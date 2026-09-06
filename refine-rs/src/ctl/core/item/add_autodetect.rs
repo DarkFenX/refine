@@ -3,13 +3,13 @@ use crate::{AddedItemIdsResp, CmdResps, FitId, FitIdBr, ItemTypeId, err::BrResol
 // Core commands
 #[cfg_attr(feature = "serde", derive(serde::Deserialize))]
 #[derive(Clone)]
-pub struct ItemAddAutoCmd {
+pub struct ItemAutodetectAddCmd {
     type_id: ItemTypeId,
 }
 
 // Extra context commands
-pub type ItemAddAutoCmdCtxFit = ItemAddAutoCmdCtxFitGen<FitId>;
-pub type ItemAddAutoCmdCtxFitBr = ItemAddAutoCmdCtxFitGen<FitIdBr>;
+pub type ItemAutodetectAddCmdCtxFit = ItemAutodetectAddCmdCtxFitGen<FitId>;
+pub type ItemAutodetectAddCmdCtxFitBr = ItemAutodetectAddCmdCtxFitGen<FitIdBr>;
 
 #[cfg_attr(
     feature = "serde",
@@ -17,16 +17,16 @@ pub type ItemAddAutoCmdCtxFitBr = ItemAddAutoCmdCtxFitGen<FitIdBr>;
     serde(bound(deserialize = "F: serde::Deserialize<'de>"))
 )]
 #[derive(Clone)]
-pub struct ItemAddAutoCmdCtxFitGen<F> {
+pub struct ItemAutodetectAddCmdCtxFitGen<F> {
     fit_id: F,
     #[cfg_attr(feature = "serde", serde(flatten))]
-    core: ItemAddAutoCmd,
+    core: ItemAutodetectAddCmd,
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Construction
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-impl ItemAddAutoCmd {
+impl ItemAutodetectAddCmd {
     pub fn new(type_id: ItemTypeId) -> Self {
         Self { type_id }
     }
@@ -35,12 +35,12 @@ impl ItemAddAutoCmd {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Conversions
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-impl ItemAddAutoCmd {
-    pub(in crate::ctl) fn into_ctx_fit(self, fit_id: FitId) -> ItemAddAutoCmdCtxFit {
-        ItemAddAutoCmdCtxFit { fit_id, core: self }
+impl ItemAutodetectAddCmd {
+    pub(in crate::ctl) fn into_ctx_fit(self, fit_id: FitId) -> ItemAutodetectAddCmdCtxFit {
+        ItemAutodetectAddCmdCtxFit { fit_id, core: self }
     }
-    pub(in crate::ctl) fn into_ctx_fit_br(self, fit_id: impl Into<FitIdBr>) -> ItemAddAutoCmdCtxFitBr {
-        ItemAddAutoCmdCtxFitBr {
+    pub(in crate::ctl) fn into_ctx_fit_br(self, fit_id: impl Into<FitIdBr>) -> ItemAutodetectAddCmdCtxFitBr {
+        ItemAutodetectAddCmdCtxFitBr {
             fit_id: fit_id.into(),
             core: self,
         }
@@ -50,9 +50,9 @@ impl ItemAddAutoCmd {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Backref resolution
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-impl ItemAddAutoCmdCtxFitBr {
-    pub(in crate::ctl) fn br_resolve(self, resps: &CmdResps) -> Result<ItemAddAutoCmdCtxFit, BrResolveError> {
-        Ok(ItemAddAutoCmdCtxFit {
+impl ItemAutodetectAddCmdCtxFitBr {
+    pub(in crate::ctl) fn br_resolve(self, resps: &CmdResps) -> Result<ItemAutodetectAddCmdCtxFit, BrResolveError> {
+        Ok(ItemAutodetectAddCmdCtxFit {
             fit_id: resps.resolve_fit_id(self.fit_id)?,
             core: self.core,
         })
@@ -62,49 +62,49 @@ impl ItemAddAutoCmdCtxFitBr {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Execution
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-impl ItemAddAutoCmd {
+impl ItemAutodetectAddCmd {
     pub(in crate::ctl) fn exec_residue(&self) -> CmdResidue {
         CmdResidue::MutFallibleClean
     }
 }
-impl<F> ItemAddAutoCmdCtxFitGen<F> {
+impl<F> ItemAutodetectAddCmdCtxFitGen<F> {
     pub(in crate::ctl) fn exec_residue(&self) -> CmdResidue {
         CmdResidue::MutFallibleClean
     }
 }
 
-impl ItemAddAutoCmd {
-    pub(in crate::ctl) fn execute(self, core_fit: &mut rc::FitMut) -> Result<AddedItemIdsResp, ItemAddAutoError> {
-        let core_item = core_fit.add_item_auto(self.type_id)?;
+impl ItemAutodetectAddCmd {
+    pub(in crate::ctl) fn execute(self, core_fit: &mut rc::FitMut) -> Result<AddedItemIdsResp, ItemAutodetectAddError> {
+        let core_item = core_fit.autodetect_add_item(self.type_id)?;
         Ok(AddedItemIdsResp::from_core_item(core_item))
     }
 }
 #[derive(thiserror::Error, Debug)]
-pub enum ItemAddAutoError {
+pub enum ItemAutodetectAddError {
     #[error(transparent)]
-    ItemAddAuto(#[from] rc::err::FitAddItemAutoError),
+    ItemAutodetectAdd(#[from] rc::err::FitItemAutodetectAddError),
 }
 
-impl ItemAddAutoCmdCtxFit {
+impl ItemAutodetectAddCmdCtxFit {
     pub(in crate::ctl) fn execute(
         self,
         core_sol: &mut rc::SolarSystem,
-    ) -> Result<AddedItemIdsResp, FitGetItemAddAutoError> {
+    ) -> Result<AddedItemIdsResp, FitGetItemAutodetectAddError> {
         let mut core_fit = core_sol.get_fit_mut(&self.fit_id)?;
         Ok(self.core.execute(&mut core_fit)?)
     }
 }
 #[derive(thiserror::Error, Debug)]
-pub enum FitGetItemAddAutoError {
+pub enum FitGetItemAutodetectAddError {
     #[error(transparent)]
     FitGet(#[from] rc::err::FitGetError),
     #[error(transparent)]
-    ItemAddAuto(rc::err::FitAddItemAutoError),
+    ItemAutodetectAdd(rc::err::FitItemAutodetectAddError),
 }
-impl From<ItemAddAutoError> for FitGetItemAddAutoError {
-    fn from(err: ItemAddAutoError) -> Self {
+impl From<ItemAutodetectAddError> for FitGetItemAutodetectAddError {
+    fn from(err: ItemAutodetectAddError) -> Self {
         match err {
-            ItemAddAutoError::ItemAddAuto(inner) => Self::ItemAddAuto(inner),
+            ItemAutodetectAddError::ItemAutodetectAdd(inner) => Self::ItemAutodetectAdd(inner),
         }
     }
 }

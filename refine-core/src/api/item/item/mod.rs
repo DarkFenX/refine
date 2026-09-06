@@ -1,9 +1,9 @@
-pub use fit_add_item_auto::FitAddItemAutoError;
+pub use fit_autodetect_add_item::FitItemAutodetectAddError;
 pub use item::{Item, ItemMut};
 pub use item_get::ItemGetError;
 pub use item_remove::ItemRemoveError;
 
-mod fit_add_item_auto;
+mod fit_autodetect_add_item;
 mod fit_iter_items;
 mod item;
 mod item_downcast;

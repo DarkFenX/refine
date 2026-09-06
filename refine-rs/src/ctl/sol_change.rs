@@ -4,8 +4,8 @@ use crate::{
     FighterAddCmdBr, FighterChangeCmd, FighterChangeCmdBr, FitAddCmd, FitAddCmdBr, FitAddCmdGen, FitChangeCmd,
     FitChangeCmdBr, FitId, FitIdBr, FitRemoveCmd, FleetAddCmd, FleetAddCmdBr, FleetAddCmdGen, FleetChangeCmd,
     FleetChangeCmdBr, FleetId, FleetIdBr, FleetRemoveCmd, FwEffectAddCmd, FwEffectChangeCmd, ImplantAddCmd,
-    ImplantChangeCmd, ItemAddAutoCmd, ItemId, ItemIdBr, ItemRemoveCmd, ModuleAddCmd, ModuleAddCmdBr, ModuleChangeCmd,
-    ModuleChangeCmdBr, ProjEffectAddCmd, ProjEffectAddCmdBr, ProjEffectAddCmdGen, ProjEffectChangeCmd,
+    ImplantChangeCmd, ItemAutodetectAddCmd, ItemId, ItemIdBr, ItemRemoveCmd, ModuleAddCmd, ModuleAddCmdBr,
+    ModuleChangeCmd, ModuleChangeCmdBr, ProjEffectAddCmd, ProjEffectAddCmdBr, ProjEffectAddCmdGen, ProjEffectChangeCmd,
     ProjEffectChangeCmdBr, RigAddCmd, RigChangeCmd, ServiceAddCmd, ServiceChangeCmd, ShipChangeCmd, ShipSetCmd,
     ShipUnsetCmd, SkillAddCmd, SkillChangeCmd, SolChangeCmd, StanceChangeCmd, StanceSetCmd, StanceUnsetCmd,
     SubsystemAddCmd, SubsystemChangeCmd, SwEffectAddCmd, SwEffectChangeCmd,
@@ -14,7 +14,7 @@ use crate::{
         CharacterSetCmdCtxFitGen, CharacterUnsetCmdCtxFitGen, ChargeChangeCmdCtxItemGen, DroneAddCmdCtxFitGen,
         DroneChangeCmdCtxItemGen, FighterAddCmdCtxFitGen, FighterChangeCmdCtxItemGen, FitChangeCmdCtxFitGen,
         FitRemoveCmdCtxFitGen, FleetChangeCmdCtxFleetGen, FleetRemoveCmdCtxFleetGen, FwEffectAddCmdCtxFitGen,
-        FwEffectChangeCmdCtxItemGen, ImplantAddCmdCtxFitGen, ImplantChangeCmdCtxItemGen, ItemAddAutoCmdCtxFitGen,
+        FwEffectChangeCmdCtxItemGen, ImplantAddCmdCtxFitGen, ImplantChangeCmdCtxItemGen, ItemAutodetectAddCmdCtxFitGen,
         ItemRemoveCmdCtxItemGen, ModuleAddCmdCtxFitGen, ModuleChangeCmdCtxItemGen, ProjEffectChangeCmdCtxItemGen,
         RigAddCmdCtxFitGen, RigChangeCmdCtxItemGen, ServiceAddCmdCtxFitGen, ServiceChangeCmdCtxItemGen,
         ShipChangeCmdCtxAnyGen, ShipSetCmdCtxFitGen, ShipUnsetCmdCtxFitGen, SkillAddCmdCtxFitGen,
@@ -24,7 +24,7 @@ use crate::{
     err::{
         BrResolveError, CharacterChangeError, FitAddError, FitGetBoosterAddError, FitGetCharacterSetError,
         FitGetCharacterUnsetError, FitGetDroneAddError, FitGetFighterAddError, FitGetFitChangeError,
-        FitGetFitRemoveError, FitGetFwEffectAddError, FitGetImplantAddError, FitGetItemAddAutoError,
+        FitGetFitRemoveError, FitGetFwEffectAddError, FitGetImplantAddError, FitGetItemAutodetectAddError,
         FitGetModuleAddError, FitGetRigAddError, FitGetServiceAddError, FitGetShipSetError, FitGetShipUnsetError,
         FitGetSkillAddError, FitGetStanceSetError, FitGetStanceUnsetError, FitGetSubsystemAddError, FleetAddError,
         FleetGetFleetChangeError, FleetGetFleetRemoveError, ItemGetAutochargeChangeError, ItemGetBoosterChangeError,
@@ -58,7 +58,7 @@ pub enum SolChangeEnumCmdGen<L, F, I> {
     FitChange(FitChangeCmdCtxFitGen<L, F>),
     FitRemove(FitRemoveCmdCtxFitGen<F>),
     // Item
-    ItemAddAuto(ItemAddAutoCmdCtxFitGen<F>),
+    ItemAutodetectAdd(ItemAutodetectAddCmdCtxFitGen<F>),
     ItemRemove(ItemRemoveCmdCtxItemGen<I>),
     // Item - autocharge
     AutochargeChange(AutochargeChangeCmdCtxItemGen<I>),
@@ -193,12 +193,12 @@ impl ItemRemoveCmd {
         SolChangeEnumCmdBr::ItemRemove(self.into_ctx_item_br(item_id))
     }
 }
-impl ItemAddAutoCmd {
+impl ItemAutodetectAddCmd {
     pub fn into_sol_ctl(self, fit_id: FitId) -> SolChangeEnumCmd {
-        SolChangeEnumCmd::ItemAddAuto(self.into_ctx_fit(fit_id))
+        SolChangeEnumCmd::ItemAutodetectAdd(self.into_ctx_fit(fit_id))
     }
     pub fn into_sol_ctl_br(self, fit_id: impl Into<FitIdBr>) -> SolChangeEnumCmdBr {
-        SolChangeEnumCmdBr::ItemAddAuto(self.into_ctx_fit_br(fit_id))
+        SolChangeEnumCmdBr::ItemAutodetectAdd(self.into_ctx_fit_br(fit_id))
     }
 }
 // Item - autocharge
@@ -550,7 +550,7 @@ impl SolChangeEnumCmdBr {
             Self::FitChange(cmd) => SolChangeEnumCmd::FitChange(cmd.br_resolve(resps)?),
             Self::FitRemove(cmd) => SolChangeEnumCmd::FitRemove(cmd.br_resolve(resps)?),
             // Item
-            Self::ItemAddAuto(cmd) => SolChangeEnumCmd::ItemAddAuto(cmd.br_resolve(resps)?),
+            Self::ItemAutodetectAdd(cmd) => SolChangeEnumCmd::ItemAutodetectAdd(cmd.br_resolve(resps)?),
             Self::ItemRemove(cmd) => SolChangeEnumCmd::ItemRemove(cmd.br_resolve(resps)?),
             // Item - autocharge
             Self::AutochargeChange(cmd) => SolChangeEnumCmd::AutochargeChange(cmd.br_resolve(resps)?),
@@ -625,7 +625,7 @@ impl<L, F, I> SolChangeEnumCmdGen<L, F, I> {
             Self::FitChange(cmd) => cmd.exec_residue(),
             Self::FitRemove(cmd) => cmd.exec_residue(),
             // Item
-            Self::ItemAddAuto(cmd) => cmd.exec_residue(),
+            Self::ItemAutodetectAdd(cmd) => cmd.exec_residue(),
             Self::ItemRemove(cmd) => cmd.exec_residue(),
             // Item - autocharge
             Self::AutochargeChange(cmd) => cmd.exec_residue(),
@@ -698,7 +698,7 @@ impl SolChangeEnumCmd {
             Self::FitChange(cmd) => cmd.execute(core_sol)?.into(),
             Self::FitRemove(cmd) => cmd.execute(core_sol)?.into(),
             // Item
-            Self::ItemAddAuto(cmd) => cmd.execute(core_sol)?.into(),
+            Self::ItemAutodetectAdd(cmd) => cmd.execute(core_sol)?.into(),
             Self::ItemRemove(cmd) => cmd.execute(core_sol)?.into(),
             // Item - autocharge
             Self::AutochargeChange(cmd) => cmd.execute(core_sol)?.into(),
@@ -774,7 +774,7 @@ pub enum SolChangeEnumError {
     FitRemove(#[from] FitGetFitRemoveError),
     // Item
     #[error("failed to add autodetected item")]
-    ItemAddAuto(#[from] FitGetItemAddAutoError),
+    ItemAutodetectAdd(#[from] FitGetItemAutodetectAddError),
     #[error("failed to remove item")]
     ItemRemove(#[from] ItemGetItemRemoveError),
     // Item - autocharge

@@ -10,7 +10,7 @@ pub use ctl::{
     ChargeChangeCmd, DroneAddCmd, DroneAddCmdBr, DroneChangeCmd, DroneChangeCmdBr, FighterAddCmd, FighterAddCmdBr,
     FighterChangeCmd, FighterChangeCmdBr, FitAddCmd, FitAddCmdBr, FitChangeCmd, FitChangeCmdBr, FitChangeEnumCmd,
     FitChangeEnumCmdBr, FitRemoveCmd, FleetAddCmd, FleetAddCmdBr, FleetChangeCmd, FleetChangeCmdBr, FleetRemoveCmd,
-    FwEffectAddCmd, FwEffectChangeCmd, ImplantAddCmd, ImplantChangeCmd, ItemAddAutoCmd, ItemAddEnumCmd,
+    FwEffectAddCmd, FwEffectChangeCmd, ImplantAddCmd, ImplantChangeCmd, ItemAddEnumCmd, ItemAutodetectAddCmd,
     ItemChangeEnumCmd, ItemRemoveCmd, ModuleAddCmd, ModuleAddCmdBr, ModuleChangeCmd, ModuleChangeCmdBr,
     ProjEffectAddCmd, ProjEffectAddCmdBr, ProjEffectChangeCmd, ProjEffectChangeCmdBr, RigAddCmd, RigChangeCmd,
     ServiceAddCmd, ServiceChangeCmd, ShipChangeCmd, ShipSetCmd, ShipUnsetCmd, SkillAddCmd, SkillChangeCmd, SolAddCmd,

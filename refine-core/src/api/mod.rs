@@ -7,7 +7,7 @@ pub use item::{
     Ability, AbilityGetError, AbilityIter, AbilityMut, AttrMutateRawError, Autocharge, AutochargeGetError,
     AutochargeMut, Booster, BoosterGetError, BoosterMut, Character, CharacterGetError, CharacterMut, Charge,
     ChargeGetError, ChargeMut, DormantMutation, DormantMutationMut, Drone, DroneGetError, DroneMut, EffectiveMutation,
-    EffectiveMutationMut, Fighter, FighterGetError, FighterMut, FitAddItemAutoError, FullMAttr, FullMAttrIter,
+    EffectiveMutationMut, Fighter, FighterGetError, FighterMut, FitItemAutodetectAddError, FullMAttr, FullMAttrIter,
     FullMAttrMut, FwEffect, FwEffectGetError, FwEffectMut, Implant, ImplantGetError, ImplantMut, Item,
     ItemAttrGetError, ItemAttrsIterError, ItemCommon, ItemEffectsIterError, ItemGetError, ItemModifiersIterError,
     ItemMut, ItemMutCommon, ItemRemoveError, Module, ModuleGetError, ModuleIter, ModuleMut, Mutation, MutationAddError,

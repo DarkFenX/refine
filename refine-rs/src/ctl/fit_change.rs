@@ -2,7 +2,7 @@ use crate::{
     AutochargeChangeCmd, BoosterAddCmd, BoosterChangeCmd, CharacterChangeCmd, CharacterSetCmd, CharacterUnsetCmd,
     ChargeChangeCmd, CmdResp, CmdResps, DroneAddCmd, DroneAddCmdBr, DroneAddCmdGen, DroneChangeCmd, DroneChangeCmdBr,
     FighterAddCmd, FighterAddCmdBr, FighterAddCmdGen, FighterChangeCmd, FighterChangeCmdBr, FitChangeCmd,
-    FwEffectAddCmd, FwEffectChangeCmd, ImplantAddCmd, ImplantChangeCmd, ItemAddAutoCmd, ItemId, ItemIdBr,
+    FwEffectAddCmd, FwEffectChangeCmd, ImplantAddCmd, ImplantChangeCmd, ItemAutodetectAddCmd, ItemId, ItemIdBr,
     ItemRemoveCmd, ModuleAddCmd, ModuleAddCmdBr, ModuleAddCmdGen, ModuleChangeCmd, ModuleChangeCmdBr, RigAddCmd,
     RigChangeCmd, ServiceAddCmd, ServiceChangeCmd, ShipChangeCmd, ShipSetCmd, ShipUnsetCmd, SkillAddCmd,
     SkillChangeCmd, StanceChangeCmd, StanceSetCmd, StanceUnsetCmd, SubsystemAddCmd, SubsystemChangeCmd,
@@ -14,7 +14,7 @@ use crate::{
     },
     err::{
         BrResolveError, DroneAddError, FighterAddError, FitChangeError, FitCharacterChangeError, FitShipChangeError,
-        FitStanceChangeError, ItemAddAutoError, ItemGetAutochargeChangeError, ItemGetBoosterChangeError,
+        FitStanceChangeError, ItemAutodetectAddError, ItemGetAutochargeChangeError, ItemGetBoosterChangeError,
         ItemGetChargeChangeError, ItemGetDroneChangeError, ItemGetFighterChangeError, ItemGetFwEffectChangeError,
         ItemGetImplantChangeError, ItemGetItemRemoveError, ItemGetModuleChangeError, ItemGetRigChangeError,
         ItemGetServiceChangeError, ItemGetSkillChangeError, ItemGetSubsystemChangeError, ModuleAddError, SkillAddError,
@@ -36,7 +36,7 @@ pub enum FitChangeEnumCmdGen<I> {
     // Fit
     FitChange(FitChangeCmd),
     // Item
-    ItemAddAuto(ItemAddAutoCmd),
+    ItemAutodetectAdd(ItemAutodetectAddCmd),
     ItemRemove(ItemRemoveCmdCtxItemGen<I>),
     // Item - autocharge
     AutochargeChange(AutochargeChangeCmdCtxItemGen<I>),
@@ -265,12 +265,12 @@ impl ModuleChangeCmdBr {
     }
 }
 // Item
-impl ItemAddAutoCmd {
+impl ItemAutodetectAddCmd {
     pub fn into_fit_ctl(self) -> FitChangeEnumCmd {
-        FitChangeEnumCmd::ItemAddAuto(self)
+        FitChangeEnumCmd::ItemAutodetectAdd(self)
     }
     pub fn into_fit_ctl_br(self) -> FitChangeEnumCmdBr {
-        FitChangeEnumCmdBr::ItemAddAuto(self)
+        FitChangeEnumCmdBr::ItemAutodetectAdd(self)
     }
 }
 // Item - rig
@@ -401,7 +401,7 @@ impl FitChangeEnumCmdBr {
             // Fit
             Self::FitChange(cmd) => FitChangeEnumCmd::FitChange(cmd),
             // Item
-            Self::ItemAddAuto(cmd) => FitChangeEnumCmd::ItemAddAuto(cmd),
+            Self::ItemAutodetectAdd(cmd) => FitChangeEnumCmd::ItemAutodetectAdd(cmd),
             Self::ItemRemove(cmd) => FitChangeEnumCmd::ItemRemove(cmd.br_resolve(resps)?),
             // Item - autocharge
             Self::AutochargeChange(cmd) => FitChangeEnumCmd::AutochargeChange(cmd.br_resolve(resps)?),
@@ -462,7 +462,7 @@ impl<I> FitChangeEnumCmdGen<I> {
             // Fit
             Self::FitChange(cmd) => cmd.exec_residue(),
             // Item
-            Self::ItemAddAuto(cmd) => cmd.exec_residue(),
+            Self::ItemAutodetectAdd(cmd) => cmd.exec_residue(),
             Self::ItemRemove(cmd) => cmd.exec_residue(),
             // Item - autocharge
             Self::AutochargeChange(cmd) => cmd.exec_residue(),
@@ -520,7 +520,7 @@ impl FitChangeEnumCmd {
             // Fit
             Self::FitChange(cmd) => cmd.execute(core_fit)?.into(),
             // Item
-            Self::ItemAddAuto(cmd) => cmd.execute(core_fit)?.into(),
+            Self::ItemAutodetectAdd(cmd) => cmd.execute(core_fit)?.into(),
             Self::ItemRemove(cmd) => cmd.execute(core_fit.get_sol_mut())?.into(),
             // Item - autocharge
             Self::AutochargeChange(cmd) => cmd.execute(core_fit.get_sol_mut())?.into(),
@@ -582,7 +582,7 @@ pub enum FitChangeEnumError {
     FitChange(#[from] FitChangeError),
     // Item
     #[error("failed to add autodetected item")]
-    ItemAddAuto(#[from] ItemAddAutoError),
+    ItemAutodetectAdd(#[from] ItemAutodetectAddError),
     #[error("failed to remove item")]
     ItemRemove(#[from] ItemGetItemRemoveError),
     // Item - autocharge

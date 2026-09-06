@@ -2,7 +2,7 @@ use crate::{
     AutochargeChangeCmd, BoosterAddCmd, BoosterChangeCmd, CharacterChangeCmd, CharacterSetCmd, CharacterUnsetCmd,
     ChargeChangeCmd, CmdResp, CmdResps, DroneAddCmdBr, DroneChangeCmdBr, FighterAddCmdBr, FighterChangeCmdBr,
     FitChangeCmd, FitChangeEnumCmd, FitChangeEnumCmdBr, FitInfoCmdBr, FitInfoEnumCmdBr, FwEffectAddCmd,
-    FwEffectChangeCmd, ImplantAddCmd, ImplantChangeCmd, ItemAddAutoCmd, ItemIdBr, ItemInfoCmdBr, ItemRemoveCmd,
+    FwEffectChangeCmd, ImplantAddCmd, ImplantChangeCmd, ItemAutodetectAddCmd, ItemIdBr, ItemInfoCmdBr, ItemRemoveCmd,
     ModuleAddCmdBr, ModuleChangeCmdBr, RigAddCmd, RigChangeCmd, ServiceAddCmd, ServiceChangeCmd, ShipChangeCmd,
     ShipSetCmd, ShipUnsetCmd, SkillAddCmd, SkillChangeCmd, StanceChangeCmd, StanceSetCmd, StanceUnsetCmd,
     SubsystemAddCmd, SubsystemChangeCmd,
@@ -43,7 +43,7 @@ impl FitChangeCmd {
     }
 }
 // Item
-impl ItemAddAutoCmd {
+impl ItemAutodetectAddCmd {
     pub fn into_fit_hyb_br(self) -> FitHybridCmdBr {
         FitHybridCmdBr::Ctl(self.into_fit_ctl_br())
     }

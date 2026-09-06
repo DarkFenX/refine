@@ -9,9 +9,10 @@ pub use fleet::{
 };
 pub(crate) use fleet::{FleetAddCmdGen, FleetChangeCmdCtxFleetGen, FleetRemoveCmdCtxFleetGen};
 pub use item::{
-    FitGetItemAddAutoError, ItemAddAutoCmd, ItemAddAutoError, ItemGetItemRemoveError, ItemRemoveCmd, ItemRemoveError,
+    FitGetItemAutodetectAddError, ItemAutodetectAddCmd, ItemAutodetectAddCmdCtxFit, ItemAutodetectAddError,
+    ItemGetItemRemoveError, ItemRemoveCmd, ItemRemoveError,
 };
-pub(crate) use item::{ItemAddAutoCmdCtxFitGen, ItemRemoveCmdCtxItemGen};
+pub(crate) use item::{ItemAutodetectAddCmdCtxFitGen, ItemRemoveCmdCtxItemGen};
 pub(crate) use item_autocharge::AutochargeChangeCmdCtxItemGen;
 pub use item_autocharge::{AutochargeChangeCmd, AutochargeChangeError, ItemGetAutochargeChangeError};
 pub use item_booster::{

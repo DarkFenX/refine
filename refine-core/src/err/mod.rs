@@ -5,7 +5,7 @@ pub use crate::ud::err::{FitIdParseError, FleetIdParseError, ItemIdParseError};
 pub use crate::{
     api::{
         AbilityGetError, AttrMutateRawError, AutochargeGetError, BoosterGetError, CharacterGetError, ChargeGetError,
-        DroneGetError, FighterGetError, FitAddItemAutoError, FitFleetSetError, FitFleetUnsetError, FitGetError,
+        DroneGetError, FighterGetError, FitFleetSetError, FitFleetUnsetError, FitGetError, FitItemAutodetectAddError,
         FitRahIncomingDpsRemoveError, FleetFitAddError, FleetFitRemoveError, FleetGetError, FwEffectGetError,
         ImplantGetError, ItemAttrGetError, ItemAttrsIterError, ItemEffectsIterError, ItemGetError,
         ItemModifiersIterError, ItemRemoveError, ModuleGetError, MutationAddError, ProjAddError, ProjEffectGetError,
