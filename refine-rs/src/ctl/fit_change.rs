@@ -2,10 +2,10 @@ use crate::{
     AutochargeChangeCmd, BoosterAddCmd, BoosterChangeCmd, CharacterChangeCmd, CharacterSetCmd, CharacterUnsetCmd,
     ChargeChangeCmd, CmdResp, CmdResps, DroneAddCmd, DroneAddCmdBr, DroneAddCmdGen, DroneChangeCmd, DroneChangeCmdBr,
     FighterAddCmd, FighterAddCmdBr, FighterAddCmdGen, FighterChangeCmd, FighterChangeCmdBr, FitChangeCmd,
-    FwEffectAddCmd, FwEffectChangeCmd, ImplantAddCmd, ImplantChangeCmd, ItemId, ItemIdBr, ItemRemoveCmd, ModuleAddCmd,
-    ModuleAddCmdBr, ModuleAddCmdGen, ModuleChangeCmd, ModuleChangeCmdBr, RigAddCmd, RigChangeCmd, ServiceAddCmd,
-    ServiceChangeCmd, ShipChangeCmd, ShipSetCmd, ShipUnsetCmd, SkillAddCmd, SkillChangeCmd, StanceChangeCmd,
-    StanceSetCmd, StanceUnsetCmd, SubsystemAddCmd, SubsystemChangeCmd,
+    FwEffectAddCmd, FwEffectChangeCmd, ImplantAddCmd, ImplantChangeCmd, ItemAddAutoCmd, ItemId, ItemIdBr,
+    ItemRemoveCmd, ModuleAddCmd, ModuleAddCmdBr, ModuleAddCmdGen, ModuleChangeCmd, ModuleChangeCmdBr, RigAddCmd,
+    RigChangeCmd, ServiceAddCmd, ServiceChangeCmd, ShipChangeCmd, ShipSetCmd, ShipUnsetCmd, SkillAddCmd,
+    SkillChangeCmd, StanceChangeCmd, StanceSetCmd, StanceUnsetCmd, SubsystemAddCmd, SubsystemChangeCmd,
     ctl::core::{
         AutochargeChangeCmdCtxItemGen, BoosterChangeCmdCtxItemGen, ChargeChangeCmdCtxItemGen, DroneChangeCmdCtxItemGen,
         FighterChangeCmdCtxItemGen, FwEffectChangeCmdCtxItemGen, ImplantChangeCmdCtxItemGen, ItemRemoveCmdCtxItemGen,
@@ -14,10 +14,10 @@ use crate::{
     },
     err::{
         BrResolveError, DroneAddError, FighterAddError, FitChangeError, FitCharacterChangeError, FitShipChangeError,
-        FitStanceChangeError, ItemGetAutochargeChangeError, ItemGetBoosterChangeError, ItemGetChargeChangeError,
-        ItemGetDroneChangeError, ItemGetFighterChangeError, ItemGetFwEffectChangeError, ItemGetImplantChangeError,
-        ItemGetItemRemoveError, ItemGetModuleChangeError, ItemGetRigChangeError, ItemGetServiceChangeError,
-        ItemGetSkillChangeError, ItemGetSubsystemChangeError, ModuleAddError, SkillAddError,
+        FitStanceChangeError, ItemAddAutoError, ItemGetAutochargeChangeError, ItemGetBoosterChangeError,
+        ItemGetChargeChangeError, ItemGetDroneChangeError, ItemGetFighterChangeError, ItemGetFwEffectChangeError,
+        ItemGetImplantChangeError, ItemGetItemRemoveError, ItemGetModuleChangeError, ItemGetRigChangeError,
+        ItemGetServiceChangeError, ItemGetSkillChangeError, ItemGetSubsystemChangeError, ModuleAddError, SkillAddError,
     },
     shared::CmdResidue,
 };
@@ -36,6 +36,7 @@ pub enum FitChangeEnumCmdGen<I> {
     // Fit
     FitChange(FitChangeCmd),
     // Item
+    ItemAddAuto(ItemAddAutoCmd),
     ItemRemove(ItemRemoveCmdCtxItemGen<I>),
     // Item - autocharge
     AutochargeChange(AutochargeChangeCmdCtxItemGen<I>),
@@ -263,6 +264,15 @@ impl ModuleChangeCmdBr {
         FitChangeEnumCmdBr::ModuleChange(self.into_ctx_item_br(item_id))
     }
 }
+// Item
+impl ItemAddAutoCmd {
+    pub fn into_fit_ctl(self) -> FitChangeEnumCmd {
+        FitChangeEnumCmd::ItemAddAuto(self)
+    }
+    pub fn into_fit_ctl_br(self) -> FitChangeEnumCmdBr {
+        FitChangeEnumCmdBr::ItemAddAuto(self)
+    }
+}
 // Item - rig
 impl RigAddCmd {
     pub fn into_fit_ctl(self) -> FitChangeEnumCmd {
@@ -391,6 +401,7 @@ impl FitChangeEnumCmdBr {
             // Fit
             Self::FitChange(cmd) => FitChangeEnumCmd::FitChange(cmd),
             // Item
+            Self::ItemAddAuto(cmd) => FitChangeEnumCmd::ItemAddAuto(cmd),
             Self::ItemRemove(cmd) => FitChangeEnumCmd::ItemRemove(cmd.br_resolve(resps)?),
             // Item - autocharge
             Self::AutochargeChange(cmd) => FitChangeEnumCmd::AutochargeChange(cmd.br_resolve(resps)?),
@@ -451,6 +462,7 @@ impl<I> FitChangeEnumCmdGen<I> {
             // Fit
             Self::FitChange(cmd) => cmd.exec_residue(),
             // Item
+            Self::ItemAddAuto(cmd) => cmd.exec_residue(),
             Self::ItemRemove(cmd) => cmd.exec_residue(),
             // Item - autocharge
             Self::AutochargeChange(cmd) => cmd.exec_residue(),
@@ -508,6 +520,7 @@ impl FitChangeEnumCmd {
             // Fit
             Self::FitChange(cmd) => cmd.execute(core_fit)?.into(),
             // Item
+            Self::ItemAddAuto(cmd) => cmd.execute(core_fit)?.into(),
             Self::ItemRemove(cmd) => cmd.execute(core_fit.get_sol_mut())?.into(),
             // Item - autocharge
             Self::AutochargeChange(cmd) => cmd.execute(core_fit.get_sol_mut())?.into(),
@@ -568,6 +581,8 @@ pub enum FitChangeEnumError {
     #[error("failed to change fleet")]
     FitChange(#[from] FitChangeError),
     // Item
+    #[error("failed to add autodetected item")]
+    ItemAddAuto(#[from] ItemAddAutoError),
     #[error("failed to remove item")]
     ItemRemove(#[from] ItemGetItemRemoveError),
     // Item - autocharge

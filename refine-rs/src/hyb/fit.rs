@@ -2,10 +2,10 @@ use crate::{
     AutochargeChangeCmd, BoosterAddCmd, BoosterChangeCmd, CharacterChangeCmd, CharacterSetCmd, CharacterUnsetCmd,
     ChargeChangeCmd, CmdResp, CmdResps, DroneAddCmdBr, DroneChangeCmdBr, FighterAddCmdBr, FighterChangeCmdBr,
     FitChangeCmd, FitChangeEnumCmd, FitChangeEnumCmdBr, FitInfoCmdBr, FitInfoEnumCmdBr, FwEffectAddCmd,
-    FwEffectChangeCmd, ImplantAddCmd, ImplantChangeCmd, ItemIdBr, ItemInfoCmdBr, ItemRemoveCmd, ModuleAddCmdBr,
-    ModuleChangeCmdBr, RigAddCmd, RigChangeCmd, ServiceAddCmd, ServiceChangeCmd, ShipChangeCmd, ShipSetCmd,
-    ShipUnsetCmd, SkillAddCmd, SkillChangeCmd, StanceChangeCmd, StanceSetCmd, StanceUnsetCmd, SubsystemAddCmd,
-    SubsystemChangeCmd,
+    FwEffectChangeCmd, ImplantAddCmd, ImplantChangeCmd, ItemAddAutoCmd, ItemIdBr, ItemInfoCmdBr, ItemRemoveCmd,
+    ModuleAddCmdBr, ModuleChangeCmdBr, RigAddCmd, RigChangeCmd, ServiceAddCmd, ServiceChangeCmd, ShipChangeCmd,
+    ShipSetCmd, ShipUnsetCmd, SkillAddCmd, SkillChangeCmd, StanceChangeCmd, StanceSetCmd, StanceUnsetCmd,
+    SubsystemAddCmd, SubsystemChangeCmd,
     err::{BrResolveError, FitChangeEnumError, FitInfoEnumError},
     info::FitInfoEnumCmd,
     shared::CmdResidue,
@@ -43,6 +43,11 @@ impl FitChangeCmd {
     }
 }
 // Item
+impl ItemAddAutoCmd {
+    pub fn into_fit_hyb_br(self) -> FitHybridCmdBr {
+        FitHybridCmdBr::Ctl(self.into_fit_ctl_br())
+    }
+}
 impl ItemRemoveCmd {
     pub fn into_fit_hyb_br(self, item_id: impl Into<ItemIdBr>) -> FitHybridCmdBr {
         FitHybridCmdBr::Ctl(self.into_fit_ctl_br(item_id))

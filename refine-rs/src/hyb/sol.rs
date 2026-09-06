@@ -2,12 +2,12 @@ use crate::{
     AutochargeChangeCmd, BoosterAddCmd, BoosterChangeCmd, CharacterChangeCmd, CharacterSetCmd, CharacterUnsetCmd,
     ChargeChangeCmd, CmdResp, CmdResps, DroneAddCmdBr, DroneChangeCmdBr, FighterAddCmdBr, FighterChangeCmdBr,
     FitAddCmdBr, FitChangeCmdBr, FitIdBr, FitInfoCmdBr, FitRemoveCmd, FleetAddCmdBr, FleetChangeCmdBr, FleetIdBr,
-    FleetInfoCmdBr, FleetRemoveCmd, FwEffectAddCmd, FwEffectChangeCmd, ImplantAddCmd, ImplantChangeCmd, ItemIdBr,
-    ItemInfoCmdBr, ItemRemoveCmd, ModuleAddCmdBr, ModuleChangeCmdBr, ProjEffectAddCmdBr, ProjEffectChangeCmdBr,
-    RigAddCmd, RigChangeCmd, ServiceAddCmd, ServiceChangeCmd, ShipChangeCmd, ShipSetCmd, ShipUnsetCmd, SkillAddCmd,
-    SkillChangeCmd, SolChangeCmd, SolChangeEnumCmd, SolChangeEnumCmdBr, SolInfoCmdBr, SolInfoEnumCmdBr,
-    StanceChangeCmd, StanceSetCmd, StanceUnsetCmd, SubsystemAddCmd, SubsystemChangeCmd, SwEffectAddCmd,
-    SwEffectChangeCmd,
+    FleetInfoCmdBr, FleetRemoveCmd, FwEffectAddCmd, FwEffectChangeCmd, ImplantAddCmd, ImplantChangeCmd, ItemAddAutoCmd,
+    ItemIdBr, ItemInfoCmdBr, ItemRemoveCmd, ModuleAddCmdBr, ModuleChangeCmdBr, ProjEffectAddCmdBr,
+    ProjEffectChangeCmdBr, RigAddCmd, RigChangeCmd, ServiceAddCmd, ServiceChangeCmd, ShipChangeCmd, ShipSetCmd,
+    ShipUnsetCmd, SkillAddCmd, SkillChangeCmd, SolChangeCmd, SolChangeEnumCmd, SolChangeEnumCmdBr, SolInfoCmdBr,
+    SolInfoEnumCmdBr, StanceChangeCmd, StanceSetCmd, StanceUnsetCmd, SubsystemAddCmd, SubsystemChangeCmd,
+    SwEffectAddCmd, SwEffectChangeCmd,
     err::{BrResolveError, SolChangeEnumError, SolInfoEnumError},
     info::SolInfoEnumCmd,
     shared::CmdResidue,
@@ -81,6 +81,11 @@ impl FitRemoveCmd {
     }
 }
 // Item
+impl ItemAddAutoCmd {
+    pub fn into_sol_hyb_br(self, fit_id: impl Into<FitIdBr>) -> SolHybridCmdBr {
+        SolHybridCmdBr::Ctl(self.into_sol_ctl_br(fit_id))
+    }
+}
 impl ItemRemoveCmd {
     pub fn into_sol_hyb_br(self, item_id: impl Into<ItemIdBr>) -> SolHybridCmdBr {
         SolHybridCmdBr::Ctl(self.into_sol_ctl_br(item_id))

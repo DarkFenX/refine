@@ -10,11 +10,11 @@ pub use ctl::{
     ChargeChangeCmd, DroneAddCmd, DroneAddCmdBr, DroneChangeCmd, DroneChangeCmdBr, FighterAddCmd, FighterAddCmdBr,
     FighterChangeCmd, FighterChangeCmdBr, FitAddCmd, FitAddCmdBr, FitChangeCmd, FitChangeCmdBr, FitChangeEnumCmd,
     FitChangeEnumCmdBr, FitRemoveCmd, FleetAddCmd, FleetAddCmdBr, FleetChangeCmd, FleetChangeCmdBr, FleetRemoveCmd,
-    FwEffectAddCmd, FwEffectChangeCmd, ImplantAddCmd, ImplantChangeCmd, ItemAddEnumCmd, ItemChangeEnumCmd,
-    ItemRemoveCmd, ModuleAddCmd, ModuleAddCmdBr, ModuleChangeCmd, ModuleChangeCmdBr, ProjEffectAddCmd,
-    ProjEffectAddCmdBr, ProjEffectChangeCmd, ProjEffectChangeCmdBr, RigAddCmd, RigChangeCmd, ServiceAddCmd,
-    ServiceChangeCmd, ShipChangeCmd, ShipSetCmd, ShipUnsetCmd, SkillAddCmd, SkillChangeCmd, SolAddCmd, SolChangeCmd,
-    SolChangeEnumCmd, SolChangeEnumCmdBr, StanceChangeCmd, StanceSetCmd, StanceUnsetCmd, SubsystemAddCmd,
+    FwEffectAddCmd, FwEffectChangeCmd, ImplantAddCmd, ImplantChangeCmd, ItemAddAutoCmd, ItemAddEnumCmd,
+    ItemChangeEnumCmd, ItemRemoveCmd, ModuleAddCmd, ModuleAddCmdBr, ModuleChangeCmd, ModuleChangeCmdBr,
+    ProjEffectAddCmd, ProjEffectAddCmdBr, ProjEffectChangeCmd, ProjEffectChangeCmdBr, RigAddCmd, RigChangeCmd,
+    ServiceAddCmd, ServiceChangeCmd, ShipChangeCmd, ShipSetCmd, ShipUnsetCmd, SkillAddCmd, SkillChangeCmd, SolAddCmd,
+    SolChangeCmd, SolChangeEnumCmd, SolChangeEnumCmdBr, StanceChangeCmd, StanceSetCmd, StanceUnsetCmd, SubsystemAddCmd,
     SubsystemChangeCmd, SwEffectAddCmd, SwEffectChangeCmd,
 };
 pub(crate) use ctl::{

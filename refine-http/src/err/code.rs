@@ -280,6 +280,10 @@ fn sol_change_enum(err: &rs::err::SolChangeEnumError) -> (StatusCode, &'static s
             (StatusCode::BAD_REQUEST, "FIT-001")
         }
         // Item
+        rs::err::SolChangeEnumError::ItemAddAuto(err_l2) => match err_l2 {
+            rs::err::FitGetItemAddAutoError::FitGet(..) => (StatusCode::BAD_REQUEST, "FIT-001"),
+            rs::err::FitGetItemAddAutoError::ItemAddAuto(err_l3) => item_add_auto(err_l3),
+        },
         rs::err::SolChangeEnumError::ItemRemove(err_l2) => match err_l2 {
             rs::err::ItemGetItemRemoveError::ItemGet(..) => (StatusCode::BAD_REQUEST, "ITM-001"),
             rs::err::ItemGetItemRemoveError::ItemRemove(rs::err::core::ItemRemoveError::UnremovableAutocharge) => {
@@ -471,6 +475,9 @@ fn fit_change_enum(err: &rs::err::FitChangeEnumError) -> (StatusCode, &'static s
             (StatusCode::BAD_REQUEST, "FIT-004")
         }
         // Item
+        rs::err::FitChangeEnumError::ItemAddAuto(rs::err::ItemAddAutoError::ItemAddAuto(err_l2)) => {
+            item_add_auto(err_l2)
+        }
         rs::err::FitChangeEnumError::ItemRemove(err_l2) => match err_l2 {
             rs::err::ItemGetItemRemoveError::ItemGet(..) => (StatusCode::BAD_REQUEST, "ITM-001"),
             rs::err::ItemGetItemRemoveError::ItemRemove(rs::err::core::ItemRemoveError::UnremovableAutocharge) => {
@@ -572,5 +579,13 @@ fn fit_change_enum(err: &rs::err::FitChangeEnumError) -> (StatusCode, &'static s
             rs::err::ItemGetSubsystemChangeError::ItemGet(..) => (StatusCode::BAD_REQUEST, "ITM-001"),
             rs::err::ItemGetSubsystemChangeError::ItemIsNotSubsystem(..) => (StatusCode::BAD_REQUEST, "SUB-001"),
         },
+    }
+}
+
+fn item_add_auto(err: &rs::err::core::FitAddItemAutoError) -> (StatusCode, &'static str) {
+    match err {
+        rs::err::core::FitAddItemAutoError::TypeId(..) => (StatusCode::BAD_REQUEST, "ITM-003"),
+        rs::err::core::FitAddItemAutoError::KindUnknown => (StatusCode::BAD_REQUEST, "ITM-004"),
+        rs::err::core::FitAddItemAutoError::KindInvalid(..) => (StatusCode::BAD_REQUEST, "ITM-005"),
     }
 }

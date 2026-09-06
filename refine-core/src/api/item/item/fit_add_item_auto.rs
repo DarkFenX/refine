@@ -7,17 +7,17 @@ use crate::{
 };
 
 impl SolarSystem {
-    pub(in crate::api) fn internal_try_add_item(
+    pub(in crate::api) fn internal_fit_add_item_auto(
         &mut self,
         fit_uid: UFitId,
         type_aid: AItemId,
         reuse_eupdates: &mut UEffectUpdates,
-    ) -> Result<UItemId, FitTryAddItemError> {
+    ) -> Result<UItemId, FitAddItemAutoError> {
         let Some(r_item) = self.u_data.r_data.get_item_by_aid(&type_aid) else {
-            return Err(FitTryAddItemError::TypeId(ItemTypeId::from_aid(type_aid)));
+            return Err(FitAddItemAutoError::TypeId(ItemTypeId::from_aid(type_aid)));
         };
         let Some(item_kind) = r_item.attr_data.kind else {
-            return Err(FitTryAddItemError::KindUnknown);
+            return Err(FitAddItemAutoError::KindUnknown);
         };
         let item_uid = match item_kind {
             DetectedItemKind::Booster => self.internal_add_booster(fit_uid, type_aid, reuse_eupdates),
@@ -72,18 +72,18 @@ impl SolarSystem {
                 self.internal_add_service(fit_uid, type_aid, ServiceState::Online, reuse_eupdates)
             }
             DetectedItemKind::Subsystem => self.internal_add_subsystem(fit_uid, type_aid, reuse_eupdates),
-            kind => return Err(FitTryAddItemError::KindInvalid(kind)),
+            kind => return Err(FitAddItemAutoError::KindInvalid(kind)),
         };
         Ok(item_uid)
     }
 }
 
 impl<'s> FitMut<'s> {
-    pub fn try_add_item(&mut self, type_id: ItemTypeId) -> Result<ItemMut<'_>, FitTryAddItemError> {
+    pub fn add_item_auto(&mut self, type_id: ItemTypeId) -> Result<ItemMut<'_>, FitAddItemAutoError> {
         let mut reuse_eupdates = UEffectUpdates::new();
         let item_uid = self
             .sol
-            .internal_try_add_item(self.uid, type_id.into_aid(), &mut reuse_eupdates)?;
+            .internal_fit_add_item_auto(self.uid, type_id.into_aid(), &mut reuse_eupdates)?;
         Ok(ItemMut::new(self.sol, item_uid))
     }
 }
@@ -100,7 +100,7 @@ fn conv_state(r_state: RState) -> ModuleState {
 }
 
 #[derive(Debug, thiserror::Error)]
-pub enum FitTryAddItemError {
+pub enum FitAddItemAutoError {
     #[error("type ID {0} not found")]
     TypeId(ItemTypeId),
     #[error("item kind could not be detected")]

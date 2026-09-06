@@ -49,6 +49,12 @@ impl AddedFitIdResp {
 }
 
 impl AddedItemIdsResp {
+    pub(in crate::ctl::core) fn from_core_item(core_item: rc::ItemMut) -> Self {
+        Self {
+            item_id: core_item.get_item_id(),
+            charge_item_id: None,
+        }
+    }
     pub(in crate::ctl::core) fn from_core_booster(core_booster: rc::BoosterMut) -> Self {
         Self {
             item_id: core_booster.get_item_id(),
