@@ -114,7 +114,7 @@ impl FitTryItemsCmd {
         let fit_id = core_fit.get_fit_id();
         let mut cloned_sol = core_fit.get_sol().clone();
         let mut cloned_fit = cloned_sol.get_fit_mut(&fit_id).unwrap();
-        cloned_fit.try_fit_items(&self.type_ids, &self.val_options)
+        cloned_fit.try_items(&self.type_ids, &self.val_options)
     }
 }
 

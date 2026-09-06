@@ -681,7 +681,7 @@ fn test_nphoon(edh: &EveDataHandler, adc: &AdaptedDataCacher) {
     tracing::error!("starting nphoon test, trying {} items per iteration", items.len());
     let before = Utc::now();
     for _ in 0..iterations {
-        let result = fit.try_fit_items(&items, &val_options);
+        let result = fit.try_items(&items, &val_options);
         // println!("Valid items: {:?}", result);
     }
     let after = Utc::now();

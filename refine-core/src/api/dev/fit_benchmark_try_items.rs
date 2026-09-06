@@ -16,7 +16,7 @@ impl<'s> FitMut<'s> {
         for _ in 0..iterations {
             black_box(
                 self.sol
-                    .internal_try_fit_items(self.uid, &type_aids, &int_val_options, &mut reuse_eupdates),
+                    .internal_fit_try_items(self.uid, &type_aids, &int_val_options, &mut reuse_eupdates),
             );
         }
     }

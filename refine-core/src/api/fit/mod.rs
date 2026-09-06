@@ -6,7 +6,6 @@ pub use stats::{StatFitAppliedError, StatFitCharacterError, StatFitShipAppliedEr
 
 mod fit;
 mod fit_remove;
-mod fit_try_fit_items;
 mod fit_validate;
 mod fleet;
 mod rah_incoming_dps;
@@ -15,3 +14,4 @@ mod sol_add_fit;
 mod sol_get_fit;
 mod sol_iter_fits;
 mod stats;
+mod trial;

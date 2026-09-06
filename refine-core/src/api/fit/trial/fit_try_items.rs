@@ -10,7 +10,7 @@ use crate::{
 };
 
 impl SolarSystem {
-    pub(in crate::api) fn internal_try_fit_items(
+    pub(in crate::api) fn internal_fit_try_items(
         &mut self,
         fit_uid: UFitId,
         type_aids: &[AItemId],
@@ -156,13 +156,13 @@ impl SolarSystem {
 }
 
 impl<'s> FitMut<'s> {
-    pub fn try_fit_items(&mut self, type_ids: &[ItemTypeId], val_options: &ValOptions) -> Vec<ItemTypeId> {
+    pub fn try_items(&mut self, type_ids: &[ItemTypeId], val_options: &ValOptions) -> Vec<ItemTypeId> {
         let type_aids = type_ids.iter().map(|v| v.into_aid()).collect_vec();
         let int_val_options = ValOptionsInt::from_pub(val_options, self.sol);
         let mut reuse_eupdates = UEffectUpdates::new();
         let type_aids = self
             .sol
-            .internal_try_fit_items(self.uid, &type_aids, &int_val_options, &mut reuse_eupdates);
+            .internal_fit_try_items(self.uid, &type_aids, &int_val_options, &mut reuse_eupdates);
         type_aids.into_iter().map(ItemTypeId::from_aid).collect()
     }
 }
