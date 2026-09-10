@@ -4,7 +4,7 @@ use crate::{
     util::RMap,
 };
 
-// Holds info about effect projections
+/// Holds info about effect projections
 #[derive(Clone)]
 pub(crate) struct EffProjs {
     pub(super) proj_datas: RMap<(EffectSpec, UItemId), UProjData>,

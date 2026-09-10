@@ -239,7 +239,7 @@ impl Calc {
         );
         Some(ItemData::new(rah_info))
     }
-    // Set resonances to unadapted values in sim storage for all RAHs of requested fit
+    /// Set resonances to unadapted values in sim storage for all RAHs of requested fit
     fn set_fit_rahs_unadapted(&mut self, ctx: SvcCtx, fit_uid: UFitId, trigger_recalc: bool) {
         for item_uid in self.rah.by_fit.get(fit_uid).copied().collect_vec() {
             self.set_rah_unadapted(ctx, item_uid, trigger_recalc);

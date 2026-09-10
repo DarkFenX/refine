@@ -35,7 +35,7 @@ use crate::{
     util::{PSlab, RMap},
 };
 
-// Item attributes and any data which relies on item attributes.
+/// Item attributes and any data which relies on item attributes.
 #[derive(Clone, Default)]
 pub(crate) struct RItemAttrData {
     // Raw data
@@ -49,18 +49,23 @@ pub(crate) struct RItemAttrData {
     pub(crate) radius: PValue,
     pub(crate) calibration_use: Option<Value>,
     pub(crate) bandwidth_use: Option<Value>,
-    pub(crate) rig_size: Option<Value>,    // On-rig and on-ship attribute
-    pub(crate) charge_size: Option<Value>, // On-module and on-charge attribute
+    /// On-rig and on-ship attribute
+    pub(crate) rig_size: Option<Value>,
+    /// On-module and on-charge attribute
+    pub(crate) charge_size: Option<Value>,
     pub(crate) charge_rate: Count,
     pub(crate) max_fighter_count: CountNz,
     pub(crate) fighter_refuel_duration: PValue,
     pub(crate) remote_resist_attr_rid: Option<RAttrId>,
     // Derived data - mobility
-    pub(crate) is_mobile: bool,  // Used to differentiate between mobile and sentry drones
-    pub(crate) entity_mwd: bool, // Used to differentiate between single/dual-prop drones
+    /// Used to differentiate between mobile and sentry drones
+    pub(crate) is_mobile: bool,
+    /// Used to differentiate between single/dual-prop drones
+    pub(crate) entity_mwd: bool,
     pub(crate) jump_fuel_item_aid: Option<AItemId>,
     pub(crate) enables_conduit: bool,
-    pub(crate) enables_portal: bool, // Used by bridge modules
+    /// Used by bridge modules
+    pub(crate) enables_portal: bool,
     // Derived data - module cycle flags
     pub(crate) specs_reactivation_delay: bool,
     pub(crate) specs_disallow_repeats: bool,
@@ -76,27 +81,36 @@ pub(crate) struct RItemAttrData {
     pub(crate) booster_slot: Option<SlotIndex>,
     pub(crate) subsystem_slot: Option<SlotIndex>,
     // Derived data - various aggregated limits
-    pub(crate) ship_limit: Option<RItemShipLimit>, // Items can be fit to those ships
-    pub(crate) charge_limit: Option<RItemChargeLimit>, // Items can load those charges
-    pub(crate) cont_limit: Option<RItemContLimit>, // Charges can be loaded into those items
-    pub(crate) drone_limit: Option<RShipDroneLimit>, // Ship can use those drones
+    /// Items can be fit to those ships
+    pub(crate) ship_limit: Option<RItemShipLimit>,
+    /// Items can load those charges
+    pub(crate) charge_limit: Option<RItemChargeLimit>,
+    /// Charges can be loaded into those items
+    pub(crate) cont_limit: Option<RItemContLimit>,
+    /// Ship can use those drones
+    pub(crate) drone_limit: Option<RShipDroneLimit>,
     // Derived data - is item limitable by an appropriate "max group" limit, or cannot be affected
     // at all
     pub(crate) max_group_fitted_limited: bool,
     pub(crate) max_group_online_limited: bool,
     pub(crate) max_group_active_limited: bool,
     // Derived data - self-limits
-    pub(crate) max_type_fitted: Option<Count>, // Max amount of fit items of this type ID
-    pub(crate) sec_zone_limitable: bool,       // If item can be sec zone limited altogether
-    pub(crate) online_max_sec_class: Option<Value>, // 2 hisec, 1 lowsec, 0 the rest
+    /// Max amount of fit items of this type ID
+    pub(crate) max_type_fitted: Option<Count>,
+    /// If item can be sec zone limited altogether
+    pub(crate) sec_zone_limitable: bool,
+    /// 2 hisec, 1 lowsec, 0 the rest
+    pub(crate) online_max_sec_class: Option<Value>,
     pub(crate) disallow_vs_ew_immune_tgt: bool,
     // Derived data - ship limits
     pub(crate) activation_blocks_cloak: bool,
     pub(crate) activation_blocks_in_assist: bool,
     // Derived data - misc
     pub(crate) kind: Option<DetectedItemKind>,
-    pub(crate) item_ship_kind: Option<RShipKind>, // Which ship type this item fits to
-    pub(crate) overload_td_lvl: Option<SkillLevel>, // Required thermodynamics level for overheat
+    /// Which ship type this item fits to
+    pub(crate) item_ship_kind: Option<RShipKind>,
+    /// Required thermodynamics level for overheat
+    pub(crate) overload_td_lvl: Option<SkillLevel>,
 }
 impl RItemAttrData {
     pub(crate) fn get_oattr_ffb(&self, attr_rid: Option<RAttrId>, fallback: Value) -> Value {

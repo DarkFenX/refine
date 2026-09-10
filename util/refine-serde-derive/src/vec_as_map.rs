@@ -101,7 +101,7 @@ fn get_key_value_fields(input: &DeriveInput) -> syn::Result<(FieldInfo, FieldInf
     Ok((key, value, value_as))
 }
 
-// Convert placeholder to "::serde_with::Same"
+/// Convert placeholder to "::serde_with::Same"
 struct InferAsSame;
 impl VisitMut for InferAsSame {
     fn visit_type_mut(&mut self, node: &mut Type) {

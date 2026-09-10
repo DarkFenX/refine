@@ -61,8 +61,8 @@ where
     Some(accum)
 }
 
-// Projected effects, puts data for non-looped part into one accumulator, and for looped part into
-// another
+/// Projected effects, puts data for non-looped part into one accumulator, and for looped part into
+/// another
 pub(in crate::svc::vast) fn aggr_proj_split<BG, BX, I, IAO, IAL>(
     ctx: SvcCtx,
     calc: &mut Calc,

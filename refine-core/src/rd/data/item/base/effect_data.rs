@@ -5,7 +5,7 @@ use crate::{
     util::RMap,
 };
 
-// Item-specific attribute-independent effect data
+/// Item-specific attribute-independent effect data
 #[derive(Copy, Clone)]
 pub(crate) struct RItemEffectData {
     pub(crate) ability_cooldown: Option<PValue>,

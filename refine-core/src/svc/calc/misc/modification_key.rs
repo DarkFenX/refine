@@ -4,10 +4,10 @@ use crate::{
     ud::UItemId,
 };
 
-// This is an auxiliary entity to make sure that overlapping modifications are not applied. We can
-// only guess what's in actual key in EVE, and what we have here is based on observations and common
-// sense. For EVE scenarios which prompt for existence of key and what's in it, see tests in
-// test_similar_modifiers.py
+/// This is an auxiliary entity to make sure that overlapping modifications are not applied. We can
+/// only guess what's in actual key in EVE, and what we have here is based on observations and
+/// common sense. For EVE scenarios which prompt for existence of key and what's in it, see tests in
+/// test_similar_modifiers.py
 #[derive(Eq, PartialEq, Hash)]
 pub(in crate::svc::calc) struct CalcModificationKey {
     pub(in crate::svc::calc) affector_uid: UItemId,

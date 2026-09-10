@@ -4,7 +4,7 @@ use crate::num::{Count, PValue};
 pub(crate) struct OutputComplex<I> {
     pub(crate) instance: I,
     pub(crate) delay: PValue,
-    // Total count of instances
+    /// Total count of instances
     pub(crate) repeats: Count,
     pub(crate) interval: PValue,
 }

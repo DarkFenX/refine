@@ -16,7 +16,7 @@ use crate::{
     ud::UItemId,
 };
 
-// Local effects, considers only infinite parts of cycles
+/// Local effects, considers only infinite parts of cycles
 pub(in crate::svc::vast) fn aggr_local_looped<BG, BX, I, IA>(
     ctx: SvcCtx,
     calc: &mut Calc,
@@ -39,10 +39,10 @@ where
     Some(accum)
 }
 
-// Local effects, puts data for non-looped part into one accumulator, and for looped part into
-// another
-// Not used anywhere for now, but at some point might be, so keeping it around & suppressing the
-// warning
+/// Local effects, puts data for non-looped part into one accumulator, and for looped part into
+/// another
+/// Not used anywhere for now, but at some point might be, so keeping it around & suppressing the
+/// warning
 #[expect(dead_code)]
 pub(in crate::svc::vast) fn aggr_local_split<BG, BX, I, IAO, IAL>(
     ctx: SvcCtx,

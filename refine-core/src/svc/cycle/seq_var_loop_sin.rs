@@ -9,7 +9,7 @@ use crate::{num::PValue, util::LibConverter};
 #[derive(Copy, Clone, Eq, PartialEq, Hash)]
 pub(in crate::svc) struct CSeqLoopSin<D, HDT> {
     pub(in crate::svc) data: D,
-    // Optional hard downtime every cycle
+    /// Optional hard downtime every cycle
     pub(in crate::svc) hard_dt: Option<HDT>,
 }
 impl<D, HDT> CSeqLoopSin<D, HDT> {

@@ -3,7 +3,7 @@ use crate::{
     util::round_f64_to_i32,
 };
 
-// Part of primary and foreign keys
+/// Part of primary and foreign keys
 #[derive(Copy, Clone, Eq, PartialEq, Hash)]
 pub(in crate::ad::generator) struct KeyPart(i32);
 impl KeyPart {

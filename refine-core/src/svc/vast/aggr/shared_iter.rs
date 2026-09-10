@@ -85,7 +85,7 @@ impl<I> AggrIterDataSpool<I> {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 pub(in crate::svc::vast) struct AggrIterItem<I> {
     pub(in crate::svc::vast) output: Output<I>,
-    // Is set only if output completion duration is shorter than time left until hard downtime
+    /// Is set only if output completion duration is shorter than time left until hard downtime
     pub(in crate::svc::vast) output_duration_limit: Option<PValue>,
     pub(in crate::svc::vast) cycle_duration: PValue,
 }
@@ -195,9 +195,9 @@ where
 pub(in crate::svc::vast) struct AggrPartDataSpoolIter<I> {
     // Active + soft downtime duration combined
     pub(super) cycle_main_duration: PValue,
-    // Are there interrupts of any kind every cycle in this part
+    /// Are there interrupts of any kind every cycle in this part
     pub(super) interrupt: bool,
-    // Part-specific strength multiplier, which does not include spool factor
+    /// Part-specific strength multiplier, which does not include spool factor
     pub(super) str_mult: PValue,
     pub(super) output_zero_spool: Output<I>,
     pub(super) output_max_spool: Output<I>,

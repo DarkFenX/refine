@@ -4,7 +4,7 @@ use crate::{
     ud::{UCharge, UItemId},
 };
 
-// Charges expose no projection info, since it fully matches projections of the parent item
+/// Charges expose no projection info, since it fully matches projections of the parent item
 pub struct Charge<'s> {
     pub(in crate::api) sol: &'s SolarSystem,
     pub(in crate::api) uid: UItemId,

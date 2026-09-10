@@ -39,11 +39,11 @@ pub(in crate::svc::calc) struct StandardRegister {
     // Fleet modifiers on a per-fit basis
     // Map<affector fit, modifiers>
     pub(super) rmods_fleet: RMapRSet<UFitId, RawModifier>,
-    // System-wide system effect modifiers
+    /// System-wide system effect modifiers
     pub(super) rmods_sw_system: RSet<RawModifier>,
-    // System-wide buff modifiers
+    /// System-wide buff modifiers
     pub(super) rmods_sw_buff: RSet<RawModifier>,
-    // Fit-wide buff modifiers
+    /// Fit-wide buff modifiers
     pub(super) rmods_fw_buff: RMapRSet<UFitId, RawModifier>,
     // Child containers
     pub(super) rmods_proj_status: StandardRegisterRawProjStatus,

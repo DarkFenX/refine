@@ -11,9 +11,9 @@ use crate::{
     },
 };
 
-// Process breacher module cycle sequence + output per cycle into some kind of aggregated value,
-// which discards all overlapping instances and aligns everything to ticks, which is needed for
-// further processing
+/// Process breacher module cycle sequence + output per cycle into some kind of aggregated value,
+/// which discards all overlapping instances and aligns everything to ticks, which is needed for
+/// further processing
 pub(super) fn cseq_to_ticks(
     cseq: &CycleSeq<CycleDataFull, CSeqHardDtFull>,
     output: Output<NEffectBreacherAmount>,

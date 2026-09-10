@@ -115,7 +115,7 @@ impl NEffectProjMultGetter {
             _ => None,
         }
     }
-    // Returns attributes which can affect modifier application strength
+    /// Returns attributes which can affect modifier application strength
     pub(crate) fn get_proj_modifier_attr_aids(&self, a_effect: &AEffect) -> [Option<AAttrId>; 2] {
         // Only variants actually used to project modifiers are filled
         match self {

@@ -13,11 +13,11 @@ use crate::{
     util::RMap,
 };
 
-// Represents an effect.
-//
-// Effects are higher-level modification descriptors, as opposed to modifiers, which are
-// lower-level. An effect can contain any number of modifiers under a single roof, accompanied by
-// extra effect-wide properties.
+/// Represents an effect.
+///
+/// Effects are higher-level modification descriptors, as opposed to modifiers, which are
+/// lower-level. An effect can contain any number of modifiers under a single roof, accompanied by
+/// extra effect-wide properties.
 pub(crate) struct REffect {
     pub(crate) aid: AEffectId,
     pub(crate) rid: REffectId,

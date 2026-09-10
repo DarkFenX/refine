@@ -53,7 +53,7 @@ const impl<K, V> Default for CMap<K, V> {
     }
 }
 impl<K, V> CMap<K, V> {
-    // Used only in adapted data deserialization
+    /// Used only in adapted data deserialization
     #[cfg(feature = "serde-ad")]
     pub(crate) fn with_capacity(capacity: usize) -> Self {
         Self {

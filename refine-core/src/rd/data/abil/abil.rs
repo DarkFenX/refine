@@ -4,7 +4,7 @@ use crate::{
     util::{LibGetId, RMap},
 };
 
-// Represents a fighter ability.
+/// Represents a fighter ability.
 pub(crate) struct RAbil {
     pub(crate) aid: AAbilId,
     pub(crate) effect_aid: AEffectId,

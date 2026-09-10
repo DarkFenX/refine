@@ -5,10 +5,10 @@ use crate::{
     util::RMap,
 };
 
-// Represents a dogma attribute.
-//
-// An attribute carries just properties which govern how modified attribute values are calculated.
-// Values themselves are stored elsewhere as plain numbers.
+/// Represents a dogma attribute.
+///
+/// An attribute carries just properties which govern how modified attribute values are calculated.
+/// Values themselves are stored elsewhere as plain numbers.
 pub(crate) struct RAttr {
     pub(crate) rid: RAttrId,
     pub(crate) aid: AAttrId,

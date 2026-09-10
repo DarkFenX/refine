@@ -28,8 +28,8 @@ impl AggrBreacherTicks {
             Self::CycleComplex(inner) => inner.get_loop_len(),
         }
     }
-    // Within requested range, find damage ranges (ranges where damage occurs every tick), and call
-    // passed function for each of them
+    /// Within requested range, find damage ranges (ranges where damage occurs every tick), and call
+    /// passed function for each of them
     pub(super) fn call_for_dmg_ranges<F>(&self, req_range: TickRange, func: &mut F)
     where
         F: FnMut(TickRange),

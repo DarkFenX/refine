@@ -17,7 +17,7 @@ use crate::{
     util::LibConverter,
 };
 
-// Projected effects, iterator over cycles (cycle time + instance iter)
+/// Projected effects, iterator over cycles (cycle time + instance iter)
 pub(in crate::svc::vast) fn aggr_proj_iter<BG, BX, I>(
     ctx: SvcCtx,
     calc: &mut Calc,

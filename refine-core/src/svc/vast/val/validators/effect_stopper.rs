@@ -85,7 +85,7 @@ impl VastFitData {
     }
 }
 
-// Returns true if any of projectors is in range to block target effect
+/// Returns true if any of projectors is in range to block target effect
 fn is_any_in_effective_range(
     ctx: SvcCtx,
     calc: &mut Calc,

@@ -55,7 +55,7 @@ impl UItemVec {
         self.data.insert(pos, item_uid);
         pos
     }
-    // Returns item UIDs for items which need their positions shifted right
+    /// Returns item UIDs for items which need their positions shifted right
     pub(crate) fn insert(&mut self, pos: Index, item_uid: UItemId) -> impl ExactSizeIterator<Item = UItemId> {
         // Update positions of all elements on requested position and past it, to make space for the
         // new one
@@ -81,7 +81,7 @@ impl UItemVec {
 // Changing
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl UItemVec {
-    // Returns item UIDs and shift direction
+    /// Returns item UIDs and shift direction
     pub(crate) fn shift(
         &mut self,
         src_pos: Index,
@@ -120,7 +120,7 @@ impl UItemVec {
         }
         Some((shifts.into_iter().map(|(_, item_uid)| item_uid), dir))
     }
-    // Returns item ID of target item, if there is one
+    /// Returns item ID of target item, if there is one
     pub(crate) fn swap(&mut self, src_pos: Index, tgt_pos: Index) -> Option<UItemId> {
         let src_item_uid = self.data.remove(&src_pos);
         let tgt_item_uid = self.data.remove(&tgt_pos);
@@ -146,7 +146,7 @@ impl UItemVec {
     pub(crate) fn free(&mut self, pos: Index) {
         self.data.remove(&pos);
     }
-    // Returns item UIDs for items which need their positions shifted left
+    /// Returns item UIDs for items which need their positions shifted left
     pub(crate) fn remove(&mut self, pos: Index) -> impl ExactSizeIterator<Item = UItemId> {
         self.data.remove(&pos);
         // Update positions of all elements on positions to the right of requested one

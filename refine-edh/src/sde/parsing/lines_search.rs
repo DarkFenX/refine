@@ -1,6 +1,6 @@
 use super::error::ReadParseFailReason;
 
-// Returns first entry accepted by the predicate
+/// Returns first entry accepted by the predicate
 pub(in crate::sde) fn first_in_lines<T>(
     mut reader: impl std::io::BufRead,
     mut predicate: impl FnMut(&T) -> bool,

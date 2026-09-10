@@ -4,10 +4,10 @@ use crate::{
     util::RMap,
 };
 
-// Represents a dogma buff.
-//
-// A dogma buff applies modifications to a set of ships, and the modifications can stick for some
-// time. For instance, fleet effects are implemented as dogma buffs.
+/// Represents a dogma buff.
+///
+/// A dogma buff applies modifications to a set of ships, and the modifications can stick for some
+/// time. For instance, fleet effects are implemented as dogma buffs.
 pub(crate) struct RBuff {
     pub(crate) aid: ABuffId,
     pub(crate) aggr_mode: ABuffAggrMode,

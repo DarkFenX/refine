@@ -4,7 +4,7 @@ use crate::{
     ud::UItemId,
 };
 
-// Result of calculation of -math.log(0.25) / 1000000 using 64-bit python 2.7
+/// Result of calculation of -math.log(0.25) / 1000000 using 64-bit python 2.7
 const AGILITY_CONST: PValue = PValue::from_f64_clamped(f64::from_bits(0x3eb74216c502a54f));
 
 impl Vast {

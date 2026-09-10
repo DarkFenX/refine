@@ -3,7 +3,7 @@ use serde_json::value::RawValue;
 
 use super::error::ReadParseFailReason;
 
-// Returns first array entry accepted by the predicate
+/// Returns first array entry accepted by the predicate
 pub(in crate::phb) fn first_in_array<T>(
     reader: impl std::io::Read,
     predicate: impl FnMut(&T) -> bool,
@@ -30,8 +30,8 @@ where
     }
 }
 
-// Visitor which goes through all entries and returns one matching predicate via error (there seems
-// to be no other way to return early)
+/// Visitor which goes through all entries and returns one matching predicate via error (there seems
+/// to be no other way to return early)
 struct Array<'a, T, F> {
     predicate: F,
     found: &'a mut Option<T>,

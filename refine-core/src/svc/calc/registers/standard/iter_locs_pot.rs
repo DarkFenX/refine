@@ -1,6 +1,6 @@
 use crate::{svc::calc::LocationKind, ud::UItem, util::State4};
 
-// Iterator over item's potential location roots
+/// Iterator over item's potential location roots
 pub(super) struct PotentialLocations<'a> {
     item: &'a UItem,
     state: State4,

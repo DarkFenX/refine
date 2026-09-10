@@ -18,7 +18,7 @@ use crate::{
     util::{RMap, RMapRMap, RMapRMapRMap, RMapRSet, RSet, SSlabUnchecked},
 };
 
-// Vast stands for VAlidation and STats.
+/// Vast stands for VAlidation and STats.
 #[derive(Clone)]
 pub(in crate::svc) struct Vast {
     pub(super) fit_datas: SSlabUnchecked<UFitId, VastFitData>,

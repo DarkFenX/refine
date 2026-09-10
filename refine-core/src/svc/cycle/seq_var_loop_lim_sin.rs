@@ -18,7 +18,7 @@ pub(in crate::svc) struct CSeqLoopLimSin<D, HDT> {
     pub(in crate::svc) p1_data: D,
     pub(in crate::svc) p1_repeat_count: Count,
     pub(in crate::svc) p2_data: D,
-    // Optional hard downtime every loop
+    /// Optional hard downtime every loop
     pub(in crate::svc) hard_dt: Option<HDT>,
 }
 impl<D, HDT> CSeqLoopLimSin<D, HDT> {

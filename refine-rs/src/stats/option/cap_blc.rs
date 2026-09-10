@@ -17,7 +17,7 @@ pub type StatOptionCapBlcBr = StatOptionCapBlcGen<ItemIdBr>;
 pub struct StatOptionCapBlcGen<I> {
     #[cfg_attr(feature = "serde", serde(default))]
     pub(in crate::stats) src_kinds: StatCapBlcSrcKinds<I> = StatCapBlcSrcKinds::default(),
-    // Unlike other stats, default is sim mode over burst mode
+    /// Unlike other stats, default is sim mode over burst mode
     #[cfg_attr(feature = "serde", serde(default = "time_default"))]
     pub(in crate::stats) time: StatTimeOptions = StatTimeOptions::Sim(StatTimeOptionsSim { .. }),
 }

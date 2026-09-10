@@ -9,12 +9,12 @@ use crate::{
 
 #[derive(Copy, Clone)]
 pub(crate) enum REffectResist {
-    // Resistance attribute ID
+    /// Resistance attribute ID
     Attr(RAttrId),
-    // Value of this projector attribute references actual resistance attribute ID
+    /// Value of this projector attribute references actual resistance attribute ID
     AttrRef(RAttrId),
-    // Value of remoteResistanceID projector attribute references actual resistance attribute ID.
-    // Special-cased for optimization purposes.
+    /// Value of remoteResistanceID projector attribute references actual resistance attribute ID.
+    /// Special-cased for optimization purposes.
     RemoteResistance,
 }
 

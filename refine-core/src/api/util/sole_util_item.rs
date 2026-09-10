@@ -22,9 +22,6 @@ impl SolarSystem {
             eupdates,
         );
     }
-    // "With projections" in this case means that projections will be handled when stopping effects,
-    // to emit effect projected/unprojected notifications. Notifications "projection added" is not
-    // part of it
     pub(in crate::api) fn util_remove_item(
         u_data: &UData,
         svc: &mut Svc,

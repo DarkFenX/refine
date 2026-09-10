@@ -6,8 +6,8 @@ use crate::{
     util::RSet,
 };
 
-// UAD stands for User and Adapted Data. Per definition, contains user-defined data, as well as
-// container with EVE-derived-data, since which one is used is also chosen by user.
+/// UAD stands for User and Adapted Data. Per definition, contains user-defined data, as well as
+/// container with EVE-derived-data, since which one is used is also chosen by user.
 #[derive(Clone)]
 pub(crate) struct UData {
     pub(crate) r_data: RcData,

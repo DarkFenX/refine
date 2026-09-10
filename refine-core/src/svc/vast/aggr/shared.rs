@@ -45,9 +45,9 @@ impl<I> GetMainDuration for AggrPartData<I> {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 #[derive(Copy, Clone, Eq, PartialEq)]
 pub(super) struct AggrPartDataTail<I> {
-    // Cycle active duration + soft downtime duration
+    /// Cycle active duration + soft downtime duration
     pub(super) cycle_main_duration: PValue,
-    // After main duration part is complete, it takes this duration to finish with output
+    /// After main duration part is complete, it takes this duration to finish with output
     pub(super) cycle_tail_duration: Option<PValue>,
     pub(super) output: Output<I>,
 }

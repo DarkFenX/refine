@@ -6,8 +6,8 @@ use crate::{
     util::RMapRSet,
 };
 
-// Intended to hold data about modifiers which originated from buffs defined using on-item
-// attributes
+/// Intended to hold data about modifiers which originated from buffs defined using on-item
+/// attributes
 #[derive(Clone)]
 pub(in crate::svc::calc) struct BuffRegister {
     pub(super) effect_rids: RMapRSet<UItemId, REffectId>,

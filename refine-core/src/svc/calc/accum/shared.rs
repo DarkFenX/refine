@@ -7,9 +7,9 @@ const PENALTY_IMMUNE_ITEM_CATS: [AItemCatId; 5] = [
     AItemCatId::IMPLANT,
     AItemCatId::SUBSYSTEM,
 ];
-// Result of calculation of math.exp((i / 2.67) ** 2.0) using 64-bit python 2.7, with i being
-// position of penalizable value in chain. In EVE client, it seems to have max of 8 values, after
-// which modifications are ignored.
+/// Result of calculation of math.exp((i / 2.67) ** 2.0) using 64-bit python 2.7, with i being
+/// position of penalizable value in chain. In EVE client, it seems to have max of 8 values, after
+/// which modifications are ignored.
 pub(super) const PENALTY_MULTS: [UnitInterval; 8] = [
     UnitInterval::from_f64_clamped(1.0 / f64::from_bits(0x3ff0000000000000)),
     UnitInterval::from_f64_clamped(1.0 / f64::from_bits(0x3ff268d024fc2657)),

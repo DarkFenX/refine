@@ -17,8 +17,8 @@ use crate::{
     util::LibConverter,
 };
 
-// Local effects, considers only first cycle (for "burst" stats)
-// Hard downtime is ignored, since burst cseqs are supposed not to have it
+/// Local effects, considers only first cycle (for "burst" stats)
+/// Hard downtime is ignored, since burst cseqs are supposed not to have it
 pub(in crate::svc::vast) fn aggr_local_burst<BG, BX, I, IA>(
     ctx: SvcCtx,
     calc: &mut Calc,

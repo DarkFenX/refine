@@ -15,7 +15,7 @@ use crate::{
     ud::UItemId,
 };
 
-// Local effects, iterator over cycles (cycle time + instance iter)
+/// Local effects, iterator over cycles (cycle time + instance iter)
 pub(in crate::svc::vast) fn aggr_local_iter<BG, BX, I>(
     ctx: SvcCtx,
     calc: &mut Calc,

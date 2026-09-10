@@ -4,9 +4,9 @@ use crate::{misc::Xyz, num::PValue, rd::RItemAttrData, ud::UPhysics};
 pub(crate) struct UProjData {
     pub(super) src_physics: UPhysics,
     pub(super) tgt_physics: UPhysics,
-    // Center-to-center range
+    /// Center-to-center range
     pub(super) range_c2c: PValue,
-    // Surface-to-surface range
+    /// Surface-to-surface range
     pub(super) range_s2s: PValue,
     pub(super) src_radius: PValue,
     pub(super) tgt_radius: PValue,

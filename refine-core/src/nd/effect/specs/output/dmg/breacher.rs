@@ -15,9 +15,9 @@ use crate::{
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 #[derive(Copy, Clone)]
 pub(crate) struct NEffectBreacherAmount {
-    // Absolute damage cap per tick/instance of damage
+    /// Absolute damage cap per tick/instance of damage
     pub(crate) absolute_max: PValue,
-    // Relative damage cap per tick/instance of damage
+    /// Relative damage cap per tick/instance of damage
     pub(crate) relative_max: UnitInterval,
     pub(crate) tick_count: Count,
 }

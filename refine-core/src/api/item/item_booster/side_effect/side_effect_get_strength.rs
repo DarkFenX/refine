@@ -11,7 +11,7 @@ use crate::{
 pub struct SideEffectPartialStr {
     op: Op,
     attr_id: Option<AttrId>,
-    // Used only to generate full side effect strength with modification value
+    /// Used only to generate full side effect strength with modification value
     strength: REffectModStrength,
 }
 impl SideEffectPartialStr {

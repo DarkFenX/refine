@@ -62,7 +62,8 @@ impl Fk for EAttr {
     }
 }
 impl EAttr {
-    // Receive unit ID, and if the attribute has such unit ID - push its default value to the vector
+    /// Receive unit ID, and if the attribute has such unit ID - push its default value to the
+    /// vector
     fn get_fk_from_defval(&self, check_unit_eid: EAttrUnitId) -> Option<KeyPart> {
         match (self.unit_id, attr_val_to_fk(self.default_value)) {
             (Some(unit_eid), Some(fk)) if unit_eid == check_unit_eid => Some(fk),

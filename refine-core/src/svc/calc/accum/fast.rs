@@ -111,7 +111,7 @@ impl ModAccumFast {
 // Assignment
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 struct AccumAssign {
-    // Best seen non-aggregable assignment
+    /// Best seen non-aggregable assignment
     main: Option<Value>,
     // Aggregable assignments
     aggr_min: AggrMin,
@@ -342,7 +342,7 @@ where
     }
 }
 
-// Take a slice of mult changes, return mult
+/// Take a slice of mult changes, return mult
 fn get_penalty_chain_mult(vals: &[Value]) -> Value {
     let mut val = Value::ONE;
     for (&mod_val, &mult) in std::iter::zip(vals.iter(), PENALTY_MULTS.iter()) {

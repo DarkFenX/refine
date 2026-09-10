@@ -54,9 +54,9 @@ pub(super) fn get_fighter_cseq_map(
 struct EffectInfo {
     kills_item: bool,
     active_duration: PValue,
-    // Counting from end of active duration
+    /// Counting from end of active duration
     cooldown_duration: PValue,
-    // Does effect have a soft downtime due to cooldowns or non-repeating activations
+    /// Does effect have a soft downtime due to cooldowns or non-repeating activations
     sdt_cd_nr: bool,
     charge_count: Option<Count>,
     charge_rearm_duration: PValue,
@@ -520,11 +520,11 @@ impl CycleSoftDtFull {
 }
 
 enum ExtraCycle {
-    // Full active part of cycle can fit in remaining time, value is time left after it (for
-    // cooldown or idling)
+    /// Full active part of cycle can fit in remaining time, value is time left after it (for
+    /// cooldown or idling)
     ActiveFull(PValue),
-    // Time left only for partial cycle; value is the time left for extra cycle
+    /// Time left only for partial cycle; value is the time left for extra cycle
     ActivePartial(PValue),
-    // Not enough time for full or partial cycle, value is the time effect is idling
+    /// Not enough time for full or partial cycle, value is the time effect is idling
     None(PValue),
 }

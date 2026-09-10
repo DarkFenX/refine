@@ -3,7 +3,7 @@ use crate::{
     util::RMap,
 };
 
-// Intended to hold modifiers which need special handling, e.g. custom AAR modifiers
+/// Intended to hold modifiers which need special handling, e.g. custom AAR modifiers
 #[derive(Clone)]
 pub(in crate::svc::calc) struct RevisionRegister {
     pub(super) item_add_remove: RMap<CtxModifier, ItemAddRemoveReviser>,

@@ -20,9 +20,9 @@ pub(super) enum ModStrength {
     Custom(CalcCustomModStrength),
 }
 impl ModStrength {
-    // Simple and fast way to get affector attribute. Variants which have actual affector attributes
-    // but do not expose anything are designed to handle attribute cleanup in some other way (via
-    // dependency/revision registers)
+    /// Simple and fast way to get affector attribute. Variants which have actual affector
+    /// attributes but do not expose anything are designed to handle attribute cleanup in some
+    /// other way (via dependency/revision registers)
     pub(super) fn get_affector_attr_rid(&self) -> Option<RAttrId> {
         match self {
             Self::Attr(attr_rid) => Some(*attr_rid),
@@ -30,7 +30,7 @@ impl ModStrength {
             Self::Custom(custom_str) => custom_str.affector_attr_rid,
         }
     }
-    // More expensive, but comprehensive info about affecting items/attributes
+    /// More expensive, but comprehensive info about affecting items/attributes
     pub(super) fn get_affector_info(&self, ctx: SvcCtx, item_uid: UItemId) -> SmallVec<[CalcModInfoAffector; 1]> {
         match self {
             Self::Attr(attr_rid) => smallvec![CalcModInfoAffector {

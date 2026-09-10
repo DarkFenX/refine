@@ -4,7 +4,7 @@ use crate::{
     ud::{UAutocharge, UItemId},
 };
 
-// Autocharges expose no projection info, since it fully matches projections of the parent item
+/// Autocharges expose no projection info, since it fully matches projections of the parent item
 pub struct Autocharge<'s> {
     pub(in crate::api) sol: &'s SolarSystem,
     pub(in crate::api) uid: UItemId,

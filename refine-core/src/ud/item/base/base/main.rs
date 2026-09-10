@@ -13,7 +13,7 @@ use crate::{
     util::RSet,
 };
 
-// Item base stores all the data every item should have
+/// Item base stores all the data every item should have
 #[derive(Clone)]
 pub(in crate::ud::item) struct UItemBase {
     // User-defined data
@@ -28,7 +28,7 @@ pub(in crate::ud::item) struct UItemBase {
 #[derive(Clone)]
 struct ItemBaseCache {
     r_item: RcItem,
-    // Running effects, are available only when adapted item is set
+    /// Running effects, are available only when adapted item is set
     reffs: RSet<REffectId>,
 }
 

@@ -15,7 +15,7 @@ pub(crate) type NEffectAssigner = fn(&mut RMap<AItemId, AItem>) -> bool;
 pub(crate) type NEffectUpdater = fn(&mut AEffect, &mut Vec<String>);
 
 pub(crate) struct NEffect {
-    // Adapted data effect ID
+    /// Adapted data effect ID
     pub(crate) aid: AEffectId,
     // Fields related to adapted data generation - buff info and effect customization functions
     pub(crate) adg_buff: Option<AEffectBuff> = None,
@@ -37,8 +37,9 @@ pub(crate) struct NEffect {
     pub(crate) disallows_jump_drive: Option<NEffectDuration> = None,
     pub(crate) disallows_dock: Option<NEffectDuration> = None,
     pub(crate) disallows_tether: Option<NEffectDuration> = None,
-    pub(crate) do_not_prevent_tether: bool = false,  // Ignore scram status change if true
-    // Effect modifier customization ran during runtime in calculator service
+    /// Ignore scram status change if true
+    pub(crate) do_not_prevent_tether: bool = false,
+    /// Effect modifier customization ran during runtime in calculator service
     pub(crate) calc_custom_mod: Option<CalcCustomModifier> = None,
     // Specs - modifier
     pub(crate) proj_mod: Option<NEffectProjModSpec> = None,
@@ -61,7 +62,7 @@ pub(crate) struct NEffect {
     // Specs - cap
     pub(crate) cap_consume: Option<NEffectLocalOpcSpec<NEffectGeneralOutputGetter>> = None,
     pub(crate) neut: Option<NEffectNeut> = None,
-    // Nosf spec is used only for purposes of cap balance/sim calcs
+    /// Nosf spec is used only for purposes of cap balance/sim calcs
     pub(crate) nosf: Option<NEffectProjOpcSpec<NEffectGeneralOutputGetter>> = None,
     pub(crate) outgoing_cap: Option<NEffectProjOpcSpec<NEffectGeneralOutputGetter>> = None,
     pub(crate) cap_inject: Option<NEffectLocalOpcSpec<NEffectGeneralOutputGetter>> = None,

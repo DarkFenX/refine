@@ -14,9 +14,9 @@ const TIME_LIMIT: PValue = PValue::from_f64_clamped(4.0 * 60.0 * 60.0);
 #[cfg_attr(feature = "serde", derive(serde::Serialize), serde(rename_all = "snake_case"))]
 #[derive(Copy, Clone)]
 pub enum StatCapSim {
-    // Average stability value
+    /// Average stability value
     Stable(UnitInterval),
-    // Time in seconds it takes to drain cap to 0
+    /// Time in seconds it takes to drain cap to 0
     Time(PValue),
 }
 
@@ -25,7 +25,7 @@ pub(super) struct CapSim {
     max_pcap: PValue,
     tau: Option<PValue>,
     events: BinaryHeap<CapSimEvent>,
-    // Injectors available for immediate use
+    /// Injectors available for immediate use
     #[expect(clippy::vec_box)]
     injectors: Vec<Box<CapSimEventInjector>>,
     // Current sim state

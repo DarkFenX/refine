@@ -16,7 +16,7 @@ impl SolarSystemInnerGuarded {
     pub(in crate::svc) fn try_lock(&self) -> Result<MutexGuard<'_, SolarSystemInner>, TryLockError> {
         self.0.try_lock()
     }
-    // Like regular lock, but updates timestamp on inner sol during drop
+    /// Like regular lock, but updates timestamp on inner sol during drop
     pub(crate) async fn into_lock_touch_owned(self) -> SolOwnedMutexGuard {
         SolOwnedMutexGuard {
             guard: self.0.lock_owned().await,

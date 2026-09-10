@@ -5,19 +5,19 @@ use crate::{
 
 #[derive(Copy, Clone, Eq, PartialEq, Hash, Debug)]
 pub enum AEffectId {
-    // ID of a general EVE effect
+    /// ID of a general EVE effect
     Dogma(ADogmaEffectId),
-    // Buff effect attached to an item, system-wide effect part
+    /// Buff effect attached to an item, system-wide effect part
     SystemWide(AItemId),
-    // Buff effect attached to an item, system buff emitter part
+    /// Buff effect attached to an item, system buff emitter part
     SystemEmitter(AItemId),
-    // Buff effect attached to an item, proximity effect part
+    /// Buff effect attached to an item, proximity effect part
     ProxyEffect(AItemId),
-    // Buff effect attached to an item, proximity trap/trigger part
+    /// Buff effect attached to an item, proximity trap/trigger part
     ProxyTrigger(AItemId),
-    // Buff effect attached to an item, ship link part
+    /// Buff effect attached to an item, ship link part
     ShipLink(AItemId),
-    // ID of an effect created by the library
+    /// ID of an effect created by the library
     Custom(ACustomEffectId),
 }
 

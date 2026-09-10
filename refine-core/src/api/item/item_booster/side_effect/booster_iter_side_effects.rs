@@ -8,7 +8,7 @@ use crate::{
     ud::UItemId,
 };
 
-// Lending iterator for side effects
+/// Lending iterator for side effects
 pub struct SideEffectIter<'iter> {
     sol: &'iter mut SolarSystem,
     item_uid: UItemId,

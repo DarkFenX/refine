@@ -5,8 +5,8 @@ use crate::{
     ud::{UEffectUpdates, UItem, UItemId},
 };
 
-// If some stat requested state to be ignored, this method checks their state, and if it's not
-// high enough, saves their old state and enables/activates them
+/// If some stat requested state to be ignored, this method checks their state, and if it's not
+/// high enough, saves their old state and enables/activates them
 pub(in crate::api) fn active_stat_prepare<T>(
     item: &mut T,
     charge_options: StatItemChargeOptions,

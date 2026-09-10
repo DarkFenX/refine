@@ -462,7 +462,7 @@ struct SoftDts {
     reload: CycleSoftDtFull,
 }
 impl SoftDts {
-    // Produce soft downtime for non-reload cycle and reload cycle at once
+    /// Produce soft downtime for non-reload cycle and reload cycle at once
     fn new_for_module(ctx: SvcCtx, calc: &mut Calc, item_uid: UItemId, module: &UModule) -> Self {
         let riad = module.get_r_item_attr_data().unwrap();
         let mut soft_dt_regular = None;

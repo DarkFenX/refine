@@ -2,8 +2,8 @@ use crate::{ad::AMutaAttrRange, num::Value};
 
 #[derive(Copy, Clone)]
 pub(crate) struct RMutaAttrRange {
-    // For some attr mutations, min mult has higher value than max. Some parts of the lib rely on
-    // this data as-is, but some need actual min and actual max, so we're storing both.
+    /// For some attr mutations, min mult has higher value than max. Some parts of the lib rely on
+    /// this data as-is, but some need actual min and actual max, so we're storing both.
     pub(crate) mult_min_raw: Value,
     pub(crate) mult_max_raw: Value,
     pub(crate) mult_min_math: Value,

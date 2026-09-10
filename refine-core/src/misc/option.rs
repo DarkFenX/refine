@@ -9,7 +9,7 @@ pub enum OptionExt<T> {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Non-public
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-// Internal counterpart for public options where default field is present, bool version
+/// Internal counterpart for public options where default field is present, bool version
 #[derive(Copy, Clone, Default)]
 pub(crate) enum DefOption {
     #[default]
@@ -27,7 +27,7 @@ impl DefOption {
     }
 }
 
-// Internal counterpart for public options where default field is present, OptionExt version
+/// Internal counterpart for public options where default field is present, OptionExt version
 #[derive(Copy, Clone, Default)]
 pub(crate) enum DefOptionExt<T> {
     #[default]
@@ -51,7 +51,7 @@ impl<T> DefOptionExt<T> {
             Self::EnabledExtended(settings) => Some(*settings),
         }
     }
-    // Used internally be deserializers
+    /// Used internally be deserializers
     #[cfg(feature = "serde")]
     pub(crate) fn into_option_ext(self) -> Option<OptionExt<T>> {
         match self {

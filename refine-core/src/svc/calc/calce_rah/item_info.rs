@@ -1,6 +1,6 @@
 use crate::{misc::DmgKinds, num::PValue, svc::calc::CalcAttrVals, ud::UItemId};
 
-// Initial values of a RAH, non-rounded
+/// Initial values of a RAH, non-rounded
 #[derive(Copy, Clone)]
 pub(super) struct ItemInfo {
     pub(super) uid: UItemId,

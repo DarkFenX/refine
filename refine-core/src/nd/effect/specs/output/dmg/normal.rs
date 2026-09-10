@@ -142,7 +142,7 @@ fn get_target_attack(ctx: SvcCtx, calc: &mut Calc, item_uid: UItemId) -> Option<
     }))
 }
 
-// The only difference from regular getter is that bomb damage can be modified by fighter count
+/// The only difference from regular getter is that bomb damage can be modified by fighter count
 fn get_bomb(ctx: SvcCtx, calc: &mut Calc, item_uid: UItemId) -> Option<Output<DmgKinds<PValue>>> {
     let mut dmg = get_dmg_values_standard(ctx, calc, item_uid)?;
     if let Some(mult) = ctx.u_data.get_charge_mult(item_uid) {

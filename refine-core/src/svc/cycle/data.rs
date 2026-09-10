@@ -5,7 +5,7 @@ pub(in crate::svc) trait GetDuration {
 }
 
 pub(in crate::svc) trait GetMainDuration {
-    // Active duration and soft downtime duration combined
+    /// Active duration and soft downtime duration combined
     fn get_main_duration(&self) -> PValue;
 }
 
@@ -30,16 +30,16 @@ impl GetMainDuration for CycleDataFull {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Detail fields
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-// Data about active part of cycle
+/// Data about active part of cycle
 #[derive(Copy, Clone)]
 pub(in crate::svc) struct CycleActive {
-    // Duration of effect cycle
+    /// Duration of effect cycle
     pub(in crate::svc) duration: PValue,
-    // How charged cycle is
+    /// How charged cycle is
     pub(in crate::svc) chargedness: Option<UnitInterval>,
 }
 
-// Info about soft downtime between cycles (during which effects can apply their instances)
+/// Info about soft downtime between cycles (during which effects can apply their instances)
 #[derive(Copy, Clone)]
 pub(in crate::svc) struct CycleSoftDtFull {
     pub(in crate::svc) duration: PValue,
@@ -59,7 +59,7 @@ pub(in crate::svc) struct CycleSoftDtReasons {
     pub(in crate::svc) reload: bool,
 }
 
-// Info about cycle sequence hard downtime (during which effects cannot apply their instances)
+/// Info about cycle sequence hard downtime (during which effects cannot apply their instances)
 #[derive(Copy, Clone, Eq, PartialEq, Hash)]
 pub(in crate::svc) struct CSeqHardDtFull {
     pub(in crate::svc) duration: PValue,

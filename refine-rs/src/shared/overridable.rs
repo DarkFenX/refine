@@ -6,8 +6,8 @@ use crate::{
     util::RMap,
 };
 
-// Representation form which is compact; it is hard to use work with it directly, so types which are
-// often queried should be converted into something else.
+/// Representation form which is compact; it is hard to use work with it directly, so types which
+/// are often queried should be converted into something else.
 #[derive(Clone)]
 pub(crate) struct OvrdCompact<K, V> {
     default: V,
@@ -33,8 +33,8 @@ impl<K, V> OvrdCompact<K, V> {
     }
 }
 
-// Representation form which takes space, but is easy to query. This version should be used for
-// relatively small copiable values.
+/// Representation form which takes space, but is easy to query. This version should be used for
+/// relatively small copiable values.
 #[derive(Clone)]
 pub(crate) struct OvrdMapLight<K, V> {
     default: V,
@@ -70,8 +70,8 @@ where
     }
 }
 
-// Representation form which takes space, but is easy to query. This version should be used for
-// relatively large or non-copiable values.
+/// Representation form which takes space, but is easy to query. This version should be used for
+/// relatively large or non-copiable values.
 #[derive(Clone)]
 pub(crate) struct OvrdMapHeavy<K, V> {
     default: V,

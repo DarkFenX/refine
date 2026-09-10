@@ -4,9 +4,9 @@ use crate::{
     util::{LibGetId, RMap},
 };
 
-// Represents a mutator (aka mutaplasmid in EVE).
-//
-// A mutator controls how attributes of an item it is being applied to change.
+/// Represents a mutator (aka mutaplasmid in EVE).
+///
+/// A mutator controls how attributes of an item it is being applied to change.
 pub(crate) struct RMuta {
     pub(crate) id: AItemId,
     pub(crate) item_map: RMap<AItemId, AItemId>,

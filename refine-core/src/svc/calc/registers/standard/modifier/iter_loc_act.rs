@@ -4,7 +4,7 @@ use crate::{
     util::State4,
 };
 
-// Iterator over item's root location kinds which are actually assigned to a fit
+/// Iterator over item's root location kinds which are actually assigned to a fit
 pub(super) struct ActiveLocations<'a> {
     item: &'a UItem,
     fit: &'a UFit,

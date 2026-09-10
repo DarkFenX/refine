@@ -8,7 +8,7 @@ use crate::{
     val::{ValEnabled, ValOptions, ValOptionsSol},
 };
 
-// Internal variant, with fit/item UIDs instead of external IDs
+/// Internal variant, with fit/item UIDs instead of external IDs
 pub(crate) struct ValOptionsSolInt {
     pub(crate) options: ValOptionsInt,
     pub(crate) fit_uids: Vec<UFitId>,

@@ -25,7 +25,7 @@ use crate::{
     util::LibConverter,
 };
 
-// Projected effects, aggregates total output by specified time
+/// Projected effects, aggregates total output by specified time
 pub(in crate::svc::vast) fn aggr_proj_time<BG, BX, I, IA>(
     ctx: SvcCtx,
     calc: &mut Calc,

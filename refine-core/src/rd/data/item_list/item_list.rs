@@ -3,9 +3,9 @@ use crate::{
     util::RSet,
 };
 
-// Represents an item list.
-//
-// Item lists in their rendered form carry just that, an item list.
+/// Represents an item list.
+///
+/// Item lists in their rendered form carry just that, an item list.
 pub(crate) struct RItemList {
     pub(crate) item_aids: RSet<AItemId>,
 }

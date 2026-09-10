@@ -12,7 +12,7 @@ pub enum StatOptionExt<T> {
     EnabledExtended(Vec<T>),
 }
 
-// Internal counterpart of public option, which can carry per-stat-option error
+/// Internal counterpart of public option, which can carry per-stat-option error
 #[derive(Clone)]
 pub(in crate::stats) enum StatOptionInt<T> {
     Disabled,

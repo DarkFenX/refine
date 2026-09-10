@@ -5,8 +5,8 @@ use crate::{
     util::RMapRSet,
 };
 
-// Intended to hold ad-hoc dependencies between attributes, which are not covered by registers
-// which hold data about regular modifiers.
+/// Intended to hold ad-hoc dependencies between attributes, which are not covered by registers
+/// which hold data about regular modifiers.
 #[derive(Clone)]
 pub(in crate::svc::calc) struct DependencyRegister {
     // Map<affector spec, affectee specs> - this map could be StMapSetL2 with Option<EffectSpec> as

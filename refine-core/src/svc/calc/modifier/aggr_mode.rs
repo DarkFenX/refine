@@ -5,14 +5,14 @@ use crate::{
 
 pub(in crate::svc::calc) type AggrKey = ABuffId;
 
-// Defines how a modification will be aggregated.
+/// Defines how a modification will be aggregated.
 #[derive(Copy, Clone, Eq, PartialEq, Hash)]
 pub(in crate::svc::calc) enum AggrMode {
-    // All modifications are applied.
+    /// All modifications are applied.
     Stack,
-    // Min value will be used, from values with provided key.
+    /// Min value will be used, from values with provided key.
     Min(AggrKey),
-    // Max value will be used, from values with provided key.
+    /// Max value will be used, from values with provided key.
     Max(AggrKey),
 }
 impl AggrMode {

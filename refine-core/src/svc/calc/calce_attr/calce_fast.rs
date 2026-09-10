@@ -18,7 +18,7 @@ use crate::{
 // Thin wrappers around core query methods
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl Calc {
-    // - Extra value as an option
+    /// - Extra value as an option
     pub(in crate::svc) fn get_item_attr_odogma(
         &mut self,
         ctx: SvcCtx,
@@ -35,8 +35,8 @@ impl Calc {
     ) -> Option<Value> {
         self.get_item_attr_rfull(ctx, item_uid, attr_rid).ok().map(|v| v.extra)
     }
-    // - Optional attribute
-    // - Dogma value as an option
+    /// - Optional attribute
+    /// - Dogma value as an option
     pub(in crate::svc::calc) fn get_item_oattr_odogma(
         &mut self,
         ctx: SvcCtx,
@@ -45,8 +45,8 @@ impl Calc {
     ) -> Option<Value> {
         self.get_item_attr_rfull(ctx, item_uid, attr_rid?).ok().map(|v| v.dogma)
     }
-    // - Optional attribute
-    // - Extra value as an option
+    /// - Optional attribute
+    /// - Extra value as an option
     pub(crate) fn get_item_oattr_oextra(
         &mut self,
         ctx: SvcCtx,
@@ -55,9 +55,9 @@ impl Calc {
     ) -> Option<Value> {
         self.get_item_attr_rfull(ctx, item_uid, attr_rid?).ok().map(|v| v.extra)
     }
-    // - Optional attribute
-    // - Fallback in case of missing attribute argument
-    // - Extra value as an option
+    /// - Optional attribute
+    /// - Fallback in case of missing attribute argument
+    /// - Extra value as an option
     pub(crate) fn get_item_oattr_afb_oextra(
         &mut self,
         ctx: SvcCtx,
@@ -73,9 +73,9 @@ impl Calc {
             },
         }
     }
-    // - Optional attribute
-    // - Fallback for all cases
-    // - Dogma value
+    /// - Optional attribute
+    /// - Fallback for all cases
+    /// - Dogma value
     pub(crate) fn get_item_oattr_ffb_dogma(
         &mut self,
         ctx: SvcCtx,
@@ -88,9 +88,9 @@ impl Calc {
             Err(..) => fallback,
         }
     }
-    // - Optional attribute
-    // - Fallback for all cases
-    // - Extra value
+    /// - Optional attribute
+    /// - Fallback for all cases
+    /// - Extra value
     pub(crate) fn get_item_oattr_ffb_extra(
         &mut self,
         ctx: SvcCtx,
@@ -103,10 +103,10 @@ impl Calc {
             Err(..) => fallback,
         }
     }
-    // - Optional item
-    // - Optional attribute
-    // - Fallback for missing attribute argument
-    // - Extra value as an option
+    /// - Optional item
+    /// - Optional attribute
+    /// - Fallback for missing attribute argument
+    /// - Extra value as an option
     pub(in crate::svc) fn get_oitem_oattr_afb_oextra(
         &mut self,
         ctx: SvcCtx,
@@ -122,10 +122,10 @@ impl Calc {
             },
         }
     }
-    // - Modifiers are filtered
-    // - Optional attribute
-    // - Fallback for all cases
-    // - Extra value
+    /// - Modifiers are filtered
+    /// - Optional attribute
+    /// - Fallback for all cases
+    /// - Extra value
     pub(crate) fn get_item_oattr_ffb_extra_filtered<F>(
         &mut self,
         ctx: SvcCtx,
@@ -204,7 +204,7 @@ impl Calc {
         }
         Some(self.unchecked_calc_value_cache(ctx, item_uid, attr_rid))
     }
-    // Gets value with custom filter, but does not use cache (has to recalculate on every request)
+    /// Gets value with custom filter, but does not use cache (has to recalculate on every request)
     fn get_item_oattr_rfull_filtered<F>(
         &mut self,
         ctx: SvcCtx,

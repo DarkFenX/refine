@@ -1,4 +1,4 @@
-// Carries extra info about source of a command batch execution failure
+/// Carries extra info about source of a command batch execution failure
 #[derive(Debug)]
 pub(crate) struct ApiErrorIndexed<E> {
     pub(crate) index: usize,

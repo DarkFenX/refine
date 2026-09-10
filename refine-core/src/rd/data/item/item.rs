@@ -4,10 +4,10 @@ use crate::{
     util::{PSlab, RMap},
 };
 
-// Represents an item (or item type, according to EVE terminology).
-//
-// An item carries alot of info needed to calculate fit attributes, for example base attribute
-// values.
+/// Represents an item (or item type, according to EVE terminology).
+///
+/// An item carries alot of info needed to calculate fit attributes, for example base attribute
+/// values.
 pub(crate) struct RItem {
     pub(crate) base: RItemBase,
     pub(crate) attr_data: RItemAttrData,

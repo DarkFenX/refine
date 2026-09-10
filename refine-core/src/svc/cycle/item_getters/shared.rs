@@ -13,10 +13,10 @@ pub(in crate::svc) enum CyclingOptions {
 
 #[derive(Copy, Clone)]
 pub(in crate::svc) struct CycleOptionsSim {
-    // Controls if effects which can run with/without charges (e.g. ancillary reps) are forced to
-    // reload once they run out of charges
+    /// Controls if effects which can run with/without charges (e.g. ancillary reps) are forced to
+    /// reload once they run out of charges
     pub(in crate::svc) optional_reloads: Option<OptionalReload> = None,
-    // Controls if depleted fighter abilities force fighter recall, refuel and rearm
+    /// Controls if depleted fighter abilities force fighter recall, refuel and rearm
     pub(in crate::svc) rearm_minions: Option<RearmMinion> = None,
 }
 

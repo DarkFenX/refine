@@ -435,7 +435,7 @@ struct BoundaryEvent {
     is_start: bool,
 }
 
-// Aggregate damaging range starts/ends of all breachers into a single container
+/// Aggregate damaging range starts/ends of all breachers into a single container
 fn collect_boundary_events<'a>(
     breacher_ticks: impl Iterator<Item = &'a AggrBreacherTicks>,
     tick_range: TickRange,
@@ -484,8 +484,8 @@ impl ActiveBreachers {
                 false => None,
             })
     }
-    // Apply changes from all the events which happen on the same tick as the event with the passed
-    // index, and return index of the first event which happens after
+    /// Apply changes from all the events which happen on the same tick as the event with the passed
+    /// index, and return index of the first event which happens after
     fn apply_events(&mut self, events: &[BoundaryEvent], mut event_index: usize) -> usize {
         let requested_tick = events[event_index].tick;
         while event_index < events.len() && events[event_index].tick == requested_tick {

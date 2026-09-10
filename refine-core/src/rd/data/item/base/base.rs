@@ -9,7 +9,7 @@ use crate::{
     util::{PSlab, RMap},
 };
 
-// Item base data - the data which does not depend on attributes.
+/// Item base data - the data which does not depend on attributes.
 pub(crate) struct RItemBase {
     // Raw data
     pub(crate) aid: AItemId,
@@ -22,7 +22,8 @@ pub(crate) struct RItemBase {
     // Derived data - item type flags
     pub(crate) is_cloak: bool,
     pub(crate) is_ice_harvester: bool,
-    pub(crate) enables_portal: bool, // Used by ansiblex service
+    /// Used by ansiblex service
+    pub(crate) enables_portal: bool,
     // Derived data - effect flags
     pub(crate) has_online_effect: bool,
     pub(crate) takes_turret_hardpoint: bool,

@@ -2,7 +2,7 @@ use lender::{ExactSizeLender, Lender, Lending, check_covariance};
 
 use crate::{Proj, ProjMut, SolarSystem, api::item::shared::proj::iter_projectee_uids, ud::UItemId};
 
-// Lending iterator for non-ranged projections
+/// Lending iterator for non-ranged projections
 pub struct ProjIter<'iter> {
     sol: &'iter mut SolarSystem,
     item_uid: UItemId,

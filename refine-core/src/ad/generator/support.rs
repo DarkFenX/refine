@@ -11,8 +11,8 @@ pub(in crate::ad::generator) struct AdgSupport {
     pub(in crate::ad::generator) attr_unit_map: RMap<EAttrId, EAttrUnitId>,
     pub(in crate::ad::generator) eff_item_map: RMapRSet<EEffectId, EItemId>,
     pub(in crate::ad::generator) eff_buff_map: RMap<EEffectId, AEffectBuff>,
-    // Standalone containers are for entities which do not exist in data yet, but will be put into
-    // it later
+    /// Standalone containers are for entities which do not exist in data yet, but will be put into
+    /// it later
     pub(in crate::ad::generator) standalone_attrs: Vec<AAttr>,
     pub(in crate::ad::generator) standalone_effects: Vec<AEffect>,
     pub(in crate::ad::generator) standalone_buffs: Vec<ABuff>,

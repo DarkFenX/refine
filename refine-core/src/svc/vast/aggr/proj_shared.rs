@@ -203,7 +203,7 @@ pub(super) struct AggrPartDataSpool {
 pub(super) struct AggrPartDataSpoolTail {
     // Active + soft downtime duration combined
     pub(super) cycle_main_duration: PValue,
-    // Active + soft downtime duration, or output completion duration, whichever is longer
+    /// Active + soft downtime duration, or output completion duration, whichever is longer
     pub(super) cycle_completion_duration: Value,
     pub(super) cycle_tail_duration: Option<PValue>,
     pub(super) soft_dt: bool,

@@ -18,7 +18,7 @@ mod custom_serde_ad {
 
     use super::*;
 
-    // Human-readable representation - relies on knowledge that variants are serialized differently
+    /// Human-readable representation - relies on knowledge that variants are serialized differently
     #[derive(serde::Serialize, serde::Deserialize)]
     #[serde(remote = "AEffectModStrength")]
     #[serde(untagged)]

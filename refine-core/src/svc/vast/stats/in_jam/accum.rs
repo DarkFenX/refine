@@ -28,10 +28,10 @@ impl SeqAccum<SeqInstanceAccumEcm> {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 pub(in crate::svc::vast::stats::in_jam) struct SeqInstanceAccumEcm {
     sensors: StatSensors,
-    // This is total chance target won't be jammed a single time over sequence
+    /// This is total chance target won't be jammed a single time over sequence
     unjam_chance: PValue,
-    // Jam time is jam chance multiplied by jam duration for a single instance. Different instances
-    // within the same sequence stack additively, which is considered a good enough approximation.
+    /// Jam time is jam chance multiplied by jam duration for a single instance. Different instances
+    /// within the same sequence stack additively, which is considered a good enough approximation.
     jam_time: PValue,
 }
 impl SeqInstanceAccumEcm {

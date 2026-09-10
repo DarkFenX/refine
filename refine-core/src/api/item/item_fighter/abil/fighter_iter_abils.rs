@@ -7,7 +7,7 @@ use crate::{
     ud::UItemId,
 };
 
-// Lending iterator for fighter abilities
+/// Lending iterator for fighter abilities
 pub struct AbilityIter<'iter> {
     sol: &'iter mut SolarSystem,
     fighter_uid: UItemId,
