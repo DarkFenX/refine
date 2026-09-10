@@ -11,4 +11,4 @@ edition = "2024"
 refine-serde-derive = { path = "../refine-serde-derive" }
 # Non-local
 serde = ">=1.0.229"
-serde_with = ">=3.22.0"
+serde_with = ">=3.23.0"
