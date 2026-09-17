@@ -5,8 +5,6 @@ use crate::{
     util::RMap,
 };
 
-const DEFAULT_EFFECT_MODE: EffectMode = EffectMode::FullCompliance;
-
 pub(in crate::ud::item) type UEffectModeOverrideIter<'a> = impl ExactSizeIterator<Item = (AEffectId, EffectMode)>;
 
 #[derive(Clone)]
@@ -25,13 +23,13 @@ impl UEffectModes {
     pub(in crate::ud::item) fn get_by_rid(&self, effect_rid: &REffectId) -> EffectMode {
         match self.by_rid.get(effect_rid) {
             Some(effect_mode) => *effect_mode,
-            None => DEFAULT_EFFECT_MODE,
+            None => EffectMode::default(),
         }
     }
     pub(in crate::ud::item) fn get_by_aid(&self, effect_aid: &AEffectId) -> EffectMode {
         match self.by_aid.get(effect_aid) {
             Some(effect_mode) => *effect_mode,
-            None => DEFAULT_EFFECT_MODE,
+            None => EffectMode::default(),
         }
     }
     #[define_opaque(UEffectModeOverrideIter)]
@@ -42,14 +40,14 @@ impl UEffectModes {
     }
     // Modification methods
     pub(in crate::ud::item) fn set_by_aid(&mut self, effect_aid: AEffectId, effect_mode: EffectMode, r_data: &RData) {
-        match effect_mode {
-            DEFAULT_EFFECT_MODE => {
+        match effect_mode == EffectMode::default() {
+            true => {
                 self.by_aid.remove(&effect_aid);
                 if let Some(effect_rid) = r_data.get_effect_rid_by_aid(&effect_aid) {
                     self.by_rid.remove(&effect_rid);
                 }
             }
-            _ => {
+            false => {
                 self.by_aid.insert(effect_aid, effect_mode);
                 if let Some(effect_rid) = r_data.get_effect_rid_by_aid(&effect_aid) {
                     self.by_rid.insert(effect_rid, effect_mode);
