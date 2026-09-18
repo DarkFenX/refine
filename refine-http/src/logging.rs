@@ -44,9 +44,8 @@ pub(crate) fn setup_logging(settings: SettingsLog) -> (Option<WorkerGuard>, LogB
         .with_target(false)
         .pretty()
         .with_filter(refine_targets(STDOUT_LEVEL));
-    // We log into file only if we've been given path and appropriate log level
     let (file_log, file_guard, effective_max_level) = match (settings.dir, LevelFilter::from_str(&settings.level)) {
-        (Some(dir), Ok(max_level)) if max_level != LevelFilter::OFF => {
+        (Some(dir), Ok(max_level)) if max_level != LevelFilter::OFF && !settings.level.is_empty() => {
             let (rotation, time_format) = match settings.rotate {
                 true => (tracing_appender::rolling::Rotation::DAILY, TIME_FORMAT_SHORT),
                 false => (tracing_appender::rolling::Rotation::NEVER, TIME_FORMAT_FULL),
