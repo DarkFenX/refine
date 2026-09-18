@@ -3,7 +3,7 @@ use std::time::{Duration, Instant};
 use crate::Refine;
 
 impl Refine {
-    #[tracing::instrument(name = "sol-cln", level = "trace", skip_all)]
+    #[tracing::instrument(name = "sol-cln", level = "error", skip_all)]
     pub(crate) async fn cleanup_sols(&self, sol_inact_limit: Duration) {
         tracing::debug!("starting cleanup");
         let now = Instant::now();

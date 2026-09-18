@@ -8,7 +8,7 @@ use crate::{
 
 impl Refine {
     /// Add a data source, using passed EVE data handler and optional adapted data cacher.
-    #[tracing::instrument(name = "src-add", level = "trace", skip_all)]
+    #[tracing::instrument(name = "src-add", level = "error", skip_all)]
     pub async fn add_src(
         &self,
         alias: SrcAlias,
@@ -125,12 +125,12 @@ fn log_warnings(core_src: &rc::Src) {
     let core_info = core_src.get_info();
     // Report data fetching errors under EVE data handler span, since that's where they originate
     // from
-    tracing::trace_span!("edh").in_scope(|| {
+    tracing::error_span!("edh").in_scope(|| {
         for warning in core_info.warnings.eve_data_fetch.iter() {
             tracing::warn!("{}", warning);
         }
     });
-    tracing::trace_span!("adg").in_scope(|| {
+    tracing::error_span!("adg").in_scope(|| {
         for warning in core_info.warnings.adg_pk_duplicates.iter() {
             tracing::warn!("{}", warning);
         }
@@ -158,7 +158,7 @@ fn log_warnings(core_src: &rc::Src) {
         }
     });
     if let Some(warning) = core_info.warnings.cache_write.as_ref() {
-        tracing::trace_span!("adc").in_scope(|| {
+        tracing::error_span!("adc").in_scope(|| {
             tracing::warn!("{}", warning);
         });
     }

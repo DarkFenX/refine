@@ -22,7 +22,7 @@ impl ThreadPool {
         F: FnOnce() -> R + Send + 'static,
         R: Send + 'static,
     {
-        let sync_span = tracing::trace_span!("sync");
+        let sync_span = tracing::error_span!("sync");
         self.standard
             .spawn_fifo_async(move || {
                 let _sg = sync_span.enter();
@@ -35,7 +35,7 @@ impl ThreadPool {
         F: FnOnce() -> R + Send + 'static,
         R: Send + 'static,
     {
-        let sync_span = tracing::trace_span!("sync");
+        let sync_span = tracing::error_span!("sync");
         self.heavy
             .spawn_fifo_async(move || {
                 let _sg = sync_span.enter();

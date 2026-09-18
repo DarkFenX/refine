@@ -8,7 +8,7 @@ use crate::{
 };
 
 impl SolarSystem<'_> {
-    #[tracing::instrument(name = "sol-hyb", level = "trace", skip_all)]
+    #[tracing::instrument(name = "sol-hyb", level = "error", skip_all)]
     pub async fn hybrid_batch(&mut self, cmds: Vec<SolHybridCmdBr>) -> Result<CmdResps, SolHybridBatchError> {
         let sol_backup = ResidueResolver::new().add_cmds(cmds.iter().map(|cmd| cmd.exec_residue()));
         // Variables for move

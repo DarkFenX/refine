@@ -4,7 +4,7 @@ use crate::{
 };
 
 impl<'r, 's> SolarSystem<'r> {
-    #[tracing::instrument(name = "itm-add", level = "trace", skip_all)]
+    #[tracing::instrument(name = "itm-add", level = "error", skip_all)]
     pub async fn add_item(&'s mut self, ctl_cmd: ItemAddEnumCmd) -> Result<Item<'r, 's>, ItemAddEnumError> {
         let sol_backup = ResidueResolver::new().add_cmd(ctl_cmd.exec_residue());
         let item_id = self
@@ -15,7 +15,7 @@ impl<'r, 's> SolarSystem<'r> {
         let item = Item::new(self, item_id);
         Ok(item)
     }
-    #[tracing::instrument(name = "itm-add-inf", level = "trace", skip_all)]
+    #[tracing::instrument(name = "itm-add-inf", level = "error", skip_all)]
     pub async fn add_item_and_get_info(
         &'s mut self,
         ctl_cmd: ItemAddEnumCmd,

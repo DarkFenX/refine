@@ -4,13 +4,13 @@ use crate::{
 };
 
 impl SolarSystem<'_> {
-    #[tracing::instrument(name = "sol-chg", level = "trace", skip_all)]
+    #[tracing::instrument(name = "sol-chg", level = "error", skip_all)]
     pub async fn change(&mut self, ctl_cmd: SolChangeEnumCmd) -> Result<CmdResp, SolChangeEnumError> {
         let sol_backup = ResidueResolver::new().add_cmd(ctl_cmd.exec_residue());
         self.exec_standard(sol_backup, |core_sol| ctl_cmd.execute(core_sol))
             .await
     }
-    #[tracing::instrument(name = "sol-chg-inf", level = "trace", skip_all)]
+    #[tracing::instrument(name = "sol-chg-inf", level = "error", skip_all)]
     pub async fn change_and_get_info(
         &mut self,
         ctl_cmd: SolChangeEnumCmd,

@@ -28,7 +28,7 @@ impl SolarSystem<'_> {
     /// called again, until it accepts the results or exhausts the fix limit. Once results are
     /// accepted, info and stats are generated, and all the info is returned; in every other case,
     /// solar system state before any changes is restored.
-    #[tracing::instrument(name = "sol-app", level = "trace", skip_all)]
+    #[tracing::instrument(name = "sol-app", level = "error", skip_all)]
     pub async fn fitting_app_batch<VC, VCE>(
         &mut self,
         ctl_cmds: Vec<SolChangeEnumCmdBr>,

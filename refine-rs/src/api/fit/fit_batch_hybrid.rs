@@ -6,7 +6,7 @@ use crate::{
 };
 
 impl Fit<'_, '_> {
-    #[tracing::instrument(name = "fit-hyb", level = "trace", skip_all)]
+    #[tracing::instrument(name = "fit-hyb", level = "error", skip_all)]
     pub async fn hybrid_batch(&mut self, cmds: Vec<FitHybridCmdBr>) -> Result<CmdResps, FitHybridBatchError> {
         let sol_backup = ResidueResolver::new().add_cmds(cmds.iter().map(|cmd| cmd.exec_residue()));
         // Variables for move

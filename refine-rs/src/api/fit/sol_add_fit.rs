@@ -1,7 +1,7 @@
 use crate::{Fit, FitAddCmd, FitInfo, FitInfoCmd, SolarSystem, err::FitAddError, shared::ResidueResolver};
 
 impl<'r, 's> SolarSystem<'r> {
-    #[tracing::instrument(name = "fit-add", level = "trace", skip_all)]
+    #[tracing::instrument(name = "fit-add", level = "error", skip_all)]
     pub async fn add_fit(&'s mut self, ctl_cmd: FitAddCmd) -> Result<Fit<'r, 's>, FitAddError> {
         let sol_backup = ResidueResolver::new().add_cmd(ctl_cmd.exec_residue());
         let ctl_cmd_resp = self
@@ -10,7 +10,7 @@ impl<'r, 's> SolarSystem<'r> {
         let fit = Fit::new(self, ctl_cmd_resp.fit_id);
         Ok(fit)
     }
-    #[tracing::instrument(name = "fit-add-inf", level = "trace", skip_all)]
+    #[tracing::instrument(name = "fit-add-inf", level = "error", skip_all)]
     pub async fn add_fit_and_get_info(
         &'s mut self,
         ctl_cmd: FitAddCmd,

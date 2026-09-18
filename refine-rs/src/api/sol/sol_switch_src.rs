@@ -4,7 +4,7 @@ use crate::{
 };
 
 impl SolarSystem<'_> {
-    #[tracing::instrument(name = "sol-swt-src", level = "trace", skip_all)]
+    #[tracing::instrument(name = "sol-swt-src", level = "error", skip_all)]
     pub async fn switch_src(&mut self, src_alias: Option<SrcAlias>) -> Result<(), SolSwitchSrcError> {
         // Variables for move
         let src = self.refine.internal_get_src(src_alias).await?.get_core().clone();
@@ -12,7 +12,7 @@ impl SolarSystem<'_> {
             .await;
         Ok(())
     }
-    #[tracing::instrument(name = "sol-swt-src-inf", level = "trace", skip_all)]
+    #[tracing::instrument(name = "sol-swt-src-inf", level = "error", skip_all)]
     pub async fn switch_src_and_get_info(
         &mut self,
         src_alias: Option<SrcAlias>,

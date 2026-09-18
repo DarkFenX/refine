@@ -3,7 +3,7 @@ use crate::{
 };
 
 impl<'r, 's> SolarSystem<'r> {
-    #[tracing::instrument(name = "flt-add", level = "trace", skip_all)]
+    #[tracing::instrument(name = "flt-add", level = "error", skip_all)]
     pub async fn add_fleet(&'s mut self, ctl_cmd: FleetAddCmd) -> Result<Fleet<'r, 's>, FleetAddError> {
         let sol_backup = ResidueResolver::new().add_cmd(ctl_cmd.exec_residue());
         let ctl_cmd_resp = self
@@ -14,7 +14,7 @@ impl<'r, 's> SolarSystem<'r> {
         let fleet = Fleet::new(self, ctl_cmd_resp);
         Ok(fleet)
     }
-    #[tracing::instrument(name = "flt-add-inf", level = "trace", skip_all)]
+    #[tracing::instrument(name = "flt-add-inf", level = "error", skip_all)]
     pub async fn add_fleet_and_get_info(
         &'s mut self,
         ctl_cmd: FleetAddCmd,

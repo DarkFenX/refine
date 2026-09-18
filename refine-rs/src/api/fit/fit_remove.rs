@@ -1,7 +1,7 @@
 use crate::{Fit, FitRemoveCmd};
 
 impl Fit<'_, '_> {
-    #[tracing::instrument(name = "fit-rmv", level = "trace", skip_all)]
+    #[tracing::instrument(name = "fit-rmv", level = "error", skip_all)]
     pub async fn remove(self, ctl_cmd: FitRemoveCmd) {
         // Variables for move
         let fit_id = self.id;

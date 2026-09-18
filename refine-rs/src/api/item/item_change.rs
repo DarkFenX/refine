@@ -4,7 +4,7 @@ use crate::{
 };
 
 impl Item<'_, '_> {
-    #[tracing::instrument(name = "itm-chg", level = "trace", skip_all)]
+    #[tracing::instrument(name = "itm-chg", level = "error", skip_all)]
     pub async fn change(&mut self, ctl_cmd: ItemChangeEnumCmd) -> Result<ChangedItemIdsResp, ItemChangeEnumError> {
         let sol_backup = ResidueResolver::new().add_cmd(ctl_cmd.exec_residue());
         // Variables for move
@@ -17,7 +17,7 @@ impl Item<'_, '_> {
             })
             .await
     }
-    #[tracing::instrument(name = "itm-chg-inf", level = "trace", skip_all)]
+    #[tracing::instrument(name = "itm-chg-inf", level = "error", skip_all)]
     pub async fn change_and_get_info(
         &mut self,
         ctl_cmd: ItemChangeEnumCmd,

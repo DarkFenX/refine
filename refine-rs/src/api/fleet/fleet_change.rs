@@ -1,7 +1,7 @@
 use crate::{Fleet, FleetChangeCmd, FleetInfo, FleetInfoCmd, err::FleetChangeError, shared::ResidueResolver};
 
 impl Fleet<'_, '_> {
-    #[tracing::instrument(name = "flt-chg", level = "trace", skip_all)]
+    #[tracing::instrument(name = "flt-chg", level = "error", skip_all)]
     pub async fn change(&mut self, ctl_cmd: FleetChangeCmd) -> Result<(), FleetChangeError> {
         let sol_backup = ResidueResolver::new().add_cmd(ctl_cmd.exec_residue());
         // Variables for move
@@ -16,7 +16,7 @@ impl Fleet<'_, '_> {
             .await?;
         Ok(())
     }
-    #[tracing::instrument(name = "flt-chg-inf", level = "trace", skip_all)]
+    #[tracing::instrument(name = "flt-chg-inf", level = "error", skip_all)]
     pub async fn change_and_get_info(
         &mut self,
         ctl_cmd: FleetChangeCmd,

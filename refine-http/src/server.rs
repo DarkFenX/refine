@@ -99,8 +99,8 @@ pub(crate) async fn setup_server() {
             TraceLayer::new_for_http()
                 .make_span_with(
                     |request: &http::Request<Body>| match request.extensions().get::<RequestId>() {
-                        Some(request_id) => tracing::trace_span!("http", id = %request_id),
-                        None => tracing::trace_span!("http", id = "unknown"),
+                        Some(request_id) => tracing::error_span!("http", id = %request_id),
+                        None => tracing::error_span!("http", id = "unknown"),
                     },
                 )
                 .on_request(|request: &http::Request<Body>, _span: &Span| {

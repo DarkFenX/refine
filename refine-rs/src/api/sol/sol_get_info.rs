@@ -1,7 +1,7 @@
 use crate::{SolInfo, SolInfoCmd, SolarSystem};
 
 impl SolarSystem<'_> {
-    #[tracing::instrument(name = "sol-inf", level = "trace", skip_all)]
+    #[tracing::instrument(name = "sol-inf", level = "error", skip_all)]
     pub async fn get_info(&mut self, info_cmd: SolInfoCmd) -> SolInfo {
         // Variables for move
         let ctx = self.get_ctx();

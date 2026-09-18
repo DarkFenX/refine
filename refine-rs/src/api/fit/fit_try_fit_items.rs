@@ -1,7 +1,7 @@
 use crate::{Fit, ItemTypeId, trial::FitTryItemsCmd};
 
 impl Fit<'_, '_> {
-    #[tracing::instrument(name = "fit-try", level = "trace", skip_all)]
+    #[tracing::instrument(name = "fit-try", level = "error", skip_all)]
     pub async fn try_items(&mut self, try_cmd: FitTryItemsCmd) -> Vec<ItemTypeId> {
         // Variables for move
         let fit_id = self.id;

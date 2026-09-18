@@ -3,7 +3,7 @@ use crate::{
 };
 
 impl Fit<'_, '_> {
-    #[tracing::instrument(name = "fit-chg", level = "trace", skip_all)]
+    #[tracing::instrument(name = "fit-chg", level = "error", skip_all)]
     pub async fn change(&mut self, ctl_cmd: FitChangeEnumCmd) -> Result<CmdResp, FitChangeEnumError> {
         let sol_backup = ResidueResolver::new().add_cmd(ctl_cmd.exec_residue());
         // Variables for move
@@ -17,7 +17,7 @@ impl Fit<'_, '_> {
             })
             .await
     }
-    #[tracing::instrument(name = "fit-chg-inf", level = "trace", skip_all)]
+    #[tracing::instrument(name = "fit-chg-inf", level = "error", skip_all)]
     pub async fn change_and_get_info(
         &mut self,
         ctl_cmd: FitChangeEnumCmd,

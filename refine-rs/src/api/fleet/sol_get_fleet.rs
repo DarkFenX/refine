@@ -1,7 +1,7 @@
 use crate::{Fleet, FleetId, SolarSystem};
 
 impl<'r, 's> SolarSystem<'r> {
-    #[tracing::instrument(name = "flt-get", level = "trace", skip_all)]
+    #[tracing::instrument(name = "flt-get", level = "error", skip_all)]
     pub async fn get_fleet(&'s mut self, fleet_id: FleetId) -> Result<Fleet<'r, 's>, FleetGetError> {
         let fleet_id = self.exec_inplace(|core_sol| {
             core_sol
