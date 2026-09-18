@@ -1,17 +1,16 @@
 use std::str::FromStr;
 
 use time::{format_description::FormatDescriptionV3, macros::format_description};
-use tracing::Level;
 use tracing_appender::{non_blocking::WorkerGuard, rolling::RollingFileAppender};
 use tracing_subscriber::{
-    filter::Targets,
+    filter::{LevelFilter, Targets},
     fmt::{layer, time::UtcTime},
     prelude::*,
 };
 
 use crate::settings::SettingsLog;
 
-const STDOUT_LEVEL: Level = Level::WARN;
+const STDOUT_LEVEL: LevelFilter = LevelFilter::WARN;
 
 const TIME_FORMAT_FULL: FormatDescriptionV3<'_> = format_description!(
     version = 3,
@@ -23,7 +22,7 @@ const TIME_FORMAT_SHORT: FormatDescriptionV3<'_> =
 pub(crate) const RX_PREFIX: &str = ">>> rx";
 pub(crate) const TX_PREFIX: &str = "<<< tx";
 
-fn refine_targets(max_level: Level) -> Targets {
+fn refine_targets(max_level: LevelFilter) -> Targets {
     Targets::new()
         .with_default(None)
         .with_target("refine_rs", max_level)
@@ -46,8 +45,8 @@ pub(crate) fn setup_logging(settings: SettingsLog) -> (Option<WorkerGuard>, LogB
         .pretty()
         .with_filter(refine_targets(STDOUT_LEVEL));
     // We log into file only if we've been given path and appropriate log level
-    let (file_log, file_guard, effective_max_level) = match (settings.dir, Level::from_str(&settings.level)) {
-        (Some(dir), Ok(max_level)) => {
+    let (file_log, file_guard, effective_max_level) = match (settings.dir, LevelFilter::from_str(&settings.level)) {
+        (Some(dir), Ok(max_level)) if max_level != LevelFilter::OFF => {
             let (rotation, time_format) = match settings.rotate {
                 true => (tracing_appender::rolling::Rotation::DAILY, TIME_FORMAT_SHORT),
                 false => (tracing_appender::rolling::Rotation::NEVER, TIME_FORMAT_FULL),
@@ -60,14 +59,14 @@ pub(crate) fn setup_logging(settings: SettingsLog) -> (Option<WorkerGuard>, LogB
                 .with_timer(UtcTime::new(time_format))
                 .with_target(false)
                 .with_filter(refine_targets(max_level));
-            (Some(file_log), Some(file_guard), Some(max_level))
+            (Some(file_log), Some(file_guard), max_level)
         }
-        _ => (None, None, None),
+        _ => (None, None, LevelFilter::OFF),
     };
     tracing_subscriber::registry().with(stdout_log).with(file_log).init();
     // Log bodies only if both conditions (flag which enables it & log level) are met
-    let bodies = match (settings.bodies, effective_max_level) {
-        (true, Some(effective_max_level)) if effective_max_level >= Level::INFO => LogBodies::Enabled,
+    let bodies = match settings.bodies {
+        true if effective_max_level >= LevelFilter::INFO => LogBodies::Enabled,
         _ => LogBodies::Disabled,
     };
     (file_guard, bodies)
