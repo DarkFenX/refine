@@ -8,26 +8,31 @@ use crate::{ad::ASkillLevel, num::Value};
 pub struct SkillLevel(u8);
 impl SkillLevel {
     pub fn from_i32_checked(level: i32) -> Result<Self, SkillLevelError> {
-        match (0..=5).contains(&level) {
+        match (Self::MIN.0 as i32..=Self::MAX.0 as i32).contains(&level) {
             true => Ok(Self(level as u8)),
             false => Err(SkillLevelError { level }),
         }
     }
     pub const fn from_i32_clamped(level: i32) -> Self {
-        Self(level.clamp(0, 5) as u8)
+        Self(level.clamp(Self::MIN.0 as i32, Self::MAX.0 as i32) as u8)
     }
     pub const fn from_u64_clamped(level: u64) -> Self {
-        Self(level.clamp(0, 5) as u8)
+        Self(level.clamp(Self::MIN.0 as u64, Self::MAX.0 as u64) as u8)
     }
     pub const fn from_i64_clamped(level: i64) -> Self {
-        Self(level.clamp(0, 5) as u8)
+        Self(level.clamp(Self::MIN.0 as i64, Self::MAX.0 as i64) as u8)
     }
     pub const fn into_u8(self) -> u8 {
         self.0
     }
 }
+
 #[derive(Debug, thiserror::Error)]
-#[error("skill level {level} is out of allowed range [0, 5]")]
+#[error(
+    "skill level {level} is out of allowed range [{}, {}]",
+    SkillLevel::MIN,
+    SkillLevel::MAX
+)]
 pub struct SkillLevelError {
     pub level: i32,
 }
@@ -45,7 +50,7 @@ impl SkillLevel {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl SkillLevel {
     pub(crate) fn from_f64_rounded(level: f64) -> Self {
-        Self(level.clamp(0.0, 5.0).round() as u8)
+        Self(level.clamp(Self::MIN.0 as f64, Self::MAX.0 as f64).round() as u8)
     }
     pub(crate) fn from_a_skill_level(a_skill_level: ASkillLevel) -> Self {
         Self(a_skill_level.into_u8())

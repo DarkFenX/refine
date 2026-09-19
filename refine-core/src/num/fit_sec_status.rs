@@ -2,33 +2,49 @@ use ordered_float::OrderedFloat;
 
 use crate::num::Value;
 
-const SS_MIN: f64 = -10.0;
-const SS_MAX: f64 = 5.0;
-
 /// Security status of a fit's pilot, within `[-10, 5]` range.
 ///
 /// Serialization notes: deserialization clamps out-of-range input instead of failing.
 #[cfg_attr(feature = "serde", derive(serde::Serialize), serde(transparent))]
-#[derive(Copy, Clone, Default, Debug, derive_more::Display)]
+#[derive(Copy, Clone, Debug, derive_more::Display)]
 pub struct FitSecStatus(f64);
 impl FitSecStatus {
     pub fn from_f64_checked(sec_status: f64) -> Result<Self, FitSecStatusError> {
-        match (SS_MIN..=SS_MAX).contains(&sec_status) {
+        match (Self::MIN.0..=Self::MAX.0).contains(&sec_status) {
             true => Ok(Self(sec_status)),
             false => Err(FitSecStatusError { sec_status }),
         }
     }
     pub const fn from_f64_clamped(sec_status: f64) -> Self {
-        Self(sec_status.clamp(SS_MIN, SS_MAX))
+        Self(sec_status.clamp(Self::MIN.0, Self::MAX.0))
     }
     pub const fn into_f64(self) -> f64 {
         self.0
     }
 }
+const impl Default for FitSecStatus {
+    fn default() -> Self {
+        Self::ZERO
+    }
+}
+
 #[derive(Debug, thiserror::Error)]
-#[error("sec status {sec_status} is out of allowed range [-10, 5]")]
+#[error(
+    "sec status {sec_status} is out of allowed range [{}, {}]",
+    FitSecStatus::MIN,
+    FitSecStatus::MAX
+)]
 pub struct FitSecStatusError {
     pub sec_status: f64,
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Constants
+////////////////////////////////////////////////////////////////////////////////////////////////////
+impl FitSecStatus {
+    pub const ZERO: Self = Self(0.0);
+    pub const MIN: Self = Self(-10.0);
+    pub const MAX: Self = Self(5.0);
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
