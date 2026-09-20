@@ -20,8 +20,8 @@ pub struct AddedItemIdsResp {
     pub item_id: ItemId,
     #[cfg_attr(feature = "serde", serde(skip_serializing_if = "Option::is_none"))]
     pub charge_item_id: Option<ItemId> = None,
-    #[cfg_attr(feature = "serde", serde(skip_serializing_if = "AutochargeItemIds::is_unchanged"))]
-    pub autocharge_item_ids: AutochargeItemIds = AutochargeItemIds::Unchanged,
+    #[cfg_attr(feature = "serde", serde(skip_serializing_if = "AutochargeItemIds::is_not_generated"))]
+    pub autocharge_item_ids: AutochargeItemIds = AutochargeItemIds::NotGenerated,
 }
 
 #[cfg_attr(feature = "serde", derive(serde::Serialize))]
@@ -29,8 +29,8 @@ pub struct AddedItemIdsResp {
 pub struct ChangedItemIdsResp {
     #[cfg_attr(feature = "serde", serde(skip_serializing_if = "Option::is_none"))]
     pub charge_item_id: Option<ItemId> = None,
-    #[cfg_attr(feature = "serde", serde(skip_serializing_if = "AutochargeItemIds::is_unchanged"))]
-    pub autocharge_item_ids: AutochargeItemIds = AutochargeItemIds::Unchanged,
+    #[cfg_attr(feature = "serde", serde(skip_serializing_if = "AutochargeItemIds::is_not_generated"))]
+    pub autocharge_item_ids: AutochargeItemIds = AutochargeItemIds::NotGenerated,
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -58,7 +58,7 @@ impl AddedItemIdsResp {
             item_id: core_item.get_item_id(),
             autocharge_item_ids: match &core_item {
                 rc::ItemMut::Fighter(core_fighter) => AutochargeItemIds::from_core_fighter(core_fighter),
-                _ => AutochargeItemIds::Unchanged,
+                _ => AutochargeItemIds::NotGenerated,
             },
             ..
         }
@@ -169,23 +169,33 @@ impl ChangedItemIdsResp {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Autocharge handling
 ////////////////////////////////////////////////////////////////////////////////////////////////////
+/// Some item kinds can house autocharges, which are charges automatically created for needs of an
+/// effect of that item, if that effect needs it.
 #[derive(Clone, Default)]
 pub enum AutochargeItemIds {
+    /// Autocharge generation process was not triggered.
+    ///
+    /// It means that:
+    /// - in case item was added: item does not support autocharges altogether;
+    /// - in case item was changed: even if item supports autocharges, request to change didn't
+    ///   trigger the autocharge generation process (e.g. item type ID change triggers it, ability
+    ///   status change does not).
     #[default]
-    Unchanged,
-    Updated(Vec<(EffectId, ItemId)>),
+    NotGenerated,
+    /// Autocharges were (re)generated, and this is the result.
+    Generated(Vec<(EffectId, ItemId)>),
 }
 impl AutochargeItemIds {
     fn from_core_fighter(core_fighter: &rc::FighterMut) -> Self {
-        Self::Updated(
+        Self::Generated(
             core_fighter
                 .iter_autocharges()
                 .map(|core_autocharge| (core_autocharge.get_cont_effect_id(), core_autocharge.get_item_id()))
                 .collect(),
         )
     }
-    pub fn is_unchanged(&self) -> bool {
-        matches!(self, Self::Unchanged)
+    pub fn is_not_generated(&self) -> bool {
+        matches!(self, Self::NotGenerated)
     }
 }
 
@@ -206,8 +216,8 @@ mod custom_serde {
             match self {
                 // This still serializes unchanged variant, still have to declare
                 // "skip_serializing_if" in containing struct
-                Self::Unchanged => serializer.serialize_unit(),
-                Self::Updated(item_ids) => {
+                Self::NotGenerated => serializer.serialize_unit(),
+                Self::Generated(item_ids) => {
                     let mut map = serializer.serialize_map(Some(item_ids.len()))?;
                     for (effect_id, item_id) in item_ids.iter() {
                         map.serialize_entry(effect_id, item_id)?;
