@@ -90,7 +90,7 @@ pub use item_subsystem::{
 pub(crate) use item_subsystem::{SubsystemAddCmdCtxFitGen, SubsystemChangeCmdCtxItemGen};
 pub(crate) use item_sw_effect::SwEffectChangeCmdCtxItemGen;
 pub use item_sw_effect::{ItemGetSwEffectChangeError, SwEffectAddCmd, SwEffectChangeCmd, SwEffectChangeError};
-pub use resp::{AddedFitIdResp, AddedFleetIdResp, AddedItemIdsResp, ChangedItemIdsResp};
+pub use resp::{AddedFitIdResp, AddedFleetIdResp, AddedItemIdsResp, AutochargeItemIds, ChangedItemIdsResp};
 pub use shared::{AddMutation, AttrMutation, ChangeMutation};
 pub use sol::{SolAddCmd, SolChangeCmd};
 

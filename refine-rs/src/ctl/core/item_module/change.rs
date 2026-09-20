@@ -231,7 +231,7 @@ impl ModuleChangeCmd {
             TriStateField::Value(charge_type_id) => {
                 let core_charge = core_module.set_charge_type_id(charge_type_id);
                 // Set response charge ID only if we actually did it
-                resp = ChangedItemIdsResp::from_core_charge(core_charge);
+                resp.add_core_charge(core_charge);
             }
             TriStateField::None => {
                 // Do nothing if module had no charge

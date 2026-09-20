@@ -182,12 +182,15 @@ impl<I> FighterChangeCmdCtxItemGen<I> {
 
 impl FighterChangeCmd {
     pub(in crate::ctl) fn execute(self, core_item: &mut rc::ItemMut) -> Result<ChangedItemIdsResp, FighterChangeError> {
+        let mut resp = ChangedItemIdsResp::default();
         let core_fighter = core_item.dc_fighter()?;
         for projectee_item_id in self.rm_proj_item_ids.iter() {
             core_fighter.get_proj_mut(projectee_item_id)?.remove();
         }
         if let Some(type_id) = self.type_id {
             core_fighter.set_type_id(type_id);
+            // Autocharges are recreated when type ID changes, so report their IDs
+            resp.add_core_fighter_autocharges(core_fighter);
         }
         if let Some(state) = self.state {
             core_fighter.set_state(state);
@@ -215,7 +218,7 @@ impl FighterChangeCmd {
         for projectee_item_id in self.add_proj_item_ids.iter() {
             core_fighter.add_proj(projectee_item_id)?;
         }
-        Ok(ChangedItemIdsResp::default())
+        Ok(resp)
     }
 }
 #[derive(thiserror::Error, Debug)]

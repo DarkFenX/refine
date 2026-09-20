@@ -1,5 +1,5 @@
 use crate::{
-    ChangedItemIdsResp, CmdResps, Item, ItemChangeEnumCmd, ItemInfo, ItemInfoCmdBr, err::ItemChangeEnumError,
+    ChangedItemIdsResp, CmdResp, CmdResps, Item, ItemChangeEnumCmd, ItemInfo, ItemInfoCmdBr, err::ItemChangeEnumError,
     shared::ResidueResolver,
 };
 
@@ -34,6 +34,9 @@ impl Item<'_, '_> {
                 let ctl_cmd_resps = CmdResps::with_resp(ctl_cmd_resp.into());
                 let info_cmd = info_cmd.br_resolve(&ctl_cmd_resps);
                 let item_info = info_cmd.execute(&mut core_item);
+                let Some(CmdResp::ChangedItemIds(ctl_cmd_resp)) = ctl_cmd_resps.into_iter().next() else {
+                    unreachable!("expected the same command which was sent in");
+                };
                 Ok((ctl_cmd_resp, item_info))
             })
             .await
