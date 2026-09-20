@@ -162,7 +162,7 @@ impl ChangedItemIdsResp {
         self.charge_item_id = Some(core_charge.get_item_id());
     }
     pub(in crate::ctl::core) fn add_core_fighter_autocharges(&mut self, core_fighter: &rc::FighterMut) {
-        self.autocharge_item_ids = AutochargeItemIds::from_core_fighter(&core_fighter);
+        self.autocharge_item_ids = AutochargeItemIds::from_core_fighter(core_fighter);
     }
 }
 
