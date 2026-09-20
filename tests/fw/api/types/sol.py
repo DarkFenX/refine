@@ -12,8 +12,9 @@ from fw.util import Absent, AttrDict, AttrHookDef, Default, is_subset
 
 if typing.TYPE_CHECKING:
     from fw import eve
+    from fw.aliases import JsonPredicate, ReqHook
     from fw.api import ApiClient
-    from fw.api.aliases import DpsProfileAlias, ReqHook
+    from fw.api.aliases import DpsProfileAlias
     from fw.api.types.validation import ValOptions
     from fw.consts import ApiEffMode, ApiNpcProp, ApiOptionalReload, ApiRearmMinion, ApiSecZone
     from fw.response import Response
@@ -38,7 +39,7 @@ class SolarSystem(AttrDict):
             self, *,
             hook_req: ReqHook | None = None,
             status_code: int = 200,
-            json_predicate: dict | None = None,
+            json_predicate: JsonPredicate = None,
     ) -> SolCmdBatchCtx:
         return SolCmdBatchCtx(
             client=self._client,
@@ -54,7 +55,7 @@ class SolarSystem(AttrDict):
             fit_info_mode: ApiFitInfoMode | type[Absent] = ApiFitInfoMode.full,
             item_info_mode: ApiItemInfoMode | type[Absent] = ApiItemInfoMode.id,
             status_code: int = 200,
-            json_predicate: dict | None = None,
+            json_predicate: JsonPredicate = None,
     ) -> SolarSystem | None:
         resp = self._client.get_sol_request(
             sol_id=self.id,
@@ -77,7 +78,7 @@ class SolarSystem(AttrDict):
             fit_info_mode: ApiFitInfoMode | type[Absent] = ApiFitInfoMode.full,
             item_info_mode: ApiItemInfoMode | type[Absent] = ApiItemInfoMode.id,
             status_code: int = 200,
-            json_predicate: dict | None = None,
+            json_predicate: JsonPredicate = None,
     ) -> SolarSystem:
         resp = self._client.change_sol_src_request(
             sol_id=self.id,
@@ -95,7 +96,7 @@ class SolarSystem(AttrDict):
     def remove(
             self, *,
             status_code: int = 204,
-            json_predicate: dict | None = None,
+            json_predicate: JsonPredicate = None,
     ) -> None:
         resp = self._client.remove_sol_request(sol_id=self.id).send()
         resp.check(status_code=status_code, json_predicate=json_predicate)
@@ -115,7 +116,7 @@ class SolarSystem(AttrDict):
             fit_info_mode: ApiFitInfoMode | type[Absent] = ApiFitInfoMode.id,
             item_info_mode: ApiItemInfoMode | type[Absent] = ApiItemInfoMode.id,
             status_code: int = 200,
-            json_predicate: dict | None = None,
+            json_predicate: JsonPredicate = None,
     ) -> SolarSystem:
         command = SolCtlSolChangeCmd(
             sec_zone=sec_zone,
@@ -142,7 +143,7 @@ class SolarSystem(AttrDict):
             fit_ids: list[str] | type[Absent | Default] = Default,
             options: ValOptions | type[Absent],
             status_code: int = 200,
-            json_predicate: dict | None = None,
+            json_predicate: JsonPredicate = None,
     ) -> SolValResult | None:
         resp_simple = self.__validate_sol(
             fit_ids=fit_ids,
@@ -190,7 +191,7 @@ class SolarSystem(AttrDict):
             options: ValOptions | type[Absent],
             val_info_mode: ApiValInfoMode | type[Absent] = Absent,
             status_code: int = 200,
-            json_predicate: dict | None = None,
+            json_predicate: JsonPredicate = None,
     ) -> SolValResult | None:
         resp = self.__validate_sol(
             fit_ids=fit_ids,
@@ -208,7 +209,7 @@ class SolarSystem(AttrDict):
             options: ValOptions | type[Absent],
             val_info_mode: ApiValInfoMode | type[Absent],
             status_code: int,
-            json_predicate: dict | None,
+            json_predicate: JsonPredicate,
     ) -> Response:
         if fit_ids is Default:
             fit_ids = []
@@ -227,7 +228,7 @@ class SolarSystem(AttrDict):
             options: ValOptions | type[Absent],
             val_info_mode: ApiValInfoMode | type[Absent],
             status_code: int,
-            json_predicate: dict | None,
+            json_predicate: JsonPredicate,
     ) -> Response:
         resp = self._client.validate_fit_request(
             sol_id=self.id,
@@ -246,7 +247,7 @@ class SolarSystem(AttrDict):
             fit_info_mode: ApiFitInfoMode | type[Absent] = ApiFitInfoMode.id,
             item_info_mode: ApiItemInfoMode | type[Absent] = ApiItemInfoMode.id,
             status_code: int = 200,
-            json_predicate: dict | None = None,
+            json_predicate: JsonPredicate = None,
     ) -> Fleet | None:
         resp = self._client.get_fleet_request(
             sol_id=self.id,
@@ -265,7 +266,7 @@ class SolarSystem(AttrDict):
             fit_ids: list[str] | type[Absent] = Absent,
             fleet_info_mode: ApiFleetInfoMode | type[Absent] = ApiFleetInfoMode.id,
             status_code: int = 201,
-            json_predicate: dict | None = None,
+            json_predicate: JsonPredicate = None,
     ) -> Fleet | None:
         resp = self._client.create_fleet_request(
             sol_id=self.id,
@@ -284,7 +285,7 @@ class SolarSystem(AttrDict):
             fit_info_mode: ApiFitInfoMode | type[Absent] = ApiFitInfoMode.full,
             item_info_mode: ApiItemInfoMode | type[Absent] = ApiItemInfoMode.id,
             status_code: int = 200,
-            json_predicate: dict | None = None,
+            json_predicate: JsonPredicate = None,
     ) -> Fit | None:
         resp = self._client.get_fit_request(
             sol_id=self.id,
@@ -305,7 +306,7 @@ class SolarSystem(AttrDict):
             fit_info_mode: ApiFitInfoMode | type[Absent] = ApiFitInfoMode.id,
             item_info_mode: ApiItemInfoMode | type[Absent] = Absent,
             status_code: int = 201,
-            json_predicate: dict | None = None,
+            json_predicate: JsonPredicate = None,
     ) -> Fit | None:
         resp = self._client.create_fit_request(
             sol_id=self.id,
@@ -326,7 +327,7 @@ class SolarSystem(AttrDict):
             item_id: str,
             item_info_mode: ApiItemInfoMode | type[Absent] = ApiItemInfoMode.full,
             status_code: int = 200,
-            json_predicate: dict | None = None,
+            json_predicate: JsonPredicate = None,
     ) -> Item | None:
         resp = self._client.get_item_request(sol_id=self.id, item_id=item_id, item_info_mode=item_info_mode).send()
         self.check()
@@ -343,7 +344,7 @@ class SolarSystem(AttrDict):
             effect_modes: dict[int | str, ApiEffMode] | type[Absent] = Absent,
             item_info_mode: ApiItemInfoMode | type[Absent] = ApiItemInfoMode.id,
             status_code: int = 201,
-            json_predicate: dict | None = None,
+            json_predicate: JsonPredicate = None,
     ) -> Item | None:
         command = ItemCtlProjEffectAddCmd(
             type_id=type_id,
@@ -367,7 +368,7 @@ class SolarSystem(AttrDict):
             effect_modes: dict[int | str, ApiEffMode] | type[Absent] = Absent,
             item_info_mode: ApiItemInfoMode | type[Absent] = ApiItemInfoMode.id,
             status_code: int = 201,
-            json_predicate: dict | None = None,
+            json_predicate: JsonPredicate = None,
     ) -> Item | None:
         command = ItemCtlSwEffectAddCmd(
             type_id=type_id,

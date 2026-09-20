@@ -50,8 +50,9 @@ from .base import BaseCmdBatchCtx
 if typing.TYPE_CHECKING:
     from types import TracebackType
 
+    from fw.aliases import JsonPredicate, ReqHook
     from fw.api import ApiClient
-    from fw.api.aliases import DpsProfileAlias, InfoMode, MutaAdd, MutaChange, ReqHook, StatsOptions
+    from fw.api.aliases import DpsProfileAlias, InfoMode, MutaAdd, MutaChange, StatsOptions
     from fw.api.types.fit import Fit
     from fw.api.types.item import Item
     from fw.api.types.stats import FitStatsOptions, ItemStatsOptions
@@ -78,7 +79,7 @@ class FitCmdBatchCtx(BaseCmdBatchCtx):
             fit_id: str,
             hook_req: ReqHook | None,
             status_code: int,
-            json_predicate: dict | None,
+            json_predicate: JsonPredicate,
     ) -> None:
         super().__init__(
             client=client,

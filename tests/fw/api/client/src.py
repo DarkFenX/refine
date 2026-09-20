@@ -7,6 +7,7 @@ from fw.util import Default, conditional_insert
 from .base import ApiClientBase
 
 if typing.TYPE_CHECKING:
+    from fw.aliases import JsonPredicate
     from fw.eve.aliases import DataPrimHook, DataStrHook
     from fw.util import Absent
 
@@ -42,7 +43,7 @@ class ApiClientSrc(ApiClientBase, eve.EveDataManager, eve.EveDataServer):
             src_info_mode: ApiSrcInfoMode | type[Absent] = ApiSrcInfoMode.full,
             status_code: int = 201,
             cleanup_check: bool = True,
-            json_predicate: dict | None = None,
+            json_predicate: JsonPredicate = None,
             hook_data_prim: DataPrimHook | None = None,
             hook_data_str: DataStrHook | None = None,
     ) -> None:
@@ -77,7 +78,7 @@ class ApiClientSrc(ApiClientBase, eve.EveDataManager, eve.EveDataServer):
             src_info_mode: ApiSrcInfoMode | type[Absent] = ApiSrcInfoMode.full,
             status_code: int = 201,
             cleanup_check: bool = True,
-            json_predicate: dict | None = None,
+            json_predicate: JsonPredicate = None,
             hook_data_prim: DataPrimHook | None = None,
             hook_data_str: DataStrHook | None = None,
     ) -> None:

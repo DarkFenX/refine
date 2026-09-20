@@ -5,8 +5,8 @@ import typing
 from fw.api.types.item import Item
 
 if typing.TYPE_CHECKING:
+    from fw.aliases import JsonPredicate, ReqHook
     from fw.api import ApiClient
-    from fw.api.aliases import ReqHook
     from fw.api.commands import BaseCommand
     from fw.api.types.fit import Fit
     from fw.request import Request
@@ -35,7 +35,7 @@ class BaseCmdBatchCtx:
             sol_id: str,
             hook_req: ReqHook | None,
             status_code: int,
-            json_predicate: dict | None,
+            json_predicate: JsonPredicate,
     ) -> None:
         self._client = client
         self._sol_id = sol_id

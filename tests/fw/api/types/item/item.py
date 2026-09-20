@@ -36,6 +36,7 @@ from .side_effect_info import SideEffectInfo
 from .spool_count import SpoolCycleInfo
 
 if typing.TYPE_CHECKING:
+    from fw.aliases import JsonPredicate
     from fw.api import ApiClient
     from fw.api.aliases import MutaAdd, MutaChange
     from fw.api.types import ItemStatsOptions
@@ -83,7 +84,7 @@ class Item(AttrDict):
             self, *,
             item_info_mode: ApiItemInfoMode | type[Absent] = ApiItemInfoMode.full,
             status_code: int = 200,
-            json_predicate: dict | None = None,
+            json_predicate: JsonPredicate = None,
     ) -> Item | None:
         resp = self._client.get_item_request(sol_id=self._sol_id, item_id=self.id, item_info_mode=item_info_mode).send()
         self._client.check_sol(sol_id=self._sol_id)
@@ -97,7 +98,7 @@ class Item(AttrDict):
             self, *,
             rm_mode: ApiModRmMode | type[Absent] = Absent,
             status_code: int = 204,
-            json_predicate: dict | None = None,
+            json_predicate: JsonPredicate = None,
     ) -> None:
         resp = self._client.remove_item_request(sol_id=self._sol_id, item_id=self.id, rm_mode=rm_mode).send()
         self._client.check_sol(sol_id=self._sol_id)
@@ -107,7 +108,7 @@ class Item(AttrDict):
             self, *,
             options: ItemStatsOptions | type[Absent],
             status_code: int = 200,
-            json_predicate: dict | None = None,
+            json_predicate: JsonPredicate = None,
     ) -> ItemStats | None:
         resp = self._client.get_item_stats_request(
             sol_id=self._sol_id,
@@ -125,7 +126,7 @@ class Item(AttrDict):
             effect_modes: dict[int | str, ApiEffMode] | type[Absent] = Absent,
             item_info_mode: ApiItemInfoMode | type[Absent] = ApiItemInfoMode.id,
             status_code: int = 200,
-            json_predicate: dict | None = None,
+            json_predicate: JsonPredicate = None,
     ) -> Item | None:
         command = ItemCtlAutochargeChangeCmd(
             state=state,
@@ -150,7 +151,7 @@ class Item(AttrDict):
             effect_modes: dict[int | str, ApiEffMode] | type[Absent] = Absent,
             item_info_mode: ApiItemInfoMode | type[Absent] = ApiItemInfoMode.id,
             status_code: int = 200,
-            json_predicate: dict | None = None,
+            json_predicate: JsonPredicate = None,
     ) -> Item | None:
         command = ItemCtlBoosterChangeCmd(
             type_id=type_id,
@@ -176,7 +177,7 @@ class Item(AttrDict):
             effect_modes: dict[int | str, ApiEffMode] | type[Absent] = Absent,
             item_info_mode: ApiItemInfoMode | type[Absent] = ApiItemInfoMode.id,
             status_code: int = 200,
-            json_predicate: dict | None = None,
+            json_predicate: JsonPredicate = None,
     ) -> Item | None:
         command = ItemCtlCharacterChangeCmd(
             type_id=type_id,
@@ -201,7 +202,7 @@ class Item(AttrDict):
             effect_modes: dict[int | str, ApiEffMode] | type[Absent] = Absent,
             item_info_mode: ApiItemInfoMode | type[Absent] = ApiItemInfoMode.id,
             status_code: int = 200,
-            json_predicate: dict | None = None,
+            json_predicate: JsonPredicate = None,
     ) -> Item | None:
         command = ItemCtlChargeChangeCmd(
             type_id=type_id,
@@ -232,7 +233,7 @@ class Item(AttrDict):
             effect_modes: dict[int | str, ApiEffMode] | type[Absent] = Absent,
             item_info_mode: ApiItemInfoMode | type[Absent] = ApiItemInfoMode.id,
             status_code: int = 200,
-            json_predicate: dict | None = None,
+            json_predicate: JsonPredicate = None,
     ) -> Item | None:
         command = ItemCtlDroneChangeCmd(
             type_id=type_id,
@@ -270,7 +271,7 @@ class Item(AttrDict):
             effect_modes: dict[int | str, ApiEffMode] | type[Absent] = Absent,
             item_info_mode: ApiItemInfoMode | type[Absent] = ApiItemInfoMode.id,
             status_code: int = 200,
-            json_predicate: dict | None = None,
+            json_predicate: JsonPredicate = None,
     ) -> Item | None:
         command = ItemCtlFighterChangeCmd(
             type_id=type_id,
@@ -302,7 +303,7 @@ class Item(AttrDict):
             effect_modes: dict[int | str, ApiEffMode] | type[Absent] = Absent,
             item_info_mode: ApiItemInfoMode | type[Absent] = ApiItemInfoMode.id,
             status_code: int = 200,
-            json_predicate: dict | None = None,
+            json_predicate: JsonPredicate = None,
     ) -> Item | None:
         command = ItemCtlFwEffectChangeCmd(
             type_id=type_id,
@@ -327,7 +328,7 @@ class Item(AttrDict):
             effect_modes: dict[int | str, ApiEffMode] | type[Absent] = Absent,
             item_info_mode: ApiItemInfoMode | type[Absent] = ApiItemInfoMode.id,
             status_code: int = 200,
-            json_predicate: dict | None = None,
+            json_predicate: JsonPredicate = None,
     ) -> Item | None:
         command = ItemCtlImplantChangeCmd(
             type_id=type_id,
@@ -359,7 +360,7 @@ class Item(AttrDict):
             effect_modes: dict[int | str, ApiEffMode] | type[Absent] = Absent,
             item_info_mode: ApiItemInfoMode | type[Absent] = ApiItemInfoMode.id,
             status_code: int = 200,
-            json_predicate: dict | None = None,
+            json_predicate: JsonPredicate = None,
     ) -> Item | None:
         command = ItemCtlModuleChangeCmd(
             type_id=type_id,
@@ -393,7 +394,7 @@ class Item(AttrDict):
             effect_modes: dict[int | str, ApiEffMode] | type[Absent] = Absent,
             item_info_mode: ApiItemInfoMode | type[Absent] = ApiItemInfoMode.id,
             status_code: int = 200,
-            json_predicate: dict | None = None,
+            json_predicate: JsonPredicate = None,
     ) -> Item | None:
         command = ItemCtlProjEffectChangeCmd(
             type_id=type_id,
@@ -420,7 +421,7 @@ class Item(AttrDict):
             effect_modes: dict[int | str, ApiEffMode] | type[Absent] = Absent,
             item_info_mode: ApiItemInfoMode | type[Absent] = ApiItemInfoMode.id,
             status_code: int = 200,
-            json_predicate: dict | None = None,
+            json_predicate: JsonPredicate = None,
     ) -> Item | None:
         command = ItemCtlRigChangeCmd(
             type_id=type_id,
@@ -445,7 +446,7 @@ class Item(AttrDict):
             effect_modes: dict[int | str, ApiEffMode] | type[Absent] = Absent,
             item_info_mode: ApiItemInfoMode | type[Absent] = ApiItemInfoMode.id,
             status_code: int = 200,
-            json_predicate: dict | None = None,
+            json_predicate: JsonPredicate = None,
     ) -> Item | None:
         command = ItemCtlServiceChangeCmd(
             type_id=type_id,
@@ -472,7 +473,7 @@ class Item(AttrDict):
             effect_modes: dict[int | str, ApiEffMode] | type[Absent] = Absent,
             item_info_mode: ApiItemInfoMode | type[Absent] = ApiItemInfoMode.id,
             status_code: int = 200,
-            json_predicate: dict | None = None,
+            json_predicate: JsonPredicate = None,
     ) -> Item | None:
         command = ItemCtlShipChangeCmd(
             type_id=type_id,
@@ -500,7 +501,7 @@ class Item(AttrDict):
             effect_modes: dict[int | str, ApiEffMode] | type[Absent] = Absent,
             item_info_mode: ApiItemInfoMode | type[Absent] = ApiItemInfoMode.id,
             status_code: int = 200,
-            json_predicate: dict | None = None,
+            json_predicate: JsonPredicate = None,
     ) -> Item | None:
         command = ItemCtlSkillChangeCmd(
             type_id=type_id,
@@ -526,7 +527,7 @@ class Item(AttrDict):
             effect_modes: dict[int | str, ApiEffMode] | type[Absent] = Absent,
             item_info_mode: ApiItemInfoMode | type[Absent] = ApiItemInfoMode.id,
             status_code: int = 200,
-            json_predicate: dict | None = None,
+            json_predicate: JsonPredicate = None,
     ) -> Item | None:
         command = ItemCtlStanceChangeCmd(
             type_id=type_id,
@@ -551,7 +552,7 @@ class Item(AttrDict):
             effect_modes: dict[int | str, ApiEffMode] | type[Absent] = Absent,
             item_info_mode: ApiItemInfoMode | type[Absent] = ApiItemInfoMode.id,
             status_code: int = 200,
-            json_predicate: dict | None = None,
+            json_predicate: JsonPredicate = None,
     ) -> Item | None:
         command = ItemCtlSubsystemChangeCmd(
             type_id=type_id,
@@ -576,7 +577,7 @@ class Item(AttrDict):
             effect_modes: dict[int | str, ApiEffMode] | type[Absent] = Absent,
             item_info_mode: ApiItemInfoMode | type[Absent] = ApiItemInfoMode.id,
             status_code: int = 200,
-            json_predicate: dict | None = None,
+            json_predicate: JsonPredicate = None,
     ) -> Item | None:
         command = ItemCtlSwEffectChangeCmd(
             type_id=type_id,

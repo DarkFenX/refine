@@ -9,6 +9,7 @@ from fw.util import Absent, Default, conditional_insert
 from .base import ApiClientBase
 
 if typing.TYPE_CHECKING:
+    from fw.aliases import JsonPredicate
     from fw.api.aliases import DpsProfileAlias
     from fw.api.commands import BaseCommand
     from fw.consts import (
@@ -92,7 +93,7 @@ class ApiClientSol(ApiClientBase, eve.EveDataManager):
             fit_info_mode: ApiFitInfoMode | type[Absent] = Absent,
             item_info_mode: ApiItemInfoMode | type[Absent] = Absent,
             status_code: int = 201,
-            json_predicate: dict | None = None,
+            json_predicate: JsonPredicate = None,
     ) -> SolarSystem | None:
         if data is Default:
             data = self._get_default_eve_data()
@@ -127,7 +128,7 @@ class ApiClientSol(ApiClientBase, eve.EveDataManager):
             fit_info_mode: ApiFitInfoMode | type[Absent],
             item_info_mode: ApiItemInfoMode | type[Absent],
             status_code: int = 200,
-            json_predicate: dict | None = None,
+            json_predicate: JsonPredicate = None,
     ) -> SolarSystem | None:
         resp = self.get_sol_request(
             sol_id=sol_id,

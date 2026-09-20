@@ -8,7 +8,7 @@ import typing
 from fw import check_no_field
 
 if typing.TYPE_CHECKING:
-    from fw.api.aliases import ReqHook
+    from fw.aliases import ReqHook
     from fw.request import Request
 
 

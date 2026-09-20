@@ -6,6 +6,7 @@ from fw.util import Absent, AttrDict, AttrHookDef
 from .stats import FleetStats
 
 if typing.TYPE_CHECKING:
+    from fw.aliases import JsonPredicate
     from fw.api import ApiClient
     from .stats import FleetStatsOptions
 
@@ -25,7 +26,7 @@ class Fleet(AttrDict):
             fit_info_mode: ApiFitInfoMode | type[Absent] = ApiFitInfoMode.id,
             item_info_mode: ApiItemInfoMode | type[Absent] = ApiItemInfoMode.id,
             status_code: int = 200,
-            json_predicate: dict | None = None,
+            json_predicate: JsonPredicate = None,
     ) -> Fleet | None:
         resp = self._client.get_fleet_request(
             sol_id=self._sol_id,
@@ -46,7 +47,7 @@ class Fleet(AttrDict):
             rm_fit_ids: list[str] | type[Absent] = Absent,
             fleet_info_mode: ApiFleetInfoMode | type[Absent] = ApiFleetInfoMode.full,
             status_code: int = 200,
-            json_predicate: dict | None = None,
+            json_predicate: JsonPredicate = None,
     ) -> Fleet | None:
         resp = self._client.change_fleet_request(
             sol_id=self._sol_id,
@@ -64,7 +65,7 @@ class Fleet(AttrDict):
     def remove(
             self, *,
             status_code: int = 204,
-            json_predicate: dict | None = None,
+            json_predicate: JsonPredicate = None,
     ) -> None:
         resp = self._client.remove_fleet_request(sol_id=self._sol_id, fleet_id=self.id).send()
         self._client.check_sol(sol_id=self._sol_id)
@@ -74,7 +75,7 @@ class Fleet(AttrDict):
             self, *,
             options: FleetStatsOptions | type[Absent],
             status_code: int = 200,
-            json_predicate: dict | None = None,
+            json_predicate: JsonPredicate = None,
     ) -> FleetStats | None:
         resp = self._client.get_fleet_stats_request(
             sol_id=self._sol_id,

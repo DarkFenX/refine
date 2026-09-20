@@ -3,6 +3,9 @@ import typing
 
 import requests
 
+if typing.TYPE_CHECKING:
+    from fw.aliases import JsonPredicate
+
 
 class Response(requests.Response):
 
@@ -12,7 +15,7 @@ class Response(requests.Response):
     def check(
             self, *,
             status_code: int | None = None,
-            json_predicate: dict | None = None,
+            json_predicate: JsonPredicate = None,
     ) -> None:
         if status_code is not None:
             assert self.status_code == status_code

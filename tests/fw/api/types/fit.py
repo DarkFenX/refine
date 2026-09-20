@@ -38,8 +38,9 @@ from fw.consts import (
 from fw.util import Absent, AttrDict, AttrHookDef, is_subset
 
 if typing.TYPE_CHECKING:
+    from fw.aliases import JsonPredicate, ReqHook
     from fw.api import ApiClient
-    from fw.api.aliases import DpsProfileAlias, MutaAdd, ReqHook
+    from fw.api.aliases import DpsProfileAlias, MutaAdd
     from fw.api.types.stats import FitStatsOptions
     from fw.api.types.validation import ValOptions
     from fw.consts import ApiEffMode, ApiNpcProp, ApiOptionalReload, ApiRearmMinion
@@ -77,7 +78,7 @@ class Fit(AttrDict):
             self, *,
             hook_req: ReqHook | None = None,
             status_code: int = 200,
-            json_predicate: dict | None = None,
+            json_predicate: JsonPredicate = None,
     ) -> FitCmdBatchCtx:
         return FitCmdBatchCtx(
             client=self._client,
@@ -92,7 +93,7 @@ class Fit(AttrDict):
             fit_info_mode: ApiFitInfoMode | type[Absent] = ApiFitInfoMode.full,
             item_info_mode: ApiItemInfoMode | type[Absent] = ApiItemInfoMode.id,
             status_code: int = 200,
-            json_predicate: dict | None = None,
+            json_predicate: JsonPredicate = None,
     ) -> Fit | None:
         resp = self._client.get_fit_request(
             sol_id=self._sol_id,
@@ -109,7 +110,7 @@ class Fit(AttrDict):
     def remove(
             self, *,
             status_code: int = 204,
-            json_predicate: dict | None = None,
+            json_predicate: JsonPredicate = None,
     ) -> None:
         resp = self._client.remove_fit_request(sol_id=self._sol_id, fit_id=self.id).send()
         self._client.check_sol(sol_id=self._sol_id)
@@ -119,7 +120,7 @@ class Fit(AttrDict):
             self, *,
             options: FitStatsOptions | type[Absent],
             status_code: int = 200,
-            json_predicate: dict | None = None,
+            json_predicate: JsonPredicate = None,
     ) -> FitStats | None:
         resp = self._client.get_fit_stats_request(
             sol_id=self._sol_id,
@@ -135,7 +136,7 @@ class Fit(AttrDict):
             self, *,
             options: ValOptions | type[Absent],
             status_code: int = 200,
-            json_predicate: dict | None = None,
+            json_predicate: JsonPredicate = None,
     ) -> FitValResult | None:
         resp_simple = self.__validate_fit(
             options=options,
@@ -185,7 +186,7 @@ class Fit(AttrDict):
             options: ValOptions | type[Absent],
             val_info_mode: ApiValInfoMode | type[Absent] = Absent,
             status_code: int = 200,
-            json_predicate: dict | None = None,
+            json_predicate: JsonPredicate = None,
     ) -> FitValResult | None:
         resp = self.__validate_fit(
             options=options,
@@ -201,7 +202,7 @@ class Fit(AttrDict):
             options: ValOptions | type[Absent],
             val_info_mode: ApiValInfoMode | type[Absent],
             status_code: int,
-            json_predicate: dict | None,
+            json_predicate: JsonPredicate,
     ) -> Response:
         resp = self._client.validate_fit_request(
             sol_id=self._sol_id,
@@ -218,7 +219,7 @@ class Fit(AttrDict):
             options: ValOptions | type[Absent],
             val_info_mode: ApiValInfoMode | type[Absent],
             status_code: int,
-            json_predicate: dict | None,
+            json_predicate: JsonPredicate,
     ) -> Response:
         resp = self._client.validate_sol_request(
             sol_id=self._sol_id,
@@ -234,7 +235,7 @@ class Fit(AttrDict):
             type_ids: list[int],
             val_options: ValOptions | type[Absent],
             status_code: int = 200,
-            json_predicate: dict | None = None,
+            json_predicate: JsonPredicate = None,
     ) -> list[int] | None:
         resp = self._client.try_fit_items_request(
             sol_id=self._sol_id,
@@ -255,7 +256,7 @@ class Fit(AttrDict):
             fit_info_mode: ApiFitInfoMode | type[Absent] = ApiFitInfoMode.full,
             item_info_mode: ApiItemInfoMode | type[Absent] = ApiItemInfoMode.id,
             status_code: int = 200,
-            json_predicate: dict | None = None,
+            json_predicate: JsonPredicate = None,
     ) -> Fit | None:
         command = FitCtlFitChangeCmd(
             fleet_id=fleet_id,
@@ -280,7 +281,7 @@ class Fit(AttrDict):
             item_id: str,
             rm_mode: ApiModRmMode | type[Absent] = Absent,
             status_code: int = 204,
-            json_predicate: dict | None = None,
+            json_predicate: JsonPredicate = None,
     ) -> None:
         resp = self._client.remove_item_request(sol_id=self._sol_id, item_id=item_id, rm_mode=rm_mode).send()
         self._client.check_sol(sol_id=self._sol_id)
@@ -294,7 +295,7 @@ class Fit(AttrDict):
             effect_modes: dict[int | str, ApiEffMode] | type[Absent] = Absent,
             item_info_mode: ApiItemInfoMode | type[Absent] = ApiItemInfoMode.id,
             status_code: int = 201,
-            json_predicate: dict | None = None,
+            json_predicate: JsonPredicate = None,
     ) -> Item | None:
         command = ItemCtlBoosterAddCmd(
             fit_id=self.id,
@@ -319,7 +320,7 @@ class Fit(AttrDict):
             effect_modes: dict[int | str, ApiEffMode] | type[Absent] = Absent,
             item_info_mode: ApiItemInfoMode | type[Absent] = ApiItemInfoMode.id,
             status_code: int = 201,
-            json_predicate: dict | None = None,
+            json_predicate: JsonPredicate = None,
     ) -> Item | None:
         command = ItemCtlCharacterSetCmd(
             fit_id=self.id,
@@ -341,7 +342,7 @@ class Fit(AttrDict):
             fit_info_mode: ApiFitInfoMode | type[Absent] = ApiFitInfoMode.full,
             item_info_mode: ApiItemInfoMode | type[Absent] = ApiItemInfoMode.id,
             status_code: int = 200,
-            json_predicate: dict | None = None,
+            json_predicate: JsonPredicate = None,
     ) -> Fit | None:
         command = FitCtlCharacterUnsetCmd()
         resp = self._client.fit_command_request(
@@ -369,7 +370,7 @@ class Fit(AttrDict):
             effect_modes: dict[int | str, ApiEffMode] | type[Absent] = Absent,
             item_info_mode: ApiItemInfoMode | type[Absent] = ApiItemInfoMode.id,
             status_code: int = 201,
-            json_predicate: dict | None = None,
+            json_predicate: JsonPredicate = None,
     ) -> Item | None:
         command = ItemCtlDroneAddCmd(
             fit_id=self.id,
@@ -404,7 +405,7 @@ class Fit(AttrDict):
             effect_modes: dict[int | str, ApiEffMode] | type[Absent] = Absent,
             item_info_mode: ApiItemInfoMode | type[Absent] = ApiItemInfoMode.id,
             status_code: int = 201,
-            json_predicate: dict | None = None,
+            json_predicate: JsonPredicate = None,
     ) -> Item | None:
         command = ItemCtlFighterAddCmd(
             fit_id=self.id,
@@ -434,7 +435,7 @@ class Fit(AttrDict):
             effect_modes: dict[int | str, ApiEffMode] | type[Absent] = Absent,
             item_info_mode: ApiItemInfoMode | type[Absent] = ApiItemInfoMode.id,
             status_code: int = 201,
-            json_predicate: dict | None = None,
+            json_predicate: JsonPredicate = None,
     ) -> Item | None:
         command = ItemCtlFwEffectAddCmd(
             fit_id=self.id,
@@ -458,7 +459,7 @@ class Fit(AttrDict):
             effect_modes: dict[int | str, ApiEffMode] | type[Absent] = Absent,
             item_info_mode: ApiItemInfoMode | type[Absent] = ApiItemInfoMode.id,
             status_code: int = 201,
-            json_predicate: dict | None = None,
+            json_predicate: JsonPredicate = None,
     ) -> Item | None:
         command = ItemCtlImplantAddCmd(
             fit_id=self.id,
@@ -489,7 +490,7 @@ class Fit(AttrDict):
             effect_modes: dict[int | str, ApiEffMode] | type[Absent] = Absent,
             item_info_mode: ApiItemInfoMode | type[Absent] = ApiItemInfoMode.id,
             status_code: int = 201,
-            json_predicate: dict | None = None,
+            json_predicate: JsonPredicate = None,
     ) -> Item | None:
         command = ItemCtlModuleAddCmd(
             fit_id=self.id,
@@ -520,7 +521,7 @@ class Fit(AttrDict):
             effect_modes: dict[int | str, ApiEffMode] | type[Absent] = Absent,
             item_info_mode: ApiItemInfoMode | type[Absent] = ApiItemInfoMode.id,
             status_code: int = 201,
-            json_predicate: dict | None = None,
+            json_predicate: JsonPredicate = None,
     ) -> Item | None:
         command = ItemCtlRigAddCmd(
             fit_id=self.id,
@@ -544,7 +545,7 @@ class Fit(AttrDict):
             effect_modes: dict[int | str, ApiEffMode] | type[Absent] = Absent,
             item_info_mode: ApiItemInfoMode | type[Absent] = ApiItemInfoMode.id,
             status_code: int = 201,
-            json_predicate: dict | None = None,
+            json_predicate: JsonPredicate = None,
     ) -> Item | None:
         command = ItemCtlServiceAddCmd(
             fit_id=self.id,
@@ -570,7 +571,7 @@ class Fit(AttrDict):
             effect_modes: dict[int | str, ApiEffMode] | type[Absent] = Absent,
             item_info_mode: ApiItemInfoMode | type[Absent] = ApiItemInfoMode.id,
             status_code: int = 201,
-            json_predicate: dict | None = None,
+            json_predicate: JsonPredicate = None,
     ) -> Item | None:
         command = ItemCtlShipSetCmd(
             fit_id=self.id,
@@ -594,7 +595,7 @@ class Fit(AttrDict):
             fit_info_mode: ApiFitInfoMode | type[Absent] = ApiFitInfoMode.full,
             item_info_mode: ApiItemInfoMode | type[Absent] = ApiItemInfoMode.id,
             status_code: int = 200,
-            json_predicate: dict | None = None,
+            json_predicate: JsonPredicate = None,
     ) -> Fit | None:
         command = FitCtlShipUnsetCmd()
         resp = self._client.fit_command_request(
@@ -618,7 +619,7 @@ class Fit(AttrDict):
             effect_modes: dict[int | str, ApiEffMode] | type[Absent] = Absent,
             item_info_mode: ApiItemInfoMode | type[Absent] = ApiItemInfoMode.id,
             status_code: int = 201,
-            json_predicate: dict | None = None,
+            json_predicate: JsonPredicate = None,
     ) -> Item | None:
         command = ItemCtlSkillAddCmd(
             fit_id=self.id,
@@ -643,7 +644,7 @@ class Fit(AttrDict):
             effect_modes: dict[int | str, ApiEffMode] | type[Absent] = Absent,
             item_info_mode: ApiItemInfoMode | type[Absent] = ApiItemInfoMode.id,
             status_code: int = 201,
-            json_predicate: dict | None = None,
+            json_predicate: JsonPredicate = None,
     ) -> Item | None:
         command = ItemCtlStanceSetCmd(
             fit_id=self.id,
@@ -665,7 +666,7 @@ class Fit(AttrDict):
             fit_info_mode: ApiFitInfoMode | type[Absent] = ApiFitInfoMode.full,
             item_info_mode: ApiItemInfoMode | type[Absent] = ApiItemInfoMode.id,
             status_code: int = 200,
-            json_predicate: dict | None = None,
+            json_predicate: JsonPredicate = None,
     ) -> Fit | None:
         command = FitCtlStanceUnsetCmd()
         resp = self._client.fit_command_request(
@@ -688,7 +689,7 @@ class Fit(AttrDict):
             effect_modes: dict[int | str, ApiEffMode] | type[Absent] = Absent,
             item_info_mode: ApiItemInfoMode | type[Absent] = ApiItemInfoMode.id,
             status_code: int = 201,
-            json_predicate: dict | None = None,
+            json_predicate: JsonPredicate = None,
     ) -> Item | None:
         command = ItemCtlSubsystemAddCmd(
             fit_id=self.id,
