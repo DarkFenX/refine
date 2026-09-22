@@ -5,8 +5,8 @@ def test_from_stage2(client, consts):
     eve_attr1_id = client.mk_eve_attr()
     eve_attr2_id = client.mk_eve_attr()
     eve_base_item1_id = client.mk_eve_item(attrs={eve_attr1_id: 100, eve_attr2_id: 100})
-    eve_base_item2_id = client.mk_eve_item(attrs={eve_attr1_id: 200, eve_attr2_id: 200})
-    eve_mutated_item2_id = client.mk_eve_item(attrs={eve_attr2_id: 300})
+    eve_base_item2_id = client.mk_eve_item(attrs={eve_attr1_id: 200, eve_attr2_id: 300})
+    eve_mutated_item2_id = client.mk_eve_item(attrs={eve_attr2_id: 200})
     eve_mutator_id = client.mk_eve_mutator(
         items=[([eve_base_item2_id], eve_mutated_item2_id)],
         attrs={eve_attr1_id: (0.8, 1.2), eve_attr2_id: (0.8, 1.2)})
@@ -48,9 +48,9 @@ def test_from_stage3(client, consts):
     eve_attr1_id = client.mk_eve_attr()
     eve_attr2_id = client.mk_eve_attr()
     eve_base_item1_id = client.mk_eve_item(attrs={eve_attr1_id: 100, eve_attr2_id: 100})
-    eve_base_item2_id = client.mk_eve_item(attrs={eve_attr1_id: 200, eve_attr2_id: 200})
+    eve_base_item2_id = client.mk_eve_item(attrs={eve_attr1_id: 200, eve_attr2_id: 300})
     eve_mutated_item1_id = client.alloc_item_id()
-    eve_mutated_item2_id = client.mk_eve_item(attrs={eve_attr2_id: 300})
+    eve_mutated_item2_id = client.mk_eve_item(attrs={eve_attr2_id: 200})
     eve_mutator_id = client.mk_eve_mutator(
         items=[([eve_base_item1_id], eve_mutated_item1_id), ([eve_base_item2_id], eve_mutated_item2_id)],
         attrs={eve_attr1_id: (0.8, 1.2), eve_attr2_id: (0.8, 1.2)})
@@ -183,9 +183,9 @@ def test_from_stage4_mutated_item_different(client, consts):
     eve_attr1_id = client.mk_eve_attr()
     eve_attr2_id = client.mk_eve_attr()
     eve_base_item1_id = client.mk_eve_item(attrs={eve_attr1_id: 100, eve_attr2_id: 100})
-    eve_base_item2_id = client.mk_eve_item(attrs={eve_attr1_id: 200, eve_attr2_id: 200})
+    eve_base_item2_id = client.mk_eve_item(attrs={eve_attr1_id: 200, eve_attr2_id: 300})
     eve_mutated_item1_id = client.mk_eve_item()
-    eve_mutated_item2_id = client.mk_eve_item(attrs={eve_attr2_id: 300})
+    eve_mutated_item2_id = client.mk_eve_item(attrs={eve_attr2_id: 200})
     eve_mutator_id = client.mk_eve_mutator(
         items=[([eve_base_item1_id], eve_mutated_item1_id), ([eve_base_item2_id], eve_mutated_item2_id)],
         attrs={eve_attr1_id: (0.8, 1.2), eve_attr2_id: (0.8, 1.2)})

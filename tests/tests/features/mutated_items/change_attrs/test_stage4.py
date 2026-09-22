@@ -175,17 +175,17 @@ def test_absolute_base_attr_value(client, consts):
     eve_remove_mutated_attr_id = client.mk_eve_attr()
     eve_base_item_id = client.mk_eve_item(attrs={
         eve_add_base_attr_id: 50,
-        eve_add_overlap_attr_id: 70,
-        eve_change_base_attr_id: 50,
-        eve_change_overlap_attr_id: 70,
-        eve_remove_base_attr_id: 50,
-        eve_remove_overlap_attr_id: 70})
-    eve_mutated_item_id = client.mk_eve_item(attrs={
         eve_add_overlap_attr_id: 80,
-        eve_add_mutated_attr_id: 100,
+        eve_change_base_attr_id: 50,
         eve_change_overlap_attr_id: 80,
+        eve_remove_base_attr_id: 50,
+        eve_remove_overlap_attr_id: 80})
+    eve_mutated_item_id = client.mk_eve_item(attrs={
+        eve_add_overlap_attr_id: 70,
+        eve_add_mutated_attr_id: 100,
+        eve_change_overlap_attr_id: 70,
         eve_change_mutated_attr_id: 100,
-        eve_remove_overlap_attr_id: 80,
+        eve_remove_overlap_attr_id: 70,
         eve_remove_mutated_attr_id: 100})
     eve_mutator_id = client.mk_eve_mutator(items=[([eve_base_item_id], eve_mutated_item_id)], attrs={
         eve_add_base_attr_id: (0.8, 1.2),
@@ -256,7 +256,7 @@ def test_absolute_base_attr_value(client, consts):
         eve_remove_base_attr_id: None,
         eve_remove_overlap_attr_id: None,
         eve_remove_mutated_attr_id: None})
-    # Verification - for overlapping values, mutated item values should be taken, we check it
+    # Verification - for overlapping values, base item values should be taken, we check it
     # indirectly via roll values
     api_item.update()
     assert api_item.mutation.type == consts.ApiMutationType.effective

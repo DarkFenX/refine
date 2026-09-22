@@ -87,9 +87,9 @@ def test_from_stage3(client, consts):
 def test_from_stage4(client, consts):
     eve_attr1_id = client.mk_eve_attr()
     eve_attr2_id = client.mk_eve_attr()
-    eve_base_item1_id = client.mk_eve_item(attrs={eve_attr1_id: 100, eve_attr2_id: 100})
+    eve_base_item1_id = client.mk_eve_item(attrs={eve_attr1_id: 100, eve_attr2_id: 50})
     eve_base_item2_id = client.mk_eve_item(attrs={eve_attr1_id: 200, eve_attr2_id: 200})
-    eve_mutated_item1_id = client.mk_eve_item(attrs={eve_attr2_id: 50})
+    eve_mutated_item1_id = client.mk_eve_item(attrs={eve_attr2_id: 100})
     eve_mutated_item2_id = client.alloc_item_id()
     eve_mutator_id = client.mk_eve_mutator(
         items=[([eve_base_item1_id], eve_mutated_item1_id), ([eve_base_item2_id], eve_mutated_item2_id)],

@@ -112,8 +112,8 @@ def test_absolute_base_attr_value(client, consts):
     eve_base_attr_id = client.mk_eve_attr()
     eve_overlap_attr_id = client.mk_eve_attr()
     eve_mutated_attr_id = client.mk_eve_attr()
-    eve_base_item_id = client.mk_eve_item(attrs={eve_base_attr_id: 50, eve_overlap_attr_id: 70})
-    eve_mutated_item_id = client.mk_eve_item(attrs={eve_overlap_attr_id: 80, eve_mutated_attr_id: 100})
+    eve_base_item_id = client.mk_eve_item(attrs={eve_base_attr_id: 50, eve_overlap_attr_id: 80})
+    eve_mutated_item_id = client.mk_eve_item(attrs={eve_overlap_attr_id: 70, eve_mutated_attr_id: 100})
     eve_mutator_id = client.mk_eve_mutator(
         items=[([eve_base_item_id], eve_mutated_item_id)],
         attrs={eve_base_attr_id: (0.8, 1.2), eve_overlap_attr_id: (0.8, 1.2), eve_mutated_attr_id: (0.8, 1.2)})
@@ -127,7 +127,7 @@ def test_absolute_base_attr_value(client, consts):
         api_item.mutation  # ruff:ignore[useless-expression]
     assert len(api_item.attrs) == 2
     assert api_item.attrs[eve_base_attr_id].base == approx(50)
-    assert api_item.attrs[eve_overlap_attr_id].base == approx(70)
+    assert api_item.attrs[eve_overlap_attr_id].base == approx(80)
     # Action
     api_item.change_module(mutation=(eve_mutator_id, {
         eve_base_attr_id: Muta.abs_to_api(val=55),
@@ -143,8 +143,8 @@ def test_absolute_base_attr_value(client, consts):
     assert api_item.mutation.rolls[eve_base_attr_id] == approx(0.75)
     assert api_item.mutation.rolls[eve_overlap_attr_id] == approx(0.34375)
     assert api_item.mutation.rolls[eve_mutated_attr_id] == approx(0.875)
-    # For overlapping values, mutated item values should be taken; we check it here via roll value,
-    # which is below 0.5 if base value is 80 instead of 70
+    # For overlapping values, base item values should be taken; we check it here via roll value,
+    # which is below 0.5 if pre-roll value is 80 instead of 70
     assert api_item.mutation.attrs[eve_overlap_attr_id].roll == approx(0.34375)
     assert api_item.mutation.attrs[eve_overlap_attr_id].absolute == approx(75)
     assert api_item.mutation.attrs[eve_mutated_attr_id].roll == approx(0.875)

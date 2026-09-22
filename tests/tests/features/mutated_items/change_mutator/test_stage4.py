@@ -262,12 +262,12 @@ def test_from_stage4_mutated_item(client, consts):
     assert api_item.mutation.attrs[eve_attr1_id].roll == approx(0.3)
     assert api_item.mutation.attrs[eve_attr1_id].absolute == approx(92)
     assert api_item.mutation.attrs[eve_attr2_id].roll == approx(0.3)
-    assert api_item.mutation.attrs[eve_attr2_id].absolute == approx(184)
+    assert api_item.mutation.attrs[eve_attr2_id].absolute == approx(92)
     assert len(api_item.mutation.rolls) == 2
     assert api_item.mutation.rolls[eve_attr1_id] == approx(0.3)
     assert api_item.mutation.rolls[eve_attr2_id] == approx(0.3)
     assert api_item.attrs[eve_attr1_id].base == approx(92)
-    assert api_item.attrs[eve_attr2_id].base == approx(184)
+    assert api_item.attrs[eve_attr2_id].base == approx(92)
 
 
 def test_projection(client, consts):
