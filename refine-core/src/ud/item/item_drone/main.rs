@@ -148,8 +148,8 @@ impl UDrone {
         self.fit_uid
     }
     pub(in crate::ud::item) fn get_radius(&self) -> PValue {
-        match self.get_r_item_flex_data() {
-            Some(axt) => axt.radius,
+        match self.get_r_item_base() {
+            Some(rib) => rib.radius,
             None => PValue::ZERO,
         }
     }

@@ -14,6 +14,5 @@ pub(super) mod kind;
 pub(super) mod max_group;
 pub(super) mod mobility;
 pub(super) mod sec_zone;
-pub(super) mod ship_kind;
 pub(super) mod ship_limit;
 pub(super) mod slot_index;

@@ -4,7 +4,7 @@ use crate::{
     Count, ModRack,
     ad::{AItemCatId, AItemGrpId},
     misc::DetectedItemKind,
-    rd::{RItemFlexData, RShipKind},
+    rd::{RItemBase, RItemFlexData, RShipKind},
     svc::{
         Vast,
         vast::{
@@ -72,16 +72,17 @@ impl Vast {
                     handle_charge_group_add(fit_data, cont_uid, cont_rifd, item_uid, &charge_rib.grp_id);
                     handle_charge_cont_group_add(fit_data, cont_uid, &cont_rib.grp_id, item_uid, charge_rifd);
                     handle_charge_size_add(fit_data, cont_uid, cont_rifd, item_uid, charge_rifd);
-                    handle_charge_volume_add(fit_data, cont_uid, cont_rifd, item_uid, charge_rifd);
+                    handle_charge_volume_add(fit_data, cont_uid, cont_rib, item_uid, charge_rib);
                 }
                 if charge_rifd.sec_zone_limitable {
                     fit_data.sec_zone_unactivable.insert(item_uid);
                 }
             }
             UItem::Drone(drone) => {
+                let drone_rib = drone.get_r_item_base().unwrap();
                 let drone_rifd = drone.get_r_item_flex_data().unwrap();
                 item_kind_add(fit_data, item_uid, drone_rifd.kind, DetectedItemKind::Drone);
-                fit_data.drones_volume.insert(item_uid, drone_rifd.volume);
+                fit_data.drones_volume.insert(item_uid, drone_rib.volume);
                 if let Some(bandwidth) = drone_rifd.bandwidth_use {
                     fit_data.drones_bandwidth.insert(item_uid, bandwidth);
                 };
@@ -99,7 +100,7 @@ impl Vast {
                 let count = fighter.get_count_info().unwrap();
                 fit_data
                     .fighters_volume
-                    .insert(item_uid, fighter_rifd.volume * count.current.into_pvalue());
+                    .insert(item_uid, fighter_rib.volume * count.current.into_pvalue());
                 if count.current > count.max {
                     fit_data.fighter_squad_size.insert(
                         item_uid,
@@ -169,7 +170,7 @@ impl Vast {
                         handle_charge_group_add(fit_data, item_uid, module_rifd, charge_uid, &charge_rib.grp_id);
                         handle_charge_cont_group_add(fit_data, item_uid, &module_rib.grp_id, charge_uid, charge_rifd);
                         handle_charge_size_add(fit_data, item_uid, module_rifd, charge_uid, charge_rifd);
-                        handle_charge_volume_add(fit_data, item_uid, module_rifd, charge_uid, charge_rifd);
+                        handle_charge_volume_add(fit_data, item_uid, module_rib, charge_uid, charge_rib);
                     }
                 }
                 if let Some(max_fitted) = module_rifd.max_type_fitted {
@@ -178,7 +179,7 @@ impl Vast {
                         .add_entry(module.get_type_aid(), item_uid, max_fitted);
                 }
                 if let Some(RShipKind::CapitalShip) = module_rifd.item_ship_kind {
-                    fit_data.mods_capital.insert(item_uid, module_rifd.volume);
+                    fit_data.mods_capital.insert(item_uid, module_rib.volume);
                 }
                 if let Some(sec_class) = module_rifd.online_max_sec_class {
                     fit_data.sec_zone_unonlineable_class.insert(item_uid, sec_class);
@@ -673,11 +674,11 @@ fn handle_charge_size_add(
 fn handle_charge_volume_add(
     fit_data: &mut VastFitData,
     cont_uid: UItemId,
-    cont_rifd: &RItemFlexData,
+    cont_rib: &RItemBase,
     charge_uid: UItemId,
-    charge_rifd: &RItemFlexData,
+    charge_rib: &RItemBase,
 ) {
-    if cont_rifd.capacity < charge_rifd.volume {
+    if cont_rib.capacity < charge_rib.volume {
         fit_data.charge_volume.insert(charge_uid, cont_uid);
     }
 }

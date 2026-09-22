@@ -1,4 +1,4 @@
-use crate::{misc::Xyz, num::PValue, rd::RItemFlexData, ud::UPhysics};
+use crate::{misc::Xyz, num::PValue, rd::RItemBase, ud::UPhysics};
 
 #[derive(Copy, Clone, Eq, PartialEq, Ord, PartialOrd)]
 pub(crate) struct UProjData {
@@ -12,17 +12,17 @@ pub(crate) struct UProjData {
     pub(super) tgt_radius: PValue,
 }
 impl UProjData {
-    pub(crate) fn from_physics_with_rifd(
+    pub(crate) fn from_physics_with_rib(
         src_physics: UPhysics,
         tgt_physics: UPhysics,
-        src_rifd: Option<&RItemFlexData>,
-        tgt_rifd: Option<&RItemFlexData>,
+        src_rib: Option<&RItemBase>,
+        tgt_rib: Option<&RItemBase>,
     ) -> Self {
         UProjData::from_physics_with_radii(
             src_physics,
             tgt_physics,
-            src_rifd.map(|v| v.radius),
-            tgt_rifd.map(|v| v.radius),
+            src_rib.map(|v| v.radius),
+            tgt_rib.map(|v| v.radius),
         )
     }
     pub(crate) fn from_physics_with_radii(

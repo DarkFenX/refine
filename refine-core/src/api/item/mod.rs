@@ -25,7 +25,7 @@ pub use shared::{
     ProjMut, RangedProj, RangedProjIter, RangedProjMut, RawMAttr, RawMAttrGetError, RawMAttrIter, RawMAttrMut,
 };
 pub(in crate::api) use shared::{
-    active_stat_prepare, active_stat_rollback, get_ship_rifd, iter_projs, iter_ranged_projs,
+    active_stat_prepare, active_stat_rollback, get_ship_rib, iter_projs, iter_ranged_projs,
 };
 pub(in crate::api) use traits::ItemSealed;
 pub use traits::{

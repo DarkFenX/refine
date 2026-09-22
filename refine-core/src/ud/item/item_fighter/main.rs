@@ -156,8 +156,8 @@ impl UFighter {
         &self.physics
     }
     pub(in crate::ud::item) fn get_radius(&self) -> PValue {
-        match self.get_r_item_flex_data() {
-            Some(rifd) => rifd.radius,
+        match self.get_r_item_base() {
+            Some(rib) => rib.radius,
             None => PValue::ZERO,
         }
     }

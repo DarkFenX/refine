@@ -174,15 +174,15 @@ impl UModule {
         // No charge - no info
         let charge_uid = self.get_charge_uid()?;
         let charge_item = u_data.items.get(charge_uid);
-        let module_capacity = match self.get_r_item_flex_data() {
-            Some(rifd) => rifd.capacity,
+        let module_capacity = match self.get_r_item_base() {
+            Some(rib) => rib.capacity,
             // Module not loaded - no info
             _ => {
                 return None;
             }
         };
-        let charge_volume = match charge_item.get_r_item_flex_data() {
-            Some(rifd) if rifd.volume != PValue::ZERO => rifd.volume,
+        let charge_volume = match charge_item.get_r_item_base() {
+            Some(rib) if rib.volume != PValue::ZERO => rib.volume,
             // Charge not loaded or has 0 volume - no info
             _ => {
                 return None;

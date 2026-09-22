@@ -50,8 +50,8 @@ impl VastFitData {
             charges.push(ValChargeVolumeChargeInfo {
                 charge_item_id: ctx.u_data.items.ext_id_by_int_id(charge_uid),
                 parent_item_id: ctx.u_data.items.ext_id_by_int_id(cont_uid),
-                charge_volume: ctx.u_data.items.get(charge_uid).get_r_item_flex_data().unwrap().volume,
-                max_volume: ctx.u_data.items.get(cont_uid).get_r_item_flex_data().unwrap().capacity,
+                charge_volume: ctx.u_data.items.get(charge_uid).get_r_item_base().unwrap().volume,
+                max_volume: ctx.u_data.items.get(cont_uid).get_r_item_base().unwrap().capacity,
             });
         }
         match charges.is_empty() {

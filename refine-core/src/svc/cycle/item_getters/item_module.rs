@@ -95,7 +95,7 @@ fn fill_module_effect_info(
             // - civilian guns: infinite cycles
             // Here, we rely on module capacity to differentiate between those
             REffectChargeLoc::TargetAttack => {
-                match module.get_r_item_flex_data().unwrap().capacity > PValue::FLOAT_TOLERANCE {
+                match module.get_r_item_base().unwrap().capacity > PValue::FLOAT_TOLERANCE {
                     true => get_eci_crystal(ctx, calc, module, NEffectChargeDeplCrystal { .. }),
                     false => get_eci_undepletable(),
                 }

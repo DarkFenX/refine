@@ -1,13 +1,14 @@
 use super::getters::{
+    attr_val::{get_capacity, get_radius, get_volume},
     fighter_kind::{
         get_heavy_fighter_flag, get_light_fighter_flag, get_st_heavy_fighter_flag, get_st_light_fighter_flag,
         get_st_support_fighter_flag, get_support_fighter_flag,
     },
     has_effect::{has_launcher_effect, has_online_effect, has_turret_effect},
-    ship_kind::get_ship_kind,
+    ship_kind::{get_item_ship_kind, get_ship_kind},
 };
 use crate::{
-    SkillLevel, Value,
+    PValue, SkillLevel, Value,
     ad::{AAbilId, AAttrId, AEffectId, AItem, AItemCatId, AItemGrpId, AItemId, AItemListId},
     rd::{
         RAttrConsts, RAttrId, REffectId, RItemCapConsumer, RItemEffectData, RItemListId, RShipKind, RState, RcEffect,
@@ -52,6 +53,10 @@ pub(crate) struct RItemBase {
     pub(crate) cap_consumers: Vec<RItemCapConsumer>,
     pub(crate) ship_kind: Option<RShipKind>,
     pub(crate) disallowed_in_wspace: bool,
+    // Derived data - base item attribute values, cast to necessary type
+    pub(crate) volume: PValue,
+    pub(crate) capacity: PValue,
+    pub(crate) radius: PValue,
     // Derived data - fighter kind flags
     pub(crate) is_light_fighter: bool,
     pub(crate) is_heavy_fighter: bool,
@@ -59,6 +64,9 @@ pub(crate) struct RItemBase {
     pub(crate) is_st_light_fighter: bool,
     pub(crate) is_st_heavy_fighter: bool,
     pub(crate) is_st_support_fighter: bool,
+    // Derived data - misc
+    /// Which ship type this item fits to
+    pub(crate) item_ship_kind: Option<RShipKind>,
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -94,12 +102,17 @@ impl RItemBase {
             fleet_buff_item_list_rids: Default::default(),
             cap_consumers: Default::default(),
             ship_kind: Default::default(),
+            // Same, but also rely on attributes
+            volume: Default::default(),
+            capacity: Default::default(),
+            radius: Default::default(),
             is_light_fighter: Default::default(),
             is_heavy_fighter: Default::default(),
             is_support_fighter: Default::default(),
             is_st_light_fighter: Default::default(),
             is_st_heavy_fighter: Default::default(),
             is_st_support_fighter: Default::default(),
+            item_ship_kind: Default::default(),
         }
     }
     pub(in crate::rd::data::item) fn fill_runtime_basic(
@@ -150,6 +163,10 @@ impl RItemBase {
         attrs: &RMap<RAttrId, Value>,
         attr_consts: &RAttrConsts,
     ) {
+        // Base item attribute values
+        self.volume = get_volume(attrs, attr_consts);
+        self.capacity = get_capacity(attrs, attr_consts);
+        self.radius = get_radius(attrs, attr_consts);
         // Fighter kind flags
         self.is_light_fighter = get_light_fighter_flag(attrs, attr_consts);
         self.is_heavy_fighter = get_heavy_fighter_flag(attrs, attr_consts);
@@ -157,5 +174,7 @@ impl RItemBase {
         self.is_st_light_fighter = get_st_light_fighter_flag(attrs, attr_consts);
         self.is_st_heavy_fighter = get_st_heavy_fighter_flag(attrs, attr_consts);
         self.is_st_support_fighter = get_st_support_fighter_flag(attrs, attr_consts);
+        // Misc
+        self.item_ship_kind = get_item_ship_kind(self.cat_id, attrs, attr_consts);
     }
 }

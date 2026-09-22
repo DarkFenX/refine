@@ -1,9 +1,9 @@
 use super::getters::{
     activation_blocks::{get_activation_blocks_cloak, get_activation_blocks_in_assist},
     attr_val::{
-        get_bandwidth_use, get_calibration_use, get_capacity, get_charge_rate, get_charge_size,
-        get_fighter_refuel_duration, get_max_fighter_count, get_max_type_fitted_count, get_online_max_sec_class,
-        get_overload_td_lvl, get_radius, get_remote_resist_attr_id, get_rig_size, get_volume,
+        get_bandwidth_use, get_calibration_use, get_charge_rate, get_charge_size, get_fighter_refuel_duration,
+        get_max_fighter_count, get_max_type_fitted_count, get_online_max_sec_class, get_overload_td_lvl,
+        get_remote_resist_attr_id, get_rig_size,
     },
     charge_limit::get_item_charge_limit,
     container_limit::get_item_container_limit,
@@ -14,7 +14,6 @@ use super::getters::{
     max_group::{get_max_group_active_limited, get_max_group_fitted_limited, get_max_group_online_limited},
     mobility::{get_enables_conduit, get_enables_portal, get_entity_has_mwd, get_is_mobile, get_jump_fuel_type_id},
     sec_zone::is_sec_zone_limitable,
-    ship_kind::get_item_ship_kind,
     ship_limit::get_item_ship_limit,
     slot_index::{get_booster_slot, get_implant_slot, get_subsystem_slot},
 };
@@ -47,9 +46,6 @@ pub(crate) struct RItemFlexData {
     pub(crate) effect_adds: RMap<REffectId, RItemFlexEffectData>,
     // Derived data - unmutated and unmodified (by dogma modifiers) attribute values, cast to
     // necessary type
-    pub(crate) volume: PValue,
-    pub(crate) capacity: PValue,
-    pub(crate) radius: PValue,
     pub(crate) calibration_use: Option<Value>,
     pub(crate) bandwidth_use: Option<Value>,
     /// On-rig and on-ship attribute
@@ -188,9 +184,6 @@ impl RItemFlexData {
             self.effect_adds.insert(effect_rid, r_item_attr_effect);
         }
         // Unmutated and unmodified attribute values
-        self.volume = get_volume(&self.attrs, attr_consts);
-        self.capacity = get_capacity(&self.attrs, attr_consts);
-        self.radius = get_radius(&self.attrs, attr_consts);
         self.calibration_use = get_calibration_use(&self.attrs, attr_consts);
         self.bandwidth_use = get_bandwidth_use(&self.attrs, attr_consts);
         self.rig_size = get_rig_size(&self.attrs, attr_consts);
@@ -238,7 +231,6 @@ impl RItemFlexData {
             attr_consts,
             effect_consts,
         );
-        self.item_ship_kind = get_item_ship_kind(r_base.cat_id, &self.attrs, attr_consts);
         self.overload_td_lvl = get_overload_td_lvl(&self.attrs, attr_consts);
     }
 }

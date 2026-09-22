@@ -6,9 +6,9 @@ pub use mutation::{
 };
 pub use proj::{Proj, ProjAddError, ProjGetError, ProjIter, ProjMut, RangedProj, RangedProjIter, RangedProjMut};
 pub(in crate::api) use proj::{iter_projs, iter_ranged_projs};
-pub(in crate::api) use ship_rifd::get_ship_rifd;
+pub(in crate::api) use ship_rib::get_ship_rib;
 
 mod active_stat;
 mod mutation;
 mod proj;
-mod ship_rifd;
+mod ship_rib;
