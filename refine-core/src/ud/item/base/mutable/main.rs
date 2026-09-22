@@ -4,7 +4,7 @@ use crate::{
     EffectMode, ItemId, UnitInterval, Value,
     ad::{AAttrId, AEffectId, AItemId},
     err::basic::ItemNotMutatedError,
-    rd::{RAttrId, RData, REffectId, RItem, RItemAttrData, RItemBase, RMuta, RMutaAttrRange, RState, RcItem, RcMuta},
+    rd::{RAttrId, RData, REffectId, RItem, RItemBase, RItemFlexData, RMuta, RMutaAttrRange, RState, RcItem, RcMuta},
     ud::{
         UAttrMutationRequest, UItemMutationRequest,
         item::{
@@ -85,7 +85,7 @@ impl UItemBaseMutable {
         };
         // Make proper mutated item once we have all the data
         let merged_attrs = get_combined_attr_values(r_data.get_item_by_aid(&type_aid), mutated_r_item);
-        let mut merged_attr_data = RItemAttrData::from_attrs(merged_attrs, &mutated_r_item.base, r_data);
+        let mut merged_attr_data = RItemFlexData::from_attrs(merged_attrs, &mutated_r_item.base, r_data);
         apply_attr_mutations(&mut merged_attr_data, mutator, &item_mutation_data.attr_rolls, r_data);
         let regular_base = UItemBase::base_with_r_item(item_id, mutated_r_item.clone(), state);
         item_mutation_data.cache = Some(ItemMutationDataCache {
@@ -107,13 +107,13 @@ impl UItemBaseMutable {
     pub(in crate::ud::item) fn get_r_item_base(&self) -> Option<&RItemBase> {
         self.base.get_r_item_base()
     }
-    pub(in crate::ud::item) fn get_r_item_attr_data(&self) -> Option<&RItemAttrData> {
+    pub(in crate::ud::item) fn get_r_item_flex_data(&self) -> Option<&RItemFlexData> {
         let Some(item_mutation) = &self.mutation else {
-            return self.base.get_r_item_attr_data();
+            return self.base.get_r_item_flex_data();
         };
         match &item_mutation.cache {
             Some(cache) => Some(&cache.merged_attr_data),
-            None => self.base.get_r_item_attr_data(),
+            None => self.base.get_r_item_flex_data(),
         }
     }
 }
@@ -227,7 +227,7 @@ impl UItemBaseMutable {
         };
         // Compose attribute cache
         let merged_attrs = get_combined_attr_values(r_data.get_item_by_aid(&base_type_aid), mutated_r_item);
-        let mut merged_attr_data = RItemAttrData::from_attrs(merged_attrs, &mutated_r_item.base, r_data);
+        let mut merged_attr_data = RItemFlexData::from_attrs(merged_attrs, &mutated_r_item.base, r_data);
         apply_attr_mutations(&mut merged_attr_data, mutator, &item_mutation.attr_rolls, r_data);
         // Everything needed is at hand, update item
         self.base.base_set_r_item(mutated_r_item.clone());
@@ -277,7 +277,7 @@ impl UItemBaseMutable {
         };
         // Since we have all the data now, apply mutation properly
         let merged_attrs = get_combined_attr_values(self.base.base_get_r_item(), mutated_r_item);
-        let mut merged_attr_data = RItemAttrData::from_attrs(merged_attrs, &mutated_r_item.base, r_data);
+        let mut merged_attr_data = RItemFlexData::from_attrs(merged_attrs, &mutated_r_item.base, r_data);
         apply_attr_mutations(&mut merged_attr_data, mutator, &item_mutation_data.attr_rolls, r_data);
         self.base.base_set_r_item(mutated_r_item.clone());
         item_mutation_data.cache = Some(ItemMutationDataCache {
@@ -498,7 +498,7 @@ fn convert_request_to_data(mutation_request: UItemMutationRequest) -> ItemMutati
 pub(crate) struct ItemMutationDataCache {
     base_type_aid: AItemId,
     mutator: RcMuta,
-    pub(super) merged_attr_data: RItemAttrData,
+    pub(super) merged_attr_data: RItemFlexData,
 }
 impl ItemMutationDataCache {
     pub(crate) fn get_base_type_aid(&self) -> AItemId {
@@ -513,25 +513,25 @@ impl ItemMutationDataCache {
 // Attribute mutations
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 fn apply_attr_mutations(
-    item_attr_data: &mut RItemAttrData,
+    item_flex_data: &mut RItemFlexData,
     mutator: &RMuta,
     attr_rolls: &RMap<AAttrId, UnitInterval>,
     r_data: &RData,
 ) {
     for (&attr_rid, attr_mutation_range) in mutator.attr_mods.iter() {
-        let Some(&unmutated_value) = item_attr_data.attrs.get(&attr_rid) else {
+        let Some(&unmutated_value) = item_flex_data.attrs.get(&attr_rid) else {
             continue;
         };
         let attr_id = r_data.get_attr_by_rid(attr_rid).aid;
         match attr_rolls.get(&attr_id) {
             Some(attr_roll) => {
                 let mutated_val = mutate_attr_value(unmutated_value, attr_mutation_range, *attr_roll);
-                item_attr_data.attrs.insert(attr_rid, mutated_val);
+                item_flex_data.attrs.insert(attr_rid, mutated_val);
             }
             // When no roll is defined by user, still limit possible values by what roll range is
             None => {
                 let mutated_val = limit_attr_value(unmutated_value, attr_mutation_range);
-                item_attr_data.attrs.insert(attr_rid, mutated_val);
+                item_flex_data.attrs.insert(attr_rid, mutated_val);
             }
         }
     }

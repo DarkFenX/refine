@@ -3,7 +3,7 @@ use crate::{
     ad::{AEffectId, AItemId},
     api::MinionState,
     err::basic::ItemNotMutatedError,
-    rd::{RAttrId, RData, REffectId, RItemAttrData, RItemBase, RState},
+    rd::{RAttrId, RData, REffectId, RItemBase, RItemFlexData, RState},
     ud::{
         UAttrMutationRequest, UFitId, UItemMutationRequest,
         err::ItemMutatedError,
@@ -94,8 +94,8 @@ impl UDrone {
     pub(crate) fn get_r_item_base(&self) -> Option<&RItemBase> {
         self.base.get_r_item_base()
     }
-    pub(crate) fn get_r_item_attr_data(&self) -> Option<&RItemAttrData> {
-        self.base.get_r_item_attr_data()
+    pub(crate) fn get_r_item_flex_data(&self) -> Option<&RItemFlexData> {
+        self.base.get_r_item_flex_data()
     }
     pub(crate) fn is_loaded(&self) -> bool {
         self.base.is_loaded()
@@ -148,7 +148,7 @@ impl UDrone {
         self.fit_uid
     }
     pub(in crate::ud::item) fn get_radius(&self) -> PValue {
-        match self.get_r_item_attr_data() {
+        match self.get_r_item_flex_data() {
             Some(axt) => axt.radius,
             None => PValue::ZERO,
         }

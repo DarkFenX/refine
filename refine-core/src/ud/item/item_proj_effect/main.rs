@@ -1,7 +1,7 @@
 use crate::{
     EffectMode, ItemId, ItemKind,
     ad::{AEffectId, AItemId},
-    rd::{RData, REffectId, RItemAttrData, RItemBase, RState},
+    rd::{RData, REffectId, RItemBase, RItemFlexData, RState},
     ud::item::{UEffectModeOverrideIter, UEffectUpdates, UItemBase, UProjs, bool_to_state_active, state_to_bool},
     util::RSet,
 };
@@ -74,8 +74,8 @@ impl UProjEffect {
     pub(in crate::ud::item) fn get_r_item_base(&self) -> Option<&RItemBase> {
         self.base.get_r_item_base()
     }
-    pub(in crate::ud::item) fn get_r_item_attr_data(&self) -> Option<&RItemAttrData> {
-        self.base.get_r_item_attr_data()
+    pub(in crate::ud::item) fn get_r_item_flex_data(&self) -> Option<&RItemFlexData> {
+        self.base.get_r_item_flex_data()
     }
     pub(in crate::ud::item) fn is_loaded(&self) -> bool {
         self.base.is_loaded()

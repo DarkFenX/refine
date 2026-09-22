@@ -30,7 +30,7 @@ impl SolarSystem {
             return;
         };
         let effects_with_ac_type_aids = u_item
-            .get_r_item_attr_data()
+            .get_r_item_flex_data()
             .unwrap()
             .effect_adds
             .iter()

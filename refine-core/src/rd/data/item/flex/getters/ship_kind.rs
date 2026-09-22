@@ -7,7 +7,7 @@ use crate::{
     util::RMap,
 };
 
-pub(in crate::rd::data::item::attr_data) fn get_item_ship_kind(
+pub(in crate::rd::data::item::flex) fn get_item_ship_kind(
     item_cat_id: AItemCatId,
     item_attrs: &RMap<RAttrId, Value>,
     attr_consts: &RAttrConsts,

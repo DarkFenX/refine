@@ -12,7 +12,7 @@ pub(crate) struct RItemContLimit {
     pub(crate) group_ids: Vec<AItemGrpId>,
 }
 
-pub(in crate::rd::data::item::attr_data) fn get_item_container_limit(
+pub(in crate::rd::data::item::flex) fn get_item_container_limit(
     item_attrs: &RMap<RAttrId, Value>,
     attr_consts: &RAttrConsts,
 ) -> Option<RItemContLimit> {

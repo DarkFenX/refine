@@ -7,7 +7,7 @@ use crate::{
 
 /// Item-specific attribute-derived effect data
 #[derive(Copy, Clone)]
-pub(crate) struct RItemAttrEffectData {
+pub(crate) struct RItemFlexEffectData {
     pub(crate) autocharge_aid: Option<AItemId>,
     pub(crate) projectee_filter_rid: Option<RItemListId>,
 }
@@ -15,7 +15,7 @@ pub(crate) struct RItemAttrEffectData {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Conversions
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-impl RItemAttrEffectData {
+impl RItemFlexEffectData {
     pub(super) fn try_from_r_effect_data(
         r_effect_data: &RItemEffectData,
         item_attrs: &RMap<RAttrId, Value>,

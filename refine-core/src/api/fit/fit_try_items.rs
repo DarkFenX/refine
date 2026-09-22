@@ -177,10 +177,10 @@ fn get_chargeable_modules(u_data: &UData, fit_uid: UFitId) -> Vec<UItemId> {
             continue;
         }
         seen_type_aids.push(type_aid);
-        let Some(item_riad) = u_item.get_r_item_attr_data() else {
+        let Some(item_rifd) = u_item.get_r_item_flex_data() else {
             continue;
         };
-        if item_riad.capacity > PValue::ZERO {
+        if item_rifd.capacity > PValue::ZERO {
             module_uids.push(module_uid);
         }
     }

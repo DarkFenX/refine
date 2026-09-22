@@ -2,7 +2,7 @@ use crate::{
     Count, EffectMode, Index, ItemId, ItemKind, ModRack, ModuleState, OptionalReload, PValue, Spool,
     ad::{AEffectId, AItemId},
     err::basic::ItemNotMutatedError,
-    rd::{RAttrId, RData, REffectId, RItemAttrData, RItemBase, RState},
+    rd::{RAttrId, RData, REffectId, RItemBase, RItemFlexData, RState},
     ud::{
         UAttrMutationRequest, UData, UFitId, UItemId, UItemMutationRequest,
         err::ItemMutatedError,
@@ -102,8 +102,8 @@ impl UModule {
     pub(crate) fn get_r_item_base(&self) -> Option<&RItemBase> {
         self.base.get_r_item_base()
     }
-    pub(crate) fn get_r_item_attr_data(&self) -> Option<&RItemAttrData> {
-        self.base.get_r_item_attr_data()
+    pub(crate) fn get_r_item_flex_data(&self) -> Option<&RItemFlexData> {
+        self.base.get_r_item_flex_data()
     }
     pub(crate) fn is_loaded(&self) -> bool {
         self.base.is_loaded()
@@ -174,15 +174,15 @@ impl UModule {
         // No charge - no info
         let charge_uid = self.get_charge_uid()?;
         let charge_item = u_data.items.get(charge_uid);
-        let module_capacity = match self.get_r_item_attr_data() {
-            Some(riad) => riad.capacity,
+        let module_capacity = match self.get_r_item_flex_data() {
+            Some(rifd) => rifd.capacity,
             // Module not loaded - no info
             _ => {
                 return None;
             }
         };
-        let charge_volume = match charge_item.get_r_item_attr_data() {
-            Some(riad) if riad.volume != PValue::ZERO => riad.volume,
+        let charge_volume = match charge_item.get_r_item_flex_data() {
+            Some(rifd) if rifd.volume != PValue::ZERO => rifd.volume,
             // Charge not loaded or has 0 volume - no info
             _ => {
                 return None;

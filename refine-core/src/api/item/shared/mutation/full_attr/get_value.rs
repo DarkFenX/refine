@@ -25,7 +25,7 @@ fn get_value(sol: &SolarSystem, item_uid: UItemId, attr_aid: &AAttrId) -> Value 
     *sol.u_data
         .items
         .get(item_uid)
-        .get_r_item_attr_data()
+        .get_r_item_flex_data()
         .unwrap()
         .attrs
         .get(&attr_rid)

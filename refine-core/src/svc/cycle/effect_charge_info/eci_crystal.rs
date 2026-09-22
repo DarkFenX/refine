@@ -28,8 +28,8 @@ fn internal_cycle_count(ctx: SvcCtx, calc: &mut Calc, module: &UModule) -> InfCo
     }
     let charge_uid = module.get_charge_uid().unwrap();
     let charge_item = ctx.u_data.items.get(charge_uid);
-    let charge_attrs = match charge_item.get_r_item_attr_data() {
-        Some(riad) => &riad.attrs,
+    let charge_attrs = match charge_item.get_r_item_flex_data() {
+        Some(rifd) => &rifd.attrs,
         // Charge is not loaded - can't use it
         None => return InfCount::Count(Count::ZERO),
     };

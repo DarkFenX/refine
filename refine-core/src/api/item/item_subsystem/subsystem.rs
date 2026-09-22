@@ -78,7 +78,7 @@ fn get_fit(sol: &SolarSystem, subsystem_uid: UItemId) -> Fit<'_> {
 }
 fn get_slot(sol: &SolarSystem, subsystem_uid: UItemId) -> Option<SlotIndex> {
     get_u_subsystem(sol, subsystem_uid)
-        .get_r_item_attr_data()?
+        .get_r_item_flex_data()?
         .subsystem_slot
 }
 fn get_state(sol: &SolarSystem, subsystem_uid: UItemId) -> bool {

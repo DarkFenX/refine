@@ -6,7 +6,7 @@ use crate::{
     util::RMap,
 };
 
-pub(in crate::rd::data::item::attr_data) fn detect_item_kind(
+pub(in crate::rd::data::item::flex) fn detect_item_kind(
     item_grp_id: AItemGrpId,
     item_cat_id: AItemCatId,
     item_attrs: &RMap<RAttrId, Value>,

@@ -38,8 +38,8 @@ impl NEffectNeutChecker {
 }
 
 fn check_bomb(u_item: &UItem, attr_consts: &RAttrConsts) -> bool {
-    let Some(riad) = u_item.get_r_item_attr_data() else {
+    let Some(rifd) = u_item.get_r_item_flex_data() else {
         return false;
     };
-    riad.get_oattr_ffb(attr_consts.energy_neut_amount, Value::ZERO) > Value::ZERO
+    rifd.get_oattr_ffb(attr_consts.energy_neut_amount, Value::ZERO) > Value::ZERO
 }

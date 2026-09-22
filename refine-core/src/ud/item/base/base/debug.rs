@@ -10,9 +10,9 @@ impl UItemBase {
                 cap_consumer.consistency_check(u_data)?;
             }
         }
-        if let Some(riad) = self.get_r_item_attr_data() {
-            riad.consistency_check(u_data)?;
-            for attr_rid in riad.attrs.keys() {
+        if let Some(rifd) = self.get_r_item_flex_data() {
+            rifd.consistency_check(u_data)?;
+            for attr_rid in rifd.attrs.keys() {
                 attr_rid.consistency_check(u_data)?;
             }
         }

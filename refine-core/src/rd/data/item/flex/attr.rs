@@ -28,20 +28,27 @@ use crate::{
     dbg::DebugResult,
     misc::DetectedItemKind,
     rd::{
-        RAttrConsts, RAttrId, RData, REffectConsts, REffectId, RItemAttrEffectData, RItemBase, RItemChargeLimit,
-        RItemContLimit, RItemListId, RItemShipLimit, RShipDroneLimit, RShipKind, RcEffect,
+        RAttrConsts, RAttrId, RData, REffectConsts, REffectId, RItemBase, RItemChargeLimit, RItemContLimit,
+        RItemFlexEffectData, RItemListId, RItemShipLimit, RShipDroneLimit, RShipKind, RcEffect,
     },
     ud::UData,
     util::{PSlab, RMap},
 };
 
-/// Item attributes and any data which relies on item attributes.
+/// Flexible item data. It stores attributes and data derived from them for cases when those
+/// attributes might need to be supplied outside from item itself.
+///
+/// For unmutated items, this container just stores item attributes, as well as data derived from
+/// them. The distinction with item base becomes important for mutated items: this data container
+/// stores merged attributes (base item + mutated item), as well as all the derived data which needs
+/// merged attributes specifically. If it does not need merged attributes - it better be put onto
+/// base item.
 #[derive(Clone, Default)]
-pub(crate) struct RItemAttrData {
+pub(crate) struct RItemFlexData {
     // Raw data
     pub(crate) attrs: RMap<RAttrId, Value>,
     // Derived data - per-effect attribute-dependent data
-    pub(crate) effect_adds: RMap<REffectId, RItemAttrEffectData>,
+    pub(crate) effect_adds: RMap<REffectId, RItemFlexEffectData>,
     // Derived data - unmutated and unmodified (by dogma modifiers) attribute values, cast to
     // necessary type
     pub(crate) volume: PValue,
@@ -112,7 +119,7 @@ pub(crate) struct RItemAttrData {
     /// Required thermodynamics level for overheat
     pub(crate) overload_td_lvl: Option<SkillLevel>,
 }
-impl RItemAttrData {
+impl RItemFlexData {
     pub(crate) fn get_oattr_ffb(&self, attr_rid: Option<RAttrId>, fallback: Value) -> Value {
         let Some(attr_rid) = attr_rid else {
             return fallback;
@@ -127,7 +134,7 @@ impl RItemAttrData {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Conversions
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-impl RItemAttrData {
+impl RItemFlexData {
     pub(crate) fn from_attrs(attrs: RMap<RAttrId, Value>, r_base: &RItemBase, r_data: &RData) -> Self {
         let mut data = Self {
             attrs,
@@ -180,7 +187,7 @@ impl RItemAttrData {
     ) {
         // Per-effect data
         for (&effect_rid, r_effect_data) in r_base.effects.iter() {
-            let Some(r_item_attr_effect) = RItemAttrEffectData::try_from_r_effect_data(
+            let Some(r_item_attr_effect) = RItemFlexEffectData::try_from_r_effect_data(
                 r_effect_data,
                 &self.attrs,
                 effect_rid,
@@ -257,7 +264,7 @@ impl RItemAttrData {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Debugging
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-impl RItemAttrData {
+impl RItemFlexData {
     pub(crate) fn consistency_check(&self, u_data: &UData) -> DebugResult {
         for attr_rid in self.attrs.keys() {
             attr_rid.consistency_check(u_data)?;

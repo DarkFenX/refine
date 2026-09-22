@@ -1,7 +1,7 @@
 use crate::{
     EffectMode, ItemId, ItemKind, NpcProp, OptionalReload, PValue, RearmMinion, SkillLevel, Spool,
     ad::{AEffectId, AItemId},
-    rd::{RData, REffectId, RItemAttrData, RItemBase, RItemCapConsumer, RState},
+    rd::{RData, REffectId, RItemBase, RItemCapConsumer, RItemFlexData, RState},
     ud::{
         UAutocharge, UBooster, UCharacter, UCharge, UData, UDrone, UFighter, UFitId, UFwEffect, UImplant, UItemId,
         UModule, UPhysics, UProjEffect, URig, UService, UShip, USkill, UStance, USubsystem, USwEffect,
@@ -303,25 +303,25 @@ impl UItem {
             Self::SwEffect(sw_effect) => sw_effect.get_r_item_base(),
         }
     }
-    pub(crate) fn get_r_item_attr_data(&self) -> Option<&RItemAttrData> {
+    pub(crate) fn get_r_item_flex_data(&self) -> Option<&RItemFlexData> {
         match self {
-            Self::Autocharge(autocharge) => autocharge.get_r_item_attr_data(),
-            Self::Booster(booster) => booster.get_r_item_attr_data(),
-            Self::Character(character) => character.get_r_item_attr_data(),
-            Self::Charge(charge) => charge.get_r_item_attr_data(),
-            Self::Drone(drone) => drone.get_r_item_attr_data(),
-            Self::Fighter(fighter) => fighter.get_r_item_attr_data(),
-            Self::FwEffect(fw_effect) => fw_effect.get_r_item_attr_data(),
-            Self::Implant(implant) => implant.get_r_item_attr_data(),
-            Self::Module(module) => module.get_r_item_attr_data(),
-            Self::ProjEffect(proj_effect) => proj_effect.get_r_item_attr_data(),
-            Self::Rig(rig) => rig.get_r_item_attr_data(),
-            Self::Service(service) => service.get_r_item_attr_data(),
-            Self::Ship(ship) => ship.get_r_item_attr_data(),
-            Self::Skill(skill) => skill.get_r_item_attr_data(),
-            Self::Stance(stance) => stance.get_r_item_attr_data(),
-            Self::Subsystem(subsystem) => subsystem.get_r_item_attr_data(),
-            Self::SwEffect(sw_effect) => sw_effect.get_r_item_attr_data(),
+            Self::Autocharge(autocharge) => autocharge.get_r_item_flex_data(),
+            Self::Booster(booster) => booster.get_r_item_flex_data(),
+            Self::Character(character) => character.get_r_item_flex_data(),
+            Self::Charge(charge) => charge.get_r_item_flex_data(),
+            Self::Drone(drone) => drone.get_r_item_flex_data(),
+            Self::Fighter(fighter) => fighter.get_r_item_flex_data(),
+            Self::FwEffect(fw_effect) => fw_effect.get_r_item_flex_data(),
+            Self::Implant(implant) => implant.get_r_item_flex_data(),
+            Self::Module(module) => module.get_r_item_flex_data(),
+            Self::ProjEffect(proj_effect) => proj_effect.get_r_item_flex_data(),
+            Self::Rig(rig) => rig.get_r_item_flex_data(),
+            Self::Service(service) => service.get_r_item_flex_data(),
+            Self::Ship(ship) => ship.get_r_item_flex_data(),
+            Self::Skill(skill) => skill.get_r_item_flex_data(),
+            Self::Stance(stance) => stance.get_r_item_flex_data(),
+            Self::Subsystem(subsystem) => subsystem.get_r_item_flex_data(),
+            Self::SwEffect(sw_effect) => sw_effect.get_r_item_flex_data(),
         }
     }
     pub(crate) fn is_loaded(&self) -> bool {

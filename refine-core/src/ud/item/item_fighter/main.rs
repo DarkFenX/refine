@@ -1,7 +1,7 @@
 use crate::{
     CountNz, EffectMode, FighterCountInfo, ItemId, ItemKind, MinionState, PValue, RearmMinion,
     ad::{AEffectId, AItemId},
-    rd::{RData, REffectId, RItemAttrData, RItemBase, RState},
+    rd::{RData, REffectId, RItemBase, RItemFlexData, RState},
     ud::{
         UEffectUpdates, UFitId, UPhysics, UProjs,
         item::{UAutocharges, UEffectModeOverrideIter, UItemBase},
@@ -95,8 +95,8 @@ impl UFighter {
     pub(crate) fn get_r_item_base(&self) -> Option<&RItemBase> {
         self.base.get_r_item_base()
     }
-    pub(crate) fn get_r_item_attr_data(&self) -> Option<&RItemAttrData> {
-        self.base.get_r_item_attr_data()
+    pub(crate) fn get_r_item_flex_data(&self) -> Option<&RItemFlexData> {
+        self.base.get_r_item_flex_data()
     }
     pub(crate) fn is_loaded(&self) -> bool {
         self.base.is_loaded()
@@ -121,22 +121,22 @@ impl UFighter {
         self.fit_uid
     }
     pub(crate) fn get_current_count(&self) -> Option<CountNz> {
-        let riad = self.get_r_item_attr_data()?;
+        let rifd = self.get_r_item_flex_data()?;
         Some(match self.count_override {
             Some(count_override) => count_override,
-            None => riad.max_fighter_count,
+            None => rifd.max_fighter_count,
         })
     }
     pub(crate) fn get_count_info(&self) -> Option<FighterCountInfo> {
-        let riad = self.get_r_item_attr_data()?;
+        let rifd = self.get_r_item_flex_data()?;
         Some(match self.count_override {
             Some(count_override) => FighterCountInfo {
                 current: count_override,
-                max: riad.max_fighter_count,
+                max: rifd.max_fighter_count,
             },
             None => FighterCountInfo {
-                current: riad.max_fighter_count,
-                max: riad.max_fighter_count,
+                current: rifd.max_fighter_count,
+                max: rifd.max_fighter_count,
             },
         })
     }
@@ -156,8 +156,8 @@ impl UFighter {
         &self.physics
     }
     pub(in crate::ud::item) fn get_radius(&self) -> PValue {
-        match self.get_r_item_attr_data() {
-            Some(riad) => riad.radius,
+        match self.get_r_item_flex_data() {
+            Some(rifd) => rifd.radius,
             None => PValue::ZERO,
         }
     }

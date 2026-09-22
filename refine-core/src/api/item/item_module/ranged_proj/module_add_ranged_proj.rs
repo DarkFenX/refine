@@ -1,5 +1,5 @@
 use crate::{
-    api::{ModuleMut, ProjAddError, RangedProjMut, get_ship_riad},
+    api::{ModuleMut, ProjAddError, RangedProjMut, get_ship_rifd},
     err::basic::{ItemReceiveProjError, ProjNotFoundError},
     sol::SolarSystem,
     ud::{ItemId, UItemId, UProjData},
@@ -32,11 +32,11 @@ impl SolarSystem {
             .into());
         };
         let ship_physics = self.u_data.get_fit_ship_physics(u_module.get_fit_uid());
-        let u_proj_data = Some(UProjData::from_physics_with_riad(
+        let u_proj_data = Some(UProjData::from_physics_with_rifd(
             ship_physics,
             projectee_physics,
-            get_ship_riad(&self.u_data, u_module.get_fit_uid()),
-            projectee_u_item.get_r_item_attr_data(),
+            get_ship_rifd(&self.u_data, u_module.get_fit_uid()),
+            projectee_u_item.get_r_item_flex_data(),
         ));
         let charge_uid = u_module.get_charge_uid();
         // Update user data for module

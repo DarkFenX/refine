@@ -230,7 +230,7 @@ impl Calc {
         // Here, we get already calculated attributes, which includes attributes absent on the EVE
         // item
         let item_attr_data = self.get_item_data_with_err(item_uid)?;
-        let base_attrs = &ctx.u_data.items.get(item_uid).get_r_item_attr_data().unwrap().attrs;
+        let base_attrs = &ctx.u_data.items.get(item_uid).get_r_item_flex_data().unwrap().attrs;
         let mut cval_map = RMap::with_capacity(item_attr_data.len().max(base_attrs.len()));
         let mut attrs_with_pps = Vec::new();
         for (&attr_rid, attr_entry) in item_attr_data.iter() {

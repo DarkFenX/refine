@@ -1,7 +1,7 @@
 use crate::{
     EffectMode,
     ad::{AEffectId, AItemId},
-    rd::{RData, REffectId, RItemAttrData, RItemBase, RState, RcItem},
+    rd::{RData, REffectId, RItemBase, RItemFlexData, RState, RcItem},
     ud::{
         ItemId,
         item::{
@@ -82,7 +82,7 @@ impl UItemBase {
     pub(in crate::ud::item) fn get_r_item_base(&self) -> Option<&RItemBase> {
         self.base_get_r_item().map(|v| &v.base)
     }
-    pub(in crate::ud::item) fn get_r_item_attr_data(&self) -> Option<&RItemAttrData> {
+    pub(in crate::ud::item) fn get_r_item_flex_data(&self) -> Option<&RItemFlexData> {
         self.base_get_r_item().map(|v| &v.attr_data)
     }
 }

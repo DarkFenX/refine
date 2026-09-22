@@ -70,7 +70,7 @@ impl Calc {
         item_uid: UItemId,
     ) -> Result<impl ExactSizeIterator<Item = RAttrId> + use<>, UItemLoadedError> {
         let item_attr_data = self.get_item_data_with_err(item_uid)?;
-        let base_attrs = &ctx.u_data.items.get(item_uid).get_r_item_attr_data().unwrap().attrs;
+        let base_attrs = &ctx.u_data.items.get(item_uid).get_r_item_flex_data().unwrap().attrs;
         let mut attr_rids = RSet::with_capacity(item_attr_data.len().max(base_attrs.len()));
         for (&attr_rid, attr_entry) in item_attr_data.iter() {
             if attr_entry.value.is_some() {

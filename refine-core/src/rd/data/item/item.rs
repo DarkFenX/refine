@@ -1,6 +1,6 @@
 use crate::{
     ad::{AAttrId, AEffectId, AItem, AItemId, AItemListId},
-    rd::{RAttrConsts, RAttrId, REffectConsts, REffectId, RItemAttrData, RItemBase, RItemListId, RcEffect},
+    rd::{RAttrConsts, RAttrId, REffectConsts, REffectId, RItemBase, RItemFlexData, RItemListId, RcEffect},
     util::{PSlab, RMap},
 };
 
@@ -10,7 +10,7 @@ use crate::{
 /// values.
 pub(crate) struct RItem {
     pub(crate) base: RItemBase,
-    pub(crate) attr_data: RItemAttrData,
+    pub(crate) attr_data: RItemFlexData,
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -20,7 +20,7 @@ impl RItem {
     pub(in crate::rd::data) fn from_a_item(a_item: &AItem) -> Self {
         Self {
             base: RItemBase::from_a_item(a_item),
-            attr_data: RItemAttrData::default(),
+            attr_data: RItemFlexData::default(),
         }
     }
     pub(in crate::rd::data) fn fill_runtime(

@@ -30,8 +30,8 @@ pub(crate) fn get_sig_radius(ctx: SvcCtx, calc: &mut Calc, item_uid: UItemId) ->
 /// Get the setting only for items which can use it
 fn get_npc_prop(ctx: SvcCtx, item_uid: UItemId) -> Option<NpcProp> {
     let u_item = ctx.u_data.items.get(item_uid);
-    if let Some(item_riad) = u_item.get_r_item_attr_data()
-        && !item_riad.entity_mwd
+    if let Some(item_rifd) = u_item.get_r_item_flex_data()
+        && !item_rifd.entity_mwd
     {
         return None;
     }

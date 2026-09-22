@@ -9,7 +9,11 @@ use crate::{
     util::{PSlab, RMap},
 };
 
-/// Item base data - the data which does not depend on attributes.
+/// Item base data - the data which does not depend on anything outside the item itself.
+///
+/// The distinction with flex data is important when mutated items come into play. Mutated items can
+/// combine  attributes from multiple items. For mutated items, base data stores only data derived
+/// from mutated item type itself; any changes from base item are not considered.
 pub(crate) struct RItemBase {
     // Raw data
     pub(crate) aid: AItemId,
