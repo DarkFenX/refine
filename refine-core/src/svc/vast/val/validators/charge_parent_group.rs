@@ -55,7 +55,7 @@ impl VastFitData {
                     .u_data
                     .items
                     .get(charge_uid)
-                    .get_r_item_flex_data()
+                    .get_r_item_base()
                     .unwrap()
                     .cont_limit
                     .as_ref()

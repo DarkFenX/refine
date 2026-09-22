@@ -74,10 +74,10 @@ impl UStance {
         self.base.set_effect_modes(effect_modes, r_data)
     }
     // Runtime data
-    pub(in crate::ud::item) fn get_r_item_base(&self) -> Option<&RItemBase> {
+    pub(crate) fn get_r_item_base(&self) -> Option<&RItemBase> {
         self.base.get_r_item_base()
     }
-    pub(crate) fn get_r_item_flex_data(&self) -> Option<&RItemFlexData> {
+    pub(in crate::ud::item) fn get_r_item_flex_data(&self) -> Option<&RItemFlexData> {
         self.base.get_r_item_flex_data()
     }
     pub(in crate::ud::item) fn is_loaded(&self) -> bool {

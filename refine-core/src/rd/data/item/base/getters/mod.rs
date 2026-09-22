@@ -1,5 +1,16 @@
+pub(crate) use charge_limit::RItemChargeLimit;
+pub(crate) use container_limit::RItemContLimit;
+pub(crate) use drone_limit::RShipDroneLimit;
+pub(crate) use ship_limit::RItemShipLimit;
+
 pub(super) mod attr_val;
+pub(super) mod charge_limit;
+pub(super) mod container_limit;
+pub(super) mod drone_limit;
 pub(super) mod fighter_kind;
 pub(super) mod has_effect;
+pub(super) mod kind;
 pub(super) mod mobility;
 pub(super) mod ship_kind;
+pub(super) mod ship_limit;
+pub(super) mod slot_index;

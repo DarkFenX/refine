@@ -3,19 +3,27 @@ use super::getters::{
         get_calibration_use, get_capacity, get_charge_rate, get_charge_size, get_fighter_refuel_duration,
         get_max_fighter_count, get_radius, get_rig_size, get_volume,
     },
+    charge_limit::get_item_charge_limit,
+    container_limit::get_item_container_limit,
+    drone_limit::get_ship_drone_limit,
     fighter_kind::{
         get_heavy_fighter_flag, get_light_fighter_flag, get_st_heavy_fighter_flag, get_st_light_fighter_flag,
         get_st_support_fighter_flag, get_support_fighter_flag,
     },
     has_effect::{has_launcher_effect, has_online_effect, has_turret_effect},
+    kind::detect_item_kind,
     mobility::{get_enables_conduit, get_enables_portal_from_attrs, get_jump_fuel_type_id},
     ship_kind::{get_item_ship_kind, get_ship_kind},
+    ship_limit::get_item_ship_limit,
+    slot_index::{get_booster_slot, get_implant_slot, get_subsystem_slot},
 };
 use crate::{
-    Count, CountNz, PValue, SkillLevel, Value,
+    Count, CountNz, PValue, SkillLevel, SlotIndex, Value,
     ad::{AAbilId, AAttrId, AEffectId, AItem, AItemCatId, AItemGrpId, AItemId, AItemListId},
+    misc::DetectedItemKind,
     rd::{
-        RAttrConsts, RAttrId, REffectId, RItemCapConsumer, RItemEffectData, RItemListId, RShipKind, RState, RcEffect,
+        RAttrConsts, RAttrId, REffectConsts, REffectId, RItemCapConsumer, RItemChargeLimit, RItemContLimit,
+        RItemEffectData, RItemListId, RItemShipLimit, RShipDroneLimit, RShipKind, RState, RcEffect,
     },
     util::{PSlab, RMap},
 };
@@ -79,7 +87,21 @@ pub(crate) struct RItemBase {
     pub(crate) enables_conduit: bool,
     /// Used by ansiblex service (which comes from adapted data) and modules (from attributes)
     pub(crate) enables_portal: bool,
+    // Derived data - slot index this item takes
+    pub(crate) implant_slot: Option<SlotIndex>,
+    pub(crate) booster_slot: Option<SlotIndex>,
+    pub(crate) subsystem_slot: Option<SlotIndex>,
+    // Derived data - various aggregated limits
+    /// Items can be fit to those ships
+    pub(crate) ship_limit: Option<RItemShipLimit>,
+    /// Items can load those charges
+    pub(crate) charge_limit: Option<RItemChargeLimit>,
+    /// Charges can be loaded into those items
+    pub(crate) cont_limit: Option<RItemContLimit>,
+    /// Ship can use those drones
+    pub(crate) drone_limit: Option<RShipDroneLimit>,
     // Derived data - misc
+    pub(crate) kind: Option<DetectedItemKind>,
     /// Which ship type this item fits to
     pub(crate) item_ship_kind: Option<RShipKind>,
 }
@@ -135,6 +157,14 @@ impl RItemBase {
             is_st_support_fighter: Default::default(),
             jump_fuel_item_aid: Default::default(),
             enables_conduit: Default::default(),
+            implant_slot: Default::default(),
+            booster_slot: Default::default(),
+            subsystem_slot: Default::default(),
+            ship_limit: Default::default(),
+            charge_limit: Default::default(),
+            cont_limit: Default::default(),
+            drone_limit: Default::default(),
+            kind: Default::default(),
             item_ship_kind: Default::default(),
         }
     }
@@ -185,6 +215,7 @@ impl RItemBase {
         &mut self,
         attrs: &RMap<RAttrId, Value>,
         attr_consts: &RAttrConsts,
+        effect_consts: &REffectConsts,
     ) {
         // Base item attribute values
         self.volume = get_volume(attrs, attr_consts);
@@ -207,7 +238,24 @@ impl RItemBase {
         self.is_st_light_fighter = get_st_light_fighter_flag(attrs, attr_consts);
         self.is_st_heavy_fighter = get_st_heavy_fighter_flag(attrs, attr_consts);
         self.is_st_support_fighter = get_st_support_fighter_flag(attrs, attr_consts);
+        // Slot index this item takes
+        self.implant_slot = get_implant_slot(attrs, attr_consts);
+        self.booster_slot = get_booster_slot(attrs, attr_consts);
+        self.subsystem_slot = get_subsystem_slot(attrs, attr_consts);
+        // Various aggregated limits
+        self.ship_limit = get_item_ship_limit(self.aid, attrs, attr_consts);
+        self.charge_limit = get_item_charge_limit(attrs, attr_consts);
+        self.cont_limit = get_item_container_limit(attrs, attr_consts);
+        self.drone_limit = get_ship_drone_limit(attrs, attr_consts);
         // Misc
+        self.kind = detect_item_kind(
+            self.grp_id,
+            self.cat_id,
+            attrs,
+            &self.effects,
+            attr_consts,
+            effect_consts,
+        );
         self.item_ship_kind = get_item_ship_kind(self.cat_id, attrs, attr_consts);
     }
 }

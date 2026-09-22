@@ -4,27 +4,17 @@ use super::getters::{
         get_bandwidth_use, get_max_type_fitted_count, get_online_max_sec_class, get_overload_td_lvl,
         get_remote_resist_attr_id,
     },
-    charge_limit::get_item_charge_limit,
-    container_limit::get_item_container_limit,
     cycle::{specifies_disallow_repeats, specifies_reactivation_delay},
-    drone_limit::get_ship_drone_limit,
     effect_immunity::get_disallow_vs_ew_immune_tgt,
-    kind::detect_item_kind,
     max_group::{get_max_group_active_limited, get_max_group_fitted_limited, get_max_group_online_limited},
     mobility::{get_entity_has_mwd, get_is_mobile},
     sec_zone::is_sec_zone_limitable,
-    ship_limit::get_item_ship_limit,
-    slot_index::{get_booster_slot, get_implant_slot, get_subsystem_slot},
 };
 use crate::{
-    Count, SkillLevel, SlotIndex, Value,
+    Count, SkillLevel, Value,
     ad::{AAttrId, AItem, AItemId, AItemListId},
     dbg::DebugResult,
-    misc::DetectedItemKind,
-    rd::{
-        RAttrConsts, RAttrId, RData, REffectConsts, REffectId, RItemBase, RItemChargeLimit, RItemContLimit,
-        RItemFlexEffectData, RItemListId, RItemShipLimit, RShipDroneLimit, RcEffect,
-    },
+    rd::{RAttrConsts, RAttrId, RData, REffectId, RItemBase, RItemFlexEffectData, RItemListId, RcEffect},
     ud::UData,
     util::{PSlab, RMap},
 };
@@ -58,21 +48,10 @@ pub(crate) struct RItemFlexData {
     /// which is not specified on mutated drones, so has to be taken from base item.
     pub(crate) entity_mwd: bool,
     // Derived data - module cycle flags
+    /// Mutated ADCs do not specify it, it is taken from base item; have to use merged attrs.
     pub(crate) specs_reactivation_delay: bool,
+    /// Mutated ADCs do not specify it, it is taken from base item; have to use merged attrs.
     pub(crate) specs_disallow_repeats: bool,
-    // Derived data - slot index this item takes
-    pub(crate) implant_slot: Option<SlotIndex>,
-    pub(crate) booster_slot: Option<SlotIndex>,
-    pub(crate) subsystem_slot: Option<SlotIndex>,
-    // Derived data - various aggregated limits
-    /// Items can be fit to those ships
-    pub(crate) ship_limit: Option<RItemShipLimit>,
-    /// Items can load those charges
-    pub(crate) charge_limit: Option<RItemChargeLimit>,
-    /// Charges can be loaded into those items
-    pub(crate) cont_limit: Option<RItemContLimit>,
-    /// Ship can use those drones
-    pub(crate) drone_limit: Option<RShipDroneLimit>,
     // Derived data - is item limitable by an appropriate "max group" limit, or cannot be affected
     // at all
     pub(crate) max_group_fitted_limited: bool,
@@ -90,7 +69,6 @@ pub(crate) struct RItemFlexData {
     pub(crate) activation_blocks_cloak: bool,
     pub(crate) activation_blocks_in_assist: bool,
     // Derived data - misc
-    pub(crate) kind: Option<DetectedItemKind>,
     /// Required thermodynamics level for overheat
     pub(crate) overload_td_lvl: Option<SkillLevel>,
 }
@@ -120,7 +98,6 @@ impl RItemFlexData {
             &r_data.item_list_aid_rid_map,
             &r_data.attr_aid_rid_map,
             &r_data.attr_consts,
-            &r_data.effect_consts,
             &r_data.effects,
         );
         data
@@ -132,7 +109,6 @@ impl RItemFlexData {
         item_list_aid_rid_map: &RMap<AItemListId, RItemListId>,
         attr_aid_rid_map: &RMap<AAttrId, RAttrId>,
         attr_consts: &RAttrConsts,
-        effect_consts: &REffectConsts,
         r_effects: &PSlab<REffectId, RcEffect>,
     ) {
         let a_item = a_items.get(&r_base.aid).unwrap();
@@ -142,14 +118,7 @@ impl RItemFlexData {
                 self.attrs.insert(attr_rid, Value::from_a_value(a_item_attr.value));
             }
         }
-        self.fill_derived(
-            r_base,
-            item_list_aid_rid_map,
-            attr_aid_rid_map,
-            attr_consts,
-            effect_consts,
-            r_effects,
-        );
+        self.fill_derived(r_base, item_list_aid_rid_map, attr_aid_rid_map, attr_consts, r_effects);
     }
     fn fill_derived(
         &mut self,
@@ -157,7 +126,6 @@ impl RItemFlexData {
         item_list_aid_rid_map: &RMap<AItemListId, RItemListId>,
         attr_aid_rid_map: &RMap<AAttrId, RAttrId>,
         attr_consts: &RAttrConsts,
-        effect_consts: &REffectConsts,
         r_effects: &PSlab<REffectId, RcEffect>,
     ) {
         // Per-effect data
@@ -182,15 +150,6 @@ impl RItemFlexData {
         // Module cycle flags
         self.specs_reactivation_delay = specifies_reactivation_delay(&self.attrs, attr_consts);
         self.specs_disallow_repeats = specifies_disallow_repeats(&self.attrs, attr_consts);
-        // Slot index this item takes
-        self.implant_slot = get_implant_slot(&self.attrs, attr_consts);
-        self.booster_slot = get_booster_slot(&self.attrs, attr_consts);
-        self.subsystem_slot = get_subsystem_slot(&self.attrs, attr_consts);
-        // Various aggregated limits
-        self.ship_limit = get_item_ship_limit(r_base.aid, &self.attrs, attr_consts);
-        self.charge_limit = get_item_charge_limit(&self.attrs, attr_consts);
-        self.cont_limit = get_item_container_limit(&self.attrs, attr_consts);
-        self.drone_limit = get_ship_drone_limit(&self.attrs, attr_consts);
         // Is item limitable by an appropriate "max group" limit
         self.max_group_fitted_limited = get_max_group_fitted_limited(&self.attrs, attr_consts);
         self.max_group_online_limited = get_max_group_online_limited(&self.attrs, attr_consts);
@@ -204,14 +163,6 @@ impl RItemFlexData {
         self.activation_blocks_cloak = get_activation_blocks_cloak(&self.attrs, attr_consts);
         self.activation_blocks_in_assist = get_activation_blocks_in_assist(&self.attrs, attr_consts);
         // Misc
-        self.kind = detect_item_kind(
-            r_base.grp_id,
-            r_base.cat_id,
-            &self.attrs,
-            &r_base.effects,
-            attr_consts,
-            effect_consts,
-        );
         self.overload_td_lvl = get_overload_td_lvl(&self.attrs, attr_consts);
     }
 }

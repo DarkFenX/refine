@@ -46,9 +46,9 @@ impl RItem {
             item_list_aid_rid_map,
             attr_aid_rid_map,
             attr_consts,
-            effect_consts,
             r_effects,
         );
-        self.base.fill_runtime_extended(&self.attr_data.attrs, attr_consts);
+        self.base
+            .fill_runtime_extended(&self.attr_data.attrs, attr_consts, effect_consts);
     }
 }

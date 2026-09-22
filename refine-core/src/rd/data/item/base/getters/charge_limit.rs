@@ -12,7 +12,7 @@ pub(crate) struct RItemChargeLimit {
     pub(crate) group_ids: Vec<AItemGrpId>,
 }
 
-pub(in crate::rd::data::item::flex) fn get_item_charge_limit(
+pub(in crate::rd::data::item::base) fn get_item_charge_limit(
     item_attrs: &RMap<RAttrId, Value>,
     attr_consts: &RAttrConsts,
 ) -> Option<RItemChargeLimit> {

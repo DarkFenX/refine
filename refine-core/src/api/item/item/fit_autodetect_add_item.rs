@@ -16,7 +16,7 @@ impl SolarSystem {
         let Some(r_item) = self.u_data.r_data.get_item_by_aid(&type_aid) else {
             return Err(FitItemAutodetectAddError::TypeId(ItemTypeId::from_aid(type_aid)));
         };
-        let Some(item_kind) = r_item.attr_data.kind else {
+        let Some(item_kind) = r_item.base.kind else {
             return Err(FitItemAutodetectAddError::KindUnknown);
         };
         let item_uid = match item_kind {
