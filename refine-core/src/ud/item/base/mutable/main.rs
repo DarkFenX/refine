@@ -1,3 +1,5 @@
+use std::cell::LazyCell;
+
 use crate::{
     EffectMode, ItemId, UnitInterval, Value,
     ad::{AAttrId, AEffectId, AItemId},
@@ -311,17 +313,19 @@ impl UItemBaseMutable {
             }
             return Ok(Vec::new());
         };
+        let base_r_item = r_data.get_item_by_aid(&mutation_cache.base_type_aid);
         // All the methods which set cache guarantee that all the following entities are available
         // for the source the cache was generated with, and this method is supposed to be called
         // with the same source
-        let mutated_type_aid = mutation_cache
-            .mutator
-            .item_map
-            .get(&mutation_cache.base_type_aid)
-            .unwrap();
-        let mutated_r_item = r_data.get_item_by_aid(mutated_type_aid).unwrap();
+        let mutated_r_item = LazyCell::new(|| {
+            let mutated_type_aid = mutation_cache
+                .mutator
+                .item_map
+                .get(&mutation_cache.base_type_aid)
+                .unwrap();
+            r_data.get_item_by_aid(mutated_type_aid).unwrap()
+        });
         // Process mutation requests, recording attributes whose values were changed for the item
-        let mut base_r_item_cache = None;
         let mut changed_attr_rids = Vec::new();
         for attr_mutation_request in attr_mutation_requests {
             let new_rid_value = match attr_mutation_request.roll {
@@ -332,13 +336,9 @@ impl UItemBaseMutable {
                         .attr_rolls
                         .insert(attr_mutation_request.attr_aid, attr_roll);
                     // Process source-dependent data and return new value
-                    let Some(unmutated_value) = get_combined_attr_value(
-                        r_data,
-                        &mutation_cache.base_type_aid,
-                        &mut base_r_item_cache,
-                        mutated_r_item,
-                        &attr_mutation_request.attr_aid,
-                    ) else {
+                    let Some(unmutated_value) =
+                        get_combined_attr_value(r_data, base_r_item, &mutated_r_item, &attr_mutation_request.attr_aid)
+                    else {
                         // No unmutated value now means there couldn't be any mutated value with any
                         // mutation earlier as well, thus attribute value cannot change. We already
                         // updated user data, so just go to next attribute
@@ -360,13 +360,9 @@ impl UItemBaseMutable {
                     // Update user-defined data
                     item_mutation.attr_rolls.remove(&attr_mutation_request.attr_aid);
                     // Update source-dependent data
-                    let Some(unmutated_value) = get_combined_attr_value(
-                        r_data,
-                        &mutation_cache.base_type_aid,
-                        &mut base_r_item_cache,
-                        mutated_r_item,
-                        &attr_mutation_request.attr_aid,
-                    ) else {
+                    let Some(unmutated_value) =
+                        get_combined_attr_value(r_data, base_r_item, &mutated_r_item, &attr_mutation_request.attr_aid)
+                    else {
                         // No unmutated value - can't do any comparisons
                         continue;
                     };
@@ -564,37 +560,39 @@ struct AttrRidVal {
     value: Value,
 }
 
-fn get_combined_attr_value<'a>(
+fn get_combined_attr_value<'a, MG>(
     r_data: &'a RData,
-    base_type_aid: &AItemId,
-    base_r_item_cache: &mut Option<Option<&'a RcItem>>,
-    mutated_r_item: &RItem,
+    base_r_item: Option<&'a RcItem>,
+    mutated_r_item: &LazyCell<&'a RcItem, MG>,
     attr_id: &AAttrId,
-) -> Option<AttrRidVal> {
+) -> Option<AttrRidVal>
+where
+    MG: FnOnce() -> &'a RcItem,
+{
     let attr_rid = r_data.get_attr_rid_by_aid(attr_id)?;
-    let value = match mutated_r_item.attr_data.attrs.get(&attr_rid) {
-        Some(&unmutated_value) => Some(unmutated_value),
-        None => match base_r_item_cache {
-            Some(opt_base_r_item) => {
-                opt_base_r_item.and_then(|base_r_item| base_r_item.attr_data.attrs.get(&attr_rid).copied())
-            }
-            None => {
-                let opt_base_r_item = r_data.get_item_by_aid(base_type_aid);
-                base_r_item_cache.replace(opt_base_r_item);
-                opt_base_r_item.and_then(|base_r_item| base_r_item.attr_data.attrs.get(&attr_rid).copied())
-            }
-        },
-    }?;
-    Some(AttrRidVal { rid: attr_rid, value })
+    // Base item attributes have priority in case of collisions
+    if let Some(base_r_item) = base_r_item
+        && let Some(attr_value) = base_r_item.attr_data.attrs.get(&attr_rid)
+    {
+        return Some(AttrRidVal {
+            rid: attr_rid,
+            value: *attr_value,
+        });
+    }
+    let attr_value = *mutated_r_item.attr_data.attrs.get(&attr_rid)?;
+    Some(AttrRidVal {
+        rid: attr_rid,
+        value: attr_value,
+    })
 }
 
 pub(crate) fn get_combined_attr_values(base_r_item: Option<&RcItem>, mutated_r_item: &RItem) -> RMap<RAttrId, Value> {
     match base_r_item {
         Some(base_r_item) => {
             let mut attrs = base_r_item.attr_data.attrs.clone();
-            // Mutated item attributes have priority in case of collisions
+            // Base item attributes have priority in case of collisions
             for (&attr_rid, &attr_val) in mutated_r_item.attr_data.attrs.iter() {
-                attrs.insert(attr_rid, attr_val);
+                attrs.entry(attr_rid).or_insert(attr_val);
             }
             attrs
         }
