@@ -8,6 +8,7 @@ use super::getters::{
         get_st_support_fighter_flag, get_support_fighter_flag,
     },
     has_effect::{has_launcher_effect, has_online_effect, has_turret_effect},
+    mobility::{get_enables_conduit, get_enables_portal_from_attrs, get_jump_fuel_type_id},
     ship_kind::{get_item_ship_kind, get_ship_kind},
 };
 use crate::{
@@ -36,8 +37,6 @@ pub(crate) struct RItemBase {
     // Derived data - item type flags
     pub(crate) is_cloak: bool,
     pub(crate) is_ice_harvester: bool,
-    /// Used by ansiblex service
-    pub(crate) enables_portal: bool,
     // Derived data - effect flags
     pub(crate) has_online_effect: bool,
     pub(crate) takes_turret_hardpoint: bool,
@@ -75,6 +74,11 @@ pub(crate) struct RItemBase {
     pub(crate) is_st_light_fighter: bool,
     pub(crate) is_st_heavy_fighter: bool,
     pub(crate) is_st_support_fighter: bool,
+    // Derived data - mobility
+    pub(crate) jump_fuel_item_aid: Option<AItemId>,
+    pub(crate) enables_conduit: bool,
+    /// Used by ansiblex service (which comes from adapted data) and modules (from attributes)
+    pub(crate) enables_portal: bool,
     // Derived data - misc
     /// Which ship type this item fits to
     pub(crate) item_ship_kind: Option<RShipKind>,
@@ -129,6 +133,8 @@ impl RItemBase {
             is_st_light_fighter: Default::default(),
             is_st_heavy_fighter: Default::default(),
             is_st_support_fighter: Default::default(),
+            jump_fuel_item_aid: Default::default(),
+            enables_conduit: Default::default(),
             item_ship_kind: Default::default(),
         }
     }
@@ -190,6 +196,10 @@ impl RItemBase {
         self.charge_rate = get_charge_rate(attrs, attr_consts);
         self.max_fighter_count = get_max_fighter_count(attrs, attr_consts);
         self.fighter_refuel_duration = get_fighter_refuel_duration(attrs, attr_consts);
+        // Mobility
+        self.jump_fuel_item_aid = get_jump_fuel_type_id(attrs, attr_consts);
+        self.enables_conduit = get_enables_conduit(attrs, attr_consts);
+        self.enables_portal = self.enables_portal || get_enables_portal_from_attrs(attrs, attr_consts);
         // Fighter kind flags
         self.is_light_fighter = get_light_fighter_flag(attrs, attr_consts);
         self.is_heavy_fighter = get_heavy_fighter_flag(attrs, attr_consts);

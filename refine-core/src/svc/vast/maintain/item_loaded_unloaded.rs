@@ -269,7 +269,7 @@ impl Vast {
                 if ship_rib.disallowed_in_wspace {
                     fit_data.sec_zone_fitted_wspace_banned.insert(item_uid);
                 }
-                if ship_rifd.enables_conduit {
+                if ship_rib.enables_conduit {
                     fit_data.conduit_enablers.insert(item_uid);
                 }
                 // Ship/structure modules are not enforced when ship is not set. When we get one,
@@ -522,7 +522,7 @@ impl Vast {
                 if ship_rib.disallowed_in_wspace {
                     fit_data.sec_zone_fitted_wspace_banned.remove(item_uid);
                 }
-                if ship_rifd.enables_conduit {
+                if ship_rib.enables_conduit {
                     fit_data.conduit_enablers.remove(item_uid);
                 }
                 fit_data.mods_rigs_svcs_vs_ship_kind.clear();

@@ -11,7 +11,7 @@ use super::getters::{
     effect_immunity::get_disallow_vs_ew_immune_tgt,
     kind::detect_item_kind,
     max_group::{get_max_group_active_limited, get_max_group_fitted_limited, get_max_group_online_limited},
-    mobility::{get_enables_conduit, get_enables_portal, get_entity_has_mwd, get_is_mobile, get_jump_fuel_type_id},
+    mobility::{get_entity_has_mwd, get_is_mobile},
     sec_zone::is_sec_zone_limitable,
     ship_limit::get_item_ship_limit,
     slot_index::{get_booster_slot, get_implant_slot, get_subsystem_slot},
@@ -47,17 +47,16 @@ pub(crate) struct RItemFlexData {
     // necessary type
     /// Mutated drones do not specify bandwidth, it has to be taken from base item
     pub(crate) bandwidth_use: Option<Value>,
-    /// Mutated webs and nosfs do not specify remoteResistanceID, it has to be taken from base item
+    /// Mutated webs and nosfs do not specify remoteResistanceID, it has to be taken from base item.
+    /// Nosfs likely do not use it (it is defined on the nosf effect), but webs certainly do.
     pub(crate) remote_resist_attr_rid: Option<RAttrId>,
     // Derived data - mobility
-    /// Used to differentiate between mobile and sentry drones
+    /// Used to differentiate between mobile and sentry drones. Relies on maxVelocity attribute,
+    /// which is not specified on mutated drones, so has to be taken from base item.
     pub(crate) is_mobile: bool,
-    /// Used to differentiate between single/dual-prop drones
+    /// Used to differentiate between single/dual-prop drones. Relies on entityFlySpeed attribute,
+    /// which is not specified on mutated drones, so has to be taken from base item.
     pub(crate) entity_mwd: bool,
-    pub(crate) jump_fuel_item_aid: Option<AItemId>,
-    pub(crate) enables_conduit: bool,
-    /// Used by bridge modules
-    pub(crate) enables_portal: bool,
     // Derived data - module cycle flags
     pub(crate) specs_reactivation_delay: bool,
     pub(crate) specs_disallow_repeats: bool,
@@ -180,9 +179,6 @@ impl RItemFlexData {
         // Mobility
         self.is_mobile = get_is_mobile(&self.attrs, attr_consts);
         self.entity_mwd = get_entity_has_mwd(&self.attrs, attr_consts);
-        self.jump_fuel_item_aid = get_jump_fuel_type_id(&self.attrs, attr_consts);
-        self.enables_conduit = get_enables_conduit(&self.attrs, attr_consts);
-        self.enables_portal = get_enables_portal(&self.attrs, attr_consts);
         // Module cycle flags
         self.specs_reactivation_delay = specifies_reactivation_delay(&self.attrs, attr_consts);
         self.specs_disallow_repeats = specifies_disallow_repeats(&self.attrs, attr_consts);

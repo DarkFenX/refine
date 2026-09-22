@@ -57,7 +57,7 @@ impl Vast {
                     if let Some(sec_class) = module_rifd.online_max_sec_class {
                         fit_data.sec_zone_online_class.insert(item_uid, sec_class);
                     }
-                    if module_rifd.enables_conduit {
+                    if module_rib.enables_conduit {
                         fit_data.conduit_enablers.insert(item_uid);
                     }
                     if module_rib.max_state == RState::Offline {
@@ -131,7 +131,7 @@ impl Vast {
                         fit_data.sec_zone_active.insert(item_uid);
                     }
                     fit_data.mods_active.insert(item_uid);
-                    if module_rifd.enables_portal {
+                    if module_rib.enables_portal {
                         fit_data.portal_enablers.insert(item_uid);
                     }
                     if module_rifd.activation_blocks_cloak {
@@ -218,7 +218,7 @@ impl Vast {
                     if module_rifd.online_max_sec_class.is_some() {
                         fit_data.sec_zone_online_class.remove(item_uid);
                     }
-                    if module_rifd.enables_conduit {
+                    if module_rib.enables_conduit {
                         fit_data.conduit_enablers.remove(item_uid);
                     }
                     if module_rib.max_state == RState::Offline {
@@ -275,7 +275,7 @@ impl Vast {
                         fit_data.sec_zone_active.remove(item_uid);
                     }
                     fit_data.mods_active.remove(item_uid);
-                    if module_rifd.enables_portal {
+                    if module_rib.enables_portal {
                         fit_data.portal_enablers.remove(item_uid);
                     }
                     if module_rifd.activation_blocks_cloak {
