@@ -10,7 +10,6 @@ pub(super) mod container_limit;
 pub(super) mod cycle;
 pub(super) mod drone_limit;
 pub(super) mod effect_immunity;
-pub(super) mod fighter_kind;
 pub(super) mod kind;
 pub(super) mod max_group;
 pub(super) mod mobility;

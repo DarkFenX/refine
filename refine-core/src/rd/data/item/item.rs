@@ -33,7 +33,7 @@ impl RItem {
         effect_consts: &REffectConsts,
         r_effects: &PSlab<REffectId, RcEffect>,
     ) {
-        self.base.fill_runtime(
+        self.base.fill_runtime_basic(
             a_items,
             item_list_aid_rid_map,
             attr_aid_rid_map,
@@ -49,5 +49,6 @@ impl RItem {
             effect_consts,
             r_effects,
         );
+        self.base.fill_runtime_extended(&self.attr_data.attrs, attr_consts);
     }
 }

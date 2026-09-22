@@ -10,10 +10,6 @@ use super::getters::{
     cycle::{specifies_disallow_repeats, specifies_reactivation_delay},
     drone_limit::get_ship_drone_limit,
     effect_immunity::get_disallow_vs_ew_immune_tgt,
-    fighter_kind::{
-        get_heavy_fighter_flag, get_light_fighter_flag, get_st_heavy_fighter_flag, get_st_light_fighter_flag,
-        get_st_support_fighter_flag, get_support_fighter_flag,
-    },
     kind::detect_item_kind,
     max_group::{get_max_group_active_limited, get_max_group_fitted_limited, get_max_group_online_limited},
     mobility::{get_enables_conduit, get_enables_portal, get_entity_has_mwd, get_is_mobile, get_jump_fuel_type_id},
@@ -76,13 +72,6 @@ pub(crate) struct RItemFlexData {
     // Derived data - module cycle flags
     pub(crate) specs_reactivation_delay: bool,
     pub(crate) specs_disallow_repeats: bool,
-    // Derived data - fighter kind flags
-    pub(crate) is_light_fighter: bool,
-    pub(crate) is_heavy_fighter: bool,
-    pub(crate) is_support_fighter: bool,
-    pub(crate) is_st_light_fighter: bool,
-    pub(crate) is_st_heavy_fighter: bool,
-    pub(crate) is_st_support_fighter: bool,
     // Derived data - slot index this item takes
     pub(crate) implant_slot: Option<SlotIndex>,
     pub(crate) booster_slot: Option<SlotIndex>,
@@ -219,13 +208,6 @@ impl RItemFlexData {
         // Module cycle flags
         self.specs_reactivation_delay = specifies_reactivation_delay(&self.attrs, attr_consts);
         self.specs_disallow_repeats = specifies_disallow_repeats(&self.attrs, attr_consts);
-        // Fighter kind flags
-        self.is_light_fighter = get_light_fighter_flag(&self.attrs, attr_consts);
-        self.is_heavy_fighter = get_heavy_fighter_flag(&self.attrs, attr_consts);
-        self.is_support_fighter = get_support_fighter_flag(&self.attrs, attr_consts);
-        self.is_st_light_fighter = get_st_light_fighter_flag(&self.attrs, attr_consts);
-        self.is_st_heavy_fighter = get_st_heavy_fighter_flag(&self.attrs, attr_consts);
-        self.is_st_support_fighter = get_st_support_fighter_flag(&self.attrs, attr_consts);
         // Slot index this item takes
         self.implant_slot = get_implant_slot(&self.attrs, attr_consts);
         self.booster_slot = get_booster_slot(&self.attrs, attr_consts);

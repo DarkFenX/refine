@@ -93,6 +93,7 @@ impl Vast {
                 }
             }
             UItem::Fighter(fighter) => {
+                let fighter_rib = fighter.get_r_item_base().unwrap();
                 let fighter_rifd = fighter.get_r_item_flex_data().unwrap();
                 item_kind_add(fit_data, item_uid, fighter_rifd.kind, DetectedItemKind::Fighter);
                 let count = fighter.get_count_info().unwrap();
@@ -108,22 +109,22 @@ impl Vast {
                         },
                     );
                 }
-                if fighter_rifd.is_light_fighter {
+                if fighter_rib.is_light_fighter {
                     fit_data.light_fighters.insert(item_uid);
                 }
-                if fighter_rifd.is_heavy_fighter {
+                if fighter_rib.is_heavy_fighter {
                     fit_data.heavy_fighters.insert(item_uid);
                 }
-                if fighter_rifd.is_support_fighter {
+                if fighter_rib.is_support_fighter {
                     fit_data.support_fighters.insert(item_uid);
                 }
-                if fighter_rifd.is_st_light_fighter {
+                if fighter_rib.is_st_light_fighter {
                     fit_data.st_light_fighters.insert(item_uid);
                 }
-                if fighter_rifd.is_st_heavy_fighter {
+                if fighter_rib.is_st_heavy_fighter {
                     fit_data.st_heavy_fighters.insert(item_uid);
                 }
-                if fighter_rifd.is_st_support_fighter {
+                if fighter_rib.is_st_support_fighter {
                     fit_data.st_support_fighters.insert(item_uid);
                 }
             }
@@ -369,6 +370,7 @@ impl Vast {
                 }
             }
             UItem::Fighter(fighter) => {
+                let fighter_rib = fighter.get_r_item_base().unwrap();
                 let fighter_rifd = fighter.get_r_item_flex_data().unwrap();
                 item_kind_remove(fit_data, item_uid, fighter_rifd.kind, DetectedItemKind::Fighter);
                 fit_data.fighters_volume.remove(item_uid);
@@ -376,22 +378,22 @@ impl Vast {
                 if count.current > count.max {
                     fit_data.fighter_squad_size.remove(item_uid);
                 }
-                if fighter_rifd.is_light_fighter {
+                if fighter_rib.is_light_fighter {
                     fit_data.light_fighters.remove(item_uid);
                 }
-                if fighter_rifd.is_heavy_fighter {
+                if fighter_rib.is_heavy_fighter {
                     fit_data.heavy_fighters.remove(item_uid);
                 }
-                if fighter_rifd.is_support_fighter {
+                if fighter_rib.is_support_fighter {
                     fit_data.support_fighters.remove(item_uid);
                 }
-                if fighter_rifd.is_st_light_fighter {
+                if fighter_rib.is_st_light_fighter {
                     fit_data.st_light_fighters.remove(item_uid);
                 }
-                if fighter_rifd.is_st_heavy_fighter {
+                if fighter_rib.is_st_heavy_fighter {
                     fit_data.st_heavy_fighters.remove(item_uid);
                 }
-                if fighter_rifd.is_st_support_fighter {
+                if fighter_rib.is_st_support_fighter {
                     fit_data.st_support_fighters.remove(item_uid);
                 }
             }

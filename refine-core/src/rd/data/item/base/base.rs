@@ -1,11 +1,17 @@
 use super::getters::{
+    fighter_kind::{
+        get_heavy_fighter_flag, get_light_fighter_flag, get_st_heavy_fighter_flag, get_st_light_fighter_flag,
+        get_st_support_fighter_flag, get_support_fighter_flag,
+    },
     has_effect::{has_launcher_effect, has_online_effect, has_turret_effect},
     ship_kind::get_ship_kind,
 };
 use crate::{
-    SkillLevel,
+    SkillLevel, Value,
     ad::{AAbilId, AAttrId, AEffectId, AItem, AItemCatId, AItemGrpId, AItemId, AItemListId},
-    rd::{RAttrId, REffectId, RItemCapConsumer, RItemEffectData, RItemListId, RShipKind, RState, RcEffect},
+    rd::{
+        RAttrConsts, RAttrId, REffectId, RItemCapConsumer, RItemEffectData, RItemListId, RShipKind, RState, RcEffect,
+    },
     util::{PSlab, RMap},
 };
 
@@ -46,6 +52,13 @@ pub(crate) struct RItemBase {
     pub(crate) cap_consumers: Vec<RItemCapConsumer>,
     pub(crate) ship_kind: Option<RShipKind>,
     pub(crate) disallowed_in_wspace: bool,
+    // Derived data - fighter kind flags
+    pub(crate) is_light_fighter: bool,
+    pub(crate) is_heavy_fighter: bool,
+    pub(crate) is_support_fighter: bool,
+    pub(crate) is_st_light_fighter: bool,
+    pub(crate) is_st_heavy_fighter: bool,
+    pub(crate) is_st_support_fighter: bool,
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -71,7 +84,7 @@ impl RItemBase {
             val_active_group_id: a_item.val_active_group_id,
             max_state: RState::from_a_state(&a_item.max_state),
             disallowed_in_wspace: a_item.disallowed_in_wspace,
-            // Fields which depend on data not available during instantiation
+            // Fields which depend on data not available on adapted item
             effects: Default::default(),
             defeff_rid: Default::default(),
             has_online_effect: Default::default(),
@@ -81,9 +94,15 @@ impl RItemBase {
             fleet_buff_item_list_rids: Default::default(),
             cap_consumers: Default::default(),
             ship_kind: Default::default(),
+            is_light_fighter: Default::default(),
+            is_heavy_fighter: Default::default(),
+            is_support_fighter: Default::default(),
+            is_st_light_fighter: Default::default(),
+            is_st_heavy_fighter: Default::default(),
+            is_st_support_fighter: Default::default(),
         }
     }
-    pub(in crate::rd::data::item) fn fill_runtime(
+    pub(in crate::rd::data::item) fn fill_runtime_basic(
         &mut self,
         a_items: &RMap<AItemId, AItem>,
         item_list_aid_rid_map: &RMap<AItemListId, RItemListId>,
@@ -125,5 +144,18 @@ impl RItemBase {
             }
         }
         self.ship_kind = get_ship_kind(self.cat_id, &self.srqs);
+    }
+    pub(in crate::rd::data::item) fn fill_runtime_extended(
+        &mut self,
+        attrs: &RMap<RAttrId, Value>,
+        attr_consts: &RAttrConsts,
+    ) {
+        // Fighter kind flags
+        self.is_light_fighter = get_light_fighter_flag(attrs, attr_consts);
+        self.is_heavy_fighter = get_heavy_fighter_flag(attrs, attr_consts);
+        self.is_support_fighter = get_support_fighter_flag(attrs, attr_consts);
+        self.is_st_light_fighter = get_st_light_fighter_flag(attrs, attr_consts);
+        self.is_st_heavy_fighter = get_st_heavy_fighter_flag(attrs, attr_consts);
+        self.is_st_support_fighter = get_st_support_fighter_flag(attrs, attr_consts);
     }
 }

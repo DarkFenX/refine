@@ -18,24 +18,24 @@ impl Vast {
             }
             RState::Online => match item {
                 UItem::Fighter(fighter) => {
-                    let fighter_rifd = fighter.get_r_item_flex_data().unwrap();
+                    let fighter_rib = fighter.get_r_item_base().unwrap();
                     let fit_data = self.get_fit_data_mut(fighter.get_fit_uid());
-                    if fighter_rifd.is_light_fighter {
+                    if fighter_rib.is_light_fighter {
                         fit_data.light_fighters_online.insert(item_uid);
                     }
-                    if fighter_rifd.is_heavy_fighter {
+                    if fighter_rib.is_heavy_fighter {
                         fit_data.heavy_fighters_online.insert(item_uid);
                     }
-                    if fighter_rifd.is_support_fighter {
+                    if fighter_rib.is_support_fighter {
                         fit_data.support_fighters_online.insert(item_uid);
                     }
-                    if fighter_rifd.is_st_light_fighter {
+                    if fighter_rib.is_st_light_fighter {
                         fit_data.st_light_fighters_online.insert(item_uid);
                     }
-                    if fighter_rifd.is_st_heavy_fighter {
+                    if fighter_rib.is_st_heavy_fighter {
                         fit_data.st_heavy_fighters_online.insert(item_uid);
                     }
-                    if fighter_rifd.is_st_support_fighter {
+                    if fighter_rib.is_st_support_fighter {
                         fit_data.st_support_fighters_online.insert(item_uid);
                     }
                 }
@@ -181,24 +181,24 @@ impl Vast {
             }
             RState::Online => match item {
                 UItem::Fighter(fighter) => {
-                    let fighter_rifd = fighter.get_r_item_flex_data().unwrap();
+                    let fighter_rib = fighter.get_r_item_base().unwrap();
                     let fit_data = self.get_fit_data_mut(fighter.get_fit_uid());
-                    if fighter_rifd.is_light_fighter {
+                    if fighter_rib.is_light_fighter {
                         fit_data.light_fighters_online.remove(item_uid);
                     }
-                    if fighter_rifd.is_heavy_fighter {
+                    if fighter_rib.is_heavy_fighter {
                         fit_data.heavy_fighters_online.remove(item_uid);
                     }
-                    if fighter_rifd.is_support_fighter {
+                    if fighter_rib.is_support_fighter {
                         fit_data.support_fighters_online.remove(item_uid);
                     }
-                    if fighter_rifd.is_st_light_fighter {
+                    if fighter_rib.is_st_light_fighter {
                         fit_data.st_light_fighters_online.remove(item_uid);
                     }
-                    if fighter_rifd.is_st_heavy_fighter {
+                    if fighter_rib.is_st_heavy_fighter {
                         fit_data.st_heavy_fighters_online.remove(item_uid);
                     }
-                    if fighter_rifd.is_st_support_fighter {
+                    if fighter_rib.is_st_support_fighter {
                         fit_data.st_support_fighters_online.remove(item_uid);
                     }
                 }
