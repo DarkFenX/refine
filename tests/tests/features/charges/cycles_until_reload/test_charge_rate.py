@@ -174,11 +174,11 @@ def test_mutation_charge_rate(client, consts):
         duration_attr_id=eve_cycle_time_attr_id)
     eve_charge_id = client.mk_eve_item(attrs={eve_volume_attr_id: 0.05})
     eve_base_module_id = client.mk_eve_item(
-        attrs={eve_capacity_attr_id: 0.50, eve_charge_rate_attr_id: 1, eve_cycle_time_attr_id: 1000},
+        attrs={eve_capacity_attr_id: 0.50, eve_charge_rate_attr_id: 2, eve_cycle_time_attr_id: 1000},
         eff_ids=[eve_effect_id],
         defeff_id=eve_effect_id)
     eve_mutated_module_id = client.mk_eve_item(
-        attrs={eve_capacity_attr_id: 0.50, eve_charge_rate_attr_id: 2, eve_cycle_time_attr_id: 1000},
+        attrs={eve_capacity_attr_id: 0.50, eve_charge_rate_attr_id: 1, eve_cycle_time_attr_id: 1000},
         eff_ids=[eve_effect_id],
         defeff_id=eve_effect_id)
     eve_mutator_id = client.mk_eve_mutator(
@@ -190,8 +190,8 @@ def test_mutation_charge_rate(client, consts):
     api_module = api_fit.add_module(type_id=eve_base_module_id, charge_type_id=eve_charge_id)
     # Verification
     api_module.update()
-    assert api_module.attrs[eve_charge_rate_attr_id].modified == approx(1)
-    assert api_module.charged_cycles == 10
+    assert api_module.attrs[eve_charge_rate_attr_id].modified == approx(2)
+    assert api_module.charged_cycles == 5
     # Action
     api_module.change_module(mutation=eve_mutator_id)
     # Verification - value from mutated item is used
@@ -208,8 +208,8 @@ def test_mutation_charge_rate(client, consts):
     api_module.change_module(mutation=None)
     # Verification
     api_module.update()
-    assert api_module.attrs[eve_charge_rate_attr_id].modified == approx(1)
-    assert api_module.charged_cycles == 10
+    assert api_module.attrs[eve_charge_rate_attr_id].modified == approx(2)
+    assert api_module.charged_cycles == 5
 
 
 def test_no_charge(client, consts):

@@ -24,7 +24,7 @@ use crate::{
     misc::DetectedItemKind,
     rd::{
         RAttrConsts, RAttrId, RData, REffectConsts, REffectId, RItemBase, RItemChargeLimit, RItemContLimit,
-        RItemFlexEffectData, RItemListId, RItemShipLimit, RShipDroneLimit, RShipKind, RcEffect,
+        RItemFlexEffectData, RItemListId, RItemShipLimit, RShipDroneLimit, RcEffect,
     },
     ud::UData,
     util::{PSlab, RMap},
@@ -99,8 +99,6 @@ pub(crate) struct RItemFlexData {
     pub(crate) activation_blocks_in_assist: bool,
     // Derived data - misc
     pub(crate) kind: Option<DetectedItemKind>,
-    /// Which ship type this item fits to
-    pub(crate) item_ship_kind: Option<RShipKind>,
     /// Required thermodynamics level for overheat
     pub(crate) overload_td_lvl: Option<SkillLevel>,
 }

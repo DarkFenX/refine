@@ -178,7 +178,7 @@ impl Vast {
                         .mods_svcs_max_type_fitted
                         .add_entry(module.get_type_aid(), item_uid, max_fitted);
                 }
-                if let Some(RShipKind::CapitalShip) = module_rifd.item_ship_kind {
+                if let Some(RShipKind::CapitalShip) = module_rib.item_ship_kind {
                     fit_data.mods_capital.insert(item_uid, module_rib.volume);
                 }
                 if let Some(sec_class) = module_rifd.online_max_sec_class {
@@ -439,7 +439,7 @@ impl Vast {
                     }
                     fit_data.charge_volume.remove(&charge_uid);
                 }
-                if let Some(RShipKind::CapitalShip) = module_rifd.item_ship_kind {
+                if let Some(RShipKind::CapitalShip) = module_rib.item_ship_kind {
                     fit_data.mods_capital.remove(item_uid);
                 }
                 if module_rifd.max_type_fitted.is_some() {
