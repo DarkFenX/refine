@@ -1,5 +1,8 @@
 use super::getters::{
-    attr_val::{get_capacity, get_radius, get_volume},
+    attr_val::{
+        get_calibration_use, get_capacity, get_charge_rate, get_charge_size, get_fighter_refuel_duration,
+        get_max_fighter_count, get_radius, get_rig_size, get_volume,
+    },
     fighter_kind::{
         get_heavy_fighter_flag, get_light_fighter_flag, get_st_heavy_fighter_flag, get_st_light_fighter_flag,
         get_st_support_fighter_flag, get_support_fighter_flag,
@@ -8,7 +11,7 @@ use super::getters::{
     ship_kind::{get_item_ship_kind, get_ship_kind},
 };
 use crate::{
-    PValue, SkillLevel, Value,
+    Count, CountNz, PValue, SkillLevel, Value,
     ad::{AAbilId, AAttrId, AEffectId, AItem, AItemCatId, AItemGrpId, AItemId, AItemListId},
     rd::{
         RAttrConsts, RAttrId, REffectId, RItemCapConsumer, RItemEffectData, RItemListId, RShipKind, RState, RcEffect,
@@ -57,6 +60,14 @@ pub(crate) struct RItemBase {
     pub(crate) volume: PValue,
     pub(crate) capacity: PValue,
     pub(crate) radius: PValue,
+    pub(crate) calibration_use: Option<Value>,
+    /// On-rig and on-ship attribute
+    pub(crate) rig_size: Option<Value>,
+    /// On-module and on-charge attribute
+    pub(crate) charge_size: Option<Value>,
+    pub(crate) charge_rate: Count,
+    pub(crate) max_fighter_count: CountNz,
+    pub(crate) fighter_refuel_duration: PValue,
     // Derived data - fighter kind flags
     pub(crate) is_light_fighter: bool,
     pub(crate) is_heavy_fighter: bool,
@@ -106,6 +117,12 @@ impl RItemBase {
             volume: Default::default(),
             capacity: Default::default(),
             radius: Default::default(),
+            calibration_use: Default::default(),
+            rig_size: Default::default(),
+            charge_size: Default::default(),
+            charge_rate: Default::default(),
+            max_fighter_count: Default::default(),
+            fighter_refuel_duration: Default::default(),
             is_light_fighter: Default::default(),
             is_heavy_fighter: Default::default(),
             is_support_fighter: Default::default(),
@@ -167,6 +184,12 @@ impl RItemBase {
         self.volume = get_volume(attrs, attr_consts);
         self.capacity = get_capacity(attrs, attr_consts);
         self.radius = get_radius(attrs, attr_consts);
+        self.calibration_use = get_calibration_use(attrs, attr_consts);
+        self.rig_size = get_rig_size(attrs, attr_consts);
+        self.charge_size = get_charge_size(attrs, attr_consts);
+        self.charge_rate = get_charge_rate(attrs, attr_consts);
+        self.max_fighter_count = get_max_fighter_count(attrs, attr_consts);
+        self.fighter_refuel_duration = get_fighter_refuel_duration(attrs, attr_consts);
         // Fighter kind flags
         self.is_light_fighter = get_light_fighter_flag(attrs, attr_consts);
         self.is_heavy_fighter = get_heavy_fighter_flag(attrs, attr_consts);

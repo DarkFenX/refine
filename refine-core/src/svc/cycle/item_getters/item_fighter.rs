@@ -320,7 +320,7 @@ fn sim_rearm_process_refuel(cseq_map: &mut CseqMap, mut effect_infos: RMap<REffe
     // to rearm its charges. On top of that, fighters take extra second to land, some time to
     // refuel, and extra second to launch.
     let in_space_duration = trigger_rearm_info.in_space_duration;
-    let refuel_duration = fighter.get_r_item_flex_data().unwrap().fighter_refuel_duration;
+    let refuel_duration = fighter.get_r_item_base().unwrap().fighter_refuel_duration;
     let hard_dt_duration = PValue::from_f64_unchecked(2.0) + refuel_duration + trigger_rearm_info.rearm_duration;
     // Fill data for triggering effect
     cseq_map.insert(

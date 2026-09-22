@@ -10,7 +10,7 @@ impl Vast {
         match state {
             RState::Offline => {
                 if let UItem::Rig(rig) = item
-                    && let Some(val) = rig.get_r_item_flex_data().unwrap().calibration_use
+                    && let Some(val) = rig.get_r_item_base().unwrap().calibration_use
                 {
                     let fit_data = self.get_fit_data_mut(rig.get_fit_uid());
                     fit_data.rigs_offline_calibration.insert(item_uid, val);

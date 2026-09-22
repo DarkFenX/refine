@@ -71,7 +71,7 @@ impl Vast {
                 {
                     handle_charge_group_add(fit_data, cont_uid, cont_rifd, item_uid, &charge_rib.grp_id);
                     handle_charge_cont_group_add(fit_data, cont_uid, &cont_rib.grp_id, item_uid, charge_rifd);
-                    handle_charge_size_add(fit_data, cont_uid, cont_rifd, item_uid, charge_rifd);
+                    handle_charge_size_add(fit_data, cont_uid, cont_rib, item_uid, charge_rib);
                     handle_charge_volume_add(fit_data, cont_uid, cont_rib, item_uid, charge_rib);
                 }
                 if charge_rifd.sec_zone_limitable {
@@ -169,7 +169,7 @@ impl Vast {
                     {
                         handle_charge_group_add(fit_data, item_uid, module_rifd, charge_uid, &charge_rib.grp_id);
                         handle_charge_cont_group_add(fit_data, item_uid, &module_rib.grp_id, charge_uid, charge_rifd);
-                        handle_charge_size_add(fit_data, item_uid, module_rifd, charge_uid, charge_rifd);
+                        handle_charge_size_add(fit_data, item_uid, module_rib, charge_uid, charge_rib);
                         handle_charge_volume_add(fit_data, item_uid, module_rib, charge_uid, charge_rib);
                     }
                 }
@@ -196,7 +196,7 @@ impl Vast {
                 let rig_rib = rig.get_r_item_base().unwrap();
                 let rig_rifd = rig.get_r_item_flex_data().unwrap();
                 item_kind_add(fit_data, item_uid, rig_rifd.kind, DetectedItemKind::Rig);
-                fit_data.rigs_rig_size.insert(item_uid, rig_rifd.rig_size);
+                fit_data.rigs_rig_size.insert(item_uid, rig_rib.rig_size);
                 if let Some(ship_limit) = &rig_rifd.ship_limit {
                     fit_data.ship_limited_items.insert(item_uid, ship_limit.clone());
                 }
@@ -434,7 +434,7 @@ impl Vast {
                         fit_data.charge_group.remove(&charge_uid);
                     }
                     fit_data.charge_cont_group.remove(&charge_uid);
-                    if module_rifd.charge_size.is_some() {
+                    if module_rib.charge_size.is_some() {
                         fit_data.charge_size.remove(&charge_uid);
                     }
                     fit_data.charge_volume.remove(&charge_uid);
@@ -661,12 +661,12 @@ fn handle_charge_cont_group_add(
 fn handle_charge_size_add(
     fit_data: &mut VastFitData,
     cont_uid: UItemId,
-    cont_rifd: &RItemFlexData,
+    cont_rib: &RItemBase,
     charge_uid: UItemId,
-    charge_rifd: &RItemFlexData,
+    charge_rib: &RItemBase,
 ) {
     // Charge size mismatch happens when parent module requires some charge size
-    if cont_rifd.charge_size.is_some() && cont_rifd.charge_size != charge_rifd.charge_size {
+    if cont_rib.charge_size.is_some() && cont_rib.charge_size != charge_rib.charge_size {
         fit_data.charge_size.insert(charge_uid, cont_uid);
     }
 }

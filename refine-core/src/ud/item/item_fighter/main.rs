@@ -121,22 +121,22 @@ impl UFighter {
         self.fit_uid
     }
     pub(crate) fn get_current_count(&self) -> Option<CountNz> {
-        let rifd = self.get_r_item_flex_data()?;
+        let rib = self.get_r_item_base()?;
         Some(match self.count_override {
             Some(count_override) => count_override,
-            None => rifd.max_fighter_count,
+            None => rib.max_fighter_count,
         })
     }
     pub(crate) fn get_count_info(&self) -> Option<FighterCountInfo> {
-        let rifd = self.get_r_item_flex_data()?;
+        let rib = self.get_r_item_base()?;
         Some(match self.count_override {
             Some(count_override) => FighterCountInfo {
                 current: count_override,
-                max: rifd.max_fighter_count,
+                max: rib.max_fighter_count,
             },
             None => FighterCountInfo {
-                current: rifd.max_fighter_count,
-                max: rifd.max_fighter_count,
+                current: rib.max_fighter_count,
+                max: rib.max_fighter_count,
             },
         })
     }

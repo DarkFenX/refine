@@ -1,9 +1,8 @@
 use super::getters::{
     activation_blocks::{get_activation_blocks_cloak, get_activation_blocks_in_assist},
     attr_val::{
-        get_bandwidth_use, get_calibration_use, get_charge_rate, get_charge_size, get_fighter_refuel_duration,
-        get_max_fighter_count, get_max_type_fitted_count, get_online_max_sec_class, get_overload_td_lvl,
-        get_remote_resist_attr_id, get_rig_size,
+        get_bandwidth_use, get_max_type_fitted_count, get_online_max_sec_class, get_overload_td_lvl,
+        get_remote_resist_attr_id,
     },
     charge_limit::get_item_charge_limit,
     container_limit::get_item_container_limit,
@@ -18,7 +17,7 @@ use super::getters::{
     slot_index::{get_booster_slot, get_implant_slot, get_subsystem_slot},
 };
 use crate::{
-    Count, CountNz, PValue, SkillLevel, SlotIndex, Value,
+    Count, SkillLevel, SlotIndex, Value,
     ad::{AAttrId, AItem, AItemId, AItemListId},
     dbg::DebugResult,
     misc::DetectedItemKind,
@@ -46,15 +45,9 @@ pub(crate) struct RItemFlexData {
     pub(crate) effect_adds: RMap<REffectId, RItemFlexEffectData>,
     // Derived data - unmutated and unmodified (by dogma modifiers) attribute values, cast to
     // necessary type
-    pub(crate) calibration_use: Option<Value>,
+    /// Mutated drones do not specify bandwidth, it has to be taken from base item
     pub(crate) bandwidth_use: Option<Value>,
-    /// On-rig and on-ship attribute
-    pub(crate) rig_size: Option<Value>,
-    /// On-module and on-charge attribute
-    pub(crate) charge_size: Option<Value>,
-    pub(crate) charge_rate: Count,
-    pub(crate) max_fighter_count: CountNz,
-    pub(crate) fighter_refuel_duration: PValue,
+    /// Mutated webs and nosfs do not specify remoteResistanceID, it has to be taken from base item
     pub(crate) remote_resist_attr_rid: Option<RAttrId>,
     // Derived data - mobility
     /// Used to differentiate between mobile and sentry drones
@@ -182,13 +175,7 @@ impl RItemFlexData {
             self.effect_adds.insert(effect_rid, r_item_attr_effect);
         }
         // Unmutated and unmodified attribute values
-        self.calibration_use = get_calibration_use(&self.attrs, attr_consts);
         self.bandwidth_use = get_bandwidth_use(&self.attrs, attr_consts);
-        self.rig_size = get_rig_size(&self.attrs, attr_consts);
-        self.charge_size = get_charge_size(&self.attrs, attr_consts);
-        self.charge_rate = get_charge_rate(&self.attrs, attr_consts);
-        self.max_fighter_count = get_max_fighter_count(&self.attrs, attr_consts);
-        self.fighter_refuel_duration = get_fighter_refuel_duration(&self.attrs, attr_consts);
         self.remote_resist_attr_rid = get_remote_resist_attr_id(&self.attrs, attr_consts, attr_aid_rid_map);
         // Mobility
         self.is_mobile = get_is_mobile(&self.attrs, attr_consts);

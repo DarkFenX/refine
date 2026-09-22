@@ -1,5 +1,5 @@
 use crate::{
-    PValue, Value,
+    Count, CountNz, PValue, Value,
     rd::{RAttrConsts, RAttrId},
     util::RMap,
 };
@@ -29,5 +29,57 @@ pub(in crate::rd::data::item::base) fn get_radius(
     match attr_consts.radius.and_then(|v| item_attrs.get(&v)) {
         Some(&radius) => PValue::from_value_clamped(radius),
         None => Default::default(),
+    }
+}
+
+pub(in crate::rd::data::item::base) fn get_calibration_use(
+    item_attrs: &RMap<RAttrId, Value>,
+    attr_consts: &RAttrConsts,
+) -> Option<Value> {
+    attr_consts.upgrade_cost.and_then(|v| item_attrs.get(&v).copied())
+}
+
+pub(in crate::rd::data::item::base) fn get_rig_size(
+    item_attrs: &RMap<RAttrId, Value>,
+    attr_consts: &RAttrConsts,
+) -> Option<Value> {
+    attr_consts.rig_size.and_then(|v| item_attrs.get(&v).copied())
+}
+
+pub(in crate::rd::data::item::base) fn get_charge_size(
+    item_attrs: &RMap<RAttrId, Value>,
+    attr_consts: &RAttrConsts,
+) -> Option<Value> {
+    attr_consts.charge_size.and_then(|v| item_attrs.get(&v).copied())
+}
+
+pub(in crate::rd::data::item::base) fn get_charge_rate(
+    item_attrs: &RMap<RAttrId, Value>,
+    attr_consts: &RAttrConsts,
+) -> Count {
+    match attr_consts.charge_rate.and_then(|v| item_attrs.get(&v)) {
+        Some(&val) => Count::from_value_rounded(val),
+        None => Count::ONE,
+    }
+}
+
+pub(in crate::rd::data::item::base) fn get_max_fighter_count(
+    item_attrs: &RMap<RAttrId, Value>,
+    attr_consts: &RAttrConsts,
+) -> CountNz {
+    match attr_consts.ftr_sq_max_size.and_then(|v| item_attrs.get(&v)) {
+        // Ensure there can be at least 1 fighter in a squad
+        Some(&value) => CountNz::from_f64_rounded(value.into_f64()),
+        None => CountNz::ONE,
+    }
+}
+
+pub(in crate::rd::data::item::base) fn get_fighter_refuel_duration(
+    item_attrs: &RMap<RAttrId, Value>,
+    attr_consts: &RAttrConsts,
+) -> PValue {
+    match attr_consts.ftr_refueling_time.and_then(|v| item_attrs.get(&v)) {
+        Some(&value) => PValue::from_value_clamped(value / Value::THOUSAND),
+        None => PValue::default(),
     }
 }
