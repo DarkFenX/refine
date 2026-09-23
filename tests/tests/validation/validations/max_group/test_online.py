@@ -144,7 +144,7 @@ def test_mutation_limit_priority(client, consts):
     eve_mutated_module_id = client.mk_eve_item(grp_id=eve_grp_id, attrs={eve_limit_attr_id: 1})
     eve_mutator_id = client.mk_eve_mutator(
         items=[([eve_base_module_id], eve_mutated_module_id)],
-        attrs={eve_limit_attr_id: (1, 5)})
+        attrs={eve_limit_attr_id: (0.5, 2)})
     client.create_sources()
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
@@ -159,10 +159,11 @@ def test_mutation_limit_priority(client, consts):
     # Action
     api_module2.change_module(mutation=eve_mutator_id)
     # Verification
-    assert api_module2.update().attrs[eve_limit_attr_id].modified == approx(1)
+    assert api_module2.update().attrs[eve_limit_attr_id].modified == approx(2)
     api_val = api_fit.validate(options=ValOptions(max_group_online=True))
-    assert api_val.passed is False
-    assert api_val.details.max_group_online == {eve_grp_id: [2, {api_module2.id: 1}]}
+    assert api_val.passed is True
+    with check_no_field():
+        api_val.details  # ruff:ignore[useless-expression]
     # Action
     api_module2.change_module(mutation=None)
     # Verification
@@ -172,13 +173,12 @@ def test_mutation_limit_priority(client, consts):
     with check_no_field():
         api_val.details  # ruff:ignore[useless-expression]
     # Action
-    api_module2.change_module(mutation=(eve_mutator_id, {eve_limit_attr_id: Muta.abs_to_api(val=2)}))
+    api_module2.change_module(mutation=(eve_mutator_id, {eve_limit_attr_id: Muta.abs_to_api(val=1)}))
     # Verification
-    assert api_module2.update().attrs[eve_limit_attr_id].modified == approx(2)
+    assert api_module2.update().attrs[eve_limit_attr_id].modified == approx(1)
     api_val = api_fit.validate(options=ValOptions(max_group_online=True))
-    assert api_val.passed is True
-    with check_no_field():
-        api_val.details  # ruff:ignore[useless-expression]
+    assert api_val.passed is False
+    assert api_val.details.max_group_online == {eve_grp_id: [2, {api_module2.id: 1}]}
 
 
 def test_mutation_limit_inheritance(client, consts):

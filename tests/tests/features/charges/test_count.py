@@ -109,15 +109,15 @@ def test_mutation_capacity(client, consts):
     assert api_module.charge_count == 10
     # Action
     api_module.change_module(mutation=eve_mutator_id)
-    # Verification - volume of mutated item is used
+    # Verification - attribute of base item is used, but for charge count mutated base value is used
     api_module.update()
-    assert api_module.attrs[eve_capacity_attr_id].modified == approx(0.75)
+    assert api_module.attrs[eve_capacity_attr_id].modified == approx(0.5)
     assert api_module.charge_count == 15
     # Action
     api_module.change_module(mutation={eve_capacity_attr_id: Muta.roll_to_api(val=1)})
-    # Verification - unmutated capacity attribute value of mutated item is used
+    # Verification - rolled value is ignored
     api_module.update()
-    assert api_module.attrs[eve_capacity_attr_id].modified == approx(1.125)
+    assert api_module.attrs[eve_capacity_attr_id].modified == approx(0.75)
     assert api_module.charge_count == 15
     # Action
     api_module.change_module(mutation=None)

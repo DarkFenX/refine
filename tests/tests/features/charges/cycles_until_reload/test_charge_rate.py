@@ -197,13 +197,13 @@ def test_mutation_charge_rate(client, consts):
     # Verification - value from mutated item is used
     api_module.update()
     assert api_module.attrs[eve_charge_rate_attr_id].modified == approx(2)
-    assert api_module.charged_cycles == 5
+    assert api_module.charged_cycles == 10
     # Action
     api_module.change_module(mutation={eve_charge_rate_attr_id: Muta.roll_to_api(val=1)})
-    # Verification - but attribute mutation is ignored
+    # Verification - attribute roll is ignored
     api_module.update()
     assert api_module.attrs[eve_charge_rate_attr_id].modified == approx(3)
-    assert api_module.charged_cycles == 5
+    assert api_module.charged_cycles == 10
     # Action
     api_module.change_module(mutation=None)
     # Verification
