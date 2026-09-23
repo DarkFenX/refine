@@ -620,8 +620,8 @@ def test_modified(client, consts):
 
 def test_mutation(client, consts):
     eve_attr_id = client.mk_eve_attr(id_=consts.EveAttr.disallow_in_empire_space)
-    eve_base_module_id = client.mk_eve_item(attrs={eve_attr_id: 0})
-    eve_mutated_module_id = client.mk_eve_item(attrs={eve_attr_id: 1})
+    eve_base_module_id = client.mk_eve_item(attrs={eve_attr_id: 1})
+    eve_mutated_module_id = client.mk_eve_item(attrs={eve_attr_id: 0})
     eve_mutator_id = client.mk_eve_mutator(
         items=[([eve_base_module_id], eve_mutated_module_id)],
         attrs={eve_attr_id: (0, 3)})
@@ -630,11 +630,12 @@ def test_mutation(client, consts):
     api_fit = api_sol.create_fit()
     api_module = api_fit.add_module(type_id=eve_base_module_id, state=consts.ApiModuleState.active)
     # Verification
-    assert api_module.update().attrs[eve_attr_id].modified == approx(0)
+    assert api_module.update().attrs[eve_attr_id].modified == approx(1)
     api_val = api_fit.validate(options=ValOptions(sec_zone_active=True))
-    assert api_val.passed is True
-    with check_no_field():
-        api_val.details  # ruff:ignore[useless-expression]
+    assert api_val.passed is False
+    assert api_val.details.sec_zone_active.zone == consts.ApiSecZone.hisec
+    assert api_val.details.sec_zone_active.items == {
+        api_module.id: sorted([consts.ApiSecZone.nullsec, consts.ApiSecZone.wspace, consts.ApiSecZone.hazard])}
     # Action
     api_module.change_module(mutation=eve_mutator_id)
     # Verification
@@ -664,11 +665,12 @@ def test_mutation(client, consts):
     # Action
     api_module.change_module(mutation=None)
     # Verification
-    assert api_module.update().attrs[eve_attr_id].modified == approx(0)
+    assert api_module.update().attrs[eve_attr_id].modified == approx(1)
     api_val = api_fit.validate(options=ValOptions(sec_zone_active=True))
-    assert api_val.passed is True
-    with check_no_field():
-        api_val.details  # ruff:ignore[useless-expression]
+    assert api_val.passed is False
+    assert api_val.details.sec_zone_active.zone == consts.ApiSecZone.hisec
+    assert api_val.details.sec_zone_active.items == {
+        api_module.id: sorted([consts.ApiSecZone.nullsec, consts.ApiSecZone.wspace, consts.ApiSecZone.hazard])}
 
 
 def test_values(client, consts):
