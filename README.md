@@ -1,7 +1,7 @@
 # refine
 Rust Eve FIttiNg Engine
 
-The engine's purpose is validation of fits and calculation of item/fit/fleet stats. It does not do much else - i.e. there is no fit persistence, or anything related to UI (for instance, it is not aware of item/fit names). 
+The engine's purpose is validation of fits and calculation of item/fit/fleet stats. It does not do much else - i.e. there is no fit persistence, or anything related to UI (for instance, it is not aware of item/fit names).
 
 # Crate Layout
 
@@ -24,7 +24,10 @@ Interface is built to unify multiple smaller changes into commands and command b
 ### refine-http
 High-level HTTP interface built on top of `refine-rs`.
 
-# CPU Features
+# Building
+You will need nightly version of Rust to build it, the code makes use of multiple unstable features.
+
+### CPU Features
 The engine makes use of some hardware features like FMA (fused multiply-add). If they are not declared as available during compilation, there is a performance hit, even if minor one.
 
 On x86-64, they are enabled by passing `-C target-cpu=x86-64-v3` to the Rust compiler, via `RUSTFLAGS` or a `.cargo/config.toml`. Note that binaries built this way need a CPU no older than Intel Haswell (2013) or AMD Excavator (2015), and abort with an illegal instruction error on anything older. ARM64 needs no configuration, since FMA is a part of its baseline.
