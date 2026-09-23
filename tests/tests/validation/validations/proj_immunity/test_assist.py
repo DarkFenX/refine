@@ -350,8 +350,8 @@ def test_tgt_mutation(client, consts):
     eve_immunity_attr_id = client.mk_eve_attr(id_=consts.EveAttr.disallow_assistance)
     eve_src_effect_id = client.mk_eve_effect(cat_id=consts.EveEffCat.target, is_assistance=True)
     eve_src_item_id = client.mk_eve_item(eff_ids=[eve_src_effect_id], defeff_id=eve_src_effect_id)
-    eve_tgt_base_item_id = client.mk_eve_item(attrs={eve_immunity_attr_id: 0})
-    eve_tgt_mutated_item_id = client.mk_eve_item(attrs={eve_immunity_attr_id: 1})
+    eve_tgt_base_item_id = client.mk_eve_item(attrs={eve_immunity_attr_id: 1})
+    eve_tgt_mutated_item_id = client.mk_eve_item(attrs={eve_immunity_attr_id: 0})
     eve_tgt_mutator_id = client.mk_eve_mutator(
         items=[([eve_tgt_base_item_id], eve_tgt_mutated_item_id)],
         attrs={eve_immunity_attr_id: (0, 2)})
@@ -363,11 +363,10 @@ def test_tgt_mutation(client, consts):
     api_tgt_item = api_tgt_fit.add_drone(type_id=eve_tgt_base_item_id)
     api_src_item.change_module(add_proj_item_ids=[api_tgt_item.id])
     # Verification
-    assert api_tgt_item.update().attrs[eve_immunity_attr_id].modified == approx(0)
+    assert api_tgt_item.update().attrs[eve_immunity_attr_id].modified == approx(1)
     api_val = api_src_fit.validate(options=ValOptions(assist_immunity=True))
-    assert api_val.passed is True
-    with check_no_field():
-        api_val.details  # ruff:ignore[useless-expression]
+    assert api_val.passed is False
+    assert api_val.details.assist_immunity == {api_src_item.id: [api_tgt_item.id]}
     # Action
     api_tgt_item.change_drone(mutation=eve_tgt_mutator_id)
     # Verification
@@ -393,11 +392,10 @@ def test_tgt_mutation(client, consts):
     # Action
     api_tgt_item.change_drone(mutation=None)
     # Verification
-    assert api_tgt_item.update().attrs[eve_immunity_attr_id].modified == approx(0)
+    assert api_tgt_item.update().attrs[eve_immunity_attr_id].modified == approx(1)
     api_val = api_src_fit.validate(options=ValOptions(assist_immunity=True))
-    assert api_val.passed is True
-    with check_no_field():
-        api_val.details  # ruff:ignore[useless-expression]
+    assert api_val.passed is False
+    assert api_val.details.assist_immunity == {api_src_item.id: [api_tgt_item.id]}
 
 
 def test_src_mutation(client, consts):

@@ -179,15 +179,15 @@ def test_mutation_limit_priority(client, consts):
         state=consts.ApiServiceState.offline,
         mutation=(eve_mutator_id, {eve_limit_attr_id: Muta.roll_to_api(val=1)}))
     # Verification
-    assert api_module1.update().attrs[eve_limit_attr_id].modified == approx(1)
-    assert api_module2.update().attrs[eve_limit_attr_id].modified == approx(5)
+    assert api_module1.update().attrs[eve_limit_attr_id].modified == approx(2)
+    assert api_module2.update().attrs[eve_limit_attr_id].modified == approx(10)
     api_val = api_fit.validate(options=ValOptions(max_type_fitted=True))
     assert api_val.passed is False
     assert api_val.details.max_type_fitted == {eve_mutated_module_id: [2, {api_module1.id: 1, api_module2.id: 1}]}
     # Action
     api_module2.change_module(mutation=None)
     # Verification
-    assert api_module1.update().attrs[eve_limit_attr_id].modified == approx(1)
+    assert api_module1.update().attrs[eve_limit_attr_id].modified == approx(2)
     assert api_module2.update().attrs[eve_limit_attr_id].modified == approx(2)
     api_val = api_fit.validate(options=ValOptions(max_type_fitted=True))
     assert api_val.passed is True
@@ -205,6 +205,7 @@ def test_mutation_limit_priority(client, consts):
 
 
 def test_mutation_limit_inheritance(client, consts):
+    # Mutated items consider the restriction only when it is defined directly on mutated type
     eve_limit_attr_id = client.mk_eve_attr(id_=consts.EveAttr.max_type_fitted)
     eve_base_module_id = client.mk_eve_item(attrs={eve_limit_attr_id: 1})
     eve_mutated_module_id = client.mk_eve_item()
@@ -226,8 +227,9 @@ def test_mutation_limit_inheritance(client, consts):
     assert api_module1.update().attrs[eve_limit_attr_id].modified == approx(1)
     assert api_module2.update().attrs[eve_limit_attr_id].modified == approx(5)
     api_val = api_fit.validate(options=ValOptions(max_type_fitted=True))
-    assert api_val.passed is False
-    assert api_val.details.max_type_fitted == {eve_mutated_module_id: [2, {api_module1.id: 1, api_module2.id: 1}]}
+    assert api_val.passed is True
+    with check_no_field():
+        api_val.details  # ruff:ignore[useless-expression]
     # Action
     api_module2.change_module(mutation=None)
     # Verification

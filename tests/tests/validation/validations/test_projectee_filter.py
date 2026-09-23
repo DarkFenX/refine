@@ -343,7 +343,7 @@ def test_src_mutation_itemlist_replaced(client, consts):
     # Action
     api_src_module.change_module(mutation=eve_mutator_id)
     # Verification
-    assert api_src_module.update().attrs[eve_tgt_list_attr_id].modified == approx(eve_item_list1_id)
+    assert api_src_module.update().attrs[eve_tgt_list_attr_id].modified == approx(eve_item_list2_id)
     api_val = api_src_fit.validate(options=ValOptions(projectee_filter=True))
     assert api_val.passed is True
     with check_no_field():
@@ -374,6 +374,7 @@ def test_src_mutation_itemlist_replaced(client, consts):
 
 
 def test_src_mutation_itemlist_inherited(client, consts):
+    # No attribute directly on mutated item type - no restriction
     eve_tgt_list_attr_id = client.mk_eve_attr(id_=consts.EveAttr.tgt_filter_typelist_id)
     eve_effect_id = client.mk_eve_effect(id_=consts.EveEffect.lightning_weapon, cat_id=consts.EveEffCat.target)
     eve_ship1_id = client.mk_eve_ship()
@@ -398,8 +399,9 @@ def test_src_mutation_itemlist_inherited(client, consts):
     api_src_module.change_module(mutation=eve_mutator_id)
     # Verification
     api_val = api_src_fit.validate(options=ValOptions(projectee_filter=True))
-    assert api_val.passed is False
-    assert api_val.details.projectee_filter == {api_src_module.id: [api_tgt_ship.id]}
+    assert api_val.passed is True
+    with check_no_field():
+        api_val.details  # ruff:ignore[useless-expression]
     # Action
     api_tgt_ship.change_ship(type_id=eve_ship2_id)
     # Verification
@@ -411,8 +413,9 @@ def test_src_mutation_itemlist_inherited(client, consts):
     api_tgt_ship.change_ship(type_id=eve_ship1_id)
     # Verification
     api_val = api_src_fit.validate(options=ValOptions(projectee_filter=True))
-    assert api_val.passed is False
-    assert api_val.details.projectee_filter == {api_src_module.id: [api_tgt_ship.id]}
+    assert api_val.passed is True
+    with check_no_field():
+        api_val.details  # ruff:ignore[useless-expression]
     # Action
     api_src_module.change_module(mutation=None)
     # Verification

@@ -151,21 +151,22 @@ def test_modified(client, consts):
 
 def test_mutation(client, consts):
     eve_attr_id = client.mk_eve_attr(id_=consts.EveAttr.activation_blocked, def_val=0)
-    eve_base_module_id = client.mk_eve_item(attrs={eve_attr_id: 0})
-    eve_mutated_module_id = client.mk_eve_item(attrs={eve_attr_id: 1})
+    eve_base_module1_id = client.mk_eve_item(attrs={eve_attr_id: 1})
+    eve_base_module2_id = client.mk_eve_item(attrs={eve_attr_id: 0})
+    eve_mutated_module1_id = client.mk_eve_item(attrs={eve_attr_id: 0})
+    eve_mutated_module2_id = client.mk_eve_item(attrs={eve_attr_id: 1})
     eve_mutator_id = client.mk_eve_mutator(
-        items=[([eve_base_module_id], eve_mutated_module_id)],
+        items=[([eve_base_module1_id], eve_mutated_module1_id), ([eve_base_module2_id], eve_mutated_module2_id)],
         attrs={eve_attr_id: (0, 1)})
     client.create_sources()
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
-    api_module = api_fit.add_module(type_id=eve_base_module_id, state=consts.ApiModuleState.active)
+    api_module = api_fit.add_module(type_id=eve_base_module1_id, state=consts.ApiModuleState.active)
     # Verification
-    assert api_module.update().attrs[eve_attr_id].modified == approx(0)
+    assert api_module.update().attrs[eve_attr_id].modified == approx(1)
     api_val = api_fit.validate(options=ValOptions(activation_blocked=True))
-    assert api_val.passed is True
-    with check_no_field():
-        api_val.details  # ruff:ignore[useless-expression]
+    assert api_val.passed is False
+    assert api_val.details.activation_blocked == [api_module.id]
     # Action
     api_module.change_module(mutation=eve_mutator_id)
     # Verification
@@ -188,6 +189,14 @@ def test_mutation(client, consts):
     api_val = api_fit.validate(options=ValOptions(activation_blocked=True))
     assert api_val.passed is False
     assert api_val.details.activation_blocked == [api_module.id]
+    # Action
+    api_module.change_module(type_id=eve_base_module2_id)
+    # Verification
+    assert api_module.update().attrs[eve_attr_id].modified == approx(0)
+    api_val = api_fit.validate(options=ValOptions(activation_blocked=True))
+    assert api_val.passed is True
+    with check_no_field():
+        api_val.details  # ruff:ignore[useless-expression]
     # Action
     api_module.change_module(mutation=None)
     # Verification
