@@ -24,7 +24,7 @@ impl SolarSystem {
             let Some(r_item) = self.u_data.r_data.get_item_by_aid(type_aid) else {
                 continue;
             };
-            let Some(item_kind) = r_item.base.kind else {
+            let Some(item_kind) = r_item.base.detected_kind else {
                 continue;
             };
             match item_kind {

@@ -1,17 +1,12 @@
 use super::getters::{
     activation_blocks::{get_activation_blocks_cloak, get_activation_blocks_in_assist},
-    attr_val::{
-        get_bandwidth_use, get_max_type_fitted_count, get_online_max_sec_class, get_overload_td_lvl,
-        get_remote_resist_attr_id,
-    },
+    attr_val::{get_bandwidth_use, get_overload_td_lvl, get_remote_resist_attr_id},
     cycle::{specifies_disallow_repeats, specifies_reactivation_delay},
-    effect_immunity::get_disallow_vs_ew_immune_tgt,
     max_group::{get_max_group_active_limited, get_max_group_fitted_limited, get_max_group_online_limited},
     mobility::{get_entity_has_mwd, get_is_mobile},
-    sec_zone::is_sec_zone_limitable,
 };
 use crate::{
-    Count, SkillLevel, Value,
+    SkillLevel, Value,
     ad::{AAttrId, AItem, AItemId, AItemListId},
     dbg::DebugResult,
     rd::{RAttrConsts, RAttrId, RData, REffectId, RItemBase, RItemFlexEffectData, RItemListId, RcEffect},
@@ -53,23 +48,17 @@ pub(crate) struct RItemFlexData {
     /// Mutated ADCs do not specify it, it is taken from base item; have to use merged attrs.
     pub(crate) specs_disallow_repeats: bool,
     // Derived data - is item limitable by an appropriate "max group" limit, or cannot be affected
-    // at all
+    // at all. Those fields are put here because mutated item sometimes does not have limit defined,
+    // while base item does (siege modules, ancillary reps).
     pub(crate) max_group_fitted_limited: bool,
     pub(crate) max_group_online_limited: bool,
     pub(crate) max_group_active_limited: bool,
-    // Derived data - self-limits
-    /// Max amount of fit items of this type ID
-    pub(crate) max_type_fitted: Option<Count>,
-    /// If item can be sec zone limited altogether
-    pub(crate) sec_zone_limitable: bool,
-    /// 2 hisec, 1 lowsec, 0 the rest
-    pub(crate) online_max_sec_class: Option<Value>,
-    pub(crate) disallow_vs_ew_immune_tgt: bool,
     // Derived data - ship limits
     pub(crate) activation_blocks_cloak: bool,
     pub(crate) activation_blocks_in_assist: bool,
     // Derived data - misc
-    /// Required thermodynamics level for overheat
+    /// Required thermodynamics level for overheat. Mutated items borrow it from base item, so have
+    /// to keep it here.
     pub(crate) overload_td_lvl: Option<SkillLevel>,
 }
 impl RItemFlexData {
@@ -154,11 +143,6 @@ impl RItemFlexData {
         self.max_group_fitted_limited = get_max_group_fitted_limited(&self.attrs, attr_consts);
         self.max_group_online_limited = get_max_group_online_limited(&self.attrs, attr_consts);
         self.max_group_active_limited = get_max_group_active_limited(&self.attrs, attr_consts);
-        // Self-limits
-        self.max_type_fitted = get_max_type_fitted_count(&self.attrs, attr_consts);
-        self.sec_zone_limitable = is_sec_zone_limitable(&self.attrs, attr_consts);
-        self.online_max_sec_class = get_online_max_sec_class(&self.attrs, attr_consts);
-        self.disallow_vs_ew_immune_tgt = get_disallow_vs_ew_immune_tgt(&self.attrs, attr_consts);
         // Ship limits
         self.activation_blocks_cloak = get_activation_blocks_cloak(&self.attrs, attr_consts);
         self.activation_blocks_in_assist = get_activation_blocks_in_assist(&self.attrs, attr_consts);

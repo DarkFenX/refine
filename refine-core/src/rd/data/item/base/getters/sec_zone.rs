@@ -4,7 +4,7 @@ use crate::{
     util::RMap,
 };
 
-pub(in crate::rd::data::item::flex) fn is_sec_zone_limitable(
+pub(in crate::rd::data::item::base) fn is_sec_zone_limitable(
     item_attrs: &RMap<RAttrId, Value>,
     attr_consts: &RAttrConsts,
 ) -> bool {

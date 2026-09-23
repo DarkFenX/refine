@@ -54,7 +54,7 @@ impl Vast {
                                 .insert(item_uid, item_grp_aid);
                         }
                     }
-                    if let Some(sec_class) = module_rifd.online_max_sec_class {
+                    if let Some(sec_class) = module_rib.online_max_sec_class {
                         fit_data.sec_zone_online_class.insert(item_uid, sec_class);
                     }
                     if module_rib.enables_conduit {
@@ -85,7 +85,7 @@ impl Vast {
                                 .insert(item_uid, item_grp_aid);
                         }
                     }
-                    if let Some(sec_class) = service_rifd.online_max_sec_class {
+                    if let Some(sec_class) = service_rib.online_max_sec_class {
                         fit_data.sec_zone_online_class.insert(item_uid, sec_class);
                     }
                     if service_rib.enables_portal {
@@ -96,8 +96,8 @@ impl Vast {
             },
             RState::Active => match item {
                 UItem::Charge(charge) => {
-                    let charge_rifd = charge.get_r_item_flex_data().unwrap();
-                    if charge_rifd.sec_zone_limitable {
+                    let charge_rib = charge.get_r_item_base().unwrap();
+                    if charge_rib.sec_zone_limitable {
                         let fit_data = self.get_fit_data_mut(charge.get_fit_uid());
                         fit_data.sec_zone_active.insert(item_uid);
                     }
@@ -127,7 +127,7 @@ impl Vast {
                         }
                         _ => (),
                     }
-                    if module_rifd.sec_zone_limitable {
+                    if module_rib.sec_zone_limitable {
                         fit_data.sec_zone_active.insert(item_uid);
                     }
                     fit_data.mods_active.insert(item_uid);
@@ -215,7 +215,7 @@ impl Vast {
                             fit_data.mods_svcs_max_group_online_limited.remove(item_uid);
                         }
                     }
-                    if module_rifd.online_max_sec_class.is_some() {
+                    if module_rib.online_max_sec_class.is_some() {
                         fit_data.sec_zone_online_class.remove(item_uid);
                     }
                     if module_rib.enables_conduit {
@@ -238,7 +238,7 @@ impl Vast {
                             fit_data.mods_svcs_max_group_online_limited.remove(item_uid);
                         }
                     }
-                    if service_rifd.online_max_sec_class.is_some() {
+                    if service_rib.online_max_sec_class.is_some() {
                         fit_data.sec_zone_online_class.remove(item_uid);
                     }
                     if service_rib.enables_portal {
@@ -271,7 +271,7 @@ impl Vast {
                         }
                         _ => (),
                     }
-                    if module_rifd.sec_zone_limitable {
+                    if module_rib.sec_zone_limitable {
                         fit_data.sec_zone_active.remove(item_uid);
                     }
                     fit_data.mods_active.remove(item_uid);

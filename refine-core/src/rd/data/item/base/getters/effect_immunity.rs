@@ -4,7 +4,7 @@ use crate::{
     util::RMap,
 };
 
-pub(in crate::rd::data::item::flex) fn get_disallow_vs_ew_immune_tgt(
+pub(in crate::rd::data::item::base) fn get_disallow_vs_ew_immune_tgt(
     item_attrs: &RMap<RAttrId, Value>,
     attr_consts: &RAttrConsts,
 ) -> bool {

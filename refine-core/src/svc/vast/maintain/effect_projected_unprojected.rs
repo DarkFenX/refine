@@ -201,5 +201,5 @@ fn is_offense_blockable(projector_item: &UItem, r_effect: &REffect) -> bool {
         return true;
     };
     // Assistance with extra flag can be blocked by the disallow offensive modifiers flag too
-    r_effect.is_assist && projector_item.get_r_item_flex_data().unwrap().disallow_vs_ew_immune_tgt
+    r_effect.is_assist && projector_item.get_r_item_base().unwrap().disallow_vs_ew_immune_tgt
 }

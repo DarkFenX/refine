@@ -1,11 +1,13 @@
 use super::getters::{
     attr_val::{
         get_calibration_use, get_capacity, get_charge_rate, get_charge_size, get_fighter_refuel_duration,
-        get_max_fighter_count, get_radius, get_rig_size, get_volume,
+        get_max_fighter_count, get_max_type_fitted_count, get_online_max_sec_class, get_radius, get_rig_size,
+        get_volume,
     },
     charge_limit::get_item_charge_limit,
     container_limit::get_item_container_limit,
     drone_limit::get_ship_drone_limit,
+    effect_immunity::get_disallow_vs_ew_immune_tgt,
     fighter_kind::{
         get_heavy_fighter_flag, get_light_fighter_flag, get_st_heavy_fighter_flag, get_st_light_fighter_flag,
         get_st_support_fighter_flag, get_support_fighter_flag,
@@ -13,6 +15,7 @@ use super::getters::{
     has_effect::{has_launcher_effect, has_online_effect, has_turret_effect},
     kind::detect_item_kind,
     mobility::{get_enables_conduit, get_enables_portal_from_attrs, get_jump_fuel_type_id},
+    sec_zone::is_sec_zone_limitable,
     ship_kind::{get_item_ship_kind, get_ship_kind},
     ship_limit::get_item_ship_limit,
     slot_index::{get_booster_slot, get_implant_slot, get_subsystem_slot},
@@ -100,8 +103,16 @@ pub(crate) struct RItemBase {
     pub(crate) cont_limit: Option<RItemContLimit>,
     /// Ship can use those drones
     pub(crate) drone_limit: Option<RShipDroneLimit>,
+    // Derived data - self-limits
+    /// Max amount of fit items of this type ID
+    pub(crate) max_type_fitted: Option<Count>,
+    /// If item can be sec zone limited altogether
+    pub(crate) sec_zone_limitable: bool,
+    /// 2 hisec, 1 lowsec, 0 the rest
+    pub(crate) online_max_sec_class: Option<Value>,
+    pub(crate) disallow_vs_ew_immune_tgt: bool,
     // Derived data - misc
-    pub(crate) kind: Option<DetectedItemKind>,
+    pub(crate) detected_kind: Option<DetectedItemKind>,
     /// Which ship type this item fits to
     pub(crate) item_ship_kind: Option<RShipKind>,
 }
@@ -164,7 +175,11 @@ impl RItemBase {
             charge_limit: Default::default(),
             cont_limit: Default::default(),
             drone_limit: Default::default(),
-            kind: Default::default(),
+            max_type_fitted: Default::default(),
+            sec_zone_limitable: Default::default(),
+            online_max_sec_class: Default::default(),
+            disallow_vs_ew_immune_tgt: Default::default(),
+            detected_kind: Default::default(),
             item_ship_kind: Default::default(),
         }
     }
@@ -247,8 +262,13 @@ impl RItemBase {
         self.charge_limit = get_item_charge_limit(attrs, attr_consts);
         self.cont_limit = get_item_container_limit(attrs, attr_consts);
         self.drone_limit = get_ship_drone_limit(attrs, attr_consts);
+        // Self-limits
+        self.max_type_fitted = get_max_type_fitted_count(attrs, attr_consts);
+        self.sec_zone_limitable = is_sec_zone_limitable(attrs, attr_consts);
+        self.online_max_sec_class = get_online_max_sec_class(attrs, attr_consts);
+        self.disallow_vs_ew_immune_tgt = get_disallow_vs_ew_immune_tgt(attrs, attr_consts);
         // Misc
-        self.kind = detect_item_kind(
+        self.detected_kind = detect_item_kind(
             self.grp_id,
             self.cat_id,
             attrs,
