@@ -1,4 +1,5 @@
 use super::getters::{
+    activation_blocks::{get_activation_blocks_cloak, get_activation_blocks_in_assist},
     attr_val::{
         get_calibration_use, get_capacity, get_charge_rate, get_charge_size, get_fighter_refuel_duration,
         get_max_fighter_count, get_max_type_fitted_count, get_online_max_sec_class, get_radius, get_rig_size,
@@ -111,6 +112,9 @@ pub(crate) struct RItemBase {
     /// 2 hisec, 1 lowsec, 0 the rest
     pub(crate) online_max_sec_class: Option<Value>,
     pub(crate) disallow_vs_ew_immune_tgt: bool,
+    // Derived data - ship limits
+    pub(crate) activation_blocks_cloak: bool,
+    pub(crate) activation_blocks_in_assist: bool,
     // Derived data - misc
     pub(crate) detected_kind: Option<DetectedItemKind>,
     /// Which ship type this item fits to
@@ -179,6 +183,8 @@ impl RItemBase {
             sec_zone_limitable: Default::default(),
             online_max_sec_class: Default::default(),
             disallow_vs_ew_immune_tgt: Default::default(),
+            activation_blocks_cloak: Default::default(),
+            activation_blocks_in_assist: Default::default(),
             detected_kind: Default::default(),
             item_ship_kind: Default::default(),
         }
@@ -267,6 +273,9 @@ impl RItemBase {
         self.sec_zone_limitable = is_sec_zone_limitable(attrs, attr_consts);
         self.online_max_sec_class = get_online_max_sec_class(attrs, attr_consts);
         self.disallow_vs_ew_immune_tgt = get_disallow_vs_ew_immune_tgt(attrs, attr_consts);
+        // Ship limits
+        self.activation_blocks_cloak = get_activation_blocks_cloak(attrs, attr_consts);
+        self.activation_blocks_in_assist = get_activation_blocks_in_assist(attrs, attr_consts);
         // Misc
         self.detected_kind = detect_item_kind(
             self.grp_id,

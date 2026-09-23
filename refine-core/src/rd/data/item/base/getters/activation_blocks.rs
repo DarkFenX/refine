@@ -4,7 +4,7 @@ use crate::{
     util::RMap,
 };
 
-pub(in crate::rd::data::item::flex) fn get_activation_blocks_cloak(
+pub(in crate::rd::data::item::base) fn get_activation_blocks_cloak(
     item_attrs: &RMap<RAttrId, Value>,
     attr_consts: &RAttrConsts,
 ) -> bool {
@@ -14,7 +14,7 @@ pub(in crate::rd::data::item::flex) fn get_activation_blocks_cloak(
     }
 }
 
-pub(in crate::rd::data::item::flex) fn get_activation_blocks_in_assist(
+pub(in crate::rd::data::item::base) fn get_activation_blocks_in_assist(
     item_attrs: &RMap<RAttrId, Value>,
     attr_consts: &RAttrConsts,
 ) -> bool {

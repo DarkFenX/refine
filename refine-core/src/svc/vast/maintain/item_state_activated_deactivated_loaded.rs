@@ -134,10 +134,10 @@ impl Vast {
                     if module_rib.enables_portal {
                         fit_data.portal_enablers.insert(item_uid);
                     }
-                    if module_rifd.activation_blocks_cloak {
+                    if module_rib.activation_blocks_cloak {
                         fit_data.mods_active_block_cloak.insert(item_uid);
                     }
-                    if module_rifd.activation_blocks_in_assist {
+                    if module_rib.activation_blocks_in_assist {
                         fit_data.mods_active_block_in_assist.insert(item_uid);
                     }
                 }
@@ -278,10 +278,10 @@ impl Vast {
                     if module_rib.enables_portal {
                         fit_data.portal_enablers.remove(item_uid);
                     }
-                    if module_rifd.activation_blocks_cloak {
+                    if module_rib.activation_blocks_cloak {
                         fit_data.mods_active_block_cloak.remove(item_uid);
                     }
-                    if module_rifd.activation_blocks_in_assist {
+                    if module_rib.activation_blocks_in_assist {
                         fit_data.mods_active_block_in_assist.remove(item_uid);
                     }
                 }

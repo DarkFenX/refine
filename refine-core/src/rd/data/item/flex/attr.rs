@@ -1,5 +1,4 @@
 use super::getters::{
-    activation_blocks::{get_activation_blocks_cloak, get_activation_blocks_in_assist},
     attr_val::{get_bandwidth_use, get_overload_td_lvl, get_remote_resist_attr_id},
     cycle::{specifies_disallow_repeats, specifies_reactivation_delay},
     max_group::{get_max_group_active_limited, get_max_group_fitted_limited, get_max_group_online_limited},
@@ -53,9 +52,6 @@ pub(crate) struct RItemFlexData {
     pub(crate) max_group_fitted_limited: bool,
     pub(crate) max_group_online_limited: bool,
     pub(crate) max_group_active_limited: bool,
-    // Derived data - ship limits
-    pub(crate) activation_blocks_cloak: bool,
-    pub(crate) activation_blocks_in_assist: bool,
     // Derived data - misc
     /// Required thermodynamics level for overheat. Mutated items borrow it from base item, so have
     /// to keep it here.
@@ -143,9 +139,6 @@ impl RItemFlexData {
         self.max_group_fitted_limited = get_max_group_fitted_limited(&self.attrs, attr_consts);
         self.max_group_online_limited = get_max_group_online_limited(&self.attrs, attr_consts);
         self.max_group_active_limited = get_max_group_active_limited(&self.attrs, attr_consts);
-        // Ship limits
-        self.activation_blocks_cloak = get_activation_blocks_cloak(&self.attrs, attr_consts);
-        self.activation_blocks_in_assist = get_activation_blocks_in_assist(&self.attrs, attr_consts);
         // Misc
         self.overload_td_lvl = get_overload_td_lvl(&self.attrs, attr_consts);
     }
