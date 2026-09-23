@@ -1,7 +1,7 @@
 pub(crate) use base::{
-    RItemBase, RItemCapConsumer, RItemChargeLimit, RItemContLimit, RItemEffectData, RItemShipLimit, RShipDroneLimit,
+    RItemBase, RItemBaseEffectData, RItemCapConsumer, RItemChargeLimit, RItemContLimit, RItemShipLimit, RShipDroneLimit,
 };
-pub(crate) use flex::{RItemFlexData, RItemFlexEffectData};
+pub(crate) use flex::RItemFlexData;
 pub(crate) use item::RItem;
 pub(crate) use ship_kind::RShipKind;
 

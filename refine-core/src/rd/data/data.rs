@@ -1,7 +1,7 @@
 use std::sync::Arc;
 
 use crate::{
-    ad::{AAbilId, AAttrId, ABuffId, AData, AEffectId, AItemId, AItemListId},
+    ad::{AAbilId, AAttrId, ABuffId, AData, AEffectId, AItemId},
     rd::{
         RAbil, RAttr, RAttrConsts, RAttrId, RBuff, RBuffId, REffect, REffectConsts, REffectId, RItem, RItemList,
         RItemListId, RMuta,
@@ -17,7 +17,6 @@ pub(crate) type RcMuta = Arc<RMuta>;
 pub(crate) struct RData {
     pub(super) items: RMap<AItemId, RcItem>,
     pub(super) item_lists: PSlab<RItemListId, RItemList>,
-    pub(super) item_list_aid_rid_map: RMap<AItemListId, RItemListId>,
     pub(super) attrs: PSlab<RAttrId, RAttr>,
     pub(super) attr_aid_rid_map: RMap<AAttrId, RAttrId>,
     pub(super) attr_consts: RAttrConsts,
@@ -198,7 +197,6 @@ impl RData {
         Self {
             items,
             item_lists,
-            item_list_aid_rid_map,
             attrs,
             attr_aid_rid_map,
             attr_consts,

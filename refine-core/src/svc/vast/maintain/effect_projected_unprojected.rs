@@ -20,11 +20,7 @@ impl Vast {
             let projector_fit_data = self.get_fit_data_mut(projector_fit_uid);
             let projector_espec = EffectSpec::new(projector_uid, effect.rid);
             if effect.projectee_filter.is_some()
-                && let Some(effect_data) = projector_item
-                    .get_r_item_flex_data()
-                    .unwrap()
-                    .effect_adds
-                    .get(&effect.rid)
+                && let Some(effect_data) = projector_item.get_r_item_base().unwrap().effects.get(&effect.rid)
                 && let Some(item_list_rid) = effect_data.projectee_filter_rid
             {
                 projector_fit_data

@@ -2,7 +2,7 @@ use crate::{
     Value,
     ad::{AItemCatId, AItemGrpId},
     misc::DetectedItemKind,
-    rd::{RAttrConsts, RAttrId, REffectConsts, REffectId, RItemEffectData},
+    rd::{RAttrConsts, RAttrId, REffectConsts, REffectId, RItemBaseEffectData},
     util::RMap,
 };
 
@@ -10,7 +10,7 @@ pub(in crate::rd::data::item::base) fn detect_item_kind(
     item_grp_id: AItemGrpId,
     item_cat_id: AItemCatId,
     item_attrs: &RMap<RAttrId, Value>,
-    item_effects: &RMap<REffectId, RItemEffectData>,
+    item_effects: &RMap<REffectId, RItemBaseEffectData>,
     attr_consts: &RAttrConsts,
     effect_consts: &REffectConsts,
 ) -> Option<DetectedItemKind> {

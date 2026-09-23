@@ -12,9 +12,9 @@ pub(crate) use data::{
     RAbil, RAttr, RAttrConsts, RAttrId, RBuff, RBuffId, RBuffModifier, RData, REffect, REffectBuff, REffectBuffScope,
     REffectCharge, REffectChargeLoc, REffectConsts, REffectEcm, REffectId, REffectLocalOpcSpec, REffectMining,
     REffectModStrength, REffectModifier, REffectNeut, REffectProjModSpec, REffectProjOpcSpec, REffectProjecteeFilter,
-    REffectResist, REffectSpoolAttrs, RItem, RItemBase, RItemCapConsumer, RItemChargeLimit, RItemContLimit,
-    RItemEffectData, RItemFlexData, RItemFlexEffectData, RItemList, RItemListId, RItemShipLimit, RMuta, RMutaAttrRange,
-    RShipDroneLimit, RShipKind, RState, RcData, RcEffect, RcItem, RcMuta,
+    REffectResist, REffectSpoolAttrs, RItem, RItemBase, RItemBaseEffectData, RItemCapConsumer, RItemChargeLimit,
+    RItemContLimit, RItemFlexData, RItemList, RItemListId, RItemShipLimit, RMuta, RMutaAttrRange, RShipDroneLimit,
+    RShipKind, RState, RcData, RcEffect, RcItem, RcMuta,
 };
 
 mod data;

@@ -47,6 +47,9 @@ impl AItemEffects {
     pub(in crate::ad) fn keys(&self) -> impl ExactSizeIterator<Item = &AEffectId> {
         self.data.keys()
     }
+    pub(crate) fn get(&self, id: &AEffectId) -> Option<&AItemEffect> {
+        self.data.get(id)
+    }
     pub(in crate::ad) fn get_mut(&mut self, id: &AEffectId) -> Option<&mut AItemEffect> {
         self.data.get_mut(id)
     }

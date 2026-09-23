@@ -26,8 +26,8 @@ use crate::{
     ad::{AAbilId, AAttrId, AEffectId, AItem, AItemCatId, AItemGrpId, AItemId, AItemListId},
     misc::DetectedItemKind,
     rd::{
-        RAttrConsts, RAttrId, REffectConsts, REffectId, RItemCapConsumer, RItemChargeLimit, RItemContLimit,
-        RItemEffectData, RItemListId, RItemShipLimit, RShipDroneLimit, RShipKind, RState, RcEffect,
+        RAttrConsts, RAttrId, REffectConsts, REffectId, RItemBaseEffectData, RItemCapConsumer, RItemChargeLimit,
+        RItemContLimit, RItemListId, RItemShipLimit, RShipDroneLimit, RShipKind, RState, RcEffect,
     },
     util::{PSlab, RMap},
 };
@@ -42,7 +42,7 @@ pub(crate) struct RItemBase {
     pub(crate) aid: AItemId,
     pub(crate) grp_id: AItemGrpId,
     pub(crate) cat_id: AItemCatId,
-    pub(crate) effects: RMap<REffectId, RItemEffectData>,
+    pub(crate) effects: RMap<REffectId, RItemBaseEffectData>,
     pub(crate) defeff_rid: Option<REffectId>,
     pub(crate) abil_ids: Vec<AAbilId>,
     pub(crate) srqs: RMap<AItemId, SkillLevel>,
@@ -193,7 +193,6 @@ impl RItemBase {
         &mut self,
         a_items: &RMap<AItemId, AItem>,
         item_list_aid_rid_map: &RMap<AItemListId, RItemListId>,
-        attr_aid_rid_map: &RMap<AAttrId, RAttrId>,
         effect_aid_rid_map: &RMap<AEffectId, REffectId>,
         r_effects: &PSlab<REffectId, RcEffect>,
     ) {
@@ -202,8 +201,9 @@ impl RItemBase {
             let Some(&effect_rid) = effect_aid_rid_map.get(&a_item_effect.id) else {
                 continue;
             };
-            let r_effect_data = RItemEffectData::from_a_effect_data(&a_item_effect.data, attr_aid_rid_map);
-            self.effects.insert(effect_rid, r_effect_data);
+            // Put defaults on this pass; the effect-specific data will be filled later. Nothing in
+            // this method depends on it
+            self.effects.insert(effect_rid, RItemBaseEffectData::default());
         }
         self.defeff_rid = a_item
             .defeff_id
@@ -223,7 +223,6 @@ impl RItemBase {
                 .iter()
                 .filter_map(|item_list_aid| item_list_aid_rid_map.get(item_list_aid).copied()),
         );
-
         for &effect_rid in self.effects.keys() {
             let r_effect = r_effects.get(effect_rid).unwrap();
             if let Some(opc_spec) = r_effect.cap_consume {
@@ -234,57 +233,74 @@ impl RItemBase {
     }
     pub(in crate::rd::data::item) fn fill_runtime_extended(
         &mut self,
-        attrs: &RMap<RAttrId, Value>,
+        a_items: &RMap<AItemId, AItem>,
+        item_list_aid_rid_map: &RMap<AItemListId, RItemListId>,
+        attr_aid_rid_map: &RMap<AAttrId, RAttrId>,
+        r_item_attrs: &RMap<RAttrId, Value>,
+        r_effects: &PSlab<REffectId, RcEffect>,
         attr_consts: &RAttrConsts,
         effect_consts: &REffectConsts,
     ) {
+        // Item-specific effect data
+        for (&effect_rid, r_effect_data) in self.effects.iter_mut() {
+            let r_effect = r_effects.get(effect_rid).unwrap();
+            let a_item = a_items.get(&self.aid).unwrap();
+            let a_item_effect = a_item.effects.get(&r_effect.aid).unwrap();
+            r_effect_data.fill_from_a_effect_data(
+                r_effect,
+                &a_item_effect.data,
+                r_item_attrs,
+                attr_aid_rid_map,
+                item_list_aid_rid_map,
+            );
+        }
         // Base item attribute values
-        self.volume = get_volume(attrs, attr_consts);
-        self.capacity = get_capacity(attrs, attr_consts);
-        self.radius = get_radius(attrs, attr_consts);
-        self.calibration_use = get_calibration_use(attrs, attr_consts);
-        self.rig_size = get_rig_size(attrs, attr_consts);
-        self.charge_size = get_charge_size(attrs, attr_consts);
-        self.charge_rate = get_charge_rate(attrs, attr_consts);
-        self.max_fighter_count = get_max_fighter_count(attrs, attr_consts);
-        self.fighter_refuel_duration = get_fighter_refuel_duration(attrs, attr_consts);
+        self.volume = get_volume(r_item_attrs, attr_consts);
+        self.capacity = get_capacity(r_item_attrs, attr_consts);
+        self.radius = get_radius(r_item_attrs, attr_consts);
+        self.calibration_use = get_calibration_use(r_item_attrs, attr_consts);
+        self.rig_size = get_rig_size(r_item_attrs, attr_consts);
+        self.charge_size = get_charge_size(r_item_attrs, attr_consts);
+        self.charge_rate = get_charge_rate(r_item_attrs, attr_consts);
+        self.max_fighter_count = get_max_fighter_count(r_item_attrs, attr_consts);
+        self.fighter_refuel_duration = get_fighter_refuel_duration(r_item_attrs, attr_consts);
         // Mobility
-        self.jump_fuel_item_aid = get_jump_fuel_type_id(attrs, attr_consts);
-        self.enables_conduit = get_enables_conduit(attrs, attr_consts);
-        self.enables_portal = self.enables_portal || get_enables_portal_from_attrs(attrs, attr_consts);
+        self.jump_fuel_item_aid = get_jump_fuel_type_id(r_item_attrs, attr_consts);
+        self.enables_conduit = get_enables_conduit(r_item_attrs, attr_consts);
+        self.enables_portal = self.enables_portal || get_enables_portal_from_attrs(r_item_attrs, attr_consts);
         // Fighter kind flags
-        self.is_light_fighter = get_light_fighter_flag(attrs, attr_consts);
-        self.is_heavy_fighter = get_heavy_fighter_flag(attrs, attr_consts);
-        self.is_support_fighter = get_support_fighter_flag(attrs, attr_consts);
-        self.is_st_light_fighter = get_st_light_fighter_flag(attrs, attr_consts);
-        self.is_st_heavy_fighter = get_st_heavy_fighter_flag(attrs, attr_consts);
-        self.is_st_support_fighter = get_st_support_fighter_flag(attrs, attr_consts);
+        self.is_light_fighter = get_light_fighter_flag(r_item_attrs, attr_consts);
+        self.is_heavy_fighter = get_heavy_fighter_flag(r_item_attrs, attr_consts);
+        self.is_support_fighter = get_support_fighter_flag(r_item_attrs, attr_consts);
+        self.is_st_light_fighter = get_st_light_fighter_flag(r_item_attrs, attr_consts);
+        self.is_st_heavy_fighter = get_st_heavy_fighter_flag(r_item_attrs, attr_consts);
+        self.is_st_support_fighter = get_st_support_fighter_flag(r_item_attrs, attr_consts);
         // Slot index this item takes
-        self.implant_slot = get_implant_slot(attrs, attr_consts);
-        self.booster_slot = get_booster_slot(attrs, attr_consts);
-        self.subsystem_slot = get_subsystem_slot(attrs, attr_consts);
+        self.implant_slot = get_implant_slot(r_item_attrs, attr_consts);
+        self.booster_slot = get_booster_slot(r_item_attrs, attr_consts);
+        self.subsystem_slot = get_subsystem_slot(r_item_attrs, attr_consts);
         // Various aggregated limits
-        self.ship_limit = get_item_ship_limit(self.aid, attrs, attr_consts);
-        self.charge_limit = get_item_charge_limit(attrs, attr_consts);
-        self.cont_limit = get_item_container_limit(attrs, attr_consts);
-        self.drone_limit = get_ship_drone_limit(attrs, attr_consts);
+        self.ship_limit = get_item_ship_limit(self.aid, r_item_attrs, attr_consts);
+        self.charge_limit = get_item_charge_limit(r_item_attrs, attr_consts);
+        self.cont_limit = get_item_container_limit(r_item_attrs, attr_consts);
+        self.drone_limit = get_ship_drone_limit(r_item_attrs, attr_consts);
         // Self-limits
-        self.max_type_fitted = get_max_type_fitted_count(attrs, attr_consts);
-        self.sec_zone_limitable = is_sec_zone_limitable(attrs, attr_consts);
-        self.online_max_sec_class = get_online_max_sec_class(attrs, attr_consts);
-        self.disallow_vs_ew_immune_tgt = get_disallow_vs_ew_immune_tgt(attrs, attr_consts);
+        self.max_type_fitted = get_max_type_fitted_count(r_item_attrs, attr_consts);
+        self.sec_zone_limitable = is_sec_zone_limitable(r_item_attrs, attr_consts);
+        self.online_max_sec_class = get_online_max_sec_class(r_item_attrs, attr_consts);
+        self.disallow_vs_ew_immune_tgt = get_disallow_vs_ew_immune_tgt(r_item_attrs, attr_consts);
         // Ship limits
-        self.activation_blocks_cloak = get_activation_blocks_cloak(attrs, attr_consts);
-        self.activation_blocks_in_assist = get_activation_blocks_in_assist(attrs, attr_consts);
+        self.activation_blocks_cloak = get_activation_blocks_cloak(r_item_attrs, attr_consts);
+        self.activation_blocks_in_assist = get_activation_blocks_in_assist(r_item_attrs, attr_consts);
         // Misc
         self.detected_kind = detect_item_kind(
             self.grp_id,
             self.cat_id,
-            attrs,
+            r_item_attrs,
             &self.effects,
             attr_consts,
             effect_consts,
         );
-        self.item_ship_kind = get_item_ship_kind(self.cat_id, attrs, attr_consts);
+        self.item_ship_kind = get_item_ship_kind(self.cat_id, r_item_attrs, attr_consts);
     }
 }

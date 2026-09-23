@@ -1,9 +1,9 @@
 pub(crate) use base::RItemBase;
 pub(crate) use cap_consumer::RItemCapConsumer;
-pub(crate) use effect_data::RItemEffectData;
+pub(crate) use effect::RItemBaseEffectData;
 pub(crate) use getters::{RItemChargeLimit, RItemContLimit, RItemShipLimit, RShipDroneLimit};
 
 mod base;
 mod cap_consumer;
-mod effect_data;
+mod effect;
 mod getters;

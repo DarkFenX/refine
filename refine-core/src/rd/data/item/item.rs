@@ -33,22 +33,18 @@ impl RItem {
         effect_consts: &REffectConsts,
         r_effects: &PSlab<REffectId, RcEffect>,
     ) {
-        self.base.fill_runtime_basic(
-            a_items,
-            item_list_aid_rid_map,
-            attr_aid_rid_map,
-            effect_aid_rid_map,
-            r_effects,
-        );
-        self.attr_data.fill_runtime(
-            &self.base,
-            a_items,
-            item_list_aid_rid_map,
-            attr_aid_rid_map,
-            attr_consts,
-            r_effects,
-        );
         self.base
-            .fill_runtime_extended(&self.attr_data.attrs, attr_consts, effect_consts);
+            .fill_runtime_basic(a_items, item_list_aid_rid_map, effect_aid_rid_map, r_effects);
+        self.attr_data
+            .fill_runtime(&self.base, a_items, attr_aid_rid_map, attr_consts);
+        self.base.fill_runtime_extended(
+            a_items,
+            item_list_aid_rid_map,
+            attr_aid_rid_map,
+            &self.attr_data.attrs,
+            r_effects,
+            attr_consts,
+            effect_consts,
+        );
     }
 }

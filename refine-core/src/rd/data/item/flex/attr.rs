@@ -6,11 +6,11 @@ use super::getters::{
 };
 use crate::{
     SkillLevel, Value,
-    ad::{AAttrId, AItem, AItemId, AItemListId},
+    ad::{AAttrId, AItem, AItemId},
     dbg::DebugResult,
-    rd::{RAttrConsts, RAttrId, RData, REffectId, RItemBase, RItemFlexEffectData, RItemListId, RcEffect},
+    rd::{RAttrConsts, RAttrId, RData, RItemBase},
     ud::UData,
-    util::{PSlab, RMap},
+    util::RMap,
 };
 
 /// Flexible item data. It stores attributes and data derived from them for cases when those
@@ -25,8 +25,6 @@ use crate::{
 pub(crate) struct RItemFlexData {
     // Raw data
     pub(crate) attrs: RMap<RAttrId, Value>,
-    // Derived data - per-effect attribute-dependent data
-    pub(crate) effect_adds: RMap<REffectId, RItemFlexEffectData>,
     // Derived data - unmutated and unmodified (by dogma modifiers) attribute values, cast to
     // necessary type
     /// Mutated drones do not specify bandwidth, it has to be taken from base item
@@ -73,28 +71,20 @@ impl RItemFlexData {
 // Conversions
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl RItemFlexData {
-    pub(crate) fn from_attrs(attrs: RMap<RAttrId, Value>, r_base: &RItemBase, r_data: &RData) -> Self {
+    pub(crate) fn from_attrs(attrs: RMap<RAttrId, Value>, r_data: &RData) -> Self {
         let mut data = Self {
             attrs,
             ..Self::default()
         };
-        data.fill_derived(
-            r_base,
-            &r_data.item_list_aid_rid_map,
-            &r_data.attr_aid_rid_map,
-            &r_data.attr_consts,
-            &r_data.effects,
-        );
+        data.fill_derived(&r_data.attr_aid_rid_map, &r_data.attr_consts);
         data
     }
     pub(in crate::rd::data::item) fn fill_runtime(
         &mut self,
         r_base: &RItemBase,
         a_items: &RMap<AItemId, AItem>,
-        item_list_aid_rid_map: &RMap<AItemListId, RItemListId>,
         attr_aid_rid_map: &RMap<AAttrId, RAttrId>,
         attr_consts: &RAttrConsts,
-        r_effects: &PSlab<REffectId, RcEffect>,
     ) {
         let a_item = a_items.get(&r_base.aid).unwrap();
         // Raw data
@@ -103,29 +93,9 @@ impl RItemFlexData {
                 self.attrs.insert(attr_rid, Value::from_a_value(a_item_attr.value));
             }
         }
-        self.fill_derived(r_base, item_list_aid_rid_map, attr_aid_rid_map, attr_consts, r_effects);
+        self.fill_derived(attr_aid_rid_map, attr_consts);
     }
-    fn fill_derived(
-        &mut self,
-        r_base: &RItemBase,
-        item_list_aid_rid_map: &RMap<AItemListId, RItemListId>,
-        attr_aid_rid_map: &RMap<AAttrId, RAttrId>,
-        attr_consts: &RAttrConsts,
-        r_effects: &PSlab<REffectId, RcEffect>,
-    ) {
-        // Per-effect data
-        for (&effect_rid, r_effect_data) in r_base.effects.iter() {
-            let Some(r_item_attr_effect) = RItemFlexEffectData::try_from_r_effect_data(
-                r_effect_data,
-                &self.attrs,
-                effect_rid,
-                item_list_aid_rid_map,
-                r_effects,
-            ) else {
-                continue;
-            };
-            self.effect_adds.insert(effect_rid, r_item_attr_effect);
-        }
+    fn fill_derived(&mut self, attr_aid_rid_map: &RMap<AAttrId, RAttrId>, attr_consts: &RAttrConsts) {
         // Unmutated and unmodified attribute values
         self.bandwidth_use = get_bandwidth_use(&self.attrs, attr_consts);
         self.remote_resist_attr_rid = get_remote_resist_attr_id(&self.attrs, attr_consts, attr_aid_rid_map);
@@ -151,9 +121,6 @@ impl RItemFlexData {
     pub(crate) fn consistency_check(&self, u_data: &UData) -> DebugResult {
         for attr_rid in self.attrs.keys() {
             attr_rid.consistency_check(u_data)?;
-        }
-        for effect_rid in self.effect_adds.keys() {
-            effect_rid.consistency_check(u_data)?;
         }
         if let Some(attr_rid) = self.remote_resist_attr_rid {
             attr_rid.consistency_check(u_data)?;

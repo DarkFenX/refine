@@ -30,9 +30,9 @@ impl SolarSystem {
             return;
         };
         let effects_with_ac_type_aids = u_item
-            .get_r_item_flex_data()
+            .get_r_item_base()
             .unwrap()
-            .effect_adds
+            .effects
             .iter()
             .filter_map(|(effect_rid, effect_data)| {
                 effect_data.autocharge_aid.map(|ac_type_aid| (*effect_rid, ac_type_aid))

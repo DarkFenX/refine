@@ -85,7 +85,7 @@ impl UItemBaseMutable {
         };
         // Make proper mutated item once we have all the data
         let merged_attrs = get_combined_attr_values(r_data.get_item_by_aid(&type_aid), mutated_r_item);
-        let mut merged_attr_data = RItemFlexData::from_attrs(merged_attrs, &mutated_r_item.base, r_data);
+        let mut merged_attr_data = RItemFlexData::from_attrs(merged_attrs, r_data);
         apply_attr_mutations(&mut merged_attr_data, mutator, &item_mutation_data.attr_rolls, r_data);
         let regular_base = UItemBase::base_with_r_item(item_id, mutated_r_item.clone(), state);
         item_mutation_data.cache = Some(ItemMutationDataCache {
@@ -227,7 +227,7 @@ impl UItemBaseMutable {
         };
         // Compose attribute cache
         let merged_attrs = get_combined_attr_values(r_data.get_item_by_aid(&base_type_aid), mutated_r_item);
-        let mut merged_attr_data = RItemFlexData::from_attrs(merged_attrs, &mutated_r_item.base, r_data);
+        let mut merged_attr_data = RItemFlexData::from_attrs(merged_attrs, r_data);
         apply_attr_mutations(&mut merged_attr_data, mutator, &item_mutation.attr_rolls, r_data);
         // Everything needed is at hand, update item
         self.base.base_set_r_item(mutated_r_item.clone());
@@ -277,7 +277,7 @@ impl UItemBaseMutable {
         };
         // Since we have all the data now, apply mutation properly
         let merged_attrs = get_combined_attr_values(self.base.base_get_r_item(), mutated_r_item);
-        let mut merged_attr_data = RItemFlexData::from_attrs(merged_attrs, &mutated_r_item.base, r_data);
+        let mut merged_attr_data = RItemFlexData::from_attrs(merged_attrs, r_data);
         apply_attr_mutations(&mut merged_attr_data, mutator, &item_mutation_data.attr_rolls, r_data);
         self.base.base_set_r_item(mutated_r_item.clone());
         item_mutation_data.cache = Some(ItemMutationDataCache {

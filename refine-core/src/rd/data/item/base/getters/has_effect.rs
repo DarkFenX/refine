@@ -1,32 +1,32 @@
 use crate::{
     ad::AEffectId,
-    rd::{REffectId, RItemEffectData},
+    rd::{REffectId, RItemBaseEffectData},
     util::RMap,
 };
 
 pub(in crate::rd::data::item::base) fn has_online_effect(
-    item_effects: &RMap<REffectId, RItemEffectData>,
+    item_effects: &RMap<REffectId, RItemBaseEffectData>,
     effect_aid_rid_map: &RMap<AEffectId, REffectId>,
 ) -> bool {
     has_effect(item_effects, effect_aid_rid_map, &AEffectId::ONLINE)
 }
 
 pub(in crate::rd::data::item::base) fn has_turret_effect(
-    item_effects: &RMap<REffectId, RItemEffectData>,
+    item_effects: &RMap<REffectId, RItemBaseEffectData>,
     effect_aid_rid_map: &RMap<AEffectId, REffectId>,
 ) -> bool {
     has_effect(item_effects, effect_aid_rid_map, &AEffectId::TURRET_FITTED)
 }
 
 pub(in crate::rd::data::item::base) fn has_launcher_effect(
-    item_effects: &RMap<REffectId, RItemEffectData>,
+    item_effects: &RMap<REffectId, RItemBaseEffectData>,
     effect_aid_rid_map: &RMap<AEffectId, REffectId>,
 ) -> bool {
     has_effect(item_effects, effect_aid_rid_map, &AEffectId::LAUNCHER_FITTED)
 }
 
 fn has_effect(
-    item_effects: &RMap<REffectId, RItemEffectData>,
+    item_effects: &RMap<REffectId, RItemBaseEffectData>,
     effect_aid_rid_map: &RMap<AEffectId, REffectId>,
     effect_id: &AEffectId,
 ) -> bool {
