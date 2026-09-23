@@ -199,8 +199,8 @@ def test_modified_req(client, consts):
 
 def test_mutation_req(client, consts):
     eve_attr_id = client.mk_eve_attr(id_=consts.EveAttr.required_thermodynamics_skill)
-    eve_base_module_id = client.mk_eve_item(attrs={eve_attr_id: 2})
-    eve_mutated_module_id = client.mk_eve_item(attrs={eve_attr_id: 3})
+    eve_base_module_id = client.mk_eve_item(attrs={eve_attr_id: 3})
+    eve_mutated_module_id = client.mk_eve_item(attrs={eve_attr_id: 2})
     eve_mutator_id = client.mk_eve_mutator(
         items=[([eve_base_module_id], eve_mutated_module_id)],
         attrs={eve_attr_id: (0.5, 1.5)})
@@ -239,11 +239,11 @@ def test_mutation_req(client, consts):
     # Action
     api_module.change_module(mutation=None)
     # Verification
-    assert api_module.update().attrs[eve_attr_id].modified == approx(2)
+    assert api_module.update().attrs[eve_attr_id].modified == approx(3)
     api_val = api_fit.validate(options=ValOptions(overload_skill=True))
     assert api_val.passed is False
     assert api_val.details.overload_skill.td_lvl == 1
-    assert api_val.details.overload_skill.module_reqs == {api_module.id: 2}
+    assert api_val.details.overload_skill.module_reqs == {api_module.id: 3}
 
 
 def test_no_skill(client, consts):

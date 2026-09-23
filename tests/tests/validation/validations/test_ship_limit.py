@@ -827,8 +827,9 @@ def test_modified_group(client, consts):
 
 
 def test_mutation_type(client, consts):
-    # Unrealistic scenario, but we still check what happens if restrictions on base and mutated item
-    # are not the same
+    # Restrictions on base item and mutated item can mismatch (e.g. as of 2026-09-23, 10000MN ABs
+    # have no restrictions while base modules do). Regardless of base item values, mutated item
+    # values are taken for the limit.
     eve_ship_grp_id = client.mk_eve_ship_group()
     eve_type1_attr_id = client.mk_eve_attr(id_=consts.EveAttr.can_fit_ship_type1, unit_id=consts.EveAttrUnit.item_id)
     eve_type2_attr_id = client.mk_eve_attr(id_=consts.EveAttr.can_fit_ship_type2, unit_id=consts.EveAttrUnit.item_id)
@@ -836,8 +837,10 @@ def test_mutation_type(client, consts):
     eve_ship2_id = client.mk_eve_ship(grp_id=eve_ship_grp_id)
     eve_ship3_id = client.mk_eve_ship(grp_id=eve_ship_grp_id)
     eve_base_module_id = client.mk_eve_item(attrs={eve_type1_attr_id: eve_ship1_id, eve_type2_attr_id: eve_ship2_id})
-    eve_mutated_module_id = client.mk_eve_item(attrs={eve_type1_attr_id: eve_ship3_id})
-    eve_mutator_id = client.mk_eve_mutator(items=[([eve_base_module_id], eve_mutated_module_id)])
+    eve_mutated_module1_id = client.mk_eve_item(attrs={eve_type1_attr_id: eve_ship3_id})
+    eve_mutated_module2_id = client.mk_eve_item()
+    eve_mutator1_id = client.mk_eve_mutator(items=[([eve_base_module_id], eve_mutated_module1_id)])
+    eve_mutator2_id = client.mk_eve_mutator(items=[([eve_base_module_id], eve_mutated_module2_id)])
     client.create_sources()
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
@@ -850,7 +853,7 @@ def test_mutation_type(client, consts):
     assert api_val.details.ship_limit.ship_group_id == eve_ship_grp_id
     assert api_val.details.ship_limit.items == {api_module.id: (sorted([eve_ship1_id, eve_ship2_id]), [])}
     # Action
-    api_module.change_module(mutation=eve_mutator_id)
+    api_module.change_module(mutation=eve_mutator1_id)
     # Verification
     api_val = api_fit.validate(options=ValOptions(ship_limit=True))
     assert api_val.passed is True
@@ -860,9 +863,10 @@ def test_mutation_type(client, consts):
     api_fit.set_ship(type_id=eve_ship2_id)
     # Verification
     api_val = api_fit.validate(options=ValOptions(ship_limit=True))
-    assert api_val.passed is True
-    with check_no_field():
-        api_val.details  # ruff:ignore[useless-expression]
+    assert api_val.passed is False
+    assert api_val.details.ship_limit.ship_type_id == eve_ship2_id
+    assert api_val.details.ship_limit.ship_group_id == eve_ship_grp_id
+    assert api_val.details.ship_limit.items == {api_module.id: ([eve_ship3_id], [])}
     # Action
     api_fit.set_ship(type_id=eve_ship1_id)
     # Verification
@@ -870,7 +874,14 @@ def test_mutation_type(client, consts):
     assert api_val.passed is False
     assert api_val.details.ship_limit.ship_type_id == eve_ship1_id
     assert api_val.details.ship_limit.ship_group_id == eve_ship_grp_id
-    assert api_val.details.ship_limit.items == {api_module.id: (sorted([eve_ship2_id, eve_ship3_id]), [])}
+    assert api_val.details.ship_limit.items == {api_module.id: ([eve_ship3_id], [])}
+    # Action
+    api_module.change_module(mutation=eve_mutator2_id)
+    # Verification - no restriction on this mutator whatsoever
+    api_val = api_fit.validate(options=ValOptions(ship_limit=True))
+    assert api_val.passed is True
+    with check_no_field():
+        api_val.details  # ruff:ignore[useless-expression]
     # Action
     api_module.change_module(mutation=None)
     # Verification
@@ -889,8 +900,9 @@ def test_mutation_type(client, consts):
 
 
 def test_mutation_group(client, consts):
-    # Unrealistic scenario, but we still check what happens if restrictions on base and mutated item
-    # are not the same
+    # Restrictions on base item and mutated item can mismatch (e.g. as of 2026-09-23, 10000MN ABs
+    # have no restrictions while base modules do). Regardless of base item values, mutated item
+    # values are taken for the limit.
     eve_ship_grp1_id = client.mk_eve_ship_group()
     eve_ship_grp2_id = client.mk_eve_ship_group()
     eve_ship_grp3_id = client.mk_eve_ship_group()
@@ -901,8 +913,10 @@ def test_mutation_group(client, consts):
     eve_ship3_id = client.mk_eve_ship(grp_id=eve_ship_grp3_id)
     eve_base_module_id = client.mk_eve_item(
         attrs={eve_group1_attr_id: eve_ship_grp1_id, eve_group2_attr_id: eve_ship_grp2_id})
-    eve_mutated_module_id = client.mk_eve_item(attrs={eve_group1_attr_id: eve_ship_grp3_id})
-    eve_mutator_id = client.mk_eve_mutator(items=[([eve_base_module_id], eve_mutated_module_id)])
+    eve_mutated_module1_id = client.mk_eve_item(attrs={eve_group1_attr_id: eve_ship_grp3_id})
+    eve_mutated_module2_id = client.mk_eve_item()
+    eve_mutator1_id = client.mk_eve_mutator(items=[([eve_base_module_id], eve_mutated_module1_id)])
+    eve_mutator2_id = client.mk_eve_mutator(items=[([eve_base_module_id], eve_mutated_module2_id)])
     client.create_sources()
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
@@ -915,7 +929,7 @@ def test_mutation_group(client, consts):
     assert api_val.details.ship_limit.ship_group_id == eve_ship_grp3_id
     assert api_val.details.ship_limit.items == {api_module.id: ([], sorted([eve_ship_grp1_id, eve_ship_grp2_id]))}
     # Action
-    api_module.change_module(mutation=eve_mutator_id)
+    api_module.change_module(mutation=eve_mutator1_id)
     # Verification
     api_val = api_fit.validate(options=ValOptions(ship_limit=True))
     assert api_val.passed is True
@@ -925,9 +939,10 @@ def test_mutation_group(client, consts):
     api_fit.set_ship(type_id=eve_ship2_id)
     # Verification
     api_val = api_fit.validate(options=ValOptions(ship_limit=True))
-    assert api_val.passed is True
-    with check_no_field():
-        api_val.details  # ruff:ignore[useless-expression]
+    assert api_val.passed is False
+    assert api_val.details.ship_limit.ship_type_id == eve_ship2_id
+    assert api_val.details.ship_limit.ship_group_id == eve_ship_grp2_id
+    assert api_val.details.ship_limit.items == {api_module.id: ([], [eve_ship_grp3_id])}
     # Action
     api_fit.set_ship(type_id=eve_ship1_id)
     # Verification
@@ -935,7 +950,14 @@ def test_mutation_group(client, consts):
     assert api_val.passed is False
     assert api_val.details.ship_limit.ship_type_id == eve_ship1_id
     assert api_val.details.ship_limit.ship_group_id == eve_ship_grp1_id
-    assert api_val.details.ship_limit.items == {api_module.id: ([], sorted([eve_ship_grp2_id, eve_ship_grp3_id]))}
+    assert api_val.details.ship_limit.items == {api_module.id: ([], [eve_ship_grp3_id])}
+    # Action
+    api_module.change_module(mutation=eve_mutator2_id)
+    # Verification - no restriction on this mutator whatsoever
+    api_val = api_fit.validate(options=ValOptions(ship_limit=True))
+    assert api_val.passed is True
+    with check_no_field():
+        api_val.details  # ruff:ignore[useless-expression]
     # Action
     api_module.change_module(mutation=None)
     # Verification

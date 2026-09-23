@@ -259,11 +259,11 @@ def test_mutation_attr(client, consts):
     eve_use_attr_id = client.mk_eve_attr()
     eve_use_effect_id = client.mk_eve_effect(cat_id=consts.EveEffCat.active, discharge_attr_id=eve_use_attr_id)
     eve_base_module_id = client.mk_eve_item(
-        attrs={eve_use_attr_id: 1000},
+        attrs={eve_use_attr_id: 1200},
         eff_ids=[eve_use_effect_id],
         defeff_id=eve_use_effect_id)
     eve_mutated_module_id = client.mk_eve_item(
-        attrs={eve_use_attr_id: 1200},
+        attrs={eve_use_attr_id: 1000},
         eff_ids=[eve_use_effect_id],
         defeff_id=eve_use_effect_id)
     eve_mutator_id = client.mk_eve_mutator(
@@ -278,7 +278,7 @@ def test_mutation_attr(client, consts):
     # Verification
     api_val = api_fit.validate(options=ValOptions(unusable_cap=True))
     assert api_val.passed is False
-    assert api_val.details.unusable_cap == (approx(750), {api_module.id: approx(1000)})
+    assert api_val.details.unusable_cap == (approx(750), {api_module.id: approx(1200)})
     # Action
     api_module.change_module(mutation=(eve_mutator_id, {eve_use_attr_id: Muta.roll_to_api(val=0.9)}))
     # Verification
@@ -297,7 +297,7 @@ def test_mutation_attr(client, consts):
     # Verification
     api_val = api_fit.validate(options=ValOptions(unusable_cap=True))
     assert api_val.passed is False
-    assert api_val.details.unusable_cap == (approx(750), {api_module.id: approx(1000)})
+    assert api_val.details.unusable_cap == (approx(750), {api_module.id: approx(1200)})
 
 
 def test_mutation_effect(client, consts):
