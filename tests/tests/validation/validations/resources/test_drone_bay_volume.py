@@ -273,8 +273,9 @@ def test_mutation_use(client, consts):
         api_val.details  # ruff:ignore[useless-expression]
     # Action
     api_drone.change_drone(mutation=(eve_mutator_id, {eve_use_attr_id: Muta.roll_to_api(val=0.8)}))
-    # Verification
-    assert api_drone.update().attrs[eve_use_attr_id].modified == approx(145.6)
+    # Verification - rolled base attribute value is in attributes, but value from mutated drone type
+    # is used for stats/validation
+    assert api_drone.update().attrs[eve_use_attr_id].modified == approx(134.4)
     api_stats = api_fit.get_stats(options=FitStatsOptions(drone_bay_volume=True))
     assert api_stats.drone_bay_volume.one() == (approx(130), approx(125))
     api_val = api_fit.validate(options=ValOptions(drone_bay_volume=True))
@@ -284,8 +285,9 @@ def test_mutation_use(client, consts):
     assert api_val.details.drone_bay_volume.users == {api_drone.id: 130}
     # Action
     api_drone.change_drone(mutation={eve_use_attr_id: None})
-    # Verification
-    assert api_drone.update().attrs[eve_use_attr_id].modified == approx(130)
+    # Verification - unrolled base attribute value is in attributes, but value from mutated drone
+    # type is used for stats/validation
+    assert api_drone.update().attrs[eve_use_attr_id].modified == approx(120)
     api_stats = api_fit.get_stats(options=FitStatsOptions(drone_bay_volume=True))
     assert api_stats.drone_bay_volume.one() == (approx(130), approx(125))
     api_val = api_fit.validate(options=ValOptions(drone_bay_volume=True))

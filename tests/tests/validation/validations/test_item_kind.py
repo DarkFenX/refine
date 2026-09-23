@@ -562,11 +562,11 @@ def test_mutation_attr(client, consts):
         api_item.id: (consts.ApiValItemType.booster, consts.ApiValItemType.module_high)}
     # Action
     api_item.change_module(mutation=eve_mutator_id)
-    # Verification - actual type becomes None because attributes are merged, and item is eligible to
-    # be both implant and booster, which isn't considered valid
+    # Verification - mutated item type is used; contribution of base item attributes is ignored
     api_val = api_fit.validate(options=ValOptions(item_kind=True))
     assert api_val.passed is False
-    assert api_val.details.item_kind == {api_item.id: (None, consts.ApiValItemType.module_high)}
+    assert api_val.details.item_kind == {
+        api_item.id: (consts.ApiValItemType.implant, consts.ApiValItemType.module_high)}
     # Action
     api_item.change_module(mutation=None)
     # Verification

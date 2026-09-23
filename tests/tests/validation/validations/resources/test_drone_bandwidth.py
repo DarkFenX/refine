@@ -252,8 +252,8 @@ def test_modified_max(client, consts):
 def test_mutation_use(client, consts):
     eve_use_attr_id = client.mk_eve_attr(id_=consts.EveAttr.drone_bandwidth_used)
     eve_max_attr_id = client.mk_eve_attr(id_=consts.EveAttr.drone_bandwidth)
-    eve_base_drone_id = client.mk_eve_item(attrs={eve_use_attr_id: 120})
-    eve_mutated_drone_id = client.mk_eve_item(attrs={eve_use_attr_id: 130})
+    eve_base_drone_id = client.mk_eve_item(attrs={eve_use_attr_id: 130})
+    eve_mutated_drone_id = client.mk_eve_item(attrs={eve_use_attr_id: 120})
     eve_mutator_id = client.mk_eve_mutator(
         items=[([eve_base_drone_id], eve_mutated_drone_id)],
         attrs={eve_use_attr_id: (0.8, 1.2)})
@@ -264,13 +264,14 @@ def test_mutation_use(client, consts):
     api_fit.set_ship(type_id=eve_ship_id)
     api_drone = api_fit.add_drone(type_id=eve_base_drone_id, state=consts.ApiMinionState.in_space)
     # Verification
-    assert api_drone.update().attrs[eve_use_attr_id].modified == approx(120)
+    assert api_drone.update().attrs[eve_use_attr_id].modified == approx(130)
     api_stats = api_fit.get_stats(options=FitStatsOptions(drone_bandwidth=True))
-    assert api_stats.drone_bandwidth.one() == (approx(120), approx(125))
+    assert api_stats.drone_bandwidth.one() == (approx(130), approx(125))
     api_val = api_fit.validate(options=ValOptions(drone_bandwidth=True))
-    assert api_val.passed is True
-    with check_no_field():
-        api_val.details  # ruff:ignore[useless-expression]
+    assert api_val.passed is False
+    assert api_val.details.drone_bandwidth.used == approx(130)
+    assert api_val.details.drone_bandwidth.max == approx(125)
+    assert api_val.details.drone_bandwidth.users == {api_drone.id: approx(130)}
     # Action
     api_drone.change_drone(mutation=(eve_mutator_id, {eve_use_attr_id: Muta.roll_to_api(val=0.8)}))
     # Verification
