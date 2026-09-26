@@ -14,8 +14,10 @@
 //!
 //! - `phb-fs`: Enables handler which reads Phobos data export from filesystem.
 //! - `phb-http`: Enables handler which fetches Phobos data export over HTTP.
+//! - `phb-https`: `phb-http` with TLS support, which is needed to fetch over HTTPS.
 //! - `sde-fs`: Enables handler which reads FC-produced SDE from filesystem.
 //! - `sde-http`: Enables handler which fetches FC-produced SDE over HTTP.
+//! - `sde-https`: `sde-http` with TLS support, which is needed to fetch over HTTPS.
 
 #[cfg(feature = "phb-fs")]
 pub use phb::PhbFsEdh;
