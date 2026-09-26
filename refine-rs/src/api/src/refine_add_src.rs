@@ -2,7 +2,7 @@ use std::sync::Arc;
 
 use crate::{
     Refine,
-    src::{Src, SrcAlias},
+    src::{Src, SrcAlias, SrcInfo, SrcInfoMode},
     svc::SrcInnerGuarded,
 };
 
@@ -16,6 +16,40 @@ impl Refine {
         ed_handler: rc::ed::EveDataHandler,
         ad_cacher: Option<rc::ad::AdaptedDataCacher>,
     ) -> Result<Src<'_>, SrcAddError> {
+        let inner_src = self
+            .internal_add_src(alias, make_default, ed_handler, ad_cacher)
+            .await?;
+        Ok(Src::new(self, inner_src))
+    }
+    /// Add a data source, using passed EVE data handler and optional adapted data cacher, and get
+    /// its info.
+    #[tracing::instrument(name = "src-add-inf", level = "error", skip_all)]
+    pub async fn add_src_and_get_info(
+        &self,
+        alias: SrcAlias,
+        make_default: bool,
+        ed_handler: rc::ed::EveDataHandler,
+        ad_cacher: Option<rc::ad::AdaptedDataCacher>,
+        info_mode: SrcInfoMode,
+    ) -> Result<(Src<'_>, SrcInfo), SrcAddError> {
+        let inner_src = self
+            .internal_add_src(alias, make_default, ed_handler, ad_cacher)
+            .await?;
+        let src_info = SrcInfo::from_alias_and_core(
+            inner_src.get_alias(),
+            inner_src.get_time_created(),
+            inner_src.get_core().get_info(),
+            info_mode,
+        );
+        Ok((Src::new(self, inner_src), src_info))
+    }
+    async fn internal_add_src(
+        &self,
+        alias: SrcAlias,
+        make_default: bool,
+        ed_handler: rc::ed::EveDataHandler,
+        ad_cacher: Option<rc::ad::AdaptedDataCacher>,
+    ) -> Result<SrcInnerGuarded, SrcAddError> {
         tracing::debug!("creating source with alias \"{alias}\", default={make_default}");
         // Source creation time is the time request was received
         let time_created = time::UtcDateTime::now();
@@ -41,7 +75,7 @@ impl Refine {
         }
         drop(alias_data);
         drop(reservation);
-        Ok(Src::new(self, inner_src))
+        Ok(inner_src)
     }
 }
 
