@@ -4,7 +4,7 @@ use crate::Refine;
 
 impl Refine {
     #[tracing::instrument(name = "sol-cln", level = "error", skip_all)]
-    pub(crate) async fn cleanup_sols(&self, sol_inact_limit: Duration) {
+    pub(crate) fn cleanup_sols(&self, sol_inact_limit: Duration) {
         tracing::debug!("starting cleanup");
         let mut id_sol_map = self.id_sol_map.write();
         let now = Instant::now();

@@ -8,7 +8,7 @@ impl Refine {
         timer.set_missed_tick_behavior(tokio::time::MissedTickBehavior::Skip);
         loop {
             timer.tick().await;
-            self.cleanup_sols(sol_inact_limit).await;
+            self.cleanup_sols(sol_inact_limit);
         }
     }
 }

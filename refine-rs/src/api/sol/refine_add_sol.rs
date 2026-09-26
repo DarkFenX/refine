@@ -13,7 +13,7 @@ impl Refine {
         src_alias: Option<SrcAlias>,
         ctl_cmd: SolAddCmd,
     ) -> Result<SolarSystem<'_>, SolAddError> {
-        let inner_src = self.internal_get_src(src_alias).await?;
+        let inner_src = self.internal_get_src(src_alias)?;
         // Variables for move
         let core_src = inner_src.get_core().clone();
         let core_sol = self.tpool.exec_standard(move || ctl_cmd.execute(&core_src)).await;
@@ -29,7 +29,7 @@ impl Refine {
         ctl_cmd: SolAddCmd,
         info_cmd: SolInfoCmd,
     ) -> Result<(SolarSystem<'_>, SolInfo), SolAddError> {
-        let inner_src = self.internal_get_src(src_alias).await?;
+        let inner_src = self.internal_get_src(src_alias)?;
         // Variables for move
         let core_src = inner_src.get_core().clone();
         let (core_sol, info_ext) = self

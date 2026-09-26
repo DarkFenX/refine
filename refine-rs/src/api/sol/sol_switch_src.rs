@@ -6,7 +6,7 @@ use crate::{
 impl SolarSystem<'_> {
     #[tracing::instrument(name = "sol-swt-src", level = "error", skip_all)]
     pub async fn switch_src(&mut self, src_alias: Option<SrcAlias>) -> Result<(), SolSwitchSrcError> {
-        let inner_src = self.refine.internal_get_src(src_alias).await?;
+        let inner_src = self.refine.internal_get_src(src_alias)?;
         // Variables for move
         let core_src = inner_src.get_core().clone();
         self.exec_standard_infallible(move |core_sol| core_sol.set_src(&core_src))
@@ -20,7 +20,7 @@ impl SolarSystem<'_> {
         src_alias: Option<SrcAlias>,
         info_cmd: SolInfoCmd,
     ) -> Result<SolInfo, SolSwitchSrcError> {
-        let inner_src = self.refine.internal_get_src(src_alias).await?;
+        let inner_src = self.refine.internal_get_src(src_alias)?;
         let core_src = inner_src.get_core().clone();
         // Variables for move
         let sol_id = self.get_id();

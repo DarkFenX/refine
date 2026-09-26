@@ -7,13 +7,10 @@ use crate::{
 impl Refine {
     #[tracing::instrument(name = "src-get", level = "error", skip_all)]
     pub async fn get_src(&self, alias: Option<SrcAlias>) -> Result<Src<'_>, SrcGetError> {
-        let inner_src = self.internal_get_src(alias).await?;
+        let inner_src = self.internal_get_src(alias)?;
         Ok(Src::new(self, inner_src))
     }
-    pub(in crate::api) async fn internal_get_src(
-        &self,
-        alias: Option<SrcAlias>,
-    ) -> Result<SrcInnerGuarded, SrcGetError> {
+    pub(in crate::api) fn internal_get_src(&self, alias: Option<SrcAlias>) -> Result<SrcInnerGuarded, SrcGetError> {
         let alias_data = self.src_alias_data.read();
         let alias = match alias {
             Some(alias) => alias,
