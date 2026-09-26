@@ -23,3 +23,7 @@ inherits = "release"
 codegen-units = 1
 lto = "fat"
 panic = "abort"
+
+[profile.release-dist]
+inherits = "release-opt"
+strip = "symbols"
