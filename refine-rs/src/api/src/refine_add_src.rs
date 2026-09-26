@@ -19,49 +19,29 @@ impl Refine {
         tracing::debug!("creating source with alias \"{alias}\", default={make_default}");
         // Source creation time is the time request was received
         let time_created = time::UtcDateTime::now();
-        // Disallow creating of sources with the same name until this one is created/fails
-        if !self.check_alias_availability(&alias).await {
+        let Some(reservation) = self.src_alias_locks.reserve(alias) else {
+            return Err(SrcAddError::SrcAliasNotAvailable(alias));
+        };
+        if self.src_alias_data.read().await.map.contains_key(&alias) {
             return Err(SrcAddError::SrcAliasNotAvailable(alias));
         }
-        self.lock_alias(alias).await;
         // Create source in a heavy threadpool
-        let result = self
+        let inner_src = self
             .tpool
             .exec_heavy(move || {
                 create_core_src(ed_handler, ad_cacher)
                     .map(|core_src| SrcInnerGuarded::new(alias, time_created, Arc::new(core_src)))
             })
-            .await;
-        // Write results and unlock alias
-        match result {
-            Ok(inner_src) => {
-                let mut alias_data = self.src_alias_data.write().await;
-                alias_data.map.insert(alias, inner_src.clone());
-                if make_default {
-                    alias_data.default = Some(inner_src.clone());
-                }
-                drop(alias_data);
-                self.unlock_alias(&alias).await;
-                Ok(Src::new(self, inner_src))
-            }
-            Err(e) => {
-                self.unlock_alias(&alias).await;
-                Err(e)
-            }
+            .await?;
+        // Write results, then release the alias
+        let mut alias_data = self.src_alias_data.write().await;
+        alias_data.map.insert(alias, inner_src.clone());
+        if make_default {
+            alias_data.default = Some(inner_src.clone());
         }
-    }
-    async fn check_alias_availability(&self, alias: &SrcAlias) -> bool {
-        !self.src_alias_data.read().await.map.contains_key(alias) && !self.src_alias_locks.read().await.contains(alias)
-    }
-    async fn lock_alias(&self, alias: SrcAlias) {
-        tracing::trace!("locking alias \"{alias}\"");
-        self.src_alias_locks.write().await.insert(alias);
-    }
-    async fn unlock_alias(&self, alias: &SrcAlias) {
-        tracing::trace!("unlocking alias \"{alias}\"");
-        if !self.src_alias_locks.write().await.remove(alias) {
-            tracing::warn!("attempt to unlock alias which is not locked")
-        }
+        drop(alias_data);
+        drop(reservation);
+        Ok(Src::new(self, inner_src))
     }
 }
 

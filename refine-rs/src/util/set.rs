@@ -32,9 +32,6 @@ where
     V: Eq + Hash,
     H: BuildHasher,
 {
-    pub(crate) fn contains(&self, val: &V) -> bool {
-        self.data.contains(val)
-    }
     // Modification methods
     pub(crate) fn insert(&mut self, val: V) -> bool {
         self.data.insert(val)
