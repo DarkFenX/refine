@@ -18,7 +18,7 @@ config = { version = ">=0.15.26", default-features = false, features = ["toml"] 
 http-body-util = ">=0.1.5"
 serde = { version = ">=1.0.229", features = ["derive"] }
 serde_json = { version = ">=1.0.151", features = ["float_roundtrip"] }
-thiserror = ">=2.0.20"
+thiserror = ">=2.0.21"
 time = { version = ">=0.3.55", features = ["formatting", "macros"] }
 tokio = { version = ">=1.53.1", features = ["macros", "net", "rt", "rt-multi-thread"] }
 tower = { version = ">=0.5.3", features = ["util"] }
