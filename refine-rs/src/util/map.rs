@@ -71,7 +71,7 @@ where
     pub(crate) fn remove(&mut self, key: &K) -> Option<V> {
         self.data.remove(key)
     }
-    pub(crate) fn retain(&mut self, func: impl FnMut(&K, &mut V) -> bool) {
-        self.data.retain(func)
+    pub(crate) fn extract_if(&mut self, func: impl FnMut(&K, &mut V) -> bool) -> impl Iterator<Item = (K, V)> {
+        self.data.extract_if(func)
     }
 }
