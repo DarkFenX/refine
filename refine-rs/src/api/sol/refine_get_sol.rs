@@ -3,7 +3,7 @@ use crate::{Refine, SolarSystem, SolarSystemId};
 impl Refine {
     #[tracing::instrument(name = "sol-get", level = "error", skip_all)]
     pub async fn get_sol(&self, id: SolarSystemId) -> Result<SolarSystem<'_>, SolGetError> {
-        let guarded_inner_sol = match self.id_sol_map.read().await.get(&id) {
+        let guarded_inner_sol = match self.id_sol_map.read().get(&id) {
             Some(sol) => sol.clone(),
             None => return Err(SolGetError::SolNotFound(id)),
         };

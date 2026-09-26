@@ -48,7 +48,7 @@ impl Refine {
     }
     async fn create_and_store_inner_sol(&self, src_alias: SrcAlias, core_sol: rc::SolarSystem) -> SolInnerGuarded {
         let mut id = SolarSystemId::new();
-        let mut id_sol_map = self.id_sol_map.write().await;
+        let mut id_sol_map = self.id_sol_map.write();
         loop {
             match id_sol_map.entry(id) {
                 Entry::Vacant(entry) => {

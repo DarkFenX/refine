@@ -1,4 +1,4 @@
-use tokio::sync::{RwLock, RwLockReadGuard, RwLockWriteGuard};
+use parking_lot::{RwLock, RwLockReadGuard, RwLockWriteGuard};
 
 use super::inner::SolInnerGuarded;
 use crate::{SolarSystemId, util::RMap};
@@ -12,10 +12,10 @@ impl SolMapGuarded {
             inner: RwLock::new(RMap::new()),
         }
     }
-    pub(crate) async fn read(&self) -> RwLockReadGuard<'_, RMap<SolarSystemId, SolInnerGuarded>> {
-        self.inner.read().await
+    pub(crate) fn read(&self) -> RwLockReadGuard<'_, RMap<SolarSystemId, SolInnerGuarded>> {
+        self.inner.read()
     }
-    pub(crate) async fn write(&self) -> RwLockWriteGuard<'_, RMap<SolarSystemId, SolInnerGuarded>> {
-        self.inner.write().await
+    pub(crate) fn write(&self) -> RwLockWriteGuard<'_, RMap<SolarSystemId, SolInnerGuarded>> {
+        self.inner.write()
     }
 }

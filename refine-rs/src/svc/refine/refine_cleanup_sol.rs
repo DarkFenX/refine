@@ -6,7 +6,7 @@ impl Refine {
     #[tracing::instrument(name = "sol-cln", level = "error", skip_all)]
     pub(crate) async fn cleanup_sols(&self, sol_inact_limit: Duration) {
         tracing::debug!("starting cleanup");
-        let mut id_sol_map = self.id_sol_map.write().await;
+        let mut id_sol_map = self.id_sol_map.write();
         let now = Instant::now();
         // Detection & removal in the same lock to avoid sols being taken to do something, and then
         // removed

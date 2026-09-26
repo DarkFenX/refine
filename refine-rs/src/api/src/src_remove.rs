@@ -7,7 +7,7 @@ impl Refine {
     #[tracing::instrument(name = "src-rmv", level = "error", skip_all)]
     async fn remove_src(&self, alias: &SrcAlias) -> Result<(), SrcRemoveError> {
         tracing::debug!("removing source with alias \"{alias}\"");
-        let mut alias_data = self.src_alias_data.write().await;
+        let mut alias_data = self.src_alias_data.write();
         let extracted_inner_sol = match alias_data.map.remove(alias) {
             Some(inner_sol) => inner_sol,
             None => return Err(SrcRemoveError::SrcNotFound(*alias)),

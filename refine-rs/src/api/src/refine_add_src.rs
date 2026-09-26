@@ -56,7 +56,7 @@ impl Refine {
         let Some(reservation) = self.src_alias_locks.reserve(alias) else {
             return Err(SrcAddError::SrcAliasNotAvailable(alias));
         };
-        if self.src_alias_data.read().await.map.contains_key(&alias) {
+        if self.src_alias_data.read().map.contains_key(&alias) {
             return Err(SrcAddError::SrcAliasNotAvailable(alias));
         }
         // Create source in a heavy threadpool
@@ -68,7 +68,7 @@ impl Refine {
             })
             .await?;
         // Write results, then release the alias
-        let mut alias_data = self.src_alias_data.write().await;
+        let mut alias_data = self.src_alias_data.write();
         alias_data.map.insert(alias, inner_src.clone());
         if make_default {
             alias_data.default = Some(inner_src.clone());

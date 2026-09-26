@@ -3,7 +3,7 @@ use crate::{Refine, SolarSystem, SolarSystemId};
 impl Refine {
     #[tracing::instrument(name = "sol-rmv", level = "error", skip_all)]
     async fn remove_sol(&self, id: SolarSystemId) -> Result<(), SolRemoveError> {
-        match self.id_sol_map.write().await.remove(&id) {
+        match self.id_sol_map.write().remove(&id) {
             Some(..) => Ok(()),
             None => Err(SolRemoveError::SolNotFound(id)),
         }

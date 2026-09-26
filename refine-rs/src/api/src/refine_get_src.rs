@@ -14,7 +14,7 @@ impl Refine {
         &self,
         alias: Option<SrcAlias>,
     ) -> Result<SrcInnerGuarded, SrcGetError> {
-        let alias_data = self.src_alias_data.read().await;
+        let alias_data = self.src_alias_data.read();
         let alias = match alias {
             Some(alias) => alias,
             None => {
