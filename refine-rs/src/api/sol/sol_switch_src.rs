@@ -6,10 +6,12 @@ use crate::{
 impl SolarSystem<'_> {
     #[tracing::instrument(name = "sol-swt-src", level = "error", skip_all)]
     pub async fn switch_src(&mut self, src_alias: Option<SrcAlias>) -> Result<(), SolSwitchSrcError> {
+        let inner_src = self.refine.internal_get_src(src_alias).await?;
         // Variables for move
-        let src = self.refine.internal_get_src(src_alias).await?.get_core().clone();
-        self.exec_standard_infallible(move |core_sol| core_sol.set_src(&src))
+        let core_src = inner_src.get_core().clone();
+        self.exec_standard_infallible(move |core_sol| core_sol.set_src(&core_src))
             .await;
+        self.inner.set_src_alias(inner_src.get_alias());
         Ok(())
     }
     #[tracing::instrument(name = "sol-swt-src-inf", level = "error", skip_all)]
@@ -19,13 +21,13 @@ impl SolarSystem<'_> {
         info_cmd: SolInfoCmd,
     ) -> Result<SolInfo, SolSwitchSrcError> {
         let inner_src = self.refine.internal_get_src(src_alias).await?;
-        let src = inner_src.get_core().clone();
+        let core_src = inner_src.get_core().clone();
         // Variables for move
         let sol_id = self.get_id();
         let src_alias = inner_src.get_alias();
         let sol_info = self
             .exec_standard_infallible(move |core_sol| {
-                core_sol.set_src(&src);
+                core_sol.set_src(&core_src);
                 info_cmd.execute(sol_id, src_alias, core_sol)
             })
             .await;
