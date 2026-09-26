@@ -1,7 +1,7 @@
 use crate::{
     Refine, SolarSystemId,
     src::SrcAlias,
-    svc::{SolOwnedMutexGuard, SolarSystemInnerGuarded},
+    svc::{SolInnerGuarded, SolOwnedMutexGuard},
 };
 
 pub struct SolarSystem<'r> {
@@ -18,7 +18,7 @@ impl<'r> SolarSystem<'r> {
 }
 // Private part
 impl<'r> SolarSystem<'r> {
-    pub(super) async fn new(refine: &'r Refine, inner: SolarSystemInnerGuarded) -> Self {
+    pub(super) async fn new(refine: &'r Refine, inner: SolInnerGuarded) -> Self {
         Self {
             refine,
             inner: inner.into_lock_touch_owned().await,

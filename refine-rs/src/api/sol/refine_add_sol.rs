@@ -3,7 +3,7 @@ use std::collections::hash_map::Entry;
 use crate::{
     Refine, SolAddCmd, SolInfo, SolInfoCmd, SolarSystem, SolarSystemId,
     src::{SrcAlias, err::SrcGetError},
-    svc::SolarSystemInnerGuarded,
+    svc::SolInnerGuarded,
 };
 
 impl Refine {
@@ -46,17 +46,13 @@ impl Refine {
         let info = SolInfo::from_ids_and_ext(sol.get_id(), sol.get_src_alias(), info_ext);
         Ok((sol, info))
     }
-    async fn create_and_store_inner_sol(
-        &self,
-        src_alias: SrcAlias,
-        core_sol: rc::SolarSystem,
-    ) -> SolarSystemInnerGuarded {
+    async fn create_and_store_inner_sol(&self, src_alias: SrcAlias, core_sol: rc::SolarSystem) -> SolInnerGuarded {
         let mut id = SolarSystemId::new();
         let mut id_sol_map = self.id_sol_map.write().await;
         loop {
             match id_sol_map.entry(id) {
                 Entry::Vacant(entry) => {
-                    let inner_sol = SolarSystemInnerGuarded::new(id, src_alias, core_sol);
+                    let inner_sol = SolInnerGuarded::new(id, src_alias, core_sol);
                     entry.insert(inner_sol.clone());
                     return inner_sol;
                 }

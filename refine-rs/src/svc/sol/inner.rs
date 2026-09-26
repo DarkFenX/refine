@@ -1,19 +1,19 @@
 use std::{sync::Arc, time::Instant};
 
-use tokio::sync::{Mutex, MutexGuard, OwnedMutexGuard, TryLockError};
-
 use crate::{SolarSystemId, src::SrcAlias};
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-// Guarded
+// Inner guarded
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 #[derive(Clone)]
-pub(crate) struct SolarSystemInnerGuarded(Arc<Mutex<SolarSystemInner>>);
-impl SolarSystemInnerGuarded {
+pub(crate) struct SolInnerGuarded(Arc<tokio::sync::Mutex<SolInner>>);
+impl SolInnerGuarded {
     pub(crate) fn new(id: SolarSystemId, src_alias: SrcAlias, core_sol: rc::SolarSystem) -> Self {
-        Self(Arc::new(Mutex::new(SolarSystemInner::new(id, src_alias, core_sol))))
+        Self(Arc::new(tokio::sync::Mutex::new(SolInner::new(
+            id, src_alias, core_sol,
+        ))))
     }
-    pub(in crate::svc) fn try_lock(&self) -> Result<MutexGuard<'_, SolarSystemInner>, TryLockError> {
+    pub(in crate::svc) fn try_lock(&self) -> Result<tokio::sync::MutexGuard<'_, SolInner>, tokio::sync::TryLockError> {
         self.0.try_lock()
     }
     /// Like regular lock, but updates timestamp on inner sol during drop
@@ -25,7 +25,7 @@ impl SolarSystemInnerGuarded {
 }
 
 pub(crate) struct SolOwnedMutexGuard {
-    guard: OwnedMutexGuard<SolarSystemInner>,
+    guard: tokio::sync::OwnedMutexGuard<SolInner>,
 }
 impl Drop for SolOwnedMutexGuard {
     fn drop(&mut self) {
@@ -33,7 +33,7 @@ impl Drop for SolOwnedMutexGuard {
     }
 }
 impl std::ops::Deref for SolOwnedMutexGuard {
-    type Target = SolarSystemInner;
+    type Target = SolInner;
     fn deref(&self) -> &Self::Target {
         &self.guard
     }
@@ -45,21 +45,21 @@ impl std::ops::DerefMut for SolOwnedMutexGuard {
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-// Unguarded
+// Inner unguarded
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-pub(crate) struct SolarSystemInner {
+pub(crate) struct SolInner {
     id: SolarSystemId,
     src_alias: SrcAlias,
     last_accessed: Instant,
-    pub(super) core_sol: Option<Box<rc::SolarSystem>>,
+    pub(super) core_sol: SolCoreGuarded,
 }
-impl SolarSystemInner {
+impl SolInner {
     fn new(id: SolarSystemId, src_alias: SrcAlias, core_sol: rc::SolarSystem) -> Self {
         Self {
             id,
             src_alias,
             last_accessed: Instant::now(),
-            core_sol: Some(Box::new(core_sol)),
+            core_sol: SolCoreGuarded::new(core_sol),
         }
     }
     pub(crate) fn get_id(&self) -> SolarSystemId {
@@ -76,5 +76,19 @@ impl SolarSystemInner {
     }
     fn touch(&mut self) {
         self.last_accessed = Instant::now();
+    }
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Core guarded
+////////////////////////////////////////////////////////////////////////////////////////////////////
+#[derive(Clone)]
+pub(super) struct SolCoreGuarded(Arc<parking_lot::Mutex<rc::SolarSystem>>);
+impl SolCoreGuarded {
+    fn new(core_sol: rc::SolarSystem) -> Self {
+        Self(Arc::new(parking_lot::Mutex::new(core_sol)))
+    }
+    pub(super) fn lock(&self) -> parking_lot::MutexGuard<'_, rc::SolarSystem> {
+        self.0.lock()
     }
 }
