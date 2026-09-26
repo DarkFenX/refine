@@ -14,7 +14,7 @@ redh = { package = "refine-edh", path = "../refine-edh", features = ["phb-http",
 # Non-local
 axum = { version = ">=0.8.9", default-features = false, features = ["http1", "json", "query", "tokio"] }
 axum-extra = { version = ">=0.12.6", features = ["with-rejection"] }
-config = { version = ">=0.15.26", features = ["toml"] }
+config = { version = ">=0.15.26", default-features = false, features = ["toml"] }
 http-body-util = ">=0.1.5"
 serde = { version = ">=1.0.229", features = ["derive"] }
 serde_json = { version = ">=1.0.151", features = ["float_roundtrip"] }
