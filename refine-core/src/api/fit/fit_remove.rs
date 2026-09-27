@@ -3,15 +3,14 @@ use itertools::Itertools;
 use crate::{
     api::{FitMut, RemoveMode},
     sol::SolarSystem,
-    ud::{UEffectUpdates, UFitId},
+    ud::UFitId,
 };
 
 impl SolarSystem {
-    pub(in crate::api) fn internal_remove_fit(&mut self, fit_uid: UFitId, reuse_eupdates: &mut UEffectUpdates) {
+    pub(in crate::api) fn internal_remove_fit(&mut self, fit_uid: UFitId) {
         let item_uids = self.u_data.fits.get(fit_uid).iter_direct_items().collect_vec();
         for item_uid in item_uids.into_iter() {
-            self.internal_remove_item(item_uid, RemoveMode::Free, reuse_eupdates)
-                .unwrap();
+            self.internal_remove_item(item_uid, RemoveMode::Free).unwrap();
         }
         self.svc.notify_fit_removed(fit_uid);
         let u_fit = self.u_data.fits.remove(fit_uid);
@@ -24,7 +23,6 @@ impl SolarSystem {
 
 impl<'s> FitMut<'s> {
     pub fn remove(self) {
-        let mut reuse_eupdates = UEffectUpdates::new();
-        self.sol.internal_remove_fit(self.uid, &mut reuse_eupdates);
+        self.sol.internal_remove_fit(self.uid);
     }
 }

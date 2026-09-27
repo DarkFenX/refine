@@ -21,7 +21,7 @@ use crate::{
         cycle::CseqMap,
         vast::{StatCapBlcSrcKindsInt, StatCapSimStaggerInt},
     },
-    ud::{FitId, ItemId, UEffectUpdates},
+    ud::{FitId, ItemId},
     util::RMap,
 };
 
@@ -136,23 +136,16 @@ pub trait ItemMutCommon: ItemCommon {
     }
     fn set_effect_mode(&mut self, effect_id: &EffectId, effect_mode: EffectMode) {
         let item_uid = self.get_uid();
-        let mut reuse_eupdates = UEffectUpdates::new();
-        self.get_sol_mut().internal_set_effect_id_mode(
-            item_uid,
-            effect_id.into_aid(),
-            effect_mode,
-            &mut reuse_eupdates,
-        );
+        self.get_sol_mut()
+            .internal_set_effect_id_mode(item_uid, effect_id.into_aid(), effect_mode);
     }
     fn set_effect_modes(&mut self, effect_modes: impl IntoIterator<Item = (EffectId, EffectMode)>) {
         let item_uid = self.get_uid();
-        let mut reuse_eupdates = UEffectUpdates::new();
         self.get_sol_mut().internal_set_effect_id_modes(
             item_uid,
             effect_modes
                 .into_iter()
                 .map(|(effect_id, effect_mode)| (effect_id.into_aid(), effect_mode)),
-            &mut reuse_eupdates,
         );
     }
     ////////////////////////////////////////////////////////////////////////////////////////////////
@@ -165,8 +158,7 @@ pub trait ItemMutCommon: ItemCommon {
         charge_options: StatItemChargeOptions,
         state_options: StatItemStateOptions,
     ) -> Result<StatDmg, StatItemError<!>> {
-        let mut reuse_eupdates = UEffectUpdates::new();
-        let saved_state = active_stat_prepare(self, charge_options, state_options, &mut reuse_eupdates);
+        let saved_state = active_stat_prepare(self, charge_options, state_options);
         let item_uid = self.get_uid();
         let sol = self.get_sol_mut();
         let result = sol
@@ -180,7 +172,7 @@ pub trait ItemMutCommon: ItemCommon {
                 charge_options,
             )
             .map_err(|e| StatItemError::from_svc_err(e, &sol.u_data.items));
-        active_stat_rollback(self, saved_state, &mut reuse_eupdates);
+        active_stat_rollback(self, saved_state);
         result
     }
     fn get_stat_dmg_applied(
@@ -191,8 +183,7 @@ pub trait ItemMutCommon: ItemCommon {
         state_options: StatItemStateOptions,
         projectee_item_id: &ItemId,
     ) -> Result<StatDmgApplied, StatItemAppliedError<!>> {
-        let mut reuse_eupdates = UEffectUpdates::new();
-        let saved_state = active_stat_prepare(self, charge_options, state_options, &mut reuse_eupdates);
+        let saved_state = active_stat_prepare(self, charge_options, state_options);
         let item_uid = self.get_uid();
         let sol = self.get_sol_mut();
         let projectee_uid = sol.u_data.get_projectee_uid(projectee_item_id)?;
@@ -208,7 +199,7 @@ pub trait ItemMutCommon: ItemCommon {
                 projectee_uid,
             )
             .map_err(|e| StatItemAppliedError::from_svc_err(e, &sol.u_data.items));
-        active_stat_rollback(self, saved_state, &mut reuse_eupdates);
+        active_stat_rollback(self, saved_state);
         result
     }
     fn get_stat_mps(
@@ -217,15 +208,14 @@ pub trait ItemMutCommon: ItemCommon {
         resource_kind: StatMiningResourceKind,
         state_options: StatItemStateOptions,
     ) -> Result<StatMining, StatItemError<!>> {
-        let mut reuse_eupdates = UEffectUpdates::new();
-        let saved_state = active_stat_prepare(self, StatItemChargeOptions::Exclude, state_options, &mut reuse_eupdates);
+        let saved_state = active_stat_prepare(self, StatItemChargeOptions::Exclude, state_options);
         let item_uid = self.get_uid();
         let sol = self.get_sol_mut();
         let result = sol
             .svc
             .get_stat_item_mps(&mut CseqMap::new(), &sol.u_data, item_uid, time_options, resource_kind)
             .map_err(|e| StatItemError::from_svc_err(e, &sol.u_data.items));
-        active_stat_rollback(self, saved_state, &mut reuse_eupdates);
+        active_stat_rollback(self, saved_state);
         result
     }
     fn get_stat_outgoing_nps(
@@ -234,8 +224,7 @@ pub trait ItemMutCommon: ItemCommon {
         charge_options: StatItemChargeOptions,
         state_options: StatItemStateOptions,
     ) -> Result<PValue, StatItemError<!>> {
-        let mut reuse_eupdates = UEffectUpdates::new();
-        let saved_state = active_stat_prepare(self, charge_options, state_options, &mut reuse_eupdates);
+        let saved_state = active_stat_prepare(self, charge_options, state_options);
         let item_uid = self.get_uid();
         let sol = self.get_sol_mut();
         let result = sol
@@ -249,7 +238,7 @@ pub trait ItemMutCommon: ItemCommon {
                 None,
             )
             .map_err(|e| StatItemError::from_svc_err(e, &sol.u_data.items));
-        active_stat_rollback(self, saved_state, &mut reuse_eupdates);
+        active_stat_rollback(self, saved_state);
         result
     }
     fn get_stat_outgoing_nps_applied(
@@ -259,8 +248,7 @@ pub trait ItemMutCommon: ItemCommon {
         state_options: StatItemStateOptions,
         projectee_item_id: &ItemId,
     ) -> Result<PValue, StatItemAppliedError<!>> {
-        let mut reuse_eupdates = UEffectUpdates::new();
-        let saved_state = active_stat_prepare(self, charge_options, state_options, &mut reuse_eupdates);
+        let saved_state = active_stat_prepare(self, charge_options, state_options);
         let item_uid = self.get_uid();
         let sol = self.get_sol_mut();
         let projectee_uid = sol.u_data.get_projectee_uid(projectee_item_id)?;
@@ -275,7 +263,7 @@ pub trait ItemMutCommon: ItemCommon {
                 Some(projectee_uid),
             )
             .map_err(|e| StatItemAppliedError::from_svc_err(e, &sol.u_data.items));
-        active_stat_rollback(self, saved_state, &mut reuse_eupdates);
+        active_stat_rollback(self, saved_state);
         result
     }
     fn get_stat_outgoing_rps(
@@ -283,15 +271,14 @@ pub trait ItemMutCommon: ItemCommon {
         time_options: StatTimeOptions,
         state_options: StatItemStateOptions,
     ) -> Result<StatOutReps, StatItemError<!>> {
-        let mut reuse_eupdates = UEffectUpdates::new();
-        let saved_state = active_stat_prepare(self, StatItemChargeOptions::Exclude, state_options, &mut reuse_eupdates);
+        let saved_state = active_stat_prepare(self, StatItemChargeOptions::Exclude, state_options);
         let item_uid = self.get_uid();
         let sol = self.get_sol_mut();
         let result = sol
             .svc
             .get_stat_item_outgoing_rps(&mut CseqMap::new(), &sol.u_data, item_uid, time_options, None)
             .map_err(|e| StatItemError::from_svc_err(e, &sol.u_data.items));
-        active_stat_rollback(self, saved_state, &mut reuse_eupdates);
+        active_stat_rollback(self, saved_state);
         result
     }
     fn get_stat_outgoing_rps_applied(
@@ -300,8 +287,7 @@ pub trait ItemMutCommon: ItemCommon {
         state_options: StatItemStateOptions,
         projectee_item_id: &ItemId,
     ) -> Result<StatOutReps, StatItemAppliedError<!>> {
-        let mut reuse_eupdates = UEffectUpdates::new();
-        let saved_state = active_stat_prepare(self, StatItemChargeOptions::Exclude, state_options, &mut reuse_eupdates);
+        let saved_state = active_stat_prepare(self, StatItemChargeOptions::Exclude, state_options);
         let item_uid = self.get_uid();
         let sol = self.get_sol_mut();
         let projectee_uid = sol.u_data.get_projectee_uid(projectee_item_id)?;
@@ -315,7 +301,7 @@ pub trait ItemMutCommon: ItemCommon {
                 Some(projectee_uid),
             )
             .map_err(|e| StatItemAppliedError::from_svc_err(e, &sol.u_data.items));
-        active_stat_rollback(self, saved_state, &mut reuse_eupdates);
+        active_stat_rollback(self, saved_state);
         result
     }
     fn get_stat_outgoing_cps(
@@ -323,15 +309,14 @@ pub trait ItemMutCommon: ItemCommon {
         time_options: StatTimeOptions,
         state_options: StatItemStateOptions,
     ) -> Result<PValue, StatItemError<!>> {
-        let mut reuse_eupdates = UEffectUpdates::new();
-        let saved_state = active_stat_prepare(self, StatItemChargeOptions::Exclude, state_options, &mut reuse_eupdates);
+        let saved_state = active_stat_prepare(self, StatItemChargeOptions::Exclude, state_options);
         let item_uid = self.get_uid();
         let sol = self.get_sol_mut();
         let result = sol
             .svc
             .get_stat_item_outgoing_cps(&mut CseqMap::new(), &sol.u_data, item_uid, time_options, None)
             .map_err(|e| StatItemError::from_svc_err(e, &sol.u_data.items));
-        active_stat_rollback(self, saved_state, &mut reuse_eupdates);
+        active_stat_rollback(self, saved_state);
         result
     }
     fn get_stat_outgoing_cps_applied(
@@ -340,8 +325,7 @@ pub trait ItemMutCommon: ItemCommon {
         state_options: StatItemStateOptions,
         projectee_item_id: &ItemId,
     ) -> Result<PValue, StatItemAppliedError<!>> {
-        let mut reuse_eupdates = UEffectUpdates::new();
-        let saved_state = active_stat_prepare(self, StatItemChargeOptions::Exclude, state_options, &mut reuse_eupdates);
+        let saved_state = active_stat_prepare(self, StatItemChargeOptions::Exclude, state_options);
         let item_uid = self.get_uid();
         let sol = self.get_sol_mut();
         let projectee_uid = sol.u_data.get_projectee_uid(projectee_item_id)?;
@@ -355,7 +339,7 @@ pub trait ItemMutCommon: ItemCommon {
                 Some(projectee_uid),
             )
             .map_err(|e| StatItemAppliedError::from_svc_err(e, &sol.u_data.items));
-        active_stat_rollback(self, saved_state, &mut reuse_eupdates);
+        active_stat_rollback(self, saved_state);
         result
     }
     ////////////////////////////////////////////////////////////////////////////////////////////////
@@ -566,7 +550,6 @@ pub trait ItemMutCommon: ItemCommon {
     fn get_stat_mass(&mut self, affectors: CtlAffectors) -> Result<PValue, StatItemError<!>> {
         let item_uid = self.get_uid();
         let mut saved_states = RMap::new();
-        let mut reuse_eupdates = UEffectUpdates::new();
         let sol = self.get_sol_mut();
         sol.internal_ctl_affectors_switch(
             item_uid,
@@ -574,13 +557,12 @@ pub trait ItemMutCommon: ItemCommon {
             affectors,
             AffectionDir::Increase,
             &mut saved_states,
-            &mut reuse_eupdates,
         );
         let result = sol
             .svc
             .get_stat_item_mass(&sol.u_data, item_uid)
             .map_err(|e| StatItemError::from_svc_err(e, &sol.u_data.items));
-        sol.internal_ctl_affectors_restore(&mut saved_states, &mut reuse_eupdates);
+        sol.internal_ctl_affectors_restore(&mut saved_states);
         result
     }
     fn get_stat_warp_speed(&mut self) -> Result<PValue, StatItemError<StatWarpSpeedError>> {
@@ -604,7 +586,6 @@ pub trait ItemMutCommon: ItemCommon {
         passenger_fuel_affectors: CtlAffectors,
     ) -> Result<StatJump, StatItemError<StatJumpError>> {
         let mut saved_states = RMap::new();
-        let mut reuse_eupdates = UEffectUpdates::new();
         let item_uid = self.get_uid();
         let sol = self.get_sol_mut();
         let passenger_fit_uids = passenger_fit_ids
@@ -620,7 +601,6 @@ pub trait ItemMutCommon: ItemCommon {
                 passenger_fuel_affectors,
                 AffectionDir::Increase,
                 &mut saved_states,
-                &mut reuse_eupdates,
             );
         }
         // Collect stats
@@ -629,7 +609,7 @@ pub trait ItemMutCommon: ItemCommon {
             .get_stat_item_jump(&sol.u_data, item_uid, range, &passenger_fit_uids)
             .map_err(|e| StatItemError::from_svc_err(e, &sol.u_data.items));
         // Revert item state changes
-        sol.internal_ctl_affectors_restore(&mut saved_states, &mut reuse_eupdates);
+        sol.internal_ctl_affectors_restore(&mut saved_states);
         result
     }
     ////////////////////////////////////////////////////////////////////////////////////////////////

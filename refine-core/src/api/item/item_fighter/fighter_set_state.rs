@@ -1,26 +1,20 @@
 use itertools::Itertools;
 
-use crate::{
-    FighterMut, MinionState, SolarSystem,
-    ud::{UEffectUpdates, UItemId},
-};
+use crate::{FighterMut, MinionState, SolarSystem, ud::UItemId};
 
 impl SolarSystem {
-    pub(in crate::api::item) fn internal_set_fighter_state(
-        &mut self,
-        fighter_uid: UItemId,
-        state: MinionState,
-        reuse_eupdates: &mut UEffectUpdates,
-    ) {
+    pub(in crate::api::item) fn internal_set_fighter_state(&mut self, fighter_uid: UItemId, state: MinionState) {
         // Update user data for fighter
         let u_fighter = self.u_data.items.get_mut(fighter_uid).dc_fighter_mut().unwrap();
         let old_state = u_fighter.get_state();
         u_fighter.set_fighter_state(state);
         let new_state = u_fighter.get_state();
-        u_fighter.update_reffs(reuse_eupdates, &self.u_data.r_data);
+        u_fighter.update_reffs(&mut self.cache.eupdates, &self.u_data.r_data);
         // Filter out autocharges which couldn't be added due to any reason (no attribute which
         // defines them in the data, or couldn't be loaded), and fill autocharge key data
-        let ac_activations = reuse_eupdates
+        let ac_activations = self
+            .cache
+            .eupdates
             .autocharges
             .iter()
             .filter_map(|ac_act| {
@@ -37,21 +31,19 @@ impl SolarSystem {
             fighter_uid,
             old_state,
             new_state,
-            reuse_eupdates,
+            &self.cache.eupdates,
         );
         SolarSystem::util_process_autocharge_activations(
             &mut self.u_data,
             &mut self.svc,
             ac_activations,
-            reuse_eupdates,
+            &mut self.cache.eupdates,
         );
     }
 }
 
 impl<'s> FighterMut<'s> {
     pub fn set_state(&mut self, state: MinionState) {
-        let mut reuse_eupdates = UEffectUpdates::new();
-        self.sol
-            .internal_set_fighter_state(self.uid, state, &mut reuse_eupdates)
+        self.sol.internal_set_fighter_state(self.uid, state)
     }
 }

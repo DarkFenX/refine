@@ -1,4 +1,4 @@
-use crate::{api::AbilityMut, misc::EffectMode, ud::UEffectUpdates};
+use crate::{api::AbilityMut, misc::EffectMode};
 
 impl<'s> AbilityMut<'s> {
     pub fn set_state(&mut self, state: bool) {
@@ -14,8 +14,7 @@ impl<'s> AbilityMut<'s> {
             (false, true) => EffectMode::ForceStop,
             (false, false) => EffectMode::FullCompliance,
         };
-        let mut reuse_eupdates = UEffectUpdates::new();
         self.sol
-            .internal_set_effect_id_mode(self.fighter_uid, effect_aid, effect_mode, &mut reuse_eupdates);
+            .internal_set_effect_id_mode(self.fighter_uid, effect_aid, effect_mode);
     }
 }

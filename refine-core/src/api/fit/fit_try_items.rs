@@ -5,7 +5,7 @@ use crate::{
     ad::AItemId,
     rd::RState,
     svc::vast::ValOptionsInt,
-    ud::{UData, UEffectUpdates, UFitId, UItemId, UPhysics},
+    ud::{UData, UFitId, UItemId, UPhysics},
     val::{DetectedItemKind, ValOptions},
 };
 
@@ -15,7 +15,6 @@ impl SolarSystem {
         fit_uid: UFitId,
         type_aids: &[AItemId],
         val_options: &ValOptionsInt,
-        reuse_eupdates: &mut UEffectUpdates,
     ) -> Vec<AItemId> {
         let mut valid = Vec::new();
         let u_physics = UPhysics::default();
@@ -29,54 +28,46 @@ impl SolarSystem {
             };
             match item_kind {
                 DetectedItemKind::Booster => {
-                    let booster_uid = self.internal_add_booster(fit_uid, *type_aid, reuse_eupdates);
+                    let booster_uid = self.internal_add_booster(fit_uid, *type_aid);
                     if self.internal_validate_fit_fast(fit_uid, val_options) {
                         valid.push(*type_aid)
                     }
-                    self.internal_remove_booster(booster_uid, reuse_eupdates);
+                    self.internal_remove_booster(booster_uid);
                 }
                 // TODO: setting charge is a destructive action (since it removes old charge with
                 // TODO: all its settings), rework it to be non-destructive, unless it is too
                 // TODO: expensive - HTTP module copies solar system before trying to fit anyway
                 DetectedItemKind::Charge => {
                     for &module_uid in chargeable_module_uids.iter() {
-                        let charge_uid = self.internal_set_module_charge(module_uid, *type_aid, reuse_eupdates);
+                        let charge_uid = self.internal_set_module_charge(module_uid, *type_aid);
                         if self.internal_validate_fit_fast(fit_uid, val_options) {
                             valid.push(*type_aid);
-                            self.internal_remove_charge(charge_uid, reuse_eupdates);
+                            self.internal_remove_charge(charge_uid);
                             break;
                         }
-                        self.internal_remove_charge(charge_uid, reuse_eupdates);
+                        self.internal_remove_charge(charge_uid);
                     }
                 }
                 DetectedItemKind::Drone => {
-                    let drone_uid = self.internal_add_drone(
-                        fit_uid,
-                        *type_aid,
-                        MinionState::InBay,
-                        None,
-                        u_physics,
-                        reuse_eupdates,
-                    );
+                    let drone_uid = self.internal_add_drone(fit_uid, *type_aid, MinionState::InBay, None, u_physics);
                     if self.internal_validate_fit_fast(fit_uid, val_options) {
                         valid.push(*type_aid)
                     }
-                    self.internal_remove_drone(drone_uid, reuse_eupdates);
+                    self.internal_remove_drone(drone_uid);
                 }
                 DetectedItemKind::Fighter => {
-                    let fighter_uid =
-                        self.internal_add_fighter(fit_uid, *type_aid, MinionState::InBay, u_physics, reuse_eupdates);
+                    let fighter_uid = self.internal_add_fighter(fit_uid, *type_aid, MinionState::InBay, u_physics);
                     if self.internal_validate_fit_fast(fit_uid, val_options) {
                         valid.push(*type_aid)
                     }
-                    self.internal_remove_fighter(fighter_uid, reuse_eupdates);
+                    self.internal_remove_fighter(fighter_uid);
                 }
                 DetectedItemKind::Implant => {
-                    let implant_uid = self.internal_add_implant(fit_uid, *type_aid, reuse_eupdates);
+                    let implant_uid = self.internal_add_implant(fit_uid, *type_aid);
                     if self.internal_validate_fit_fast(fit_uid, val_options) {
                         valid.push(*type_aid)
                     }
-                    self.internal_remove_implant(implant_uid, reuse_eupdates);
+                    self.internal_remove_implant(implant_uid);
                 }
                 DetectedItemKind::ModuleHigh => {
                     let module_uid = self.internal_add_module(
@@ -87,12 +78,11 @@ impl SolarSystem {
                         conv_state(r_item.base.max_state),
                         None,
                         None,
-                        reuse_eupdates,
                     );
                     if self.internal_validate_fit_fast(fit_uid, val_options) {
                         valid.push(*type_aid)
                     }
-                    self.internal_remove_module(module_uid, RemoveMode::Free, reuse_eupdates);
+                    self.internal_remove_module(module_uid, RemoveMode::Free);
                 }
                 DetectedItemKind::ModuleMid => {
                     let module_uid = self.internal_add_module(
@@ -103,12 +93,11 @@ impl SolarSystem {
                         conv_state(r_item.base.max_state),
                         None,
                         None,
-                        reuse_eupdates,
                     );
                     if self.internal_validate_fit_fast(fit_uid, val_options) {
                         valid.push(*type_aid)
                     }
-                    self.internal_remove_module(module_uid, RemoveMode::Free, reuse_eupdates);
+                    self.internal_remove_module(module_uid, RemoveMode::Free);
                 }
                 DetectedItemKind::ModuleLow => {
                     let module_uid = self.internal_add_module(
@@ -119,34 +108,32 @@ impl SolarSystem {
                         conv_state(r_item.base.max_state),
                         None,
                         None,
-                        reuse_eupdates,
                     );
                     if self.internal_validate_fit_fast(fit_uid, val_options) {
                         valid.push(*type_aid)
                     }
-                    self.internal_remove_module(module_uid, RemoveMode::Free, reuse_eupdates);
+                    self.internal_remove_module(module_uid, RemoveMode::Free);
                 }
                 DetectedItemKind::Rig => {
-                    let rig_uid = self.internal_add_rig(fit_uid, *type_aid, reuse_eupdates);
+                    let rig_uid = self.internal_add_rig(fit_uid, *type_aid);
                     if self.internal_validate_fit_fast(fit_uid, val_options) {
                         valid.push(*type_aid)
                     }
-                    self.internal_remove_rig(rig_uid, reuse_eupdates);
+                    self.internal_remove_rig(rig_uid);
                 }
                 DetectedItemKind::Service => {
-                    let service_uid =
-                        self.internal_add_service(fit_uid, *type_aid, ServiceState::Online, reuse_eupdates);
+                    let service_uid = self.internal_add_service(fit_uid, *type_aid, ServiceState::Online);
                     if self.internal_validate_fit_fast(fit_uid, val_options) {
                         valid.push(*type_aid)
                     }
-                    self.internal_remove_service(service_uid, reuse_eupdates);
+                    self.internal_remove_service(service_uid);
                 }
                 DetectedItemKind::Subsystem => {
-                    let subsystem_uid = self.internal_add_subsystem(fit_uid, *type_aid, reuse_eupdates);
+                    let subsystem_uid = self.internal_add_subsystem(fit_uid, *type_aid);
                     if self.internal_validate_fit_fast(fit_uid, val_options) {
                         valid.push(*type_aid)
                     }
-                    self.internal_remove_subsystem(subsystem_uid, reuse_eupdates);
+                    self.internal_remove_subsystem(subsystem_uid);
                 }
                 _ => continue,
             }
@@ -159,10 +146,7 @@ impl<'s> FitMut<'s> {
     pub fn try_items(&mut self, type_ids: &[ItemTypeId], val_options: &ValOptions) -> Vec<ItemTypeId> {
         let type_aids = type_ids.iter().map(|v| v.into_aid()).collect_vec();
         let int_val_options = ValOptionsInt::from_pub(val_options, self.sol);
-        let mut reuse_eupdates = UEffectUpdates::new();
-        let type_aids = self
-            .sol
-            .internal_fit_try_items(self.uid, &type_aids, &int_val_options, &mut reuse_eupdates);
+        let type_aids = self.sol.internal_fit_try_items(self.uid, &type_aids, &int_val_options);
         type_aids.into_iter().map(ItemTypeId::from_aid).collect()
     }
 }

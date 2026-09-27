@@ -1,7 +1,7 @@
 use crate::{
     ad::AItemId,
     sol::SolarSystem,
-    ud::{UEffectUpdates, UItemId, err::ItemMutatedError},
+    ud::{UItemId, err::ItemMutatedError},
 };
 
 impl SolarSystem {
@@ -9,15 +9,29 @@ impl SolarSystem {
         &mut self,
         module_uid: UItemId,
         mutator_type_aid: AItemId,
-        reuse_eupdates: &mut UEffectUpdates,
     ) -> Result<(), ItemMutatedError> {
-        SolarSystem::util_remove_module_with_charge_act(&mut self.u_data, &mut self.svc, module_uid, reuse_eupdates);
+        SolarSystem::util_remove_module_with_charge_act(
+            &mut self.u_data,
+            &mut self.svc,
+            module_uid,
+            &mut self.cache.eupdates,
+        );
         let u_module = self.u_data.items.get_mut(module_uid).dc_module_mut().unwrap();
         if let Err(error) = u_module.set_mutator_type_aid(mutator_type_aid, &self.u_data.r_data) {
-            SolarSystem::util_add_module_with_charge_act(&mut self.u_data, &mut self.svc, module_uid, reuse_eupdates);
+            SolarSystem::util_add_module_with_charge_act(
+                &mut self.u_data,
+                &mut self.svc,
+                module_uid,
+                &mut self.cache.eupdates,
+            );
             return Err(error);
         }
-        SolarSystem::util_add_module_with_charge_act(&mut self.u_data, &mut self.svc, module_uid, reuse_eupdates);
+        SolarSystem::util_add_module_with_charge_act(
+            &mut self.u_data,
+            &mut self.svc,
+            module_uid,
+            &mut self.cache.eupdates,
+        );
         Ok(())
     }
 }

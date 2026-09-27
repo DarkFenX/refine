@@ -1,35 +1,29 @@
 use crate::{
     api::{DroneMut, MinionState},
     sol::SolarSystem,
-    ud::{UEffectUpdates, UItemId},
+    ud::UItemId,
 };
 
 impl SolarSystem {
-    pub(in crate::api::item) fn internal_set_drone_state(
-        &mut self,
-        drone_uid: UItemId,
-        state: MinionState,
-        reuse_eupdates: &mut UEffectUpdates,
-    ) {
+    pub(in crate::api::item) fn internal_set_drone_state(&mut self, drone_uid: UItemId, state: MinionState) {
         let u_drone = self.u_data.items.get_mut(drone_uid).dc_drone_mut().unwrap();
         let old_a_state = u_drone.get_state();
         u_drone.set_drone_state(state);
         let new_a_state = u_drone.get_state();
-        u_drone.update_reffs(reuse_eupdates, &self.u_data.r_data);
+        u_drone.update_reffs(&mut self.cache.eupdates, &self.u_data.r_data);
         SolarSystem::util_switch_item_state(
             &self.u_data,
             &mut self.svc,
             drone_uid,
             old_a_state,
             new_a_state,
-            reuse_eupdates,
+            &self.cache.eupdates,
         );
     }
 }
 
 impl<'s> DroneMut<'s> {
     pub fn set_state(&mut self, state: MinionState) {
-        let mut reuse_eupdates = UEffectUpdates::new();
-        self.sol.internal_set_drone_state(self.uid, state, &mut reuse_eupdates)
+        self.sol.internal_set_drone_state(self.uid, state)
     }
 }

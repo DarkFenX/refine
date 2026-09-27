@@ -2,7 +2,7 @@ use crate::{
     api::{DroneMut, ItemTypeId, MutationAddError, MutationMut},
     err::basic::ItemNotMutatedError,
     sol::SolarSystem,
-    ud::{UEffectUpdates, UItemId, UItemMutationRequest},
+    ud::{UItemId, UItemMutationRequest},
 };
 
 impl SolarSystem {
@@ -10,16 +10,15 @@ impl SolarSystem {
         &mut self,
         drone_uid: UItemId,
         mutation: UItemMutationRequest,
-        reuse_eupdates: &mut UEffectUpdates,
     ) -> Result<(), ItemNotMutatedError> {
-        SolarSystem::util_remove_drone(&mut self.u_data, &mut self.svc, drone_uid, reuse_eupdates);
+        SolarSystem::util_remove_drone(&mut self.u_data, &mut self.svc, drone_uid, &mut self.cache.eupdates);
         let u_drone = self.u_data.items.get_mut(drone_uid).dc_drone_mut().unwrap();
         if let Err(error) = u_drone.mutate(mutation, &self.u_data.r_data) {
-            SolarSystem::util_add_drone(&mut self.u_data, &mut self.svc, drone_uid, reuse_eupdates);
+            SolarSystem::util_add_drone(&mut self.u_data, &mut self.svc, drone_uid, &mut self.cache.eupdates);
             return Err(error);
         }
         SolarSystem::util_update_item_radius_in_projs(&mut self.u_data, &self.rev_projs, &mut self.svc, drone_uid);
-        SolarSystem::util_add_drone(&mut self.u_data, &mut self.svc, drone_uid, reuse_eupdates);
+        SolarSystem::util_add_drone(&mut self.u_data, &mut self.svc, drone_uid, &mut self.cache.eupdates);
         Ok(())
     }
 }
@@ -30,9 +29,7 @@ impl<'s> DroneMut<'s> {
             mutator_type_aid: mutator_type_id.into_aid(),
             attrs: Vec::new(),
         };
-        let mut reuse_eupdates = UEffectUpdates::new();
-        self.sol
-            .internal_add_drone_mutation(self.uid, mutation, &mut reuse_eupdates)?;
+        self.sol.internal_add_drone_mutation(self.uid, mutation)?;
         Ok(self.get_mutation_mut().unwrap())
     }
 }

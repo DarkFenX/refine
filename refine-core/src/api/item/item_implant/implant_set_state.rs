@@ -1,36 +1,25 @@
-use crate::{
-    api::ImplantMut,
-    sol::SolarSystem,
-    ud::{UEffectUpdates, UItemId},
-};
+use crate::{api::ImplantMut, sol::SolarSystem, ud::UItemId};
 
 impl SolarSystem {
-    pub(in crate::api) fn internal_set_implant_state(
-        &mut self,
-        implant_uid: UItemId,
-        state: bool,
-        reuse_eupdates: &mut UEffectUpdates,
-    ) {
+    pub(in crate::api) fn internal_set_implant_state(&mut self, implant_uid: UItemId, state: bool) {
         let u_implant = self.u_data.items.get_mut(implant_uid).dc_implant_mut().unwrap();
         let old_a_state = u_implant.get_state();
         u_implant.set_implant_state(state);
         let new_a_state = u_implant.get_state();
-        u_implant.update_reffs(reuse_eupdates, &self.u_data.r_data);
+        u_implant.update_reffs(&mut self.cache.eupdates, &self.u_data.r_data);
         SolarSystem::util_switch_item_state(
             &self.u_data,
             &mut self.svc,
             implant_uid,
             old_a_state,
             new_a_state,
-            reuse_eupdates,
+            &self.cache.eupdates,
         );
     }
 }
 
 impl<'s> ImplantMut<'s> {
     pub fn set_state(&mut self, state: bool) {
-        let mut reuse_eupdates = UEffectUpdates::new();
-        self.sol
-            .internal_set_implant_state(self.uid, state, &mut reuse_eupdates)
+        self.sol.internal_set_implant_state(self.uid, state)
     }
 }

@@ -1,18 +1,14 @@
 use crate::{
     api::{DormantMutationMut, EffectiveMutationMut, MutationMut},
     sol::SolarSystem,
-    ud::{UEffectUpdates, UItem, UItemId, err::ItemMutatedError},
+    ud::{UItem, UItemId, err::ItemMutatedError},
 };
 
 impl SolarSystem {
-    pub(in crate::api) fn internal_remove_item_mutation(
-        &mut self,
-        item_uid: UItemId,
-        reuse_eupdates: &mut UEffectUpdates,
-    ) -> Result<(), ItemMutatedError> {
+    pub(in crate::api) fn internal_remove_item_mutation(&mut self, item_uid: UItemId) -> Result<(), ItemMutatedError> {
         match self.u_data.items.get(item_uid) {
-            UItem::Drone(..) => self.internal_remove_drone_mutation(item_uid, reuse_eupdates),
-            UItem::Module(..) => self.internal_remove_module_mutation(item_uid, reuse_eupdates),
+            UItem::Drone(..) => self.internal_remove_drone_mutation(item_uid),
+            UItem::Module(..) => self.internal_remove_module_mutation(item_uid),
             _ => unreachable!("unmutable item kind is used in mutation"),
         }
     }
@@ -29,18 +25,12 @@ impl<'s> MutationMut<'s> {
 
 impl<'s> EffectiveMutationMut<'s> {
     pub fn remove(self) {
-        let mut reuse_eupdates = UEffectUpdates::new();
-        self.sol
-            .internal_remove_item_mutation(self.item_uid, &mut reuse_eupdates)
-            .unwrap();
+        self.sol.internal_remove_item_mutation(self.item_uid).unwrap();
     }
 }
 
 impl<'s> DormantMutationMut<'s> {
     pub fn remove(self) {
-        let mut reuse_eupdates = UEffectUpdates::new();
-        self.sol
-            .internal_remove_item_mutation(self.item_uid, &mut reuse_eupdates)
-            .unwrap();
+        self.sol.internal_remove_item_mutation(self.item_uid).unwrap();
     }
 }

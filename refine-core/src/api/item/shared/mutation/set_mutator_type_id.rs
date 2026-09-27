@@ -2,7 +2,7 @@ use crate::{
     ad::AItemId,
     api::{DormantMutationMut, EffectiveMutationMut, ItemTypeId, MutationMut},
     sol::SolarSystem,
-    ud::{UEffectUpdates, UItem, UItemId, err::ItemMutatedError},
+    ud::{UItem, UItemId, err::ItemMutatedError},
 };
 
 impl SolarSystem {
@@ -10,12 +10,11 @@ impl SolarSystem {
         &mut self,
         item_uid: UItemId,
         mutator_type_aid: AItemId,
-        reuse_eupdates: &mut UEffectUpdates,
     ) -> Result<(), ItemMutatedError> {
         let u_item = self.u_data.items.get_mut(item_uid);
         match u_item {
-            UItem::Drone(..) => self.internal_set_drone_mutator_type_aid(item_uid, mutator_type_aid, reuse_eupdates),
-            UItem::Module(..) => self.internal_set_module_mutator_aid(item_uid, mutator_type_aid, reuse_eupdates),
+            UItem::Drone(..) => self.internal_set_drone_mutator_type_aid(item_uid, mutator_type_aid),
+            UItem::Module(..) => self.internal_set_module_mutator_aid(item_uid, mutator_type_aid),
             _ => unreachable!("unmutable item kind is used to change mutator ID"),
         }
     }
@@ -32,9 +31,8 @@ impl<'s> MutationMut<'s> {
 
 impl<'s> EffectiveMutationMut<'s> {
     pub fn set_mutator_type_id(self, mutator_type_id: ItemTypeId) -> MutationMut<'s> {
-        let mut reuse_eupdates = UEffectUpdates::new();
         self.sol
-            .internal_set_mutator_aid(self.item_uid, mutator_type_id.into_aid(), &mut reuse_eupdates)
+            .internal_set_mutator_aid(self.item_uid, mutator_type_id.into_aid())
             .unwrap();
         self.sol.api_get_item_mutation_mut(self.item_uid).unwrap()
     }
@@ -42,9 +40,8 @@ impl<'s> EffectiveMutationMut<'s> {
 
 impl<'s> DormantMutationMut<'s> {
     pub fn set_mutator_type_id(self, mutator_type_id: ItemTypeId) -> MutationMut<'s> {
-        let mut reuse_eupdates = UEffectUpdates::new();
         self.sol
-            .internal_set_mutator_aid(self.item_uid, mutator_type_id.into_aid(), &mut reuse_eupdates)
+            .internal_set_mutator_aid(self.item_uid, mutator_type_id.into_aid())
             .unwrap();
         self.sol.api_get_item_mutation_mut(self.item_uid).unwrap()
     }

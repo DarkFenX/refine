@@ -2,7 +2,7 @@ use crate::{
     ItemMutCommon, MinionState, ModuleState, SolarSystem,
     rd::RState,
     stats::{StatItemChargeOptions, StatItemStateOptions},
-    ud::{UEffectUpdates, UItem, UItemId},
+    ud::{UItem, UItemId},
 };
 
 /// If some stat requested state to be ignored, this method checks their state, and if it's not
@@ -11,7 +11,6 @@ pub(in crate::api) fn active_stat_prepare<T>(
     item: &mut T,
     charge_options: StatItemChargeOptions,
     state_options: StatItemStateOptions,
-    reuse_eupdates: &mut UEffectUpdates,
 ) -> Option<SavedItemState>
 where
     T: ItemMutCommon,
@@ -32,13 +31,12 @@ where
             let parent_uid = autocharge.get_cont_item_uid();
             let saved_autocharge_state = match autocharge.get_force_disabled() {
                 true => {
-                    item.get_sol_mut()
-                        .internal_set_autocharge_state(item_uid, true, reuse_eupdates);
+                    item.get_sol_mut().internal_set_autocharge_state(item_uid, true);
                     Some(false)
                 }
                 false => None,
             };
-            let saved_parent_state = prepare_charge_parent(item.get_sol_mut(), parent_uid, reuse_eupdates);
+            let saved_parent_state = prepare_charge_parent(item.get_sol_mut(), parent_uid);
             match saved_autocharge_state.is_some() || saved_parent_state.is_some() {
                 true => Some(SavedItemState::Autocharge(saved_autocharge_state, saved_parent_state)),
                 false => None,
@@ -51,13 +49,12 @@ where
             let parent_uid = charge.get_cont_item_uid();
             let saved_charge_state = match charge.get_force_disabled() {
                 true => {
-                    item.get_sol_mut()
-                        .internal_set_charge_state(item_uid, true, reuse_eupdates);
+                    item.get_sol_mut().internal_set_charge_state(item_uid, true);
                     Some(false)
                 }
                 false => None,
             };
-            let saved_parent_state = prepare_charge_parent(item.get_sol_mut(), parent_uid, reuse_eupdates);
+            let saved_parent_state = prepare_charge_parent(item.get_sol_mut(), parent_uid);
             match saved_charge_state.is_some() || saved_parent_state.is_some() {
                 true => Some(SavedItemState::Charge(saved_charge_state, saved_parent_state)),
                 false => None,
@@ -69,7 +66,7 @@ where
             match drone_state {
                 MinionState::InBay | MinionState::InSpace => {
                     item.get_sol_mut()
-                        .internal_set_drone_state(item_uid, MinionState::Engaging, reuse_eupdates);
+                        .internal_set_drone_state(item_uid, MinionState::Engaging);
                     Some(SavedItemState::Drone(drone_state))
                 }
                 MinionState::Engaging => None,
@@ -95,10 +92,10 @@ where
                 }
                 for autocharge_info in saved_autocharge_states.iter() {
                     item.get_sol_mut()
-                        .internal_set_autocharge_state(autocharge_info.uid, true, reuse_eupdates);
+                        .internal_set_autocharge_state(autocharge_info.uid, true);
                 }
             }
-            let saved_fighter_state = prepare_fighter(item_uid, fighter_state, item.get_sol_mut(), reuse_eupdates);
+            let saved_fighter_state = prepare_fighter(item_uid, fighter_state, item.get_sol_mut());
             match saved_fighter_state.is_some() || !saved_autocharge_states.is_empty() {
                 true => Some(SavedItemState::Fighter(saved_fighter_state, saved_autocharge_states)),
                 false => None,
@@ -118,15 +115,13 @@ where
                 module.get_module_state(),
                 module.get_r_item_base().map(|v| v.max_state),
                 item.get_sol_mut(),
-                reuse_eupdates,
             );
             let saved_charge_state = match (charge_uid, charge_options) {
                 (Some(charge_uid), StatItemChargeOptions::Include) => {
                     let charge = item.get_sol().u_data.items.get(charge_uid).dc_charge().unwrap();
                     match charge.get_force_disabled() {
                         true => {
-                            item.get_sol_mut()
-                                .internal_set_charge_state(charge_uid, true, reuse_eupdates);
+                            item.get_sol_mut().internal_set_charge_state(charge_uid, true);
                             Some(ItemInfo {
                                 uid: charge_uid,
                                 state: false,
@@ -145,11 +140,8 @@ where
         _ => None,
     }
 }
-pub(in crate::api) fn active_stat_rollback<T>(
-    item: &mut T,
-    saved_state: Option<SavedItemState>,
-    reuse_eupdates: &mut UEffectUpdates,
-) where
+pub(in crate::api) fn active_stat_rollback<T>(item: &mut T, saved_state: Option<SavedItemState>)
+where
     T: ItemMutCommon,
 {
     let Some(saved_state) = saved_state else {
@@ -160,41 +152,40 @@ pub(in crate::api) fn active_stat_rollback<T>(
         SavedItemState::Autocharge(autocharge_state, parent_info) => {
             let sol = item.get_sol_mut();
             if let Some(autocharge_state) = autocharge_state {
-                sol.internal_set_autocharge_state(item_uid, autocharge_state, reuse_eupdates);
+                sol.internal_set_autocharge_state(item_uid, autocharge_state);
             }
             if let Some(parent_info) = parent_info {
-                rollback_charge_parent(sol, parent_info, reuse_eupdates);
+                rollback_charge_parent(sol, parent_info);
             }
         }
         SavedItemState::Charge(charge_state, parent_info) => {
             let sol = item.get_sol_mut();
             if let Some(charge_state) = charge_state {
-                sol.internal_set_charge_state(item_uid, charge_state, reuse_eupdates);
+                sol.internal_set_charge_state(item_uid, charge_state);
             }
             if let Some(parent_info) = parent_info {
-                rollback_charge_parent(sol, parent_info, reuse_eupdates);
+                rollback_charge_parent(sol, parent_info);
             }
         }
         SavedItemState::Drone(drone_state) => {
-            item.get_sol_mut()
-                .internal_set_drone_state(item_uid, drone_state, reuse_eupdates);
+            item.get_sol_mut().internal_set_drone_state(item_uid, drone_state);
         }
         SavedItemState::Fighter(fighter_state, autocharge_infos) => {
             let sol = item.get_sol_mut();
             if let Some(fighter_state) = fighter_state {
-                sol.internal_set_fighter_state(item_uid, fighter_state, reuse_eupdates);
+                sol.internal_set_fighter_state(item_uid, fighter_state);
             }
             for autocharge_info in autocharge_infos.into_iter() {
-                sol.internal_set_autocharge_state(autocharge_info.uid, autocharge_info.state, reuse_eupdates);
+                sol.internal_set_autocharge_state(autocharge_info.uid, autocharge_info.state);
             }
         }
         SavedItemState::Module(module_state, charge_info) => {
             let sol = item.get_sol_mut();
             if let Some(module_state) = module_state {
-                sol.internal_set_module_state(item_uid, module_state, reuse_eupdates);
+                sol.internal_set_module_state(item_uid, module_state);
             }
             if let Some(charge_info) = charge_info {
-                sol.internal_set_charge_state(charge_info.uid, charge_info.state, reuse_eupdates);
+                sol.internal_set_charge_state(charge_info.uid, charge_info.state);
             }
         }
     }
@@ -226,12 +217,11 @@ fn prepare_module(
     module_state: ModuleState,
     module_max_state: Option<RState>,
     sol: &mut SolarSystem,
-    reuse_eupdates: &mut UEffectUpdates,
 ) -> Option<ModuleState> {
     match module_state {
         ModuleState::Disabled | ModuleState::Offline | ModuleState::Online => match module_max_state {
             Some(RState::Active) | Some(RState::Overload) => {
-                sol.internal_set_module_state(module_uid, ModuleState::Active, reuse_eupdates);
+                sol.internal_set_module_state(module_uid, ModuleState::Active);
                 Some(module_state)
             }
             _ => None,
@@ -240,29 +230,20 @@ fn prepare_module(
     }
 }
 
-fn prepare_fighter(
-    fighter_uid: UItemId,
-    fighter_state: MinionState,
-    sol: &mut SolarSystem,
-    reuse_eupdates: &mut UEffectUpdates,
-) -> Option<MinionState> {
+fn prepare_fighter(fighter_uid: UItemId, fighter_state: MinionState, sol: &mut SolarSystem) -> Option<MinionState> {
     match fighter_state {
         MinionState::InBay | MinionState::InSpace => {
-            sol.internal_set_fighter_state(fighter_uid, MinionState::Engaging, reuse_eupdates);
+            sol.internal_set_fighter_state(fighter_uid, MinionState::Engaging);
             Some(fighter_state)
         }
         MinionState::Engaging => None,
     }
 }
 
-fn prepare_charge_parent(
-    sol: &mut SolarSystem,
-    parent_uid: UItemId,
-    reuse_eupdates: &mut UEffectUpdates,
-) -> Option<SavedParentInfo> {
+fn prepare_charge_parent(sol: &mut SolarSystem, parent_uid: UItemId) -> Option<SavedParentInfo> {
     match sol.u_data.items.get(parent_uid) {
         UItem::Fighter(fighter) => {
-            prepare_fighter(parent_uid, fighter.get_fighter_state(), sol, reuse_eupdates).map(|saved_module_state| {
+            prepare_fighter(parent_uid, fighter.get_fighter_state(), sol).map(|saved_module_state| {
                 SavedParentInfo::Fighter(ItemInfo {
                     uid: parent_uid,
                     state: saved_module_state,
@@ -274,7 +255,6 @@ fn prepare_charge_parent(
             module.get_module_state(),
             module.get_r_item_base().map(|v| v.max_state),
             sol,
-            reuse_eupdates,
         )
         .map(|saved_module_state| {
             SavedParentInfo::Module(ItemInfo {
@@ -285,13 +265,9 @@ fn prepare_charge_parent(
         _ => None,
     }
 }
-fn rollback_charge_parent(sol: &mut SolarSystem, parent_info: SavedParentInfo, reuse_eupdates: &mut UEffectUpdates) {
+fn rollback_charge_parent(sol: &mut SolarSystem, parent_info: SavedParentInfo) {
     match parent_info {
-        SavedParentInfo::Fighter(fighter_info) => {
-            sol.internal_set_fighter_state(fighter_info.uid, fighter_info.state, reuse_eupdates)
-        }
-        SavedParentInfo::Module(module_info) => {
-            sol.internal_set_module_state(module_info.uid, module_info.state, reuse_eupdates)
-        }
+        SavedParentInfo::Fighter(fighter_info) => sol.internal_set_fighter_state(fighter_info.uid, fighter_info.state),
+        SavedParentInfo::Module(module_info) => sol.internal_set_module_state(module_info.uid, module_info.state),
     }
 }

@@ -2,7 +2,7 @@ use crate::{
     AddMode, FitMut, ItemMut, ItemTypeId, MinionState, ModRack, ModuleState, ServiceState, SolarSystem,
     ad::AItemId,
     rd::RState,
-    ud::{UEffectUpdates, UFitId, UItemId, UPhysics},
+    ud::{UFitId, UItemId, UPhysics},
     val::DetectedItemKind,
 };
 
@@ -11,7 +11,6 @@ impl SolarSystem {
         &mut self,
         fit_uid: UFitId,
         type_aid: AItemId,
-        reuse_eupdates: &mut UEffectUpdates,
     ) -> Result<UItemId, FitItemAutodetectAddError> {
         let Some(r_item) = self.u_data.r_data.get_item_by_aid(&type_aid) else {
             return Err(FitItemAutodetectAddError::TypeId(ItemTypeId::from_aid(type_aid)));
@@ -20,23 +19,14 @@ impl SolarSystem {
             return Err(FitItemAutodetectAddError::KindUnknown);
         };
         let item_uid = match item_kind {
-            DetectedItemKind::Booster => self.internal_add_booster(fit_uid, type_aid, reuse_eupdates),
-            DetectedItemKind::Drone => self.internal_add_drone(
-                fit_uid,
-                type_aid,
-                MinionState::Engaging,
-                None,
-                UPhysics::default(),
-                reuse_eupdates,
-            ),
-            DetectedItemKind::Fighter => self.internal_add_fighter(
-                fit_uid,
-                type_aid,
-                MinionState::Engaging,
-                UPhysics::default(),
-                reuse_eupdates,
-            ),
-            DetectedItemKind::Implant => self.internal_add_implant(fit_uid, type_aid, reuse_eupdates),
+            DetectedItemKind::Booster => self.internal_add_booster(fit_uid, type_aid),
+            DetectedItemKind::Drone => {
+                self.internal_add_drone(fit_uid, type_aid, MinionState::Engaging, None, UPhysics::default())
+            }
+            DetectedItemKind::Fighter => {
+                self.internal_add_fighter(fit_uid, type_aid, MinionState::Engaging, UPhysics::default())
+            }
+            DetectedItemKind::Implant => self.internal_add_implant(fit_uid, type_aid),
             DetectedItemKind::ModuleHigh => self.internal_add_module(
                 fit_uid,
                 ModRack::High,
@@ -45,7 +35,6 @@ impl SolarSystem {
                 conv_state(r_item.base.max_state),
                 None,
                 None,
-                reuse_eupdates,
             ),
             DetectedItemKind::ModuleMid => self.internal_add_module(
                 fit_uid,
@@ -55,7 +44,6 @@ impl SolarSystem {
                 conv_state(r_item.base.max_state),
                 None,
                 None,
-                reuse_eupdates,
             ),
             DetectedItemKind::ModuleLow => self.internal_add_module(
                 fit_uid,
@@ -65,13 +53,10 @@ impl SolarSystem {
                 conv_state(r_item.base.max_state),
                 None,
                 None,
-                reuse_eupdates,
             ),
-            DetectedItemKind::Rig => self.internal_add_rig(fit_uid, type_aid, reuse_eupdates),
-            DetectedItemKind::Service => {
-                self.internal_add_service(fit_uid, type_aid, ServiceState::Online, reuse_eupdates)
-            }
-            DetectedItemKind::Subsystem => self.internal_add_subsystem(fit_uid, type_aid, reuse_eupdates),
+            DetectedItemKind::Rig => self.internal_add_rig(fit_uid, type_aid),
+            DetectedItemKind::Service => self.internal_add_service(fit_uid, type_aid, ServiceState::Online),
+            DetectedItemKind::Subsystem => self.internal_add_subsystem(fit_uid, type_aid),
             kind => return Err(FitItemAutodetectAddError::KindInvalid(kind)),
         };
         Ok(item_uid)
@@ -80,10 +65,9 @@ impl SolarSystem {
 
 impl<'s> FitMut<'s> {
     pub fn autodetect_add_item(&mut self, type_id: ItemTypeId) -> Result<ItemMut<'_>, FitItemAutodetectAddError> {
-        let mut reuse_eupdates = UEffectUpdates::new();
         let item_uid = self
             .sol
-            .internal_fit_autodetect_add_item(self.uid, type_id.into_aid(), &mut reuse_eupdates)?;
+            .internal_fit_autodetect_add_item(self.uid, type_id.into_aid())?;
         Ok(ItemMut::new(self.sol, item_uid))
     }
 }

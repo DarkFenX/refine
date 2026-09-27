@@ -1,4 +1,9 @@
-use crate::{sol::rev_projs::RevProjs, src::Src, svc::Svc, ud::UData};
+use crate::{
+    sol::{cache::SolCache, rev_projs::RevProjs},
+    src::Src,
+    svc::Svc,
+    ud::UData,
+};
 
 /// Holds all the user data, and exposes the interface to manipulate, process and fetch it.
 ///
@@ -10,6 +15,7 @@ pub struct SolarSystem {
     pub(crate) u_data: UData,
     pub(crate) svc: Svc,
     pub(crate) rev_projs: RevProjs,
+    pub(crate) cache: SolCache,
 }
 impl SolarSystem {
     pub fn new(src: &Src) -> Self {
@@ -17,6 +23,7 @@ impl SolarSystem {
             u_data: UData::new(src.r_data.clone()),
             svc: Svc::new(),
             rev_projs: RevProjs::new(),
+            cache: SolCache::new(),
         }
     }
 }

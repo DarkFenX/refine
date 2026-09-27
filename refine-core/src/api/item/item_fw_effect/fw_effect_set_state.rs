@@ -1,36 +1,25 @@
-use crate::{
-    api::FwEffectMut,
-    sol::SolarSystem,
-    ud::{UEffectUpdates, UItemId},
-};
+use crate::{api::FwEffectMut, sol::SolarSystem, ud::UItemId};
 
 impl SolarSystem {
-    pub(in crate::api) fn internal_set_fw_effect_state(
-        &mut self,
-        fw_effect_uid: UItemId,
-        state: bool,
-        reuse_eupdates: &mut UEffectUpdates,
-    ) {
+    pub(in crate::api) fn internal_set_fw_effect_state(&mut self, fw_effect_uid: UItemId, state: bool) {
         let u_fw_effect = self.u_data.items.get_mut(fw_effect_uid).dc_fw_effect_mut().unwrap();
         let old_a_state = u_fw_effect.get_state();
         u_fw_effect.set_fw_effect_state(state);
         let new_a_state = u_fw_effect.get_state();
-        u_fw_effect.update_reffs(reuse_eupdates, &self.u_data.r_data);
+        u_fw_effect.update_reffs(&mut self.cache.eupdates, &self.u_data.r_data);
         SolarSystem::util_switch_item_state(
             &self.u_data,
             &mut self.svc,
             fw_effect_uid,
             old_a_state,
             new_a_state,
-            reuse_eupdates,
+            &self.cache.eupdates,
         );
     }
 }
 
 impl<'s> FwEffectMut<'s> {
     pub fn set_state(&mut self, state: bool) {
-        let mut reuse_eupdates = UEffectUpdates::new();
-        self.sol
-            .internal_set_fw_effect_state(self.uid, state, &mut reuse_eupdates)
+        self.sol.internal_set_fw_effect_state(self.uid, state)
     }
 }

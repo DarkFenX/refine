@@ -6,7 +6,7 @@ use crate::{
     rd::{RAttrId, RState},
     sol::SolarSystem,
     svc::calc::CalcModInfo,
-    ud::{UData, UEffectUpdates, UItem, UItemId},
+    ud::{UData, UItem, UItemId},
     util::RMap,
 };
 
@@ -51,7 +51,6 @@ impl SolarSystem {
         action: CtlAffectors,
         direction: AffectionDir,
         reuse_saved_states: &mut RMap<UItemId, RState>,
-        reuse_eupdates: &mut UEffectUpdates,
     ) {
         let Some(attr_rid) = attr_rid else {
             return;
@@ -106,18 +105,14 @@ impl SolarSystem {
         // Actually switch states
         for (&affector_uid, new_state) in reuse_saved_states.iter_mut() {
             let saved_state = self.u_data.items.get(affector_uid).get_state();
-            self.internal_set_module_state(affector_uid, ModuleState::from_r_state(*new_state), reuse_eupdates);
+            self.internal_set_module_state(affector_uid, ModuleState::from_r_state(*new_state));
             *new_state = saved_state;
         }
     }
     /// Reverts changes done by the controllable affector function.
-    pub(in crate::api) fn internal_ctl_affectors_restore(
-        &mut self,
-        reuse_saved_states: &mut RMap<UItemId, RState>,
-        reuse_eupdates: &mut UEffectUpdates,
-    ) {
+    pub(in crate::api) fn internal_ctl_affectors_restore(&mut self, reuse_saved_states: &mut RMap<UItemId, RState>) {
         for (&affector_uid, &saved_state) in reuse_saved_states.iter() {
-            self.internal_set_module_state(affector_uid, ModuleState::from_r_state(saved_state), reuse_eupdates);
+            self.internal_set_module_state(affector_uid, ModuleState::from_r_state(saved_state));
         }
         reuse_saved_states.clear();
     }

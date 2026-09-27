@@ -3,7 +3,7 @@ use crate::{
     api::{ItemTypeId, SkillMut},
     err::basic::SkillEveTypeError,
     sol::SolarSystem,
-    ud::{UEffectUpdates, UItemId},
+    ud::UItemId,
     util::LibGetId,
 };
 
@@ -12,7 +12,6 @@ impl SolarSystem {
         &mut self,
         skill_uid: UItemId,
         type_aid: AItemId,
-        reuse_eupdates: &mut UEffectUpdates,
     ) -> Result<(), SkillEveTypeError> {
         let u_item = self.u_data.items.get(skill_uid);
         let old_type_aid = u_item.get_type_aid();
@@ -30,7 +29,7 @@ impl SolarSystem {
             });
         }
         // Unload skill
-        SolarSystem::util_remove_skill(&mut self.u_data, &mut self.svc, skill_uid, reuse_eupdates);
+        SolarSystem::util_remove_skill(&mut self.u_data, &mut self.svc, skill_uid, &mut self.cache.eupdates);
         // Update type ID and reload adapted data
         let u_skill = self.u_data.items.get_mut(skill_uid).dc_skill_mut().unwrap();
         u_skill.set_type_aid(type_aid, &self.u_data.r_data);
@@ -39,7 +38,7 @@ impl SolarSystem {
         let fit_skill = u_fit.skills.remove(&old_type_aid).unwrap();
         u_fit.skills.insert(type_aid, fit_skill);
         // Load skill
-        SolarSystem::util_add_skill(&mut self.u_data, &mut self.svc, skill_uid, reuse_eupdates);
+        SolarSystem::util_add_skill(&mut self.u_data, &mut self.svc, skill_uid, &mut self.cache.eupdates);
         Ok(())
     }
 }
@@ -47,9 +46,7 @@ impl SolarSystem {
 impl<'s> SkillMut<'s> {
     /// Set type ID, replacing currently used EVE item by another, preserving all the user data.
     pub fn set_type_id(&mut self, type_id: ItemTypeId) -> Result<(), SkillTypeIdSetError> {
-        let mut reuse_eupdates = UEffectUpdates::new();
-        self.sol
-            .internal_set_skill_type_aid(self.uid, type_id.into_aid(), &mut reuse_eupdates)?;
+        self.sol.internal_set_skill_type_aid(self.uid, type_id.into_aid())?;
         Ok(())
     }
 }

@@ -1,7 +1,6 @@
 use crate::{
     api::{AffectionDir, CtlAffectors, FleetMut},
     num::PValue,
-    ud::UEffectUpdates,
     util::RMap,
 };
 
@@ -9,7 +8,6 @@ impl<'s> FleetMut<'s> {
     pub fn get_stat_mass(&mut self, ctl_affectors: CtlAffectors) -> PValue {
         let mut fleet_mass = PValue::ZERO;
         let mut saved_states = RMap::new();
-        let mut reuse_eupdates = UEffectUpdates::new();
         let ship_uids = self.sol.u_data.get_fleet_ship_uids(self.uid);
         // Work on item states according to request
         for &ship_uid in ship_uids.iter() {
@@ -19,7 +17,6 @@ impl<'s> FleetMut<'s> {
                 ctl_affectors,
                 AffectionDir::Increase,
                 &mut saved_states,
-                &mut reuse_eupdates,
             );
         }
         // Collect stats
@@ -29,8 +26,7 @@ impl<'s> FleetMut<'s> {
             }
         }
         // Revert item state changes
-        self.sol
-            .internal_ctl_affectors_restore(&mut saved_states, &mut reuse_eupdates);
+        self.sol.internal_ctl_affectors_restore(&mut saved_states);
         fleet_mass
     }
 }

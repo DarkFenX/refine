@@ -2,21 +2,16 @@ use crate::{
     ad::AItemId,
     api::{DroneMut, ItemTypeId},
     sol::SolarSystem,
-    ud::{UEffectUpdates, UItemId},
+    ud::UItemId,
 };
 
 impl SolarSystem {
-    pub(in crate::api) fn internal_set_drone_type_aid(
-        &mut self,
-        drone_uid: UItemId,
-        type_aid: AItemId,
-        reuse_eupdates: &mut UEffectUpdates,
-    ) {
+    pub(in crate::api) fn internal_set_drone_type_aid(&mut self, drone_uid: UItemId, type_aid: AItemId) {
         let u_item = self.u_data.items.get(drone_uid);
         if u_item.get_type_aid() == type_aid {
             return;
         }
-        SolarSystem::util_remove_drone(&mut self.u_data, &mut self.svc, drone_uid, reuse_eupdates);
+        SolarSystem::util_remove_drone(&mut self.u_data, &mut self.svc, drone_uid, &mut self.cache.eupdates);
         self.u_data
             .items
             .get_mut(drone_uid)
@@ -24,7 +19,7 @@ impl SolarSystem {
             .unwrap()
             .set_type_aid(type_aid, &self.u_data.r_data);
         SolarSystem::util_update_item_radius_in_projs(&mut self.u_data, &self.rev_projs, &mut self.svc, drone_uid);
-        SolarSystem::util_add_drone(&mut self.u_data, &mut self.svc, drone_uid, reuse_eupdates);
+        SolarSystem::util_add_drone(&mut self.u_data, &mut self.svc, drone_uid, &mut self.cache.eupdates);
     }
 }
 
@@ -32,8 +27,6 @@ impl<'s> DroneMut<'s> {
     /// Set type ID, replacing currently used EVE item by another, preserving all the user data. If
     /// item is mutated, base item type ID is updated.
     pub fn set_type_id(&mut self, type_id: ItemTypeId) {
-        let mut reuse_eupdates = UEffectUpdates::new();
-        self.sol
-            .internal_set_drone_type_aid(self.uid, type_id.into_aid(), &mut reuse_eupdates)
+        self.sol.internal_set_drone_type_aid(self.uid, type_id.into_aid())
     }
 }

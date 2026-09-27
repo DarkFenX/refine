@@ -4,7 +4,7 @@ use crate::{
     ad::AItemId,
     api::{ChargeMut, ItemTypeId, ModuleMut},
     sol::SolarSystem,
-    ud::{UCharge, UEffectUpdates, UItem, UItemId},
+    ud::{UCharge, UItem, UItemId},
 };
 
 impl SolarSystem {
@@ -12,7 +12,6 @@ impl SolarSystem {
         &mut self,
         module_uid: UItemId,
         charge_type_aid: AItemId,
-        reuse_eupdates: &mut UEffectUpdates,
     ) -> UItemId {
         let u_module = self.u_data.items.get(module_uid).dc_module().unwrap();
         let fit_uid = u_module.get_fit_uid();
@@ -40,7 +39,12 @@ impl SolarSystem {
                 old_u_charge.get_projs_mut().clear();
             }
             // Update services for charge being removed
-            SolarSystem::util_remove_charge(&mut self.u_data, &mut self.svc, old_charge_uid, reuse_eupdates);
+            SolarSystem::util_remove_charge(
+                &mut self.u_data,
+                &mut self.svc,
+                old_charge_uid,
+                &mut self.cache.eupdates,
+            );
             // Update user data for charge - do not update module<->charge references because charge
             // will be removed, and module will be updated later
             self.u_data.items.remove(old_charge_uid);
@@ -78,7 +82,12 @@ impl SolarSystem {
         let u_module = self.u_data.items.get_mut(module_uid).dc_module_mut().unwrap();
         u_module.set_charge_uid(Some(new_charge_uid));
         // Update services
-        SolarSystem::util_add_charge(&mut self.u_data, &mut self.svc, new_charge_uid, reuse_eupdates);
+        SolarSystem::util_add_charge(
+            &mut self.u_data,
+            &mut self.svc,
+            new_charge_uid,
+            &mut self.cache.eupdates,
+        );
         // Reapply module projections to charge
         if !module_projs.is_empty() {
             let new_u_charge = self.u_data.items.get_mut(new_charge_uid).dc_charge_mut().unwrap();
@@ -104,10 +113,7 @@ impl SolarSystem {
 
 impl<'s> ModuleMut<'s> {
     pub fn set_charge_type_id(&mut self, charge_type_id: ItemTypeId) -> ChargeMut<'_> {
-        let mut reuse_eupdates = UEffectUpdates::new();
-        let charge_uid = self
-            .sol
-            .internal_set_module_charge(self.uid, charge_type_id.into_aid(), &mut reuse_eupdates);
+        let charge_uid = self.sol.internal_set_module_charge(self.uid, charge_type_id.into_aid());
         ChargeMut::new(self.sol, charge_uid)
     }
 }

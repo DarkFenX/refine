@@ -1,12 +1,10 @@
 use crate::{
     api::{AddMode, FitMut, ItemTypeId, ModuleState, RemoveMode},
     misc::ModRack,
-    ud::UEffectUpdates,
 };
 
 impl<'s> FitMut<'s> {
     pub fn benchmark_attr_calc(&mut self, type_id: ItemTypeId, iterations: usize) {
-        let mut reuse_eupdates = UEffectUpdates::new();
         let ship_uid = self.sol.u_data.fits.get(self.uid).ship.unwrap();
         // Collect attr keys
         let mut attr_rids = Vec::new();
@@ -31,7 +29,6 @@ impl<'s> FitMut<'s> {
                 ModuleState::Online,
                 None,
                 None,
-                &mut reuse_eupdates,
             );
             for attr_rid in attr_rids.iter().copied() {
                 let _ = self
@@ -39,8 +36,7 @@ impl<'s> FitMut<'s> {
                     .svc
                     .get_item_attr_val_full(&self.sol.u_data, ship_uid, attr_rid);
             }
-            self.sol
-                .internal_remove_module(item_uid, RemoveMode::Free, &mut reuse_eupdates);
+            self.sol.internal_remove_module(item_uid, RemoveMode::Free);
             for attr_rid in attr_rids.iter().copied() {
                 let _ = self
                     .sol

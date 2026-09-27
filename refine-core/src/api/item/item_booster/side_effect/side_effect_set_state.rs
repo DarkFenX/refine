@@ -1,4 +1,4 @@
-use crate::{api::SideEffectMut, misc::EffectMode, sol::SolarSystem, ud::UEffectUpdates};
+use crate::{api::SideEffectMut, misc::EffectMode, sol::SolarSystem};
 
 impl<'s> SideEffectMut<'s> {
     /// Set side effect state.
@@ -10,9 +10,13 @@ impl<'s> SideEffectMut<'s> {
             true => EffectMode::StateCompliance,
             false => EffectMode::FullCompliance,
         };
-        let mut reuse_eupdates = UEffectUpdates::new();
         u_booster.set_effect_mode(self.effect_aid, effect_mode, &self.sol.u_data.r_data);
-        u_booster.update_reffs(&mut reuse_eupdates, &self.sol.u_data.r_data);
-        SolarSystem::util_process_effect_updates(&self.sol.u_data, &mut self.sol.svc, self.item_uid, &reuse_eupdates);
+        u_booster.update_reffs(&mut self.sol.cache.eupdates, &self.sol.u_data.r_data);
+        SolarSystem::util_process_effect_updates(
+            &self.sol.u_data,
+            &mut self.sol.svc,
+            self.item_uid,
+            &self.sol.cache.eupdates,
+        );
     }
 }

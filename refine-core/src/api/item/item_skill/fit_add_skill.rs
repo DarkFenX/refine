@@ -6,7 +6,7 @@ use crate::{
     err::basic::SkillEveTypeError,
     num::SkillLevel,
     sol::SolarSystem,
-    ud::{UEffectUpdates, UFitId, UFitSkill, UItem, UItemId, USkill},
+    ud::{UFitId, UFitSkill, UItem, UItemId, USkill},
 };
 
 impl SolarSystem {
@@ -15,7 +15,6 @@ impl SolarSystem {
         fit_uid: UFitId,
         type_aid: AItemId,
         level: SkillLevel,
-        reuse_eupdates: &mut UEffectUpdates,
     ) -> Result<UItemId, SkillEveTypeError> {
         let fit = self.u_data.fits.get_mut(fit_uid);
         match fit.skills.entry(type_aid) {
@@ -25,7 +24,7 @@ impl SolarSystem {
                 let item = UItem::Skill(skill);
                 let skill_uid = self.u_data.items.add(item);
                 entry.insert(UFitSkill { skill_uid, level });
-                SolarSystem::util_add_skill(&mut self.u_data, &mut self.svc, skill_uid, reuse_eupdates);
+                SolarSystem::util_add_skill(&mut self.u_data, &mut self.svc, skill_uid, &mut self.cache.eupdates);
                 Ok(skill_uid)
             }
             Entry::Occupied(entry) => Err(SkillEveTypeError {
@@ -39,10 +38,7 @@ impl SolarSystem {
 
 impl<'s> FitMut<'s> {
     pub fn add_skill(&mut self, type_id: ItemTypeId, level: SkillLevel) -> Result<SkillMut<'_>, SkillAddError> {
-        let mut reuse_eupdates = UEffectUpdates::new();
-        let skill_uid = self
-            .sol
-            .internal_add_skill(self.uid, type_id.into_aid(), level, &mut reuse_eupdates)?;
+        let skill_uid = self.sol.internal_add_skill(self.uid, type_id.into_aid(), level)?;
         Ok(SkillMut::new(self.sol, skill_uid))
     }
 }

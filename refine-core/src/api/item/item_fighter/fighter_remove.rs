@@ -1,15 +1,7 @@
-use crate::{
-    api::FighterMut,
-    sol::SolarSystem,
-    ud::{UEffectUpdates, UItemId},
-};
+use crate::{api::FighterMut, sol::SolarSystem, ud::UItemId};
 
 impl SolarSystem {
-    pub(in crate::api) fn internal_remove_fighter(
-        &mut self,
-        fighter_uid: UItemId,
-        reuse_eupdates: &mut UEffectUpdates,
-    ) {
+    pub(in crate::api) fn internal_remove_fighter(&mut self, fighter_uid: UItemId) {
         // Remove incoming projections
         self.internal_remove_incoming_projections(fighter_uid);
         // Remove autocharges with all the associated relations
@@ -18,7 +10,7 @@ impl SolarSystem {
             &mut self.svc,
             &mut self.rev_projs,
             fighter_uid,
-            reuse_eupdates,
+            &mut self.cache.eupdates,
         );
         // Remove outgoing projections
         let u_fighter = self.u_data.items.get(fighter_uid).dc_fighter().unwrap();
@@ -32,7 +24,7 @@ impl SolarSystem {
             u_fighter.get_projs_mut().clear();
         }
         // Update services
-        SolarSystem::util_remove_fighter(&mut self.u_data, &mut self.svc, fighter_uid, reuse_eupdates);
+        SolarSystem::util_remove_fighter(&mut self.u_data, &mut self.svc, fighter_uid, &mut self.cache.eupdates);
         // Update user data
         let u_fit = self.u_data.fits.get_mut(fit_uid);
         u_fit.fighters.remove(&fighter_uid);
@@ -42,7 +34,6 @@ impl SolarSystem {
 
 impl<'s> FighterMut<'s> {
     pub fn remove(self) {
-        let mut reuse_eupdates = UEffectUpdates::new();
-        self.sol.internal_remove_fighter(self.uid, &mut reuse_eupdates);
+        self.sol.internal_remove_fighter(self.uid);
     }
 }

@@ -3,16 +3,11 @@ use crate::{
     api::{ModuleMut, RemoveMode},
     num::Index,
     sol::SolarSystem,
-    ud::{UEffectUpdates, UItemId},
+    ud::UItemId,
 };
 
 impl SolarSystem {
-    pub(in crate::api) fn internal_remove_module(
-        &mut self,
-        module_uid: UItemId,
-        pos_mode: RemoveMode,
-        reuse_eupdates: &mut UEffectUpdates,
-    ) {
+    pub(in crate::api) fn internal_remove_module(&mut self, module_uid: UItemId, pos_mode: RemoveMode) {
         let u_module = self.u_data.items.get(module_uid).dc_module().unwrap();
         let fit_uid = u_module.get_fit_uid();
         let rack = u_module.get_rack();
@@ -44,10 +39,10 @@ impl SolarSystem {
         }
         // Remove charge from services
         if let Some(charge_uid) = charge_uid {
-            SolarSystem::util_remove_charge(&mut self.u_data, &mut self.svc, charge_uid, reuse_eupdates);
+            SolarSystem::util_remove_charge(&mut self.u_data, &mut self.svc, charge_uid, &mut self.cache.eupdates);
         }
         // Remove module from services
-        SolarSystem::util_remove_module(&mut self.u_data, &mut self.svc, module_uid, reuse_eupdates);
+        SolarSystem::util_remove_module(&mut self.u_data, &mut self.svc, module_uid, &mut self.cache.eupdates);
         // Update user data - not updating module<->charge references because both will be removed
         if let Some(charge_uid) = charge_uid {
             self.u_data.items.remove(charge_uid);
@@ -68,7 +63,6 @@ impl SolarSystem {
 
 impl<'s> ModuleMut<'s> {
     pub fn remove(self, pos_mode: RemoveMode) {
-        let mut reuse_eupdates = UEffectUpdates::new();
-        self.sol.internal_remove_module(self.uid, pos_mode, &mut reuse_eupdates)
+        self.sol.internal_remove_module(self.uid, pos_mode)
     }
 }

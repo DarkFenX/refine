@@ -5,7 +5,7 @@ use crate::{
     misc::ModRack,
     num::Index,
     sol::SolarSystem,
-    ud::{UCharge, UEffectUpdates, UFitId, UItem, UItemId, UItemMutationRequest, UModule},
+    ud::{UCharge, UFitId, UItem, UItemId, UItemMutationRequest, UModule},
 };
 
 impl SolarSystem {
@@ -18,7 +18,6 @@ impl SolarSystem {
         state: ModuleState,
         mutation: Option<UItemMutationRequest>,
         charge_type_aid: Option<AItemId>,
-        reuse_eupdates: &mut UEffectUpdates,
     ) -> UItemId {
         let module_item_id = self.u_data.items.alloc_id();
         let u_fit_rack = get_fit_rack_mut(&mut self.u_data.fits, fit_uid, rack);
@@ -57,7 +56,7 @@ impl SolarSystem {
             AddMode::Replace(pos) => {
                 match u_fit_rack.get(pos) {
                     Some(old_module_uid) => {
-                        self.internal_remove_module(old_module_uid, RemoveMode::Free, reuse_eupdates);
+                        self.internal_remove_module(old_module_uid, RemoveMode::Free);
                         let u_fit_rack = get_fit_rack_mut(&mut self.u_data.fits, fit_uid, rack);
                         u_fit_rack.place(pos, module_uid);
                     }
@@ -92,13 +91,13 @@ impl SolarSystem {
         u_module.set_charge_uid(charge_uid);
         // Add module to services. While adding module, effect updates structure records if charge
         // needs to be activated
-        SolarSystem::util_add_module(&mut self.u_data, &mut self.svc, module_uid, reuse_eupdates);
+        SolarSystem::util_add_module(&mut self.u_data, &mut self.svc, module_uid, &mut self.cache.eupdates);
         if let Some(charge_uid) = charge_uid {
-            if reuse_eupdates.charge.unwrap_or(false) {
+            if self.cache.eupdates.charge.unwrap_or(false) {
                 let u_charge = self.u_data.items.get_mut(charge_uid).dc_charge_mut().unwrap();
                 u_charge.set_activated(true);
             }
-            SolarSystem::util_add_charge(&mut self.u_data, &mut self.svc, charge_uid, reuse_eupdates);
+            SolarSystem::util_add_charge(&mut self.u_data, &mut self.svc, charge_uid, &mut self.cache.eupdates);
         }
         module_uid
     }
@@ -112,17 +111,9 @@ impl<'s> FitMut<'s> {
         type_id: ItemTypeId,
         state: ModuleState,
     ) -> ModuleMut<'_> {
-        let mut reuse_eupdates = UEffectUpdates::new();
-        let module_uid = self.sol.internal_add_module(
-            self.uid,
-            rack,
-            pos_mode,
-            type_id.into_aid(),
-            state,
-            None,
-            None,
-            &mut reuse_eupdates,
-        );
+        let module_uid = self
+            .sol
+            .internal_add_module(self.uid, rack, pos_mode, type_id.into_aid(), state, None, None);
         ModuleMut::new(self.sol, module_uid)
     }
 }

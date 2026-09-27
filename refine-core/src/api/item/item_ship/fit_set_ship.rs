@@ -2,7 +2,7 @@ use crate::{
     ad::AItemId,
     api::{Coordinates, FitMut, ItemTypeId, Movement, ShipMut},
     sol::SolarSystem,
-    ud::{UEffectUpdates, UFitId, UItem, UItemId, UPhysics, UShip},
+    ud::{UFitId, UItem, UItemId, UPhysics, UShip},
 };
 
 impl SolarSystem {
@@ -11,12 +11,11 @@ impl SolarSystem {
         fit_uid: UFitId,
         type_aid: AItemId,
         physics: UPhysics,
-        reuse_eupdates: &mut UEffectUpdates,
     ) -> UItemId {
         let u_fit = self.u_data.fits.get(fit_uid);
         // Remove old ship, if it was set
         if let Some(old_ship_uid) = u_fit.ship {
-            self.internal_remove_ship(old_ship_uid, reuse_eupdates);
+            self.internal_remove_ship(old_ship_uid);
         }
         // Add new ship
         let item_id = self.u_data.items.alloc_id();
@@ -28,7 +27,7 @@ impl SolarSystem {
         let u_fit = self.u_data.fits.get_mut(fit_uid);
         u_fit.ship = Some(ship_uid);
         u_fit.ship_kind = ship_kind;
-        SolarSystem::util_add_ship(&mut self.u_data, &mut self.svc, ship_uid, reuse_eupdates);
+        SolarSystem::util_add_ship(&mut self.u_data, &mut self.svc, ship_uid, &mut self.cache.eupdates);
         // Update projections outgoing from on-ship items
         SolarSystem::util_update_ship_radius_for_outgoing_projs(&mut self.u_data, &mut self.svc, fit_uid, ship_radius);
         ship_uid
@@ -50,10 +49,7 @@ impl<'s> FitMut<'s> {
             u_physics.direction = movement.direction.into_xyz();
             u_physics.speed = movement.speed;
         }
-        let mut reuse_eupdates = UEffectUpdates::new();
-        let ship_uid = self
-            .sol
-            .internal_set_fit_ship(self.uid, type_id.into_aid(), u_physics, &mut reuse_eupdates);
+        let ship_uid = self.sol.internal_set_fit_ship(self.uid, type_id.into_aid(), u_physics);
         ShipMut::new(self.sol, ship_uid)
     }
 }

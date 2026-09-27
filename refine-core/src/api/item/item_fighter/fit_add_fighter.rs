@@ -2,7 +2,7 @@ use crate::{
     ad::AItemId,
     api::{Coordinates, FighterMut, FitMut, ItemTypeId, MinionState, Movement},
     sol::SolarSystem,
-    ud::{UEffectUpdates, UFighter, UFitId, UItem, UItemId, UPhysics},
+    ud::{UFighter, UFitId, UItem, UItemId, UPhysics},
 };
 
 impl SolarSystem {
@@ -12,7 +12,6 @@ impl SolarSystem {
         type_aid: AItemId,
         state: MinionState,
         physics: UPhysics,
-        reuse_eupdates: &mut UEffectUpdates,
     ) -> UItemId {
         let u_fit = self.u_data.fits.get_mut(fit_uid);
         let item_id = self.u_data.items.alloc_id();
@@ -26,7 +25,7 @@ impl SolarSystem {
             &mut self.svc,
             &mut self.rev_projs,
             fighter_uid,
-            reuse_eupdates,
+            &mut self.cache.eupdates,
         );
         fighter_uid
     }
@@ -48,10 +47,9 @@ impl<'s> FitMut<'s> {
             u_physics.direction = movement.direction.into_xyz();
             u_physics.speed = movement.speed;
         }
-        let mut reuse_eupdates = UEffectUpdates::new();
-        let fighter_uid =
-            self.sol
-                .internal_add_fighter(self.uid, type_id.into_aid(), state, u_physics, &mut reuse_eupdates);
+        let fighter_uid = self
+            .sol
+            .internal_add_fighter(self.uid, type_id.into_aid(), state, u_physics);
         FighterMut::new(self.sol, fighter_uid)
     }
 }

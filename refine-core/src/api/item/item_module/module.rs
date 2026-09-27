@@ -5,7 +5,7 @@ use crate::{
     misc::InfCount,
     stats::{StatItemChargeOptions, StatItemStateOptions},
     svc::cycle::CseqMap,
-    ud::{UEffectUpdates, UItemId, UModule},
+    ud::{UItemId, UModule},
 };
 
 pub struct Module<'s> {
@@ -106,13 +106,7 @@ impl<'s> ModuleMut<'s> {
         get_optional_reload_override(self.sol, self.uid)
     }
     pub fn get_charged_cycle_count(&mut self) -> Option<Count> {
-        let mut reuse_eupdates = UEffectUpdates::new();
-        let saved_state = active_stat_prepare(
-            self,
-            StatItemChargeOptions::Exclude,
-            StatItemStateOptions::Switch,
-            &mut reuse_eupdates,
-        );
+        let saved_state = active_stat_prepare(self, StatItemChargeOptions::Exclude, StatItemStateOptions::Switch);
         let result = match self
             .sol
             .svc
@@ -121,7 +115,7 @@ impl<'s> ModuleMut<'s> {
             Some(InfCount::Count(count)) => Some(count),
             _ => None,
         };
-        active_stat_rollback(self, saved_state, &mut reuse_eupdates);
+        active_stat_rollback(self, saved_state);
         result
     }
     pub fn get_spool_cycle_count(&mut self) -> Option<ItemSpoolInfo> {
