@@ -28,7 +28,7 @@ impl SolarSystem {
         SolarSystem::util_process_effect_updates(&self.u_data, &mut self.svc, item_uid, &self.cache.eupdates);
         let u_item = self.u_data.items.get(item_uid);
         let charge_uid = u_item.get_charge_uid();
-        // Autocharges
+        // Autocharges - use secondary effect updates container for their effects
         if !self.cache.eupdates.autocharges.is_empty()
             && let Some(autocharges) = u_item.get_autocharges()
         {
@@ -47,10 +47,10 @@ impl SolarSystem {
                 &mut self.u_data,
                 &mut self.svc,
                 ac_activations,
-                &mut self.cache.eupdates,
+                &mut self.cache.eupdates_secondary,
             );
         }
-        // Charge
+        // Charge - use secondary effect updates container for their effects
         if let Some(charge_activated) = self.cache.eupdates.charge
             && let Some(charge_uid) = charge_uid
         {
@@ -59,7 +59,7 @@ impl SolarSystem {
                 &mut self.svc,
                 charge_uid,
                 charge_activated,
-                &mut self.cache.eupdates,
+                &mut self.cache.eupdates_secondary,
             );
         }
     }
