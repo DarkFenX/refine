@@ -50,7 +50,7 @@ impl VastFitData {
     pub(in crate::svc::vast::val) fn validate_item_kind_verbose(
         &self,
         kfs: &RSet<UItemId>,
-        ctx: SvcCtx,
+        ctx: &SvcCtx,
     ) -> Option<ValItemKindFail> {
         let item_kinds = self
             .item_kind

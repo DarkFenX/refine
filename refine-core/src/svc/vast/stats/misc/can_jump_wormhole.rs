@@ -6,7 +6,7 @@ use crate::{
 impl Vast {
     pub(in crate::svc) fn get_stat_item_can_jump_wormhole(
         &self,
-        ctx: SvcCtx,
+        ctx: &SvcCtx,
         item_uid: UItemId,
     ) -> Result<bool, IntStatItemError<!>> {
         let ship = check_ship_no_struct(ctx.u_data, item_uid)?;

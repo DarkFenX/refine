@@ -16,7 +16,7 @@ impl Vast {
     pub(in crate::svc) fn get_stat_fits_outgoing_cps(
         &self,
         reuse_cseq_map: &mut CseqMap,
-        ctx: SvcCtx,
+        ctx: &SvcCtx,
         calc: &mut Calc,
         fit_uids: impl Iterator<Item = UFitId>,
         time_options: StatTimeOptions,
@@ -39,7 +39,7 @@ impl Vast {
     pub(in crate::svc) fn get_stat_fit_outgoing_cps(
         &self,
         reuse_cseq_map: &mut CseqMap,
-        ctx: SvcCtx,
+        ctx: &SvcCtx,
         calc: &mut Calc,
         fit_uid: UFitId,
         time_options: StatTimeOptions,
@@ -60,7 +60,7 @@ impl Vast {
 
 fn get_ocps(
     reuse_cseq_map: &mut CseqMap,
-    ctx: SvcCtx,
+    ctx: &SvcCtx,
     calc: &mut Calc,
     item_kinds: StatOutRepItemKinds,
     time_options: StatTimeOptions,

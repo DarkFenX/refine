@@ -32,7 +32,7 @@ pub(super) fn make_rmod(attr_consts: &RAttrConsts, espec: EffectSpec) -> Option<
     })
 }
 
-pub(super) fn get_mod_val(calc: &mut Calc, ctx: SvcCtx, espec: EffectSpec) -> Option<Value> {
+pub(super) fn get_mod_val(calc: &mut Calc, ctx: &SvcCtx, espec: EffectSpec) -> Option<Value> {
     // Return multiplier only if everything could be fetched successfully
     if let Some(charge_uid) = ctx.u_data.items.get(espec.item_uid).get_charge_uid()
         && let AItemId::NANITE_REPAIR_PASTE = ctx.u_data.items.get(charge_uid).get_type_aid()
@@ -43,7 +43,7 @@ pub(super) fn get_mod_val(calc: &mut Calc, ctx: SvcCtx, espec: EffectSpec) -> Op
     Some(Value::ONE)
 }
 
-pub(super) fn get_affector_info(ctx: SvcCtx, item_uid: UItemId) -> SmallVec<[CalcModInfoAffector; 1]> {
+pub(super) fn get_affector_info(ctx: &SvcCtx, item_uid: UItemId) -> SmallVec<[CalcModInfoAffector; 1]> {
     let mut info = SmallVec::new();
     if let Some(mult_attr_rid) = ctx.ac().charged_armor_dmg_mult {
         info.push(CalcModInfoAffector {
@@ -55,7 +55,7 @@ pub(super) fn get_affector_info(ctx: SvcCtx, item_uid: UItemId) -> SmallVec<[Cal
 }
 
 pub(super) fn revise_on_item_add_removal(
-    ctx: SvcCtx,
+    ctx: &SvcCtx,
     affector_uid: UItemId,
     changed_uid: UItemId,
     changed_item: &UItem,

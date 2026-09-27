@@ -18,7 +18,7 @@ use crate::{
 };
 
 pub(in crate::nd::effect::specs::proj_mult_getter) fn get_turret_proj_mult(
-    ctx: SvcCtx,
+    ctx: &SvcCtx,
     calc: &mut Calc,
     projector_uid: UItemId,
     effect: &REffect,
@@ -38,7 +38,7 @@ pub(in crate::nd::effect::specs::proj_mult_getter) fn get_turret_proj_mult(
 }
 
 pub(in crate::nd::effect::specs::proj_mult_getter) fn get_disintegrator_proj_mult(
-    ctx: SvcCtx,
+    ctx: &SvcCtx,
     calc: &mut Calc,
     projector_uid: UItemId,
     effect: &REffect,
@@ -58,7 +58,7 @@ pub(in crate::nd::effect::specs::proj_mult_getter) fn get_disintegrator_proj_mul
 }
 
 pub(in crate::nd::effect::specs::proj_mult_getter) fn get_vorton_proj_mult(
-    ctx: SvcCtx,
+    ctx: &SvcCtx,
     calc: &mut Calc,
     projector_uid: UItemId,
     effect: &REffect,
@@ -73,7 +73,7 @@ pub(in crate::nd::effect::specs::proj_mult_getter) fn get_vorton_proj_mult(
 }
 
 pub(in crate::nd::effect::specs::proj_mult_getter) fn get_aoe_burst_proj_mult(
-    ctx: SvcCtx,
+    ctx: &SvcCtx,
     calc: &mut Calc,
     projector_uid: UItemId,
     projectee_uid: UItemId,
@@ -93,7 +93,7 @@ pub(in crate::nd::effect::specs::proj_mult_getter) fn get_aoe_burst_proj_mult(
 }
 
 pub(in crate::nd::effect::specs::proj_mult_getter) fn get_aoe_dd_dmg_sharp_proj_mult(
-    ctx: SvcCtx,
+    ctx: &SvcCtx,
     calc: &mut Calc,
     projector_uid: UItemId,
     projectee_uid: UItemId,
@@ -107,7 +107,7 @@ pub(in crate::nd::effect::specs::proj_mult_getter) fn get_aoe_dd_dmg_sharp_proj_
 }
 
 pub(in crate::nd::effect::specs::proj_mult_getter) fn get_aoe_dd_dmg_round_proj_mult(
-    ctx: SvcCtx,
+    ctx: &SvcCtx,
     calc: &mut Calc,
     projector_uid: UItemId,
     projectee_uid: UItemId,
@@ -121,7 +121,7 @@ pub(in crate::nd::effect::specs::proj_mult_getter) fn get_aoe_dd_dmg_round_proj_
 }
 
 pub(in crate::nd::effect::specs::proj_mult_getter) fn get_aoe_dd_side_neut_proj_mult(
-    ctx: SvcCtx,
+    ctx: &SvcCtx,
     calc: &mut Calc,
     projector_uid: UItemId,
     projectee_uid: UItemId,
@@ -141,7 +141,7 @@ pub(in crate::nd::effect::specs::proj_mult_getter) fn get_aoe_dd_side_neut_proj_
 }
 
 pub(in crate::nd::effect::specs::proj_mult_getter) fn get_neut_proj_mult(
-    ctx: SvcCtx,
+    ctx: &SvcCtx,
     calc: &mut Calc,
     projector_uid: UItemId,
     effect: &REffect,
@@ -162,7 +162,7 @@ pub(in crate::nd::effect::specs::proj_mult_getter) fn get_neut_proj_mult(
 }
 
 pub(in crate::nd::effect::specs::proj_mult_getter) fn get_ftr_abil_attack_m_proj_mult(
-    ctx: SvcCtx,
+    ctx: &SvcCtx,
     calc: &mut Calc,
     projector_uid: UItemId,
     effect: &REffect,
@@ -187,7 +187,7 @@ pub(in crate::nd::effect::specs::proj_mult_getter) fn get_ftr_abil_attack_m_proj
 }
 
 pub(in crate::nd::effect::specs::proj_mult_getter) fn get_ftr_abil_missiles_proj_mult(
-    ctx: SvcCtx,
+    ctx: &SvcCtx,
     calc: &mut Calc,
     projector_uid: UItemId,
     effect: &REffect,
@@ -212,7 +212,7 @@ pub(in crate::nd::effect::specs::proj_mult_getter) fn get_ftr_abil_missiles_proj
 }
 
 pub(in crate::nd::effect::specs::proj_mult_getter) fn get_ftr_abil_kamikaze_proj_mult(
-    ctx: SvcCtx,
+    ctx: &SvcCtx,
     calc: &mut Calc,
     projector_uid: UItemId,
     projectee_uid: UItemId,

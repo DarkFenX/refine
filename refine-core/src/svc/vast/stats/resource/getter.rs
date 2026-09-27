@@ -8,7 +8,7 @@ use crate::{
 
 impl VastFitData {
     // Public methods
-    pub(in crate::svc) fn get_stat_cpu(&self, ctx: SvcCtx, calc: &mut Calc, fit: &UFit) -> StatResource {
+    pub(in crate::svc) fn get_stat_cpu(&self, ctx: &SvcCtx, calc: &mut Calc, fit: &UFit) -> StatResource {
         get_resource_stats_fitting(
             ctx,
             calc,
@@ -18,7 +18,7 @@ impl VastFitData {
             ctx.ac().cpu_output,
         )
     }
-    pub(in crate::svc) fn get_stat_powergrid(&self, ctx: SvcCtx, calc: &mut Calc, fit: &UFit) -> StatResource {
+    pub(in crate::svc) fn get_stat_powergrid(&self, ctx: &SvcCtx, calc: &mut Calc, fit: &UFit) -> StatResource {
         get_resource_stats_fitting(
             ctx,
             calc,
@@ -28,7 +28,7 @@ impl VastFitData {
             ctx.ac().power_output,
         )
     }
-    pub(in crate::svc) fn get_stat_calibration(&self, ctx: SvcCtx, calc: &mut Calc, fit: &UFit) -> StatResource {
+    pub(in crate::svc) fn get_stat_calibration(&self, ctx: &SvcCtx, calc: &mut Calc, fit: &UFit) -> StatResource {
         get_resource_stats_other(
             ctx,
             calc,
@@ -37,7 +37,7 @@ impl VastFitData {
             ctx.ac().upgrade_capacity,
         )
     }
-    pub(in crate::svc) fn get_stat_drone_bay_volume(&self, ctx: SvcCtx, calc: &mut Calc, fit: &UFit) -> StatResource {
+    pub(in crate::svc) fn get_stat_drone_bay_volume(&self, ctx: &SvcCtx, calc: &mut Calc, fit: &UFit) -> StatResource {
         get_resource_stats_other(
             ctx,
             calc,
@@ -46,7 +46,7 @@ impl VastFitData {
             ctx.ac().drone_capacity,
         )
     }
-    pub(in crate::svc) fn get_stat_drone_bandwidth(&self, ctx: SvcCtx, calc: &mut Calc, fit: &UFit) -> StatResource {
+    pub(in crate::svc) fn get_stat_drone_bandwidth(&self, ctx: &SvcCtx, calc: &mut Calc, fit: &UFit) -> StatResource {
         get_resource_stats_other(
             ctx,
             calc,
@@ -55,7 +55,12 @@ impl VastFitData {
             ctx.ac().drone_bandwidth,
         )
     }
-    pub(in crate::svc) fn get_stat_fighter_bay_volume(&self, ctx: SvcCtx, calc: &mut Calc, fit: &UFit) -> StatResource {
+    pub(in crate::svc) fn get_stat_fighter_bay_volume(
+        &self,
+        ctx: &SvcCtx,
+        calc: &mut Calc,
+        fit: &UFit,
+    ) -> StatResource {
         get_resource_stats_other(
             ctx,
             calc,
@@ -67,7 +72,7 @@ impl VastFitData {
 }
 
 fn get_resource_stats_fitting(
-    ctx: SvcCtx,
+    ctx: &SvcCtx,
     calc: &mut Calc,
     fit: &UFit,
     items: impl Iterator<Item = UItemId>,
@@ -85,7 +90,7 @@ fn get_resource_stats_fitting(
     }
 }
 fn get_resource_stats_other(
-    ctx: SvcCtx,
+    ctx: &SvcCtx,
     calc: &mut Calc,
     fit: &UFit,
     items_use: impl Iterator<Item = Value>,

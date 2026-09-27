@@ -16,7 +16,7 @@ impl Svc {
         attr_rid: RAttrId,
     ) -> Result<CalcAttrVals, UItemLoadedError> {
         self.calc
-            .get_item_attr_rfull(SvcCtx::new(u_data, &self.eff_projs), item_uid, attr_rid)
+            .get_item_attr_rfull(&SvcCtx::new(u_data, &self.eff_projs), item_uid, attr_rid)
     }
     pub(crate) fn iter_item_attr_vals(
         &mut self,
@@ -24,14 +24,15 @@ impl Svc {
         item_uid: UItemId,
     ) -> Result<impl ExactSizeIterator<Item = (RAttrId, CalcAttrVals)>, UItemLoadedError> {
         self.calc
-            .iter_item_attrs_rfull(SvcCtx::new(u_data, &self.eff_projs), item_uid)
+            .iter_item_attrs_rfull(&SvcCtx::new(u_data, &self.eff_projs), item_uid)
     }
     pub(crate) fn iter_item_mods(
         &mut self,
         u_data: &UData,
         item_uid: UItemId,
     ) -> Result<impl ExactSizeIterator<Item = (RAttrId, Vec<CalcModInfo>)>, UItemLoadedError> {
-        self.calc.iter_item_mods(SvcCtx::new(u_data, &self.eff_projs), item_uid)
+        self.calc
+            .iter_item_mods(&SvcCtx::new(u_data, &self.eff_projs), item_uid)
     }
     pub(crate) fn iter_item_attr_mods(
         &mut self,
@@ -40,6 +41,6 @@ impl Svc {
         attr_rid: RAttrId,
     ) -> Result<impl ExactSizeIterator<Item = CalcModInfo>, UItemLoadedError> {
         self.calc
-            .iter_item_attr_mods(SvcCtx::new(u_data, &self.eff_projs), item_uid, attr_rid)
+            .iter_item_attr_mods(&SvcCtx::new(u_data, &self.eff_projs), item_uid, attr_rid)
     }
 }

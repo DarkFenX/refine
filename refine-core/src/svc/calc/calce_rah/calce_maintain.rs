@@ -12,7 +12,7 @@ use crate::{
 };
 
 impl Calc {
-    pub(in crate::svc::calc) fn rah_item_loaded(&mut self, ctx: SvcCtx, item: &UItem) {
+    pub(in crate::svc::calc) fn rah_item_loaded(&mut self, ctx: &SvcCtx, item: &UItem) {
         if self.rah.sim_running {
             return;
         }
@@ -20,7 +20,7 @@ impl Calc {
             self.clear_fit_rah_results(ctx, ship.get_fit_uid());
         }
     }
-    pub(in crate::svc::calc) fn rah_item_unloaded(&mut self, ctx: SvcCtx, item: &UItem) {
+    pub(in crate::svc::calc) fn rah_item_unloaded(&mut self, ctx: &SvcCtx, item: &UItem) {
         if self.rah.sim_running {
             return;
         }
@@ -30,7 +30,7 @@ impl Calc {
     }
     pub(in crate::svc::calc) fn rah_effects_started(
         &mut self,
-        ctx: SvcCtx,
+        ctx: &SvcCtx,
         item_uid: UItemId,
         item: &UItem,
         effects: &[RcEffect],
@@ -67,7 +67,7 @@ impl Calc {
     }
     pub(in crate::svc::calc) fn rah_effects_stopped(
         &mut self,
-        ctx: SvcCtx,
+        ctx: &SvcCtx,
         item_uid: UItemId,
         item: &UItem,
         effects: &[RcEffect],
@@ -102,7 +102,7 @@ impl Calc {
             self.clear_fit_rah_results(ctx, fit_uid);
         }
     }
-    pub(in crate::svc::calc) fn rah_attr_value_changed(&mut self, ctx: SvcCtx, aspec: &AttrSpec) {
+    pub(in crate::svc::calc) fn rah_attr_value_changed(&mut self, ctx: &SvcCtx, aspec: &AttrSpec) {
         if self.rah.sim_running {
             return;
         }
@@ -160,17 +160,17 @@ impl Calc {
             _ => (),
         }
     }
-    pub(in crate::svc::calc) fn rah_fit_rah_dps_profile_changed(&mut self, ctx: SvcCtx, fit_uid: UFitId) {
+    pub(in crate::svc::calc) fn rah_fit_rah_dps_profile_changed(&mut self, ctx: &SvcCtx, fit_uid: UFitId) {
         self.clear_fit_rah_results(ctx, fit_uid);
     }
     // Private methods
-    fn clear_fit_rah_results(&mut self, ctx: SvcCtx, fit_uid: UFitId) {
+    fn clear_fit_rah_results(&mut self, ctx: &SvcCtx, fit_uid: UFitId) {
         let rah_uids = self.rah.by_fit.get(fit_uid).copied().collect_vec();
         for rah_uid in rah_uids {
             self.clear_rah_result(ctx, rah_uid);
         }
     }
-    fn clear_rah_result(&mut self, ctx: SvcCtx, item_uid: UItemId) {
+    fn clear_rah_result(&mut self, ctx: &SvcCtx, item_uid: UItemId) {
         if self.rah.resonances.get_mut(&item_uid).unwrap().take().is_some() {
             let attr_consts = ctx.ac();
             self.force_oattr_postproc_recalc(ctx, item_uid, attr_consts.armor_em_dmg_resonance);

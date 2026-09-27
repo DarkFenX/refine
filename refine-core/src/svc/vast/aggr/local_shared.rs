@@ -27,7 +27,7 @@ pub(super) struct AggrLocalInvData<I> {
 }
 impl<I> AggrLocalInvData<I> {
     pub(super) fn try_make<BG, BX>(
-        ctx: SvcCtx,
+        ctx: &SvcCtx,
         calc: &mut Calc,
         item_uid: UItemId,
         effect: &REffect,
@@ -52,22 +52,22 @@ impl<I> AggrLocalInvData<I> {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Converter
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-pub(super) struct LocalConverter<'u, 'p, 'c, 'o, 'i, BG, I>
+pub(super) struct LocalConverter<'s, 'c, 'o, 'i, BG, I>
 where
     BG: NEffectOutputGetter,
 {
-    ctx: SvcCtx<'u, 'p>,
+    ctx: &'s SvcCtx<'s, 's>,
     calc: &'c mut Calc,
     item_uid: UItemId,
     ospec: &'o REffectLocalOpcSpec<BG>,
     inv_local: &'i AggrLocalInvData<I>,
 }
-impl<'u, 'p, 'c, 'o, 'i, BG, I> LocalConverter<'u, 'p, 'c, 'o, 'i, BG, I>
+impl<'s, 'c, 'o, 'i, BG, I> LocalConverter<'s, 'c, 'o, 'i, BG, I>
 where
     BG: NEffectOutputGetter,
 {
     pub(super) fn new(
-        ctx: SvcCtx<'u, 'p>,
+        ctx: &'s SvcCtx<'s, 's>,
         calc: &'c mut Calc,
         item_uid: UItemId,
         ospec: &'o REffectLocalOpcSpec<BG>,
@@ -82,7 +82,7 @@ where
         }
     }
 }
-impl<BG, I> LibConverter<CycleDataFull, AggrPartData<I>> for LocalConverter<'_, '_, '_, '_, '_, BG, I>
+impl<BG, I> LibConverter<CycleDataFull, AggrPartData<I>> for LocalConverter<'_, '_, '_, '_, BG, I>
 where
     BG: NEffectOutputGetter,
     I: Copy + std::ops::MulAssign<PValue> + InstanceLimit,
@@ -102,7 +102,7 @@ where
         }
     }
 }
-impl<BG, I> LibConverter<CycleDataFull, AggrPartDataTail<I>> for LocalConverter<'_, '_, '_, '_, '_, BG, I>
+impl<BG, I> LibConverter<CycleDataFull, AggrPartDataTail<I>> for LocalConverter<'_, '_, '_, '_, BG, I>
 where
     BG: NEffectOutputGetter,
     I: Copy + std::ops::MulAssign<PValue> + InstanceDuration + InstanceLimit,
@@ -130,7 +130,7 @@ where
 // Helper functions
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 fn get_local_output<BG, I>(
-    ctx: SvcCtx,
+    ctx: &SvcCtx,
     calc: &mut Calc,
     item_uid: UItemId,
     ospec: &REffectLocalOpcSpec<BG>,

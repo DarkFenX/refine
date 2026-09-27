@@ -11,7 +11,7 @@ use crate::{
 };
 
 impl Vast {
-    pub(in crate::svc) fn validate_sol_fast(&self, ctx: SvcCtx, calc: &mut Calc, options: &ValOptionsSolInt) -> bool {
+    pub(in crate::svc) fn validate_sol_fast(&self, ctx: &SvcCtx, calc: &mut Calc, options: &ValOptionsSolInt) -> bool {
         for &fit_uid in options.fit_uids.iter() {
             if !self.validate_fit_fast(ctx, calc, fit_uid, &options.options) {
                 return false;
@@ -26,7 +26,7 @@ impl Vast {
     }
     pub(in crate::svc) fn validate_sol_verbose(
         &mut self,
-        ctx: SvcCtx,
+        ctx: &SvcCtx,
         calc: &mut Calc,
         options: &ValOptionsSolInt,
     ) -> ValResultSol {
@@ -45,7 +45,7 @@ impl Vast {
     }
     pub(in crate::svc) fn validate_fit_fast(
         &self,
-        ctx: SvcCtx,
+        ctx: &SvcCtx,
         calc: &mut Calc,
         fit_uid: UFitId,
         options: &ValOptionsInt,
@@ -464,7 +464,7 @@ impl Vast {
     }
     pub(in crate::svc) fn validate_fit_verbose(
         &self,
-        ctx: SvcCtx,
+        ctx: &SvcCtx,
         calc: &mut Calc,
         fit_uid: UFitId,
         options: &ValOptionsInt,

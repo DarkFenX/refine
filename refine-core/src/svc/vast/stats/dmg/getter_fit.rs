@@ -20,7 +20,7 @@ impl Vast {
     pub(in crate::svc) fn get_stat_fits_dmg_raw(
         &self,
         reuse_cseq_map: &mut CseqMap,
-        ctx: SvcCtx,
+        ctx: &SvcCtx,
         calc: &mut Calc,
         fit_uids: impl Iterator<Item = UFitId>,
         item_kinds: StatDmgItemKinds,
@@ -72,7 +72,7 @@ impl Vast {
     pub(in crate::svc) fn get_stat_fits_dmg_applied(
         &self,
         reuse_cseq_map: &mut CseqMap,
-        ctx: SvcCtx,
+        ctx: &SvcCtx,
         calc: &mut Calc,
         fit_uids: impl Iterator<Item = UFitId>,
         item_kinds: StatDmgItemKinds,
@@ -127,7 +127,7 @@ impl Vast {
     pub(in crate::svc) fn get_stat_fit_dmg_raw(
         &self,
         reuse_cseq_map: &mut CseqMap,
-        ctx: SvcCtx,
+        ctx: &SvcCtx,
         calc: &mut Calc,
         fit_uid: UFitId,
         item_kinds: StatDmgItemKinds,
@@ -177,7 +177,7 @@ impl Vast {
     pub(in crate::svc) fn get_stat_fit_dmg_applied(
         &self,
         reuse_cseq_map: &mut CseqMap,
-        ctx: SvcCtx,
+        ctx: &SvcCtx,
         calc: &mut Calc,
         fit_uid: UFitId,
         item_kinds: StatDmgItemKinds,
@@ -233,7 +233,7 @@ impl VastFitData {
     fn fill_stat_dmg_normal(
         &self,
         reuse_cseq_map: &mut CseqMap,
-        ctx: SvcCtx,
+        ctx: &SvcCtx,
         calc: &mut Calc,
         dps_normal: &mut DmgKinds<PValue>,
         volley_normal: &mut DmgKinds<PValue>,
@@ -323,7 +323,7 @@ impl VastFitData {
     fn fill_stat_dmg_breacher(
         &self,
         reuse_cseq_map: &mut CseqMap,
-        ctx: SvcCtx,
+        ctx: &SvcCtx,
         calc: &mut Calc,
         breacher_accum: &mut BreacherAccum,
         item_kinds: StatDmgItemKinds,
@@ -349,7 +349,7 @@ impl VastFitData {
     fn fill_stat_dmg_breacher_applied(
         &self,
         reuse_cseq_map: &mut CseqMap,
-        ctx: SvcCtx,
+        ctx: &SvcCtx,
         calc: &mut Calc,
         breacher_accum: &mut AppliedBreacherAccum,
         item_kinds: StatDmgItemKinds,

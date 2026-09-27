@@ -40,7 +40,7 @@ impl VastFitData {
     pub(in crate::svc::vast::val) fn validate_cpu_fast(
         &self,
         kfs: &RSet<UItemId>,
-        ctx: SvcCtx,
+        ctx: &SvcCtx,
         calc: &mut Calc,
         fit: &UFit,
     ) -> bool {
@@ -57,7 +57,7 @@ impl VastFitData {
     pub(in crate::svc::vast::val) fn validate_powergrid_fast(
         &self,
         kfs: &RSet<UItemId>,
-        ctx: SvcCtx,
+        ctx: &SvcCtx,
         calc: &mut Calc,
         fit: &UFit,
     ) -> bool {
@@ -74,7 +74,7 @@ impl VastFitData {
     pub(in crate::svc::vast::val) fn validate_calibration_fast(
         &self,
         kfs: &RSet<UItemId>,
-        ctx: SvcCtx,
+        ctx: &SvcCtx,
         calc: &mut Calc,
         fit: &UFit,
     ) -> bool {
@@ -90,7 +90,7 @@ impl VastFitData {
     pub(in crate::svc::vast::val) fn validate_drone_bay_volume_fast(
         &self,
         kfs: &RSet<UItemId>,
-        ctx: SvcCtx,
+        ctx: &SvcCtx,
         calc: &mut Calc,
         fit: &UFit,
     ) -> bool {
@@ -106,7 +106,7 @@ impl VastFitData {
     pub(in crate::svc::vast::val) fn validate_drone_bandwidth_fast(
         &self,
         kfs: &RSet<UItemId>,
-        ctx: SvcCtx,
+        ctx: &SvcCtx,
         calc: &mut Calc,
         fit: &UFit,
     ) -> bool {
@@ -122,7 +122,7 @@ impl VastFitData {
     pub(in crate::svc::vast::val) fn validate_fighter_bay_volume_fast(
         &self,
         kfs: &RSet<UItemId>,
-        ctx: SvcCtx,
+        ctx: &SvcCtx,
         calc: &mut Calc,
         fit: &UFit,
     ) -> bool {
@@ -139,7 +139,7 @@ impl VastFitData {
     pub(in crate::svc::vast::val) fn validate_cpu_verbose(
         &self,
         kfs: &RSet<UItemId>,
-        ctx: SvcCtx,
+        ctx: &SvcCtx,
         calc: &mut Calc,
         fit: &UFit,
     ) -> Option<ValResourceFail> {
@@ -156,7 +156,7 @@ impl VastFitData {
     pub(in crate::svc::vast::val) fn validate_powergrid_verbose(
         &self,
         kfs: &RSet<UItemId>,
-        ctx: SvcCtx,
+        ctx: &SvcCtx,
         calc: &mut Calc,
         fit: &UFit,
     ) -> Option<ValResourceFail> {
@@ -173,7 +173,7 @@ impl VastFitData {
     pub(in crate::svc::vast::val) fn validate_calibration_verbose(
         &self,
         kfs: &RSet<UItemId>,
-        ctx: SvcCtx,
+        ctx: &SvcCtx,
         calc: &mut Calc,
         fit: &UFit,
     ) -> Option<ValResourceFail> {
@@ -189,7 +189,7 @@ impl VastFitData {
     pub(in crate::svc::vast::val) fn validate_drone_bay_volume_verbose(
         &self,
         kfs: &RSet<UItemId>,
-        ctx: SvcCtx,
+        ctx: &SvcCtx,
         calc: &mut Calc,
         fit: &UFit,
     ) -> Option<ValResourceFail> {
@@ -205,7 +205,7 @@ impl VastFitData {
     pub(in crate::svc::vast::val) fn validate_drone_bandwidth_verbose(
         &self,
         kfs: &RSet<UItemId>,
-        ctx: SvcCtx,
+        ctx: &SvcCtx,
         calc: &mut Calc,
         fit: &UFit,
     ) -> Option<ValResourceFail> {
@@ -221,7 +221,7 @@ impl VastFitData {
     pub(in crate::svc::vast::val) fn validate_fighter_bay_volume_verbose(
         &self,
         kfs: &RSet<UItemId>,
-        ctx: SvcCtx,
+        ctx: &SvcCtx,
         calc: &mut Calc,
         fit: &UFit,
     ) -> Option<ValResourceFail> {
@@ -238,7 +238,7 @@ impl VastFitData {
 
 fn validate_fast_fitting(
     kfs: &RSet<UItemId>,
-    ctx: SvcCtx,
+    ctx: &SvcCtx,
     calc: &mut Calc,
     fit: &UFit,
     items: impl Iterator<Item = UItemId>,
@@ -262,7 +262,7 @@ fn validate_fast_fitting(
 }
 fn validate_fast_other(
     kfs: &RSet<UItemId>,
-    ctx: SvcCtx,
+    ctx: &SvcCtx,
     calc: &mut Calc,
     fit: &UFit,
     items: impl Iterator<Item = (UItemId, Value)>,
@@ -285,7 +285,7 @@ fn validate_fast_other(
 
 fn validate_verbose_fitting(
     kfs: &RSet<UItemId>,
-    ctx: SvcCtx,
+    ctx: &SvcCtx,
     calc: &mut Calc,
     fit: &UFit,
     items: impl ExactSizeIterator<Item = UItemId>,
@@ -321,7 +321,7 @@ fn validate_verbose_fitting(
 }
 fn validate_verbose_other(
     kfs: &RSet<UItemId>,
-    ctx: SvcCtx,
+    ctx: &SvcCtx,
     calc: &mut Calc,
     fit: &UFit,
     items: impl ExactSizeIterator<Item = (UItemId, Value)>,

@@ -7,7 +7,7 @@ use crate::{
 #[must_use]
 pub(super) fn get_autocharge_cseq_map(
     reuse_cseq_map: &mut CseqMap,
-    ctx: SvcCtx,
+    ctx: &SvcCtx,
     calc: &mut Calc,
     autocharge: &UAutocharge,
     options: CyclingOptions,

@@ -10,7 +10,7 @@ use crate::{
 impl REffectResist {
     pub(in crate::svc) fn get_mult_by_projection(
         &self,
-        ctx: SvcCtx,
+        ctx: &SvcCtx,
         calc: &mut Calc,
         projector_uid: UItemId,
         projectee_uid: UItemId,
@@ -39,7 +39,7 @@ impl REffectResist {
         }
     }
     pub(in crate::svc) fn get_mult_by_aspec(
-        ctx: SvcCtx,
+        ctx: &SvcCtx,
         calc: &mut Calc,
         projectee_aspec: &AttrSpec,
     ) -> Option<UnitInterval> {

@@ -34,7 +34,7 @@ impl NEffectOutputGetter for NEffectDmgOutputGetter {
 
     fn get(
         &self,
-        ctx: SvcCtx,
+        ctx: &SvcCtx,
         calc: &mut Calc,
         item_uid: UItemId,
         _effect: &REffect,
@@ -59,14 +59,14 @@ impl NEffectOutputGetter for NEffectDmgOutputGetter {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Getter-related private functions
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-fn get_regular(ctx: SvcCtx, calc: &mut Calc, item_uid: UItemId) -> Option<Output<DmgKinds<PValue>>> {
+fn get_regular(ctx: &SvcCtx, calc: &mut Calc, item_uid: UItemId) -> Option<Output<DmgKinds<PValue>>> {
     Some(Output::Simple(OutputSimple {
         instance: get_dmg_values_standard(ctx, calc, item_uid)?,
         delay: PValue::ZERO,
     }))
 }
 
-fn get_delay1(ctx: SvcCtx, calc: &mut Calc, item_uid: UItemId) -> Option<Output<DmgKinds<PValue>>> {
+fn get_delay1(ctx: &SvcCtx, calc: &mut Calc, item_uid: UItemId) -> Option<Output<DmgKinds<PValue>>> {
     Some(Output::Simple(OutputSimple {
         instance: get_dmg_values_standard(ctx, calc, item_uid)?,
         delay: PValue::from_value_clamped(
@@ -75,7 +75,7 @@ fn get_delay1(ctx: SvcCtx, calc: &mut Calc, item_uid: UItemId) -> Option<Output<
     }))
 }
 
-fn get_delay2(ctx: SvcCtx, calc: &mut Calc, item_uid: UItemId) -> Option<Output<DmgKinds<PValue>>> {
+fn get_delay2(ctx: &SvcCtx, calc: &mut Calc, item_uid: UItemId) -> Option<Output<DmgKinds<PValue>>> {
     Some(Output::Simple(OutputSimple {
         instance: get_dmg_values_standard(ctx, calc, item_uid)?,
         delay: PValue::from_value_clamped(
@@ -85,7 +85,7 @@ fn get_delay2(ctx: SvcCtx, calc: &mut Calc, item_uid: UItemId) -> Option<Output<
     }))
 }
 
-fn get_dot_delay(ctx: SvcCtx, calc: &mut Calc, item_uid: UItemId) -> Option<Output<DmgKinds<PValue>>> {
+fn get_dot_delay(ctx: &SvcCtx, calc: &mut Calc, item_uid: UItemId) -> Option<Output<DmgKinds<PValue>>> {
     let dmg = get_dmg_values_standard(ctx, calc, item_uid)?;
     let delay = PValue::from_value_clamped(
         calc.get_item_oattr_ffb_extra(ctx, item_uid, ctx.ac().doomsday_warning_duration, Value::ZERO) / Value::THOUSAND,
@@ -107,7 +107,7 @@ fn get_dot_delay(ctx: SvcCtx, calc: &mut Calc, item_uid: UItemId) -> Option<Outp
     Some(Output::Simple(OutputSimple { instance: dmg, delay }))
 }
 
-fn get_mult_charge(ctx: SvcCtx, calc: &mut Calc, item_uid: UItemId) -> Option<Output<DmgKinds<PValue>>> {
+fn get_mult_charge(ctx: &SvcCtx, calc: &mut Calc, item_uid: UItemId) -> Option<Output<DmgKinds<PValue>>> {
     let charge_uid = ctx.u_data.items.get(item_uid).get_charge_uid()?;
     let dmg_mult =
         PValue::from_value_clamped(calc.get_item_oattr_ffb_extra(ctx, item_uid, ctx.ac().dmg_mult, Value::ONE));
@@ -122,7 +122,7 @@ fn get_mult_charge(ctx: SvcCtx, calc: &mut Calc, item_uid: UItemId) -> Option<Ou
     }))
 }
 
-fn get_target_attack(ctx: SvcCtx, calc: &mut Calc, item_uid: UItemId) -> Option<Output<DmgKinds<PValue>>> {
+fn get_target_attack(ctx: &SvcCtx, calc: &mut Calc, item_uid: UItemId) -> Option<Output<DmgKinds<PValue>>> {
     let item = ctx.u_data.items.get(item_uid);
     let dmg_dealer_uid = match item.get_r_item_base().unwrap().capacity > PValue::ZERO {
         // If item has capacity but no charge - it is not dealing damage
@@ -143,7 +143,7 @@ fn get_target_attack(ctx: SvcCtx, calc: &mut Calc, item_uid: UItemId) -> Option<
 }
 
 /// The only difference from regular getter is that bomb damage can be modified by fighter count
-fn get_bomb(ctx: SvcCtx, calc: &mut Calc, item_uid: UItemId) -> Option<Output<DmgKinds<PValue>>> {
+fn get_bomb(ctx: &SvcCtx, calc: &mut Calc, item_uid: UItemId) -> Option<Output<DmgKinds<PValue>>> {
     let mut dmg = get_dmg_values_standard(ctx, calc, item_uid)?;
     if let Some(mult) = ctx.u_data.get_charge_mult(item_uid) {
         dmg.em *= mult;
@@ -157,7 +157,7 @@ fn get_bomb(ctx: SvcCtx, calc: &mut Calc, item_uid: UItemId) -> Option<Output<Dm
     }))
 }
 
-fn get_ftr_abil_attack_m(ctx: SvcCtx, calc: &mut Calc, item_uid: UItemId) -> Option<Output<DmgKinds<PValue>>> {
+fn get_ftr_abil_attack_m(ctx: &SvcCtx, calc: &mut Calc, item_uid: UItemId) -> Option<Output<DmgKinds<PValue>>> {
     let mut dmg = get_dmg_values(
         ctx,
         calc,
@@ -188,7 +188,7 @@ fn get_ftr_abil_attack_m(ctx: SvcCtx, calc: &mut Calc, item_uid: UItemId) -> Opt
     }))
 }
 
-fn get_ftr_abil_missiles(ctx: SvcCtx, calc: &mut Calc, item_uid: UItemId) -> Option<Output<DmgKinds<PValue>>> {
+fn get_ftr_abil_missiles(ctx: &SvcCtx, calc: &mut Calc, item_uid: UItemId) -> Option<Output<DmgKinds<PValue>>> {
     let mut dmg = get_dmg_values(
         ctx,
         calc,
@@ -219,7 +219,7 @@ fn get_ftr_abil_missiles(ctx: SvcCtx, calc: &mut Calc, item_uid: UItemId) -> Opt
     }))
 }
 
-fn get_ftr_abil_kamikaze(ctx: SvcCtx, calc: &mut Calc, item_uid: UItemId) -> Option<Output<DmgKinds<PValue>>> {
+fn get_ftr_abil_kamikaze(ctx: &SvcCtx, calc: &mut Calc, item_uid: UItemId) -> Option<Output<DmgKinds<PValue>>> {
     let mut dmg = get_dmg_values(
         ctx,
         calc,
@@ -244,7 +244,7 @@ fn get_ftr_abil_kamikaze(ctx: SvcCtx, calc: &mut Calc, item_uid: UItemId) -> Opt
     }))
 }
 
-fn get_dmg_values_standard(ctx: SvcCtx, calc: &mut Calc, item_uid: UItemId) -> Option<DmgKinds<PValue>> {
+fn get_dmg_values_standard(ctx: &SvcCtx, calc: &mut Calc, item_uid: UItemId) -> Option<DmgKinds<PValue>> {
     get_dmg_values(
         ctx,
         calc,
@@ -256,7 +256,7 @@ fn get_dmg_values_standard(ctx: SvcCtx, calc: &mut Calc, item_uid: UItemId) -> O
     )
 }
 fn get_dmg_values(
-    ctx: SvcCtx,
+    ctx: &SvcCtx,
     calc: &mut Calc,
     item_uid: UItemId,
     em_attr_rid: Option<RAttrId>,

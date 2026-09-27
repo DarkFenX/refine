@@ -35,7 +35,7 @@ impl VastFitData {
     pub(in crate::svc::vast::val) fn validate_effect_stopper_fast(
         &self,
         kfs: &RSet<UItemId>,
-        ctx: SvcCtx,
+        ctx: &SvcCtx,
         calc: &mut Calc,
     ) -> bool {
         for (stopped_espec, stopper_especs) in self.stopped_effects.iter() {
@@ -54,7 +54,7 @@ impl VastFitData {
     pub(in crate::svc::vast::val) fn validate_effect_stopper_verbose(
         &self,
         kfs: &RSet<UItemId>,
-        ctx: SvcCtx,
+        ctx: &SvcCtx,
         calc: &mut Calc,
     ) -> Option<ValEffectStopperFail> {
         let mut items = RMap::new();
@@ -87,7 +87,7 @@ impl VastFitData {
 
 /// Returns true if any of projectors is in range to block target effect
 fn is_any_in_effective_range(
-    ctx: SvcCtx,
+    ctx: &SvcCtx,
     calc: &mut Calc,
     stopper_especs: impl Iterator<Item = EffectSpec>,
     stopped_item_uid: UItemId,

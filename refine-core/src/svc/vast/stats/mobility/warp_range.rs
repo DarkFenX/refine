@@ -6,7 +6,7 @@ use crate::{
 
 impl Vast {
     pub(in crate::svc) fn get_stat_item_max_warp_range(
-        ctx: SvcCtx,
+        ctx: &SvcCtx,
         calc: &mut Calc,
         item_uid: UItemId,
     ) -> Result<PValue, IntStatItemError<StatMaxWarpRangeError>> {
@@ -15,7 +15,7 @@ impl Vast {
             .map_err(IntStatItemError::StatSpecific)
     }
     fn internal_get_stat_item_max_warp_range_unchecked(
-        ctx: SvcCtx,
+        ctx: &SvcCtx,
         calc: &mut Calc,
         item_uid: UItemId,
     ) -> Result<PValue, StatMaxWarpRangeError> {

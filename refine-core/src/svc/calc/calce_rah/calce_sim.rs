@@ -30,7 +30,7 @@ const FALLBACK_RESONANCE: CalcAttrVals = CalcAttrVals {
 };
 
 impl Calc {
-    pub(super) fn rah_run_simulation(&mut self, ctx: SvcCtx, fit_uid: UFitId) {
+    pub(super) fn rah_run_simulation(&mut self, ctx: &SvcCtx, fit_uid: UFitId) {
         let fit = ctx.u_data.fits.get(fit_uid);
         let Some(ship_uid) = fit.ship else {
             // Since there were no calculated values stored in sim prior to simulation, and we are
@@ -140,7 +140,7 @@ impl Calc {
         let avg_resos = get_average_resonances(&tick_history[ticks_to_ignore..]);
         self.set_partial_fit_rahs_result(ctx, avg_resos, &item_datas);
     }
-    fn get_ship_stats(&mut self, ctx: SvcCtx, ship_uid: UItemId) -> Option<RahShipStats> {
+    fn get_ship_stats(&mut self, ctx: &SvcCtx, ship_uid: UItemId) -> Option<RahShipStats> {
         let attr_consts = ctx.ac();
         // Fail if ship is not loaded, or any of resonance attributes are not available
         let em_reso = PValue::from_value_clamped(self.get_item_oattr_odogma(
@@ -191,7 +191,7 @@ impl Calc {
             total_hp: shield_hp + armor_hp + hull_hp,
         })
     }
-    fn get_fit_rah_item_datas(&mut self, ctx: SvcCtx, fit_uid: UFitId) -> ItemDataVec<ItemData> {
+    fn get_fit_rah_item_datas(&mut self, ctx: &SvcCtx, fit_uid: UFitId) -> ItemDataVec<ItemData> {
         let mut rah_datas = ItemDataVec::new();
         for item_uid in self.rah.by_fit.get(fit_uid).copied().collect_vec() {
             let Some(rah_attrs) = self.get_rah_item_data(ctx, item_uid) else {
@@ -205,7 +205,7 @@ impl Calc {
         }
         rah_datas
     }
-    fn get_rah_item_data(&mut self, ctx: SvcCtx, item_uid: UItemId) -> Option<ItemData> {
+    fn get_rah_item_data(&mut self, ctx: &SvcCtx, item_uid: UItemId) -> Option<ItemData> {
         // Get resonances bypassing postprocessing functions, since we already installed them
         let attr_consts = ctx.ac();
         let res_em = self.get_item_oattr_ofull_nopp(ctx, item_uid, attr_consts.armor_em_dmg_resonance)?;
@@ -240,12 +240,12 @@ impl Calc {
         Some(ItemData::new(rah_info))
     }
     /// Set resonances to unadapted values in sim storage for all RAHs of requested fit
-    fn set_fit_rahs_unadapted(&mut self, ctx: SvcCtx, fit_uid: UFitId, trigger_recalc: bool) {
+    fn set_fit_rahs_unadapted(&mut self, ctx: &SvcCtx, fit_uid: UFitId, trigger_recalc: bool) {
         for item_uid in self.rah.by_fit.get(fit_uid).copied().collect_vec() {
             self.set_rah_unadapted(ctx, item_uid, trigger_recalc);
         }
     }
-    fn set_rah_unadapted(&mut self, ctx: SvcCtx, item_uid: UItemId, trigger_recalc: bool) {
+    fn set_rah_unadapted(&mut self, ctx: &SvcCtx, item_uid: UItemId, trigger_recalc: bool) {
         let attr_consts = ctx.ac();
         let em = self
             .get_item_oattr_ofull_nopp(ctx, item_uid, attr_consts.armor_em_dmg_resonance)
@@ -270,7 +270,7 @@ impl Calc {
     // Result application methods
     fn set_rah_result(
         &mut self,
-        ctx: SvcCtx,
+        ctx: &SvcCtx,
         item_uid: UItemId,
         new_resos: DmgKinds<CalcAttrVals>,
         trigger_recalc: bool,
@@ -294,7 +294,7 @@ impl Calc {
     }
     fn set_partial_fit_rahs_result(
         &mut self,
-        ctx: SvcCtx,
+        ctx: &SvcCtx,
         resos: RMap<UItemId, DmgKinds<Value>>,
         item_datas: &ItemDataVec<ItemData>,
     ) {

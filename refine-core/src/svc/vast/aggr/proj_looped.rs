@@ -28,7 +28,7 @@ use crate::{
 
 // Projected effects, considers only infinite parts of cycles
 pub(in crate::svc::vast) fn aggr_proj_looped<BG, BX, I, IA>(
-    ctx: SvcCtx,
+    ctx: &SvcCtx,
     calc: &mut Calc,
     projector_uid: UItemId,
     effect: &REffect,
@@ -64,7 +64,7 @@ where
 /// Projected effects, puts data for non-looped part into one accumulator, and for looped part into
 /// another
 pub(in crate::svc::vast) fn aggr_proj_split<BG, BX, I, IAO, IAL>(
-    ctx: SvcCtx,
+    ctx: &SvcCtx,
     calc: &mut Calc,
     projector_uid: UItemId,
     effect: &REffect,

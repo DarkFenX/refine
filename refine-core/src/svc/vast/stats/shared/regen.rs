@@ -6,7 +6,7 @@ use crate::{
 };
 
 pub(in crate::svc::vast::stats) fn calc_regen_for_attrs(
-    ctx: SvcCtx,
+    ctx: &SvcCtx,
     calc: &mut Calc,
     item_uid: UItemId,
     max_attr_rid: Option<RAttrId>,

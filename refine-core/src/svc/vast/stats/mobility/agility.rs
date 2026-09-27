@@ -9,7 +9,7 @@ const AGILITY_CONST: PValue = PValue::from_f64_clamped(f64::from_bits(0x3eb74216
 
 impl Vast {
     pub(in crate::svc) fn get_stat_item_agility(
-        ctx: SvcCtx,
+        ctx: &SvcCtx,
         calc: &mut Calc,
         item_uid: UItemId,
     ) -> Result<PValue, IntStatItemError<StatAgilityError>> {
@@ -17,7 +17,7 @@ impl Vast {
         Self::internal_get_stat_item_agility_unchecked(ctx, calc, item_uid).map_err(IntStatItemError::StatSpecific)
     }
     fn internal_get_stat_item_agility_unchecked(
-        ctx: SvcCtx,
+        ctx: &SvcCtx,
         calc: &mut Calc,
         item_uid: UItemId,
     ) -> Result<PValue, StatAgilityError> {
@@ -35,7 +35,7 @@ impl Vast {
         Ok(AGILITY_CONST * agility * mass)
     }
     pub(in crate::svc) fn get_stat_item_align_time(
-        ctx: SvcCtx,
+        ctx: &SvcCtx,
         calc: &mut Calc,
         item_uid: UItemId,
     ) -> Result<PValue, IntStatItemError<StatAgilityError>> {

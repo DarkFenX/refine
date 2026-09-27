@@ -13,7 +13,7 @@ pub(crate) enum NEffectChargeMultGetter {
 impl NEffectChargeMultGetter {
     pub(crate) fn get(
         &self,
-        ctx: SvcCtx,
+        ctx: &SvcCtx,
         calc: &mut Calc,
         item_uid: UItemId,
         chargedness: UnitInterval,
@@ -28,7 +28,7 @@ impl NEffectChargeMultGetter {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Getter implementations
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-fn get_asb_cap(ctx: SvcCtx, calc: &mut Calc, item_uid: UItemId) -> Option<PValue> {
+fn get_asb_cap(ctx: &SvcCtx, calc: &mut Calc, item_uid: UItemId) -> Option<PValue> {
     if let Some(charge_uid) = ctx.u_data.items.get(item_uid).get_charge_uid()
         && let Some(charge_rib) = ctx.u_data.items.get(charge_uid).get_r_item_base()
         && charge_rib.grp_id == AItemGrpId::CAPACITOR_BOOSTER_CHARGE
@@ -39,7 +39,7 @@ fn get_asb_cap(ctx: SvcCtx, calc: &mut Calc, item_uid: UItemId) -> Option<PValue
     None
 }
 
-fn get_aar_rep(ctx: SvcCtx, calc: &mut Calc, item_uid: UItemId, chargedness: UnitInterval) -> Option<PValue> {
+fn get_aar_rep(ctx: &SvcCtx, calc: &mut Calc, item_uid: UItemId, chargedness: UnitInterval) -> Option<PValue> {
     if let Some(charge_uid) = ctx.u_data.items.get(item_uid).get_charge_uid()
         && ctx.u_data.items.get(charge_uid).get_type_aid() == AItemId::NANITE_REPAIR_PASTE
         && let Some(rep_mult) = calc.get_item_oattr_oextra(ctx, item_uid, ctx.ac().charged_armor_dmg_mult)

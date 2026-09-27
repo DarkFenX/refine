@@ -10,7 +10,7 @@ impl Svc {
         u_data: &UData,
         item_uid: UItemId,
     ) -> Result<PValue, IntStatItemError<!>> {
-        Vast::get_stat_item_drone_control_range(SvcCtx::new(u_data, &self.eff_projs), &mut self.calc, item_uid)
+        Vast::get_stat_item_drone_control_range(&SvcCtx::new(u_data, &self.eff_projs), &mut self.calc, item_uid)
     }
     pub(crate) fn get_stat_item_can_warp(
         &mut self,
@@ -18,7 +18,7 @@ impl Svc {
         item_uid: UItemId,
     ) -> Result<bool, IntStatItemError<!>> {
         self.vast
-            .get_stat_item_can_warp(SvcCtx::new(u_data, &self.eff_projs), &mut self.calc, item_uid)
+            .get_stat_item_can_warp(&SvcCtx::new(u_data, &self.eff_projs), &mut self.calc, item_uid)
     }
     pub(crate) fn get_stat_item_can_jump_gate(
         &mut self,
@@ -26,7 +26,7 @@ impl Svc {
         item_uid: UItemId,
     ) -> Result<bool, IntStatItemError<!>> {
         self.vast
-            .get_stat_item_can_jump_gate(SvcCtx::new(u_data, &self.eff_projs), &mut self.calc, item_uid)
+            .get_stat_item_can_jump_gate(&SvcCtx::new(u_data, &self.eff_projs), &mut self.calc, item_uid)
     }
     pub(crate) fn get_stat_item_can_jump_wormhole(
         &mut self,
@@ -34,7 +34,7 @@ impl Svc {
         item_uid: UItemId,
     ) -> Result<bool, IntStatItemError<!>> {
         self.vast
-            .get_stat_item_can_jump_wormhole(SvcCtx::new(u_data, &self.eff_projs), item_uid)
+            .get_stat_item_can_jump_wormhole(&SvcCtx::new(u_data, &self.eff_projs), item_uid)
     }
     pub(crate) fn get_stat_item_can_jump_drive(
         &mut self,
@@ -42,7 +42,7 @@ impl Svc {
         item_uid: UItemId,
     ) -> Result<bool, IntStatItemError<!>> {
         self.vast
-            .get_stat_item_can_jump_drive(SvcCtx::new(u_data, &self.eff_projs), &mut self.calc, item_uid)
+            .get_stat_item_can_jump_drive(&SvcCtx::new(u_data, &self.eff_projs), &mut self.calc, item_uid)
     }
     pub(crate) fn get_stat_item_can_dock_station(
         &mut self,
@@ -50,7 +50,7 @@ impl Svc {
         item_uid: UItemId,
     ) -> Result<bool, IntStatItemError<!>> {
         self.vast
-            .get_stat_item_can_dock_station(SvcCtx::new(u_data, &self.eff_projs), &mut self.calc, item_uid)
+            .get_stat_item_can_dock_station(&SvcCtx::new(u_data, &self.eff_projs), &mut self.calc, item_uid)
     }
     pub(crate) fn get_stat_item_can_dock_citadel(
         &mut self,
@@ -58,7 +58,7 @@ impl Svc {
         item_uid: UItemId,
     ) -> Result<bool, IntStatItemError<!>> {
         self.vast
-            .get_stat_item_can_dock_citadel(SvcCtx::new(u_data, &self.eff_projs), &mut self.calc, item_uid)
+            .get_stat_item_can_dock_citadel(&SvcCtx::new(u_data, &self.eff_projs), &mut self.calc, item_uid)
     }
     pub(crate) fn get_stat_item_can_tether(
         &mut self,
@@ -66,6 +66,6 @@ impl Svc {
         item_uid: UItemId,
     ) -> Result<bool, IntStatItemError<!>> {
         self.vast
-            .get_stat_item_can_tether(SvcCtx::new(u_data, &self.eff_projs), &mut self.calc, item_uid)
+            .get_stat_item_can_tether(&SvcCtx::new(u_data, &self.eff_projs), &mut self.calc, item_uid)
     }
 }

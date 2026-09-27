@@ -6,7 +6,7 @@ use crate::{
 };
 
 pub(super) fn get_max_resource(
-    ctx: SvcCtx,
+    ctx: &SvcCtx,
     calc: &mut Calc,
     max_item_uid: Option<UItemId>,
     max_attr_rid: Option<RAttrId>,

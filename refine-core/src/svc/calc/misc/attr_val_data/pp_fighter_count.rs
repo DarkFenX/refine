@@ -6,7 +6,7 @@ use crate::{
     ud::UItemId,
 };
 
-pub(super) fn fighter_count_postproc_fast(ctx: SvcCtx, item_uid: UItemId, mut val: CalcAttrVals) -> CalcAttrVals {
+pub(super) fn fighter_count_postproc_fast(ctx: &SvcCtx, item_uid: UItemId, mut val: CalcAttrVals) -> CalcAttrVals {
     let count = ctx
         .u_data
         .items
@@ -21,7 +21,7 @@ pub(super) fn fighter_count_postproc_fast(ctx: SvcCtx, item_uid: UItemId, mut va
     val
 }
 
-pub(super) fn fighter_count_postproc_info(ctx: SvcCtx, item_uid: UItemId) -> AttrValInfo {
+pub(super) fn fighter_count_postproc_info(ctx: &SvcCtx, item_uid: UItemId) -> AttrValInfo {
     let count = ctx
         .u_data
         .items

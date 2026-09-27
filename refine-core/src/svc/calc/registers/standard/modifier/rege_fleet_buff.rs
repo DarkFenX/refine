@@ -17,7 +17,7 @@ impl StandardRegister {
     pub(in crate::svc::calc) fn reg_fleet_buff_mod(
         &mut self,
         reuse_cmods: &mut Vec<CtxModifier>,
-        ctx: SvcCtx,
+        ctx: &SvcCtx,
         item: &UItem,
         rmod: RawModifier,
     ) -> bool {
@@ -47,7 +47,7 @@ impl StandardRegister {
     pub(in crate::svc::calc) fn unreg_fleet_buff_mod(
         &mut self,
         reuse_cmods: &mut Vec<CtxModifier>,
-        ctx: SvcCtx,
+        ctx: &SvcCtx,
         item: &UItem,
         rmod: RawModifier,
     ) {
@@ -73,7 +73,7 @@ impl StandardRegister {
     }
     pub(in crate::svc::calc) fn reg_fleet_for_fit(
         &mut self,
-        ctx: SvcCtx,
+        ctx: &SvcCtx,
         fleet: &UFleet,
         fit_uid: UFitId,
     ) -> Vec<CtxModifier> {
@@ -99,7 +99,7 @@ impl StandardRegister {
     }
     pub(in crate::svc::calc) fn unreg_fleet_for_fit(
         &mut self,
-        ctx: SvcCtx,
+        ctx: &SvcCtx,
         fleet: &UFleet,
         fit_uid: UFitId,
     ) -> Vec<CtxModifier> {
@@ -125,7 +125,7 @@ impl StandardRegister {
     }
     pub(in crate::svc::calc::registers::standard) fn load_affectee_for_fleet(
         &mut self,
-        ctx: SvcCtx,
+        ctx: &SvcCtx,
         ship_uid: UItemId,
         ship: &UShip,
     ) {
@@ -147,7 +147,7 @@ impl StandardRegister {
     }
     pub(in crate::svc::calc::registers::standard) fn unload_affectee_for_fleet(
         &mut self,
-        ctx: SvcCtx,
+        ctx: &SvcCtx,
         ship_uid: UItemId,
         ship: &UShip,
     ) {
@@ -170,7 +170,7 @@ impl StandardRegister {
 }
 
 fn is_fit_ship_on_fleet_item_list<'u>(
-    ctx: SvcCtx<'u, '_>,
+    ctx: &SvcCtx<'u, '_>,
     fit_uid: UFitId,
     item_list_rid: &RItemListId,
 ) -> Option<(UItemId, &'u UShip)> {
@@ -194,7 +194,7 @@ fn is_ship_on_fleet_item_list(ship: &UShip, item_list_rid: &RItemListId) -> bool
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 fn apply_fleet_mod_with_fit_uid(
     reuse_cmods: &mut Vec<CtxModifier>,
-    ctx: SvcCtx,
+    ctx: &SvcCtx,
     reg_cmods: &mut StandardRegisterCtxMods,
     rmod: RawModifier,
     fit_uid: UFitId,
@@ -247,7 +247,7 @@ fn apply_fleet_mod_with_fit_uid(
 }
 fn unapply_fleet_mod_with_fit_uid(
     reuse_cmods: &mut Vec<CtxModifier>,
-    ctx: SvcCtx,
+    ctx: &SvcCtx,
     reg_cmods: &mut StandardRegisterCtxMods,
     rmod: RawModifier,
     fit_uid: UFitId,

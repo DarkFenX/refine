@@ -18,7 +18,7 @@ use crate::{
 
 /// Local effects, aggregates total output by specified time
 pub(in crate::svc::vast) fn aggr_local_time<BG, BX, I, IA>(
-    ctx: SvcCtx,
+    ctx: &SvcCtx,
     calc: &mut Calc,
     item_uid: UItemId,
     effect: &REffect,

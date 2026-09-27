@@ -21,7 +21,7 @@ use crate::{
 impl Vast {
     pub(in crate::svc) fn get_stat_item_dmg_raw(
         reuse_cseq_map: &mut CseqMap,
-        ctx: SvcCtx,
+        ctx: &SvcCtx,
         calc: &mut Calc,
         item_uid: UItemId,
         time_options: StatTimeOptions,
@@ -60,7 +60,7 @@ impl Vast {
     }
     pub(in crate::svc) fn get_stat_item_dmg_applied(
         reuse_cseq_map: &mut CseqMap,
-        ctx: SvcCtx,
+        ctx: &SvcCtx,
         calc: &mut Calc,
         item_uid: UItemId,
         time_options: StatTimeOptions,
@@ -101,7 +101,7 @@ impl Vast {
     }
     fn internal_get_stat_item_dmg_checked(
         reuse_cseq_map: &mut CseqMap,
-        ctx: SvcCtx,
+        ctx: &SvcCtx,
         calc: &mut Calc,
         dps_normal: &mut DmgKinds<PValue>,
         volley_normal: &mut DmgKinds<PValue>,
@@ -205,7 +205,7 @@ impl Vast {
     }
     fn internal_get_stat_item_dmg_applied_checked(
         reuse_cseq_map: &mut CseqMap,
-        ctx: SvcCtx,
+        ctx: &SvcCtx,
         calc: &mut Calc,
         dps_normal: &mut DmgKinds<PValue>,
         volley_normal: &mut DmgKinds<PValue>,

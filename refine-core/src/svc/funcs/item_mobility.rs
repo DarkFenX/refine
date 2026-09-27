@@ -5,7 +5,7 @@ use crate::{
     ud::UItemId,
 };
 
-pub(crate) fn get_speed(ctx: SvcCtx, calc: &mut Calc, item_uid: UItemId) -> PValue {
+pub(crate) fn get_speed(ctx: &SvcCtx, calc: &mut Calc, item_uid: UItemId) -> PValue {
     let attr_rid = match get_npc_prop(ctx, item_uid) {
         Some(NpcProp::Cruise) => ctx.ac().entity_cruise_speed,
         _ => ctx.ac().max_velocity,
@@ -13,7 +13,7 @@ pub(crate) fn get_speed(ctx: SvcCtx, calc: &mut Calc, item_uid: UItemId) -> PVal
     PValue::from_value_clamped(calc.get_item_oattr_ffb_extra(ctx, item_uid, attr_rid, Value::ZERO))
 }
 
-pub(crate) fn get_sig_radius(ctx: SvcCtx, calc: &mut Calc, item_uid: UItemId) -> PValue {
+pub(crate) fn get_sig_radius(ctx: &SvcCtx, calc: &mut Calc, item_uid: UItemId) -> PValue {
     let mut sig_radius =
         PValue::from_value_clamped(calc.get_item_oattr_ffb_extra(ctx, item_uid, ctx.ac().sig_radius, Value::ZERO));
     if let Some(NpcProp::Chase) = get_npc_prop(ctx, item_uid) {
@@ -28,7 +28,7 @@ pub(crate) fn get_sig_radius(ctx: SvcCtx, calc: &mut Calc, item_uid: UItemId) ->
 }
 
 /// Get the setting only for items which can use it
-fn get_npc_prop(ctx: SvcCtx, item_uid: UItemId) -> Option<NpcProp> {
+fn get_npc_prop(ctx: &SvcCtx, item_uid: UItemId) -> Option<NpcProp> {
     let u_item = ctx.u_data.items.get(item_uid);
     if let Some(item_rifd) = u_item.get_r_item_flex_data()
         && !item_rifd.entity_mwd

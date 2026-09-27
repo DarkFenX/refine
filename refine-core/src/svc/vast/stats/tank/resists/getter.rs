@@ -12,7 +12,7 @@ use crate::{
 
 impl Vast {
     pub(in crate::svc) fn get_stat_item_resists(
-        ctx: SvcCtx,
+        ctx: &SvcCtx,
         calc: &mut Calc,
         item_uid: UItemId,
     ) -> Result<StatResists, IntStatItemError<!>> {
@@ -20,7 +20,7 @@ impl Vast {
         Ok(Self::get_stat_item_resists_unchecked(ctx, calc, item_uid))
     }
     pub(in crate::svc::vast::stats::tank) fn get_stat_item_resists_unchecked(
-        ctx: SvcCtx,
+        ctx: &SvcCtx,
         calc: &mut Calc,
         item_uid: UItemId,
     ) -> StatResists {
@@ -30,7 +30,7 @@ impl Vast {
             hull: Self::get_item_hull_resists(ctx, calc, item_uid),
         }
     }
-    fn get_item_shield_resists(ctx: SvcCtx, calc: &mut Calc, item_uid: UItemId) -> StatResistsLayer {
+    fn get_item_shield_resists(ctx: &SvcCtx, calc: &mut Calc, item_uid: UItemId) -> StatResistsLayer {
         get_item_layer_resists(
             ctx,
             calc,
@@ -41,7 +41,7 @@ impl Vast {
             ctx.ac().shield_expl_dmg_resonance,
         )
     }
-    fn get_item_armor_resists(ctx: SvcCtx, calc: &mut Calc, item_uid: UItemId) -> StatResistsLayer {
+    fn get_item_armor_resists(ctx: &SvcCtx, calc: &mut Calc, item_uid: UItemId) -> StatResistsLayer {
         get_item_layer_resists(
             ctx,
             calc,
@@ -52,7 +52,7 @@ impl Vast {
             ctx.ac().armor_expl_dmg_resonance,
         )
     }
-    fn get_item_hull_resists(ctx: SvcCtx, calc: &mut Calc, item_uid: UItemId) -> StatResistsLayer {
+    fn get_item_hull_resists(ctx: &SvcCtx, calc: &mut Calc, item_uid: UItemId) -> StatResistsLayer {
         get_item_layer_resists(
             ctx,
             calc,
@@ -64,7 +64,7 @@ impl Vast {
         )
     }
     pub(in crate::svc) fn get_stat_item_breach_resist(
-        ctx: SvcCtx,
+        ctx: &SvcCtx,
         calc: &mut Calc,
         item_uid: UItemId,
     ) -> Result<UnitInterval, IntStatItemError<!>> {
@@ -76,7 +76,7 @@ impl Vast {
 }
 
 fn get_item_layer_resists(
-    ctx: SvcCtx,
+    ctx: &SvcCtx,
     calc: &mut Calc,
     item_uid: UItemId,
     em_attr_rid: Option<RAttrId>,

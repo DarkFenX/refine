@@ -5,7 +5,7 @@ use crate::{
 };
 
 pub(in crate::svc) fn is_oattr_flag_set(
-    ctx: SvcCtx,
+    ctx: &SvcCtx,
     calc: &mut Calc,
     item_uid: UItemId,
     attr_rid: Option<RAttrId>,
@@ -14,7 +14,7 @@ pub(in crate::svc) fn is_oattr_flag_set(
 }
 
 pub(in crate::svc) fn is_attr_flag_set(
-    ctx: SvcCtx,
+    ctx: &SvcCtx,
     calc: &mut Calc,
     item_uid: UItemId,
     attr_rid: RAttrId,

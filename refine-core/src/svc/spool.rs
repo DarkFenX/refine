@@ -13,7 +13,7 @@ pub(in crate::svc) struct ResolvedSpool {
 }
 impl ResolvedSpool {
     pub(in crate::svc) fn try_build(
-        ctx: SvcCtx,
+        ctx: &SvcCtx,
         calc: &mut Calc,
         item_uid: UItemId,
         effect: &REffect,

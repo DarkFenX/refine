@@ -19,7 +19,7 @@ use crate::{
 
 /// Projected effects, iterator over cycles (cycle time + instance iter)
 pub(in crate::svc::vast) fn aggr_proj_iter<BG, BX, I>(
-    ctx: SvcCtx,
+    ctx: &SvcCtx,
     calc: &mut Calc,
     projector_uid: UItemId,
     effect: &REffect,
@@ -54,7 +54,7 @@ where
 // Non-spool
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 fn aggr_regular<BG, I>(
-    ctx: SvcCtx,
+    ctx: &SvcCtx,
     calc: &mut Calc,
     projector_uid: UItemId,
     cseq: &CycleSeq<CycleDataFull, CSeqHardDtFull>,
@@ -74,7 +74,7 @@ where
 // Spool-specific
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 fn aggr_spool<BG, I>(
-    ctx: SvcCtx,
+    ctx: &SvcCtx,
     calc: &mut Calc,
     projector_uid: UItemId,
     cseq: &CycleSeq<CycleDataFull, CSeqHardDtFull>,
@@ -91,23 +91,23 @@ where
     AggrIterData::Spool(AggrIterDataSpool::new(cseq_conv, inv_proj, inv_spool))
 }
 
-struct ProjConverterSpoolIter<'sc1, 'sc2, 'calc, 'ospec, 'ip, 'is, BG, I>
+struct ProjConverterSpoolIter<'sc, 'calc, 'ospec, 'ip, 'is, BG, I>
 where
     BG: NEffectOutputGetter,
 {
-    ctx: SvcCtx<'sc1, 'sc2>,
+    ctx: &'sc SvcCtx<'sc, 'sc>,
     calc: &'calc mut Calc,
     projector_uid: UItemId,
     ospec: &'ospec REffectProjOpcSpec<BG>,
     inv_proj: &'ip AggrProjInvData<I>,
     inv_spool: &'is AggrSpoolInvData,
 }
-impl<'sc1, 'sc2, 'calc, 'ospec, 'ip, 'is, BG, I> ProjConverterSpoolIter<'sc1, 'sc2, 'calc, 'ospec, 'ip, 'is, BG, I>
+impl<'sc, 'calc, 'ospec, 'ip, 'is, BG, I> ProjConverterSpoolIter<'sc, 'calc, 'ospec, 'ip, 'is, BG, I>
 where
     BG: NEffectOutputGetter,
 {
     pub(super) fn new(
-        ctx: SvcCtx<'sc1, 'sc2>,
+        ctx: &'sc SvcCtx<'sc, 'sc>,
         calc: &'calc mut Calc,
         projector_uid: UItemId,
         ospec: &'ospec REffectProjOpcSpec<BG>,
@@ -124,8 +124,7 @@ where
         }
     }
 }
-impl<BG, I> LibConverter<CycleDataFull, AggrPartDataSpoolIter<I>>
-    for ProjConverterSpoolIter<'_, '_, '_, '_, '_, '_, BG, I>
+impl<BG, I> LibConverter<CycleDataFull, AggrPartDataSpoolIter<I>> for ProjConverterSpoolIter<'_, '_, '_, '_, '_, BG, I>
 where
     BG: NEffectOutputGetter,
     I: Copy + std::ops::MulAssign<PValue> + InstanceDuration + InstanceLimit,

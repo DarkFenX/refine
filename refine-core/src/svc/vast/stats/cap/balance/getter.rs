@@ -22,7 +22,7 @@ impl Vast {
     pub(in crate::svc) fn get_stat_item_cap_balance(
         &self,
         reuse_cseq_map: &mut CseqMap,
-        ctx: SvcCtx,
+        ctx: &SvcCtx,
         calc: &mut Calc,
         item_uid: UItemId,
         src_kinds: StatCapBlcSrcKindsInt,
@@ -60,7 +60,7 @@ impl Vast {
     }
 }
 
-fn get_cap_regen(ctx: SvcCtx, calc: &mut Calc, item_uid: UItemId, cap_perc: UnitInterval) -> PValue {
+fn get_cap_regen(ctx: &SvcCtx, calc: &mut Calc, item_uid: UItemId, cap_perc: UnitInterval) -> PValue {
     calc_regen_for_attrs(
         ctx,
         calc,
@@ -73,7 +73,7 @@ fn get_cap_regen(ctx: SvcCtx, calc: &mut Calc, item_uid: UItemId, cap_perc: Unit
 
 fn get_cap_injects(
     reuse_cseq_map: &mut CseqMap,
-    ctx: SvcCtx,
+    ctx: &SvcCtx,
     calc: &mut Calc,
     time_options: StatTimeOptions,
     fit_data: &VastFitData,
@@ -117,7 +117,7 @@ fn get_cap_injects(
 
 fn get_cap_consumed(
     reuse_cseq_map: &mut CseqMap,
-    ctx: SvcCtx,
+    ctx: &SvcCtx,
     calc: &mut Calc,
     time_options: StatTimeOptions,
     fit_data: &VastFitData,
@@ -161,7 +161,7 @@ fn get_cap_consumed(
 
 fn get_nosfs(
     reuse_cseq_map: &mut CseqMap,
-    ctx: SvcCtx,
+    ctx: &SvcCtx,
     calc: &mut Calc,
     time_options: StatTimeOptions,
     projectee_item_uid: Option<UItemId>,
@@ -229,7 +229,7 @@ fn get_nosfs(
 
 fn get_incoming_cap_transfers(
     reuse_cseq_map: &mut CseqMap,
-    ctx: SvcCtx,
+    ctx: &SvcCtx,
     calc: &mut Calc,
     time_options: StatTimeOptions,
     cap_item_uid: UItemId,
@@ -300,7 +300,7 @@ fn get_incoming_cap_transfers(
 
 fn get_incoming_neuts(
     reuse_cseq_map: &mut CseqMap,
-    ctx: SvcCtx,
+    ctx: &SvcCtx,
     calc: &mut Calc,
     time_options: StatTimeOptions,
     cap_item_uid: UItemId,

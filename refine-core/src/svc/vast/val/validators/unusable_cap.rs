@@ -37,7 +37,7 @@ impl VastFitData {
     pub(in crate::svc::vast::val) fn validate_unusable_cap_fast(
         &self,
         kfs: &RSet<UItemId>,
-        ctx: SvcCtx,
+        ctx: &SvcCtx,
         calc: &mut Calc,
         ship_uid: Option<UItemId>,
     ) -> bool {
@@ -69,7 +69,7 @@ impl VastFitData {
     pub(in crate::svc::vast::val) fn validate_unusable_cap_verbose(
         &self,
         kfs: &RSet<UItemId>,
-        ctx: SvcCtx,
+        ctx: &SvcCtx,
         calc: &mut Calc,
         ship_uid: Option<UItemId>,
     ) -> Option<ValUnusableCapFail> {
@@ -107,7 +107,7 @@ impl VastFitData {
 }
 
 fn get_cap_consumption_instance(
-    ctx: SvcCtx,
+    ctx: &SvcCtx,
     calc: &mut Calc,
     item_uid: UItemId,
     u_item: &UItem,

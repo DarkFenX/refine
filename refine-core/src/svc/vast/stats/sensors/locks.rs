@@ -6,7 +6,7 @@ use crate::{
 
 impl Vast {
     pub(in crate::svc) fn get_stat_item_locks(
-        ctx: SvcCtx,
+        ctx: &SvcCtx,
         calc: &mut Calc,
         item_uid: UItemId,
     ) -> Result<Count, IntStatItemError<!>> {

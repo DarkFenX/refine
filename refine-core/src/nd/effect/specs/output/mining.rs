@@ -71,7 +71,7 @@ impl NEffectOutputGetter for NEffectMiningOutputGetter {
 
     fn get(
         &self,
-        ctx: SvcCtx,
+        ctx: &SvcCtx,
         calc: &mut Calc,
         item_uid: UItemId,
         effect: &REffect,
@@ -85,7 +85,7 @@ impl NEffectOutputGetter for NEffectMiningOutputGetter {
 }
 
 fn get_regular(
-    ctx: SvcCtx,
+    ctx: &SvcCtx,
     calc: &mut Calc,
     item_uid: UItemId,
     effect: &REffect,
@@ -99,7 +99,7 @@ fn get_regular(
 }
 
 fn get_crit(
-    ctx: SvcCtx,
+    ctx: &SvcCtx,
     calc: &mut Calc,
     item_uid: UItemId,
     effect: &REffect,
@@ -129,7 +129,7 @@ fn get_crit(
 }
 
 fn get_mining_values(
-    ctx: SvcCtx,
+    ctx: &SvcCtx,
     calc: &mut Calc,
     item_uid: UItemId,
     effect: &REffect,

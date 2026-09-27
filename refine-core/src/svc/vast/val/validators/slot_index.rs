@@ -47,21 +47,21 @@ impl VastFitData {
     pub(in crate::svc::vast::val) fn validate_implant_slot_index_verbose(
         &self,
         kfs: &RSet<UItemId>,
-        ctx: SvcCtx,
+        ctx: &SvcCtx,
     ) -> Option<ValSlotIndexFail> {
         validate_slot_index_verbose(kfs, ctx, &self.slotted_implants)
     }
     pub(in crate::svc::vast::val) fn validate_booster_slot_index_verbose(
         &self,
         kfs: &RSet<UItemId>,
-        ctx: SvcCtx,
+        ctx: &SvcCtx,
     ) -> Option<ValSlotIndexFail> {
         validate_slot_index_verbose(kfs, ctx, &self.slotted_boosters)
     }
     pub(in crate::svc::vast::val) fn validate_subsystem_slot_index_verbose(
         &self,
         kfs: &RSet<UItemId>,
-        ctx: SvcCtx,
+        ctx: &SvcCtx,
     ) -> Option<ValSlotIndexFail> {
         validate_slot_index_verbose(kfs, ctx, &self.slotted_subsystems)
     }
@@ -73,7 +73,7 @@ fn validate_slot_index_fast(kfs: &RSet<UItemId>, data: &RMapRSet<SlotIndex, UIte
 }
 fn validate_slot_index_verbose(
     kfs: &RSet<UItemId>,
-    ctx: SvcCtx,
+    ctx: &SvcCtx,
     data: &RMapRSet<SlotIndex, UItemId>,
 ) -> Option<ValSlotIndexFail> {
     let mut slot_users = Vec::new();

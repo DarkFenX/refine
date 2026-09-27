@@ -7,7 +7,7 @@ use crate::{
 impl Vast {
     pub(in crate::svc) fn get_stat_item_can_tether(
         &self,
-        ctx: SvcCtx,
+        ctx: &SvcCtx,
         calc: &mut Calc,
         item_uid: UItemId,
     ) -> Result<bool, IntStatItemError<!>> {

@@ -34,7 +34,7 @@ pub(super) struct AggrProjInvData<I> {
 }
 impl<I> AggrProjInvData<I> {
     pub(super) fn try_make<BG, BX>(
-        ctx: SvcCtx,
+        ctx: &SvcCtx,
         calc: &mut Calc,
         projector_uid: UItemId,
         effect: &REffect,
@@ -151,7 +151,7 @@ pub(super) struct AggrSpoolInvData {
 }
 impl AggrSpoolInvData {
     pub(super) fn try_make<BG>(
-        ctx: SvcCtx,
+        ctx: &SvcCtx,
         calc: &mut Calc,
         item_uid: UItemId,
         effect: &REffect,
@@ -219,22 +219,22 @@ impl GetMainDuration for AggrPartDataSpoolTail {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Converter
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-pub(super) struct ProjConverter<'sc1, 'sc2, 'calc, 'ospec, 'ip, BG, I>
+pub(super) struct ProjConverter<'sc, 'calc, 'ospec, 'ip, BG, I>
 where
     BG: NEffectOutputGetter,
 {
-    pub(super) ctx: SvcCtx<'sc1, 'sc2>,
+    pub(super) ctx: &'sc SvcCtx<'sc, 'sc>,
     pub(super) calc: &'calc mut Calc,
     pub(super) projector_uid: UItemId,
     pub(super) ospec: &'ospec REffectProjOpcSpec<BG>,
     pub(super) inv_proj: &'ip AggrProjInvData<I>,
 }
-impl<'sc1, 'sc2, 'calc, 'ospec, 'ip, BG, I> ProjConverter<'sc1, 'sc2, 'calc, 'ospec, 'ip, BG, I>
+impl<'sc, 'calc, 'ospec, 'ip, BG, I> ProjConverter<'sc, 'calc, 'ospec, 'ip, BG, I>
 where
     BG: NEffectOutputGetter,
 {
     pub(super) fn new(
-        ctx: SvcCtx<'sc1, 'sc2>,
+        ctx: &'sc SvcCtx<'sc, 'sc>,
         calc: &'calc mut Calc,
         projector_uid: UItemId,
         ospec: &'ospec REffectProjOpcSpec<BG>,
@@ -249,7 +249,7 @@ where
         }
     }
 }
-impl<BG, I> LibConverter<CycleDataFull, AggrPartData<I>> for ProjConverter<'_, '_, '_, '_, '_, BG, I>
+impl<BG, I> LibConverter<CycleDataFull, AggrPartData<I>> for ProjConverter<'_, '_, '_, '_, BG, I>
 where
     BG: NEffectOutputGetter,
     I: Copy + std::ops::MulAssign<PValue> + InstanceDuration + InstanceLimit,
@@ -269,7 +269,7 @@ where
         }
     }
 }
-impl<BG, I> LibConverter<CycleDataFull, AggrPartDataTail<I>> for ProjConverter<'_, '_, '_, '_, '_, BG, I>
+impl<BG, I> LibConverter<CycleDataFull, AggrPartDataTail<I>> for ProjConverter<'_, '_, '_, '_, BG, I>
 where
     BG: NEffectOutputGetter,
     I: Copy + std::ops::MulAssign<PValue> + InstanceDuration + InstanceLimit,
@@ -291,7 +291,7 @@ where
         }
     }
 }
-impl<BG, I> LibConverter<CycleDataFull, AggrPartDataSpool> for ProjConverter<'_, '_, '_, '_, '_, BG, I>
+impl<BG, I> LibConverter<CycleDataFull, AggrPartDataSpool> for ProjConverter<'_, '_, '_, '_, BG, I>
 where
     BG: NEffectOutputGetter,
     I: Copy + std::ops::MulAssign<PValue> + InstanceDuration + InstanceLimit,
@@ -312,7 +312,7 @@ where
         }
     }
 }
-impl<BG, I> LibConverter<CycleDataFull, AggrPartDataSpoolTail> for ProjConverter<'_, '_, '_, '_, '_, BG, I>
+impl<BG, I> LibConverter<CycleDataFull, AggrPartDataSpoolTail> for ProjConverter<'_, '_, '_, '_, BG, I>
 where
     BG: NEffectOutputGetter,
     I: Copy + std::ops::MulAssign<PValue> + InstanceDuration + InstanceLimit,
@@ -529,7 +529,7 @@ pub(super) fn process_output_for_lls_cseq_spool_hard_dt<I, IA>(
 // Helper functions
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 pub(super) fn get_proj_regular_output<BG, I>(
-    ctx: SvcCtx,
+    ctx: &SvcCtx,
     calc: &mut Calc,
     item_uid: UItemId,
     ospec: &REffectProjOpcSpec<BG>,
@@ -560,7 +560,7 @@ where
 }
 
 pub(super) fn get_proj_spool_part_str_mult<BG, I>(
-    ctx: SvcCtx,
+    ctx: &SvcCtx,
     calc: &mut Calc,
     item_uid: UItemId,
     ospec: &REffectProjOpcSpec<BG>,

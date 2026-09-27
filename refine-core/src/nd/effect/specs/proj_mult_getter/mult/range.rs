@@ -9,7 +9,7 @@ use crate::{
 // Regular optimal/falloff range calculation
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 pub(in crate::nd::effect::specs::proj_mult_getter) fn get_std_simple_c2s_range_mult(
-    ctx: SvcCtx,
+    ctx: &SvcCtx,
     calc: &mut Calc,
     projector_uid: UItemId,
     effect: &REffect,
@@ -22,7 +22,7 @@ pub(in crate::nd::effect::specs::proj_mult_getter) fn get_std_simple_c2s_range_m
     }
 }
 pub(in crate::nd::effect::specs::proj_mult_getter) fn get_std_simple_s2s_range_mult(
-    ctx: SvcCtx,
+    ctx: &SvcCtx,
     calc: &mut Calc,
     projector_uid: UItemId,
     effect: &REffect,
@@ -31,7 +31,7 @@ pub(in crate::nd::effect::specs::proj_mult_getter) fn get_std_simple_s2s_range_m
     get_simple_s2s_range_mult(ctx, calc, projector_uid, proj_data, effect.range_attr_rid)
 }
 pub(super) fn get_simple_s2s_range_mult(
-    ctx: SvcCtx,
+    ctx: &SvcCtx,
     calc: &mut Calc,
     projector_uid: UItemId,
     proj_data: UProjData,
@@ -45,7 +45,7 @@ pub(super) fn get_simple_s2s_range_mult(
 }
 
 pub(in crate::nd::effect::specs::proj_mult_getter) fn get_std_full_restricted_range_mult(
-    ctx: SvcCtx,
+    ctx: &SvcCtx,
     calc: &mut Calc,
     projector_uid: UItemId,
     effect: &REffect,
@@ -54,7 +54,7 @@ pub(in crate::nd::effect::specs::proj_mult_getter) fn get_std_full_restricted_ra
     get_std_full_range_mult(ctx, calc, projector_uid, effect, proj_data.get_range_s2s(), true)
 }
 pub(super) fn get_std_full_unrestricted_range_mult(
-    ctx: SvcCtx,
+    ctx: &SvcCtx,
     calc: &mut Calc,
     projector_uid: UItemId,
     effect: &REffect,
@@ -63,7 +63,7 @@ pub(super) fn get_std_full_unrestricted_range_mult(
     get_std_full_range_mult(ctx, calc, projector_uid, effect, proj_data.get_range_s2s(), false)
 }
 fn get_std_full_range_mult(
-    ctx: SvcCtx,
+    ctx: &SvcCtx,
     calc: &mut Calc,
     projector_uid: UItemId,
     effect: &REffect,
@@ -94,7 +94,7 @@ fn get_std_full_range_mult(
 // Missile-alike effect range calculation
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 pub(in crate::nd::effect::specs::proj_mult_getter) fn get_missile_range_mult(
-    ctx: SvcCtx,
+    ctx: &SvcCtx,
     calc: &mut Calc,
     projector_uid: UItemId,
     proj_data: UProjData,
@@ -147,7 +147,7 @@ pub(in crate::nd::effect::specs::proj_mult_getter) fn get_missile_range_mult(
 }
 
 pub(in crate::nd::effect::specs::proj_mult_getter) fn get_fof_missile_range_mult(
-    ctx: SvcCtx,
+    ctx: &SvcCtx,
     calc: &mut Calc,
     projector_uid: UItemId,
     proj_data: UProjData,
@@ -162,7 +162,7 @@ pub(in crate::nd::effect::specs::proj_mult_getter) fn get_fof_missile_range_mult
 }
 
 pub(in crate::nd::effect::specs::proj_mult_getter) fn get_bomb_range_mult(
-    ctx: SvcCtx,
+    ctx: &SvcCtx,
     calc: &mut Calc,
     projector_uid: UItemId,
     proj_data: UProjData,
@@ -251,7 +251,7 @@ fn calc_inertia_factor(mass: PValue, agility: PValue) -> PValue {
 // Misc effects
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 pub(in crate::nd::effect::specs::proj_mult_getter) fn get_aoe_burst_range_mult(
-    ctx: SvcCtx,
+    ctx: &SvcCtx,
     calc: &mut Calc,
     projector_uid: UItemId,
     proj_data: UProjData,
@@ -266,7 +266,7 @@ pub(in crate::nd::effect::specs::proj_mult_getter) fn get_aoe_burst_range_mult(
 }
 
 pub(super) fn get_aoe_dd_sharp_range_mult(
-    ctx: SvcCtx,
+    ctx: &SvcCtx,
     calc: &mut Calc,
     projector_uid: UItemId,
     proj_data: UProjData,
@@ -280,7 +280,7 @@ pub(super) fn get_aoe_dd_sharp_range_mult(
 }
 
 pub(in crate::nd::effect::specs::proj_mult_getter) fn get_aoe_dd_round_range_mult(
-    ctx: SvcCtx,
+    ctx: &SvcCtx,
     calc: &mut Calc,
     projector_uid: UItemId,
     proj_data: UProjData,
@@ -295,7 +295,7 @@ pub(in crate::nd::effect::specs::proj_mult_getter) fn get_aoe_dd_round_range_mul
 }
 
 pub(super) fn get_dd_neut_range_mult(
-    ctx: SvcCtx,
+    ctx: &SvcCtx,
     calc: &mut Calc,
     projector_uid: UItemId,
     proj_data: UProjData,
@@ -310,7 +310,7 @@ pub(super) fn get_dd_neut_range_mult(
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Utility
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-fn get_effect_range(ctx: SvcCtx, calc: &mut Calc, projector_uid: UItemId, attr_rid: Option<RAttrId>) -> PValue {
+fn get_effect_range(ctx: &SvcCtx, calc: &mut Calc, projector_uid: UItemId, attr_rid: Option<RAttrId>) -> PValue {
     match attr_rid {
         Some(attr_rid) => match calc.get_item_attr_rfull(ctx, projector_uid, attr_rid) {
             Ok(val) => PValue::from_value_clamped(val.extra),

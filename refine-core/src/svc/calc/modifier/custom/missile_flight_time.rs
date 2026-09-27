@@ -32,7 +32,7 @@ pub(super) fn make_rmod(attr_consts: &RAttrConsts, espec: EffectSpec) -> Option<
     })
 }
 
-pub(super) fn get_mod_val(calc: &mut Calc, ctx: SvcCtx, espec: EffectSpec) -> Option<Value> {
+pub(super) fn get_mod_val(calc: &mut Calc, ctx: &SvcCtx, espec: EffectSpec) -> Option<Value> {
     let ship_uid = ctx.u_data.get_item_fit_ship_uid(espec.item_uid)?;
     let missile_velocity = calc.get_item_oattr_odogma(ctx, espec.item_uid, ctx.ac().max_velocity)?;
     let ship_radius = ctx.u_data.items.get(ship_uid).get_direct_radius();
@@ -48,7 +48,7 @@ pub(super) fn get_mod_val(calc: &mut Calc, ctx: SvcCtx, espec: EffectSpec) -> Op
     Some(val)
 }
 
-pub(super) fn get_affector_info(ctx: SvcCtx, item_uid: UItemId) -> SmallVec<[CalcModInfoAffector; 1]> {
+pub(super) fn get_affector_info(ctx: &SvcCtx, item_uid: UItemId) -> SmallVec<[CalcModInfoAffector; 1]> {
     let mut info = SmallVec::new();
     if let Some(ship_uid) = ctx.u_data.get_item_fit_ship_uid(item_uid)
         && let Some(max_velocity_rid) = ctx.ac().max_velocity
@@ -70,7 +70,7 @@ pub(super) fn get_affector_info(ctx: SvcCtx, item_uid: UItemId) -> SmallVec<[Cal
     info
 }
 
-pub(super) fn revise_on_item_add_removal(ctx: SvcCtx, affector_uid: UItemId, changed_item: &UItem) -> bool {
+pub(super) fn revise_on_item_add_removal(ctx: &SvcCtx, affector_uid: UItemId, changed_item: &UItem) -> bool {
     match changed_item {
         UItem::Ship(changed_ship) => {
             Some(changed_ship.get_fit_uid()) == ctx.u_data.items.get(affector_uid).get_fit_uid()

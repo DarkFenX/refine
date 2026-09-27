@@ -51,7 +51,7 @@ pub(crate) enum NEffectProjMultGetter {
 impl NEffectProjMultGetter {
     pub(crate) fn get_proj_mult(
         &self,
-        ctx: SvcCtx,
+        ctx: &SvcCtx,
         calc: &mut Calc,
         projector_uid: UItemId,
         effect: &REffect,

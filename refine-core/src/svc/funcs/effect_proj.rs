@@ -7,7 +7,7 @@ use crate::{
 };
 
 pub(in crate::svc) fn get_espec_proj_mult(
-    ctx: SvcCtx,
+    ctx: &SvcCtx,
     calc: &mut Calc,
     projector_espec: EffectSpec,
     projectee_uid: UItemId,

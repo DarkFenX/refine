@@ -29,7 +29,7 @@ use crate::{
 #[must_use]
 pub(super) fn get_module_cseq_map(
     reuse_cseq_map: &mut CseqMap,
-    ctx: SvcCtx,
+    ctx: &SvcCtx,
     calc: &mut Calc,
     item_uid: UItemId,
     item: &UItem,
@@ -65,7 +65,7 @@ pub(super) fn get_module_cseq_map(
 fn fill_module_effect_info(
     reuse_cseq_map: &mut CseqMap,
     sk_item_info: &mut SelfKillerItemInfo,
-    ctx: SvcCtx,
+    ctx: &SvcCtx,
     calc: &mut Calc,
     item_uid: UItemId,
     item: &UItem,
@@ -302,7 +302,7 @@ fn fill_module_effect_info(
     reuse_cseq_map.insert(effect_rid, cseq);
 }
 
-fn get_reload_duration(ctx: SvcCtx, calc: &mut Calc, item_uid: UItemId) -> PValue {
+fn get_reload_duration(ctx: &SvcCtx, calc: &mut Calc, item_uid: UItemId) -> PValue {
     // All reloads can't take less than server tick realistically. E.g. lasers have almost 0 reload
     // duration but take 1-2 seconds to reload in EVE
     PValue::SERVER_TICK_S
@@ -310,7 +310,7 @@ fn get_reload_duration(ctx: SvcCtx, calc: &mut Calc, item_uid: UItemId) -> PValu
 }
 
 fn part_r(
-    ctx: SvcCtx,
+    ctx: &SvcCtx,
     calc: &mut Calc,
     item_uid: UItemId,
     module: &UModule,
@@ -330,7 +330,7 @@ fn part_r(
 }
 
 fn full_r(
-    ctx: SvcCtx,
+    ctx: &SvcCtx,
     calc: &mut Calc,
     item_uid: UItemId,
     module: &UModule,
@@ -373,7 +373,7 @@ fn full_r(
 }
 
 fn both_r(
-    ctx: SvcCtx,
+    ctx: &SvcCtx,
     calc: &mut Calc,
     item_uid: UItemId,
     module: &UModule,
@@ -406,7 +406,7 @@ fn both_r(
 // Soft downtime constructors
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl CycleSoftDtFull {
-    fn try_new_for_module_regular(ctx: SvcCtx, calc: &mut Calc, item_uid: UItemId, module: &UModule) -> Option<Self> {
+    fn try_new_for_module_regular(ctx: &SvcCtx, calc: &mut Calc, item_uid: UItemId, module: &UModule) -> Option<Self> {
         let rifd = module.get_r_item_flex_data().unwrap();
         // If auto-repeats are allowed - there should be no downtime for non-reload cycles (since
         // reactivation delay kicks in only when cycling stops, as seen on e.g. cynos/cloaks)
@@ -437,7 +437,7 @@ impl CycleSoftDtFull {
             reasons: CycleSoftDtReasons { reload: false },
         })
     }
-    fn new_for_module_reload(ctx: SvcCtx, calc: &mut Calc, item_uid: UItemId, module: &UModule) -> Self {
+    fn new_for_module_reload(ctx: &SvcCtx, calc: &mut Calc, item_uid: UItemId, module: &UModule) -> Self {
         let rifd = module.get_r_item_flex_data().unwrap();
         let mut total_duration = get_reload_duration(ctx, calc, item_uid);
         // When item reloads, reactivation delay always kicks in, if set
@@ -463,7 +463,7 @@ struct SoftDts {
 }
 impl SoftDts {
     /// Produce soft downtime for non-reload cycle and reload cycle at once
-    fn new_for_module(ctx: SvcCtx, calc: &mut Calc, item_uid: UItemId, module: &UModule) -> Self {
+    fn new_for_module(ctx: &SvcCtx, calc: &mut Calc, item_uid: UItemId, module: &UModule) -> Self {
         let rifd = module.get_r_item_flex_data().unwrap();
         let mut soft_dt_regular = None;
         let mut soft_dt_reload = CycleSoftDtFull {

@@ -17,7 +17,7 @@ impl VastFitData {
     pub(in crate::svc::vast::val) fn validate_activation_blocked_fast(
         &self,
         kfs: &RSet<UItemId>,
-        ctx: SvcCtx,
+        ctx: &SvcCtx,
         calc: &mut Calc,
     ) -> bool {
         if let Some(block_attr_rid) = ctx.ac().activation_blocked {
@@ -33,7 +33,7 @@ impl VastFitData {
     pub(in crate::svc::vast::val) fn validate_activation_blocked_verbose(
         &self,
         kfs: &RSet<UItemId>,
-        ctx: SvcCtx,
+        ctx: &SvcCtx,
         calc: &mut Calc,
     ) -> Option<ValActivationBlockedFail> {
         let mut module_ids = Vec::new();

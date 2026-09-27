@@ -19,7 +19,7 @@ impl Svc {
     ) -> Result<StatHp, IntStatItemError<!>> {
         self.vast.get_stat_item_hp(
             reuse_cseq_map,
-            SvcCtx::new(u_data, &self.eff_projs),
+            &SvcCtx::new(u_data, &self.eff_projs),
             &mut self.calc,
             item_uid,
         )
@@ -33,7 +33,7 @@ impl Svc {
     ) -> Result<StatEhp, IntStatItemError<!>> {
         self.vast.get_stat_item_ehp(
             reuse_cseq_map,
-            SvcCtx::new(u_data, &self.eff_projs),
+            &SvcCtx::new(u_data, &self.eff_projs),
             &mut self.calc,
             item_uid,
             incoming_dps,
@@ -47,7 +47,7 @@ impl Svc {
     ) -> Result<StatEhp, IntStatItemError<!>> {
         self.vast.get_stat_item_wc_ehp(
             reuse_cseq_map,
-            SvcCtx::new(u_data, &self.eff_projs),
+            &SvcCtx::new(u_data, &self.eff_projs),
             &mut self.calc,
             item_uid,
         )
@@ -62,7 +62,7 @@ impl Svc {
     ) -> Result<StatRps, IntStatItemError<!>> {
         self.vast.get_stat_item_rps(
             reuse_cseq_map,
-            SvcCtx::new(u_data, &self.eff_projs),
+            &SvcCtx::new(u_data, &self.eff_projs),
             &mut self.calc,
             item_uid,
             time_options,
@@ -80,7 +80,7 @@ impl Svc {
     ) -> Result<StatErps, IntStatItemError<!>> {
         self.vast.get_stat_item_erps(
             reuse_cseq_map,
-            SvcCtx::new(u_data, &self.eff_projs),
+            &SvcCtx::new(u_data, &self.eff_projs),
             &mut self.calc,
             item_uid,
             incoming_dps,
@@ -93,13 +93,13 @@ impl Svc {
         u_data: &UData,
         item_uid: UItemId,
     ) -> Result<StatResists, IntStatItemError<!>> {
-        Vast::get_stat_item_resists(SvcCtx::new(u_data, &self.eff_projs), &mut self.calc, item_uid)
+        Vast::get_stat_item_resists(&SvcCtx::new(u_data, &self.eff_projs), &mut self.calc, item_uid)
     }
     pub(crate) fn get_stat_item_breach_resist(
         &mut self,
         u_data: &UData,
         item_uid: UItemId,
     ) -> Result<UnitInterval, IntStatItemError<!>> {
-        Vast::get_stat_item_breach_resist(SvcCtx::new(u_data, &self.eff_projs), &mut self.calc, item_uid)
+        Vast::get_stat_item_breach_resist(&SvcCtx::new(u_data, &self.eff_projs), &mut self.calc, item_uid)
     }
 }

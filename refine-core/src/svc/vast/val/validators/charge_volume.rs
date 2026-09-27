@@ -43,7 +43,7 @@ impl VastFitData {
     pub(in crate::svc::vast::val) fn validate_charge_volume_verbose(
         &self,
         kfs: &RSet<UItemId>,
-        ctx: SvcCtx,
+        ctx: &SvcCtx,
     ) -> Option<ValChargeVolumeFail> {
         let mut charges = Vec::new();
         for (&charge_uid, &cont_uid) in self.charge_volume.difference(kfs) {

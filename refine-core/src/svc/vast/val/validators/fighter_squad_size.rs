@@ -50,7 +50,7 @@ impl VastFitData {
     pub(in crate::svc::vast::val) fn validate_fighter_squad_size_verbose(
         &self,
         kfs: &RSet<UItemId>,
-        ctx: SvcCtx,
+        ctx: &SvcCtx,
     ) -> Option<ValFighterSquadSizeFail> {
         let fighters = self
             .fighter_squad_size

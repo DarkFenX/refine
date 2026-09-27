@@ -21,7 +21,7 @@ impl Calc {
     /// - Extra value as an option
     pub(in crate::svc) fn get_item_attr_odogma(
         &mut self,
-        ctx: SvcCtx,
+        ctx: &SvcCtx,
         item_uid: UItemId,
         attr_rid: RAttrId,
     ) -> Option<Value> {
@@ -29,7 +29,7 @@ impl Calc {
     }
     pub(in crate::svc) fn get_item_attr_oextra(
         &mut self,
-        ctx: SvcCtx,
+        ctx: &SvcCtx,
         item_uid: UItemId,
         attr_rid: RAttrId,
     ) -> Option<Value> {
@@ -39,7 +39,7 @@ impl Calc {
     /// - Dogma value as an option
     pub(in crate::svc::calc) fn get_item_oattr_odogma(
         &mut self,
-        ctx: SvcCtx,
+        ctx: &SvcCtx,
         item_uid: UItemId,
         attr_rid: Option<RAttrId>,
     ) -> Option<Value> {
@@ -49,7 +49,7 @@ impl Calc {
     /// - Extra value as an option
     pub(crate) fn get_item_oattr_oextra(
         &mut self,
-        ctx: SvcCtx,
+        ctx: &SvcCtx,
         item_uid: UItemId,
         attr_rid: Option<RAttrId>,
     ) -> Option<Value> {
@@ -60,7 +60,7 @@ impl Calc {
     /// - Extra value as an option
     pub(crate) fn get_item_oattr_afb_oextra(
         &mut self,
-        ctx: SvcCtx,
+        ctx: &SvcCtx,
         item_uid: UItemId,
         attr_rid: Option<RAttrId>,
         fallback: Value,
@@ -78,7 +78,7 @@ impl Calc {
     /// - Dogma value
     pub(crate) fn get_item_oattr_ffb_dogma(
         &mut self,
-        ctx: SvcCtx,
+        ctx: &SvcCtx,
         item_uid: UItemId,
         attr_rid: Option<RAttrId>,
         fallback: Value,
@@ -93,7 +93,7 @@ impl Calc {
     /// - Extra value
     pub(crate) fn get_item_oattr_ffb_extra(
         &mut self,
-        ctx: SvcCtx,
+        ctx: &SvcCtx,
         item_uid: UItemId,
         attr_rid: Option<RAttrId>,
         fallback: Value,
@@ -109,7 +109,7 @@ impl Calc {
     /// - Extra value as an option
     pub(in crate::svc) fn get_oitem_oattr_afb_oextra(
         &mut self,
-        ctx: SvcCtx,
+        ctx: &SvcCtx,
         item_uid: Option<UItemId>,
         attr_rid: Option<RAttrId>,
         fallback: Value,
@@ -128,7 +128,7 @@ impl Calc {
     /// - Extra value
     pub(crate) fn get_item_oattr_ffb_extra_filtered<F>(
         &mut self,
-        ctx: SvcCtx,
+        ctx: &SvcCtx,
         item_uid: UItemId,
         attr_rid: Option<RAttrId>,
         mod_filter: F,
@@ -150,7 +150,7 @@ impl Calc {
 impl Calc {
     pub(crate) fn get_item_attr_rfull(
         &mut self,
-        ctx: SvcCtx,
+        ctx: &SvcCtx,
         item_uid: UItemId,
         attr_rid: RAttrId,
     ) -> Result<CalcAttrVals, UItemLoadedError> {
@@ -169,7 +169,7 @@ impl Calc {
     }
     fn get_item_oattr_rfull(
         &mut self,
-        ctx: SvcCtx,
+        ctx: &SvcCtx,
         item_uid: UItemId,
         attr_rid: Option<RAttrId>,
     ) -> Result<CalcAttrVals, GetOAttrError> {
@@ -191,7 +191,7 @@ impl Calc {
     }
     pub(in crate::svc::calc) fn get_item_oattr_ofull_nopp(
         &mut self,
-        ctx: SvcCtx,
+        ctx: &SvcCtx,
         item_uid: UItemId,
         attr_rid: Option<RAttrId>,
     ) -> Option<CalcAttrVals> {
@@ -207,7 +207,7 @@ impl Calc {
     /// Gets value with custom filter, but does not use cache (has to recalculate on every request)
     fn get_item_oattr_rfull_filtered<F>(
         &mut self,
-        ctx: SvcCtx,
+        ctx: &SvcCtx,
         item_uid: UItemId,
         attr_rid: Option<RAttrId>,
         mod_filter: F,
@@ -222,7 +222,7 @@ impl Calc {
     }
     pub(in crate::svc) fn iter_item_attrs_rfull(
         &mut self,
-        ctx: SvcCtx,
+        ctx: &SvcCtx,
         item_uid: UItemId,
     ) -> Result<impl ExactSizeIterator<Item = (RAttrId, CalcAttrVals)> + use<>, UItemLoadedError> {
         // Items can have attributes which are not defined on the original EVE item. This happens
@@ -276,7 +276,7 @@ enum GetOAttrError {
 impl Calc {
     fn unchecked_calc_value_cache_and_postproc(
         &mut self,
-        ctx: SvcCtx,
+        ctx: &SvcCtx,
         item_uid: UItemId,
         attr_rid: RAttrId,
     ) -> CalcAttrVals {
@@ -288,7 +288,7 @@ impl Calc {
         }
         cval
     }
-    fn unchecked_calc_value_cache(&mut self, ctx: SvcCtx, item_uid: UItemId, attr_rid: RAttrId) -> CalcAttrVals {
+    fn unchecked_calc_value_cache(&mut self, ctx: &SvcCtx, item_uid: UItemId, attr_rid: RAttrId) -> CalcAttrVals {
         // This method assumes that item is loaded (= has attr data)
         let cval = self.calc_item_attr_val(ctx, item_uid, attr_rid, |_| true);
         self.attrs
@@ -299,7 +299,7 @@ impl Calc {
     }
     fn checked_calc_filtered_value_and_postproc<F>(
         &mut self,
-        ctx: SvcCtx,
+        ctx: &SvcCtx,
         item_uid: UItemId,
         attr_rid: RAttrId,
         mod_filter: F,
@@ -323,7 +323,7 @@ impl Calc {
 impl Calc {
     fn iter_modifications<F>(
         &mut self,
-        ctx: SvcCtx,
+        ctx: &SvcCtx,
         item_uid: &UItemId,
         item: &UItem,
         attr_rid: RAttrId,
@@ -361,7 +361,7 @@ impl Calc {
     }
     fn calc_item_attr_val<F>(
         &mut self,
-        ctx: SvcCtx,
+        ctx: &SvcCtx,
         item_uid: UItemId,
         attr_rid: RAttrId,
         mod_filter: F,
@@ -411,7 +411,7 @@ impl Calc {
             extra: extra_val,
         }
     }
-    fn calc_item_base_attr_value(&mut self, ctx: SvcCtx, item_uid: UItemId, item: &UItem, attr: &RAttr) -> Value {
+    fn calc_item_base_attr_value(&mut self, ctx: &SvcCtx, item_uid: UItemId, item: &UItem, attr: &RAttr) -> Value {
         let attr_consts = ctx.ac();
         // Security modifier is a special case - it takes modified value of another attribute as its
         // own base

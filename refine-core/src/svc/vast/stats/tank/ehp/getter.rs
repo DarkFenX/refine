@@ -14,7 +14,7 @@ impl Vast {
     pub(in crate::svc) fn get_stat_item_ehp(
         &self,
         reuse_cseq_map: &mut CseqMap,
-        ctx: SvcCtx,
+        ctx: &SvcCtx,
         calc: &mut Calc,
         item_uid: UItemId,
         incoming_dps: Option<DpsProfile>,
@@ -32,7 +32,7 @@ impl Vast {
     pub(in crate::svc) fn get_stat_item_wc_ehp(
         &self,
         reuse_cseq_map: &mut CseqMap,
-        ctx: SvcCtx,
+        ctx: &SvcCtx,
         calc: &mut Calc,
         item_uid: UItemId,
     ) -> Result<StatEhp, IntStatItemError<!>> {

@@ -18,7 +18,7 @@ use crate::{
 
 /// Local effects, considers only infinite parts of cycles
 pub(in crate::svc::vast) fn aggr_local_looped<BG, BX, I, IA>(
-    ctx: SvcCtx,
+    ctx: &SvcCtx,
     calc: &mut Calc,
     item_uid: UItemId,
     effect: &REffect,
@@ -45,7 +45,7 @@ where
 /// warning
 #[expect(dead_code)]
 pub(in crate::svc::vast) fn aggr_local_split<BG, BX, I, IAO, IAL>(
-    ctx: SvcCtx,
+    ctx: &SvcCtx,
     calc: &mut Calc,
     item_uid: UItemId,
     effect: &REffect,

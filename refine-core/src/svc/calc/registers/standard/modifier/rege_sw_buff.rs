@@ -17,7 +17,7 @@ impl StandardRegister {
     pub(in crate::svc::calc) fn reg_sw_buff_mod(
         &mut self,
         reuse_cmods: &mut Vec<CtxModifier>,
-        ctx: SvcCtx,
+        ctx: &SvcCtx,
         rmod: RawModifier,
     ) -> bool {
         reuse_cmods.clear();
@@ -79,7 +79,7 @@ impl StandardRegister {
     pub(in crate::svc::calc) fn unreg_sw_buff_mod(
         &mut self,
         reuse_cmods: &mut Vec<CtxModifier>,
-        ctx: SvcCtx,
+        ctx: &SvcCtx,
         rmod: &RawModifier,
     ) {
         reuse_cmods.clear();

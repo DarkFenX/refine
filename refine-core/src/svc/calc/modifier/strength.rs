@@ -31,7 +31,7 @@ impl ModStrength {
         }
     }
     /// More expensive, but comprehensive info about affecting items/attributes
-    pub(super) fn get_affector_info(&self, ctx: SvcCtx, item_uid: UItemId) -> SmallVec<[CalcModInfoAffector; 1]> {
+    pub(super) fn get_affector_info(&self, ctx: &SvcCtx, item_uid: UItemId) -> SmallVec<[CalcModInfoAffector; 1]> {
         match self {
             Self::Attr(attr_rid) => smallvec![CalcModInfoAffector {
                 item_uid,
@@ -44,7 +44,7 @@ impl ModStrength {
             Self::Custom(custom_str) => custom_str.get_affector_info(ctx, item_uid),
         }
     }
-    pub(super) fn get_strength(&self, calc: &mut Calc, ctx: SvcCtx, espec: EffectSpec) -> Option<Value> {
+    pub(super) fn get_strength(&self, calc: &mut Calc, ctx: &SvcCtx, espec: EffectSpec) -> Option<Value> {
         match self {
             Self::Attr(attr_rid) => Some(calc.get_item_attr_rfull(ctx, espec.item_uid, *attr_rid).ok()?.dogma),
             Self::Hardcoded(strength) => Some(*strength),

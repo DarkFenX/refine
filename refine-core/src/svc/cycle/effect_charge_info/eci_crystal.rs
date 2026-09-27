@@ -7,7 +7,7 @@ use crate::{
 };
 
 pub(in crate::svc::cycle) fn get_eci_crystal(
-    ctx: SvcCtx,
+    ctx: &SvcCtx,
     calc: &mut Calc,
     module: &UModule,
     n_charge_crystal: NEffectChargeDeplCrystal,
@@ -19,7 +19,7 @@ pub(in crate::svc::cycle) fn get_eci_crystal(
     }
 }
 
-fn internal_cycle_count(ctx: SvcCtx, calc: &mut Calc, module: &UModule) -> InfCount {
+fn internal_cycle_count(ctx: &SvcCtx, calc: &mut Calc, module: &UModule) -> InfCount {
     let Some(charge_count) = module.get_charge_count(ctx.u_data) else {
         return InfCount::Count(Count::ZERO);
     };

@@ -18,24 +18,24 @@ impl Calc {
     pub(in crate::svc) fn fit_removed(&mut self, fit_uid: UFitId) {
         self.std.unreg_fit_for_sw(fit_uid)
     }
-    pub(in crate::svc) fn fit_added_to_fleet(&mut self, ctx: SvcCtx, fleet: &UFleet, fit_uid: UFitId) {
+    pub(in crate::svc) fn fit_added_to_fleet(&mut self, ctx: &SvcCtx, fleet: &UFleet, fit_uid: UFitId) {
         let cmods = self.std.reg_fleet_for_fit(ctx, fleet, fit_uid);
         let mut reuse_affectees = Vec::new();
         for cmod in cmods.iter() {
             self.force_mod_affectee_attr_recalc(&mut reuse_affectees, ctx, cmod);
         }
     }
-    pub(in crate::svc) fn fit_removed_from_fleet(&mut self, ctx: SvcCtx, fleet: &UFleet, fit_uid: UFitId) {
+    pub(in crate::svc) fn fit_removed_from_fleet(&mut self, ctx: &SvcCtx, fleet: &UFleet, fit_uid: UFitId) {
         let cmods = self.std.unreg_fleet_for_fit(ctx, fleet, fit_uid);
         let mut reuse_affectees = Vec::new();
         for cmod in cmods.iter() {
             self.force_mod_affectee_attr_recalc(&mut reuse_affectees, ctx, cmod);
         }
     }
-    pub(in crate::svc) fn fit_rah_dps_profile_changed(&mut self, ctx: SvcCtx, fit_uid: UFitId) {
+    pub(in crate::svc) fn fit_rah_dps_profile_changed(&mut self, ctx: &SvcCtx, fit_uid: UFitId) {
         self.rah_fit_rah_dps_profile_changed(ctx, fit_uid);
     }
-    pub(in crate::svc) fn item_added(&mut self, ctx: SvcCtx, item_uid: UItemId, item: &UItem) {
+    pub(in crate::svc) fn item_added(&mut self, ctx: &SvcCtx, item_uid: UItemId, item: &UItem) {
         // Custom modifiers
         let cmods = self
             .revs
@@ -54,7 +54,7 @@ impl Calc {
             }
         }
     }
-    pub(in crate::svc) fn item_removed(&mut self, ctx: SvcCtx, item_uid: UItemId, item: &UItem) {
+    pub(in crate::svc) fn item_removed(&mut self, ctx: &SvcCtx, item_uid: UItemId, item: &UItem) {
         // Custom modifiers
         let cmods = self
             .revs
@@ -73,7 +73,7 @@ impl Calc {
             }
         }
     }
-    pub(in crate::svc) fn item_loaded(&mut self, ctx: SvcCtx, item_uid: UItemId, item: &UItem) {
+    pub(in crate::svc) fn item_loaded(&mut self, ctx: &SvcCtx, item_uid: UItemId, item: &UItem) {
         // Notify core calc services
         self.attrs.item_loaded(ctx.u_data, item_uid, item);
         let cmods = self.std.reg_affectee(ctx, item_uid, item);
@@ -87,7 +87,7 @@ impl Calc {
         // Notify RAH sim
         self.rah_item_loaded(ctx, item);
     }
-    pub(in crate::svc) fn item_unloaded(&mut self, ctx: SvcCtx, item_uid: UItemId, item: &UItem) {
+    pub(in crate::svc) fn item_unloaded(&mut self, ctx: &SvcCtx, item_uid: UItemId, item: &UItem) {
         // Notify RAH sim
         self.rah_item_unloaded(ctx, item);
         // Notify core calc services
@@ -103,7 +103,7 @@ impl Calc {
     }
     pub(in crate::svc) fn effects_started(
         &mut self,
-        ctx: SvcCtx,
+        ctx: &SvcCtx,
         item_uid: UItemId,
         item: &UItem,
         effects: &[RcEffect],
@@ -125,7 +125,7 @@ impl Calc {
     }
     pub(in crate::svc) fn effects_stopped(
         &mut self,
-        ctx: SvcCtx,
+        ctx: &SvcCtx,
         item_uid: UItemId,
         item: &UItem,
         effects: &[RcEffect],
@@ -151,7 +151,7 @@ impl Calc {
     }
     pub(in crate::svc) fn effect_projected(
         &mut self,
-        ctx: SvcCtx,
+        ctx: &SvcCtx,
         projector_espec: EffectSpec,
         projectee_uid: UItemId,
         projectee_item: &UItem,
@@ -164,7 +164,7 @@ impl Calc {
     }
     pub(in crate::svc) fn effect_proj_data_changed(
         &mut self,
-        ctx: SvcCtx,
+        ctx: &SvcCtx,
         projector_espec: EffectSpec,
         projectee_uid: UItemId,
         projectee_item: &UItem,
@@ -179,7 +179,7 @@ impl Calc {
     }
     pub(in crate::svc) fn effect_unprojected(
         &mut self,
-        ctx: SvcCtx,
+        ctx: &SvcCtx,
         projector_espec: EffectSpec,
         projectee_uid: UItemId,
         projectee_item: &UItem,
@@ -192,7 +192,7 @@ impl Calc {
             self.force_mod_affectee_attr_recalc(&mut reuse_affectees, ctx, cmod);
         }
     }
-    pub(in crate::svc) fn attr_value_changed(&mut self, ctx: SvcCtx, aspec: AttrSpec) {
+    pub(in crate::svc) fn attr_value_changed(&mut self, ctx: &SvcCtx, aspec: AttrSpec) {
         // Clear up attribute values which rely on passed attribute as an upper/lower limit
         let affectee_aspecs = self.deps.iter_affectee_aspecs(&aspec).copied().collect_vec();
         for affectee_aspec in affectee_aspecs.into_iter() {
@@ -242,7 +242,7 @@ impl Calc {
         // Notify RAH sim
         self.rah_attr_value_changed(ctx, &aspec);
     }
-    pub(in crate::svc) fn force_attr_value_recalc(&mut self, ctx: SvcCtx, aspec: AttrSpec) {
+    pub(in crate::svc) fn force_attr_value_recalc(&mut self, ctx: &SvcCtx, aspec: AttrSpec) {
         // Sometimes calc service receives requests to clear attributes it does not know yet; this
         // can happen in multiple cases, e.g. when adding module with charge, with "other" location
         // modifier on module. User data gets references between charge and module set right away,
@@ -259,7 +259,7 @@ impl Calc {
     }
     pub(in crate::svc::calc) fn force_oattr_postproc_recalc(
         &mut self,
-        ctx: SvcCtx,
+        ctx: &SvcCtx,
         item_uid: UItemId,
         attr_rid: Option<RAttrId>,
     ) {
@@ -267,7 +267,7 @@ impl Calc {
             self.force_attr_postproc_recalc(ctx, AttrSpec::new(item_uid, attr_rid));
         }
     }
-    fn force_attr_postproc_recalc(&mut self, ctx: SvcCtx, aspec: AttrSpec) {
+    fn force_attr_postproc_recalc(&mut self, ctx: &SvcCtx, aspec: AttrSpec) {
         // Almost-copy of force recalc method without attribute removal. When something that
         // installed a postprocessing function thinks its output can change, it can let calc service
         // know about it via this method.
@@ -280,20 +280,20 @@ impl Calc {
             }
         }
     }
-    pub(in crate::svc) fn sol_sec_zone_changed(&mut self, ctx: SvcCtx) {
+    pub(in crate::svc) fn sol_sec_zone_changed(&mut self, ctx: &SvcCtx) {
         if let Some(sec_mod_attr_rid) = ctx.ac().security_modifier {
             for item_uid in ctx.u_data.items.keys() {
                 self.force_attr_value_recalc(ctx, AttrSpec::new(item_uid, sec_mod_attr_rid))
             }
         }
     }
-    pub(in crate::svc) fn fighter_count_changed(&mut self, ctx: SvcCtx, fighter_uid: UItemId) {
+    pub(in crate::svc) fn fighter_count_changed(&mut self, ctx: &SvcCtx, fighter_uid: UItemId) {
         self.force_oattr_postproc_recalc(ctx, fighter_uid, ctx.ac().ftr_sq_size);
     }
-    pub(in crate::svc) fn ship_sec_status_changed(&mut self, ctx: SvcCtx, ship_uid: UItemId) {
+    pub(in crate::svc) fn ship_sec_status_changed(&mut self, ctx: &SvcCtx, ship_uid: UItemId) {
         self.force_oattr_postproc_recalc(ctx, ship_uid, ctx.ac().pilot_security_status);
     }
-    pub(in crate::svc) fn skill_level_changed(&mut self, ctx: SvcCtx, skill_uid: UItemId) {
+    pub(in crate::svc) fn skill_level_changed(&mut self, ctx: &SvcCtx, skill_uid: UItemId) {
         self.force_oattr_postproc_recalc(ctx, skill_uid, ctx.ac().skill_level);
     }
     // Private methods
@@ -301,7 +301,7 @@ impl Calc {
         &mut self,
         reuse_items: &mut Vec<UItemId>,
         reuse_cmods: &mut Vec<CtxModifier>,
-        ctx: SvcCtx,
+        ctx: &SvcCtx,
         item_uid: UItemId,
         item: &UItem,
         rmod: RawModifier,
@@ -370,7 +370,7 @@ impl Calc {
         &mut self,
         reuse_items: &mut Vec<UItemId>,
         reuse_cmods: &mut Vec<CtxModifier>,
-        ctx: SvcCtx,
+        ctx: &SvcCtx,
         item_uid: UItemId,
         item: &UItem,
         rmod: &RawModifier,
@@ -441,7 +441,7 @@ impl Calc {
                 .unreg_dependent_mod(AttrSpec::new(item_uid, buff_type_attr_rid), rmod);
         }
     }
-    fn force_mod_affectee_attr_recalc(&mut self, reuse_affectees: &mut Vec<UItemId>, ctx: SvcCtx, cmod: &CtxModifier) {
+    fn force_mod_affectee_attr_recalc(&mut self, reuse_affectees: &mut Vec<UItemId>, ctx: &SvcCtx, cmod: &CtxModifier) {
         self.std.fill_affectees(reuse_affectees, ctx, cmod);
         for &affectee_uid in reuse_affectees.iter() {
             self.force_attr_value_recalc(ctx, AttrSpec::new(affectee_uid, cmod.raw.affectee_attr_rid));

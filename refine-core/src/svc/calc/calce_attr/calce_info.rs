@@ -32,7 +32,7 @@ impl Calc {
     ////////////////////////////////////////////////////////////////////////////////////////////////
     pub(in crate::svc) fn iter_item_mods(
         &mut self,
-        ctx: SvcCtx,
+        ctx: &SvcCtx,
         item_uid: UItemId,
     ) -> Result<impl ExactSizeIterator<Item = (RAttrId, Vec<CalcModInfo>)> + use<>, UItemLoadedError> {
         let mut info_map = RMapVec::new();
@@ -49,10 +49,10 @@ impl Calc {
     }
     pub(in crate::svc) fn iter_item_attr_mods(
         &mut self,
-        ctx: SvcCtx,
+        ctx: &SvcCtx,
         item_uid: UItemId,
         attr_rid: RAttrId,
-    ) -> Result<impl ExactSizeIterator<Item = CalcModInfo>, UItemLoadedError> {
+    ) -> Result<impl ExactSizeIterator<Item = CalcModInfo> + use<>, UItemLoadedError> {
         match ctx.u_data.items.get(item_uid).is_loaded() {
             true => Ok(self
                 .calc_item_attr_info(ctx, item_uid, attr_rid)
@@ -66,7 +66,7 @@ impl Calc {
     ////////////////////////////////////////////////////////////////////////////////////////////////
     fn iter_item_attr_rids(
         &self,
-        ctx: SvcCtx,
+        ctx: &SvcCtx,
         item_uid: UItemId,
     ) -> Result<impl ExactSizeIterator<Item = RAttrId> + use<>, UItemLoadedError> {
         let item_attr_data = self.get_item_data_with_err(item_uid)?;
@@ -82,7 +82,7 @@ impl Calc {
     }
     fn iter_affections(
         &mut self,
-        ctx: SvcCtx,
+        ctx: &SvcCtx,
         item_uid: &UItemId,
         item: &UItem,
         attr_rid: RAttrId,
@@ -116,7 +116,7 @@ impl Calc {
         }
         affections.into_values()
     }
-    fn calc_item_attr_info(&mut self, ctx: SvcCtx, item_uid: UItemId, attr_rid: RAttrId) -> AttrValInfo {
+    fn calc_item_attr_info(&mut self, ctx: &SvcCtx, item_uid: UItemId, attr_rid: RAttrId) -> AttrValInfo {
         let item = ctx.u_data.items.get(item_uid);
         let attr = ctx.u_data.r_data.get_attr_by_rid(attr_rid);
         let base_attr_info = self.calc_item_base_attr_info(ctx, item_uid, item, attr);
@@ -192,7 +192,7 @@ impl Calc {
             _ => extra_attr_info,
         }
     }
-    fn calc_item_base_attr_info(&mut self, ctx: SvcCtx, item_uid: UItemId, item: &UItem, attr: &RAttr) -> AttrValInfo {
+    fn calc_item_base_attr_info(&mut self, ctx: &SvcCtx, item_uid: UItemId, item: &UItem, attr: &RAttr) -> AttrValInfo {
         let attr_consts = ctx.ac();
         // Security modifier is a special case - it takes modified value of another attribute as its
         // own base

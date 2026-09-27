@@ -58,7 +58,7 @@ impl Hash for CalcCustomModStrength {
 impl CalcCustomModStrength {
     pub(in crate::svc::calc::modifier) fn get_affector_info(
         &self,
-        ctx: SvcCtx,
+        ctx: &SvcCtx,
         item_uid: UItemId,
     ) -> SmallVec<[CalcModInfoAffector; 1]> {
         match &self.kind {
@@ -70,7 +70,7 @@ impl CalcCustomModStrength {
     pub(in crate::svc::calc::modifier) fn get_strength(
         &self,
         calc: &mut Calc,
-        ctx: SvcCtx,
+        ctx: &SvcCtx,
         espec: EffectSpec,
     ) -> Option<Value> {
         match &self.kind {

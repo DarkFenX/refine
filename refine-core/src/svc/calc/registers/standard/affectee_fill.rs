@@ -14,7 +14,7 @@ impl StandardRegister {
     pub(in crate::svc::calc) fn fill_affectees(
         &self,
         reuse_affectees: &mut Vec<UItemId>,
-        ctx: SvcCtx,
+        ctx: &SvcCtx,
         cmod: &CtxModifier,
     ) {
         // All the context modifiers passed to this method have to come from the standard register.
@@ -41,7 +41,7 @@ impl StandardRegister {
         }
     }
     // Private methods
-    fn fill_no_context(&self, affectees: &mut Vec<UItemId>, ctx: SvcCtx, rmod: &RawModifier) {
+    fn fill_no_context(&self, affectees: &mut Vec<UItemId>, ctx: &SvcCtx, rmod: &RawModifier) {
         // No-context modifiers are used only for self/other modifications
         if let AffecteeFilter::Direct(loc) = rmod.affectee_filter {
             match loc {
@@ -58,7 +58,7 @@ impl StandardRegister {
             }
         }
     }
-    fn fill_for_fit(&self, affectees: &mut Vec<UItemId>, ctx: SvcCtx, rmod: &RawModifier, fit_uid: UFitId) {
+    fn fill_for_fit(&self, affectees: &mut Vec<UItemId>, ctx: &SvcCtx, rmod: &RawModifier, fit_uid: UFitId) {
         match rmod.affectee_filter {
             AffecteeFilter::Direct(loc)
                 if let Ok(loc_kind) = loc.try_into()
@@ -98,7 +98,7 @@ impl StandardRegister {
     fn fill_for_fit_item_target(
         &self,
         affectees: &mut Vec<UItemId>,
-        ctx: SvcCtx,
+        ctx: &SvcCtx,
         rmod: &RawModifier,
         fit_uid: UFitId,
         projectee_uid: UItemId,
@@ -138,7 +138,7 @@ impl StandardRegister {
             _ => (),
         }
     }
-    fn fill_for_fit_item_buff(&self, affectees: &mut Vec<UItemId>, ctx: SvcCtx, rmod: &RawModifier, fit_uid: UFitId) {
+    fn fill_for_fit_item_buff(&self, affectees: &mut Vec<UItemId>, ctx: &SvcCtx, rmod: &RawModifier, fit_uid: UFitId) {
         match rmod.affectee_filter {
             AffecteeFilter::Loc(..) => {
                 let fit = ctx.u_data.fits.get(fit_uid);

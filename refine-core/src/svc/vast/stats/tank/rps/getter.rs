@@ -23,7 +23,7 @@ impl Vast {
     pub(in crate::svc) fn get_stat_item_rps(
         &self,
         reuse_cseq_map: &mut CseqMap,
-        ctx: SvcCtx,
+        ctx: &SvcCtx,
         calc: &mut Calc,
         item_uid: UItemId,
         time_options: StatTimeOptions,
@@ -35,7 +35,7 @@ impl Vast {
     pub(in crate::svc::vast::stats::tank) fn get_stat_item_rps_unchecked(
         &self,
         reuse_cseq_map: &mut CseqMap,
-        ctx: SvcCtx,
+        ctx: &SvcCtx,
         calc: &mut Calc,
         item_uid: UItemId,
         item: &UItem,
@@ -117,7 +117,7 @@ impl Vast {
 
 fn get_local_rps(
     reuse_cseq_map: &mut CseqMap,
-    ctx: SvcCtx,
+    ctx: &SvcCtx,
     calc: &mut Calc,
     time_options: StatTimeOptions,
     lrr_data: &RMapRMap<UItemId, REffectId, REffectLocalOpcSpec<NEffectGeneralOutputGetter>>,
@@ -167,7 +167,7 @@ struct IrrEntry {
 fn get_irr_data(
     reuse_cseq_map: &mut CseqMap,
     reuse_result: &mut Vec<IrrEntry>,
-    ctx: SvcCtx,
+    ctx: &SvcCtx,
     calc: &mut Calc,
     projectee_item_uid: UItemId,
     time_options: StatTimeOptions,
@@ -305,7 +305,7 @@ fn get_adjusted_rps(entry: &IrrEntry) -> Option<PValue> {
     }
 }
 
-fn get_shield_regen(ctx: SvcCtx, calc: &mut Calc, item_uid: UItemId, shield_perc: UnitInterval) -> PValue {
+fn get_shield_regen(ctx: &SvcCtx, calc: &mut Calc, item_uid: UItemId, shield_perc: UnitInterval) -> PValue {
     calc_regen_for_attrs(
         ctx,
         calc,

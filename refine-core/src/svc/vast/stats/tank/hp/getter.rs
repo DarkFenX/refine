@@ -20,7 +20,7 @@ impl Vast {
     pub(in crate::svc) fn get_stat_item_hp(
         &self,
         reuse_cseq_map: &mut CseqMap,
-        ctx: SvcCtx,
+        ctx: &SvcCtx,
         calc: &mut Calc,
         item_uid: UItemId,
     ) -> Result<StatHp, IntStatItemError<!>> {
@@ -30,7 +30,7 @@ impl Vast {
     pub(in crate::svc::vast::stats::tank) fn get_stat_item_hp_unchecked(
         &self,
         reuse_cseq_map: &mut CseqMap,
-        ctx: SvcCtx,
+        ctx: &SvcCtx,
         calc: &mut Calc,
         item_uid: UItemId,
         item: &UItem,
@@ -87,7 +87,7 @@ const ANCIL_CYCLE_OPTIONS: CyclingOptions = CyclingOptions::Sim(CycleOptionsSim 
 
 fn get_local_ancil_hp(
     reuse_cseq_map: &mut CseqMap,
-    ctx: SvcCtx,
+    ctx: &SvcCtx,
     calc: &mut Calc,
     ancil_data: &RMapRMap<UItemId, REffectId, REffectLocalOpcSpec<NEffectGeneralOutputGetter>>,
 ) -> PValue {
@@ -111,7 +111,7 @@ fn get_local_ancil_hp(
 
 fn get_remote_ancil_hp(
     reuse_cseq_map: &mut CseqMap,
-    ctx: SvcCtx,
+    ctx: &SvcCtx,
     calc: &mut Calc,
     projectee_item_uid: UItemId,
     ancil_data: &RMapRMapRMap<UItemId, UItemId, REffectId, REffectProjOpcSpec<NEffectGeneralOutputGetter>>,

@@ -6,7 +6,7 @@ use crate::{
 
 impl Vast {
     pub(in crate::svc) fn get_stat_item_warp_speed(
-        ctx: SvcCtx,
+        ctx: &SvcCtx,
         calc: &mut Calc,
         item_uid: UItemId,
     ) -> Result<PValue, IntStatItemError<StatWarpSpeedError>> {
@@ -14,7 +14,7 @@ impl Vast {
         Self::internal_get_stat_item_warp_speed_unchecked(ctx, calc, item_uid).map_err(IntStatItemError::StatSpecific)
     }
     fn internal_get_stat_item_warp_speed_unchecked(
-        ctx: SvcCtx,
+        ctx: &SvcCtx,
         calc: &mut Calc,
         item_uid: UItemId,
     ) -> Result<PValue, StatWarpSpeedError> {

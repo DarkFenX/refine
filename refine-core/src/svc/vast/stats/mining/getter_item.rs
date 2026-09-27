@@ -18,7 +18,7 @@ use crate::{
 impl Vast {
     pub(in crate::svc) fn get_stat_item_mps(
         reuse_cseq_map: &mut CseqMap,
-        ctx: SvcCtx,
+        ctx: &SvcCtx,
         calc: &mut Calc,
         item_uid: UItemId,
         time_options: StatTimeOptions,
@@ -61,7 +61,7 @@ impl Vast {
 
 fn get_mps_item_uid<F>(
     reuse_cseq_map: &mut CseqMap,
-    ctx: SvcCtx,
+    ctx: &SvcCtx,
     calc: &mut Calc,
     item_uid: UItemId,
     time_options: StatTimeOptions,

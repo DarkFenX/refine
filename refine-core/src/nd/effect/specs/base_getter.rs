@@ -10,7 +10,7 @@ pub(crate) trait NEffectOutputGetter {
 
     fn get(
         &self,
-        ctx: SvcCtx,
+        ctx: &SvcCtx,
         calc: &mut Calc,
         item_uid: UItemId,
         effect: &REffect,

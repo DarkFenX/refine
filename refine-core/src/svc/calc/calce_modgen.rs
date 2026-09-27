@@ -14,7 +14,7 @@ impl Calc {
     pub(super) fn generate_mods_for_effect(
         &mut self,
         reuse_rmods: &mut Vec<RawModifier>,
-        ctx: SvcCtx,
+        ctx: &SvcCtx,
         item_uid: UItemId,
         item: &UItem,
         effect: &REffect,
@@ -99,7 +99,7 @@ impl Calc {
     }
     pub(super) fn generate_dependent_buff_mods<'a>(
         &mut self,
-        ctx: SvcCtx,
+        ctx: &SvcCtx,
         item_uid: UItemId,
         item: &UItem,
         effect_rids: impl Iterator<Item = &'a REffectId>,

@@ -7,7 +7,7 @@ use crate::{
 #[must_use]
 pub(super) fn get_charge_cseq_map(
     reuse_cseq_map: &mut CseqMap,
-    ctx: SvcCtx,
+    ctx: &SvcCtx,
     calc: &mut Calc,
     charge: &UCharge,
     options: CyclingOptions,

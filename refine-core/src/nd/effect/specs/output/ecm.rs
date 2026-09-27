@@ -71,7 +71,7 @@ impl NEffectOutputGetter for NEffectEcmOutputGetter {
 
     fn get(
         &self,
-        ctx: SvcCtx,
+        ctx: &SvcCtx,
         calc: &mut Calc,
         item_uid: UItemId,
         effect: &REffect,
@@ -88,7 +88,7 @@ impl NEffectOutputGetter for NEffectEcmOutputGetter {
     }
 }
 
-fn get_direct(ctx: SvcCtx, calc: &mut Calc, item_uid: UItemId, effect: &REffect) -> Option<Output<NEffectEcmAmount>> {
+fn get_direct(ctx: &SvcCtx, calc: &mut Calc, item_uid: UItemId, effect: &REffect) -> Option<Output<NEffectEcmAmount>> {
     let (radar, magnetometric, gravimetric, ladar) = get_std_ecm_values(ctx, calc, item_uid)?;
     let duration = funcs::get_effect_duration_s(ctx, calc, item_uid, effect)?;
     Some(Output::Simple(OutputSimple {
@@ -103,7 +103,7 @@ fn get_direct(ctx: SvcCtx, calc: &mut Calc, item_uid: UItemId, effect: &REffect)
     }))
 }
 
-fn get_burst(ctx: SvcCtx, calc: &mut Calc, item_uid: UItemId) -> Option<Output<NEffectEcmAmount>> {
+fn get_burst(ctx: &SvcCtx, calc: &mut Calc, item_uid: UItemId) -> Option<Output<NEffectEcmAmount>> {
     let (radar, magnetometric, gravimetric, ladar) = get_std_ecm_values(ctx, calc, item_uid)?;
     Some(Output::Simple(OutputSimple {
         instance: NEffectEcmAmount {
@@ -117,7 +117,7 @@ fn get_burst(ctx: SvcCtx, calc: &mut Calc, item_uid: UItemId) -> Option<Output<N
     }))
 }
 
-fn get_aoe(ctx: SvcCtx, calc: &mut Calc, item_uid: UItemId) -> Option<Output<NEffectEcmAmount>> {
+fn get_aoe(ctx: &SvcCtx, calc: &mut Calc, item_uid: UItemId) -> Option<Output<NEffectEcmAmount>> {
     let (radar, magnetometric, gravimetric, ladar) = get_std_ecm_values(ctx, calc, item_uid)?;
     let duration = PValue::from_value_clamped(
         calc.get_item_oattr_ffb_extra(ctx, item_uid, ctx.ac().doomsday_aoe_duration, Value::ZERO) / Value::THOUSAND,
@@ -137,7 +137,7 @@ fn get_aoe(ctx: SvcCtx, calc: &mut Calc, item_uid: UItemId) -> Option<Output<NEf
     }))
 }
 
-fn get_bomb(ctx: SvcCtx, calc: &mut Calc, item_uid: UItemId) -> Option<Output<NEffectEcmAmount>> {
+fn get_bomb(ctx: &SvcCtx, calc: &mut Calc, item_uid: UItemId) -> Option<Output<NEffectEcmAmount>> {
     let (mut radar, mut magnetometric, mut gravimetric, mut ladar) = get_std_ecm_values(ctx, calc, item_uid)?;
     // Do not return ECM stats for non-ecm bombs
     if radar <= PValue::ZERO && magnetometric <= PValue::ZERO && gravimetric <= PValue::ZERO && ladar <= PValue::ZERO {
@@ -161,7 +161,7 @@ fn get_bomb(ctx: SvcCtx, calc: &mut Calc, item_uid: UItemId) -> Option<Output<NE
     }))
 }
 
-fn get_entity(ctx: SvcCtx, calc: &mut Calc, item_uid: UItemId) -> Option<Output<NEffectEcmAmount>> {
+fn get_entity(ctx: &SvcCtx, calc: &mut Calc, item_uid: UItemId) -> Option<Output<NEffectEcmAmount>> {
     let (radar, magnetometric, gravimetric, ladar) = get_std_ecm_values(ctx, calc, item_uid)?;
     let duration = PValue::from_value_clamped(
         calc.get_item_oattr_ffb_extra(ctx, item_uid, ctx.ac().ecm_jam_duration, Value::ZERO) / Value::THOUSAND,
@@ -178,7 +178,12 @@ fn get_entity(ctx: SvcCtx, calc: &mut Calc, item_uid: UItemId) -> Option<Output<
     }))
 }
 
-fn get_ftr_abil(ctx: SvcCtx, calc: &mut Calc, item_uid: UItemId, effect: &REffect) -> Option<Output<NEffectEcmAmount>> {
+fn get_ftr_abil(
+    ctx: &SvcCtx,
+    calc: &mut Calc,
+    item_uid: UItemId,
+    effect: &REffect,
+) -> Option<Output<NEffectEcmAmount>> {
     let (mut radar, mut magnetometric, mut gravimetric, mut ladar) = get_ecm_values(
         ctx,
         calc,
@@ -210,7 +215,7 @@ fn get_ftr_abil(ctx: SvcCtx, calc: &mut Calc, item_uid: UItemId, effect: &REffec
     }))
 }
 
-fn get_std_ecm_values(ctx: SvcCtx, calc: &mut Calc, item_uid: UItemId) -> Option<(PValue, PValue, PValue, PValue)> {
+fn get_std_ecm_values(ctx: &SvcCtx, calc: &mut Calc, item_uid: UItemId) -> Option<(PValue, PValue, PValue, PValue)> {
     get_ecm_values(
         ctx,
         calc,
@@ -223,7 +228,7 @@ fn get_std_ecm_values(ctx: SvcCtx, calc: &mut Calc, item_uid: UItemId) -> Option
 }
 
 fn get_ecm_values(
-    ctx: SvcCtx,
+    ctx: &SvcCtx,
     calc: &mut Calc,
     item_uid: UItemId,
     radar_attr_rid: Option<RAttrId>,

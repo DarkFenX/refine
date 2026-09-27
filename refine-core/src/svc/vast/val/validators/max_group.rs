@@ -55,7 +55,7 @@ impl VastFitData {
     pub(in crate::svc::vast::val) fn validate_max_group_fitted_fast(
         &self,
         kfs: &RSet<UItemId>,
-        ctx: SvcCtx,
+        ctx: &SvcCtx,
         calc: &mut Calc,
     ) -> bool {
         validate_fast(
@@ -70,7 +70,7 @@ impl VastFitData {
     pub(in crate::svc::vast::val) fn validate_max_group_online_fast(
         &self,
         kfs: &RSet<UItemId>,
-        ctx: SvcCtx,
+        ctx: &SvcCtx,
         calc: &mut Calc,
     ) -> bool {
         validate_fast(
@@ -85,7 +85,7 @@ impl VastFitData {
     pub(in crate::svc::vast::val) fn validate_max_group_active_fast(
         &self,
         kfs: &RSet<UItemId>,
-        ctx: SvcCtx,
+        ctx: &SvcCtx,
         calc: &mut Calc,
     ) -> bool {
         validate_fast(
@@ -101,7 +101,7 @@ impl VastFitData {
     pub(in crate::svc::vast::val) fn validate_max_group_fitted_verbose(
         &self,
         kfs: &RSet<UItemId>,
-        ctx: SvcCtx,
+        ctx: &SvcCtx,
         calc: &mut Calc,
     ) -> Option<ValMaxGroupFail> {
         validate_verbose(
@@ -116,7 +116,7 @@ impl VastFitData {
     pub(in crate::svc::vast::val) fn validate_max_group_online_verbose(
         &self,
         kfs: &RSet<UItemId>,
-        ctx: SvcCtx,
+        ctx: &SvcCtx,
         calc: &mut Calc,
     ) -> Option<ValMaxGroupFail> {
         validate_verbose(
@@ -131,7 +131,7 @@ impl VastFitData {
     pub(in crate::svc::vast::val) fn validate_max_group_active_verbose(
         &self,
         kfs: &RSet<UItemId>,
-        ctx: SvcCtx,
+        ctx: &SvcCtx,
         calc: &mut Calc,
     ) -> Option<ValMaxGroupFail> {
         validate_verbose(
@@ -147,7 +147,7 @@ impl VastFitData {
 
 fn validate_fast(
     kfs: &RSet<UItemId>,
-    ctx: SvcCtx,
+    ctx: &SvcCtx,
     calc: &mut Calc,
     max_group_all: &RMapRSet<AItemGrpId, UItemId>,
     max_group_limited: &RMap<UItemId, AItemGrpId>,
@@ -168,7 +168,7 @@ fn validate_fast(
 
 fn validate_verbose(
     kfs: &RSet<UItemId>,
-    ctx: SvcCtx,
+    ctx: &SvcCtx,
     calc: &mut Calc,
     max_group_all: &RMapRSet<AItemGrpId, UItemId>,
     max_group_limited: &RMap<UItemId, AItemGrpId>,
@@ -202,7 +202,7 @@ fn validate_verbose(
     }
 }
 
-fn get_max_allowed_item_count(ctx: SvcCtx, calc: &mut Calc, item_uid: UItemId, attr_rid: RAttrId) -> Count {
+fn get_max_allowed_item_count(ctx: &SvcCtx, calc: &mut Calc, item_uid: UItemId, attr_rid: RAttrId) -> Count {
     Count::from_value_rounded(calc.get_item_attr_oextra(ctx, item_uid, attr_rid).unwrap())
 }
 fn get_actual_item_count(max_group_all: &RMapRSet<AItemGrpId, UItemId>, item_grp_aid: &AItemGrpId) -> Count {

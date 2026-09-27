@@ -16,7 +16,7 @@ impl Svc {
         u_data: &UData,
         item_uid: UItemId,
     ) -> Result<PValue, IntStatItemError<!>> {
-        Vast::get_stat_item_cap_amount(SvcCtx::new(u_data, &self.eff_projs), &mut self.calc, item_uid)
+        Vast::get_stat_item_cap_amount(&SvcCtx::new(u_data, &self.eff_projs), &mut self.calc, item_uid)
     }
     pub(crate) fn get_stat_item_cap_balance(
         &mut self,
@@ -28,7 +28,7 @@ impl Svc {
     ) -> Result<Value, IntStatItemError<!>> {
         self.vast.get_stat_item_cap_balance(
             reuse_cseq_map,
-            SvcCtx::new(u_data, &self.eff_projs),
+            &SvcCtx::new(u_data, &self.eff_projs),
             &mut self.calc,
             item_uid,
             src_kinds,
@@ -47,7 +47,7 @@ impl Svc {
     ) -> Result<StatCapSim, IntStatItemError<!>> {
         self.vast.get_stat_item_cap_sim(
             reuse_cseq_map,
-            SvcCtx::new(u_data, &self.eff_projs),
+            &SvcCtx::new(u_data, &self.eff_projs),
             &mut self.calc,
             item_uid,
             cap_perc,
@@ -61,6 +61,6 @@ impl Svc {
         u_data: &UData,
         item_uid: UItemId,
     ) -> Result<UnitInterval, IntStatItemError<!>> {
-        Vast::get_stat_item_neut_resist(SvcCtx::new(u_data, &self.eff_projs), &mut self.calc, item_uid)
+        Vast::get_stat_item_neut_resist(&SvcCtx::new(u_data, &self.eff_projs), &mut self.calc, item_uid)
     }
 }

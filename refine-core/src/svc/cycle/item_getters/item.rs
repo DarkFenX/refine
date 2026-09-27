@@ -10,7 +10,7 @@ use crate::{
 #[must_use]
 pub(in crate::svc) fn get_item_cseq_map(
     reuse_cseq_map: &mut CseqMap,
-    ctx: SvcCtx,
+    ctx: &SvcCtx,
     calc: &mut Calc,
     item_uid: UItemId,
     options: CyclingOptions,

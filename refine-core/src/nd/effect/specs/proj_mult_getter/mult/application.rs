@@ -10,7 +10,7 @@ use crate::{
 // Public
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 pub(in crate::nd::effect::specs::proj_mult_getter) fn get_std_missile_application_mult(
-    ctx: SvcCtx,
+    ctx: &SvcCtx,
     calc: &mut Calc,
     projector_uid: UItemId,
     projectee_uid: UItemId,
@@ -34,7 +34,7 @@ pub(in crate::nd::effect::specs::proj_mult_getter) fn get_std_missile_applicatio
     )
 }
 pub(super) fn get_legacy_missile_application_mult(
-    ctx: SvcCtx,
+    ctx: &SvcCtx,
     calc: &mut Calc,
     projector_uid: UItemId,
     projectee_uid: UItemId,
@@ -66,7 +66,7 @@ pub(super) fn get_legacy_missile_application_mult(
     )
 }
 fn get_missile_application_mult(
-    ctx: SvcCtx,
+    ctx: &SvcCtx,
     calc: &mut Calc,
     projector_uid: UItemId,
     projectee_uid: UItemId,
@@ -100,7 +100,7 @@ fn get_missile_application_mult(
 }
 
 pub(in crate::nd::effect::specs::proj_mult_getter) fn get_bomb_application_mult(
-    ctx: SvcCtx,
+    ctx: &SvcCtx,
     calc: &mut Calc,
     projector_uid: UItemId,
     projectee_uid: UItemId,
@@ -112,7 +112,7 @@ pub(in crate::nd::effect::specs::proj_mult_getter) fn get_bomb_application_mult(
 // Private
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 pub(super) fn get_turret_application_mult(
-    ctx: SvcCtx,
+    ctx: &SvcCtx,
     calc: &mut Calc,
     projector_uid: UItemId,
     effect: &REffect,
@@ -142,7 +142,7 @@ pub(super) fn get_turret_application_mult(
 }
 
 pub(super) fn get_radius_ratio_mult(
-    ctx: SvcCtx,
+    ctx: &SvcCtx,
     calc: &mut Calc,
     projector_uid: UItemId,
     projectee_uid: UItemId,
@@ -162,7 +162,7 @@ pub(super) fn get_radius_ratio_mult(
 // Utility
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 fn calc_angular(
-    ctx: SvcCtx,
+    ctx: &SvcCtx,
     calc: &mut Calc,
     projector_uid: UItemId,
     projectee_uid: UItemId,
@@ -195,7 +195,7 @@ fn calc_angular(
     }
 }
 
-fn get_vector(ctx: SvcCtx, calc: &mut Calc, item_uid: UItemId, direction: Xyz, speed_perc: PValue) -> Xyz {
+fn get_vector(ctx: &SvcCtx, calc: &mut Calc, item_uid: UItemId, direction: Xyz, speed_perc: PValue) -> Xyz {
     if speed_perc <= PValue::ZERO {
         return Xyz::default();
     }

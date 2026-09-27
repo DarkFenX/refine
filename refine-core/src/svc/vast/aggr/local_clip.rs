@@ -18,7 +18,7 @@ use crate::{
 
 /// Local effects, considers only part of sequence until charges are out
 pub(in crate::svc::vast) fn aggr_local_clip<BG, BX, I, IA>(
-    ctx: SvcCtx,
+    ctx: &SvcCtx,
     calc: &mut Calc,
     item_uid: UItemId,
     effect: &REffect,

@@ -38,7 +38,7 @@ impl NEffectOutputGetter for NEffectGeneralOutputGetter {
 
     fn get(
         &self,
-        ctx: SvcCtx,
+        ctx: &SvcCtx,
         calc: &mut Calc,
         item_uid: UItemId,
         effect: &REffect,
@@ -71,7 +71,7 @@ impl NEffectOutputGetter for NEffectGeneralOutputGetter {
 // Getter-related private functions
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 fn get_attr_dogma(
-    ctx: SvcCtx,
+    ctx: &SvcCtx,
     calc: &mut Calc,
     item_uid: UItemId,
     effect: &REffect,
@@ -88,7 +88,7 @@ fn get_attr_dogma(
 }
 
 fn get_attr_extra(
-    ctx: SvcCtx,
+    ctx: &SvcCtx,
     calc: &mut Calc,
     item_uid: UItemId,
     effect: &REffect,
@@ -104,7 +104,7 @@ fn get_attr_extra(
     }))
 }
 
-fn get_neut_nosf(ctx: SvcCtx, calc: &mut Calc, item_uid: UItemId, effect: &REffect) -> Option<Output<PValue>> {
+fn get_neut_nosf(ctx: &SvcCtx, calc: &mut Calc, item_uid: UItemId, effect: &REffect) -> Option<Output<PValue>> {
     // Not a blood raider ship - not considered as a neut
     if !calc
         .get_item_oattr_oextra(ctx, item_uid, ctx.ac().nos_override)?
@@ -115,7 +115,7 @@ fn get_neut_nosf(ctx: SvcCtx, calc: &mut Calc, item_uid: UItemId, effect: &REffe
     get_attr_extra(ctx, calc, item_uid, effect, ctx.ac().power_transfer_amount, false)
 }
 
-fn get_neut_aoe(ctx: SvcCtx, calc: &mut Calc, item_uid: UItemId) -> Option<Output<PValue>> {
+fn get_neut_aoe(ctx: &SvcCtx, calc: &mut Calc, item_uid: UItemId) -> Option<Output<PValue>> {
     let instance = PValue::from_value_clamped(calc.get_item_oattr_ffb_extra(
         ctx,
         item_uid,
@@ -128,7 +128,7 @@ fn get_neut_aoe(ctx: SvcCtx, calc: &mut Calc, item_uid: UItemId) -> Option<Outpu
     Some(Output::Simple(OutputSimple { instance, delay }))
 }
 
-fn get_neut_bomb(ctx: SvcCtx, calc: &mut Calc, item_uid: UItemId) -> Option<Output<PValue>> {
+fn get_neut_bomb(ctx: &SvcCtx, calc: &mut Calc, item_uid: UItemId) -> Option<Output<PValue>> {
     let instance = calc.get_item_oattr_ffb_extra(ctx, item_uid, ctx.ac().energy_neut_amount, Value::ZERO);
     let mut instance = match instance > Value::ZERO {
         true => PValue::from_value_unchecked(instance),
@@ -144,7 +144,7 @@ fn get_neut_bomb(ctx: SvcCtx, calc: &mut Calc, item_uid: UItemId) -> Option<Outp
     }))
 }
 
-fn get_neut_ftr_abil(ctx: SvcCtx, calc: &mut Calc, item_uid: UItemId) -> Option<Output<PValue>> {
+fn get_neut_ftr_abil(ctx: &SvcCtx, calc: &mut Calc, item_uid: UItemId) -> Option<Output<PValue>> {
     let mut instance = PValue::from_value_clamped(calc.get_item_oattr_ffb_extra(
         ctx,
         item_uid,
@@ -162,7 +162,7 @@ fn get_neut_ftr_abil(ctx: SvcCtx, calc: &mut Calc, item_uid: UItemId) -> Option<
     }))
 }
 
-fn get_power_booster(ctx: SvcCtx, calc: &mut Calc, item_uid: UItemId) -> Option<Output<PValue>> {
+fn get_power_booster(ctx: &SvcCtx, calc: &mut Calc, item_uid: UItemId) -> Option<Output<PValue>> {
     let item = ctx.u_data.items.get(item_uid);
     let charge_uid = item.get_charge_uid()?;
     let attr_consts = ctx.ac();

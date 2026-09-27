@@ -12,7 +12,7 @@ use crate::{
 };
 
 pub(super) fn get_item_ship_limit(
-    ctx: SvcCtx,
+    ctx: &SvcCtx,
     calc: &mut Calc,
     item_uid: UItemId,
     attr_rid: Option<RAttrId>,

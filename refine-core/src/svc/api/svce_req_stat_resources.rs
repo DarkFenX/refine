@@ -7,17 +7,17 @@ impl Svc {
     pub(crate) fn get_stat_fit_cpu(&mut self, u_data: &UData, fit_uid: UFitId, fit: &UFit) -> StatResource {
         self.vast
             .get_fit_data(fit_uid)
-            .get_stat_cpu(SvcCtx::new(u_data, &self.eff_projs), &mut self.calc, fit)
+            .get_stat_cpu(&SvcCtx::new(u_data, &self.eff_projs), &mut self.calc, fit)
     }
     pub(crate) fn get_stat_fit_powergrid(&mut self, u_data: &UData, fit_uid: UFitId, fit: &UFit) -> StatResource {
         self.vast
             .get_fit_data(fit_uid)
-            .get_stat_powergrid(SvcCtx::new(u_data, &self.eff_projs), &mut self.calc, fit)
+            .get_stat_powergrid(&SvcCtx::new(u_data, &self.eff_projs), &mut self.calc, fit)
     }
     pub(crate) fn get_stat_fit_calibration(&mut self, u_data: &UData, fit_uid: UFitId, fit: &UFit) -> StatResource {
         self.vast
             .get_fit_data(fit_uid)
-            .get_stat_calibration(SvcCtx::new(u_data, &self.eff_projs), &mut self.calc, fit)
+            .get_stat_calibration(&SvcCtx::new(u_data, &self.eff_projs), &mut self.calc, fit)
     }
     pub(crate) fn get_stat_fit_drone_bay_volume(
         &mut self,
@@ -26,14 +26,14 @@ impl Svc {
         fit: &UFit,
     ) -> StatResource {
         self.vast.get_fit_data(fit_uid).get_stat_drone_bay_volume(
-            SvcCtx::new(u_data, &self.eff_projs),
+            &SvcCtx::new(u_data, &self.eff_projs),
             &mut self.calc,
             fit,
         )
     }
     pub(crate) fn get_stat_fit_drone_bandwidth(&mut self, u_data: &UData, fit_uid: UFitId, fit: &UFit) -> StatResource {
         self.vast.get_fit_data(fit_uid).get_stat_drone_bandwidth(
-            SvcCtx::new(u_data, &self.eff_projs),
+            &SvcCtx::new(u_data, &self.eff_projs),
             &mut self.calc,
             fit,
         )
@@ -45,7 +45,7 @@ impl Svc {
         fit: &UFit,
     ) -> StatResource {
         self.vast.get_fit_data(fit_uid).get_stat_fighter_bay_volume(
-            SvcCtx::new(u_data, &self.eff_projs),
+            &SvcCtx::new(u_data, &self.eff_projs),
             &mut self.calc,
             fit,
         )

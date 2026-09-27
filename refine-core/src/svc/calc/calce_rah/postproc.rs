@@ -8,7 +8,7 @@ use crate::{
 };
 
 impl Calc {
-    fn get_rah_resonances(&mut self, ctx: SvcCtx, item_uid: UItemId) -> DmgKinds<CalcAttrVals> {
+    fn get_rah_resonances(&mut self, ctx: &SvcCtx, item_uid: UItemId) -> DmgKinds<CalcAttrVals> {
         // Unwrap item, since method is supposed to be called only for registered RAHs
         if let Some(val) = self.rah.resonances.get(&item_uid).unwrap() {
             return *val;
@@ -26,28 +26,28 @@ impl Calc {
 
 pub(in crate::svc::calc) fn rah_em_resonance_postproc_fast(
     calc: &mut Calc,
-    ctx: SvcCtx,
+    ctx: &SvcCtx,
     item_uid: UItemId,
 ) -> CalcAttrVals {
     calc.get_rah_resonances(ctx, item_uid).em
 }
 pub(in crate::svc::calc) fn rah_therm_resonance_postproc_fast(
     calc: &mut Calc,
-    ctx: SvcCtx,
+    ctx: &SvcCtx,
     item_uid: UItemId,
 ) -> CalcAttrVals {
     calc.get_rah_resonances(ctx, item_uid).thermal
 }
 pub(in crate::svc::calc) fn rah_kin_resonance_postproc_fast(
     calc: &mut Calc,
-    ctx: SvcCtx,
+    ctx: &SvcCtx,
     item_uid: UItemId,
 ) -> CalcAttrVals {
     calc.get_rah_resonances(ctx, item_uid).kinetic
 }
 pub(in crate::svc::calc) fn rah_expl_resonance_postproc_fast(
     calc: &mut Calc,
-    ctx: SvcCtx,
+    ctx: &SvcCtx,
     item_uid: UItemId,
 ) -> CalcAttrVals {
     calc.get_rah_resonances(ctx, item_uid).explosive
@@ -55,7 +55,7 @@ pub(in crate::svc::calc) fn rah_expl_resonance_postproc_fast(
 
 pub(in crate::svc::calc) fn rah_em_resonance_postproc_info(
     calc: &mut Calc,
-    ctx: SvcCtx,
+    ctx: &SvcCtx,
     item_uid: UItemId,
     mut info: AttrValInfo,
 ) -> AttrValInfo {
@@ -64,7 +64,7 @@ pub(in crate::svc::calc) fn rah_em_resonance_postproc_info(
 }
 pub(in crate::svc::calc) fn rah_therm_resonance_postproc_info(
     calc: &mut Calc,
-    ctx: SvcCtx,
+    ctx: &SvcCtx,
     item_uid: UItemId,
     mut info: AttrValInfo,
 ) -> AttrValInfo {
@@ -73,7 +73,7 @@ pub(in crate::svc::calc) fn rah_therm_resonance_postproc_info(
 }
 pub(in crate::svc::calc) fn rah_kin_resonance_postproc_info(
     calc: &mut Calc,
-    ctx: SvcCtx,
+    ctx: &SvcCtx,
     item_uid: UItemId,
     mut info: AttrValInfo,
 ) -> AttrValInfo {
@@ -82,7 +82,7 @@ pub(in crate::svc::calc) fn rah_kin_resonance_postproc_info(
 }
 pub(in crate::svc::calc) fn rah_expl_resonance_postproc_info(
     calc: &mut Calc,
-    ctx: SvcCtx,
+    ctx: &SvcCtx,
     item_uid: UItemId,
     mut info: AttrValInfo,
 ) -> AttrValInfo {

@@ -38,7 +38,7 @@ impl VastFitData {
     pub(in crate::svc::vast::val) fn validate_unlaunchable_drone_bandwidth_fast(
         &self,
         kfs: &RSet<UItemId>,
-        ctx: SvcCtx,
+        ctx: &SvcCtx,
         calc: &mut Calc,
         fit: &UFit,
     ) -> bool {
@@ -57,7 +57,7 @@ impl VastFitData {
     pub(in crate::svc::vast::val) fn validate_unlaunchable_drone_bandwidth_verbose(
         &self,
         kfs: &RSet<UItemId>,
-        ctx: SvcCtx,
+        ctx: &SvcCtx,
         calc: &mut Calc,
         fit: &UFit,
     ) -> Option<ValUnusableResFail> {

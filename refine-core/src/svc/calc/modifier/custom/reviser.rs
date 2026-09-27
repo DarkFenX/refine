@@ -12,7 +12,7 @@ pub(in crate::svc::calc) enum ItemAddRemoveReviser {
 impl ItemAddRemoveReviser {
     pub(in crate::svc::calc) fn revise(
         &self,
-        ctx: SvcCtx,
+        ctx: &SvcCtx,
         affector_uid: UItemId,
         changed_uid: UItemId,
         changed_item: &UItem,

@@ -6,7 +6,7 @@ use crate::{
 
 impl Vast {
     pub(in crate::svc) fn get_stat_item_cap_amount(
-        ctx: SvcCtx,
+        ctx: &SvcCtx,
         calc: &mut Calc,
         item_uid: UItemId,
     ) -> Result<PValue, IntStatItemError<!>> {
@@ -14,7 +14,7 @@ impl Vast {
         Ok(Self::internal_get_stat_item_cap_amount_unchecked(ctx, calc, item_uid))
     }
     pub(in crate::svc::vast::stats) fn internal_get_stat_item_cap_amount_unchecked(
-        ctx: SvcCtx,
+        ctx: &SvcCtx,
         calc: &mut Calc,
         item_uid: UItemId,
     ) -> PValue {

@@ -24,7 +24,7 @@ use crate::{
 
 // Projected effects, considers only infinite parts of cycles
 pub(in crate::svc::vast) fn aggr_proj_clip<BG, BX, I, IA>(
-    ctx: SvcCtx,
+    ctx: &SvcCtx,
     calc: &mut Calc,
     projector_uid: UItemId,
     effect: &REffect,

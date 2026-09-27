@@ -16,7 +16,7 @@ impl Svc {
     ) -> StatDmg {
         self.vast.get_stat_fits_dmg_raw(
             reuse_cseq_map,
-            SvcCtx::new(u_data, &self.eff_projs),
+            &SvcCtx::new(u_data, &self.eff_projs),
             &mut self.calc,
             fit_uids,
             item_kinds,
@@ -36,7 +36,7 @@ impl Svc {
     ) -> StatDmgApplied {
         self.vast.get_stat_fits_dmg_applied(
             reuse_cseq_map,
-            SvcCtx::new(u_data, &self.eff_projs),
+            &SvcCtx::new(u_data, &self.eff_projs),
             &mut self.calc,
             fit_uids,
             item_kinds,
@@ -56,7 +56,7 @@ impl Svc {
     ) -> StatDmg {
         self.vast.get_stat_fit_dmg_raw(
             reuse_cseq_map,
-            SvcCtx::new(u_data, &self.eff_projs),
+            &SvcCtx::new(u_data, &self.eff_projs),
             &mut self.calc,
             fit_uid,
             item_kinds,
@@ -76,7 +76,7 @@ impl Svc {
     ) -> StatDmgApplied {
         self.vast.get_stat_fit_dmg_applied(
             reuse_cseq_map,
-            SvcCtx::new(u_data, &self.eff_projs),
+            &SvcCtx::new(u_data, &self.eff_projs),
             &mut self.calc,
             fit_uid,
             item_kinds,
@@ -96,7 +96,7 @@ impl Svc {
     ) -> Result<StatDmg, IntStatItemError<!>> {
         Vast::get_stat_item_dmg_raw(
             reuse_cseq_map,
-            SvcCtx::new(u_data, &self.eff_projs),
+            &SvcCtx::new(u_data, &self.eff_projs),
             &mut self.calc,
             item_uid,
             time_options,
@@ -116,7 +116,7 @@ impl Svc {
     ) -> Result<StatDmgApplied, IntStatItemError<!>> {
         Vast::get_stat_item_dmg_applied(
             reuse_cseq_map,
-            SvcCtx::new(u_data, &self.eff_projs),
+            &SvcCtx::new(u_data, &self.eff_projs),
             &mut self.calc,
             item_uid,
             time_options,

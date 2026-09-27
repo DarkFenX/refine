@@ -32,7 +32,7 @@ impl ItemAttrPostproc {
     pub(in crate::svc::calc) fn fast(
         &self,
         calc: &mut Calc,
-        ctx: SvcCtx,
+        ctx: &SvcCtx,
         item_uid: UItemId,
         val: CalcAttrVals,
     ) -> CalcAttrVals {
@@ -49,7 +49,7 @@ impl ItemAttrPostproc {
     pub(in crate::svc::calc) fn info(
         &self,
         calc: &mut Calc,
-        ctx: SvcCtx,
+        ctx: &SvcCtx,
         item_uid: UItemId,
         info: AttrValInfo,
     ) -> AttrValInfo {

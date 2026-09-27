@@ -54,7 +54,7 @@ impl BreacherAccum {
     }
     pub(in crate::svc::vast) fn add(
         &mut self,
-        ctx: SvcCtx,
+        ctx: &SvcCtx,
         calc: &mut Calc,
         item_uid: UItemId,
         effect: &REffect,
@@ -253,7 +253,7 @@ impl AppliedBreacherAccum {
     }
     pub(in crate::svc::vast) fn add(
         &mut self,
-        ctx: SvcCtx,
+        ctx: &SvcCtx,
         calc: &mut Calc,
         item_uid: UItemId,
         effect: &REffect,

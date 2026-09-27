@@ -25,7 +25,7 @@ impl Svc {
         let defeff_rid = u_item.get_r_item_base()?.defeff_rid?;
         if !get_item_cseq_map(
             reuse_cseq_map,
-            SvcCtx::new(u_data, &self.eff_projs),
+            &SvcCtx::new(u_data, &self.eff_projs),
             &mut self.calc,
             item_uid,
             CYCLE_COUNT_OPTIONS,
@@ -71,7 +71,7 @@ impl Svc {
         let defeff = u_data.r_data.get_effect_by_rid(defeff_rid);
         let spool_attrs = defeff.spool_attr_rids?;
         // TODO: limit by non-interrupted spool cycle count
-        let ctx = SvcCtx::new(u_data, &self.eff_projs);
+        let ctx = &SvcCtx::new(u_data, &self.eff_projs);
         let resolved_spool = ResolvedSpool::try_build(ctx, &mut self.calc, item_uid, defeff, None, spool_attrs)?;
         Some(ItemSpoolInfo {
             current: resolved_spool.cycles,

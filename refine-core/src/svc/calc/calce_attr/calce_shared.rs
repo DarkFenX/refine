@@ -17,13 +17,13 @@ impl Calc {
             .get_item_attr_data(item_uid)
             .ok_or(UItemLoadedError { item_uid })
     }
-    pub(super) fn calc_resist_mult(&mut self, ctx: SvcCtx, cmod: &CtxModifier) -> Option<UnitInterval> {
+    pub(super) fn calc_resist_mult(&mut self, ctx: &SvcCtx, cmod: &CtxModifier) -> Option<UnitInterval> {
         let r_resist = cmod.raw.proj_spec?.resist?;
         let projectee_uid = cmod.ctx.get_item_uid()?;
         let resist = r_resist.get_mult_by_projection(ctx, self, cmod.raw.affector_espec.item_uid, projectee_uid)?;
         Some(resist)
     }
-    pub(super) fn calc_proj_mult(&mut self, ctx: SvcCtx, cmod: &CtxModifier) -> Option<PValue> {
+    pub(super) fn calc_proj_mult(&mut self, ctx: &SvcCtx, cmod: &CtxModifier) -> Option<PValue> {
         let item_uid = cmod.ctx.get_item_uid()?;
         let proj_mult_getter = cmod.raw.proj_spec?.proj_mult?;
         let effect = ctx.u_data.r_data.get_effect_by_rid(cmod.raw.affector_espec.effect_rid);

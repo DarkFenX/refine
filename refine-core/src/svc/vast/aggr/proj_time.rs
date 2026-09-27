@@ -27,7 +27,7 @@ use crate::{
 
 /// Projected effects, aggregates total output by specified time
 pub(in crate::svc::vast) fn aggr_proj_time<BG, BX, I, IA>(
-    ctx: SvcCtx,
+    ctx: &SvcCtx,
     calc: &mut Calc,
     projector_uid: UItemId,
     effect: &REffect,

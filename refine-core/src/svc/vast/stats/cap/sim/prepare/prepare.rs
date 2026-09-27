@@ -25,7 +25,7 @@ use crate::{
 
 pub(in crate::svc::vast::stats::cap::sim) fn prepare_events(
     reuse_cseq_map: &mut CseqMap,
-    ctx: SvcCtx,
+    ctx: &SvcCtx,
     calc: &mut Calc,
     vast: &Vast,
     optional_reloads: Option<OptionalReload>,
@@ -83,7 +83,7 @@ pub(in crate::svc::vast::stats::cap::sim) fn prepare_events(
 
 fn fill_consumers(
     reuse_cseq_map: &mut CseqMap,
-    ctx: SvcCtx,
+    ctx: &SvcCtx,
     calc: &mut Calc,
     merger: &mut Merger,
     cycling_options: CyclingOptions,
@@ -115,7 +115,7 @@ fn fill_consumers(
 
 fn fill_nosfs(
     reuse_cseq_map: &mut CseqMap,
-    ctx: SvcCtx,
+    ctx: &SvcCtx,
     calc: &mut Calc,
     merger: &mut Merger,
     cycling_options: CyclingOptions,
@@ -158,7 +158,7 @@ fn fill_nosfs(
 
 fn fill_incoming_neuts(
     reuse_cseq_map: &mut CseqMap,
-    ctx: SvcCtx,
+    ctx: &SvcCtx,
     calc: &mut Calc,
     merger: &mut Merger,
     cycling_options: CyclingOptions,
@@ -204,7 +204,7 @@ fn fill_incoming_neuts(
 
 fn fill_incoming_transfers(
     reuse_cseq_map: &mut CseqMap,
-    ctx: SvcCtx,
+    ctx: &SvcCtx,
     calc: &mut Calc,
     merger: &mut Merger,
     cycling_options: CyclingOptions,
@@ -250,7 +250,7 @@ fn fill_incoming_transfers(
 
 fn fill_injectors(
     reuse_cseq_map: &mut CseqMap,
-    ctx: SvcCtx,
+    ctx: &SvcCtx,
     calc: &mut Calc,
     events: &mut BinaryHeap<CapSimEvent>,
     cycling_options: CyclingOptions,

@@ -22,7 +22,7 @@ use crate::{
 #[must_use]
 pub(super) fn get_fighter_cseq_map(
     reuse_cseq_map: &mut CseqMap,
-    ctx: SvcCtx,
+    ctx: &SvcCtx,
     calc: &mut Calc,
     item_uid: UItemId,
     fighter: &UFighter,
@@ -68,7 +68,7 @@ impl EffectInfo {
 }
 
 fn get_effect_info(
-    ctx: SvcCtx,
+    ctx: &SvcCtx,
     calc: &mut Calc,
     item_uid: UItemId,
     fighter: &UFighter,
@@ -106,7 +106,7 @@ fn get_effect_info(
 // No rearm considered
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 fn burst_fill_cseqs(
-    ctx: SvcCtx,
+    ctx: &SvcCtx,
     calc: &mut Calc,
     item_uid: UItemId,
     fighter: &UFighter,
@@ -126,7 +126,7 @@ fn burst_fill_cseqs(
 fn burst_fill_effect_cseq(
     cseq_map: &mut CseqMap,
     sk_item_info: &mut SelfKillerItemInfo,
-    ctx: SvcCtx,
+    ctx: &SvcCtx,
     calc: &mut Calc,
     item_uid: UItemId,
     fighter: &UFighter,
@@ -155,7 +155,7 @@ fn burst_info_to_cseq(effect_info: EffectInfo) -> CycleSeq<CycleDataFull, CSeqHa
 }
 
 fn sim_no_rearm_fill_cseqs(
-    ctx: SvcCtx,
+    ctx: &SvcCtx,
     calc: &mut Calc,
     item_uid: UItemId,
     fighter: &UFighter,
@@ -175,7 +175,7 @@ fn sim_no_rearm_fill_cseqs(
 fn sim_no_rearm_fill_effect_cseq(
     cseq_map: &mut CseqMap,
     sk_item_info: &mut SelfKillerItemInfo,
-    ctx: SvcCtx,
+    ctx: &SvcCtx,
     calc: &mut Calc,
     item_uid: UItemId,
     fighter: &UFighter,
@@ -239,7 +239,7 @@ fn fill_sk_effect_data(
 // Rearm is considered
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 fn sim_rearm_fill_cseqs(
-    ctx: SvcCtx,
+    ctx: &SvcCtx,
     calc: &mut Calc,
     item_uid: UItemId,
     fighter: &UFighter,
@@ -253,7 +253,7 @@ fn sim_rearm_fill_cseqs(
     sim_rearm_process_refuel(cseq_map, effect_infos, fighter);
 }
 fn sim_rearm_collect_effect_infos(
-    ctx: SvcCtx,
+    ctx: &SvcCtx,
     calc: &mut Calc,
     item_uid: UItemId,
     fighter: &UFighter,

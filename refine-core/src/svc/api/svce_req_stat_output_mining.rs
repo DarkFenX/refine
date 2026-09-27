@@ -16,7 +16,7 @@ impl Svc {
     ) -> StatMining {
         self.vast.get_stat_fits_mps(
             reuse_cseq_map,
-            SvcCtx::new(u_data, &self.eff_projs),
+            &SvcCtx::new(u_data, &self.eff_projs),
             &mut self.calc,
             fit_uids,
             item_kinds,
@@ -35,7 +35,7 @@ impl Svc {
     ) -> StatMining {
         self.vast.get_stat_fit_mps(
             reuse_cseq_map,
-            SvcCtx::new(u_data, &self.eff_projs),
+            &SvcCtx::new(u_data, &self.eff_projs),
             &mut self.calc,
             fit_uid,
             item_kinds,
@@ -53,7 +53,7 @@ impl Svc {
     ) -> Result<StatMining, IntStatItemError<!>> {
         Vast::get_stat_item_mps(
             reuse_cseq_map,
-            SvcCtx::new(u_data, &self.eff_projs),
+            &SvcCtx::new(u_data, &self.eff_projs),
             &mut self.calc,
             item_uid,
             time_options,

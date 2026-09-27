@@ -10,7 +10,7 @@ use crate::{
 impl Vast {
     pub(in crate::svc) fn get_stat_item_jump(
         &self,
-        ctx: SvcCtx,
+        ctx: &SvcCtx,
         calc: &mut Calc,
         item_uid: UItemId,
         range: StatJumpRange,
@@ -22,7 +22,7 @@ impl Vast {
     }
     fn internal_get_stat_item_jump_unchecked(
         &self,
-        ctx: SvcCtx,
+        ctx: &SvcCtx,
         calc: &mut Calc,
         ship_uid: UItemId,
         ship: &UShip,
@@ -88,7 +88,7 @@ pub enum StatJumpError {
 }
 
 // Higher level jump fetchers
-fn get_stat_jump_self(ctx: SvcCtx, calc: &mut Calc, ship_uid: UItemId, range: PValue) -> StatJumpSelf {
+fn get_stat_jump_self(ctx: &SvcCtx, calc: &mut Calc, ship_uid: UItemId, range: PValue) -> StatJumpSelf {
     let self_fuel_need =
         calc.get_item_oattr_ffb_extra(ctx, ship_uid, ctx.ac().jump_drive_consumption_amount, Value::ZERO);
     StatJumpSelf {
@@ -96,7 +96,7 @@ fn get_stat_jump_self(ctx: SvcCtx, calc: &mut Calc, ship_uid: UItemId, range: PV
     }
 }
 fn get_stat_jump_conduit(
-    ctx: SvcCtx,
+    ctx: &SvcCtx,
     calc: &mut Calc,
     ship_uid: UItemId,
     range: PValue,
@@ -133,7 +133,7 @@ fn get_stat_jump_conduit(
     }
 }
 fn get_stat_jump_portal(
-    ctx: SvcCtx,
+    ctx: &SvcCtx,
     calc: &mut Calc,
     ship_uid: UItemId,
     portal_uid: UItemId,
@@ -203,7 +203,7 @@ enum PassengerCheck {
     Disallow,
     CheckFlag(RAttrId),
 }
-fn get_psg_check(ctx: SvcCtx, calc: &mut Calc, item_uid: UItemId, ref_attr_rid: Option<RAttrId>) -> PassengerCheck {
+fn get_psg_check(ctx: &SvcCtx, calc: &mut Calc, item_uid: UItemId, ref_attr_rid: Option<RAttrId>) -> PassengerCheck {
     // No reference attribute - no requirement - allow all passengers
     let Some(ref_attr_rid) = ref_attr_rid else {
         return PassengerCheck::Allow;
@@ -220,7 +220,7 @@ fn get_psg_check(ctx: SvcCtx, calc: &mut Calc, item_uid: UItemId, ref_attr_rid: 
         None => PassengerCheck::Disallow,
     }
 }
-fn is_psg(ctx: SvcCtx, calc: &mut Calc, psg_fit: &UFit, psg_check: PassengerCheck) -> Option<UItemId> {
+fn is_psg(ctx: &SvcCtx, calc: &mut Calc, psg_fit: &UFit, psg_check: PassengerCheck) -> Option<UItemId> {
     // No passenger ship - cannot be a passenger regardless of what check says
     let psg_ship_uid = psg_fit.ship?;
     // Passenger ship is not loaded - cannot be a passenger as well

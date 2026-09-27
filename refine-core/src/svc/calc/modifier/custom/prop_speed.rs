@@ -37,7 +37,7 @@ pub(super) fn make_rmod(attr_consts: &RAttrConsts, espec: EffectSpec) -> Option<
     })
 }
 
-pub(super) fn get_affector_info(ctx: SvcCtx, item_uid: UItemId) -> SmallVec<[CalcModInfoAffector; 1]> {
+pub(super) fn get_affector_info(ctx: &SvcCtx, item_uid: UItemId) -> SmallVec<[CalcModInfoAffector; 1]> {
     let mut info = SmallVec::new();
     if let Some(ship_uid) = ctx.u_data.get_item_fit_ship_uid(item_uid)
         && let Some(speed_factor_rid) = ctx.ac().speed_factor
@@ -62,7 +62,7 @@ pub(super) fn get_affector_info(ctx: SvcCtx, item_uid: UItemId) -> SmallVec<[Cal
     info
 }
 
-pub(super) fn get_mod_val(calc: &mut Calc, ctx: SvcCtx, espec: EffectSpec) -> Option<Value> {
+pub(super) fn get_mod_val(calc: &mut Calc, ctx: &SvcCtx, espec: EffectSpec) -> Option<Value> {
     let ship_uid = ctx.u_data.get_item_fit_ship_uid(espec.item_uid)?;
     let speed_boost = calc.get_item_oattr_odogma(ctx, espec.item_uid, ctx.ac().speed_factor)?;
     let thrust = calc.get_item_oattr_odogma(ctx, espec.item_uid, ctx.ac().speed_boost_factor)?;

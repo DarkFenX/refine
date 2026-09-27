@@ -17,7 +17,7 @@ impl VastFitData {
     pub(in crate::svc::vast::val) fn validate_cloaking_blocked_fast(
         &self,
         kfs: &RSet<UItemId>,
-        ctx: SvcCtx,
+        ctx: &SvcCtx,
         calc: &mut Calc,
         fit: &UFit,
     ) -> bool {
@@ -34,7 +34,7 @@ impl VastFitData {
     pub(in crate::svc::vast::val) fn validate_cloaking_blocked_verbose(
         &self,
         kfs: &RSet<UItemId>,
-        ctx: SvcCtx,
+        ctx: &SvcCtx,
         calc: &mut Calc,
         fit: &UFit,
     ) -> Option<ValCloakingBlockedFail> {
@@ -54,7 +54,7 @@ impl VastFitData {
         }
     }
     // Shared
-    fn can_fit_activate_cloaks(&self, ctx: SvcCtx, calc: &mut Calc, ship_uid: Option<UItemId>) -> bool {
+    fn can_fit_activate_cloaks(&self, ctx: &SvcCtx, calc: &mut Calc, ship_uid: Option<UItemId>) -> bool {
         if self.mods_fitted_cloaks > Count::ONE {
             return false;
         }
@@ -73,7 +73,7 @@ impl VastFitData {
     }
 }
 
-fn can_ship_cloak(ctx: SvcCtx, calc: &mut Calc, ship_uid: UItemId) -> bool {
+fn can_ship_cloak(ctx: &SvcCtx, calc: &mut Calc, ship_uid: UItemId) -> bool {
     is_oattr_flag_set(ctx, calc, ship_uid, ctx.ac().can_cloak).unwrap_or(true)
         && !is_oattr_flag_set(ctx, calc, ship_uid, ctx.ac().disallow_cloaking).unwrap_or(false)
 }

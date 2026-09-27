@@ -18,7 +18,7 @@ impl Vast {
     pub(in crate::svc) fn get_stat_item_incoming_jam(
         &self,
         reuse_cseq_map: &mut CseqMap,
-        ctx: SvcCtx,
+        ctx: &SvcCtx,
         calc: &mut Calc,
         projectee_item_uid: UItemId,
         time_options: StatTimeOptions,

@@ -7,7 +7,7 @@ use crate::{
 };
 
 pub(in crate::svc::cycle) fn get_eci_charge_rate(
-    ctx: SvcCtx,
+    ctx: &SvcCtx,
     module: &UModule,
     n_charge_rate: NEffectChargeDeplChargeRate,
 ) -> EffectChargeInfo {

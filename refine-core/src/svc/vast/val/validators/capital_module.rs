@@ -52,7 +52,7 @@ impl VastFitData {
     pub(in crate::svc::vast::val) fn validate_capital_module_verbose(
         &self,
         kfs: &RSet<UItemId>,
-        ctx: SvcCtx,
+        ctx: &SvcCtx,
         ship: Option<&UShip>,
     ) -> Option<ValCapitalModFail> {
         if !is_ship_subcap(ship) {

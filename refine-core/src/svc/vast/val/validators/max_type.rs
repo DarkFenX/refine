@@ -63,7 +63,7 @@ impl VastFitData {
     pub(in crate::svc::vast::val) fn validate_max_type_fitted_verbose(
         &self,
         kfs: &RSet<UItemId>,
-        ctx: SvcCtx,
+        ctx: &SvcCtx,
     ) -> Option<ValMaxTypeFail> {
         let mut item_types = RMap::new();
         for (&item_aid, item_type_data) in self.mods_svcs_max_type_fitted.iter() {

@@ -18,7 +18,7 @@ impl Vast {
     pub(in crate::svc) fn get_stat_fits_mps(
         &self,
         reuse_cseq_map: &mut CseqMap,
-        ctx: SvcCtx,
+        ctx: &SvcCtx,
         calc: &mut Calc,
         fit_uids: impl Iterator<Item = UFitId>,
         item_kinds: StatMiningItemKinds,
@@ -68,7 +68,7 @@ impl Vast {
     pub(in crate::svc) fn get_stat_fit_mps(
         &self,
         reuse_cseq_map: &mut CseqMap,
-        ctx: SvcCtx,
+        ctx: &SvcCtx,
         calc: &mut Calc,
         fit_uid: UFitId,
         item_kinds: StatMiningItemKinds,
@@ -111,7 +111,7 @@ impl Vast {
 
 fn get_mps(
     reuse_cseq_map: &mut CseqMap,
-    ctx: SvcCtx,
+    ctx: &SvcCtx,
     calc: &mut Calc,
     item_kinds: StatMiningItemKinds,
     time_options: StatTimeOptions,

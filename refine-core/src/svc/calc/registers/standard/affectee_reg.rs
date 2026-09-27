@@ -13,7 +13,7 @@ impl StandardRegister {
     // Modification methods
     pub(in crate::svc::calc) fn reg_affectee(
         &mut self,
-        ctx: SvcCtx,
+        ctx: &SvcCtx,
         item_uid: UItemId,
         item: &UItem,
     ) -> Vec<CtxModifier> {
@@ -76,7 +76,7 @@ impl StandardRegister {
     }
     pub(in crate::svc::calc) fn unreg_affectee(
         &mut self,
-        ctx: SvcCtx,
+        ctx: &SvcCtx,
         item_uid: UItemId,
         item: &UItem,
     ) -> Vec<CtxModifier> {

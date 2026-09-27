@@ -6,7 +6,7 @@ use crate::{
     ud::UItemId,
 };
 
-pub(super) fn skill_level_postproc_fast(ctx: SvcCtx, item_uid: UItemId, mut cval: CalcAttrVals) -> CalcAttrVals {
+pub(super) fn skill_level_postproc_fast(ctx: &SvcCtx, item_uid: UItemId, mut cval: CalcAttrVals) -> CalcAttrVals {
     let level = ctx
         .u_data
         .items
@@ -20,7 +20,7 @@ pub(super) fn skill_level_postproc_fast(ctx: SvcCtx, item_uid: UItemId, mut cval
     cval
 }
 
-pub(super) fn skill_level_postproc_info(ctx: SvcCtx, item_uid: UItemId) -> AttrValInfo {
+pub(super) fn skill_level_postproc_info(ctx: &SvcCtx, item_uid: UItemId) -> AttrValInfo {
     let level = ctx
         .u_data
         .items

@@ -43,7 +43,7 @@ impl VastFitData {
     pub(in crate::svc::vast::val) fn validate_charge_cont_group_verbose(
         &self,
         kfs: &RSet<UItemId>,
-        ctx: SvcCtx,
+        ctx: &SvcCtx,
     ) -> Option<ValChargeParentGroupFail> {
         let mut charges = Vec::new();
         for (&charge_uid, &cont_uid) in self.charge_cont_group.difference(kfs) {
