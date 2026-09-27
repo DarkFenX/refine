@@ -38,6 +38,7 @@ def test_benchmark_attr_calc(client, consts):
         # ruff:ignore[commented-out-code]
         # api_fit_cmds.add_module(type_id=4403, rack=consts.ApiRack.low, state=consts.ApiModuleState.active)
     iterations = 1000000
+    print()  # ruff:ignore[print]
     print('starting attr-calc benchmark')  # ruff:ignore[print]
     before = time()
     api_sol.benchmark(command={'type': 'attr_calc', 'fit_id': api_fit.id, 'type_id': 1306, 'iterations': iterations})
@@ -129,6 +130,7 @@ def test_benchmark_stats(client, consts):
         api_tgt_fit_batch.add_module(type_id=12068, rack=consts.ApiRack.mid, state=consts.ApiModuleState.active)
 
     iterations = 1000000
+    print()  # ruff:ignore[print]
     print('starting stats benchmark')  # ruff:ignore[print]
     before = time()
     api_sol.benchmark(command={
@@ -211,6 +213,7 @@ def test_benchmark_try_fit_items(client, consts):
     iterations = 1000
     try_fit_type_ids = get_try_fit_type_ids()
     options = ValOptions(default=True).to_dict()
+    print()  # ruff:ignore[print]
     print(f'starting try-fit-items benchmark, trying {len(try_fit_type_ids)} items per iteration')  # ruff:ignore[print]
     before = time()
     api_sol.benchmark(command={
