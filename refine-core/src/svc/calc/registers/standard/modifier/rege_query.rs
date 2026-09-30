@@ -61,6 +61,16 @@ impl StandardRegister {
     ) -> impl ExactSizeIterator<Item = &CtxModifier> {
         self.cmods.by_aspec.get(affector_aspec)
     }
+    pub(in crate::svc::calc) fn add_rmod_all(&mut self, rmod: RawModifier) {
+        self.rmods_all.add_entry(rmod.affector_espec, rmod);
+    }
+    pub(in crate::svc::calc) fn add_rmods_all_for_effect(
+        &mut self,
+        espec: EffectSpec,
+        rmods: impl ExactSizeIterator<Item = RawModifier>,
+    ) {
+        self.rmods_all.extend_entries(espec, rmods);
+    }
     pub(in crate::svc::calc) fn extract_raw_mods_for_effect(
         &mut self,
         reuse_raw_modifiers: &mut Vec<RawModifier>,

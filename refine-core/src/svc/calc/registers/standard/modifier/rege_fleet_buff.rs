@@ -40,7 +40,6 @@ impl StandardRegister {
                 }
             }
             self.rmods_fleet.add_entry(fit_uid, rmod);
-            self.rmods_all.add_entry(rmod.affector_espec, rmod);
         }
         valid
     }

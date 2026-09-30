@@ -16,8 +16,7 @@ use crate::{
 
 impl StandardRegister {
     pub(in crate::svc::calc) fn reg_proj_mod(&mut self, rmod: RawModifier) {
-        // Register projectable modifier.
-        self.rmods_all.add_entry(rmod.affector_espec, rmod);
+        // Register projectable modifier. The rmods_all container should be filled by the caller.
         self.rmods_proj.add_entry(rmod.affector_espec, rmod);
     }
     pub(in crate::svc::calc) fn unreg_proj_mod(&mut self, rmod: &RawModifier) {

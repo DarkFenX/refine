@@ -18,7 +18,7 @@ impl StandardRegister {
         reuse_cmods: &mut Vec<CtxModifier>,
         ctx: &SvcCtx,
         rmod: RawModifier,
-    ) {
+    ) -> bool {
         reuse_cmods.clear();
         let valid = match rmod.affectee_filter {
             AffecteeFilter::Direct(loc) if let Ok(loc_kind) = loc.try_into() => {
@@ -75,8 +75,8 @@ impl StandardRegister {
         };
         if valid {
             self.rmods_sw_system.insert(rmod);
-            self.rmods_all.add_entry(rmod.affector_espec, rmod);
         }
+        valid
     }
     pub(in crate::svc::calc) fn unreg_sw_system_mod(
         &mut self,

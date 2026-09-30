@@ -76,7 +76,6 @@ impl StandardRegister {
         };
         if valid {
             self.rmods_fw_buff.add_entry(fw_effect.get_fit_uid(), rmod);
-            self.rmods_all.add_entry(rmod.affector_espec, rmod);
         }
         valid
     }

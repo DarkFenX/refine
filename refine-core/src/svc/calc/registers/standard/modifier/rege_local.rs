@@ -11,7 +11,7 @@ use crate::{
 
 impl StandardRegister {
     pub(in crate::svc::calc) fn reg_local_mod(&mut self, item: &UItem, rmod: RawModifier) -> Option<CtxModifier> {
-        let cmod = match rmod.affectee_filter {
+        match rmod.affectee_filter {
             AffecteeFilter::Direct(loc) => match loc {
                 Location::Item => {
                     let cmod = CtxModifier::new(rmod);
@@ -65,12 +65,7 @@ impl StandardRegister {
                 add_cmod(key, cmod, &mut self.cmods.own_srq, &mut self.cmods.by_aspec);
                 Some(cmod)
             }
-        };
-        // If we received a modifier with context, it means that raw modifier was valid
-        if cmod.is_some() {
-            self.rmods_all.add_entry(rmod.affector_espec, rmod);
         }
-        cmod
     }
     pub(in crate::svc::calc) fn unreg_local_mod(&mut self, item: &UItem, rmod: RawModifier) -> Option<CtxModifier> {
         match rmod.affectee_filter {

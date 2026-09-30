@@ -114,9 +114,11 @@ impl Calc {
         let mut reuse_cmods = Vec::new();
         for effect in effects.iter() {
             self.generate_mods_for_effect(&mut reuse_rmods, ctx, item_uid, item, effect);
-            for &rmod in reuse_rmods.iter() {
-                self.reg_raw_mod(&mut reuse_items, &mut reuse_cmods, ctx, item_uid, item, rmod);
-            }
+            // Keep only registered modifiers, and add them to rmods_all of the standard register in
+            // one go, to avoid unnecessary allocations
+            reuse_rmods.retain(|&rmod| self.reg_raw_mod(&mut reuse_items, &mut reuse_cmods, ctx, item_uid, item, rmod));
+            self.std
+                .add_rmods_all_for_effect(EffectSpec::new(item_uid, effect.rid), reuse_rmods.iter().copied());
             // Buff maintenance - add info about effects which use default buff attributes
             self.buffs.reg_effect(item_uid, effect);
         }
@@ -235,7 +237,9 @@ impl Calc {
                 let mut reuse_items = Vec::new();
                 let mut reuse_cmods = Vec::new();
                 for &rmod in rmods.iter() {
-                    self.reg_raw_mod(&mut reuse_items, &mut reuse_cmods, ctx, aspec.item_uid, item, rmod);
+                    if self.reg_raw_mod(&mut reuse_items, &mut reuse_cmods, ctx, aspec.item_uid, item, rmod) {
+                        self.std.add_rmod_all(rmod);
+                    }
                 }
             }
         }
@@ -305,15 +309,17 @@ impl Calc {
         item_uid: UItemId,
         item: &UItem,
         rmod: RawModifier,
-    ) {
+    ) -> bool {
         match rmod.kind {
-            ModifierKind::Local => {
-                if let Some(cmod) = self.std.reg_local_mod(item, rmod) {
+            ModifierKind::Local => match self.std.reg_local_mod(item, rmod) {
+                Some(cmod) => {
                     self.force_mod_affectee_attr_recalc(reuse_items, ctx, &cmod);
                     // Revisions - we need those only for local modifiers for now
                     self.revs.reg_mod(&cmod);
+                    true
                 }
-            }
+                None => false,
+            },
             ModifierKind::FleetBuff => {
                 let registered = self.std.reg_fleet_buff_mod(reuse_cmods, ctx, item, rmod);
                 for cmod in reuse_cmods.iter() {
@@ -322,21 +328,28 @@ impl Calc {
                 if registered {
                     self.reg_raw_mod_for_buff(item_uid, rmod);
                 }
+                registered
             }
             ModifierKind::System => match item {
                 UItem::SwEffect(..) => {
-                    self.std.reg_sw_system_mod(reuse_cmods, ctx, rmod);
+                    let registered = self.std.reg_sw_system_mod(reuse_cmods, ctx, rmod);
                     for cmod in reuse_cmods.iter() {
                         self.force_mod_affectee_attr_recalc(reuse_items, ctx, cmod);
                     }
+                    registered
                 }
-                UItem::FwEffect(fw_effect) => {
-                    if let Some(cmod) = self.std.reg_fw_system_mod(fw_effect, rmod) {
+                UItem::FwEffect(fw_effect) => match self.std.reg_fw_system_mod(fw_effect, rmod) {
+                    Some(cmod) => {
                         self.force_mod_affectee_attr_recalc(reuse_items, ctx, &cmod);
+                        true
                     }
+                    None => false,
+                },
+                UItem::ProjEffect(..) => {
+                    self.std.reg_proj_mod(rmod);
+                    true
                 }
-                UItem::ProjEffect(..) => self.std.reg_proj_mod(rmod),
-                _ => (),
+                _ => false,
             },
             ModifierKind::Buff => {
                 let registered = match item {
@@ -362,8 +375,12 @@ impl Calc {
                 if registered {
                     self.reg_raw_mod_for_buff(item_uid, rmod);
                 }
+                registered
             }
-            ModifierKind::Targeted => self.std.reg_proj_mod(rmod),
+            ModifierKind::Targeted => {
+                self.std.reg_proj_mod(rmod);
+                true
+            }
         }
     }
     fn unreg_raw_mod(

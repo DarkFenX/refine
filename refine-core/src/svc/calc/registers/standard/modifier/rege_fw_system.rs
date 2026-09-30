@@ -15,7 +15,7 @@ impl StandardRegister {
         fw_effect: &UFwEffect,
         rmod: RawModifier,
     ) -> Option<CtxModifier> {
-        let cmod = match rmod.affectee_filter {
+        match rmod.affectee_filter {
             AffecteeFilter::Direct(loc) => {
                 let loc_kind = loc.try_into().ok()?;
                 let fit_uid = fw_effect.get_fit_uid();
@@ -55,12 +55,7 @@ impl StandardRegister {
                 add_cmod(key, cmod, &mut self.cmods.own_srq, &mut self.cmods.by_aspec);
                 Some(cmod)
             }
-        };
-        // If context modifier was returned = raw was valid
-        if cmod.is_some() {
-            self.rmods_all.add_entry(rmod.affector_espec, rmod);
         }
-        cmod
     }
     pub(in crate::svc::calc) fn unreg_fw_system_mod(
         &mut self,
