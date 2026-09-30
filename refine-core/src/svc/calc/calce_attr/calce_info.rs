@@ -37,8 +37,8 @@ impl Calc {
     ) -> Result<impl ExactSizeIterator<Item = (RAttrId, Vec<CalcModInfo>)> + use<>, UItemLoadedError> {
         let mut info_map = RMapVec::new();
         for attr_rid in self.iter_item_attr_rids(ctx, item_uid)? {
-            let mut attr_info = self.calc_item_attr_info(ctx, item_uid, attr_rid);
-            let mut info_vec = attr_info.effective_infos;
+            let attr_info = self.calc_item_attr_info(ctx, item_uid, attr_rid);
+            let info_vec = attr_info.effective_infos;
             // Only effective infos are exposed; this can be uncommented to expose filtered ones too
             // info_vec.extend(attr_info.filtered_infos.drain(..));
             if !info_vec.is_empty() {
