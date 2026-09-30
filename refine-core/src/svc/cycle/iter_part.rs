@@ -94,6 +94,7 @@ where
         if self.yielded {
             return None;
         }
+        self.yielded = true;
         Some(CSeqPartInf {
             data: self.cseq.data,
             repeat_count: InfCount::Count(self.cseq.repeat_count),
