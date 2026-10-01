@@ -6,6 +6,7 @@ mod logging;
 mod middleware;
 mod server;
 mod settings;
+mod shutdown;
 mod state;
 
 #[tokio::main(flavor = "multi_thread", worker_threads = 2)]

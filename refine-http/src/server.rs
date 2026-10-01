@@ -16,6 +16,7 @@ use crate::{
     logging::{LogBodies, RX_PREFIX, TX_PREFIX, setup_logging},
     middleware::{BodyLimit, limit_request_body_size, log_request_response},
     settings::Settings,
+    shutdown::shutdown_signal,
     state::AppState,
 };
 
@@ -131,6 +132,7 @@ pub(crate) async fn setup_server() {
     let listener = tokio::net::TcpListener::bind(addr.as_str()).await.unwrap();
     tracing::debug!("listening on {addr}");
     axum::serve(listener, ServiceExt::<extract::Request>::into_make_service(app))
+        .with_graceful_shutdown(shutdown_signal())
         .await
         .unwrap();
 }

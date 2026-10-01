@@ -20,7 +20,7 @@ serde = { version = ">=1.0.229", features = ["derive"] }
 serde_json = { version = ">=1.0.151", features = ["float_roundtrip"] }
 thiserror = ">=2.0.21"
 time = { version = ">=0.3.55", features = ["formatting", "macros"] }
-tokio = { version = ">=1.53.1", features = ["macros", "net", "rt", "rt-multi-thread"] }
+tokio = { version = ">=1.53.1", features = ["macros", "net", "rt", "rt-multi-thread", "signal"] }
 tower = { version = ">=0.5.3", features = ["util"] }
 tower-http = { version = ">=0.7.1", features = ["normalize-path", "trace"] }
 tower-request-id = ">=0.3.0"
