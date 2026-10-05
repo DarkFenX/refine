@@ -14,7 +14,7 @@ class TestClient(ApiClient, EveTypeFactory, EveDataManager):
     def __init__(
             self, *,
             eve_data_server: pytest_httpserver.HTTPServer,
-            api_port: int,
+            api_url: str,
             log_reader: LogReader,
     ) -> None:
-        super().__init__(data_server=eve_data_server, port=api_port, log_reader=log_reader)
+        super().__init__(data_server=eve_data_server, api_url=api_url, log_reader=log_reader)

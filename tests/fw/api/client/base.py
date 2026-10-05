@@ -11,10 +11,10 @@ if typing.TYPE_CHECKING:
 
 class ApiClientBase:
 
-    def __init__(self, *, port: int, log_reader: LogReader, **kwargs) -> None:
+    def __init__(self, *, api_url: str, log_reader: LogReader, **kwargs) -> None:
         super().__init__(**kwargs)
         self.__session: requests.Session = requests.Session()
-        self.__base_url: str = f'http://localhost:{port}'
+        self.__base_url: str = api_url
         self.__log_reader: LogReader = log_reader
 
     def send_prepared(self, *, req: Request) -> Response:

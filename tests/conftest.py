@@ -7,7 +7,7 @@ from fw import consts as eve_consts
 from fw.client import TestClient
 from fw.log import LogReader
 from fw.server import build_config, build_server, kill_server, run_server
-from fw.util import PROJECT_ROOT, next_free_port
+from fw.util import PROJECT_ROOT
 
 if typing.TYPE_CHECKING:
     from collections.abc import Generator
@@ -39,8 +39,7 @@ def run_tmp_dir(tmp_path_factory: pytest.TempPathFactory) -> Path:
 @pytest.fixture(scope='session')
 def run_config(run_tmp_dir: Path) -> ConfigInfo:
     config_path = run_tmp_dir / 'config.toml'
-    port = next_free_port(start_port=8000)
-    return build_config(config_path=config_path, port=port, log_dir=run_tmp_dir)
+    return build_config(config_path=config_path, log_dir=run_tmp_dir)
 
 
 @pytest.fixture(scope='session', autouse=True)
@@ -52,18 +51,12 @@ def refine_server(
     optimized = pytestconfig.getoption('optimized')
     cpu_affinity = [int(i) for i in re.split(r', ?', pytestconfig.getoption('cpu_affinity')) if i]
     build_server(proj_root=PROJECT_ROOT, optimized=optimized)
-    with log_reader.get_collector() as log_collector:
-        server_info = run_server(
-            proj_root=PROJECT_ROOT,
-            config_path=run_config.config_path,
-            optimized=optimized,
-            cpu_affinity=cpu_affinity)
-        try:
-            # Wait for server to confirm it's up before yielding
-            log_collector.wait_log_entry(msg='re:listening on.+', timeout=10)
-        except Exception:
-            kill_server(server_info=server_info)
-            raise
+    server_info = run_server(
+        proj_root=PROJECT_ROOT,
+        config_path=run_config.config_path,
+        optimized=optimized,
+        cpu_affinity=cpu_affinity,
+        log_reader=log_reader)
     try:
         yield server_info
     except Exception:
@@ -75,10 +68,10 @@ def refine_server(
 @pytest.fixture
 def client(
         httpserver: pytest_httpserver.HTTPServer,
-        run_config: ConfigInfo,
+        refine_server: ServerInfo,
         log_reader: LogReader,
 ) -> Generator[TestClient]:
-    test_client = TestClient(eve_data_server=httpserver, api_port=run_config.port, log_reader=log_reader)
+    test_client = TestClient(eve_data_server=httpserver, api_url=refine_server.api_url, log_reader=log_reader)
     yield test_client
     test_client.cleanup_sols()
     test_client.cleanup_sources()

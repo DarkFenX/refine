@@ -184,7 +184,7 @@ class LogCollector:
             level: Level | str | None = None,
             span: str | None = None,
             timeout: float = 1,
-    ) -> None:
+    ) -> LogEntry:
         timer = Timer(timeout=timeout)
         while timer.remainder > 0:
             try:
@@ -192,7 +192,7 @@ class LogCollector:
             except queue.Empty as e:
                 raise LogEntryNotFoundError(msg=msg, level=level, span=span) from e
             if entry.check(msg=msg, level=level, span=span):
-                return
+                return entry
         # Limit entries we check after timer expires by count of entries upon expiration - not to
         # check entries added after that
         for _ in range(self.__buffer.qsize()):
@@ -201,7 +201,7 @@ class LogCollector:
             except queue.Empty as e:
                 raise LogEntryNotFoundError(msg=msg, level=level, span=span) from e
             if entry.check(msg=msg, level=level, span=span):
-                return
+                return entry
         raise LogEntryNotFoundError(msg=msg, level=level, span=span)
 
     @property
