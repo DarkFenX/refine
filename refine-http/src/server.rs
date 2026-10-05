@@ -13,10 +13,11 @@ use tracing::Span;
 
 use crate::{
     handlers,
+    listener::setup_listeners,
     logging::{LogBodies, RX_PREFIX, TX_PREFIX, setup_logging},
     middleware::{BodyLimit, limit_request_body_size, log_request_response},
     settings::Settings,
-    shutdown::shutdown_signal,
+    shutdown::{setup_shutdown, wait_shutdown},
     state::AppState,
 };
 
@@ -30,8 +31,8 @@ pub(crate) async fn setup_server() {
 
     // Shared state
     let state = AppState::new(
-        settings.server.standard_threads,
-        settings.server.heavy_threads,
+        settings.app.standard_threads,
+        settings.app.heavy_threads,
         settings.cache.dir,
     );
 
@@ -41,8 +42,8 @@ pub(crate) async fn setup_server() {
         state_cleanup
             .get_refine()
             .setup_periodic_cleanup(
-                Duration::from_secs(settings.server.sol_cleanup_interval),
-                Duration::from_secs(settings.server.sol_lifetime),
+                Duration::from_secs(settings.app.sol_cleanup_interval),
+                Duration::from_secs(settings.app.sol_lifetime),
             )
             .await
     });
@@ -90,7 +91,7 @@ pub(crate) async fn setup_server() {
 
     // Middleware
     let body_limit = BodyLimit {
-        max_request_body_size: settings.server.max_request_body_size,
+        max_request_body_size: settings.app.max_request_body_size,
         log_bodies,
     };
     let url_mid = NormalizePathLayer::trim_trailing_slash();
@@ -126,13 +127,22 @@ pub(crate) async fn setup_server() {
 
     // App
     let app = url_mid.layer(router.layer(general_mid));
+    let svc_maker = ServiceExt::<extract::Request>::into_make_service(app);
+
+    // Listener/server setup
+    let listeners = setup_listeners(settings.network).await;
 
     // Run server
-    let addr = format!("127.0.0.1:{}", settings.server.port);
-    let listener = tokio::net::TcpListener::bind(addr.as_str()).await.unwrap();
-    tracing::debug!("listening on {addr}");
-    axum::serve(listener, ServiceExt::<extract::Request>::into_make_service(app))
-        .with_graceful_shutdown(shutdown_signal())
-        .await
-        .unwrap();
+    let shutdown_data = setup_shutdown();
+    let mut servers = tokio::task::JoinSet::new();
+    for listener in listeners {
+        servers.spawn(
+            axum::serve(listener, svc_maker.clone())
+                .with_graceful_shutdown(wait_shutdown(shutdown_data.clone()))
+                .into_future(),
+        );
+    }
+    while let Some(result) = servers.join_next().await {
+        result.unwrap().unwrap();
+    }
 }
