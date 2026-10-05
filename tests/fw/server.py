@@ -81,8 +81,10 @@ def run_server(
         except Exception:
             _terminate_server(popen=popen)
             raise
-    addr = log_entry.msg.removeprefix('listening on ')
-    return ServerInfo(popen=popen, api_url=f'http://{addr}')
+    # Use localhost:port instead of received address due to it possibly being v6, which slows test
+    # runs a bit (it seems to be parsed tens of times per request, first v4, then v6)
+    port = log_entry.msg.rsplit(':', 1)[1]
+    return ServerInfo(popen=popen, api_url=f'http://localhost:{port}')
 
 
 def get_profile_name(*, optimized: bool) -> str:

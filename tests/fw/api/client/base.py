@@ -14,6 +14,7 @@ class ApiClientBase:
     def __init__(self, *, api_url: str, log_reader: LogReader, **kwargs) -> None:
         super().__init__(**kwargs)
         self.__session: requests.Session = requests.Session()
+        self.__session.trust_env = False  # Skip per-request proxy settings lookup
         self.__base_url: str = api_url
         self.__log_reader: LogReader = log_reader
 
