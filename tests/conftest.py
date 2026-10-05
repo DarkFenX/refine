@@ -7,13 +7,11 @@ from fw import consts as eve_consts
 from fw.client import TestClient
 from fw.log import LogReader
 from fw.server import build_config, build_server, kill_server, run_server
-from fw.util import PROJECT_ROOT
+from fw.util import PROJECT_ROOT, StaticHttpServer
 
 if typing.TYPE_CHECKING:
     from collections.abc import Generator
     from pathlib import Path
-
-    import pytest_httpserver
 
     from fw.log import LogCollector
     from fw.server import ConfigInfo, ServerInfo
@@ -65,13 +63,27 @@ def refine_server(
     kill_server(server_info=server_info)
 
 
+@pytest.fixture(scope='session')
+def eve_data_server_session() -> Generator[StaticHttpServer]:
+    server = StaticHttpServer()
+    server.start()
+    yield server
+    server.stop()
+
+
+@pytest.fixture
+def eve_data_server(eve_data_server_session: StaticHttpServer) -> Generator[StaticHttpServer]:
+    yield eve_data_server_session
+    eve_data_server_session.clear()
+
+
 @pytest.fixture
 def client(
-        httpserver: pytest_httpserver.HTTPServer,
+        eve_data_server: StaticHttpServer,
         refine_server: ServerInfo,
         log_reader: LogReader,
 ) -> Generator[TestClient]:
-    test_client = TestClient(eve_data_server=httpserver, api_url=refine_server.api_url, log_reader=log_reader)
+    test_client = TestClient(eve_data_server=eve_data_server, api_url=refine_server.api_url, log_reader=log_reader)
     yield test_client
     test_client.cleanup_sols()
     test_client.cleanup_sources()

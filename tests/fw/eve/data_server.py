@@ -1,15 +1,14 @@
 import typing
 
 if typing.TYPE_CHECKING:
-    import pytest_httpserver
-
+    from fw.util import StaticHttpServer
     from .aliases import DataPrimHook, DataStrHook
     from .containers import EveObjects
 
 
 class EveDataServer:
 
-    def __init__(self, *, data_server: pytest_httpserver.HTTPServer, **kwargs) -> None:
+    def __init__(self, *, data_server: StaticHttpServer, **kwargs) -> None:
         super().__init__(**kwargs)
         self.__data_server = data_server
 
@@ -36,8 +35,8 @@ class EveDataServer:
             self.__setup_handler(url=f'/{data.alias}/{suffix}', data=container)
 
     def __setup_handler(self, *, url: str, data: str) -> None:
-        self.__data_server.expect_request(url).respond_with_data(data)
+        self.__data_server.set_route(path=url, data=data)
 
     @property
     def _eve_data_server_base_url(self) -> str:
-        return f'http://localhost:{self.__data_server.port}'
+        return self.__data_server.base_url

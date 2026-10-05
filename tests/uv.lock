@@ -96,12 +96,6 @@ wheels = [
 ]
 
 [[package]]
-name = "markupsafe"
-version = "3.0.3"
-source = { registry = "https://pypi.org/simple" }
-sdist = { url = "https://files.pythonhosted.org/packages/7e/99/7690b6d4034fffd95959cbe0c02de8deb3098cc577c67bb6a24fe5d7caa7/markupsafe-3.0.3.tar.gz", hash = "sha256:722695808f4b6457b320fdc131280796bdceb04ab50fe1795cd540799ebe1698", size = 80313, upload-time = "2025-09-27T18:37:40.426Z" }
-
-[[package]]
 name = "packaging"
 version = "26.3"
 source = { registry = "https://pypi.org/simple" }
@@ -161,25 +155,12 @@ wheels = [
 ]
 
 [[package]]
-name = "pytest-httpserver"
-version = "1.1.5"
-source = { registry = "https://pypi.org/simple" }
-dependencies = [
-    { name = "werkzeug" },
-]
-sdist = { url = "https://files.pythonhosted.org/packages/50/17/ad187f46998814014f7cda309de700b87c0eb4b2e111e18bc8c819be7116/pytest_httpserver-1.1.5.tar.gz", hash = "sha256:dc3d82e1fe00e491829d8939c549bf4bd9b39a260f87113c619b9d517c2f8ff1", size = 70974, upload-time = "2026-02-14T13:27:23.412Z" }
-wheels = [
-    { url = "https://files.pythonhosted.org/packages/ec/df/0bdf90b84c6a586a9fd2b509523a3ab26b1cc1b1dba2fb62a32e4411ea9e/pytest_httpserver-1.1.5-py3-none-any.whl", hash = "sha256:ee83feb587ab652c0c6729598db2820e9048233bac8df756818b7845a1621d0a", size = 23330, upload-time = "2026-02-14T13:27:22.119Z" },
-]
-
-[[package]]
 name = "refine-tests"
 version = "1.0.0"
 source = { virtual = "." }
 dependencies = [
     { name = "psutil" },
     { name = "pytest" },
-    { name = "pytest-httpserver" },
     { name = "requests" },
 ]
 
@@ -187,7 +168,6 @@ dependencies = [
 requires-dist = [
     { name = "psutil", specifier = ">=7.2.2" },
     { name = "pytest", specifier = ">=9.1.1" },
-    { name = "pytest-httpserver", specifier = ">=1.1.5" },
     { name = "requests", specifier = ">=2.34.2" },
 ]
 
@@ -213,16 +193,4 @@ source = { registry = "https://pypi.org/simple" }
 sdist = { url = "https://files.pythonhosted.org/packages/e3/05/b17359e1cefb4f909b5e40b1b90a496d987258916dbbf88e842c729f510e/urllib3-2.8.0.tar.gz", hash = "sha256:63bf2ead4c879426ebf22ef2a781eeb4aa3b4ae798a0435506f8687fd5bb9b63", size = 458972, upload-time = "2026-09-15T19:29:36.253Z" }
 wheels = [
     { url = "https://files.pythonhosted.org/packages/92/9d/c4e665119135114480843e7ab388fa94d8480650450e6f8e26b70d323a4c/urllib3-2.8.0-py3-none-any.whl", hash = "sha256:0cf3cae568d36aa9576b28dfb35f11328f1cb974ca7647d9475ebb86c75ac6e3", size = 135717, upload-time = "2026-09-15T19:29:34.577Z" },
-]
-
-[[package]]
-name = "werkzeug"
-version = "3.1.8"
-source = { registry = "https://pypi.org/simple" }
-dependencies = [
-    { name = "markupsafe" },
-]
-sdist = { url = "https://files.pythonhosted.org/packages/dd/b2/381be8cfdee792dd117872481b6e378f85c957dd7c5bca38897b08f765fd/werkzeug-3.1.8.tar.gz", hash = "sha256:9bad61a4268dac112f1c5cd4630a56ede601b6ed420300677a869083d70a4c44", size = 875852, upload-time = "2026-04-02T18:49:14.268Z" }
-wheels = [
-    { url = "https://files.pythonhosted.org/packages/93/8c/2e650f2afeb7ee576912636c23ddb621c91ac6a98e66dc8d29c3c69446e1/werkzeug-3.1.8-py3-none-any.whl", hash = "sha256:63a77fb8892bf28ebc3178683445222aa500e48ebad5ec77b0ad80f8726b1f50", size = 226459, upload-time = "2026-04-02T18:49:12.72Z" },
 ]

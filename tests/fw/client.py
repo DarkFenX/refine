@@ -4,16 +4,15 @@ from fw.api import ApiClient
 from fw.eve import EveDataManager, EveTypeFactory
 
 if typing.TYPE_CHECKING:
-    import pytest_httpserver
-
     from fw.log import LogReader
+    from fw.util import StaticHttpServer
 
 
 class TestClient(ApiClient, EveTypeFactory, EveDataManager):
 
     def __init__(
             self, *,
-            eve_data_server: pytest_httpserver.HTTPServer,
+            eve_data_server: StaticHttpServer,
             api_url: str,
             log_reader: LogReader,
     ) -> None:

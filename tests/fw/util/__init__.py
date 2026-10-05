@@ -1,6 +1,7 @@
 from .attr_dict import AttrDict, AttrHookDef
 from .cast import cast_prefixed_to_int, cast_to_int, cast_to_prefixed_str
 from .dc_conv import dc_to_dict
+from .http_server import StaticHttpServer
 from .insert import conditional_insert
 from .ntt_list import NttList
 from .paths import PROJECT_ROOT
