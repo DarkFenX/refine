@@ -7,10 +7,9 @@ them is closed.
 
 
 import socket
-import socketserver
 import threading
 import typing
-from http.server import BaseHTTPRequestHandler
+from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 
 
 class StaticHttpServer:
@@ -43,9 +42,7 @@ class StaticHttpServer:
         return self.__base_url
 
 
-class Server(socketserver.ThreadingTCPServer):
-
-    daemon_threads = True
+class Server(ThreadingHTTPServer):
 
     def __init__(self, *, family: socket.AddressFamily, host: str) -> None:
         self.address_family = family
