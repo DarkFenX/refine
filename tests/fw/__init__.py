@@ -13,9 +13,5 @@ pytest.register_assert_rewrite(
 # ruff:file-ignore[module-import-not-at-top-of-file]
 from unittest.mock import ANY as ANY_VALUE
 
-from .api import (
-    Effect,
-    Muta,
-    Spool,
-)
+from .api import Effect, Muta, Spool
 from .util import approx, check_no_field
