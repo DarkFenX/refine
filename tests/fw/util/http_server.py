@@ -19,7 +19,7 @@ class StaticHttpServer:
         self.__thread: threading.Thread = threading.Thread(target=self.__server.serve_forever, daemon=True)
         # Address of the bound socket, so that clients connect on the first try without lookups. For
         # about 4500 tests, it speeds the test run up by ~15-20 seconds
-        host, port = self.__server.server_address[:2]
+        host, port = self.__server.server_address[:2]  # For IPv6 address is a tuple with 4 elements
         if ':' in host:
             host = f'[{host}]'
         self.__base_url: str = f'http://{host}:{port}'
@@ -55,8 +55,8 @@ class Handler(BaseHTTPRequestHandler):
 
     # Use 1.1 for having keep-alive enabled by default
     protocol_version = 'HTTP/1.1'
-    # Without it headers & body are sent as separate packets, waiting for ACK, which slows test runs
-    # too much
+    # Nagle & delayed ack interact badly (throughput-wise), for python HTTP server disabling Nagle
+    # is easier
     disable_nagle_algorithm = True
 
     def do_GET(self) -> None:
