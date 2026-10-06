@@ -20,6 +20,7 @@ from fw.api import (
 
 if typing.TYPE_CHECKING:
     from fw.api.types.item import Item
+    from fw.eve.containers import EveStrings
 
 SCRIPT_DIR_PATH = Path(__file__).resolve().absolute().parent
 PHOBOS_BASE_PATH = Path('~', 'Desktop', 'phobos_tq_en-us').expanduser()
@@ -500,24 +501,24 @@ def test_playground(client, consts):
 
 # ruff:ignore[missing-type-function-argument]
 def setup_eve_data(*, client, data) -> None:
-    files = [
-        'fsd_built/types.json',
-        'fsd_built/groups.json',
-        'fsd_built/typelist.json',
-        'fsd_built/dogmaattributes.json',
-        'fsd_built/typedogma.json',
-        'fsd_built/dogmaeffects.json',
-        'fsd_lite/fighterabilities.json',
-        'fsd_lite/fighterabilitiesbytype.json',
-        'fsd_lite/dbuffcollections.json',
-        'fsd_built/spacecomponentsbytype.json',
-        'fsd_built/requiredskillsfortypes.json',
-        'fsd_built/dynamicitemattributes.json']
-    for file in files:
-        with (PHOBOS_BASE_PATH / file).open() as f:
-            # ruff:ignore[private-member-access]
-            client._EveDataServer__setup_handler(url=f'/{data.alias}/{file}', data=f.read())
-    client.create_source(data=data, cleanup_check=False)
+    cont_file_map = {
+        'types': 'fsd_built/types.json',
+        'groups': 'fsd_built/groups.json',
+        'typelist': 'fsd_built/typelist.json',
+        'dogmaattributes': 'fsd_built/dogmaattributes.json',
+        'typedogma': 'fsd_built/typedogma.json',
+        'dogmaeffects': 'fsd_built/dogmaeffects.json',
+        'fighterabilities': 'fsd_lite/fighterabilities.json',
+        'fighterabilitiesbytype': 'fsd_lite/fighterabilitiesbytype.json',
+        'dbuffcollections': 'fsd_lite/dbuffcollections.json',
+        'spacecomponentsbytype': 'fsd_built/spacecomponentsbytype.json',
+        'dynamicitemattributes': 'fsd_built/dynamicitemattributes.json'}
+
+    def hook_data_str(str_data: EveStrings) -> None:
+        for cont_name, file in cont_file_map.items():
+            setattr(str_data, cont_name, (PHOBOS_BASE_PATH / file).read_text())
+
+    client.create_source(data=data, cleanup_check=False, hook_data_str=hook_data_str)
 
 
 def get_skill_type_ids() -> list[int]:
