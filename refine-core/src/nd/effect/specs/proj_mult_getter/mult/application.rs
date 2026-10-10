@@ -133,8 +133,8 @@ pub(super) fn get_turret_application_mult(
         Value::ZERO,
     ));
     let tgt_sig_radius = funcs::get_sig_radius(ctx, calc, projectee_uid);
-    let result = PValue::from_f64_unchecked(0.5)
-        .pow_pvalue((angular_speed * turret_sig_radius / (turret_tracking_speed * tgt_sig_radius)).powi(2));
+    let exponent = (angular_speed * turret_sig_radius / (turret_tracking_speed * tgt_sig_radius)).powi(2);
+    let result = (-exponent).exp2();
     match result.is_nan() {
         true => PValue::ZERO,
         false => result,

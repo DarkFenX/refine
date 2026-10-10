@@ -77,10 +77,11 @@ fn get_std_full_range_mult(
         true => {
             match restricted && proj_range > affector_optimal + PValue::from_f64_unchecked(3.0) * affector_falloff {
                 true => PValue::ZERO,
-                false => PValue::pow_pvalue(
-                    PValue::from_f64_unchecked(0.5),
-                    (PValue::from_value_clamped(proj_range - affector_optimal) / affector_falloff).powi(2),
-                ),
+                false => {
+                    let exponent =
+                        (PValue::from_value_clamped(proj_range - affector_optimal) / affector_falloff).powi(2);
+                    (-exponent).exp2()
+                }
             }
         }
         false => match proj_range <= affector_optimal {
