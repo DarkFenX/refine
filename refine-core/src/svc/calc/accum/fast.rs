@@ -331,15 +331,27 @@ where
     fn get_mult(&mut self) -> Value {
         let mut mult = Value::ONE;
         if !self.neg.is_empty() {
-            self.neg.sort_unstable();
-            mult *= get_penalty_chain_mult(&self.neg);
+            mult *= get_penalty_chain_mult(sort_strongest(&mut self.neg, |&v| v));
         }
         if !self.pos.is_empty() {
-            self.pos.sort_unstable_by_key(|&v| -v);
-            mult *= get_penalty_chain_mult(&self.pos);
+            mult *= get_penalty_chain_mult(sort_strongest(&mut self.pos, |&v| -v));
         }
         mult
     }
+}
+
+/// Take a slice of mult changes, return sorted ones which make it into penalty chain
+fn sort_strongest(vals: &mut [Value], key: impl Fn(&Value) -> Value) -> &[Value] {
+    let vals = match vals.len() > PENALTY_MULTS.len() {
+        true => {
+            // Long penalty chains are considered unlikely
+            std::hint::cold_path();
+            vals.select_nth_unstable_by_key(PENALTY_MULTS.len(), &key).0
+        }
+        false => vals,
+    };
+    vals.sort_unstable_by_key(key);
+    vals
 }
 
 /// Take a slice of mult changes, return mult
