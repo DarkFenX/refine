@@ -1,5 +1,7 @@
 use std::collections::hash_map::Entry;
 
+use itertools::Either;
+
 use super::calce_shared::get_base_attr_value;
 use crate::{
     SecZone, Value,
@@ -7,7 +9,7 @@ use crate::{
     rd::{RAttr, RAttrId},
     svc::{
         Calc, SvcCtx,
-        calc::{CalcAttrVals, CalcModification, CalcModificationKey, ModAccumFast},
+        calc::{CalcAttrVals, CalcModification, CalcModificationKey, CtxModifier, ModAccumFast},
         err::UItemLoadedError,
     },
     ud::{UItem, UItemId},
@@ -334,32 +336,42 @@ impl Calc {
     where
         F: Fn(&EffectSpec) -> bool,
     {
-        let mut mods = RMap::new();
-        for cmod in self
+        let cmods = self
             .std
-            .get_mods_for_affectee(item_uid, item, attr_rid, &ctx.u_data.fits)
-            .iter()
-        {
-            if !filter(&cmod.raw.affector_espec) {
-                continue;
-            }
-            let Some(val) = cmod.raw.get_mod_val(self, ctx) else {
-                continue;
-            };
-            let affector_item = ctx.u_data.items.get(cmod.raw.affector_espec.item_uid);
-            let affector_item_cat_id = affector_item.get_r_item_base().unwrap().cat_id;
-            let mod_key = CalcModificationKey::from_cmod(cmod);
-            let modification = CalcModification {
-                op: cmod.raw.op,
-                val,
-                proj_mult: self.calc_proj_mult(ctx, cmod),
-                res_mult: self.calc_resist_mult(ctx, cmod),
-                aggr_mode: cmod.raw.aggr_mode,
-                affector_item_cat_id,
-            };
-            mods.insert(mod_key, modification);
+            .get_mods_for_affectee(item_uid, item, attr_rid, &ctx.u_data.fits);
+        // Shortcut for case when modifications cannot overlap
+        if cmods.len() <= 1 {
+            let modification = cmods
+                .first()
+                .and_then(|cmod| self.make_modification(ctx, cmod, &filter));
+            return Either::Left(modification.into_iter());
         }
-        mods.into_values()
+        let mut mods = RMap::new();
+        for cmod in cmods.iter() {
+            if let Some(modification) = self.make_modification(ctx, cmod, &filter) {
+                mods.insert(CalcModificationKey::from_cmod(cmod), modification);
+            }
+        }
+        Either::Right(mods.into_values())
+    }
+    fn make_modification<F>(&mut self, ctx: &SvcCtx, cmod: &CtxModifier, filter: &F) -> Option<CalcModification>
+    where
+        F: Fn(&EffectSpec) -> bool,
+    {
+        if !filter(&cmod.raw.affector_espec) {
+            return None;
+        }
+        let val = cmod.raw.get_mod_val(self, ctx)?;
+        let affector_item = ctx.u_data.items.get(cmod.raw.affector_espec.item_uid);
+        let affector_item_cat_id = affector_item.get_r_item_base().unwrap().cat_id;
+        Some(CalcModification {
+            op: cmod.raw.op,
+            val,
+            proj_mult: self.calc_proj_mult(ctx, cmod),
+            res_mult: self.calc_resist_mult(ctx, cmod),
+            aggr_mode: cmod.raw.aggr_mode,
+            affector_item_cat_id,
+        })
     }
     fn calc_item_attr_val<F>(
         &mut self,
