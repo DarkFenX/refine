@@ -165,6 +165,7 @@ impl Calc {
             };
             return Ok(cval);
         }
+        std::hint::cold_path(); // Misses are rare compared to hits
         Ok(self.unchecked_calc_value_cache_and_postproc(ctx, item_uid, attr_rid))
     }
     fn get_item_oattr_rfull(
@@ -187,6 +188,7 @@ impl Calc {
             };
             return Ok(cval);
         }
+        std::hint::cold_path(); // Misses are rare compared to hits
         Ok(self.unchecked_calc_value_cache_and_postproc(ctx, item_uid, attr_rid))
     }
     pub(in crate::svc::calc) fn get_item_oattr_ofull_nopp(
