@@ -141,6 +141,12 @@ impl Calc {
         // Notify RAH sim
         self.rah_effects_stopped(ctx, item_uid, item, effects);
         // Notify core calc services
+        // Buff maintenance - remove info about effects which use default buff attributes before
+        // removing any modifiers. Removal can change buff attribute values, and buff modifiers
+        // would be re-generated for effects which are still registered
+        for effect in effects.iter() {
+            self.buffs.unreg_effect(item_uid, effect);
+        }
         let mut reuse_rmod_ids = Vec::new();
         let mut reuse_items = Vec::new();
         let mut reuse_cmods = Vec::new();
@@ -157,8 +163,6 @@ impl Calc {
                 self.unreg_raw_mod(&mut reuse_items, &mut reuse_cmods, ctx, item_uid, item, rmod_id, &rmod);
                 self.rmods.remove_by_espec_p2(rmod_id);
             }
-            // Buff maintenance - remove info about effects which use default buff attributes
-            self.buffs.unreg_effect(item_uid, effect);
             // Remove all ad-hoc attribute dependencies defined by effects being stopped. It is used
             // by e.g. custom propulsion module modifier
             self.deps.remove_by_source(&espec);
