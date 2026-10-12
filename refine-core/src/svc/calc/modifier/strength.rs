@@ -13,7 +13,7 @@ use crate::{
     ud::{UData, UItemId},
 };
 
-#[derive(Copy, Clone, Eq, PartialEq, Hash)]
+#[derive(Copy, Clone)]
 pub(super) enum ModStrength {
     Attr(RAttrId),
     Hardcoded(Value),

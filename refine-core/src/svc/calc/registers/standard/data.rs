@@ -2,7 +2,7 @@ use crate::{
     ad::{AItemGrpId, AItemId},
     misc::{AttrSpec, EffectSpec},
     rd::{RAttrId, RItemListId},
-    svc::calc::{CtxModifier, LocationKind, RawModifier},
+    svc::calc::{CtxModKey, LocationKind, RawModId},
     ud::{UFitId, UItemId},
     util::{RMapRSet, RSet},
 };
@@ -30,21 +30,18 @@ pub(in crate::svc::calc) struct StandardRegister {
     // Fits which have ships which are modifiable by buffs via specific item list
     // Map<item list, (fit, ship)>
     pub(super) affectee_buffable_ships: RMapRSet<RItemListId, (UFitId, UItemId, LocationKind)>,
-    // All raw modifiers tracked by register
-    // Map<affector effect spec, modifiers>
-    pub(super) rmods_all: RMapRSet<EffectSpec, RawModifier>,
     // All projected raw modifiers tracked by register
     // Map<affector effect spec, modifiers>
-    pub(super) rmods_proj: RMapRSet<EffectSpec, RawModifier>,
+    pub(super) rmods_proj: RMapRSet<EffectSpec, RawModId>,
     // Fleet modifiers on a per-fit basis
     // Map<affector fit, modifiers>
-    pub(super) rmods_fleet: RMapRSet<UFitId, RawModifier>,
-    /// System-wide system effect modifiers
-    pub(super) rmods_sw_system: RSet<RawModifier>,
-    /// System-wide buff modifiers
-    pub(super) rmods_sw_buff: RSet<RawModifier>,
-    /// Fit-wide buff modifiers
-    pub(super) rmods_fw_buff: RMapRSet<UFitId, RawModifier>,
+    pub(super) rmods_fleet: RMapRSet<UFitId, RawModId>,
+    // System-wide system effect modifiers
+    pub(super) rmods_sw_system: RSet<RawModId>,
+    // System-wide buff modifiers
+    pub(super) rmods_sw_buff: RSet<RawModId>,
+    // Fit-wide buff modifiers
+    pub(super) rmods_fw_buff: RMapRSet<UFitId, RawModId>,
     // Child containers
     pub(super) rmods_proj_status: StandardRegisterRawProjStatus,
     pub(super) cmods: StandardRegisterCtxMods,
@@ -59,7 +56,6 @@ impl StandardRegister {
             affectee_own_srq: RMapRSet::new(),
             affectee_buffable: RMapRSet::new(),
             affectee_buffable_ships: RMapRSet::new(),
-            rmods_all: RMapRSet::new(),
             rmods_proj: RMapRSet::new(),
             rmods_fleet: RMapRSet::new(),
             rmods_sw_system: RSet::new(),
@@ -75,31 +71,31 @@ impl StandardRegister {
 pub(super) struct StandardRegisterCtxMods {
     // Modifiers which rely on an item-attribute pair value
     // Map<affector attr spec, modifiers>
-    pub(super) by_aspec: RMapRSet<AttrSpec, CtxModifier>,
+    pub(super) by_aspec: RMapRSet<AttrSpec, CtxModKey>,
     // Modifiers which modify item directly
     // Map<(affectee item, affectee attr), modifiers>
-    pub(super) direct: RMapRSet<(UItemId, RAttrId), CtxModifier>,
+    pub(super) direct: RMapRSet<(UItemId, RAttrId), CtxModKey>,
     // Modifiers which modify 'other' location are always stored here, regardless if they actually
     // modify something or not
     // Map<(affector item, affectee attr), modifiers>
-    pub(super) other: RMapRSet<(UItemId, RAttrId), CtxModifier>,
+    pub(super) other: RMapRSet<(UItemId, RAttrId), CtxModKey>,
     // All modifiers which modify root entities (via ship or character reference) are kept here
     // Map<(affectee fit, affectee location kind, affectee attr), modifiers>
-    pub(super) root: RMapRSet<(UFitId, LocationKind, RAttrId), CtxModifier>,
+    pub(super) root: RMapRSet<(UFitId, LocationKind, RAttrId), CtxModKey>,
     // Modifiers influencing all items belonging to certain fit and location kind
     // Map<(affectee fit, affectee location kind, affectee attr), modifiers>
-    pub(super) loc: RMapRSet<(UFitId, LocationKind, RAttrId), CtxModifier>,
+    pub(super) loc: RMapRSet<(UFitId, LocationKind, RAttrId), CtxModKey>,
     // Modifiers influencing items belonging to certain fit, location and group
     // Map<(affectee fit, affectee location, affectee group, affectee attr), modifiers>
-    pub(super) loc_grp: RMapRSet<(UFitId, LocationKind, AItemGrpId, RAttrId), CtxModifier>,
+    pub(super) loc_grp: RMapRSet<(UFitId, LocationKind, AItemGrpId, RAttrId), CtxModKey>,
     // Modifiers influencing items belonging to certain fit and location, and having certain skill
     // requirement
     // Map<(affectee fit, affectee location, affectee srq, affectee attr), modifiers>
-    pub(super) loc_srq: RMapRSet<(UFitId, LocationKind, AItemId, RAttrId), CtxModifier>,
+    pub(super) loc_srq: RMapRSet<(UFitId, LocationKind, AItemId, RAttrId), CtxModKey>,
     // Modifiers influencing owner-modifiable items belonging to certain fit and having certain
     // skill requirement
     // Map<(affectee fit, affectee srq, affectee attr), modifiers>
-    pub(super) own_srq: RMapRSet<(UFitId, AItemId, RAttrId), CtxModifier>,
+    pub(super) own_srq: RMapRSet<(UFitId, AItemId, RAttrId), CtxModKey>,
 }
 impl StandardRegisterCtxMods {
     pub(in crate::svc::calc) fn new() -> Self {
@@ -121,11 +117,11 @@ pub(super) struct StandardRegisterRawProjStatus {
     // Valid item-targeted modifiers which target eligible item kind, with projectee item passing
     // all the checks
     // Map<projectee item, modifiers>
-    pub(super) active: RMapRSet<UItemId, RawModifier>,
+    pub(super) active: RMapRSet<UItemId, RawModId>,
     // Valid item-targeted modifiers which target eligible item kind, with projectee item failing
     // some checks, and thus modifiers being inactive
     // Map<projectee item, modifiers>
-    pub(super) inactive: RMapRSet<UItemId, RawModifier>,
+    pub(super) inactive: RMapRSet<UItemId, RawModId>,
 }
 impl StandardRegisterRawProjStatus {
     pub(in crate::svc::calc) fn new() -> Self {

@@ -1,5 +1,3 @@
-use std::hash::{Hash, Hasher};
-
 use smallvec::SmallVec;
 
 use super::{aar_paste, missile_flight_time, prop_speed, reviser::ItemAddRemoveReviser};
@@ -15,7 +13,7 @@ use crate::{
     ud::{UData, UItemId},
 };
 
-#[derive(Copy, Clone, Eq, PartialEq, Hash)]
+#[derive(Copy, Clone)]
 pub(crate) enum CalcCustomModifier {
     PropSpeed,
     AarPaste,
@@ -43,17 +41,6 @@ pub(in crate::svc::calc::modifier) struct CalcCustomModStrength {
     ///
     /// Use this field over the dependency approach whenever possible.
     pub(in crate::svc::calc::modifier) affector_attr_rid: Option<RAttrId>,
-}
-impl PartialEq for CalcCustomModStrength {
-    fn eq(&self, other: &Self) -> bool {
-        self.kind.eq(&other.kind)
-    }
-}
-impl Eq for CalcCustomModStrength {}
-impl Hash for CalcCustomModStrength {
-    fn hash<H: Hasher>(&self, state: &mut H) {
-        self.kind.hash(state);
-    }
 }
 impl CalcCustomModStrength {
     pub(in crate::svc::calc::modifier) fn get_affector_info(

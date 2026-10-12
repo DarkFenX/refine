@@ -3,7 +3,7 @@ use crate::{
     svc::calc::{
         calce_rah::RahSim,
         misc::AttrValData,
-        registers::{BuffRegister, DependencyRegister, RevisionRegister, StandardRegister},
+        registers::{BuffRegister, DependencyRegister, RawModStorage, RevisionRegister, StandardRegister},
     },
     ud::UData,
 };
@@ -11,6 +11,7 @@ use crate::{
 #[derive(Clone)]
 pub(crate) struct Calc {
     pub(in crate::svc::calc) attrs: AttrValData,
+    pub(in crate::svc::calc) rmods: RawModStorage,
     pub(in crate::svc::calc) std: StandardRegister,
     pub(in crate::svc::calc) buffs: BuffRegister,
     pub(in crate::svc::calc) deps: DependencyRegister,
@@ -21,6 +22,7 @@ impl Calc {
     pub(in crate::svc) fn new() -> Self {
         Self {
             attrs: AttrValData::new(),
+            rmods: RawModStorage::new(),
             std: StandardRegister::new(),
             buffs: BuffRegister::new(),
             deps: DependencyRegister::new(),
@@ -36,10 +38,11 @@ impl Calc {
 impl Calc {
     pub(in crate::svc) fn consistency_check(&self, u_data: &UData) -> DebugResult {
         self.attrs.consistency_check(u_data)?;
-        self.std.consistency_check(u_data)?;
-        self.buffs.consistency_check(u_data)?;
+        self.rmods.consistency_check(u_data)?;
+        self.std.consistency_check(u_data, &self.rmods)?;
+        self.buffs.consistency_check(u_data, &self.rmods)?;
         self.deps.consistency_check(u_data)?;
-        self.revs.consistency_check(u_data)?;
+        self.revs.consistency_check(u_data, &self.rmods)?;
         self.rah.consistency_check(u_data)?;
         Ok(())
     }

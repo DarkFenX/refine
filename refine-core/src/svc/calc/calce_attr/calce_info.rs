@@ -88,29 +88,30 @@ impl Calc {
         attr_rid: RAttrId,
     ) -> impl Iterator<Item = Affection> {
         let mut affections = RMap::new();
-        for cmod in self
+        for ckey in self
             .std
             .get_mods_for_affectee(item_uid, item, attr_rid, &ctx.u_data.fits)
             .iter()
         {
-            let Some(val) = cmod.raw.get_mod_val(self, ctx) else {
+            let cmod = &self.rmods.get_cmod(ckey);
+            let Some(val) = cmod.rmod.get_mod_val(self, ctx) else {
                 continue;
             };
-            let affector_item = ctx.u_data.items.get(cmod.raw.affector_espec.item_uid);
+            let affector_item = ctx.u_data.items.get(cmod.rmod.affector_espec.item_uid);
             let affector_item_cat_id = affector_item.get_r_item_base().unwrap().cat_id;
             let mod_key = CalcModificationKey::from_cmod(cmod);
             let modification = CalcModification {
-                op: cmod.raw.op,
+                op: cmod.rmod.op,
                 val,
                 res_mult: self.calc_resist_mult(ctx, cmod),
                 proj_mult: self.calc_proj_mult(ctx, cmod),
-                aggr_mode: cmod.raw.aggr_mode,
+                aggr_mode: cmod.rmod.aggr_mode,
                 affector_item_cat_id,
             };
             let affection = Affection {
-                effect_rid: cmod.raw.affector_espec.effect_rid,
+                effect_rid: cmod.rmod.affector_espec.effect_rid,
                 modification,
-                affectors: cmod.raw.get_affector_info(ctx),
+                affectors: cmod.rmod.get_affector_info(ctx),
             };
             affections.insert(mod_key, affection);
         }

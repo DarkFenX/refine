@@ -1,8 +1,8 @@
 use crate::{
-    misc::{AttrSpec, EffectSpec},
+    misc::AttrSpec,
     rd::RAttrId,
     svc::calc::{
-        CtxModifier, RawModifier,
+        CtxModKey,
         registers::standard::{StandardRegister, modifier::iter_loc_act::ActiveLocations},
     },
     ud::{UFits, UItem, UItemId},
@@ -16,31 +16,31 @@ impl StandardRegister {
         item: &UItem,
         attr_rid: RAttrId,
         fits: &UFits,
-    ) -> Vec<CtxModifier> {
+    ) -> Vec<CtxModKey> {
         let fit_uid = item.get_fit_uid();
         let root_loc = item.get_root_loc_kind();
         let item_rib = item.get_r_item_base().unwrap();
         let item_grp_id = item_rib.grp_id;
         let srqs = &item_rib.srqs;
         let mut cmods = Vec::new();
-        extend_mods(&mut cmods, &self.cmods.direct, &(*item_uid, attr_rid));
+        extend_ckeys(&mut cmods, &self.cmods.direct, &(*item_uid, attr_rid));
         if let Some(other_item_uid) = item.get_other_uid() {
-            extend_mods(&mut cmods, &self.cmods.other, &(other_item_uid, attr_rid));
+            extend_ckeys(&mut cmods, &self.cmods.other, &(other_item_uid, attr_rid));
         }
         if let Some(fit_uid) = fit_uid {
             let fit = fits.get(fit_uid);
             if let Some(root_loc) = root_loc {
-                extend_mods(&mut cmods, &self.cmods.root, &(fit_uid, root_loc, attr_rid));
+                extend_ckeys(&mut cmods, &self.cmods.root, &(fit_uid, root_loc, attr_rid));
             }
             for loc_kind in ActiveLocations::new(item, fit) {
-                extend_mods(&mut cmods, &self.cmods.loc, &(fit_uid, loc_kind, attr_rid));
-                extend_mods(
+                extend_ckeys(&mut cmods, &self.cmods.loc, &(fit_uid, loc_kind, attr_rid));
+                extend_ckeys(
                     &mut cmods,
                     &self.cmods.loc_grp,
                     &(fit_uid, loc_kind, item_grp_id, attr_rid),
                 );
                 for &srq_type_aid in srqs.keys() {
-                    extend_mods(
+                    extend_ckeys(
                         &mut cmods,
                         &self.cmods.loc_srq,
                         &(fit_uid, loc_kind, srq_type_aid, attr_rid),
@@ -49,39 +49,21 @@ impl StandardRegister {
             }
             if item.is_owner_modifiable() {
                 for &srq_type_aid in srqs.keys() {
-                    extend_mods(&mut cmods, &self.cmods.own_srq, &(fit_uid, srq_type_aid, attr_rid));
+                    extend_ckeys(&mut cmods, &self.cmods.own_srq, &(fit_uid, srq_type_aid, attr_rid));
                 }
             }
         }
         cmods
     }
-    pub(in crate::svc::calc) fn iter_affector_spec_cmods(
+    pub(in crate::svc::calc) fn iter_affector_spec_ckeys(
         &self,
         affector_aspec: &AttrSpec,
-    ) -> impl ExactSizeIterator<Item = &CtxModifier> {
+    ) -> impl ExactSizeIterator<Item = &CtxModKey> {
         self.cmods.by_aspec.get(affector_aspec)
-    }
-    pub(in crate::svc::calc) fn add_rmod_all(&mut self, rmod: RawModifier) {
-        self.rmods_all.add_entry(rmod.affector_espec, rmod);
-    }
-    pub(in crate::svc::calc) fn add_rmods_all_for_effect(
-        &mut self,
-        espec: EffectSpec,
-        rmods: impl ExactSizeIterator<Item = RawModifier>,
-    ) {
-        self.rmods_all.extend_entries(espec, rmods);
-    }
-    pub(in crate::svc::calc) fn extract_raw_mods_for_effect(
-        &mut self,
-        reuse_raw_modifiers: &mut Vec<RawModifier>,
-        espec: EffectSpec,
-    ) {
-        reuse_raw_modifiers.clear();
-        reuse_raw_modifiers.extend(self.rmods_all.remove_key(&espec))
     }
 }
 
-fn extend_mods<K>(vec: &mut Vec<CtxModifier>, storage: &RMapRSet<K, CtxModifier>, key: &K)
+fn extend_ckeys<K>(vec: &mut Vec<CtxModKey>, storage: &RMapRSet<K, CtxModKey>, key: &K)
 where
     K: Eq + std::hash::Hash,
 {

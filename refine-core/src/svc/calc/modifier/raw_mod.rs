@@ -1,5 +1,3 @@
-use std::hash::{Hash, Hasher};
-
 use smallvec::SmallVec;
 
 use crate::{
@@ -15,11 +13,23 @@ use crate::{
         SvcCtx,
         calc::{
             AffecteeFilter, AggrMode, Calc, CalcModInfoAffector, CalcOp, ItemAddRemoveReviser, Location, ModifierKind,
-            modifier::ModStrength,
+            modifier::ModStrength, registers::RawModStorage,
         },
     },
     ud::{UData, UItem, UItemId},
+    util::SlabId,
 };
+
+#[derive(Copy, Clone, Eq, PartialEq, Hash)]
+pub(in crate::svc::calc) struct RawModId(usize);
+impl SlabId for RawModId {
+    fn new(index: usize) -> Self {
+        Self(index)
+    }
+    fn index(self) -> usize {
+        self.0
+    }
+}
 
 #[derive(Copy, Clone)]
 pub(in crate::svc::calc) struct RawModifier {
@@ -35,31 +45,6 @@ pub(in crate::svc::calc) struct RawModifier {
     // Projection-related
     pub(in crate::svc::calc) proj_spec: Option<REffectProjModSpec> = None,
     pub(in crate::svc::calc) resist_attr_rid: Option<RAttrId> = None,
-}
-impl PartialEq for RawModifier {
-    fn eq(&self, other: &Self) -> bool {
-        self.kind.eq(&other.kind)
-            && self.affector_espec.eq(&other.affector_espec)
-            && self.strength.eq(&other.strength)
-            && self.op.eq(&other.op)
-            && self.aggr_mode.eq(&other.aggr_mode)
-            && self.affectee_filter.eq(&other.affectee_filter)
-            && self.affectee_attr_rid.eq(&other.affectee_attr_rid)
-            && self.buff_type_attr_rid.eq(&other.buff_type_attr_rid)
-    }
-}
-impl Eq for RawModifier {}
-impl Hash for RawModifier {
-    fn hash<H: Hasher>(&self, state: &mut H) {
-        self.kind.hash(state);
-        self.affector_espec.hash(state);
-        self.strength.hash(state);
-        self.op.hash(state);
-        self.aggr_mode.hash(state);
-        self.affectee_filter.hash(state);
-        self.affectee_attr_rid.hash(state);
-        self.buff_type_attr_rid.hash(state);
-    }
 }
 impl RawModifier {
     pub(in crate::svc::calc) fn try_from_effect_mod(
@@ -250,6 +235,15 @@ fn get_effect_mod_kind(effect_cat: AEffectCatId, affectee_filter: &AffecteeFilte
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Debugging
 ////////////////////////////////////////////////////////////////////////////////////////////////////
+impl RawModId {
+    pub(in crate::svc::calc) fn consistency_check(&self, u_data: &UData, rmods: &RawModStorage) -> DebugResult {
+        match rmods.try_get_rmod(*self) {
+            Some(rmod) => rmod.consistency_check(u_data),
+            None => Err(Default::default()),
+        }
+    }
+}
+
 impl RawModifier {
     pub(in crate::svc::calc) fn consistency_check(&self, u_data: &UData) -> DebugResult {
         self.affector_espec.consistency_check(u_data, true)?;

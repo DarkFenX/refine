@@ -21,20 +21,20 @@ impl StandardRegister {
         // This way we can ensure context modifiers are valid, and make processing cheaper
         reuse_affectees.clear();
         match cmod.ctx {
-            ModContext::None => self.fill_no_context(reuse_affectees, ctx, &cmod.raw),
-            ModContext::Item(item_uid) => match cmod.raw.kind {
+            ModContext::None => self.fill_no_context(reuse_affectees, ctx, &cmod.rmod),
+            ModContext::Item(item_uid) => match cmod.rmod.kind {
                 ModifierKind::Buff | ModifierKind::FleetBuff | ModifierKind::Targeted => {
-                    self.fill_direct_only(reuse_affectees, &cmod.raw, item_uid)
+                    self.fill_direct_only(reuse_affectees, &cmod.rmod, item_uid)
                 }
                 _ => (),
             },
-            ModContext::Fit(fit_uid) => self.fill_for_fit(reuse_affectees, ctx, &cmod.raw, fit_uid),
-            ModContext::FitItem(fit_uid, item_uid) => match cmod.raw.kind {
+            ModContext::Fit(fit_uid) => self.fill_for_fit(reuse_affectees, ctx, &cmod.rmod, fit_uid),
+            ModContext::FitItem(fit_uid, item_uid) => match cmod.rmod.kind {
                 ModifierKind::Targeted => {
-                    self.fill_for_fit_item_target(reuse_affectees, ctx, &cmod.raw, fit_uid, item_uid)
+                    self.fill_for_fit_item_target(reuse_affectees, ctx, &cmod.rmod, fit_uid, item_uid)
                 }
                 ModifierKind::Buff | ModifierKind::FleetBuff => {
-                    self.fill_for_fit_item_buff(reuse_affectees, ctx, &cmod.raw, fit_uid)
+                    self.fill_for_fit_item_buff(reuse_affectees, ctx, &cmod.rmod, fit_uid)
                 }
                 _ => (),
             },

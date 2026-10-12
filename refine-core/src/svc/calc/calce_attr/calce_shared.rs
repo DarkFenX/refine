@@ -18,20 +18,20 @@ impl Calc {
             .ok_or(UItemLoadedError { item_uid })
     }
     pub(super) fn calc_resist_mult(&mut self, ctx: &SvcCtx, cmod: &CtxModifier) -> Option<UnitInterval> {
-        let r_resist = cmod.raw.proj_spec?.resist?;
+        let r_resist = cmod.rmod.proj_spec?.resist?;
         let projectee_uid = cmod.ctx.get_item_uid()?;
-        let resist = r_resist.get_mult_by_projection(ctx, self, cmod.raw.affector_espec.item_uid, projectee_uid)?;
+        let resist = r_resist.get_mult_by_projection(ctx, self, cmod.rmod.affector_espec.item_uid, projectee_uid)?;
         Some(resist)
     }
     pub(super) fn calc_proj_mult(&mut self, ctx: &SvcCtx, cmod: &CtxModifier) -> Option<PValue> {
         let item_uid = cmod.ctx.get_item_uid()?;
-        let proj_mult_getter = cmod.raw.proj_spec?.proj_mult?;
-        let effect = ctx.u_data.r_data.get_effect_by_rid(cmod.raw.affector_espec.effect_rid);
-        let proj_data = ctx.eff_projs.get_proj_data(cmod.raw.affector_espec, item_uid)?;
+        let proj_mult_getter = cmod.rmod.proj_spec?.proj_mult?;
+        let effect = ctx.u_data.r_data.get_effect_by_rid(cmod.rmod.affector_espec.effect_rid);
+        let proj_data = ctx.eff_projs.get_proj_data(cmod.rmod.affector_espec, item_uid)?;
         Some(proj_mult_getter.get_proj_mult(
             ctx,
             self,
-            cmod.raw.affector_espec.item_uid,
+            cmod.rmod.affector_espec.item_uid,
             effect,
             item_uid,
             proj_data,

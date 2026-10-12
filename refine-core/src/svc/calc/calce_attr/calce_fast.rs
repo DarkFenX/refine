@@ -336,20 +336,22 @@ impl Calc {
     where
         F: Fn(&EffectSpec) -> bool,
     {
-        let cmods = self
+        let ckeys = self
             .std
             .get_mods_for_affectee(item_uid, item, attr_rid, &ctx.u_data.fits);
         // Shortcut for case when modifications cannot overlap
-        if cmods.len() <= 1 {
-            let modification = cmods
-                .first()
-                .and_then(|cmod| self.make_modification(ctx, cmod, &filter));
+        if ckeys.len() <= 1 {
+            let modification = ckeys.first().and_then(|ckey| {
+                let cmod = self.rmods.get_cmod(ckey);
+                self.make_modification(ctx, &cmod, &filter)
+            });
             return Either::Left(modification.into_iter());
         }
         let mut mods = RMap::new();
-        for cmod in cmods.iter() {
-            if let Some(modification) = self.make_modification(ctx, cmod, &filter) {
-                mods.insert(CalcModificationKey::from_cmod(cmod), modification);
+        for ckey in ckeys.iter() {
+            let cmod = self.rmods.get_cmod(ckey);
+            if let Some(modification) = self.make_modification(ctx, &cmod, &filter) {
+                mods.insert(CalcModificationKey::from_cmod(&cmod), modification);
             }
         }
         Either::Right(mods.into_values())
@@ -358,18 +360,18 @@ impl Calc {
     where
         F: Fn(&EffectSpec) -> bool,
     {
-        if !filter(&cmod.raw.affector_espec) {
+        if !filter(&cmod.rmod.affector_espec) {
             return None;
         }
-        let val = cmod.raw.get_mod_val(self, ctx)?;
-        let affector_item = ctx.u_data.items.get(cmod.raw.affector_espec.item_uid);
+        let val = cmod.rmod.get_mod_val(self, ctx)?;
+        let affector_item = ctx.u_data.items.get(cmod.rmod.affector_espec.item_uid);
         let affector_item_cat_id = affector_item.get_r_item_base().unwrap().cat_id;
         Some(CalcModification {
-            op: cmod.raw.op,
+            op: cmod.rmod.op,
             val,
             proj_mult: self.calc_proj_mult(ctx, cmod),
             res_mult: self.calc_resist_mult(ctx, cmod),
-            aggr_mode: cmod.raw.aggr_mode,
+            aggr_mode: cmod.rmod.aggr_mode,
             affector_item_cat_id,
         })
     }

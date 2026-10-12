@@ -2,10 +2,13 @@ use crate::{
     svc::{
         SvcCtx,
         calc::{
-            AffecteeFilter, CtxModifier, RawModifier,
-            registers::standard::{
-                StandardRegister,
-                modifier::func::{add_cmod, remove_cmod},
+            AffecteeFilter, CtxModifier, RawModId, RawModifier,
+            registers::{
+                RawModStorage,
+                standard::{
+                    StandardRegister,
+                    modifier::func::{add_cmod, remove_cmod},
+                },
             },
         },
     },
@@ -17,6 +20,7 @@ impl StandardRegister {
         &mut self,
         reuse_cmods: &mut Vec<CtxModifier>,
         ctx: &SvcCtx,
+        rmod_id: RawModId,
         rmod: RawModifier,
     ) -> bool {
         reuse_cmods.clear();
@@ -25,8 +29,8 @@ impl StandardRegister {
                 reuse_cmods.reserve(ctx.u_data.fits.len());
                 for fit_uid in ctx.u_data.fits.keys() {
                     let cmod = CtxModifier::with_fit(rmod, fit_uid);
-                    let key = (fit_uid, loc_kind, cmod.raw.affectee_attr_rid);
-                    add_cmod(key, cmod, &mut self.cmods.root, &mut self.cmods.by_aspec);
+                    let key = (fit_uid, loc_kind, cmod.rmod.affectee_attr_rid);
+                    add_cmod(key, rmod_id, cmod, &mut self.cmods.root, &mut self.cmods.by_aspec);
                     reuse_cmods.push(cmod);
                 }
                 true
@@ -35,8 +39,8 @@ impl StandardRegister {
                 reuse_cmods.reserve(ctx.u_data.fits.len());
                 for fit_uid in ctx.u_data.fits.keys() {
                     let cmod = CtxModifier::with_fit(rmod, fit_uid);
-                    let key = (fit_uid, loc_kind, cmod.raw.affectee_attr_rid);
-                    add_cmod(key, cmod, &mut self.cmods.loc, &mut self.cmods.by_aspec);
+                    let key = (fit_uid, loc_kind, cmod.rmod.affectee_attr_rid);
+                    add_cmod(key, rmod_id, cmod, &mut self.cmods.loc, &mut self.cmods.by_aspec);
                     reuse_cmods.push(cmod);
                 }
                 true
@@ -45,8 +49,8 @@ impl StandardRegister {
                 reuse_cmods.reserve(ctx.u_data.fits.len());
                 for fit_uid in ctx.u_data.fits.keys() {
                     let cmod = CtxModifier::with_fit(rmod, fit_uid);
-                    let key = (fit_uid, loc_kind, item_grp_id, cmod.raw.affectee_attr_rid);
-                    add_cmod(key, cmod, &mut self.cmods.loc_grp, &mut self.cmods.by_aspec);
+                    let key = (fit_uid, loc_kind, item_grp_id, cmod.rmod.affectee_attr_rid);
+                    add_cmod(key, rmod_id, cmod, &mut self.cmods.loc_grp, &mut self.cmods.by_aspec);
                     reuse_cmods.push(cmod);
                 }
                 true
@@ -55,8 +59,8 @@ impl StandardRegister {
                 reuse_cmods.reserve(ctx.u_data.fits.len());
                 for fit_uid in ctx.u_data.fits.keys() {
                     let cmod = CtxModifier::with_fit(rmod, fit_uid);
-                    let key = (fit_uid, loc_kind, srq_type_aid, cmod.raw.affectee_attr_rid);
-                    add_cmod(key, cmod, &mut self.cmods.loc_srq, &mut self.cmods.by_aspec);
+                    let key = (fit_uid, loc_kind, srq_type_aid, cmod.rmod.affectee_attr_rid);
+                    add_cmod(key, rmod_id, cmod, &mut self.cmods.loc_srq, &mut self.cmods.by_aspec);
                     reuse_cmods.push(cmod);
                 }
                 true
@@ -65,8 +69,8 @@ impl StandardRegister {
                 reuse_cmods.reserve(ctx.u_data.fits.len());
                 for fit_uid in ctx.u_data.fits.keys() {
                     let cmod = CtxModifier::with_fit(rmod, fit_uid);
-                    let key = (fit_uid, srq_type_aid, cmod.raw.affectee_attr_rid);
-                    add_cmod(key, cmod, &mut self.cmods.own_srq, &mut self.cmods.by_aspec);
+                    let key = (fit_uid, srq_type_aid, cmod.rmod.affectee_attr_rid);
+                    add_cmod(key, rmod_id, cmod, &mut self.cmods.own_srq, &mut self.cmods.by_aspec);
                     reuse_cmods.push(cmod);
                 }
                 true
@@ -74,7 +78,7 @@ impl StandardRegister {
             _ => false,
         };
         if valid {
-            self.rmods_sw_system.insert(rmod);
+            self.rmods_sw_system.insert(rmod_id);
         }
         valid
     }
@@ -82,6 +86,7 @@ impl StandardRegister {
         &mut self,
         reuse_cmods: &mut Vec<CtxModifier>,
         ctx: &SvcCtx,
+        rmod_id: RawModId,
         rmod: RawModifier,
     ) {
         reuse_cmods.clear();
@@ -90,8 +95,8 @@ impl StandardRegister {
                 reuse_cmods.reserve(ctx.u_data.fits.len());
                 for fit_uid in ctx.u_data.fits.keys() {
                     let cmod = CtxModifier::with_fit(rmod, fit_uid);
-                    let key = (fit_uid, loc_kind, cmod.raw.affectee_attr_rid);
-                    remove_cmod(key, &cmod, &mut self.cmods.root, &mut self.cmods.by_aspec);
+                    let key = (fit_uid, loc_kind, cmod.rmod.affectee_attr_rid);
+                    remove_cmod(key, rmod_id, &cmod, &mut self.cmods.root, &mut self.cmods.by_aspec);
                     reuse_cmods.push(cmod);
                 }
             }
@@ -99,8 +104,8 @@ impl StandardRegister {
                 reuse_cmods.reserve(ctx.u_data.fits.len());
                 for fit_uid in ctx.u_data.fits.keys() {
                     let cmod = CtxModifier::with_fit(rmod, fit_uid);
-                    let key = (fit_uid, loc_kind, cmod.raw.affectee_attr_rid);
-                    remove_cmod(key, &cmod, &mut self.cmods.loc, &mut self.cmods.by_aspec);
+                    let key = (fit_uid, loc_kind, cmod.rmod.affectee_attr_rid);
+                    remove_cmod(key, rmod_id, &cmod, &mut self.cmods.loc, &mut self.cmods.by_aspec);
                     reuse_cmods.push(cmod);
                 }
             }
@@ -108,8 +113,8 @@ impl StandardRegister {
                 reuse_cmods.reserve(ctx.u_data.fits.len());
                 for fit_uid in ctx.u_data.fits.keys() {
                     let cmod = CtxModifier::with_fit(rmod, fit_uid);
-                    let key = (fit_uid, loc_kind, item_grp_id, cmod.raw.affectee_attr_rid);
-                    remove_cmod(key, &cmod, &mut self.cmods.loc_grp, &mut self.cmods.by_aspec);
+                    let key = (fit_uid, loc_kind, item_grp_id, cmod.rmod.affectee_attr_rid);
+                    remove_cmod(key, rmod_id, &cmod, &mut self.cmods.loc_grp, &mut self.cmods.by_aspec);
                     reuse_cmods.push(cmod);
                 }
             }
@@ -117,8 +122,8 @@ impl StandardRegister {
                 reuse_cmods.reserve(ctx.u_data.fits.len());
                 for fit_uid in ctx.u_data.fits.keys() {
                     let cmod = CtxModifier::with_fit(rmod, fit_uid);
-                    let key = (fit_uid, loc_kind, srq_type_aid, cmod.raw.affectee_attr_rid);
-                    remove_cmod(key, &cmod, &mut self.cmods.loc_srq, &mut self.cmods.by_aspec);
+                    let key = (fit_uid, loc_kind, srq_type_aid, cmod.rmod.affectee_attr_rid);
+                    remove_cmod(key, rmod_id, &cmod, &mut self.cmods.loc_srq, &mut self.cmods.by_aspec);
                     reuse_cmods.push(cmod);
                 }
             }
@@ -126,8 +131,8 @@ impl StandardRegister {
                 reuse_cmods.reserve(ctx.u_data.fits.len());
                 for fit_uid in ctx.u_data.fits.keys() {
                     let cmod = CtxModifier::with_fit(rmod, fit_uid);
-                    let key = (fit_uid, srq_type_aid, cmod.raw.affectee_attr_rid);
-                    remove_cmod(key, &cmod, &mut self.cmods.own_srq, &mut self.cmods.by_aspec);
+                    let key = (fit_uid, srq_type_aid, cmod.rmod.affectee_attr_rid);
+                    remove_cmod(key, rmod_id, &cmod, &mut self.cmods.own_srq, &mut self.cmods.by_aspec);
                     reuse_cmods.push(cmod);
                 }
             }
@@ -135,69 +140,71 @@ impl StandardRegister {
         }
         // Only modifiers which passed validation during registration should reach this function, so
         // we don't do extra validation and just remove them
-        self.rmods_sw_system.remove(&rmod);
+        self.rmods_sw_system.remove(&rmod_id);
     }
     // No need to return any ctx modifiers here, since fits being added have no items
-    pub(in crate::svc::calc) fn reg_fit_for_sw(&mut self, fit_uid: UFitId) {
-        for rmod in self.rmods_sw_system.iter() {
+    pub(in crate::svc::calc) fn reg_fit_for_sw(&mut self, rmods: &RawModStorage, fit_uid: UFitId) {
+        for &rmod_id in self.rmods_sw_system.iter() {
+            let rmod = rmods.get_rmod(rmod_id);
             match rmod.affectee_filter {
                 AffecteeFilter::Direct(loc) if let Ok(loc_kind) = loc.try_into() => {
                     let cmod = CtxModifier::with_fit(*rmod, fit_uid);
-                    let key = (fit_uid, loc_kind, cmod.raw.affectee_attr_rid);
-                    add_cmod(key, cmod, &mut self.cmods.root, &mut self.cmods.by_aspec);
+                    let key = (fit_uid, loc_kind, cmod.rmod.affectee_attr_rid);
+                    add_cmod(key, rmod_id, cmod, &mut self.cmods.root, &mut self.cmods.by_aspec);
                 }
                 AffecteeFilter::Loc(loc) if let Ok(loc_kind) = loc.try_into() => {
                     let cmod = CtxModifier::with_fit(*rmod, fit_uid);
-                    let key = (fit_uid, loc_kind, cmod.raw.affectee_attr_rid);
-                    add_cmod(key, cmod, &mut self.cmods.loc, &mut self.cmods.by_aspec);
+                    let key = (fit_uid, loc_kind, cmod.rmod.affectee_attr_rid);
+                    add_cmod(key, rmod_id, cmod, &mut self.cmods.loc, &mut self.cmods.by_aspec);
                 }
                 AffecteeFilter::LocGrp(loc, item_grp_id) if let Ok(loc_kind) = loc.try_into() => {
                     let cmod = CtxModifier::with_fit(*rmod, fit_uid);
-                    let key = (fit_uid, loc_kind, item_grp_id, cmod.raw.affectee_attr_rid);
-                    add_cmod(key, cmod, &mut self.cmods.loc_grp, &mut self.cmods.by_aspec);
+                    let key = (fit_uid, loc_kind, item_grp_id, cmod.rmod.affectee_attr_rid);
+                    add_cmod(key, rmod_id, cmod, &mut self.cmods.loc_grp, &mut self.cmods.by_aspec);
                 }
                 AffecteeFilter::LocSrq(loc, srq_type_aid) if let Ok(loc_kind) = loc.try_into() => {
                     let cmod = CtxModifier::with_fit(*rmod, fit_uid);
-                    let key = (fit_uid, loc_kind, srq_type_aid, cmod.raw.affectee_attr_rid);
-                    add_cmod(key, cmod, &mut self.cmods.loc_srq, &mut self.cmods.by_aspec);
+                    let key = (fit_uid, loc_kind, srq_type_aid, cmod.rmod.affectee_attr_rid);
+                    add_cmod(key, rmod_id, cmod, &mut self.cmods.loc_srq, &mut self.cmods.by_aspec);
                 }
                 AffecteeFilter::OwnSrq(srq_type_aid) => {
                     let cmod = CtxModifier::with_fit(*rmod, fit_uid);
-                    let key = (fit_uid, srq_type_aid, cmod.raw.affectee_attr_rid);
-                    add_cmod(key, cmod, &mut self.cmods.own_srq, &mut self.cmods.by_aspec);
+                    let key = (fit_uid, srq_type_aid, cmod.rmod.affectee_attr_rid);
+                    add_cmod(key, rmod_id, cmod, &mut self.cmods.own_srq, &mut self.cmods.by_aspec);
                 }
                 _ => (),
             }
         }
     }
     // No need to return any ctx modifiers here, since fits being removed have no items
-    pub(in crate::svc::calc) fn unreg_fit_for_sw(&mut self, fit_uid: UFitId) {
-        for rmod in self.rmods_sw_system.iter() {
+    pub(in crate::svc::calc) fn unreg_fit_for_sw(&mut self, rmods: &RawModStorage, fit_uid: UFitId) {
+        for &rmod_id in self.rmods_sw_system.iter() {
+            let rmod = rmods.get_rmod(rmod_id);
             match rmod.affectee_filter {
                 AffecteeFilter::Direct(loc) if let Ok(loc_kind) = loc.try_into() => {
                     let cmod = CtxModifier::with_fit(*rmod, fit_uid);
-                    let key = (fit_uid, loc_kind, cmod.raw.affectee_attr_rid);
-                    remove_cmod(key, &cmod, &mut self.cmods.root, &mut self.cmods.by_aspec);
+                    let key = (fit_uid, loc_kind, cmod.rmod.affectee_attr_rid);
+                    remove_cmod(key, rmod_id, &cmod, &mut self.cmods.root, &mut self.cmods.by_aspec);
                 }
                 AffecteeFilter::Loc(loc) if let Ok(loc_kind) = loc.try_into() => {
                     let cmod = CtxModifier::with_fit(*rmod, fit_uid);
-                    let key = (fit_uid, loc_kind, cmod.raw.affectee_attr_rid);
-                    remove_cmod(key, &cmod, &mut self.cmods.loc, &mut self.cmods.by_aspec);
+                    let key = (fit_uid, loc_kind, cmod.rmod.affectee_attr_rid);
+                    remove_cmod(key, rmod_id, &cmod, &mut self.cmods.loc, &mut self.cmods.by_aspec);
                 }
                 AffecteeFilter::LocGrp(loc, item_grp_id) if let Ok(loc_kind) = loc.try_into() => {
                     let cmod = CtxModifier::with_fit(*rmod, fit_uid);
-                    let key = (fit_uid, loc_kind, item_grp_id, cmod.raw.affectee_attr_rid);
-                    remove_cmod(key, &cmod, &mut self.cmods.loc_grp, &mut self.cmods.by_aspec);
+                    let key = (fit_uid, loc_kind, item_grp_id, cmod.rmod.affectee_attr_rid);
+                    remove_cmod(key, rmod_id, &cmod, &mut self.cmods.loc_grp, &mut self.cmods.by_aspec);
                 }
                 AffecteeFilter::LocSrq(loc, srq_type_aid) if let Ok(loc_kind) = loc.try_into() => {
                     let cmod = CtxModifier::with_fit(*rmod, fit_uid);
-                    let key = (fit_uid, loc_kind, srq_type_aid, cmod.raw.affectee_attr_rid);
-                    remove_cmod(key, &cmod, &mut self.cmods.loc_srq, &mut self.cmods.by_aspec);
+                    let key = (fit_uid, loc_kind, srq_type_aid, cmod.rmod.affectee_attr_rid);
+                    remove_cmod(key, rmod_id, &cmod, &mut self.cmods.loc_srq, &mut self.cmods.by_aspec);
                 }
                 AffecteeFilter::OwnSrq(srq_type_aid) => {
                     let cmod = CtxModifier::with_fit(*rmod, fit_uid);
-                    let key = (fit_uid, srq_type_aid, cmod.raw.affectee_attr_rid);
-                    remove_cmod(key, &cmod, &mut self.cmods.own_srq, &mut self.cmods.by_aspec);
+                    let key = (fit_uid, srq_type_aid, cmod.rmod.affectee_attr_rid);
+                    remove_cmod(key, rmod_id, &cmod, &mut self.cmods.own_srq, &mut self.cmods.by_aspec);
                 }
                 _ => (),
             }

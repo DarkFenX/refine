@@ -91,7 +91,6 @@ where
     pub(crate) fn values_inner(&self) -> impl ExactSizeIterator<Item = &Set<V, H2>> {
         self.data.values()
     }
-    #[expect(dead_code)]
     pub(crate) fn contains_entry(&self, key: &K, value: &V) -> bool {
         match self.data.get(key) {
             Some(set) => set.contains(value),

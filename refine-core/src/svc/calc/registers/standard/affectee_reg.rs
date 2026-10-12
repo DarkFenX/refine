@@ -3,7 +3,10 @@ use crate::{
         SvcCtx,
         calc::{
             CtxModifier,
-            registers::standard::{data::StandardRegister, iter_locs_pot::PotentialLocations},
+            registers::{
+                RawModStorage,
+                standard::{data::StandardRegister, iter_locs_pot::PotentialLocations},
+            },
         },
     },
     ud::{UItem, UItemId},
@@ -14,11 +17,12 @@ impl StandardRegister {
     pub(in crate::svc::calc) fn reg_affectee(
         &mut self,
         ctx: &SvcCtx,
+        rmods: &RawModStorage,
         item_uid: UItemId,
         item: &UItem,
     ) -> Vec<CtxModifier> {
         // Let existing projections know their projectee got updated
-        self.load_affectee_for_proj(item_uid, item);
+        self.load_affectee_for_proj(rmods, item_uid, item);
         let mut cmods = Vec::new();
         // Past this point we process data only for fit-related items
         let Some(fit_uid) = item.get_fit_uid() else {
@@ -62,21 +66,22 @@ impl StandardRegister {
                 }
                 _ => None,
             };
-            self.reg_affectee_for_sw_buff(item_uid, ship, item_list_rids);
-            self.reg_affectee_for_fw_buff(item_uid, ship, fit_uid, item_list_rids);
+            self.reg_affectee_for_sw_buff(rmods, item_uid, ship, item_list_rids);
+            self.reg_affectee_for_fw_buff(rmods, item_uid, ship, fit_uid, item_list_rids);
         }
         if let UItem::Ship(ship) = item {
-            self.load_affectee_for_fleet(ctx, item_uid, ship);
+            self.load_affectee_for_fleet(ctx, rmods, item_uid, ship);
             // If it's ship being unregistered, adding it might trigger attribute changes on various
             // items like modules. Valid list of modifiers can be fetched only with ship in place,
             // so do it after everything is processed
-            self.get_mods_for_changed_ship(item, &mut cmods);
+            self.get_mods_for_changed_ship(rmods, item, &mut cmods);
         }
         cmods
     }
     pub(in crate::svc::calc) fn unreg_affectee(
         &mut self,
         ctx: &SvcCtx,
+        rmods: &RawModStorage,
         item_uid: UItemId,
         item: &UItem,
     ) -> Vec<CtxModifier> {
@@ -85,11 +90,11 @@ impl StandardRegister {
             // If it's ship being unregistered, removing it might trigger attribute changes on
             // various items like modules. Valid list of modifiers can be fetched only with ship in
             // place, so do it before anything is processed
-            self.get_mods_for_changed_ship(item, &mut cmods);
-            self.unload_affectee_for_fleet(ctx, item_uid, ship);
+            self.get_mods_for_changed_ship(rmods, item, &mut cmods);
+            self.unload_affectee_for_fleet(ctx, rmods, item_uid, ship);
         }
         // Let existing projections know their projectee got updated
-        self.unload_affectee_for_proj(item_uid, item);
+        self.unload_affectee_for_proj(rmods, item_uid, item);
         // Past this point we process data only for fit-related items
         let Some(fit_uid) = item.get_fit_uid() else {
             return cmods;
@@ -132,26 +137,26 @@ impl StandardRegister {
                 }
                 _ => None,
             };
-            self.unreg_affectee_for_sw_buff(item_uid, ship, item_list_rids);
-            self.unreg_affectee_for_fw_buff(item_uid, ship, fit_uid, item_list_rids);
+            self.unreg_affectee_for_sw_buff(rmods, item_uid, ship, item_list_rids);
+            self.unreg_affectee_for_fw_buff(rmods, item_uid, ship, fit_uid, item_list_rids);
         }
         cmods
     }
-    fn get_mods_for_changed_ship(&self, item: &UItem, cmods: &mut Vec<CtxModifier>) {
+    fn get_mods_for_changed_ship(&self, rmods: &RawModStorage, item: &UItem, cmods: &mut Vec<CtxModifier>) {
         if let (Some(item_fit_uid), Some(loc_kind)) = (item.get_fit_uid(), item.get_ship_loc_kind()) {
             for ((stored_fit_uid, stored_loc_kind, _), stored_cmods) in self.cmods.loc.iter() {
                 if item_fit_uid == *stored_fit_uid && loc_kind == *stored_loc_kind {
-                    cmods.extend(stored_cmods);
+                    cmods.extend(stored_cmods.map(|ckey| rmods.get_cmod(ckey)));
                 }
             }
             for ((stored_fit_uid, stored_loc_kind, _, _), stored_cmods) in self.cmods.loc_grp.iter() {
                 if item_fit_uid == *stored_fit_uid && loc_kind == *stored_loc_kind {
-                    cmods.extend(stored_cmods);
+                    cmods.extend(stored_cmods.map(|ckey| rmods.get_cmod(ckey)));
                 }
             }
             for ((stored_fit_uid, stored_loc_kind, _, _), stored_cmods) in self.cmods.loc_srq.iter() {
                 if item_fit_uid == *stored_fit_uid && loc_kind == *stored_loc_kind {
-                    cmods.extend(stored_cmods);
+                    cmods.extend(stored_cmods.map(|ckey| rmods.get_cmod(ckey)));
                 }
             }
         }

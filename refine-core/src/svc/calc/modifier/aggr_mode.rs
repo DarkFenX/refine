@@ -6,7 +6,7 @@ use crate::{
 pub(in crate::svc::calc) type AggrKey = ABuffId;
 
 /// Defines how a modification will be aggregated.
-#[derive(Copy, Clone, Eq, PartialEq, Hash)]
+#[derive(Copy, Clone)]
 pub(in crate::svc::calc) enum AggrMode {
     /// All modifications are applied.
     Stack,
