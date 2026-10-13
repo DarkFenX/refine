@@ -88,11 +88,10 @@ impl Calc {
         attr_rid: RAttrId,
     ) -> impl Iterator<Item = Affection> {
         let mut affections = RMap::new();
-        for ckey in self
-            .std
-            .get_mods_for_affectee(item_uid, item, attr_rid, &ctx.u_data.fits)
-            .iter()
-        {
+        let mut reuse_ckeys = self.reuse.ckeys.take();
+        self.std
+            .get_mods_for_affectee(&mut reuse_ckeys, item_uid, item, attr_rid, &ctx.u_data.fits);
+        for ckey in reuse_ckeys.iter() {
             let cmod = &self.rmods.get_cmod(ckey);
             let Some(val) = cmod.rmod.get_mod_val(self, ctx) else {
                 continue;
@@ -115,6 +114,7 @@ impl Calc {
             };
             affections.insert(mod_key, affection);
         }
+        self.reuse.ckeys.put(reuse_ckeys);
         affections.into_values()
     }
     fn calc_item_attr_info(&mut self, ctx: &SvcCtx, item_uid: UItemId, attr_rid: RAttrId) -> AttrValInfo {

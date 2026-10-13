@@ -1,13 +1,14 @@
 use crate::{
-    svc::calc::{CtxModifier, RawModId, RawModifier},
+    svc::calc::{CtxModKey, CtxModifier, RawModId, RawModifier},
     ud::UItemId,
 };
 
 #[derive(Clone, Default)]
 pub(in crate::svc::calc) struct CalcReuse {
+    pub(in crate::svc::calc) items: ReuseVec<UItemId>,
     pub(in crate::svc::calc) rmod_ids: ReuseVec<RawModId>,
     pub(in crate::svc::calc) rmods: ReuseVec<RawModifier>,
-    pub(in crate::svc::calc) items: ReuseVec<UItemId>,
+    pub(in crate::svc::calc) ckeys: ReuseVec<CtxModKey>,
     pub(in crate::svc::calc) cmods: ReuseVec<CtxModifier>,
 }
 

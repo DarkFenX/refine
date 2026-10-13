@@ -336,24 +336,26 @@ impl Calc {
     where
         F: Fn(&EffectSpec) -> bool,
     {
-        let ckeys = self
-            .std
-            .get_mods_for_affectee(item_uid, item, attr_rid, &ctx.u_data.fits);
+        let mut reuse_ckeys = self.reuse.ckeys.take();
+        self.std
+            .get_mods_for_affectee(&mut reuse_ckeys, item_uid, item, attr_rid, &ctx.u_data.fits);
         // Shortcut for case when modifications cannot overlap
-        if ckeys.len() <= 1 {
-            let modification = ckeys.first().and_then(|ckey| {
+        if reuse_ckeys.len() <= 1 {
+            let modification = reuse_ckeys.first().and_then(|ckey| {
                 let cmod = self.rmods.get_cmod(ckey);
                 self.make_modification(ctx, &cmod, &filter)
             });
+            self.reuse.ckeys.put(reuse_ckeys);
             return Either::Left(modification.into_iter());
         }
         let mut mods = RMap::new();
-        for ckey in ckeys.iter() {
+        for ckey in reuse_ckeys.iter() {
             let cmod = self.rmods.get_cmod(ckey);
             if let Some(modification) = self.make_modification(ctx, &cmod, &filter) {
                 mods.insert(CalcModificationKey::from_cmod(&cmod), modification);
             }
         }
+        self.reuse.ckeys.put(reuse_ckeys);
         Either::Right(mods.into_values())
     }
     fn make_modification<F>(&mut self, ctx: &SvcCtx, cmod: &CtxModifier, filter: &F) -> Option<CalcModification>
