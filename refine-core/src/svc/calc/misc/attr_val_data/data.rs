@@ -12,8 +12,11 @@ pub(in crate::svc::calc) struct ItemAttrData {
     data: RMap<RAttrId, AttrEntry>,
 }
 impl ItemAttrData {
-    pub(in crate::svc::calc) fn new() -> Self {
-        Self { data: RMap::new() }
+    pub(super) fn from_map(data: RMap<RAttrId, AttrEntry>) -> Self {
+        Self { data }
+    }
+    pub(super) fn into_map(self) -> RMap<RAttrId, AttrEntry> {
+        self.data
     }
     pub(in crate::svc::calc) fn get(&self, attr_rid: &RAttrId) -> Option<&AttrEntry> {
         self.data.get(attr_rid)

@@ -1,17 +1,23 @@
-use super::data::ItemAttrData;
+use super::{attr::AttrEntry, data::ItemAttrData};
 use crate::{
-    svc::calc::ItemAttrPostproc,
+    rd::RAttrId,
+    svc::calc::{ItemAttrPostproc, misc::Reuse},
     ud::{UData, UItem, UItemId},
-    util::SSlab,
+    util::{RMap, SSlab},
 };
 
 #[derive(Clone)]
 pub(in crate::svc::calc) struct AttrValData {
     pub(super) data: SSlab<UItemId, ItemAttrData>,
+    // Stores unused maps from unloaded items, to be used later for loaded items
+    spare_maps: Reuse<RMap<RAttrId, AttrEntry>>,
 }
 impl AttrValData {
     pub(in crate::svc::calc) fn new() -> Self {
-        Self { data: SSlab::new() }
+        Self {
+            data: SSlab::new(),
+            spare_maps: Reuse::default(),
+        }
     }
     // Query methods
     pub(in crate::svc::calc) fn get_item_attr_data(&self, item_uid: UItemId) -> Option<&ItemAttrData> {
@@ -22,7 +28,7 @@ impl AttrValData {
     }
     // Modification methods
     pub(in crate::svc::calc) fn item_loaded(&mut self, u_data: &UData, item_uid: UItemId, item: &UItem) {
-        let mut item_data = ItemAttrData::new();
+        let mut item_data = ItemAttrData::from_map(self.spare_maps.take());
         match item {
             UItem::Fighter(..) if let Some(count_attr_rid) = u_data.r_data.get_attr_consts().ftr_sq_size => {
                 item_data.reg_postproc(count_attr_rid, ItemAttrPostproc::FighterCount);
@@ -38,6 +44,8 @@ impl AttrValData {
         self.data.insert(item_uid, item_data);
     }
     pub(in crate::svc::calc) fn item_unloaded(&mut self, item_uid: UItemId) {
-        self.data.remove(item_uid);
+        if let Some(item_data) = self.data.take(item_uid) {
+            self.spare_maps.put(item_data.into_map());
+        }
     }
 }

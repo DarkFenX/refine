@@ -4,7 +4,7 @@ pub(crate) use info::{CalcModInfo, CalcModInfoAffector};
 pub(in crate::svc::calc) use loc_kind::LocationKind;
 pub(in crate::svc::calc) use modification::CalcModification;
 pub(in crate::svc::calc) use modification_key::CalcModificationKey;
-pub(in crate::svc::calc) use reuse::CalcReuse;
+pub(in crate::svc::calc) use reuse::{CalcReuse, Reuse};
 
 mod attr_val_data;
 mod attr_vals;

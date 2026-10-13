@@ -40,6 +40,9 @@ where
     pub(crate) fn remove(&mut self, id: I) {
         self.data.remove(id);
     }
+    pub(crate) fn take(&mut self, id: I) -> Option<V> {
+        self.data.get_mut(id).and_then(Option::take)
+    }
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
