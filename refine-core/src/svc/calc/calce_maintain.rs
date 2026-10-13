@@ -20,17 +20,19 @@ impl Calc {
     }
     pub(in crate::svc) fn fit_added_to_fleet(&mut self, ctx: &SvcCtx, fleet: &UFleet, fit_uid: UFitId) {
         let cmods = self.std.reg_fleet_for_fit(ctx, &self.rmods, fleet, fit_uid);
-        let mut reuse_affectees = Vec::new();
+        let mut reuse_affectees = self.reuse.items.take();
         for cmod in cmods.into_iter() {
             self.force_mod_affectee_attr_recalc(&mut reuse_affectees, ctx, &cmod);
         }
+        self.reuse.items.put(reuse_affectees);
     }
     pub(in crate::svc) fn fit_removed_from_fleet(&mut self, ctx: &SvcCtx, fleet: &UFleet, fit_uid: UFitId) {
         let cmods = self.std.unreg_fleet_for_fit(ctx, &self.rmods, fleet, fit_uid);
-        let mut reuse_affectees = Vec::new();
+        let mut reuse_affectees = self.reuse.items.take();
         for cmod in cmods.into_iter() {
             self.force_mod_affectee_attr_recalc(&mut reuse_affectees, ctx, &cmod);
         }
+        self.reuse.items.put(reuse_affectees);
     }
     pub(in crate::svc) fn fit_rah_dps_profile_changed(&mut self, ctx: &SvcCtx, fit_uid: UFitId) {
         self.rah_fit_rah_dps_profile_changed(ctx, fit_uid);
@@ -49,10 +51,11 @@ impl Calc {
             })
             .collect_vec();
         if !cmods.is_empty() {
-            let mut reuse_items = Vec::new();
+            let mut reuse_items = self.reuse.items.take();
             for cmod in cmods.into_iter() {
                 self.force_mod_affectee_attr_recalc(&mut reuse_items, ctx, &cmod);
             }
+            self.reuse.items.put(reuse_items);
         }
     }
     pub(in crate::svc) fn item_removed(&mut self, ctx: &SvcCtx, item_uid: UItemId, item: &UItem) {
@@ -69,10 +72,11 @@ impl Calc {
             })
             .collect_vec();
         if !cmods.is_empty() {
-            let mut reuse_items = Vec::new();
+            let mut reuse_items = self.reuse.items.take();
             for cmod in cmods.into_iter() {
                 self.force_mod_affectee_attr_recalc(&mut reuse_items, ctx, &cmod);
             }
+            self.reuse.items.put(reuse_items);
         }
     }
     pub(in crate::svc) fn item_loaded(&mut self, ctx: &SvcCtx, item_uid: UItemId, item: &UItem) {
@@ -80,10 +84,11 @@ impl Calc {
         self.attrs.item_loaded(ctx.u_data, item_uid, item);
         let cmods = self.std.reg_affectee(ctx, &self.rmods, item_uid, item);
         if !cmods.is_empty() {
-            let mut reuse_affectees = Vec::new();
+            let mut reuse_affectees = self.reuse.items.take();
             for cmod in cmods.into_iter() {
                 self.force_mod_affectee_attr_recalc(&mut reuse_affectees, ctx, &cmod)
             }
+            self.reuse.items.put(reuse_affectees);
         }
         // Notify RAH sim
         self.rah_item_loaded(ctx, item);
@@ -94,10 +99,11 @@ impl Calc {
         // Notify core calc services
         let cmods = self.std.unreg_affectee(ctx, &self.rmods, item_uid, item);
         if !cmods.is_empty() {
-            let mut reuse_affectees = Vec::new();
+            let mut reuse_affectees = self.reuse.items.take();
             for cmod in cmods.into_iter() {
                 self.force_mod_affectee_attr_recalc(&mut reuse_affectees, ctx, &cmod)
             }
+            self.reuse.items.put(reuse_affectees);
         }
         self.deps.remove_item(item_uid);
         self.attrs.item_unloaded(item_uid);
@@ -110,10 +116,10 @@ impl Calc {
         effects: &[RcEffect],
     ) {
         // Notify core calc services
-        let mut reuse_rmod_ids = Vec::new();
-        let mut reuse_rmods = Vec::new();
-        let mut reuse_items = Vec::new();
-        let mut reuse_cmods = Vec::new();
+        let mut reuse_rmod_ids = self.reuse.rmod_ids.take();
+        let mut reuse_rmods = self.reuse.rmods.take();
+        let mut reuse_items = self.reuse.items.take();
+        let mut reuse_cmods = self.reuse.cmods.take();
         for effect in effects.iter() {
             self.generate_mods_for_effect(&mut reuse_rmods, ctx, item_uid, item, effect);
             self.reg_raw_mods(
@@ -150,6 +156,10 @@ impl Calc {
         for effect in effects.iter() {
             self.buffs.reg_effect(item_uid, effect);
         }
+        self.reuse.rmod_ids.put(reuse_rmod_ids);
+        self.reuse.rmods.put(reuse_rmods);
+        self.reuse.items.put(reuse_items);
+        self.reuse.cmods.put(reuse_cmods);
         // Notify RAH sim
         self.rah_effects_started(ctx, item_uid, item, effects);
     }
@@ -169,9 +179,9 @@ impl Calc {
         for effect in effects.iter() {
             self.buffs.unreg_effect(item_uid, effect);
         }
-        let mut reuse_rmod_ids = Vec::new();
-        let mut reuse_items = Vec::new();
-        let mut reuse_cmods = Vec::new();
+        let mut reuse_rmod_ids = self.reuse.rmod_ids.take();
+        let mut reuse_items = self.reuse.items.take();
+        let mut reuse_cmods = self.reuse.cmods.take();
         for effect in effects.iter() {
             let espec = EffectSpec::new(item_uid, effect.rid);
             self.rmods.remove_by_espec_p1(&mut reuse_rmod_ids, &espec);
@@ -189,6 +199,9 @@ impl Calc {
             // by e.g. custom propulsion module modifier
             self.deps.remove_by_source(&espec);
         }
+        self.reuse.rmod_ids.put(reuse_rmod_ids);
+        self.reuse.items.put(reuse_items);
+        self.reuse.cmods.put(reuse_cmods);
     }
     pub(in crate::svc) fn effect_projected(
         &mut self,
@@ -204,10 +217,11 @@ impl Calc {
         let cmods = self
             .std
             .project_effect(&self.rmods, &projector_espec, projectee_uid, projectee_item);
-        let mut reuse_affectees = Vec::new();
+        let mut reuse_affectees = self.reuse.items.take();
         for cmod in cmods.into_iter() {
             self.force_mod_affectee_attr_recalc(&mut reuse_affectees, ctx, &cmod);
         }
+        self.reuse.items.put(reuse_affectees);
     }
     pub(in crate::svc) fn effect_proj_data_changed(
         &mut self,
@@ -219,10 +233,11 @@ impl Calc {
         let cmods = self
             .std
             .query_projected_effect(&self.rmods, &projector_espec, projectee_uid, projectee_item);
-        let mut reuse_affectees = Vec::new();
+        let mut reuse_affectees = self.reuse.items.take();
         for cmod in cmods.into_iter() {
             self.force_mod_affectee_attr_recalc(&mut reuse_affectees, ctx, &cmod);
         }
+        self.reuse.items.put(reuse_affectees);
     }
     pub(in crate::svc) fn effect_unprojected(
         &mut self,
@@ -238,10 +253,11 @@ impl Calc {
         let cmods = self
             .std
             .unproject_effect(&self.rmods, &projector_espec, projectee_uid, projectee_item);
-        let mut reuse_affectees = Vec::new();
+        let mut reuse_affectees = self.reuse.items.take();
         for cmod in cmods.into_iter() {
             self.force_mod_affectee_attr_recalc(&mut reuse_affectees, ctx, &cmod);
         }
+        self.reuse.items.put(reuse_affectees);
     }
     pub(in crate::svc) fn attr_value_changed(&mut self, ctx: &SvcCtx, aspec: AttrSpec) {
         // Clear up attribute values which rely on passed attribute as an upper/lower limit
@@ -256,7 +272,7 @@ impl Calc {
             .map(|ckey| self.rmods.get_cmod(ckey))
             .collect_vec();
         if !cmods.is_empty() {
-            let mut reuse_affectees = Vec::new();
+            let mut reuse_affectees = self.reuse.items.take();
             for cmod in cmods.into_iter() {
                 self.std.fill_affectees(&mut reuse_affectees, ctx, &cmod);
                 for &affectee_uid in reuse_affectees.iter() {
@@ -264,6 +280,7 @@ impl Calc {
                     self.force_attr_value_recalc(ctx, affectee_aspec);
                 }
             }
+            self.reuse.items.put(reuse_affectees);
         }
         // Process buffs which rely on attribute being modified
         if ctx.ac().buff_merge_ids.contains(&aspec.attr_rid) {
@@ -271,8 +288,8 @@ impl Calc {
             // Remove modifiers of buffs which rely on the attribute
             let rmod_ids = self.buffs.extract_dependent_mods(&aspec);
             if rmod_ids.len() > 0 {
-                let mut reuse_items = Vec::new();
-                let mut reuse_cmods = Vec::new();
+                let mut reuse_items = self.reuse.items.take();
+                let mut reuse_cmods = self.reuse.cmods.take();
                 let rmod_ids = rmod_ids.collect_vec();
                 for rmod_id in rmod_ids.into_iter() {
                     let rmod = *self.rmods.get_rmod(rmod_id);
@@ -288,6 +305,8 @@ impl Calc {
                     );
                     self.rmods.remove_full(rmod_id);
                 }
+                self.reuse.items.put(reuse_items);
+                self.reuse.cmods.put(reuse_cmods);
             }
             // Generate new modifiers using new value and apply them
             let effect_rids = self.buffs.get_effects(&aspec.item_uid);
@@ -300,8 +319,8 @@ impl Calc {
                     effect_rids.iter(),
                     aspec.attr_rid,
                 );
-                let mut reuse_items = Vec::new();
-                let mut reuse_cmods = Vec::new();
+                let mut reuse_items = self.reuse.items.take();
+                let mut reuse_cmods = self.reuse.cmods.take();
                 for rmod in rmods.into_iter() {
                     let rmod_id = self.rmods.add(rmod);
                     if !self.reg_raw_mod(
@@ -318,6 +337,8 @@ impl Calc {
                     }
                     self.project_dependent_mod(&mut reuse_items, &mut reuse_cmods, ctx, rmod_id, rmod);
                 }
+                self.reuse.items.put(reuse_items);
+                self.reuse.cmods.put(reuse_cmods);
             }
         }
         // Notify RAH sim

@@ -2,7 +2,7 @@ use crate::{
     dbg::DebugResult,
     svc::calc::{
         calce_rah::RahSim,
-        misc::AttrValData,
+        misc::{AttrValData, CalcReuse},
         registers::{BuffRegister, DependencyRegister, RawModStorage, RevisionRegister, StandardRegister},
     },
     ud::UData,
@@ -10,6 +10,7 @@ use crate::{
 
 #[derive(Clone)]
 pub(crate) struct Calc {
+    pub(in crate::svc::calc) reuse: CalcReuse,
     pub(in crate::svc::calc) attrs: AttrValData,
     pub(in crate::svc::calc) rmods: RawModStorage,
     pub(in crate::svc::calc) std: StandardRegister,
@@ -21,6 +22,7 @@ pub(crate) struct Calc {
 impl Calc {
     pub(in crate::svc) fn new() -> Self {
         Self {
+            reuse: CalcReuse::default(),
             attrs: AttrValData::new(),
             rmods: RawModStorage::new(),
             std: StandardRegister::new(),

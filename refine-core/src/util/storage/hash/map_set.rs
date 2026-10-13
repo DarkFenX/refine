@@ -35,7 +35,7 @@ where
     pub(crate) fn add_entry(&mut self, key: K, value: V) {
         match self.data.entry(key) {
             Entry::Vacant(entry) => {
-                entry.insert(Values::One(value));
+                entry.insert(MapSetValues::One(value));
             }
             Entry::Occupied(mut entry) => entry.get_mut().insert(value),
         }
@@ -48,7 +48,7 @@ where
                 Entry::Vacant(entry) => {
                     let mut set = RSet::with_capacity(entries.len());
                     set.extend(entries);
-                    entry.insert(Values::Many(set));
+                    entry.insert(MapSetValues::Many(set));
                 }
                 Entry::Occupied(mut entry) => entry.get_mut().extend(entries),
             },
@@ -61,7 +61,7 @@ where
         }
     }
 }
-impl<V> Values<V, rustc_hash::FxBuildHasher>
+impl<V> MapSetValues<V, rustc_hash::FxBuildHasher>
 where
     V: Eq + Hash,
 {
@@ -104,7 +104,7 @@ where
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 #[derive(Clone)]
 pub(crate) struct MapSet<K, V, H1, H2> {
-    data: Map<K, Values<V, H2>, H1>,
+    data: Map<K, MapSetValues<V, H2>, H1>,
     buffer: Set<V, H2>,
 }
 impl<K, V, H1, H2> MapSet<K, V, H1, H2>
@@ -150,8 +150,8 @@ where
     pub(crate) fn remove_entry(&mut self, key: K, value: &V) {
         if let Entry::Occupied(mut entry) = self.data.entry(key) {
             let emptied = match entry.get_mut() {
-                Values::One(old_value) => old_value == value,
-                Values::Many(set) => {
+                MapSetValues::One(old_value) => old_value == value,
+                MapSetValues::Many(set) => {
                     set.remove(value);
                     set.is_empty()
                 }
@@ -168,13 +168,13 @@ where
     {
         if let Entry::Occupied(mut entry) = self.data.entry(key) {
             let emptied = match entry.get_mut() {
-                Values::One(value) => filter(value),
-                Values::Many(set) => {
+                MapSetValues::One(value) => filter(value),
+                MapSetValues::Many(set) => {
                     self.buffer.extend(set.extract_if(filter));
                     set.is_empty()
                 }
             };
-            if emptied && let Values::One(value) = entry.remove() {
+            if emptied && let MapSetValues::One(value) = entry.remove() {
                 self.buffer.insert(value);
             }
         }
@@ -185,11 +185,11 @@ where
 }
 
 #[derive(Clone)]
-enum Values<V, H> {
+enum MapSetValues<V, H> {
     One(V),
     Many(Set<V, H>),
 }
-impl<V, H> Values<V, H>
+impl<V, H> MapSetValues<V, H>
 where
     V: Eq + Hash,
     H: BuildHasher,
@@ -207,7 +207,7 @@ where
         }
     }
 }
-impl<V, H> IntoIterator for Values<V, H> {
+impl<V, H> IntoIterator for MapSetValues<V, H> {
     type Item = V;
     type IntoIter = Either<std::option::IntoIter<V>, std::collections::hash_set::IntoIter<V>>;
 
