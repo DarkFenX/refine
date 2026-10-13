@@ -19,6 +19,7 @@ use crate::{
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl Calc {
     /// - Extra value as an option
+    #[inline]
     pub(in crate::svc) fn get_item_attr_odogma(
         &mut self,
         ctx: &SvcCtx,
@@ -27,6 +28,7 @@ impl Calc {
     ) -> Option<Value> {
         self.get_item_attr_rfull(ctx, item_uid, attr_rid).ok().map(|v| v.dogma)
     }
+    #[inline]
     pub(in crate::svc) fn get_item_attr_oextra(
         &mut self,
         ctx: &SvcCtx,
@@ -37,6 +39,7 @@ impl Calc {
     }
     /// - Optional attribute
     /// - Dogma value as an option
+    #[inline]
     pub(in crate::svc::calc) fn get_item_oattr_odogma(
         &mut self,
         ctx: &SvcCtx,
@@ -47,6 +50,7 @@ impl Calc {
     }
     /// - Optional attribute
     /// - Extra value as an option
+    #[inline]
     pub(crate) fn get_item_oattr_oextra(
         &mut self,
         ctx: &SvcCtx,
@@ -58,7 +62,24 @@ impl Calc {
     /// - Optional attribute
     /// - Fallback in case of missing attribute argument
     /// - Extra value as an option
+    #[inline]
     pub(crate) fn get_item_oattr_afb_oextra(
+        &mut self,
+        ctx: &SvcCtx,
+        item_uid: UItemId,
+        attr_rid: Option<RAttrId>,
+        fallback: Value,
+    ) -> Option<Value> {
+        if let Some(attr_rid) = attr_rid
+            && let Some(cval) = self.get_cached_cval(item_uid, attr_rid)
+        {
+            return Some(cval.extra);
+        }
+        std::hint::cold_path();
+        self.get_item_oattr_afb_oextra_slow(ctx, item_uid, attr_rid, fallback)
+    }
+    #[inline(never)]
+    fn get_item_oattr_afb_oextra_slow(
         &mut self,
         ctx: &SvcCtx,
         item_uid: UItemId,
@@ -76,7 +97,24 @@ impl Calc {
     /// - Optional attribute
     /// - Fallback for all cases
     /// - Dogma value
+    #[inline]
     pub(crate) fn get_item_oattr_ffb_dogma(
+        &mut self,
+        ctx: &SvcCtx,
+        item_uid: UItemId,
+        attr_rid: Option<RAttrId>,
+        fallback: Value,
+    ) -> Value {
+        if let Some(attr_rid) = attr_rid
+            && let Some(cval) = self.get_cached_cval(item_uid, attr_rid)
+        {
+            return cval.dogma;
+        }
+        std::hint::cold_path();
+        self.get_item_oattr_ffb_dogma_slow(ctx, item_uid, attr_rid, fallback)
+    }
+    #[inline(never)]
+    fn get_item_oattr_ffb_dogma_slow(
         &mut self,
         ctx: &SvcCtx,
         item_uid: UItemId,
@@ -91,7 +129,24 @@ impl Calc {
     /// - Optional attribute
     /// - Fallback for all cases
     /// - Extra value
+    #[inline]
     pub(crate) fn get_item_oattr_ffb_extra(
+        &mut self,
+        ctx: &SvcCtx,
+        item_uid: UItemId,
+        attr_rid: Option<RAttrId>,
+        fallback: Value,
+    ) -> Value {
+        if let Some(attr_rid) = attr_rid
+            && let Some(cval) = self.get_cached_cval(item_uid, attr_rid)
+        {
+            return cval.extra;
+        }
+        std::hint::cold_path();
+        self.get_item_oattr_ffb_extra_slow(ctx, item_uid, attr_rid, fallback)
+    }
+    #[inline(never)]
+    fn get_item_oattr_ffb_extra_slow(
         &mut self,
         ctx: &SvcCtx,
         item_uid: UItemId,
@@ -107,7 +162,25 @@ impl Calc {
     /// - Optional attribute
     /// - Fallback for missing attribute argument
     /// - Extra value as an option
+    #[inline]
     pub(in crate::svc) fn get_oitem_oattr_afb_oextra(
+        &mut self,
+        ctx: &SvcCtx,
+        item_uid: Option<UItemId>,
+        attr_rid: Option<RAttrId>,
+        fallback: Value,
+    ) -> Option<Value> {
+        if let Some(item_uid) = item_uid
+            && let Some(attr_rid) = attr_rid
+            && let Some(cval) = self.get_cached_cval(item_uid, attr_rid)
+        {
+            return Some(cval.extra);
+        }
+        std::hint::cold_path();
+        self.get_oitem_oattr_afb_oextra_slow(ctx, item_uid, attr_rid, fallback)
+    }
+    #[inline(never)]
+    fn get_oitem_oattr_afb_oextra_slow(
         &mut self,
         ctx: &SvcCtx,
         item_uid: Option<UItemId>,
@@ -148,7 +221,31 @@ impl Calc {
 // Core query methods
 ////////////////////////////////////////////////////////////////////////////////////////////////
 impl Calc {
+    // Cached value of an attribute which needs no postprocessing. It is inlined into hot callers,
+    // which use regular methods for everything else
+    #[inline(always)]
+    fn get_cached_cval(&self, item_uid: UItemId, attr_rid: RAttrId) -> Option<CalcAttrVals> {
+        let attr_entry = self.attrs.get_item_attr_data(item_uid)?.get(&attr_rid)?;
+        match attr_entry.postproc {
+            None => attr_entry.value,
+            Some(_) => None,
+        }
+    }
+    #[inline]
     pub(crate) fn get_item_attr_rfull(
+        &mut self,
+        ctx: &SvcCtx,
+        item_uid: UItemId,
+        attr_rid: RAttrId,
+    ) -> Result<CalcAttrVals, UItemLoadedError> {
+        if let Some(cval) = self.get_cached_cval(item_uid, attr_rid) {
+            return Ok(cval);
+        }
+        std::hint::cold_path();
+        self.get_item_attr_rfull_slow(ctx, item_uid, attr_rid)
+    }
+    #[inline(never)]
+    fn get_item_attr_rfull_slow(
         &mut self,
         ctx: &SvcCtx,
         item_uid: UItemId,
