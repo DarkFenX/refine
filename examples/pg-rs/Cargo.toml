@@ -13,6 +13,6 @@ radc = { package = "refine-adc", path = "../../refine-adc", features = ["postcar
 redh = { package = "refine-edh", path = "../../refine-edh", features = ["phb-fs"] }
 # Non-local
 time = { version = ">=0.3.55", features = ["macros"] }
-tokio = { version = ">=1.53.1", features = ["rt", "macros"] }
+tokio = { version = ">=1.53.2", features = ["rt", "macros"] }
 tracing = ">=0.1.44"
 tracing-subscriber = { version = ">=0.3.23", features = ["time"] }
