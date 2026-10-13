@@ -29,14 +29,15 @@ impl StandardRegister {
     }
     pub(in crate::svc::calc) fn project_effect(
         &mut self,
+        reuse_cmods: &mut Vec<CtxModifier>,
         rmods: &RawModStorage,
         projector_espec: &EffectSpec,
         projectee_uid: UItemId,
         projectee_item: &UItem,
-    ) -> Vec<CtxModifier> {
+    ) {
         // Register projection and get appropriate context modifiers.
         let rmod_ids = self.rmods_proj.get(projector_espec);
-        let mut cmods = Vec::with_capacity(rmod_ids.len());
+        reuse_cmods.clear();
         for &rmod_id in rmod_ids {
             let rmod = *rmods.get_rmod(rmod_id);
             if let Some(cmod) = proj_mod(
@@ -47,10 +48,9 @@ impl StandardRegister {
                 projectee_uid,
                 projectee_item,
             ) {
-                cmods.push(cmod);
+                reuse_cmods.push(cmod);
             }
         }
-        cmods
     }
     pub(in crate::svc::calc) fn project_mod(
         &mut self,
@@ -70,14 +70,15 @@ impl StandardRegister {
     }
     pub(in crate::svc::calc) fn unproject_effect(
         &mut self,
+        reuse_cmods: &mut Vec<CtxModifier>,
         rmods: &RawModStorage,
         projector_espec: &EffectSpec,
         projectee_uid: UItemId,
         projectee_item: &UItem,
-    ) -> Vec<CtxModifier> {
+    ) {
         // Unregister projection and get appropriate context modifiers.
         let rmod_ids = self.rmods_proj.get(projector_espec);
-        let mut cmods = Vec::with_capacity(rmod_ids.len());
+        reuse_cmods.clear();
         for &rmod_id in rmod_ids {
             let rmod = *rmods.get_rmod(rmod_id);
             if let Some(cmod) = unproj_mod(
@@ -88,10 +89,9 @@ impl StandardRegister {
                 projectee_uid,
                 projectee_item,
             ) {
-                cmods.push(cmod);
+                reuse_cmods.push(cmod);
             }
         }
-        cmods
     }
     pub(in crate::svc::calc) fn unproject_mod(
         &mut self,
@@ -111,14 +111,15 @@ impl StandardRegister {
     }
     pub(in crate::svc::calc) fn query_projected_effect(
         &mut self,
+        reuse_cmods: &mut Vec<CtxModifier>,
         rmods: &RawModStorage,
         projector_espec: &EffectSpec,
         projectee_uid: UItemId,
         projectee_item: &UItem,
-    ) -> Vec<CtxModifier> {
+    ) {
         // Get context modifiers for projection.
         let rmod_ids = self.rmods_proj.get(projector_espec);
-        let mut cmods = Vec::with_capacity(rmod_ids.len());
+        reuse_cmods.clear();
         for &rmod_id in rmod_ids {
             let rmod = *rmods.get_rmod(rmod_id);
             if let Some(cmod) = match rmod.kind {
@@ -128,10 +129,9 @@ impl StandardRegister {
                 ModifierKind::Buff => query_buff_mod(rmod, projectee_uid, projectee_item),
                 _ => None,
             } {
-                cmods.push(cmod);
+                reuse_cmods.push(cmod);
             }
         }
-        cmods
     }
     pub(in crate::svc::calc::registers::standard) fn load_affectee_for_proj(
         &mut self,

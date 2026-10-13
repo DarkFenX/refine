@@ -78,18 +78,19 @@ impl StandardRegister {
     }
     pub(in crate::svc::calc) fn reg_fleet_for_fit(
         &mut self,
+        reuse_cmods: &mut Vec<CtxModifier>,
         ctx: &SvcCtx,
         rmods: &RawModStorage,
         fleet: &UFleet,
         fit_uid: UFitId,
-    ) -> Vec<CtxModifier> {
-        let mut cmods = Vec::new();
+    ) {
+        reuse_cmods.clear();
         // Outgoing fleet boosts
         for &rmod_id in self.rmods_fleet.get(&fit_uid) {
             let rmod = rmods.get_rmod(rmod_id);
             for fleet_fit_uid in fleet.iter_fits() {
                 if fleet_fit_uid != fit_uid {
-                    apply_fleet_mod_with_fit_uid(&mut cmods, ctx, &mut self.cmods, rmod_id, *rmod, fleet_fit_uid);
+                    apply_fleet_mod_with_fit_uid(reuse_cmods, ctx, &mut self.cmods, rmod_id, *rmod, fleet_fit_uid);
                 }
             }
         }
@@ -100,25 +101,25 @@ impl StandardRegister {
             }
             for &rmod_id in self.rmods_fleet.get(&fleet_fit_uid) {
                 let rmod = *rmods.get_rmod(rmod_id);
-                apply_fleet_mod_with_fit_uid(&mut cmods, ctx, &mut self.cmods, rmod_id, rmod, fit_uid);
+                apply_fleet_mod_with_fit_uid(reuse_cmods, ctx, &mut self.cmods, rmod_id, rmod, fit_uid);
             }
         }
-        cmods
     }
     pub(in crate::svc::calc) fn unreg_fleet_for_fit(
         &mut self,
+        reuse_cmods: &mut Vec<CtxModifier>,
         ctx: &SvcCtx,
         rmods: &RawModStorage,
         fleet: &UFleet,
         fit_uid: UFitId,
-    ) -> Vec<CtxModifier> {
-        let mut cmods = Vec::new();
+    ) {
+        reuse_cmods.clear();
         // Outgoing fleet boosts
         for &rmod_id in self.rmods_fleet.get(&fit_uid) {
             let rmod = rmods.get_rmod(rmod_id);
             for fleet_fit_uid in fleet.iter_fits() {
                 if fleet_fit_uid != fit_uid {
-                    unapply_fleet_mod_with_fit_uid(&mut cmods, ctx, &mut self.cmods, rmod_id, *rmod, fleet_fit_uid);
+                    unapply_fleet_mod_with_fit_uid(reuse_cmods, ctx, &mut self.cmods, rmod_id, *rmod, fleet_fit_uid);
                 }
             }
         }
@@ -129,10 +130,9 @@ impl StandardRegister {
             }
             for &rmod_id in self.rmods_fleet.get(&fleet_fit_uid) {
                 let rmod = rmods.get_rmod(rmod_id);
-                unapply_fleet_mod_with_fit_uid(&mut cmods, ctx, &mut self.cmods, rmod_id, *rmod, fit_uid);
+                unapply_fleet_mod_with_fit_uid(reuse_cmods, ctx, &mut self.cmods, rmod_id, *rmod, fit_uid);
             }
         }
-        cmods
     }
     pub(in crate::svc::calc::registers::standard) fn load_affectee_for_fleet(
         &mut self,
