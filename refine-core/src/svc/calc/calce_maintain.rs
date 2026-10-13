@@ -129,16 +129,20 @@ impl Calc {
         // Buffs which rely on on-item attributes are generated after all other modifiers of started
         // effects are registered, since those modifiers can change applied buff ID
         for effect in effects.iter() {
-            self.generate_dependent_buff_mods_for_effect(&mut reuse_rmods, ctx, item_uid, item, effect);
-            self.reg_raw_mods(
-                &mut reuse_rmod_ids,
-                &mut reuse_items,
-                &mut reuse_cmods,
-                ctx,
-                item,
-                EffectSpec::new(item_uid, effect.rid),
-                &reuse_rmods,
-            );
+            if let Some(effect_buff) = &effect.buff
+                && effect_buff.attr_merge.is_some()
+            {
+                self.generate_dependent_buff_mods_for_effect(&mut reuse_rmods, ctx, item_uid, item, effect);
+                self.reg_raw_mods(
+                    &mut reuse_rmod_ids,
+                    &mut reuse_items,
+                    &mut reuse_cmods,
+                    ctx,
+                    item,
+                    EffectSpec::new(item_uid, effect.rid),
+                    &reuse_rmods,
+                );
+            }
         }
         // Buff maintenance - add info about effects which use default buff attributes. Done after
         // all modifiers are registered, so that buff modifiers of started effects are not generated
