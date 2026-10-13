@@ -75,9 +75,9 @@ impl Calc {
         {
             return Some(cval.extra);
         }
-        std::hint::cold_path();
         self.get_item_oattr_afb_oextra_slow(ctx, item_uid, attr_rid, fallback)
     }
+    #[cold]
     #[inline(never)]
     fn get_item_oattr_afb_oextra_slow(
         &mut self,
@@ -110,9 +110,9 @@ impl Calc {
         {
             return cval.dogma;
         }
-        std::hint::cold_path();
         self.get_item_oattr_ffb_dogma_slow(ctx, item_uid, attr_rid, fallback)
     }
+    #[cold]
     #[inline(never)]
     fn get_item_oattr_ffb_dogma_slow(
         &mut self,
@@ -142,9 +142,9 @@ impl Calc {
         {
             return cval.extra;
         }
-        std::hint::cold_path();
         self.get_item_oattr_ffb_extra_slow(ctx, item_uid, attr_rid, fallback)
     }
+    #[cold]
     #[inline(never)]
     fn get_item_oattr_ffb_extra_slow(
         &mut self,
@@ -176,9 +176,9 @@ impl Calc {
         {
             return Some(cval.extra);
         }
-        std::hint::cold_path();
         self.get_oitem_oattr_afb_oextra_slow(ctx, item_uid, attr_rid, fallback)
     }
+    #[cold]
     #[inline(never)]
     fn get_oitem_oattr_afb_oextra_slow(
         &mut self,
@@ -241,9 +241,9 @@ impl Calc {
         if let Some(cval) = self.get_cached_cval(item_uid, attr_rid) {
             return Ok(cval);
         }
-        std::hint::cold_path();
         self.get_item_attr_rfull_slow(ctx, item_uid, attr_rid)
     }
+    #[cold]
     #[inline(never)]
     fn get_item_attr_rfull_slow(
         &mut self,
