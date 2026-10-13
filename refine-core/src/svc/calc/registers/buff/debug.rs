@@ -15,6 +15,13 @@ impl BuffRegister {
                 rmod_id.consistency_check(u_data, rmods)?;
             }
         }
+        for (espec, projectee_uids) in self.projectees.iter() {
+            espec.consistency_check(u_data, true)?;
+            for &projectee_uid in projectee_uids {
+                // Projectees don't have to be loaded for an entry to be added here
+                projectee_uid.consistency_check(u_data, false)?;
+            }
+        }
         Ok(())
     }
 }

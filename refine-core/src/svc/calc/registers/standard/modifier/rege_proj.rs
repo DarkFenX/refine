@@ -12,7 +12,10 @@ use crate::{
     misc::EffectSpec,
     svc::calc::{
         CtxModifier, ModifierKind, RawModId, RawModifier,
-        registers::{RawModStorage, StandardRegister},
+        registers::{
+            RawModStorage, StandardRegister,
+            standard::data::{StandardRegisterCtxMods, StandardRegisterRawProjStatus},
+        },
     },
     ud::{UItem, UItemId},
 };
@@ -36,30 +39,34 @@ impl StandardRegister {
         let mut cmods = Vec::with_capacity(rmod_ids.len());
         for &rmod_id in rmod_ids {
             let rmod = *rmods.get_rmod(rmod_id);
-            if let Some(cmod) = match rmod.kind {
-                ModifierKind::System => proj_system_mod(&mut self.cmods, rmod_id, rmod, projectee_item),
-                ModifierKind::Targeted => proj_target_mod(
-                    &mut self.rmods_proj_status,
-                    &mut self.cmods,
-                    rmod_id,
-                    rmod,
-                    projectee_uid,
-                    projectee_item,
-                ),
-                ModifierKind::Buff => proj_buff_mod(
-                    &mut self.rmods_proj_status,
-                    &mut self.cmods,
-                    rmod_id,
-                    rmod,
-                    projectee_uid,
-                    projectee_item,
-                ),
-                _ => None,
-            } {
+            if let Some(cmod) = proj_mod(
+                &mut self.rmods_proj_status,
+                &mut self.cmods,
+                rmod_id,
+                rmod,
+                projectee_uid,
+                projectee_item,
+            ) {
                 cmods.push(cmod);
             }
         }
         cmods
+    }
+    pub(in crate::svc::calc) fn project_mod(
+        &mut self,
+        rmod_id: RawModId,
+        rmod: RawModifier,
+        projectee_uid: UItemId,
+        projectee_item: &UItem,
+    ) -> Option<CtxModifier> {
+        proj_mod(
+            &mut self.rmods_proj_status,
+            &mut self.cmods,
+            rmod_id,
+            rmod,
+            projectee_uid,
+            projectee_item,
+        )
     }
     pub(in crate::svc::calc) fn unproject_effect(
         &mut self,
@@ -73,30 +80,34 @@ impl StandardRegister {
         let mut cmods = Vec::with_capacity(rmod_ids.len());
         for &rmod_id in rmod_ids {
             let rmod = *rmods.get_rmod(rmod_id);
-            if let Some(cmod) = match rmod.kind {
-                ModifierKind::System => unproj_system_mod(&mut self.cmods, rmod_id, rmod, projectee_item),
-                ModifierKind::Targeted => unproj_target_mod(
-                    &mut self.rmods_proj_status,
-                    &mut self.cmods,
-                    rmod_id,
-                    rmod,
-                    projectee_uid,
-                    projectee_item,
-                ),
-                ModifierKind::Buff => unproj_buff_mod(
-                    &mut self.rmods_proj_status,
-                    &mut self.cmods,
-                    rmod_id,
-                    rmod,
-                    projectee_uid,
-                    projectee_item,
-                ),
-                _ => None,
-            } {
+            if let Some(cmod) = unproj_mod(
+                &mut self.rmods_proj_status,
+                &mut self.cmods,
+                rmod_id,
+                rmod,
+                projectee_uid,
+                projectee_item,
+            ) {
                 cmods.push(cmod);
             }
         }
         cmods
+    }
+    pub(in crate::svc::calc) fn unproject_mod(
+        &mut self,
+        rmod_id: RawModId,
+        rmod: RawModifier,
+        projectee_uid: UItemId,
+        projectee_item: &UItem,
+    ) -> Option<CtxModifier> {
+        unproj_mod(
+            &mut self.rmods_proj_status,
+            &mut self.cmods,
+            rmod_id,
+            rmod,
+            projectee_uid,
+            projectee_item,
+        )
     }
     pub(in crate::svc::calc) fn query_projected_effect(
         &mut self,
@@ -165,5 +176,41 @@ impl StandardRegister {
         self.rmods_proj_status
             .inactive
             .extend_entries(projectee_uid, self.rmods_proj_status.active.drain_buffer());
+    }
+}
+
+fn proj_mod(
+    reg_proj_status: &mut StandardRegisterRawProjStatus,
+    reg_cmods: &mut StandardRegisterCtxMods,
+    rmod_id: RawModId,
+    rmod: RawModifier,
+    projectee_uid: UItemId,
+    projectee_item: &UItem,
+) -> Option<CtxModifier> {
+    match rmod.kind {
+        ModifierKind::System => proj_system_mod(reg_cmods, rmod_id, rmod, projectee_item),
+        ModifierKind::Targeted => {
+            proj_target_mod(reg_proj_status, reg_cmods, rmod_id, rmod, projectee_uid, projectee_item)
+        }
+        ModifierKind::Buff => proj_buff_mod(reg_proj_status, reg_cmods, rmod_id, rmod, projectee_uid, projectee_item),
+        _ => None,
+    }
+}
+
+fn unproj_mod(
+    reg_proj_status: &mut StandardRegisterRawProjStatus,
+    reg_cmods: &mut StandardRegisterCtxMods,
+    rmod_id: RawModId,
+    rmod: RawModifier,
+    projectee_uid: UItemId,
+    projectee_item: &UItem,
+) -> Option<CtxModifier> {
+    match rmod.kind {
+        ModifierKind::System => unproj_system_mod(reg_cmods, rmod_id, rmod, projectee_item),
+        ModifierKind::Targeted => {
+            unproj_target_mod(reg_proj_status, reg_cmods, rmod_id, rmod, projectee_uid, projectee_item)
+        }
+        ModifierKind::Buff => unproj_buff_mod(reg_proj_status, reg_cmods, rmod_id, rmod, projectee_uid, projectee_item),
+        _ => None,
     }
 }

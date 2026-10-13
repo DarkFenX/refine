@@ -193,6 +193,10 @@ impl Calc {
         projectee_uid: UItemId,
         projectee_item: &UItem,
     ) {
+        // Buff maintenance - record projection before projecting, so that buff modifiers
+        // re-generated during recalculations get projected too
+        let effect = ctx.u_data.r_data.get_effect_by_rid(projector_espec.effect_rid);
+        self.buffs.reg_projection(projector_espec, effect, projectee_uid);
         let cmods = self
             .std
             .project_effect(&self.rmods, &projector_espec, projectee_uid, projectee_item);
@@ -223,6 +227,10 @@ impl Calc {
         projectee_uid: UItemId,
         projectee_item: &UItem,
     ) {
+        // Buff maintenance - remove projection info before unprojecting, so that buff modifiers
+        // re-generated during recalculations do not get projected
+        let effect = ctx.u_data.r_data.get_effect_by_rid(projector_espec.effect_rid);
+        self.buffs.unreg_projection(projector_espec, effect, projectee_uid);
         let cmods = self
             .std
             .unproject_effect(&self.rmods, &projector_espec, projectee_uid, projectee_item);
@@ -264,6 +272,7 @@ impl Calc {
                 let rmod_ids = rmod_ids.collect_vec();
                 for rmod_id in rmod_ids.into_iter() {
                     let rmod = *self.rmods.get_rmod(rmod_id);
+                    self.unproject_dependent_mod(&mut reuse_items, &mut reuse_cmods, ctx, rmod_id, rmod);
                     self.unreg_raw_mod(
                         &mut reuse_items,
                         &mut reuse_cmods,
@@ -301,7 +310,9 @@ impl Calc {
                         rmod,
                     ) {
                         self.rmods.remove_full(rmod_id);
+                        continue;
                     }
+                    self.project_dependent_mod(&mut reuse_items, &mut reuse_cmods, ctx, rmod_id, rmod);
                 }
             }
         }
@@ -520,6 +531,46 @@ impl Calc {
             ModifierKind::Targeted => self.std.unreg_proj_mod(rmod_id, rmod),
         }
         self.unreg_raw_mod_for_buff(item_uid, rmod_id, rmod);
+    }
+    fn project_dependent_mod(
+        &mut self,
+        reuse_items: &mut Vec<UItemId>,
+        reuse_cmods: &mut Vec<CtxModifier>,
+        ctx: &SvcCtx,
+        rmod_id: RawModId,
+        rmod: RawModifier,
+    ) {
+        // Buff modifiers re-generated for an already projected effect are not covered by effect
+        // projection, so they are projected onto effect projectees here
+        reuse_cmods.clear();
+        for projectee_uid in self.buffs.iter_projectees(&rmod.affector_espec) {
+            let projectee_item = ctx.u_data.items.get(projectee_uid);
+            if let Some(cmod) = self.std.project_mod(rmod_id, rmod, projectee_uid, projectee_item) {
+                reuse_cmods.push(cmod);
+            }
+        }
+        for cmod in reuse_cmods.iter() {
+            self.force_mod_affectee_attr_recalc(reuse_items, ctx, cmod);
+        }
+    }
+    fn unproject_dependent_mod(
+        &mut self,
+        reuse_items: &mut Vec<UItemId>,
+        reuse_cmods: &mut Vec<CtxModifier>,
+        ctx: &SvcCtx,
+        rmod_id: RawModId,
+        rmod: RawModifier,
+    ) {
+        reuse_cmods.clear();
+        for projectee_uid in self.buffs.iter_projectees(&rmod.affector_espec) {
+            let projectee_item = ctx.u_data.items.get(projectee_uid);
+            if let Some(cmod) = self.std.unproject_mod(rmod_id, rmod, projectee_uid, projectee_item) {
+                reuse_cmods.push(cmod);
+            }
+        }
+        for cmod in reuse_cmods.iter() {
+            self.force_mod_affectee_attr_recalc(reuse_items, ctx, cmod);
+        }
     }
     fn reg_raw_mod_for_buff(&mut self, item_uid: UItemId, rmod_id: RawModId, rmod: &RawModifier) {
         if let Some(buff_type_attr_rid) = rmod.buff_type_attr_rid {
