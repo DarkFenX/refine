@@ -1,7 +1,5 @@
 use std::collections::hash_map::Entry;
 
-use itertools::Either;
-
 use super::calce_shared::get_base_attr_value;
 use crate::{
     SecZone, Value,
@@ -325,38 +323,43 @@ impl Calc {
 // Low-level fetchers
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl Calc {
-    fn iter_modifications<F>(
+    fn accumulate_modifications<F>(
         &mut self,
         ctx: &SvcCtx,
+        accumulator: &mut ModAccumFast,
         item_uid: &UItemId,
         item: &UItem,
-        attr_rid: RAttrId,
+        attr: &RAttr,
         filter: F,
-    ) -> impl Iterator<Item = CalcModification>
-    where
+    ) where
         F: Fn(&EffectSpec) -> bool,
     {
         let mut reuse_ckeys = self.reuse.ckeys.take();
         self.std
-            .get_mods_for_affectee(&mut reuse_ckeys, item_uid, item, attr_rid, &ctx.u_data.fits);
+            .get_mods_for_affectee(&mut reuse_ckeys, item_uid, item, attr.rid, &ctx.u_data.fits);
         // Shortcut for case when modifications cannot overlap
         if reuse_ckeys.len() <= 1 {
-            let modification = reuse_ckeys.first().and_then(|ckey| {
+            if let Some(ckey) = reuse_ckeys.first() {
                 let cmod = self.rmods.get_cmod(ckey);
-                self.make_modification(ctx, &cmod, &filter)
-            });
+                if let Some(modification) = self.make_modification(ctx, &cmod, &filter) {
+                    accumulate_modification(accumulator, &modification, attr);
+                }
+            }
             self.reuse.ckeys.put(reuse_ckeys);
-            return Either::Left(modification.into_iter());
+            return;
         }
-        let mut mods = RMap::new();
+        let mut reuse_mods = self.reuse.mods.take();
         for ckey in reuse_ckeys.iter() {
             let cmod = self.rmods.get_cmod(ckey);
             if let Some(modification) = self.make_modification(ctx, &cmod, &filter) {
-                mods.insert(CalcModificationKey::from_cmod(&cmod), modification);
+                reuse_mods.insert(CalcModificationKey::from_cmod(&cmod), modification);
             }
         }
         self.reuse.ckeys.put(reuse_ckeys);
-        Either::Right(mods.into_values())
+        for (_, modification) in reuse_mods.drain() {
+            accumulate_modification(accumulator, &modification, attr);
+        }
+        self.reuse.mods.put(reuse_mods);
     }
     fn make_modification<F>(&mut self, ctx: &SvcCtx, cmod: &CtxModifier, filter: &F) -> Option<CalcModification>
     where
@@ -391,18 +394,7 @@ impl Calc {
         let attr = ctx.u_data.r_data.get_attr_by_rid(attr_rid);
         let base_val = self.calc_item_base_attr_value(ctx, item_uid, item, attr);
         let mut accumulator = ModAccumFast::new();
-        for modification in self.iter_modifications(ctx, &item_uid, item, attr_rid, mod_filter) {
-            accumulator.add_val(
-                modification.val,
-                modification.op,
-                modification.proj_mult,
-                modification.res_mult,
-                attr.penalizable,
-                modification.affector_item_cat_id,
-                modification.aggr_mode,
-                attr.hig,
-            );
-        }
+        self.accumulate_modifications(ctx, &mut accumulator, &item_uid, item, attr, mod_filter);
         let mut dogma_val = accumulator.apply_dogma_mods(base_val, attr.hig);
         // Lower value limit
         if let Some(limiter_attr_rid) = attr.min_attr_rid
@@ -452,4 +444,17 @@ impl Calc {
         }
         get_base_attr_value(item, attr)
     }
+}
+
+fn accumulate_modification(accumulator: &mut ModAccumFast, modification: &CalcModification, attr: &RAttr) {
+    accumulator.add_val(
+        modification.val,
+        modification.op,
+        modification.proj_mult,
+        modification.res_mult,
+        attr.penalizable,
+        modification.affector_item_cat_id,
+        modification.aggr_mode,
+        attr.hig,
+    );
 }

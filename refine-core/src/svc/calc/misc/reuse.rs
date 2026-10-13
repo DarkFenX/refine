@@ -1,55 +1,102 @@
+use std::hash::Hash;
+
 use crate::{
-    svc::calc::{CtxModKey, CtxModifier, RawModId, RawModifier},
+    svc::calc::{CalcModification, CalcModificationKey, CtxModKey, CtxModifier, RawModId, RawModifier},
     ud::UItemId,
+    util::RMap,
 };
+
+const MAX_SPARES: usize = 5;
+// Clearing and iterating a map takes time proportional to its capacity, so maps which grew bigger
+// than this are not kept, to avoid slowing down all the following uses
+const MAX_MAP_CAPACITY: usize = 128;
 
 #[derive(Clone, Default)]
 pub(in crate::svc::calc) struct CalcReuse {
-    pub(in crate::svc::calc) items: ReuseVec<UItemId>,
-    pub(in crate::svc::calc) rmod_ids: ReuseVec<RawModId>,
-    pub(in crate::svc::calc) rmods: ReuseVec<RawModifier>,
-    pub(in crate::svc::calc) ckeys: ReuseVec<CtxModKey>,
-    pub(in crate::svc::calc) cmods: ReuseVec<CtxModifier>,
+    pub(in crate::svc::calc) items: Reuse<Vec<UItemId>>,
+    pub(in crate::svc::calc) rmod_ids: Reuse<Vec<RawModId>>,
+    pub(in crate::svc::calc) rmods: Reuse<Vec<RawModifier>>,
+    pub(in crate::svc::calc) ckeys: Reuse<Vec<CtxModKey>>,
+    pub(in crate::svc::calc) cmods: Reuse<Vec<CtxModifier>>,
+    pub(in crate::svc::calc) mods: Reuse<RMap<CalcModificationKey, CalcModification>>,
 }
 
-const MAX_SPARES: usize = 5;
-
-pub(in crate::svc::calc) struct ReuseVec<T> {
-    primary: Vec<T>,
-    spares: Vec<Vec<T>>,
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Trait for reusable container types
+////////////////////////////////////////////////////////////////////////////////////////////////////
+pub(in crate::svc::calc) trait Reusable: Default {
+    fn is_reusable(&self) -> bool;
+    fn clear(&mut self);
 }
-impl<T> Default for ReuseVec<T> {
+impl<T> Reusable for Vec<T> {
+    fn is_reusable(&self) -> bool {
+        self.capacity() > 0
+    }
+    fn clear(&mut self) {
+        Vec::clear(self)
+    }
+}
+impl<K, V> Reusable for RMap<K, V>
+where
+    K: Eq + Hash,
+{
+    fn is_reusable(&self) -> bool {
+        let capacity = self.capacity();
+        capacity > 0 && capacity <= MAX_MAP_CAPACITY
+    }
+    fn clear(&mut self) {
+        RMap::clear(self)
+    }
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Reusable container storage
+////////////////////////////////////////////////////////////////////////////////////////////////////
+pub(in crate::svc::calc) struct Reuse<C> {
+    primary: C,
+    spares: Vec<C>,
+}
+impl<C> Default for Reuse<C>
+where
+    C: Default,
+{
     fn default() -> Self {
         Self {
-            primary: Vec::new(),
+            primary: C::default(),
             spares: Vec::new(),
         }
     }
 }
-impl<T> Clone for ReuseVec<T> {
+impl<C> Clone for Reuse<C>
+where
+    C: Default,
+{
     fn clone(&self) -> Self {
         // Spare containers are just a cache, no need to copy them
         Self::default()
     }
 }
-impl<T> ReuseVec<T> {
-    pub(in crate::svc::calc) fn take(&mut self) -> Vec<T> {
-        match self.primary.capacity() {
-            0 => self.spares.pop().unwrap_or_default(),
-            _ => std::mem::take(&mut self.primary),
+impl<C> Reuse<C>
+where
+    C: Reusable,
+{
+    pub(in crate::svc::calc) fn take(&mut self) -> C {
+        match self.primary.is_reusable() {
+            true => std::mem::take(&mut self.primary),
+            false => self.spares.pop().unwrap_or_default(),
         }
     }
-    pub(in crate::svc::calc) fn put(&mut self, mut vec: Vec<T>) {
-        if vec.capacity() == 0 {
+    pub(in crate::svc::calc) fn put(&mut self, mut container: C) {
+        if !container.is_reusable() {
             return;
         }
-        vec.clear();
-        if self.primary.capacity() == 0 {
-            self.primary = vec;
+        container.clear();
+        if !self.primary.is_reusable() {
+            self.primary = container;
             return;
         }
         if self.spares.len() < MAX_SPARES {
-            self.spares.push(vec);
+            self.spares.push(container);
         }
     }
 }

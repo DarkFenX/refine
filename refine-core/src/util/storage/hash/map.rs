@@ -121,6 +121,9 @@ where
     pub(crate) fn len(&self) -> usize {
         self.data.len()
     }
+    pub(crate) fn capacity(&self) -> usize {
+        self.data.capacity()
+    }
     // Modification methods
     pub(crate) fn iter_mut(&mut self) -> impl ExactSizeIterator<Item = (&K, &mut V)> {
         self.data.iter_mut()
