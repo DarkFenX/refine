@@ -305,8 +305,8 @@ struct Pens<M>
 where
     M: MultMath,
 {
-    neg: Vec<Value>,
-    pos: Vec<Value>,
+    neg: PenVals,
+    pos: PenVals,
     math: std::marker::PhantomData<M>,
 }
 impl<M> Pens<M>
@@ -315,43 +315,72 @@ where
 {
     fn new() -> Self {
         Self {
-            neg: Vec::new(),
-            pos: Vec::new(),
+            neg: PenVals::new(),
+            pos: PenVals::new(),
             math: std::marker::PhantomData,
         }
     }
     fn add_raw(&mut self, raw: Value) {
         let mult_change = M::raw_to_mult_change(raw);
         match mult_change.cmp(&Value::ZERO) {
-            Ordering::Less => self.neg.push(mult_change),
+            Ordering::Less => self.neg.add(mult_change, neg_key),
             Ordering::Equal => (),
-            Ordering::Greater => self.pos.push(mult_change),
+            Ordering::Greater => self.pos.add(mult_change, pos_key),
         }
     }
     fn get_mult(&mut self) -> Value {
         let mut mult = Value::ONE;
         if !self.neg.is_empty() {
-            mult *= get_penalty_chain_mult(sort_strongest(&mut self.neg, |&v| v));
+            mult *= get_penalty_chain_mult(self.neg.sorted(neg_key));
         }
         if !self.pos.is_empty() {
-            mult *= get_penalty_chain_mult(sort_strongest(&mut self.pos, |&v| -v));
+            mult *= get_penalty_chain_mult(self.pos.sorted(pos_key));
         }
         mult
     }
 }
 
-/// Take a slice of mult changes, return sorted ones which make it into penalty chain
-fn sort_strongest(vals: &mut [Value], key: impl Fn(&Value) -> Value) -> &[Value] {
-    let vals = match vals.len() > PENALTY_MULTS.len() {
-        true => {
-            // Long penalty chains are considered unlikely
-            std::hint::cold_path();
-            vals.select_nth_unstable_by_key(PENALTY_MULTS.len(), &key).0
+// Custom container for penalties, to avoid allocations altogether
+struct PenVals {
+    vals: [Value; PENALTY_MULTS.len()],
+    len: usize,
+}
+impl PenVals {
+    fn new() -> Self {
+        Self {
+            vals: [Value::ZERO; PENALTY_MULTS.len()],
+            len: 0,
         }
-        false => vals,
-    };
-    vals.sort_unstable_by_key(key);
-    vals
+    }
+    fn is_empty(&self) -> bool {
+        self.len == 0
+    }
+    fn add(&mut self, val: Value, key: fn(&Value) -> Value) {
+        if self.len < self.vals.len() {
+            self.vals[self.len] = val;
+            self.len += 1;
+            return;
+        }
+        // Long penalty chains are considered unlikely
+        std::hint::cold_path();
+        // Replace the weakest mult change, if new one is stronger
+        let (weakest_idx, weakest_val) = self.vals.iter().enumerate().max_by_key(|(_, v)| key(v)).unwrap();
+        if key(&val) < key(weakest_val) {
+            self.vals[weakest_idx] = val;
+        }
+    }
+    fn sorted(&mut self, key: fn(&Value) -> Value) -> &[Value] {
+        let vals = &mut self.vals[..self.len];
+        vals.sort_unstable_by_key(key);
+        vals
+    }
+}
+
+fn neg_key(val: &Value) -> Value {
+    *val
+}
+fn pos_key(val: &Value) -> Value {
+    -*val
 }
 
 /// Take a slice of mult changes, return mult
