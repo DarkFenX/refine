@@ -12,24 +12,44 @@ pub(in crate::svc::calc) struct CalcReuse {
     pub(in crate::svc::calc) cmods: ReuseVec<CtxModifier>,
 }
 
-#[derive(Clone)]
+const MAX_SPARES: usize = 5;
+
 pub(in crate::svc::calc) struct ReuseVec<T> {
-    vec: Vec<T>,
+    primary: Vec<T>,
+    spares: Vec<Vec<T>>,
 }
 impl<T> Default for ReuseVec<T> {
     fn default() -> Self {
-        Self { vec: Vec::new() }
+        Self {
+            primary: Vec::new(),
+            spares: Vec::new(),
+        }
+    }
+}
+impl<T> Clone for ReuseVec<T> {
+    fn clone(&self) -> Self {
+        // Spare containers are just a cache, no need to copy them
+        Self::default()
     }
 }
 impl<T> ReuseVec<T> {
     pub(in crate::svc::calc) fn take(&mut self) -> Vec<T> {
-        std::mem::take(&mut self.vec)
+        match self.primary.capacity() {
+            0 => self.spares.pop().unwrap_or_default(),
+            _ => std::mem::take(&mut self.primary),
+        }
     }
     pub(in crate::svc::calc) fn put(&mut self, mut vec: Vec<T>) {
-        // Nested calls might have put their container back already, keep the bigger one
-        if vec.capacity() > self.vec.capacity() {
-            vec.clear();
-            self.vec = vec;
+        if vec.capacity() == 0 {
+            return;
+        }
+        vec.clear();
+        if self.primary.capacity() == 0 {
+            self.primary = vec;
+            return;
+        }
+        if self.spares.len() < MAX_SPARES {
+            self.spares.push(vec);
         }
     }
 }
