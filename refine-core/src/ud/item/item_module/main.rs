@@ -6,9 +6,8 @@ use crate::{
     ud::{
         UAttrMutationRequest, UData, UFitId, UItemId, UItemMutationRequest,
         err::ItemMutatedError,
-        item::{ItemMutationData, UEffectModeOverrideIter, UEffectUpdates, UItemBaseMutable, UProjs},
+        item::{ItemMutationData, REffs, UEffectModeOverrideIter, UEffectUpdates, UItemBaseMutable, UProjs},
     },
-    util::RSet,
 };
 
 #[derive(Clone)]
@@ -68,7 +67,7 @@ impl UModule {
     pub(crate) fn get_state(&self) -> RState {
         self.base.get_state()
     }
-    pub(crate) fn get_reffs(&self) -> Option<&RSet<REffectId>> {
+    pub(crate) fn get_reffs(&self) -> Option<&REffs> {
         self.base.get_reffs()
     }
     pub(crate) fn update_reffs(&mut self, reuse_eupdates: &mut UEffectUpdates, r_data: &RData) {

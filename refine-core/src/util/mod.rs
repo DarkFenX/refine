@@ -9,7 +9,7 @@ pub(crate) use iter_peek_prefetch::PrefetchPeekable;
 pub(crate) use state::{State3, State4, State5};
 pub(crate) use storage::{
     CMap, PSlab, RMap, RMapRMap, RMapRMapRMap, RMapRSet, RMapVec, ROrdSet, RSet, SSLabRSet, SSlab, SSlabUnchecked,
-    SlabId,
+    SlabId, SmallRSet,
 };
 pub(crate) use traits::{LibConverter, LibDefault, LibGetId, LibIncrement, LibMax, LibNamed};
 

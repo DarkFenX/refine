@@ -27,7 +27,7 @@ pub(crate) use item_skill::USkill;
 pub(crate) use item_stance::UStance;
 pub(crate) use item_subsystem::USubsystem;
 pub(crate) use item_sw_effect::USwEffect;
-pub(crate) use misc::{UAutocharges, UPhysics, UProjData, UProjs};
+pub(crate) use misc::{REffs, UAutocharges, UPhysics, UProjData, UProjs};
 use misc::{UEffectModeOverrideIter, bool_to_state_active, bool_to_state_offline, state_to_bool};
 pub(crate) use uid::UItemId;
 

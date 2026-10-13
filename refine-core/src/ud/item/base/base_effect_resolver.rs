@@ -2,8 +2,7 @@ use crate::{
     EffectMode,
     ad::AEffectId,
     rd::{RData, REffect, REffectId, RItem, RState, RcEffect},
-    ud::item::misc::UEffectModes,
-    util::RSet,
+    ud::item::{REffs, misc::UEffectModes},
 };
 
 pub(crate) struct UAutochargeActivation {
@@ -37,7 +36,7 @@ impl UEffectUpdates {
 
 pub(super) fn process_effects(
     reuse_eupdates: &mut UEffectUpdates,
-    reffs: &mut RSet<REffectId>,
+    reffs: &mut REffs,
     r_data: &RData,
     item: &RItem,
     item_state: RState,
@@ -60,7 +59,7 @@ pub(super) fn process_effects(
     }
 }
 
-fn stop_all_effects(reuse_eupdates: &mut UEffectUpdates, reffs: &mut RSet<REffectId>, r_data: &RData, item: &RItem) {
+fn stop_all_effects(reuse_eupdates: &mut UEffectUpdates, reffs: &mut REffs, r_data: &RData, item: &RItem) {
     // We don't want to waste time resolving effects when we want them to just stop (which happens
     // before e.g. item removal)
     reuse_eupdates.to_stop.reserve(reffs.len());
@@ -86,7 +85,7 @@ fn stop_all_effects(reuse_eupdates: &mut UEffectUpdates, reffs: &mut RSet<REffec
 
 fn update_running_effects(
     reuse_eupdates: &mut UEffectUpdates,
-    reffs: &mut RSet<REffectId>,
+    reffs: &mut REffs,
     r_data: &RData,
     item: &RItem,
     item_state: RState,

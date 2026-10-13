@@ -5,9 +5,9 @@ use crate::{
     ud::{
         UAutocharge, UBooster, UCharacter, UCharge, UData, UDrone, UFighter, UFitId, UFwEffect, UImplant, UItemId,
         UModule, UPhysics, UProjEffect, URig, UService, UShip, USkill, UStance, USubsystem, USwEffect,
-        item::{ItemMutationData, UAutocharges, UEffectUpdates, UProjData, UProjs},
+        item::{ItemMutationData, REffs, UAutocharges, UEffectUpdates, UProjData, UProjs},
     },
-    util::{LibGetId, LibNamed, RMap, RSet},
+    util::{LibGetId, LibNamed, RMap},
 };
 
 #[derive(Clone)]
@@ -110,7 +110,7 @@ impl UItem {
             Self::SwEffect(sw_effect) => sw_effect.get_type_aid(),
         }
     }
-    pub(crate) fn get_reffs(&self) -> Option<&RSet<REffectId>> {
+    pub(crate) fn get_reffs(&self) -> Option<&REffs> {
         match self {
             Self::Autocharge(autocharge) => autocharge.get_reffs(),
             Self::Booster(booster) => booster.get_reffs(),

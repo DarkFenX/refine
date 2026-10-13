@@ -1,4 +1,4 @@
-pub(crate) use map::{CMap, RMap};
+pub(crate) use map::{CMap, Map, RMap};
 pub(crate) use map_map::RMapRMap;
 pub(crate) use map_map_map::RMapRMapRMap;
 pub(crate) use map_set::RMapRSet;

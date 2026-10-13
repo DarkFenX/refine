@@ -4,9 +4,8 @@ use crate::{
     rd::{RData, REffectId, RItemBase, RItemFlexData, RState},
     ud::{
         UFitId, UItemId,
-        item::{UEffectModeOverrideIter, UEffectUpdates, UItemBase, UProjs},
+        item::{REffs, UEffectModeOverrideIter, UEffectUpdates, UItemBase, UProjs},
     },
-    util::RSet,
 };
 
 #[derive(Clone)]
@@ -59,7 +58,7 @@ impl UAutocharge {
     pub(crate) fn get_state(&self) -> RState {
         self.base.get_state()
     }
-    pub(crate) fn get_reffs(&self) -> Option<&RSet<REffectId>> {
+    pub(crate) fn get_reffs(&self) -> Option<&REffs> {
         self.base.get_reffs()
     }
     pub(crate) fn update_reffs(&mut self, reuse_eupdates: &mut UEffectUpdates, r_data: &RData) {

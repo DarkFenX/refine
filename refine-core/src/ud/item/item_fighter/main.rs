@@ -4,9 +4,8 @@ use crate::{
     rd::{RData, REffectId, RItemBase, RItemFlexData, RState},
     ud::{
         UEffectUpdates, UFitId, UPhysics, UProjs,
-        item::{UAutocharges, UEffectModeOverrideIter, UItemBase},
+        item::{REffs, UAutocharges, UEffectModeOverrideIter, UItemBase},
     },
-    util::RSet,
 };
 
 #[derive(Clone)]
@@ -61,7 +60,7 @@ impl UFighter {
     pub(crate) fn get_state(&self) -> RState {
         self.base.get_state()
     }
-    pub(crate) fn get_reffs(&self) -> Option<&RSet<REffectId>> {
+    pub(crate) fn get_reffs(&self) -> Option<&REffs> {
         self.base.get_reffs()
     }
     pub(crate) fn update_reffs(&mut self, reuse_eupdates: &mut UEffectUpdates, r_data: &RData) {

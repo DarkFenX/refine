@@ -87,6 +87,11 @@ where
     K: Eq + Hash,
     H: BuildHasher,
 {
+    pub(crate) fn with_hasher(hasher: H) -> Self {
+        Self {
+            data: HashMap::with_hasher(hasher),
+        }
+    }
     // View methods
     pub(crate) fn get<Q>(&self, key: &Q) -> Option<&V>
     where

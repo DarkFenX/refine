@@ -4,9 +4,8 @@ use crate::{
     rd::{RData, REffectId, RItemBase, RItemFlexData, RState},
     ud::{
         UFitId,
-        item::{UEffectModeOverrideIter, UEffectUpdates, UItemBase, bool_to_state_active, state_to_bool},
+        item::{REffs, UEffectModeOverrideIter, UEffectUpdates, UItemBase, bool_to_state_active, state_to_bool},
     },
-    util::RSet,
 };
 
 #[derive(Clone)]
@@ -49,7 +48,7 @@ impl UFwEffect {
     pub(crate) fn get_state(&self) -> RState {
         self.base.get_state()
     }
-    pub(in crate::ud::item) fn get_reffs(&self) -> Option<&RSet<REffectId>> {
+    pub(in crate::ud::item) fn get_reffs(&self) -> Option<&REffs> {
         self.base.get_reffs()
     }
     pub(crate) fn update_reffs(&mut self, reuse_eupdates: &mut UEffectUpdates, r_data: &RData) {

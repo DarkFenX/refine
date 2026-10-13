@@ -8,11 +8,11 @@ use crate::{
     ud::{
         UAttrMutationRequest, UItemMutationRequest,
         item::{
-            UEffectModeOverrideIter,
+            REffs, UEffectModeOverrideIter,
             base::{UEffectUpdates, UItemBase, mutable::err::ItemMutatedError},
         },
     },
-    util::{RMap, RSet},
+    util::RMap,
 };
 
 /// Item mutable base stores all the data every mutable item should have.
@@ -428,7 +428,7 @@ impl UItemBaseMutable {
 // Running effect-specific methods
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl UItemBaseMutable {
-    pub(in crate::ud::item) fn get_reffs(&self) -> Option<&RSet<REffectId>> {
+    pub(in crate::ud::item) fn get_reffs(&self) -> Option<&REffs> {
         self.base.get_reffs()
     }
     pub(in crate::ud::item) fn update_reffs(

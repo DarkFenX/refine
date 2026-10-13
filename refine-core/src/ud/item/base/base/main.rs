@@ -5,12 +5,11 @@ use crate::{
     ud::{
         ItemId,
         item::{
-            UEffectModeOverrideIter,
+            REffs, UEffectModeOverrideIter,
             base::{UEffectUpdates, process_effects},
             misc::UEffectModes,
         },
     },
-    util::RSet,
 };
 
 /// Item base stores all the data every item should have
@@ -29,7 +28,7 @@ pub(in crate::ud::item) struct UItemBase {
 struct ItemBaseCache {
     r_item: RcItem,
     /// Running effects, are available only when adapted item is set
-    reffs: RSet<REffectId>,
+    reffs: REffs,
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -44,7 +43,7 @@ impl UItemBase {
             effect_modes: UEffectModes::new(),
             cache: r_data.get_item_by_aid(&type_aid).map(|r_item| ItemBaseCache {
                 r_item: r_item.clone(),
-                reffs: RSet::new(),
+                reffs: REffs::new(),
             }),
         }
     }
@@ -69,7 +68,7 @@ impl UItemBase {
             effect_modes: UEffectModes::new(),
             cache: Some(ItemBaseCache {
                 r_item,
-                reffs: RSet::new(),
+                reffs: REffs::new(),
             }),
         }
     }
@@ -155,7 +154,7 @@ impl UItemBase {
 // Running effect-specific methods
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl UItemBase {
-    pub(in crate::ud::item) fn get_reffs(&self) -> Option<&RSet<REffectId>> {
+    pub(in crate::ud::item) fn get_reffs(&self) -> Option<&REffs> {
         self.cache.as_ref().map(|v| &v.reffs)
     }
     pub(in crate::ud::item) fn update_reffs(
@@ -223,7 +222,7 @@ impl UItemBase {
             None => {
                 self.cache = Some(ItemBaseCache {
                     r_item,
-                    reffs: RSet::new(),
+                    reffs: REffs::new(),
                 })
             }
         }
