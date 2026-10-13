@@ -116,16 +116,34 @@ impl Calc {
         let mut reuse_cmods = Vec::new();
         for effect in effects.iter() {
             self.generate_mods_for_effect(&mut reuse_rmods, ctx, item_uid, item, effect);
-            // Add all modifiers of the effect in one go to avoid unnecessary allocations, and then
-            // keep only those which were registered successfully
-            self.rmods
-                .add_for_espec(&mut reuse_rmod_ids, EffectSpec::new(item_uid, effect.rid), &reuse_rmods);
-            for (&rmod_id, &rmod) in std::iter::zip(reuse_rmod_ids.iter(), reuse_rmods.iter()) {
-                if !self.reg_raw_mod(&mut reuse_items, &mut reuse_cmods, ctx, item_uid, item, rmod_id, rmod) {
-                    self.rmods.remove_full(rmod_id);
-                }
-            }
-            // Buff maintenance - add info about effects which use default buff attributes
+            self.reg_raw_mods(
+                &mut reuse_rmod_ids,
+                &mut reuse_items,
+                &mut reuse_cmods,
+                ctx,
+                item,
+                EffectSpec::new(item_uid, effect.rid),
+                &reuse_rmods,
+            );
+        }
+        // Buffs which rely on on-item attributes are generated after all other modifiers of started
+        // effects are registered, since those modifiers can change applied buff ID
+        for effect in effects.iter() {
+            self.generate_dependent_buff_mods_for_effect(&mut reuse_rmods, ctx, item_uid, item, effect);
+            self.reg_raw_mods(
+                &mut reuse_rmod_ids,
+                &mut reuse_items,
+                &mut reuse_cmods,
+                ctx,
+                item,
+                EffectSpec::new(item_uid, effect.rid),
+                &reuse_rmods,
+            );
+        }
+        // Buff maintenance - add info about effects which use default buff attributes. Done after
+        // all modifiers are registered, so that buff modifiers of started effects are not generated
+        // again while starting them
+        for effect in effects.iter() {
             self.buffs.reg_effect(item_uid, effect);
         }
         // Notify RAH sim
@@ -262,8 +280,13 @@ impl Calc {
             let effect_rids = self.buffs.get_effects(&aspec.item_uid);
             if effect_rids.len() > 0 {
                 let effect_rids = effect_rids.collect_vec();
-                let rmods =
-                    self.generate_dependent_buff_mods(ctx, aspec.item_uid, item, effect_rids.iter(), aspec.attr_rid);
+                let rmods = self.generate_dependent_buff_mods_for_attr(
+                    ctx,
+                    aspec.item_uid,
+                    item,
+                    effect_rids.iter(),
+                    aspec.attr_rid,
+                );
                 let mut reuse_items = Vec::new();
                 let mut reuse_cmods = Vec::new();
                 for rmod in rmods.into_iter() {
@@ -340,6 +363,25 @@ impl Calc {
         self.force_oattr_postproc_recalc(ctx, skill_uid, ctx.ac().skill_level);
     }
     // Private methods
+    fn reg_raw_mods(
+        &mut self,
+        reuse_rmod_ids: &mut Vec<RawModId>,
+        reuse_items: &mut Vec<UItemId>,
+        reuse_cmods: &mut Vec<CtxModifier>,
+        ctx: &SvcCtx,
+        item: &UItem,
+        espec: EffectSpec,
+        rmods: &[RawModifier],
+    ) {
+        // Add all modifiers of the effect in one go to avoid unnecessary allocations, and then
+        // keep only those which were registered successfully
+        self.rmods.add_for_espec(reuse_rmod_ids, espec, rmods);
+        for (&rmod_id, &rmod) in std::iter::zip(reuse_rmod_ids.iter(), rmods.iter()) {
+            if !self.reg_raw_mod(reuse_items, reuse_cmods, ctx, espec.item_uid, item, rmod_id, rmod) {
+                self.rmods.remove_full(rmod_id);
+            }
+        }
+    }
     fn reg_raw_mod(
         &mut self,
         reuse_items: &mut Vec<UItemId>,

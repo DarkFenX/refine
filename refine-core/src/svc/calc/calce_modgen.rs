@@ -27,34 +27,8 @@ impl Calc {
                 None => continue,
             };
         }
-        // Buffs
+        // Buffs - only fully defined ones are processed here
         if let Some(effect_buff) = &effect.buff {
-            // Buffs which are partially defined and rely on on-item attributes to complete
-            // definition
-            if let Some(buff_attr_merge) = &effect_buff.attr_merge {
-                for (buff_type_attr_rid, buff_str_attr_rid) in ctx.ac().buff_merge_ids_strs.iter() {
-                    if let Ok(buff_id_cval) = self.get_item_attr_rfull(ctx, item_uid, *buff_type_attr_rid) {
-                        let Some(buff_aid) = ABuffId::try_eve_from_f64_rounded(buff_id_cval.extra.into_f64()) else {
-                            continue;
-                        };
-                        let Some(buff) = ctx.u_data.r_data.get_buff_by_aid(&buff_aid) else {
-                            continue;
-                        };
-                        add_buff_mods_with_attr(
-                            ctx.u_data,
-                            reuse_rmods,
-                            item_uid,
-                            item,
-                            effect,
-                            buff,
-                            &buff_attr_merge.scope,
-                            Some(*buff_type_attr_rid),
-                            *buff_str_attr_rid,
-                        );
-                    }
-                }
-            }
-            // Fully defined buffs
             for buff_full in effect_buff.full.iter() {
                 match buff_full.strength {
                     REffectModStrength::Attr(buff_str_attr_rid) => {
@@ -97,7 +71,43 @@ impl Calc {
             reuse_rmods.push(rmod);
         }
     }
-    pub(super) fn generate_dependent_buff_mods<'a>(
+    pub(super) fn generate_dependent_buff_mods_for_effect(
+        &mut self,
+        reuse_rmods: &mut Vec<RawModifier>,
+        ctx: &SvcCtx,
+        item_uid: UItemId,
+        item: &UItem,
+        effect: &REffect,
+    ) {
+        reuse_rmods.clear();
+        // Buffs which are partially defined and rely on on-item attributes to complete definition
+        if let Some(effect_buff) = &effect.buff
+            && let Some(buff_attr_merge) = &effect_buff.attr_merge
+        {
+            for (buff_type_attr_rid, buff_str_attr_rid) in ctx.ac().buff_merge_ids_strs.iter() {
+                if let Ok(buff_id_cval) = self.get_item_attr_rfull(ctx, item_uid, *buff_type_attr_rid) {
+                    let Some(buff_aid) = ABuffId::try_eve_from_f64_rounded(buff_id_cval.extra.into_f64()) else {
+                        continue;
+                    };
+                    let Some(buff) = ctx.u_data.r_data.get_buff_by_aid(&buff_aid) else {
+                        continue;
+                    };
+                    add_buff_mods_with_attr(
+                        ctx.u_data,
+                        reuse_rmods,
+                        item_uid,
+                        item,
+                        effect,
+                        buff,
+                        &buff_attr_merge.scope,
+                        Some(*buff_type_attr_rid),
+                        *buff_str_attr_rid,
+                    );
+                }
+            }
+        }
+    }
+    pub(super) fn generate_dependent_buff_mods_for_attr<'a>(
         &mut self,
         ctx: &SvcCtx,
         item_uid: UItemId,
