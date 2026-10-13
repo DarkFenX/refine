@@ -38,7 +38,7 @@ fn switch_item_state(svc: &mut Svc, item_uid: UItemId, u_item: &UItem, old_state
         std::cmp::Ordering::Equal => (),
         std::cmp::Ordering::Greater => {
             let is_item_loaded = u_item.is_loaded();
-            for state in RState::iter().filter(|v| *v > old_state && *v <= new_state) {
+            for &state in RState::above_up_to(old_state, new_state) {
                 svc.notify_state_activated(item_uid, u_item, state);
                 if is_item_loaded {
                     svc.notify_item_state_activated_loaded(item_uid, u_item, state);
@@ -47,7 +47,7 @@ fn switch_item_state(svc: &mut Svc, item_uid: UItemId, u_item: &UItem, old_state
         }
         std::cmp::Ordering::Less => {
             let is_item_loaded = u_item.is_loaded();
-            for state in RState::iter().rev().filter(|v| *v > new_state && *v <= old_state) {
+            for &state in RState::above_up_to(new_state, old_state).iter().rev() {
                 if is_item_loaded {
                     svc.notify_item_state_deactivated_loaded(&item_uid, u_item, state);
                 }

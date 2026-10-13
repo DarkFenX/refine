@@ -19,8 +19,8 @@ pub(crate) enum RState {
     Overload,
 }
 impl RState {
-    pub(crate) fn iter() -> std::array::IntoIter<Self, 6> {
-        STATES.into_iter()
+    pub(crate) fn above_up_to(low: Self, high: Self) -> &'static [Self] {
+        &STATES[low as usize + 1..=high as usize]
     }
 }
 
