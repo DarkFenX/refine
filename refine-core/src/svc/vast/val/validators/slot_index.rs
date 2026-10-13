@@ -68,8 +68,8 @@ impl VastFitData {
 }
 
 fn validate_slot_index_fast(kfs: &RSet<UItemId>, data: &RMapRSet<SlotIndex, UItemId>) -> bool {
-    data.values_inner()
-        .all(|item_uids| item_uids.len() < 2 || item_uids.is_subset(kfs))
+    data.values()
+        .all(|mut item_uids| item_uids.len() < 2 || item_uids.all(|item_uid| kfs.contains(item_uid)))
 }
 fn validate_slot_index_verbose(
     kfs: &RSet<UItemId>,
