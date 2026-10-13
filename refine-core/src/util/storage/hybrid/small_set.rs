@@ -84,7 +84,7 @@ where
             }
             let spill = self.spill.get_or_insert_with(|| {
                 Box::new(Spilled {
-                    vals: Vec::new(),
+                    vals: Vec::with_capacity(N * 2),
                     index: Map::with_hasher(H::default()),
                 })
             });
