@@ -36,6 +36,7 @@ fn get_effect_map() -> RMap<AEffectId, NEffect> {
         defs::d101_use_missiles::mk_n_effect(),
         defs::d103_defender_missile_launching::mk_n_effect(),
         defs::d104_fof_missile_launching::mk_n_effect(),
+        defs::d132_skill_effect::mk_n_effect(),
         defs::d607_cloaking::mk_n_effect(),
         defs::d660_missile_em_dmg_bonus::mk_n_effect(),
         defs::d661_missile_expl_dmg_bonus::mk_n_effect(),

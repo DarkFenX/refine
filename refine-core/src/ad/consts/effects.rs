@@ -23,6 +23,7 @@ impl AEffectId {
     pub(crate) const USE_MISSILES: Self = Self::from_eid(EEffectId::USE_MISSILES);
     pub(crate) const DEFENDER_MISSILE_LAUNCHING: Self = Self::from_eid(EEffectId::DEFENDER_MISSILE_LAUNCHING);
     pub(crate) const FOF_MISSILE_LAUNCHING: Self = Self::from_eid(EEffectId::FOF_MISSILE_LAUNCHING);
+    pub(crate) const SKILL_EFFECT: Self = Self::from_eid(EEffectId::SKILL_EFFECT);
     pub(crate) const CLOAKING: Self = Self::from_eid(EEffectId::CLOAKING);
     pub(crate) const MISSILE_EM_DMG_BONUS: Self = Self::from_eid(EEffectId::MISSILE_EM_DMG_BONUS);
     pub(crate) const MISSILE_EXPL_DMG_BONUS: Self = Self::from_eid(EEffectId::MISSILE_EXPL_DMG_BONUS);

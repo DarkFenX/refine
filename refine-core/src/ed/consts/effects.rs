@@ -20,6 +20,7 @@ impl EEffectId {
     pub(crate) const USE_MISSILES: Self = Self::from_i32(101);
     pub(crate) const DEFENDER_MISSILE_LAUNCHING: Self = Self::from_i32(103);
     pub(crate) const FOF_MISSILE_LAUNCHING: Self = Self::from_i32(104);
+    pub(crate) const SKILL_EFFECT: Self = Self::from_i32(132);
     pub(crate) const CLOAKING: Self = Self::from_i32(607);
     pub(crate) const MISSILE_EM_DMG_BONUS: Self = Self::from_i32(660);
     pub(crate) const MISSILE_EXPL_DMG_BONUS: Self = Self::from_i32(661);
