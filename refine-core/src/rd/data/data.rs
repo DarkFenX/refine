@@ -1,5 +1,6 @@
 use std::sync::Arc;
 
+use super::attr::DENSE_ATTR_AIDS;
 use crate::{
     ad::{AAbilId, AAttrId, ABuffId, AData, AEffectId, AItemId},
     rd::{
@@ -118,10 +119,17 @@ impl RData {
             entry.insert(r_item_list);
             item_list_aid_rid_map.insert(a_item_list.id, item_list_rid);
         }
-        // Attributes
+        // Attributes - densely stored attrs go first
         let mut attr_aid_rid_map = RMap::with_capacity(a_data.attrs.data.len());
         let mut attrs = PSlab::with_capacity(a_data.attrs.data.len());
-        for a_attr in a_data.attrs.iter() {
+        let dense_a_attrs = DENSE_ATTR_AIDS
+            .iter()
+            .filter_map(|attr_aid| a_data.attrs.data.get(attr_aid));
+        let sparse_a_attrs = a_data
+            .attrs
+            .iter()
+            .filter(|a_attr| !DENSE_ATTR_AIDS.contains(&a_attr.id));
+        for a_attr in dense_a_attrs.chain(sparse_a_attrs) {
             let entry = attrs.vacant_entry();
             let attr_rid = entry.id();
             let r_attr = RAttr::from_a_attr(attr_rid, a_attr);

@@ -1,5 +1,6 @@
-use super::{attr::AttrEntry, data::ItemAttrData};
+use super::{attr::AttrEntry, item::ItemAttrData};
 use crate::{
+    dbg::DebugResult,
     rd::RAttrId,
     svc::calc::{ItemAttrPostproc, misc::Reuse},
     ud::{UData, UItem, UItemId},
@@ -9,14 +10,16 @@ use crate::{
 #[derive(Clone)]
 pub(in crate::svc::calc) struct AttrValData {
     pub(super) data: SSlab<UItemId, ItemAttrData>,
-    // Stores unused maps from unloaded items, to be used later for loaded items
-    spare_maps: Reuse<RMap<RAttrId, AttrEntry>>,
+    // Stores unused containers from unloaded items, to be used later for loaded items
+    spare_dense: Reuse<Vec<(RAttrId, AttrEntry)>>,
+    spare_sparse: Reuse<RMap<RAttrId, AttrEntry>>,
 }
 impl AttrValData {
     pub(in crate::svc::calc) fn new() -> Self {
         Self {
             data: SSlab::new(),
-            spare_maps: Reuse::default(),
+            spare_dense: Reuse::default(),
+            spare_sparse: Reuse::default(),
         }
     }
     // Query methods
@@ -28,7 +31,7 @@ impl AttrValData {
     }
     // Modification methods
     pub(in crate::svc::calc) fn item_loaded(&mut self, u_data: &UData, item_uid: UItemId, item: &UItem) {
-        let mut item_data = ItemAttrData::from_map(self.spare_maps.take());
+        let mut item_data = ItemAttrData::from_parts(self.spare_dense.take(), self.spare_sparse.take());
         match item {
             UItem::Fighter(..) if let Some(count_attr_rid) = u_data.r_data.get_attr_consts().ftr_sq_size => {
                 item_data.reg_postproc(count_attr_rid, ItemAttrPostproc::FighterCount);
@@ -45,7 +48,30 @@ impl AttrValData {
     }
     pub(in crate::svc::calc) fn item_unloaded(&mut self, item_uid: UItemId) {
         if let Some(item_data) = self.data.take(item_uid) {
-            self.spare_maps.put(item_data.into_map());
+            let (dense_entries, map) = item_data.into_parts();
+            self.spare_dense.put(dense_entries);
+            self.spare_sparse.put(map);
         }
+    }
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Debug
+////////////////////////////////////////////////////////////////////////////////////////////////////
+impl AttrValData {
+    pub(in crate::svc::calc) fn consistency_check(&self, u_data: &UData) -> DebugResult {
+        for (item_uid, item_data) in self.data.iter() {
+            item_uid.consistency_check(u_data, true)?;
+            item_data.consistency_check()?;
+            for (attr_rid, attr_entry) in item_data.iter() {
+                attr_rid.consistency_check(u_data)?;
+                if let Some(attr_val) = attr_entry.value {
+                    attr_val.base.consistency_check()?;
+                    attr_val.dogma.consistency_check()?;
+                    attr_val.extra.consistency_check()?;
+                }
+            }
+        }
+        Ok(())
     }
 }
