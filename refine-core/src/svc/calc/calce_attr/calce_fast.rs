@@ -490,7 +490,11 @@ impl Calc {
         let item = ctx.u_data.items.get(item_uid);
         let attr = ctx.u_data.r_data.get_attr_by_rid(attr_rid);
         let base_val = self.calc_item_base_attr_value(ctx, item_uid, item, attr);
-        let mut accumulator = ModAccumFast::new();
+        let mut accumulator = self
+            .reuse
+            .accums
+            .take()
+            .unwrap_or_else(|| Box::new(ModAccumFast::new()));
         self.accumulate_modifications(ctx, &mut accumulator, &item_uid, item, attr, mod_filter);
         let mut dogma_val = accumulator.apply_dogma_mods(base_val, attr.hig);
         // Lower value limit
@@ -512,6 +516,7 @@ impl Calc {
         }
         // Post-dogma calculations
         let extra_val = accumulator.apply_extra_mods(dogma_val);
+        self.reuse.accums.put(Some(accumulator));
         CalcAttrVals {
             base: base_val,
             dogma: dogma_val,

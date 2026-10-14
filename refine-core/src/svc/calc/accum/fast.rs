@@ -17,32 +17,46 @@ use crate::{
 };
 
 pub(in crate::svc::calc) struct ModAccumFast {
-    pre_assign: Option<AccumAssign>,
-    pre_mul: Option<AccumMul>,
-    pre_div: Option<AccumDiv>,
-    add: Option<AccumAdd>,
-    sub: Option<AccumSub>,
-    post_mul: Option<AccumMul>,
-    post_div: Option<AccumDiv>,
-    post_perc: Option<AccumPerc>,
-    post_assign: Option<AccumAssign>,
-    extra_add: Option<AccumAdd>,
-    extra_mul: Option<AccumMul>,
+    touched: u16,
+    pre_assign: AccumAssign,
+    pre_mul: AccumMul,
+    pre_div: AccumDiv,
+    add: AccumAdd,
+    sub: AccumSub,
+    post_mul: AccumMul,
+    post_div: AccumDiv,
+    post_perc: AccumPerc,
+    post_assign: AccumAssign,
+    extra_add: AccumAdd,
+    extra_mul: AccumMul,
 }
 impl ModAccumFast {
+    const PRE_ASSIGN: u16 = 1 << 0;
+    const PRE_MUL: u16 = 1 << 1;
+    const PRE_DIV: u16 = 1 << 2;
+    const ADD: u16 = 1 << 3;
+    const SUB: u16 = 1 << 4;
+    const POST_MUL: u16 = 1 << 5;
+    const POST_DIV: u16 = 1 << 6;
+    const POST_PERC: u16 = 1 << 7;
+    const POST_ASSIGN: u16 = 1 << 8;
+    const EXTRA_ADD: u16 = 1 << 9;
+    const EXTRA_MUL: u16 = 1 << 10;
+
     pub(in crate::svc::calc) fn new() -> Self {
         Self {
-            pre_assign: None,
-            pre_mul: None,
-            pre_div: None,
-            add: None,
-            sub: None,
-            post_mul: None,
-            post_div: None,
-            post_perc: None,
-            post_assign: None,
-            extra_add: None,
-            extra_mul: None,
+            touched: 0,
+            pre_assign: AccumAssign::new(),
+            pre_mul: AccumMul::new(),
+            pre_div: AccumDiv::new(),
+            add: AccumAdd::new(),
+            sub: AccumSub::new(),
+            post_mul: AccumMul::new(),
+            post_div: AccumDiv::new(),
+            post_perc: AccumPerc::new(),
+            post_assign: AccumAssign::new(),
+            extra_add: AccumAdd::new(),
+            extra_mul: AccumMul::new(),
         }
     }
     pub(in crate::svc::calc) fn add_val(
@@ -57,95 +71,144 @@ impl ModAccumFast {
         attr_hig: bool,
     ) {
         match op {
-            CalcOp::PreAssign => self
-                .pre_assign
-                .get_or_insert_with(AccumAssign::new)
-                .add_val(val, proj_mult, res_mult, aggr_mode, attr_hig),
-            CalcOp::PreMul => self.pre_mul.get_or_insert_with(AccumMul::new).add_raw_val(
-                val,
-                proj_mult,
-                res_mult,
-                aggr_mode,
-                is_penal(attr_pen, &item_cat),
-            ),
-            CalcOp::PreDiv => self.pre_div.get_or_insert_with(AccumDiv::new).add_raw_val(
-                val,
-                proj_mult,
-                res_mult,
-                aggr_mode,
-                is_penal(attr_pen, &item_cat),
-            ),
-            CalcOp::Add => self
-                .add
-                .get_or_insert_with(AccumAdd::new)
-                .add_raw_val(val, proj_mult, res_mult, aggr_mode),
-            CalcOp::Sub => self
-                .sub
-                .get_or_insert_with(AccumSub::new)
-                .add_raw_val(val, proj_mult, res_mult, aggr_mode),
-            CalcOp::PostMul => self.post_mul.get_or_insert_with(AccumMul::new).add_raw_val(
-                val,
-                proj_mult,
-                res_mult,
-                aggr_mode,
-                is_penal(attr_pen, &item_cat),
-            ),
-            CalcOp::PostMulImmune => self
-                .post_mul
-                .get_or_insert_with(AccumMul::new)
-                .add_raw_val(val, proj_mult, res_mult, aggr_mode, false),
-            CalcOp::PostDiv => self.post_div.get_or_insert_with(AccumDiv::new).add_raw_val(
-                val,
-                proj_mult,
-                res_mult,
-                aggr_mode,
-                is_penal(attr_pen, &item_cat),
-            ),
-            CalcOp::PostPerc => self.post_perc.get_or_insert_with(AccumPerc::new).add_raw_val(
-                val,
-                proj_mult,
-                res_mult,
-                aggr_mode,
-                is_penal(attr_pen, &item_cat),
-            ),
-            CalcOp::PostPercImmune => self
-                .post_perc
-                .get_or_insert_with(AccumPerc::new)
-                .add_raw_val(val, proj_mult, res_mult, aggr_mode, false),
-            CalcOp::PostAssign => self
-                .post_assign
-                .get_or_insert_with(AccumAssign::new)
-                .add_val(val, proj_mult, res_mult, aggr_mode, attr_hig),
-            CalcOp::ExtraAdd => self
-                .extra_add
-                .get_or_insert_with(AccumAdd::new)
-                .add_raw_val(val, proj_mult, res_mult, aggr_mode),
-            CalcOp::ExtraMul => self.extra_mul.get_or_insert_with(AccumMul::new).add_raw_val(
-                val,
-                proj_mult,
-                res_mult,
-                aggr_mode,
-                is_penal(attr_pen, &item_cat),
-            ),
+            CalcOp::PreAssign => {
+                self.touched |= Self::PRE_ASSIGN;
+                self.pre_assign.add_val(val, proj_mult, res_mult, aggr_mode, attr_hig)
+            }
+            CalcOp::PreMul => {
+                self.touched |= Self::PRE_MUL;
+                self.pre_mul
+                    .add_raw_val(val, proj_mult, res_mult, aggr_mode, is_penal(attr_pen, &item_cat))
+            }
+            CalcOp::PreDiv => {
+                self.touched |= Self::PRE_DIV;
+                self.pre_div
+                    .add_raw_val(val, proj_mult, res_mult, aggr_mode, is_penal(attr_pen, &item_cat))
+            }
+            CalcOp::Add => {
+                self.touched |= Self::ADD;
+                self.add.add_raw_val(val, proj_mult, res_mult, aggr_mode)
+            }
+            CalcOp::Sub => {
+                self.touched |= Self::SUB;
+                self.sub.add_raw_val(val, proj_mult, res_mult, aggr_mode)
+            }
+            CalcOp::PostMul => {
+                self.touched |= Self::POST_MUL;
+                self.post_mul
+                    .add_raw_val(val, proj_mult, res_mult, aggr_mode, is_penal(attr_pen, &item_cat))
+            }
+            CalcOp::PostMulImmune => {
+                self.touched |= Self::POST_MUL;
+                self.post_mul.add_raw_val(val, proj_mult, res_mult, aggr_mode, false)
+            }
+            CalcOp::PostDiv => {
+                self.touched |= Self::POST_DIV;
+                self.post_div
+                    .add_raw_val(val, proj_mult, res_mult, aggr_mode, is_penal(attr_pen, &item_cat))
+            }
+            CalcOp::PostPerc => {
+                self.touched |= Self::POST_PERC;
+                self.post_perc
+                    .add_raw_val(val, proj_mult, res_mult, aggr_mode, is_penal(attr_pen, &item_cat))
+            }
+            CalcOp::PostPercImmune => {
+                self.touched |= Self::POST_PERC;
+                self.post_perc.add_raw_val(val, proj_mult, res_mult, aggr_mode, false)
+            }
+            CalcOp::PostAssign => {
+                self.touched |= Self::POST_ASSIGN;
+                self.post_assign.add_val(val, proj_mult, res_mult, aggr_mode, attr_hig)
+            }
+            CalcOp::ExtraAdd => {
+                self.touched |= Self::EXTRA_ADD;
+                self.extra_add.add_raw_val(val, proj_mult, res_mult, aggr_mode)
+            }
+            CalcOp::ExtraMul => {
+                self.touched |= Self::EXTRA_MUL;
+                self.extra_mul
+                    .add_raw_val(val, proj_mult, res_mult, aggr_mode, is_penal(attr_pen, &item_cat))
+            }
         };
     }
     pub(in crate::svc::calc) fn apply_dogma_mods(&mut self, base_val: Value, attr_hig: bool) -> Value {
-        let val = self
-            .pre_assign
-            .as_mut()
-            .map_or(base_val, |v| v.modify_val(base_val, attr_hig));
-        let val = self.pre_mul.as_mut().map_or(val, |v| v.modify_val(val));
-        let val = self.pre_div.as_mut().map_or(val, |v| v.modify_val(val));
-        let val = self.add.as_mut().map_or(val, |v| v.modify_val(val));
-        let val = self.sub.as_mut().map_or(val, |v| v.modify_val(val));
-        let val = self.post_mul.as_mut().map_or(val, |v| v.modify_val(val));
-        let val = self.post_div.as_mut().map_or(val, |v| v.modify_val(val));
-        let val = self.post_perc.as_mut().map_or(val, |v| v.modify_val(val));
-        self.post_assign.as_mut().map_or(val, |v| v.modify_val(val, attr_hig))
+        let mut val = base_val;
+        if self.touched & Self::PRE_ASSIGN != 0 {
+            val = self.pre_assign.modify_val(val, attr_hig);
+        }
+        if self.touched & Self::PRE_MUL != 0 {
+            val = self.pre_mul.modify_val(val);
+        }
+        if self.touched & Self::PRE_DIV != 0 {
+            val = self.pre_div.modify_val(val);
+        }
+        if self.touched & Self::ADD != 0 {
+            val = self.add.modify_val(val);
+        }
+        if self.touched & Self::SUB != 0 {
+            val = self.sub.modify_val(val);
+        }
+        if self.touched & Self::POST_MUL != 0 {
+            val = self.post_mul.modify_val(val);
+        }
+        if self.touched & Self::POST_DIV != 0 {
+            val = self.post_div.modify_val(val);
+        }
+        if self.touched & Self::POST_PERC != 0 {
+            val = self.post_perc.modify_val(val);
+        }
+        if self.touched & Self::POST_ASSIGN != 0 {
+            val = self.post_assign.modify_val(val, attr_hig);
+        }
+        val
     }
-    pub(in crate::svc::calc) fn apply_extra_mods(&mut self, val: Value) -> Value {
-        let val = self.extra_add.as_mut().map_or(val, |v| v.modify_val(val));
-        self.extra_mul.as_mut().map_or(val, |v| v.modify_val(val))
+    pub(in crate::svc::calc) fn apply_extra_mods(&mut self, mut val: Value) -> Value {
+        if self.touched & Self::EXTRA_ADD != 0 {
+            val = self.extra_add.modify_val(val);
+        }
+        if self.touched & Self::EXTRA_MUL != 0 {
+            val = self.extra_mul.modify_val(val);
+        }
+        val
+    }
+    pub(in crate::svc::calc) fn reset(&mut self) {
+        if self.touched == 0 {
+            return;
+        }
+        if self.touched & Self::PRE_ASSIGN != 0 {
+            self.pre_assign.reset();
+        }
+        if self.touched & Self::PRE_MUL != 0 {
+            self.pre_mul.reset();
+        }
+        if self.touched & Self::PRE_DIV != 0 {
+            self.pre_div.reset();
+        }
+        if self.touched & Self::ADD != 0 {
+            self.add.reset();
+        }
+        if self.touched & Self::SUB != 0 {
+            self.sub.reset();
+        }
+        if self.touched & Self::POST_MUL != 0 {
+            self.post_mul.reset();
+        }
+        if self.touched & Self::POST_DIV != 0 {
+            self.post_div.reset();
+        }
+        if self.touched & Self::POST_PERC != 0 {
+            self.post_perc.reset();
+        }
+        if self.touched & Self::POST_ASSIGN != 0 {
+            self.post_assign.reset();
+        }
+        if self.touched & Self::EXTRA_ADD != 0 {
+            self.extra_add.reset();
+        }
+        if self.touched & Self::EXTRA_MUL != 0 {
+            self.extra_mul.reset();
+        }
+        self.touched = 0;
     }
 }
 
@@ -166,6 +229,11 @@ impl AccumAssign {
             aggr_min: AggrMin::new(),
             aggr_max: AggrMax::new(),
         }
+    }
+    fn reset(&mut self) {
+        self.main = None;
+        self.aggr_min.reset();
+        self.aggr_max.reset();
     }
     fn add_val(
         &mut self,
@@ -244,6 +312,11 @@ where
             math: std::marker::PhantomData,
         }
     }
+    fn reset(&mut self) {
+        self.main = Value::ZERO;
+        self.aggr_min.reset();
+        self.aggr_max.reset();
+    }
     fn add_raw_val(
         &mut self,
         raw: Value,
@@ -300,6 +373,12 @@ where
             aggr_min: AggrPenMin::new(),
             aggr_max: AggrPenMax::new(),
         }
+    }
+    fn reset(&mut self) {
+        self.main = Value::ONE;
+        self.pens.reset();
+        self.aggr_min.reset();
+        self.aggr_max.reset();
     }
     fn add_raw_val(
         &mut self,
@@ -361,6 +440,10 @@ where
             pos: PenVals::new(),
             math: std::marker::PhantomData,
         }
+    }
+    fn reset(&mut self) {
+        self.neg.len = 0;
+        self.pos.len = 0;
     }
     fn add_raw(&mut self, raw: Value) {
         let mult_change = M::raw_to_mult_change(raw);
@@ -456,6 +539,13 @@ impl<T, R> AggrStore<T, R> {
         Self {
             data: RMap::new(),
             arbiter: std::marker::PhantomData,
+        }
+    }
+    fn reset(&mut self) {
+        // Should be drained if values were used (which should be pretty much always), but reset for
+        // safety anyway
+        if !self.data.is_empty() {
+            self.data.clear();
         }
     }
     fn add_val(&mut self, aggr_key: AggrKey, added: T)

@@ -1,7 +1,7 @@
 use std::hash::Hash;
 
 use crate::{
-    svc::calc::{CalcModification, CalcModificationKey, CtxModKey, CtxModifier, RawModId, RawModifier},
+    svc::calc::{CalcModification, CalcModificationKey, CtxModKey, CtxModifier, ModAccumFast, RawModId, RawModifier},
     ud::UItemId,
     util::RMap,
 };
@@ -19,6 +19,7 @@ pub(in crate::svc::calc) struct CalcReuse {
     pub(in crate::svc::calc) ckeys: Reuse<Vec<CtxModKey>>,
     pub(in crate::svc::calc) cmods: Reuse<Vec<CtxModifier>>,
     pub(in crate::svc::calc) mods: Reuse<RMap<CalcModificationKey, CalcModification>>,
+    pub(in crate::svc::calc) accums: Reuse<Option<Box<ModAccumFast>>>,
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -46,6 +47,16 @@ where
     }
     fn clear(&mut self) {
         RMap::clear(self)
+    }
+}
+impl Reusable for Option<Box<ModAccumFast>> {
+    fn is_reusable(&self) -> bool {
+        self.is_some()
+    }
+    fn clear(&mut self) {
+        if let Some(accum) = self {
+            accum.reset();
+        }
     }
 }
 
