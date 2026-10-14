@@ -1,7 +1,10 @@
 use std::sync::Arc;
 
 use crate::{
-    ad::{AAbilId, AAttrId, ABuffId, AData, AEffectId, AItemId},
+    ad::{
+        AAbilId, AAbils, AAttrId, AAttrs, ABuffId, ABuffs, AData, AEffectId, AEffects, AItemId, AItemListId,
+        AItemLists, AItems, AMutas,
+    },
     rd::{
         RAbil, RAttr, RAttrConsts, RAttrId, RBuff, RBuffId, REffect, REffectConsts, REffectId, RItem, RItemList,
         RItemListId, RMuta,
@@ -90,133 +93,40 @@ impl RData {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl RData {
     pub(crate) fn from_a_data(a_data: AData) -> Self {
-        let mut items: RMap<_, _> = a_data
-            .items
-            .data
-            .values()
-            .map(|a_item| (a_item.id, Arc::new(RItem::from_a_item(a_item))))
-            .collect();
-        let mut mutas: RMap<_, _> = a_data
-            .mutas
-            .data
-            .values()
-            .map(|a_muta| (a_muta.id, Arc::new(RMuta::from_a_muta(a_muta))))
-            .collect();
-        let mut abils: RMap<_, _> = a_data
-            .abils
-            .data
-            .values()
-            .map(|a_abil| (a_abil.id, RAbil::from_a_abil(a_abil)))
-            .collect();
-        // Item lists
-        let mut item_list_aid_rid_map = RMap::with_capacity(a_data.item_lists.data.len());
-        let mut item_lists = PSlab::with_capacity(a_data.item_lists.data.len());
-        for a_item_list in a_data.item_lists.iter() {
-            let entry = item_lists.vacant_entry();
-            let item_list_rid = entry.id();
-            let r_item_list = RItemList::from_a_item_list(a_item_list);
-            entry.insert(r_item_list);
-            item_list_aid_rid_map.insert(a_item_list.id, item_list_rid);
-        }
-        // Attributes - densely stored attrs go first
-        let mut attr_aid_rid_map = RMap::with_capacity(a_data.attrs.data.len());
-        let mut attrs = PSlab::with_capacity(a_data.attrs.data.len());
-        let dense_a_attrs = AAttrId::DENSE_ATTRS
-            .iter()
-            .filter_map(|attr_aid| a_data.attrs.data.get(attr_aid));
-        let sparse_a_attrs = a_data
-            .attrs
-            .iter()
-            .filter(|a_attr| !AAttrId::DENSE_ATTRS.contains(&a_attr.id));
-        for a_attr in dense_a_attrs.chain(sparse_a_attrs) {
-            let entry = attrs.vacant_entry();
-            let attr_rid = entry.id();
-            let r_attr = RAttr::from_a_attr(attr_rid, a_attr);
-            entry.insert(r_attr);
-            attr_aid_rid_map.insert(a_attr.id, attr_rid);
-        }
-        // Effects
-        let mut effect_aid_rid_map = RMap::with_capacity(a_data.effects.data.len());
-        let mut effects = PSlab::with_capacity(a_data.effects.data.len());
-        for a_effect in a_data.effects.iter() {
-            let entry = effects.vacant_entry();
-            let effect_rid = entry.id();
-            let r_effect = REffect::from_a_effect(effect_rid, a_effect);
-            entry.insert(Arc::new(r_effect));
-            effect_aid_rid_map.insert(a_effect.id, effect_rid);
-        }
-        // Buffs
-        let mut buff_aid_rid_map = RMap::with_capacity(a_data.buffs.data.len());
-        let mut buffs = PSlab::with_capacity(a_data.buffs.data.len());
-        for a_buff in a_data.buffs.iter() {
-            let entry = buffs.vacant_entry();
-            let buff_rid = entry.id();
-            let r_buff = RBuff::from_a_buff(a_buff);
-            entry.insert(r_buff);
-            buff_aid_rid_map.insert(a_buff.id, buff_rid);
-        }
+        let mut items = make_items(&a_data.items);
+        let mut mutas = make_mutas(&a_data.mutas);
+        let mut abils = make_abils(&a_data.abils);
+        let (item_lists, item_list_aid_rid_map) = make_item_lists(&a_data.item_lists);
+        let (mut attrs, attr_aid_rid_map) = make_attrs(&a_data.attrs);
+        let (mut effects, effect_aid_rid_map) = make_effects(&a_data.effects);
+        let (mut buffs, buff_aid_rid_map) = make_buffs(&a_data.buffs);
         // Create runtime "constants"
         let attr_consts = RAttrConsts::from_id_map(&attr_aid_rid_map);
         let effect_consts = REffectConsts::from_id_map(&effect_aid_rid_map);
         // Fill in data which wasn't filled during instantiation (e.g. depends on slab keys)
-        for r_effect in effects.values_mut() {
-            Arc::get_mut(r_effect).unwrap().fill_runtime(
-                &a_data.effects.data,
-                &item_list_aid_rid_map,
-                &attr_aid_rid_map,
-                &effect_aid_rid_map,
-                &buff_aid_rid_map,
-            );
-        }
+        fill_effects(
+            &mut effects,
+            &a_data.effects,
+            &item_list_aid_rid_map,
+            &attr_aid_rid_map,
+            &effect_aid_rid_map,
+            &buff_aid_rid_map,
+        );
         // Item data depends on having effect data already filled, so do it after effects
-        for r_item in items.values_mut() {
-            Arc::get_mut(r_item).unwrap().fill_runtime(
-                &a_data.items.data,
-                &item_list_aid_rid_map,
-                &attr_aid_rid_map,
-                &effect_aid_rid_map,
-                &attr_consts,
-                &effect_consts,
-                &effects,
-            );
-        }
-        for r_attr in attrs.values_mut() {
-            r_attr.fill_runtime(&a_data.attrs.data, &attr_aid_rid_map);
-        }
-        // Attribute dependencies can be filled only after all attributes are filled
-        let mut attr_deps = Vec::new();
-        for (attr_rid, r_attr) in attrs.iter() {
-            for limiter_attr_rid in [r_attr.min_attr_rid, r_attr.max_attr_rid].into_iter().flatten() {
-                attr_deps.push((limiter_attr_rid, attr_rid));
-            }
-        }
-        if let Some(sec_attr_rid) = attr_consts.security_modifier {
-            let zone_attr_rids = [
-                attr_consts.hisec_modifier,
-                attr_consts.lowsec_modifier,
-                attr_consts.nullsec_modifier,
-            ];
-            for zone_attr_rid in zone_attr_rids.into_iter().flatten() {
-                attr_deps.push((zone_attr_rid, sec_attr_rid));
-            }
-        }
-        for (affector_attr_rid, affectee_attr_rid) in attr_deps {
-            let dependent_attr_rids = &mut attrs.get_mut(affector_attr_rid).unwrap().dependent_attr_rids;
-            if !dependent_attr_rids.contains(&affectee_attr_rid) {
-                dependent_attr_rids.push(affectee_attr_rid);
-            }
-        }
-        for r_buff in buffs.values_mut() {
-            r_buff.fill_runtime(&a_data.buffs.data, &attr_aid_rid_map);
-        }
-        for r_muta in mutas.values_mut() {
-            Arc::get_mut(r_muta)
-                .unwrap()
-                .fill_runtime(&a_data.mutas.data, &attr_aid_rid_map);
-        }
-        for r_abil in abils.values_mut() {
-            r_abil.fill_runtime(&effect_aid_rid_map);
-        }
+        fill_items(
+            &mut items,
+            &a_data.items,
+            &item_list_aid_rid_map,
+            &attr_aid_rid_map,
+            &effect_aid_rid_map,
+            &attr_consts,
+            &effect_consts,
+            &effects,
+        );
+        fill_attrs(&mut attrs, &a_data.attrs, &attr_aid_rid_map, &attr_consts);
+        fill_buffs(&mut buffs, &a_data.buffs, &attr_aid_rid_map);
+        fill_mutas(&mut mutas, &a_data.mutas, &attr_aid_rid_map);
+        fill_abils(&mut abils, &effect_aid_rid_map);
         // Extra data
         let rah_duration_attr_rid = effect_consts
             .adaptive_armor_hardener
@@ -240,5 +150,186 @@ impl RData {
             rah_duration_attr_rid,
             online_effect,
         }
+    }
+}
+
+// Instantiation
+fn make_items(a_items: &AItems) -> RMap<AItemId, RcItem> {
+    a_items
+        .data
+        .values()
+        .map(|a_item| (a_item.id, Arc::new(RItem::from_a_item(a_item))))
+        .collect()
+}
+
+fn make_mutas(a_mutas: &AMutas) -> RMap<AItemId, RcMuta> {
+    a_mutas
+        .data
+        .values()
+        .map(|a_muta| (a_muta.id, Arc::new(RMuta::from_a_muta(a_muta))))
+        .collect()
+}
+
+fn make_abils(a_abils: &AAbils) -> RMap<AAbilId, RAbil> {
+    a_abils
+        .data
+        .values()
+        .map(|a_abil| (a_abil.id, RAbil::from_a_abil(a_abil)))
+        .collect()
+}
+
+fn make_item_lists(a_item_lists: &AItemLists) -> (PSlab<RItemListId, RItemList>, RMap<AItemListId, RItemListId>) {
+    let mut item_list_aid_rid_map = RMap::with_capacity(a_item_lists.data.len());
+    let mut item_lists = PSlab::with_capacity(a_item_lists.data.len());
+    for a_item_list in a_item_lists.iter() {
+        let entry = item_lists.vacant_entry();
+        let item_list_rid = entry.id();
+        let r_item_list = RItemList::from_a_item_list(a_item_list);
+        entry.insert(r_item_list);
+        item_list_aid_rid_map.insert(a_item_list.id, item_list_rid);
+    }
+    (item_lists, item_list_aid_rid_map)
+}
+
+fn make_attrs(a_attrs: &AAttrs) -> (PSlab<RAttrId, RAttr>, RMap<AAttrId, RAttrId>) {
+    let mut attr_aid_rid_map = RMap::with_capacity(a_attrs.data.len());
+    let mut attrs = PSlab::with_capacity(a_attrs.data.len());
+    // Densely stored attrs go first
+    let dense_a_attrs = AAttrId::DENSE_ATTRS
+        .iter()
+        .filter_map(|attr_aid| a_attrs.data.get(attr_aid));
+    let sparse_a_attrs = a_attrs
+        .iter()
+        .filter(|a_attr| !AAttrId::DENSE_ATTRS.contains(&a_attr.id));
+    for a_attr in dense_a_attrs.chain(sparse_a_attrs) {
+        let entry = attrs.vacant_entry();
+        let attr_rid = entry.id();
+        let r_attr = RAttr::from_a_attr(attr_rid, a_attr);
+        entry.insert(r_attr);
+        attr_aid_rid_map.insert(a_attr.id, attr_rid);
+    }
+    (attrs, attr_aid_rid_map)
+}
+
+fn make_effects(a_effects: &AEffects) -> (PSlab<REffectId, RcEffect>, RMap<AEffectId, REffectId>) {
+    let mut effect_aid_rid_map = RMap::with_capacity(a_effects.data.len());
+    let mut effects = PSlab::with_capacity(a_effects.data.len());
+    for a_effect in a_effects.iter() {
+        let entry = effects.vacant_entry();
+        let effect_rid = entry.id();
+        let r_effect = REffect::from_a_effect(effect_rid, a_effect);
+        entry.insert(Arc::new(r_effect));
+        effect_aid_rid_map.insert(a_effect.id, effect_rid);
+    }
+    (effects, effect_aid_rid_map)
+}
+
+fn make_buffs(a_buffs: &ABuffs) -> (PSlab<RBuffId, RBuff>, RMap<ABuffId, RBuffId>) {
+    let mut buff_aid_rid_map = RMap::with_capacity(a_buffs.data.len());
+    let mut buffs = PSlab::with_capacity(a_buffs.data.len());
+    for a_buff in a_buffs.iter() {
+        let entry = buffs.vacant_entry();
+        let buff_rid = entry.id();
+        let r_buff = RBuff::from_a_buff(a_buff);
+        entry.insert(r_buff);
+        buff_aid_rid_map.insert(a_buff.id, buff_rid);
+    }
+    (buffs, buff_aid_rid_map)
+}
+
+// Runtime data filling
+fn fill_effects(
+    effects: &mut PSlab<REffectId, RcEffect>,
+    a_effects: &AEffects,
+    item_list_aid_rid_map: &RMap<AItemListId, RItemListId>,
+    attr_aid_rid_map: &RMap<AAttrId, RAttrId>,
+    effect_aid_rid_map: &RMap<AEffectId, REffectId>,
+    buff_aid_rid_map: &RMap<ABuffId, RBuffId>,
+) {
+    for r_effect in effects.values_mut() {
+        Arc::get_mut(r_effect).unwrap().fill_runtime(
+            &a_effects.data,
+            item_list_aid_rid_map,
+            attr_aid_rid_map,
+            effect_aid_rid_map,
+            buff_aid_rid_map,
+        );
+    }
+}
+
+fn fill_items(
+    items: &mut RMap<AItemId, RcItem>,
+    a_items: &AItems,
+    item_list_aid_rid_map: &RMap<AItemListId, RItemListId>,
+    attr_aid_rid_map: &RMap<AAttrId, RAttrId>,
+    effect_aid_rid_map: &RMap<AEffectId, REffectId>,
+    attr_consts: &RAttrConsts,
+    effect_consts: &REffectConsts,
+    effects: &PSlab<REffectId, RcEffect>,
+) {
+    for r_item in items.values_mut() {
+        Arc::get_mut(r_item).unwrap().fill_runtime(
+            &a_items.data,
+            item_list_aid_rid_map,
+            attr_aid_rid_map,
+            effect_aid_rid_map,
+            attr_consts,
+            effect_consts,
+            effects,
+        );
+    }
+}
+
+fn fill_attrs(
+    attrs: &mut PSlab<RAttrId, RAttr>,
+    a_attrs: &AAttrs,
+    attr_aid_rid_map: &RMap<AAttrId, RAttrId>,
+    attr_consts: &RAttrConsts,
+) {
+    for r_attr in attrs.values_mut() {
+        r_attr.fill_runtime(&a_attrs.data, attr_aid_rid_map);
+    }
+    // Attribute dependencies can be filled only after all attributes are filled
+    let mut attr_deps = Vec::new();
+    for (attr_rid, r_attr) in attrs.iter() {
+        for limiter_attr_rid in [r_attr.min_attr_rid, r_attr.max_attr_rid].into_iter().flatten() {
+            attr_deps.push((limiter_attr_rid, attr_rid));
+        }
+    }
+    if let Some(sec_attr_rid) = attr_consts.security_modifier {
+        let zone_attr_rids = [
+            attr_consts.hisec_modifier,
+            attr_consts.lowsec_modifier,
+            attr_consts.nullsec_modifier,
+        ];
+        for zone_attr_rid in zone_attr_rids.into_iter().flatten() {
+            attr_deps.push((zone_attr_rid, sec_attr_rid));
+        }
+    }
+    for (affector_attr_rid, affectee_attr_rid) in attr_deps {
+        let dependent_attr_rids = &mut attrs.get_mut(affector_attr_rid).unwrap().dependent_attr_rids;
+        if !dependent_attr_rids.contains(&affectee_attr_rid) {
+            dependent_attr_rids.push(affectee_attr_rid);
+        }
+    }
+}
+
+fn fill_buffs(buffs: &mut PSlab<RBuffId, RBuff>, a_buffs: &ABuffs, attr_aid_rid_map: &RMap<AAttrId, RAttrId>) {
+    for r_buff in buffs.values_mut() {
+        r_buff.fill_runtime(&a_buffs.data, attr_aid_rid_map);
+    }
+}
+
+fn fill_mutas(mutas: &mut RMap<AItemId, RcMuta>, a_mutas: &AMutas, attr_aid_rid_map: &RMap<AAttrId, RAttrId>) {
+    for r_muta in mutas.values_mut() {
+        Arc::get_mut(r_muta)
+            .unwrap()
+            .fill_runtime(&a_mutas.data, attr_aid_rid_map);
+    }
+}
+
+fn fill_abils(abils: &mut RMap<AAbilId, RAbil>, effect_aid_rid_map: &RMap<AEffectId, REffectId>) {
+    for r_abil in abils.values_mut() {
+        r_abil.fill_runtime(effect_aid_rid_map);
     }
 }
