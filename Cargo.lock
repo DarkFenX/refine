@@ -1584,6 +1584,7 @@ name = "refine-core"
 version = "0.1.0"
 dependencies = [
  "angle-sc",
+ "bitflags 2.13.2",
  "cranelift-entity",
  "derive_more",
  "indexmap 2.14.2",

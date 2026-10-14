@@ -6,6 +6,8 @@
 
 use std::{cmp::Ordering, collections::hash_map::Entry};
 
+use bitflags::bitflags;
+
 use super::shared::{
     AddMath, AddMathAdd, AddMathSub, MultMath, MultMathDiv, MultMathMul, MultMathPerc, PENALTY_MULTS, is_penal,
 };
@@ -17,7 +19,7 @@ use crate::{
 };
 
 pub(in crate::svc::calc) struct ModAccumFast {
-    touched: u16,
+    touched: SubAccums,
     pre_assign: AccumAssign,
     pre_mul: AccumMul,
     pre_div: AccumDiv,
@@ -31,21 +33,9 @@ pub(in crate::svc::calc) struct ModAccumFast {
     extra_mul: AccumMul,
 }
 impl ModAccumFast {
-    const PRE_ASSIGN: u16 = 1 << 0;
-    const PRE_MUL: u16 = 1 << 1;
-    const PRE_DIV: u16 = 1 << 2;
-    const ADD: u16 = 1 << 3;
-    const SUB: u16 = 1 << 4;
-    const POST_MUL: u16 = 1 << 5;
-    const POST_DIV: u16 = 1 << 6;
-    const POST_PERC: u16 = 1 << 7;
-    const POST_ASSIGN: u16 = 1 << 8;
-    const EXTRA_ADD: u16 = 1 << 9;
-    const EXTRA_MUL: u16 = 1 << 10;
-
     pub(in crate::svc::calc) fn new() -> Self {
         Self {
-            touched: 0,
+            touched: SubAccums::empty(),
             pre_assign: AccumAssign::new(),
             pre_mul: AccumMul::new(),
             pre_div: AccumDiv::new(),
@@ -72,60 +62,60 @@ impl ModAccumFast {
     ) {
         match op {
             CalcOp::PreAssign => {
-                self.touched |= Self::PRE_ASSIGN;
+                self.touched.insert(SubAccums::PRE_ASSIGN);
                 self.pre_assign.add_val(val, proj_mult, res_mult, aggr_mode, attr_hig)
             }
             CalcOp::PreMul => {
-                self.touched |= Self::PRE_MUL;
+                self.touched.insert(SubAccums::PRE_MUL);
                 self.pre_mul
                     .add_raw_val(val, proj_mult, res_mult, aggr_mode, is_penal(attr_pen, &item_cat))
             }
             CalcOp::PreDiv => {
-                self.touched |= Self::PRE_DIV;
+                self.touched.insert(SubAccums::PRE_DIV);
                 self.pre_div
                     .add_raw_val(val, proj_mult, res_mult, aggr_mode, is_penal(attr_pen, &item_cat))
             }
             CalcOp::Add => {
-                self.touched |= Self::ADD;
+                self.touched.insert(SubAccums::ADD);
                 self.add.add_raw_val(val, proj_mult, res_mult, aggr_mode)
             }
             CalcOp::Sub => {
-                self.touched |= Self::SUB;
+                self.touched.insert(SubAccums::SUB);
                 self.sub.add_raw_val(val, proj_mult, res_mult, aggr_mode)
             }
             CalcOp::PostMul => {
-                self.touched |= Self::POST_MUL;
+                self.touched.insert(SubAccums::POST_MUL);
                 self.post_mul
                     .add_raw_val(val, proj_mult, res_mult, aggr_mode, is_penal(attr_pen, &item_cat))
             }
             CalcOp::PostMulImmune => {
-                self.touched |= Self::POST_MUL;
+                self.touched.insert(SubAccums::POST_MUL);
                 self.post_mul.add_raw_val(val, proj_mult, res_mult, aggr_mode, false)
             }
             CalcOp::PostDiv => {
-                self.touched |= Self::POST_DIV;
+                self.touched.insert(SubAccums::POST_DIV);
                 self.post_div
                     .add_raw_val(val, proj_mult, res_mult, aggr_mode, is_penal(attr_pen, &item_cat))
             }
             CalcOp::PostPerc => {
-                self.touched |= Self::POST_PERC;
+                self.touched.insert(SubAccums::POST_PERC);
                 self.post_perc
                     .add_raw_val(val, proj_mult, res_mult, aggr_mode, is_penal(attr_pen, &item_cat))
             }
             CalcOp::PostPercImmune => {
-                self.touched |= Self::POST_PERC;
+                self.touched.insert(SubAccums::POST_PERC);
                 self.post_perc.add_raw_val(val, proj_mult, res_mult, aggr_mode, false)
             }
             CalcOp::PostAssign => {
-                self.touched |= Self::POST_ASSIGN;
+                self.touched.insert(SubAccums::POST_ASSIGN);
                 self.post_assign.add_val(val, proj_mult, res_mult, aggr_mode, attr_hig)
             }
             CalcOp::ExtraAdd => {
-                self.touched |= Self::EXTRA_ADD;
+                self.touched.insert(SubAccums::EXTRA_ADD);
                 self.extra_add.add_raw_val(val, proj_mult, res_mult, aggr_mode)
             }
             CalcOp::ExtraMul => {
-                self.touched |= Self::EXTRA_MUL;
+                self.touched.insert(SubAccums::EXTRA_MUL);
                 self.extra_mul
                     .add_raw_val(val, proj_mult, res_mult, aggr_mode, is_penal(attr_pen, &item_cat))
             }
@@ -133,82 +123,98 @@ impl ModAccumFast {
     }
     pub(in crate::svc::calc) fn apply_dogma_mods(&mut self, base_val: Value, attr_hig: bool) -> Value {
         let mut val = base_val;
-        if self.touched & Self::PRE_ASSIGN != 0 {
+        if self.touched.contains(SubAccums::PRE_ASSIGN) {
             val = self.pre_assign.modify_val(val, attr_hig);
         }
-        if self.touched & Self::PRE_MUL != 0 {
+        if self.touched.contains(SubAccums::PRE_MUL) {
             val = self.pre_mul.modify_val(val);
         }
-        if self.touched & Self::PRE_DIV != 0 {
+        if self.touched.contains(SubAccums::PRE_DIV) {
             val = self.pre_div.modify_val(val);
         }
-        if self.touched & Self::ADD != 0 {
+        if self.touched.contains(SubAccums::ADD) {
             val = self.add.modify_val(val);
         }
-        if self.touched & Self::SUB != 0 {
+        if self.touched.contains(SubAccums::SUB) {
             val = self.sub.modify_val(val);
         }
-        if self.touched & Self::POST_MUL != 0 {
+        if self.touched.contains(SubAccums::POST_MUL) {
             val = self.post_mul.modify_val(val);
         }
-        if self.touched & Self::POST_DIV != 0 {
+        if self.touched.contains(SubAccums::POST_DIV) {
             val = self.post_div.modify_val(val);
         }
-        if self.touched & Self::POST_PERC != 0 {
+        if self.touched.contains(SubAccums::POST_PERC) {
             val = self.post_perc.modify_val(val);
         }
-        if self.touched & Self::POST_ASSIGN != 0 {
+        if self.touched.contains(SubAccums::POST_ASSIGN) {
             val = self.post_assign.modify_val(val, attr_hig);
         }
         val
     }
     pub(in crate::svc::calc) fn apply_extra_mods(&mut self, mut val: Value) -> Value {
-        if self.touched & Self::EXTRA_ADD != 0 {
+        if self.touched.contains(SubAccums::EXTRA_ADD) {
             val = self.extra_add.modify_val(val);
         }
-        if self.touched & Self::EXTRA_MUL != 0 {
+        if self.touched.contains(SubAccums::EXTRA_MUL) {
             val = self.extra_mul.modify_val(val);
         }
         val
     }
     pub(in crate::svc::calc) fn reset(&mut self) {
-        if self.touched == 0 {
+        if self.touched.is_empty() {
             return;
         }
-        if self.touched & Self::PRE_ASSIGN != 0 {
+        if self.touched.contains(SubAccums::PRE_ASSIGN) {
             self.pre_assign.reset();
         }
-        if self.touched & Self::PRE_MUL != 0 {
+        if self.touched.contains(SubAccums::PRE_MUL) {
             self.pre_mul.reset();
         }
-        if self.touched & Self::PRE_DIV != 0 {
+        if self.touched.contains(SubAccums::PRE_DIV) {
             self.pre_div.reset();
         }
-        if self.touched & Self::ADD != 0 {
+        if self.touched.contains(SubAccums::ADD) {
             self.add.reset();
         }
-        if self.touched & Self::SUB != 0 {
+        if self.touched.contains(SubAccums::SUB) {
             self.sub.reset();
         }
-        if self.touched & Self::POST_MUL != 0 {
+        if self.touched.contains(SubAccums::POST_MUL) {
             self.post_mul.reset();
         }
-        if self.touched & Self::POST_DIV != 0 {
+        if self.touched.contains(SubAccums::POST_DIV) {
             self.post_div.reset();
         }
-        if self.touched & Self::POST_PERC != 0 {
+        if self.touched.contains(SubAccums::POST_PERC) {
             self.post_perc.reset();
         }
-        if self.touched & Self::POST_ASSIGN != 0 {
+        if self.touched.contains(SubAccums::POST_ASSIGN) {
             self.post_assign.reset();
         }
-        if self.touched & Self::EXTRA_ADD != 0 {
+        if self.touched.contains(SubAccums::EXTRA_ADD) {
             self.extra_add.reset();
         }
-        if self.touched & Self::EXTRA_MUL != 0 {
+        if self.touched.contains(SubAccums::EXTRA_MUL) {
             self.extra_mul.reset();
         }
-        self.touched = 0;
+        self.touched = SubAccums::empty();
+    }
+}
+
+bitflags! {
+    struct SubAccums: u16 {
+        const PRE_ASSIGN = 1 << 0;
+        const PRE_MUL = 1 << 1;
+        const PRE_DIV = 1 << 2;
+        const ADD = 1 << 3;
+        const SUB = 1 << 4;
+        const POST_MUL = 1 << 5;
+        const POST_DIV = 1 << 6;
+        const POST_PERC = 1 << 7;
+        const POST_ASSIGN = 1 << 8;
+        const EXTRA_ADD = 1 << 9;
+        const EXTRA_MUL = 1 << 10;
     }
 }
 
