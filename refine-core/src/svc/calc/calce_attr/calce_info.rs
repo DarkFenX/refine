@@ -139,46 +139,42 @@ impl Calc {
         // Lower value limit
         if let Some(limiter_attr_rid) = attr.min_attr_rid
             && let Ok(limiter_val) = self.get_item_attr_rfull(ctx, item_uid, limiter_attr_rid)
+            && limiter_val.dogma > dogma_attr_info.value
         {
-            self.deps.add_anonymous(item_uid, limiter_attr_rid, attr_rid);
-            if limiter_val.dogma > dogma_attr_info.value {
-                dogma_attr_info.value = limiter_val.dogma;
-                dogma_attr_info.effective_infos.push(CalcModInfo {
-                    effect_rid: None,
-                    op: Op::MinLimit,
-                    initial_str: limiter_val.dogma,
-                    range_mult: None,
-                    resist_mult: None,
-                    stacking_mult: None,
-                    applied_str: limiter_val.dogma,
-                    affectors: smallvec![CalcModInfoAffector {
-                        item_uid,
-                        attr_rid: Some(limiter_attr_rid),
-                    }],
-                })
-            }
+            dogma_attr_info.value = limiter_val.dogma;
+            dogma_attr_info.effective_infos.push(CalcModInfo {
+                effect_rid: None,
+                op: Op::MinLimit,
+                initial_str: limiter_val.dogma,
+                range_mult: None,
+                resist_mult: None,
+                stacking_mult: None,
+                applied_str: limiter_val.dogma,
+                affectors: smallvec![CalcModInfoAffector {
+                    item_uid,
+                    attr_rid: Some(limiter_attr_rid),
+                }],
+            })
         }
         // Upper value limit
         if let Some(limiter_attr_rid) = attr.max_attr_rid
             && let Ok(limiter_val) = self.get_item_attr_rfull(ctx, item_uid, limiter_attr_rid)
+            && limiter_val.dogma < dogma_attr_info.value
         {
-            self.deps.add_anonymous(item_uid, limiter_attr_rid, attr_rid);
-            if limiter_val.dogma < dogma_attr_info.value {
-                dogma_attr_info.value = limiter_val.dogma;
-                dogma_attr_info.effective_infos.push(CalcModInfo {
-                    effect_rid: None,
-                    op: Op::MaxLimit,
-                    initial_str: limiter_val.dogma,
-                    range_mult: None,
-                    resist_mult: None,
-                    stacking_mult: None,
-                    applied_str: limiter_val.dogma,
-                    affectors: smallvec![CalcModInfoAffector {
-                        item_uid,
-                        attr_rid: Some(limiter_attr_rid),
-                    }],
-                })
-            }
+            dogma_attr_info.value = limiter_val.dogma;
+            dogma_attr_info.effective_infos.push(CalcModInfo {
+                effect_rid: None,
+                op: Op::MaxLimit,
+                initial_str: limiter_val.dogma,
+                range_mult: None,
+                resist_mult: None,
+                stacking_mult: None,
+                applied_str: limiter_val.dogma,
+                affectors: smallvec![CalcModInfoAffector {
+                    item_uid,
+                    attr_rid: Some(limiter_attr_rid),
+                }],
+            })
         }
         if ctx.ac().limited_precision.contains(&attr_rid) {
             dogma_attr_info.value.round_to_digits(2);
@@ -208,9 +204,6 @@ impl Calc {
             if let Some(security_attr_rid) = security_attr_rid
                 && let Ok(security_full_val) = self.get_item_attr_rfull(ctx, item_uid, security_attr_rid)
             {
-                // Ensure that change in any a security-specific attribute value triggers
-                // recalculation of generic security attribute value
-                self.deps.add_anonymous(item_uid, security_attr_rid, attr.rid);
                 let mut base_attr_info = AttrValInfo::new(security_full_val.dogma);
                 base_attr_info.effective_infos.push(CalcModInfo {
                     effect_rid: None,

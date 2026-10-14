@@ -290,7 +290,13 @@ impl Calc {
         self.reuse.cmods.put(reuse_cmods);
     }
     pub(in crate::svc) fn attr_value_changed(&mut self, ctx: &SvcCtx, aspec: AttrSpec) {
-        // Clear up attribute values which rely on passed attribute as an upper/lower limit
+        // Clear up attribute values which rely on passed attribute directly, e.g. as an upper/lower
+        // limit
+        let attr = ctx.u_data.r_data.get_attr_by_rid(aspec.attr_rid);
+        for &dependent_attr_rid in attr.dependent_attr_rids.iter() {
+            self.force_attr_value_recalc(ctx, AttrSpec::new(aspec.item_uid, dependent_attr_rid));
+        }
+        // Clear up attribute values which rely on passed attribute via ad-hoc dependencies
         let affectee_aspecs = self.deps.iter_affectee_aspecs(&aspec).copied().collect_vec();
         for affectee_aspec in affectee_aspecs.into_iter() {
             self.force_attr_value_recalc(ctx, affectee_aspec);

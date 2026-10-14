@@ -18,6 +18,9 @@ pub(crate) struct RAttr {
     pub(crate) min_attr_rid: Option<RAttrId>,
     pub(crate) max_attr_rid: Option<RAttrId>,
     pub(crate) buff_str_attr_rid: Option<RAttrId>,
+    // Attributes whose values on the same item are calculated using value of this attribute
+    // directly, not via modifiers
+    pub(crate) dependent_attr_rids: Vec<RAttrId>,
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -35,6 +38,7 @@ impl RAttr {
             min_attr_rid: Default::default(),
             max_attr_rid: Default::default(),
             buff_str_attr_rid: Default::default(),
+            dependent_attr_rids: Default::default(),
         }
     }
     pub(in crate::rd::data) fn fill_runtime(

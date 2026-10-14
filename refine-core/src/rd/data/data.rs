@@ -183,6 +183,29 @@ impl RData {
         for r_attr in attrs.values_mut() {
             r_attr.fill_runtime(&a_data.attrs.data, &attr_aid_rid_map);
         }
+        // Attribute dependencies can be filled only after all attributes are filled
+        let mut attr_deps = Vec::new();
+        for (attr_rid, r_attr) in attrs.iter() {
+            for limiter_attr_rid in [r_attr.min_attr_rid, r_attr.max_attr_rid].into_iter().flatten() {
+                attr_deps.push((limiter_attr_rid, attr_rid));
+            }
+        }
+        if let Some(sec_attr_rid) = attr_consts.security_modifier {
+            let zone_attr_rids = [
+                attr_consts.hisec_modifier,
+                attr_consts.lowsec_modifier,
+                attr_consts.nullsec_modifier,
+            ];
+            for zone_attr_rid in zone_attr_rids.into_iter().flatten() {
+                attr_deps.push((zone_attr_rid, sec_attr_rid));
+            }
+        }
+        for (affector_attr_rid, affectee_attr_rid) in attr_deps {
+            let dependent_attr_rids = &mut attrs.get_mut(affector_attr_rid).unwrap().dependent_attr_rids;
+            if !dependent_attr_rids.contains(&affectee_attr_rid) {
+                dependent_attr_rids.push(affectee_attr_rid);
+            }
+        }
         for r_buff in buffs.values_mut() {
             r_buff.fill_runtime(&a_data.buffs.data, &attr_aid_rid_map);
         }

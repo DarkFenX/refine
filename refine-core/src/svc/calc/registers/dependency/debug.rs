@@ -9,13 +9,6 @@ impl DependencyRegister {
                 affectee_spec.consistency_check(u_data, true)?;
             }
         }
-        for (item_uid, item_data) in self.anonymous_by_item.iter() {
-            item_uid.consistency_check(u_data, true)?;
-            for (attr1_rid, attr2_rid) in item_data {
-                attr1_rid.consistency_check(u_data)?;
-                attr2_rid.consistency_check(u_data)?;
-            }
-        }
         for (source, specs) in self.by_source.iter() {
             source.consistency_check(u_data, true)?;
             for (affector_spec, affectee_spec) in specs {

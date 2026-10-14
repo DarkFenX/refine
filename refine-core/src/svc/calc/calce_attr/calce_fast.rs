@@ -501,14 +501,12 @@ impl Calc {
         if let Some(limiter_attr_rid) = attr.min_attr_rid
             && let Ok(limiter_cval) = self.get_item_attr_rfull(ctx, item_uid, limiter_attr_rid)
         {
-            self.deps.add_anonymous(item_uid, limiter_attr_rid, attr_rid);
             dogma_val = Value::max(dogma_val, limiter_cval.dogma);
         }
         // Upper value limit
         if let Some(limiter_attr_rid) = attr.max_attr_rid
             && let Ok(limiter_cval) = self.get_item_attr_rfull(ctx, item_uid, limiter_attr_rid)
         {
-            self.deps.add_anonymous(item_uid, limiter_attr_rid, attr_rid);
             dogma_val = Value::min(dogma_val, limiter_cval.dogma);
         }
         if ctx.ac().limited_precision.contains(&attr_rid) {
@@ -538,9 +536,6 @@ impl Calc {
             if let Some(security_attr_rid) = security_attr_rid
                 && let Ok(security_full_val) = self.get_item_attr_rfull(ctx, item_uid, security_attr_rid)
             {
-                // Ensure that change in any a security-specific attribute value triggers
-                // recalculation of generic security attribute value
-                self.deps.add_anonymous(item_uid, security_attr_rid, attr.rid);
                 return security_full_val.dogma;
             }
         }
