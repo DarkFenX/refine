@@ -37,7 +37,7 @@ def test_benchmark_attr_calc(client, consts):
             api_fit_batch.add_skill(type_id=eve_skill_id, level=5)
         api_fit_batch.set_ship(type_id=11184)  # Crusader
         # ruff:ignore[commented-out-code]
-        # api_fit_cmds.add_module(type_id=4403, rack=consts.ApiRack.low, state=consts.ApiModuleState.active)
+        # api_fit_batch.add_module(type_id=4403, rack=consts.ApiRack.low, state=consts.ApiModuleState.active)  # RAH
     iterations = 1000000
     print()  # ruff:ignore[print]
     print('starting attr-calc benchmark')  # ruff:ignore[print]

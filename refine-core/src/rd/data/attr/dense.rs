@@ -2,7 +2,7 @@ use crate::ad::AAttrId;
 
 // TODO: improve the set but running large set of realistic scenarios (can share with PGO profile)
 /// Attributes which are used the most often are listed here, their item values are stored densely.
-pub(crate) const DENSE_ATTR_AIDS: [AAttrId; 43] = [
+pub(crate) const DENSE_ATTR_AIDS: [AAttrId; 47] = [
     // Resource use - validation
     AAttrId::POWER,
     AAttrId::CPU,
@@ -62,6 +62,11 @@ pub(crate) const DENSE_ATTR_AIDS: [AAttrId; 43] = [
     AAttrId::TRACKING_SPEED,
     AAttrId::OPTIMAL_SIG_RADIUS,
     AAttrId::SIG_RADIUS,
+    // RAH sim attributes
+    AAttrId::ARMOR_EM_DMG_RESONANCE,
+    AAttrId::ARMOR_THERM_DMG_RESONANCE,
+    AAttrId::ARMOR_KIN_DMG_RESONANCE,
+    AAttrId::ARMOR_EXPL_DMG_RESONANCE,
 ];
 /// Attributes with runtime IDs below this value are stored densely.
 pub(crate) const DENSE_ATTR_COUNT: usize = DENSE_ATTR_AIDS.len();
