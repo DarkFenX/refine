@@ -21,6 +21,72 @@ impl AAttrId {
     ];
     pub(crate) const LIMITED_PRECISION_ATTRS: [Self; 4] =
         [Self::CPU, Self::POWER, Self::CPU_OUTPUT, Self::POWER_OUTPUT];
+    pub(crate) const DENSE_ATTRS: [Self; 47] = [
+        // Resource use - validation
+        Self::POWER,
+        Self::CPU,
+        // Cap use on most items - validation (max cap use) & stats (cap balance/sim)
+        Self::CAPACITOR_NEED,
+        // Validation
+        Self::ACTIVATION_BLOCKED,
+        // Slots - validation & stats
+        Self::HI_SLOTS,
+        Self::MED_SLOTS,
+        Self::LOW_SLOTS,
+        Self::TURRET_SLOTS_LEFT,
+        Self::LAUNCHER_SLOTS_LEFT,
+        // Resource use - validation
+        Self::DRONE_BANDWIDTH,
+        // Drone slots - validation & stats
+        Self::MAX_ACTIVE_DRONES,
+        // Max group restriction - validation
+        Self::MAX_GROUP_FITTED,
+        Self::MAX_GROUP_ONLINE,
+        Self::MAX_GROUP_ACTIVE,
+        // Rigs - validation & stats
+        Self::UPGRADE_SLOTS_LEFT,
+        Self::UPGRADE_CAPACITY,
+        // Resource output - validation & stats
+        Self::POWER_OUTPUT,
+        Self::CPU_OUTPUT,
+        Self::DRONE_CAPACITY,
+        // Fighter-related - used in validation and stats
+        Self::FTR_TUBES,
+        Self::FTR_SUPPORT_SLOTS,
+        Self::FTR_LIGHT_SLOTS,
+        Self::FTR_HEAVY_SLOTS,
+        Self::FTR_ST_SUPPORT_SLOTS,
+        Self::FTR_ST_LIGHT_SLOTS,
+        Self::FTR_ST_HEAVY_SLOTS,
+        // Cap amount - validation & stats
+        Self::CAPACITOR_CAPACITY,
+        // Other slots - validation & stats
+        Self::SERVICE_SLOTS,
+        Self::MAX_SUBSYSTEMS,
+        // General
+        Self::SKILL_LEVEL,
+        // Cycle-related
+        Self::SPEED,
+        Self::RELOAD_TIME,
+        // Damage-related
+        Self::DMG_MULT,
+        Self::DMG_MULT_BONUS,
+        Self::EM_DMG,
+        Self::KIN_DMG,
+        Self::THERM_DMG,
+        Self::EXPL_DMG,
+        // Damage-application-related
+        Self::MAX_RANGE,
+        Self::FALLOFF,
+        Self::TRACKING_SPEED,
+        Self::OPTIMAL_SIG_RADIUS,
+        Self::SIG_RADIUS,
+        // RAH sim attributes
+        Self::ARMOR_EM_DMG_RESONANCE,
+        Self::ARMOR_THERM_DMG_RESONANCE,
+        Self::ARMOR_KIN_DMG_RESONANCE,
+        Self::ARMOR_EXPL_DMG_RESONANCE,
+    ];
     // Attribute IDs
     pub(crate) const MASS: Self = Self::from_eid(EAttrId::MASS);
     pub(crate) const CAPACITOR_NEED: Self = Self::from_eid(EAttrId::CAPACITOR_NEED);

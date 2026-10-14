@@ -1,12 +1,14 @@
 use super::attr::AttrEntry;
 use crate::{
+    ad::AAttrId,
     dbg::DebugResult,
-    rd::{DENSE_ATTR_COUNT, RAttrId},
+    rd::RAttrId,
     svc::calc::{CalcAttrVals, ItemAttrPostproc},
     util::{RMap, SlabId},
 };
 
 const NO_ENTRY: u8 = u8::MAX;
+const DENSE_ATTR_COUNT: usize = AAttrId::DENSE_ATTRS.len();
 
 /// Calculated attribute values and registered postprocessors of an item.
 ///

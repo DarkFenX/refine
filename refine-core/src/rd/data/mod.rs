@@ -1,5 +1,5 @@
 pub(crate) use abil::RAbil;
-pub(crate) use attr::{DENSE_ATTR_COUNT, RAttr, RAttrConsts, RAttrId};
+pub(crate) use attr::{RAttr, RAttrConsts, RAttrId};
 pub(crate) use buff::{RBuff, RBuffId, RBuffModifier};
 pub(crate) use data::{RData, RcData, RcEffect, RcItem, RcMuta};
 pub(crate) use effect::{

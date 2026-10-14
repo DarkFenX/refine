@@ -9,12 +9,12 @@
 //! - Remapping some IDs to slab IDs for faster access to some entity types.
 
 pub(crate) use data::{
-    DENSE_ATTR_COUNT, RAbil, RAttr, RAttrConsts, RAttrId, RBuff, RBuffId, RBuffModifier, RData, REffect, REffectBuff,
-    REffectBuffScope, REffectCharge, REffectChargeLoc, REffectConsts, REffectEcm, REffectId, REffectLocalOpcSpec,
-    REffectMining, REffectModStrength, REffectModifier, REffectNeut, REffectProjModSpec, REffectProjOpcSpec,
-    REffectProjecteeFilter, REffectResist, REffectSpoolAttrs, RItem, RItemBase, RItemBaseEffectData, RItemCapConsumer,
-    RItemChargeLimit, RItemContLimit, RItemFlexData, RItemList, RItemListId, RItemShipLimit, RMuta, RMutaAttrRange,
-    RShipDroneLimit, RShipKind, RState, RcData, RcEffect, RcItem, RcMuta,
+    RAbil, RAttr, RAttrConsts, RAttrId, RBuff, RBuffId, RBuffModifier, RData, REffect, REffectBuff, REffectBuffScope,
+    REffectCharge, REffectChargeLoc, REffectConsts, REffectEcm, REffectId, REffectLocalOpcSpec, REffectMining,
+    REffectModStrength, REffectModifier, REffectNeut, REffectProjModSpec, REffectProjOpcSpec, REffectProjecteeFilter,
+    REffectResist, REffectSpoolAttrs, RItem, RItemBase, RItemBaseEffectData, RItemCapConsumer, RItemChargeLimit,
+    RItemContLimit, RItemFlexData, RItemList, RItemListId, RItemShipLimit, RMuta, RMutaAttrRange, RShipDroneLimit,
+    RShipKind, RState, RcData, RcEffect, RcItem, RcMuta,
 };
 
 mod data;
