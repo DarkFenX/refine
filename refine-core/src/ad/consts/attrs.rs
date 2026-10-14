@@ -21,6 +21,7 @@ impl AAttrId {
     ];
     pub(crate) const LIMITED_PRECISION_ATTRS: [Self; 4] =
         [Self::CPU, Self::POWER, Self::CPU_OUTPUT, Self::POWER_OUTPUT];
+    // TODO: improve by running large set of realistic scenarios (can share with PGO profile)
     pub(crate) const DENSE_ATTRS: [Self; 47] = [
         // Resource use - validation
         Self::POWER,
