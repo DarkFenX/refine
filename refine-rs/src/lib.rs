@@ -2,6 +2,7 @@
 #![feature(const_trait_impl)]
 #![feature(const_default)]
 #![cfg_attr(feature = "serde", feature(cfg_eval))]
+#![expect(unevaluated_default_field_value)]
 
 pub use api::{Fit, Fleet, Item, Refine, SolFittingAppResp, SolarSystem, SolarSystemId};
 pub use ctl::{
