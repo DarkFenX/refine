@@ -156,6 +156,9 @@ pub(super) enum CapSimEventData {
 pub(super) struct CapSimEventCycleCheck {
     pub(super) cycle_iter: AggrIter<PValue>,
     pub(super) direction: Direction,
+    // Cap change which happens at the end of current cycle, i.e. when this event is processed next.
+    // It is kept here instead of the heap, to avoid adding it to the heap and removing it
+    pub(super) cycle_end_event: Option<CapSimEvent>,
 }
 
 pub(super) struct CapSimEventInjector {

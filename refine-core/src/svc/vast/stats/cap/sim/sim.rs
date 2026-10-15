@@ -4,7 +4,7 @@ use super::event::{CapSimEvent, CapSimEventCapChange, CapSimEventData, CapSimEve
 use crate::{
     PValue, UnitInterval, Value,
     svc::{
-        output::OutputInstanceIter,
+        output::{Output, OutputInstanceIter},
         vast::stats::{cap::sim::shared::Direction, shared::regenerate},
     },
 };
@@ -26,9 +26,12 @@ pub(super) struct CapSim {
     tau: Option<PValue>,
     exp_cache: ExpCache,
     events: BinaryHeap<CapSimEvent>,
-    // Cap change events which happen at the time of event being processed. They are kept out of the
-    // heap, since they would be pushed to it and popped from it right away
+    /// Cap change events which happen at the time of event being processed. They are kept out of
+    /// the heap, since they would be pushed to it and popped from it right away.
     current_events: Vec<CapSimEvent>,
+    /// Delayed cap change events of cycle being processed, which wait until cycle check event is
+    /// updated in the heap.
+    delayed_events: Vec<CapSimEvent>,
     /// Injectors available for immediate use
     #[expect(clippy::vec_box)]
     injectors: Vec<Box<CapSimEventInjector>>,
@@ -57,6 +60,7 @@ impl CapSim {
             exp_cache: ExpCache::new(),
             events,
             current_events: Vec::new(),
+            delayed_events: Vec::new(),
             injectors: Vec::new(),
             time: PValue::ZERO,
             cap: start_cap.into_value(),
@@ -83,20 +87,34 @@ impl CapSim {
                         // Cycle check events are updated in place, to avoid removing them from the
                         // heap and adding them back
                         CapSimEventData::CycleCheck(event_data) => {
+                            // Cap change which happens at the end of previous cycle
+                            if let Some(cycle_end_event) = event_data.cycle_end_event.take() {
+                                self.current_events.push(cycle_end_event);
+                            }
                             // Check if it can cycle altogether
                             match event_data.cycle_iter.next() {
                                 Some(cycle_iter_item) => {
+                                    let next_time = event_time + cycle_iter_item.cycle_duration;
                                     let direction = event_data.direction;
-                                    // Schedule next cycle check
-                                    heap_event.set_time(event_time + cycle_iter_item.cycle_duration);
-                                    drop(heap_event);
+                                    let cycle_end_event = &mut event_data.cycle_end_event;
                                     // Add outputs for this cycle
-                                    self.schedule_cycle_output(
+                                    Self::schedule_cycle_output(
+                                        &mut self.current_events,
+                                        |event| match cycle_end_event.is_none() && event.get_time() == next_time {
+                                            true => *cycle_end_event = Some(event),
+                                            false => self.delayed_events.push(event),
+                                        },
                                         event_time,
-                                        cycle_iter_item.output.into_instance_iter(),
+                                        cycle_iter_item.output,
                                         cycle_iter_item.output_duration_limit,
                                         direction,
                                     );
+                                    // Schedule next cycle check
+                                    heap_event.set_time(next_time);
+                                    drop(heap_event);
+                                    for event in self.delayed_events.drain(..) {
+                                        self.events.push(event);
+                                    }
                                 }
                                 // When some module is done with cycling (non-repeating modules
                                 // like CEHE), check if there are any events left, and if there are
@@ -230,8 +248,49 @@ impl CapSim {
             self.wm_aux_low = self.cap;
         }
     }
+    // Cap change events which happen at base time are added to current events, while delayed ones
+    // are passed to the scheduling function
     fn schedule_cycle_output(
-        &mut self,
+        current_events: &mut Vec<CapSimEvent>,
+        mut schedule_delayed: impl FnMut(CapSimEvent),
+        base_time: PValue,
+        output: Output<PValue>,
+        output_duration_limit: Option<PValue>,
+        direction: Direction,
+    ) {
+        match output {
+            // Simple output has just one instance, so it is scheduled without instance iterator
+            Output::Simple(simple_output) => {
+                if let Some(output_duration_limit) = output_duration_limit
+                    && simple_output.delay > output_duration_limit
+                {
+                    return;
+                }
+                let event = CapSimEvent::new(
+                    base_time + simple_output.delay,
+                    CapSimEventData::CapChange(CapSimEventCapChange {
+                        amount: simple_output.instance,
+                        direction,
+                    }),
+                );
+                match simple_output.delay == PValue::ZERO {
+                    true => current_events.push(event),
+                    false => schedule_delayed(event),
+                }
+            }
+            Output::Complex(..) => Self::schedule_output_instances(
+                current_events,
+                schedule_delayed,
+                base_time,
+                output.into_instance_iter(),
+                output_duration_limit,
+                direction,
+            ),
+        }
+    }
+    fn schedule_output_instances(
+        current_events: &mut Vec<CapSimEvent>,
+        mut schedule_delayed: impl FnMut(CapSimEvent),
         base_time: PValue,
         output_iter: OutputInstanceIter<PValue>,
         output_duration_limit: Option<PValue>,
@@ -254,8 +313,8 @@ impl CapSim {
             );
             // Base time is time of event being processed
             match extra_delay == PValue::ZERO {
-                true => self.current_events.push(event),
-                false => self.events.push(event),
+                true => current_events.push(event),
+                false => schedule_delayed(event),
             }
         }
     }
@@ -288,7 +347,9 @@ impl CapSim {
             }
             // Schedule non-immediate cap change events (EVE injectors don't have that, but data
             // format used in the lib makes it possible)
-            self.schedule_cycle_output(
+            Self::schedule_output_instances(
+                &mut self.current_events,
+                |event| self.events.push(event),
                 self.time,
                 instance_iter,
                 cycle_iter_item.output_duration_limit,

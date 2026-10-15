@@ -80,6 +80,7 @@ impl Merger {
                 CapSimEventData::CycleCheck(Box::new(CapSimEventCycleCheck {
                     cycle_iter: entry.iter_data.iter(),
                     direction,
+                    cycle_end_event: None,
                 })),
             ))
         }
