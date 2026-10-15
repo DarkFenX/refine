@@ -1,5 +1,7 @@
 use std::collections::hash_map::Entry;
 
+use smallvec::SmallVec;
+
 use super::calce_shared::get_base_attr_value;
 use crate::{
     SecZone, Value,
@@ -419,6 +421,8 @@ impl Calc {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Low-level fetchers
 ////////////////////////////////////////////////////////////////////////////////////////////////////
+const LINEAR_DEDUP_LIMIT: usize = 24;
+
 impl Calc {
     fn accumulate_modifications<F>(
         &mut self,
@@ -434,29 +438,54 @@ impl Calc {
         let mut reuse_ckeys = self.reuse.ckeys.take();
         self.std
             .get_mods_for_affectee(&mut reuse_ckeys, item_uid, item, attr.rid, &ctx.u_data.fits);
-        // Shortcut for case when modifications cannot overlap
-        if reuse_ckeys.len() <= 1 {
-            if let Some(ckey) = reuse_ckeys.first() {
-                let cmod = self.rmods.get_cmod(ckey);
-                if let Some(modification) = self.make_modification(ctx, &cmod, &filter) {
-                    accumulate_modification(accumulator, &modification, attr);
+        match reuse_ckeys.len() {
+            // Shortcut for case when modifications cannot overlap
+            ..=1 => {
+                if let Some(ckey) = reuse_ckeys.first() {
+                    let cmod = self.rmods.get_cmod(ckey);
+                    if let Some(modification) = self.make_modification(ctx, &cmod, &filter) {
+                        add_cmod_to_accum(accumulator, &modification, attr);
+                    }
+                }
+                self.reuse.ckeys.put(reuse_ckeys);
+            }
+            // Use linear deduplication while it is faster
+            2..=LINEAR_DEDUP_LIMIT => {
+                let mut mods: SmallVec<[_; LINEAR_DEDUP_LIMIT]> = SmallVec::new();
+                for ckey in reuse_ckeys.iter() {
+                    let cmod = self.rmods.get_cmod(ckey);
+                    if let Some(modification) = self.make_modification(ctx, &cmod, &filter) {
+                        let dedup_key = CalcModificationKey::from_cmod(&cmod);
+                        match mods
+                            .iter_mut()
+                            .find(|(stored_dedup_key, _)| *stored_dedup_key == dedup_key)
+                        {
+                            Some((_, stored_mod)) => *stored_mod = modification,
+                            None => mods.push((dedup_key, modification)),
+                        }
+                    }
+                }
+                self.reuse.ckeys.put(reuse_ckeys);
+                for (_, modification) in mods.iter() {
+                    add_cmod_to_accum(accumulator, modification, attr);
                 }
             }
-            self.reuse.ckeys.put(reuse_ckeys);
-            return;
-        }
-        let mut reuse_mods = self.reuse.mods.take();
-        for ckey in reuse_ckeys.iter() {
-            let cmod = self.rmods.get_cmod(ckey);
-            if let Some(modification) = self.make_modification(ctx, &cmod, &filter) {
-                reuse_mods.insert(CalcModificationKey::from_cmod(&cmod), modification);
+            // Use hashmap deduplication for large sets of modifications
+            _ => {
+                let mut reuse_mods = self.reuse.mods.take();
+                for ckey in reuse_ckeys.iter() {
+                    let cmod = self.rmods.get_cmod(ckey);
+                    if let Some(modification) = self.make_modification(ctx, &cmod, &filter) {
+                        reuse_mods.insert(CalcModificationKey::from_cmod(&cmod), modification);
+                    }
+                }
+                self.reuse.ckeys.put(reuse_ckeys);
+                for (_, modification) in reuse_mods.drain() {
+                    add_cmod_to_accum(accumulator, &modification, attr);
+                }
+                self.reuse.mods.put(reuse_mods);
             }
         }
-        self.reuse.ckeys.put(reuse_ckeys);
-        for (_, modification) in reuse_mods.drain() {
-            accumulate_modification(accumulator, &modification, attr);
-        }
-        self.reuse.mods.put(reuse_mods);
     }
     fn make_modification<F>(&mut self, ctx: &SvcCtx, cmod: &CtxModifier, filter: &F) -> Option<CalcModification>
     where
@@ -543,7 +572,7 @@ impl Calc {
     }
 }
 
-fn accumulate_modification(accumulator: &mut ModAccumFast, modification: &CalcModification, attr: &RAttr) {
+fn add_cmod_to_accum(accumulator: &mut ModAccumFast, modification: &CalcModification, attr: &RAttr) {
     accumulator.add_val(
         modification.val,
         modification.op,
