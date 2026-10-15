@@ -44,6 +44,10 @@ fn pow10(exp: i32) -> f64 {
     }
 }
 
+/// Cheaper version of .log10().floor().
+///
+/// It can produce different results for numbers close to powers of 10, but it is not really
+/// relevant for how this function is used in the lib.
 fn get_magnitude(abs_val: f64) -> i32 {
     // Estimate via binary exponent, which can be lower than actual value by up to 2, or higher by 1
     let bin_exp = ((abs_val.to_bits() >> 52) & 0x7ff) as i32 - 1023;
