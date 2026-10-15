@@ -1,4 +1,6 @@
-pub use benchmark::{DevBenchmarkAttrCalcCmd, DevBenchmarkCmd, DevBenchmarkStatsCmd, DevBenchmarkTryFitItemsCmd};
+pub use benchmark::{
+    DevBenchmarkAttrCalcCmd, DevBenchmarkCapSimCmd, DevBenchmarkCmd, DevBenchmarkStatsCmd, DevBenchmarkTryFitItemsCmd,
+};
 pub use check::DecCheckCmd;
 use util::SolCloner;
 
