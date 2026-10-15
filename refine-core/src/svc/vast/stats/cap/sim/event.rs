@@ -9,42 +9,28 @@ use crate::{
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Event main type
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-// Time is moved out of boxes to allow faster access
+// Ordering key is moved out of boxes to allow faster access
 pub(super) struct CapSimEvent {
-    // Times are not negative, so bits of their values interpreted as integers are ordered the same
-    // way as values, while being cheaper to compare
-    time_key: u64,
+    // Events are ordered by this key, except for injector events with equal key
+    key: CapSimEventKey,
     pub(super) data: CapSimEventData,
 }
 impl CapSimEvent {
     pub(super) fn new(time: PValue, data: CapSimEventData) -> Self {
         Self {
-            // Adding zero ensures -0.0 becomes +0.0
-            time_key: (time.into_f64() + 0.0).to_bits(),
+            key: CapSimEventKey::new(time, &data),
             data,
         }
     }
     pub(super) fn get_time(&self) -> PValue {
-        PValue::from_f64_unchecked(f64::from_bits(self.time_key))
+        self.key.get_time()
     }
-    // With equal time, order of processing:
-    // - cycle check events
-    // - injector ready events, from highest injection to lowest, then from fastest cycle to slowest
-    // - cap gain events, from highest to lowest
+    #[cold]
     #[inline(never)]
-    fn cmp_same_time(&self, other: &Self) -> Ordering {
+    fn cmp_injectors(&self, other: &Self) -> Ordering {
         match (&self.data, &other.data) {
-            (CapSimEventData::CycleCheck(..), CapSimEventData::CycleCheck(..)) => Ordering::Equal,
-            (CapSimEventData::CycleCheck(..), _) => Ordering::Greater,
             (CapSimEventData::InjectorReady(e1), CapSimEventData::InjectorReady(e2)) => e1.cmp_priority(e2),
-            (CapSimEventData::InjectorReady(..), _) => Ordering::Greater,
-            (CapSimEventData::CapChange(e1), CapSimEventData::CapChange(e2)) => match (e1.direction, e2.direction) {
-                (Direction::Gain, Direction::Gain) => e1.amount.cmp(&e2.amount),
-                (Direction::Loss, Direction::Loss) => e2.amount.cmp(&e1.amount),
-                (Direction::Gain, Direction::Loss) => Ordering::Greater,
-                (Direction::Loss, Direction::Gain) => Ordering::Less,
-            },
-            (CapSimEventData::CapChange(..), _) => Ordering::Less,
+            _ => Ordering::Equal,
         }
     }
 }
@@ -55,32 +41,65 @@ impl PartialOrd for CapSimEvent {
     }
 }
 impl Ord for CapSimEvent {
-    // Comparison by time is inlined, since it is what decides order in absolute majority of cases
     #[inline(always)]
     fn cmp(&self, other: &Self) -> Ordering {
-        // Since sim is using max-heap, events which have lower time are processed earlier
-        match other.time_key.cmp(&self.time_key) {
-            Ordering::Equal => self.cmp_same_time(other),
+        match self.key.cmp(&other.key) {
+            Ordering::Equal if self.key.is_injector() => self.cmp_injectors(other),
             result => result,
         }
     }
 }
 impl PartialEq<Self> for CapSimEvent {
     fn eq(&self, other: &Self) -> bool {
-        if self.time_key != other.time_key {
-            return false;
-        }
-        match (&self.data, &other.data) {
-            (CapSimEventData::CycleCheck(..), CapSimEventData::CycleCheck(..)) => true,
-            (CapSimEventData::InjectorReady(e1), CapSimEventData::InjectorReady(e2)) => {
-                e1.cmp_priority(e2) == Ordering::Equal
-            }
-            (CapSimEventData::CapChange(e1), CapSimEventData::CapChange(e2)) => e1.amount.eq(&e2.amount),
-            _ => false,
-        }
+        self.cmp(other) == Ordering::Equal
     }
 }
 impl Eq for CapSimEvent {}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Event ordering key
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// With equal time, order of processing:
+// - cycle check events
+// - injector ready events, from highest injection to lowest, then from fastest cycle to slowest
+// - cap gain events, from highest to lowest
+// - cap loss events, from lowest to highest
+const PRIO_CYCLE_CHECK: u64 = u64::MAX;
+const PRIO_INJECTOR: u64 = u64::MAX - 1;
+// Bits of non-negative non-NaN floats take up to 63 bits, so gains are always above losses
+const PRIO_GAIN_BASE: u64 = 1 << 63;
+const PRIO_LOSS_BASE: u64 = (1 << 63) - 1;
+
+/// Higher 64 bits contain inverted time bits, since sim is using max-heap, and events which have
+/// lower time are processed earlier. Lower 64 bits contain processing priority of events with equal
+/// time.
+#[derive(Copy, Clone, Eq, PartialEq, Ord, PartialOrd)]
+struct CapSimEventKey(u128);
+impl CapSimEventKey {
+    fn new(time: PValue, data: &CapSimEventData) -> Self {
+        let prio = match data {
+            CapSimEventData::CycleCheck(..) => PRIO_CYCLE_CHECK,
+            CapSimEventData::InjectorReady(..) => PRIO_INJECTOR,
+            CapSimEventData::CapChange(event) => match event.direction {
+                Direction::Gain => PRIO_GAIN_BASE + get_bits(event.amount),
+                Direction::Loss => PRIO_LOSS_BASE - get_bits(event.amount),
+            },
+        };
+        Self(((!get_bits(time) as u128) << 64) | prio as u128)
+    }
+    fn get_time(self) -> PValue {
+        PValue::from_f64_unchecked(f64::from_bits(!((self.0 >> 64) as u64)))
+    }
+    fn is_injector(self) -> bool {
+        self.0 as u64 == PRIO_INJECTOR
+    }
+}
+
+// Values are not negative, so bits of their values interpreted as integers are ordered the same way
+// as values. Adding zero ensures -0.0 becomes +0.0
+fn get_bits(value: PValue) -> u64 {
+    (value.into_f64() + 0.0).to_bits()
+}
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Event enum and its variants
