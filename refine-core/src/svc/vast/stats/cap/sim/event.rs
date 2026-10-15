@@ -14,6 +14,13 @@ pub(super) struct CapSimEvent {
     pub(super) time: PValue,
     pub(super) data: CapSimEventData,
 }
+impl CapSimEvent {
+    // Times are not negative, so bits of their values interpreted as integers are ordered the same
+    // way as values, while being cheaper to compare. Adding zero ensures -0.0 becomes +0.0
+    fn get_time_key(&self) -> u64 {
+        (self.time.into_f64() + 0.0).to_bits()
+    }
+}
 impl PartialOrd for CapSimEvent {
     fn partial_cmp(&self, other: &Self) -> Option<Ordering> {
         Some(self.cmp(other))
@@ -27,7 +34,7 @@ impl Ord for CapSimEvent {
         //   - cycle check events
         //   - injector ready events
         //   - cap gain events, from highest to lowest
-        match other.time.cmp(&self.time) {
+        match other.get_time_key().cmp(&self.get_time_key()) {
             Ordering::Equal => match (&self.data, &other.data) {
                 (CapSimEventData::CycleCheck(..), CapSimEventData::CycleCheck(..)) => Ordering::Equal,
                 (CapSimEventData::CycleCheck(..), _) => Ordering::Greater,
@@ -49,7 +56,7 @@ impl Ord for CapSimEvent {
 }
 impl PartialEq<Self> for CapSimEvent {
     fn eq(&self, other: &Self) -> bool {
-        if !self.time.eq(&other.time) {
+        if self.get_time_key() != other.get_time_key() {
             return false;
         }
         match (&self.data, &other.data) {
