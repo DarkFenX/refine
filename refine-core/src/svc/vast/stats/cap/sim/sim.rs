@@ -75,7 +75,7 @@ impl CapSim {
             return result;
         }
         while let Some(event) = self.pop_event() {
-            let event_time = event.time;
+            let event_time = event.get_time();
             match event.data {
                 CapSimEventData::CycleCheck(mut event_data) => {
                     // Check if it can cycle altogether
@@ -90,10 +90,10 @@ impl CapSim {
                             );
                             // Schedule next cycle check, reusing allocation of the current event.
                             // Cycle iter and direction stay the same, only time needs updating
-                            self.events.push(CapSimEvent {
-                                time: event_time + cycle_iter_item.cycle_duration,
-                                data: CapSimEventData::CycleCheck(event_data),
-                            });
+                            self.events.push(CapSimEvent::new(
+                                event_time + cycle_iter_item.cycle_duration,
+                                CapSimEventData::CycleCheck(event_data),
+                            ));
                         }
                         // When some module is done with cycling (non-repeating modules like CEHE),
                         // check if there are any events left, and if there are some, reset extra
@@ -230,13 +230,13 @@ impl CapSim {
             {
                 return;
             }
-            let event = CapSimEvent {
-                time: base_time + extra_delay,
-                data: CapSimEventData::CapChange(CapSimEventCapChange {
+            let event = CapSimEvent::new(
+                base_time + extra_delay,
+                CapSimEventData::CapChange(CapSimEventCapChange {
                     amount: output_event.instance,
                     direction,
                 }),
-            };
+            );
             // Base time is time of event being processed
             match extra_delay == PValue::ZERO {
                 true => self.current_events.push(event),
@@ -277,10 +277,10 @@ impl CapSim {
                 Direction::Gain,
             );
             // Schedule next cycle
-            self.events.push(CapSimEvent {
-                time: self.time + cycle_iter_item.cycle_duration,
-                data: CapSimEventData::InjectorReady(injector_data),
-            });
+            self.events.push(CapSimEvent::new(
+                self.time + cycle_iter_item.cycle_duration,
+                CapSimEventData::InjectorReady(injector_data),
+            ));
         }
     }
     fn inject_emergency(&mut self, needed_cap_total: PValue) {
