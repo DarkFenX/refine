@@ -24,6 +24,7 @@ pub(super) struct CapSim {
     max_cap: Value,
     max_pcap: PValue,
     tau: Option<PValue>,
+    exp_cache: ExpCache,
     events: BinaryHeap<CapSimEvent>,
     /// Injectors available for immediate use
     #[expect(clippy::vec_box)]
@@ -50,6 +51,7 @@ impl CapSim {
             max_cap: max_cap.into_value(),
             max_pcap: max_cap,
             tau: recharge_duration.map(|v| v / PValue::from_f64_unchecked(5.0)),
+            exp_cache: ExpCache::new(),
             events,
             injectors: Vec::new(),
             time: PValue::ZERO,
@@ -170,14 +172,8 @@ impl CapSim {
     fn advance_time(&mut self, new_time: PValue) {
         if new_time > self.time {
             if let Some(tau) = self.tau {
-                self.cap = regenerate(
-                    PValue::from_value_unchecked(self.cap),
-                    self.max_pcap,
-                    tau,
-                    self.time,
-                    new_time,
-                )
-                .into_value()
+                let decay = self.exp_cache.exp((self.time - new_time) / tau);
+                self.cap = regenerate(PValue::from_value_unchecked(self.cap), self.max_pcap, decay).into_value()
             };
             self.time = new_time;
             self.process_high_watermark();
@@ -321,5 +317,40 @@ impl CapSim {
             }),
             false => None,
         }
+    }
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Regen cache
+////////////////////////////////////////////////////////////////////////////////////////////////////
+const CACHE_SIZE: usize = 8;
+
+/// Cache of exp() results for recently used arguments, which repeat a lot in sim, since time deltas
+/// between events repeat.
+struct ExpCache {
+    // Bits of arguments, initialized with +0.0, which is never passed, since arguments are always
+    // negative
+    args: [u64; CACHE_SIZE],
+    results: [PValue; CACHE_SIZE],
+    next: usize,
+}
+impl ExpCache {
+    fn new() -> Self {
+        Self {
+            args: [0; CACHE_SIZE],
+            results: [PValue::ZERO; CACHE_SIZE],
+            next: 0,
+        }
+    }
+    fn exp(&mut self, arg: Value) -> PValue {
+        let arg_bits = arg.into_f64().to_bits();
+        if let Some(idx) = self.args.iter().position(|&v| v == arg_bits) {
+            return self.results[idx];
+        }
+        let result = arg.exp();
+        self.args[self.next] = arg_bits;
+        self.results[self.next] = result;
+        self.next = (self.next + 1) % CACHE_SIZE;
+        result
     }
 }
