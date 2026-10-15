@@ -1,4 +1,4 @@
-use std::collections::BinaryHeap;
+use dary_heap::QuaternaryHeap;
 
 use super::{
     merge::Merger,
@@ -33,7 +33,7 @@ pub(in crate::svc::vast::stats::cap::sim) fn prepare_events(
     nosf_projectee_item_uid: Option<UItemId>,
     fit_data: &VastFitData,
     cap_item_uid: UItemId,
-) -> (BinaryHeap<CapSimEvent>, Vec<CapSimEvent>) {
+) -> (QuaternaryHeap<CapSimEvent>, Vec<CapSimEvent>) {
     let cycling_options = CyclingOptions::Sim(CycleOptionsSim { optional_reloads, .. });
     let mut merger = Merger::new();
     fill_consumers(
@@ -75,7 +75,7 @@ pub(in crate::svc::vast::stats::cap::sim) fn prepare_events(
         vast,
         cap_item_uid,
     );
-    let mut events = BinaryHeap::new();
+    let mut events = QuaternaryHeap::new();
     merger.into_sim_events(&mut events);
     let mut injector_events = Vec::new();
     fill_injectors(

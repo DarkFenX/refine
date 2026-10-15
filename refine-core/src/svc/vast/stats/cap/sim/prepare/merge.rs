@@ -1,4 +1,4 @@
-use std::collections::BinaryHeap;
+use dary_heap::QuaternaryHeap;
 
 use super::timing_key::{CSeqHardDtTimingKey, CSeqPartTimingKey, TIME_ROUND_DIGITS};
 use crate::{
@@ -49,7 +49,7 @@ impl Merger {
         };
         container.push(MergeEntry { start_delay, iter_data })
     }
-    pub(super) fn into_sim_events(mut self, events: &mut BinaryHeap<CapSimEvent>) {
+    pub(super) fn into_sim_events(mut self, events: &mut QuaternaryHeap<CapSimEvent>) {
         Merger::merge(self.mergeable_gains, &mut self.gains);
         Merger::merge(self.mergeable_losses, &mut self.losses);
         Merger::convert(self.gains, Direction::Gain, events);
@@ -73,7 +73,7 @@ impl Merger {
             entries.push(main_entry);
         }
     }
-    fn convert(merge_group: Vec<MergeEntry>, direction: Direction, events: &mut BinaryHeap<CapSimEvent>) {
+    fn convert(merge_group: Vec<MergeEntry>, direction: Direction, events: &mut QuaternaryHeap<CapSimEvent>) {
         for entry in merge_group {
             events.push(CapSimEvent::new(
                 entry.start_delay,

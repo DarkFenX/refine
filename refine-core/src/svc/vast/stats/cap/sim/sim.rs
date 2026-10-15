@@ -1,4 +1,4 @@
-use std::collections::{BinaryHeap, binary_heap::PeekMut};
+use dary_heap::{PeekMut, QuaternaryHeap};
 
 use super::event::{CapSimEvent, CapSimEventCapChange, CapSimEventData, CapSimEventInjector};
 use crate::{
@@ -25,7 +25,7 @@ pub(super) struct CapSim {
     max_pcap: PValue,
     tau: Option<PValue>,
     exp_cache: ExpCache,
-    events: BinaryHeap<CapSimEvent>,
+    events: QuaternaryHeap<CapSimEvent>,
     /// Injector ready events, sorted so that the next one is the last. They are kept out of the
     /// heap, since there are just a few of them, and their ordering is more expensive than
     /// ordering of other events.
@@ -55,7 +55,7 @@ impl CapSim {
         start_cap: PValue,
         max_cap: PValue,
         recharge_duration: Option<PValue>,
-        events: BinaryHeap<CapSimEvent>,
+        events: QuaternaryHeap<CapSimEvent>,
         mut injector_events: Vec<CapSimEvent>,
     ) -> Self {
         injector_events.sort_by(|a, b| a.cmp_injector(b));
