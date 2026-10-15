@@ -145,6 +145,124 @@ def test_benchmark_stats(client, consts):
 
 
 # ruff:ignore[missing-type-function-argument, missing-return-type-undocumented-public-function]
+def test_benchmark_cap_sim(client, consts):
+    setup_eve_data(client=client, data=client._get_default_eve_data())  # ruff:ignore[private-member-access]
+    api_sol = client.create_sol()
+
+    api_fit = api_sol.create_fit()
+    api_fit_turrets = []
+    with api_fit.batch() as api_fit_batch:
+        api_fit_batch.set_character(type_id=1373)
+        for eve_skill_id in get_skill_type_ids():
+            api_fit_batch.add_skill(type_id=eve_skill_id, level=5)
+        api_fit_batch.add_implant(type_id=19540)  # HG snake alpha
+        api_fit_batch.add_implant(type_id=19551)  # HG snake beta
+        api_fit_batch.add_implant(type_id=19553)  # HG snake gamma
+        api_fit_batch.add_implant(type_id=19554)  # HG snake delta
+        api_fit_batch.add_implant(type_id=19555)  # HG snake epsilon
+        api_fit_batch.add_implant(type_id=19556)  # HG snake omega
+        api_fit_batch.add_implant(type_id=16004)  # EM-705
+        api_fit_batch.add_implant(type_id=24663)  # Zor hyperlink
+        api_fit_batch.add_implant(type_id=19687)  # SS-905
+        api_fit_batch.add_implant(type_id=19694)  # LE-1005
+        api_fit_batch.add_booster(type_id=28678)  # Synth frentix
+        api_fit_batch.add_booster(type_id=9950)  # Std blue pill
+        api_fit_batch.add_booster(type_id=46000)  # Pyro 3
+        api_nm = api_fit_batch.set_ship(type_id=17736, coordinates=(0, 0, 0), movement=(0, 0, 1))  # NM
+        # T2 mega pulses with conflag
+        api_fit_turrets.extend(api_fit_batch.add_module(
+            type_id=3057,
+            rack=consts.ApiRack.high,
+            state=consts.ApiModuleState.active,
+            charge_type_id=12816) for _ in range(4))
+        # X-type heavy neut
+        api_fit_batch.add_module(type_id=37631, rack=consts.ApiRack.high, state=consts.ApiModuleState.active)
+        # A-type med neut
+        api_fit_batch.add_module(type_id=37627, rack=consts.ApiRack.high, state=consts.ApiModuleState.active)
+        # Pith X-type XLSB
+        api_fit_batch.add_module(type_id=19208, rack=consts.ApiRack.mid, state=consts.ApiModuleState.active)
+        # TS heavy cap booster
+        api_fit_batch.add_module(
+            type_id=14174,
+            rack=consts.ApiRack.mid,
+            state=consts.ApiModuleState.active,
+            charge_type_id=41490)
+        # TS point
+        api_fit_batch.add_module(type_id=14248, rack=consts.ApiRack.mid, state=consts.ApiModuleState.active)
+        # Gist X-type AB
+        api_fit_batch.add_module(type_id=18676, rack=consts.ApiRack.mid, state=consts.ApiModuleState.active)
+        # FN web
+        api_fit_batch.add_module(type_id=17559, rack=consts.ApiRack.mid, state=consts.ApiModuleState.active)
+        # MJD
+        api_fit_batch.add_module(type_id=4383, rack=consts.ApiRack.mid, state=consts.ApiModuleState.active)
+        # Pithum C-type multispec
+        api_fit_batch.add_module(type_id=4349, rack=consts.ApiRack.mid, state=consts.ApiModuleState.active)
+        # T2 DC
+        api_fit_batch.add_module(type_id=2048, rack=consts.ApiRack.low, state=consts.ApiModuleState.online)
+        # TS heat sinks
+        for _ in range(3):
+            api_fit_batch.add_module(type_id=13943, rack=consts.ApiRack.low, state=consts.ApiModuleState.online)
+        # T2 nanos
+        for _ in range(2):
+            api_fit_batch.add_module(type_id=2605, rack=consts.ApiRack.low, state=consts.ApiModuleState.online)
+        api_fit_batch.add_rig(type_id=26388)  # T2 locus
+        api_fit_batch.add_rig(type_id=26436)  # T2 EM rig
+        api_fit_batch.add_rig(type_id=26322)  # T2 hyper
+        # T2 hornets
+        for _ in range(5):
+            api_fit_batch.add_drone(type_id=2466, state=consts.ApiMinionState.engaging)
+        # T2 warriors
+        for _ in range(5):
+            api_fit_batch.add_drone(type_id=2488, state=consts.ApiMinionState.in_bay)
+        # EC lights
+        for _ in range(5):
+            api_fit_batch.add_drone(type_id=23707, state=consts.ApiMinionState.in_bay)
+
+    api_basi_fit = api_sol.create_fit()
+    with api_basi_fit.batch() as api_basi_fit_batch:
+        api_basi_fit_batch.set_character(type_id=1373)
+        for eve_skill_id in get_skill_type_ids():
+            api_basi_fit_batch.add_skill(type_id=eve_skill_id, level=5)
+        api_basi_fit_batch.set_ship(type_id=11985, coordinates=(0, 0, 0), movement=(0, 0, 1))  # Basi
+        # LETs
+        for _ in range(3):
+            api_basi_fit_batch.add_module(
+                type_id=12102,
+                rack=consts.ApiRack.high,
+                state=consts.ApiModuleState.active,
+                proj_item_ids=[api_nm.id])
+
+    api_praxis_fit = api_sol.create_fit()
+    with api_praxis_fit.batch() as api_praxis_fit_batch:
+        api_praxis_fit_batch.set_character(type_id=1373)
+        for eve_skill_id in get_skill_type_ids():
+            api_praxis_fit_batch.add_skill(type_id=eve_skill_id, level=5)
+        api_praxis_fit_batch.set_ship(type_id=47466, coordinates=(0, 0, 0), movement=(0, 0, 1))  # Praxis
+        # T2 heavy neuts
+        for _ in range(7):
+            api_praxis_fit_batch.add_module(
+                type_id=12271,
+                rack=consts.ApiRack.high,
+                state=consts.ApiModuleState.active,
+                proj_item_ids=[api_nm.id])
+
+    iterations = 2000
+    print()  # ruff:ignore[print]
+    print('starting cap sim benchmark')  # ruff:ignore[print]
+    before = time()
+    api_sol.benchmark(command={
+        'type': 'cap_sim',
+        'fit_id': api_fit.id,
+        'staggers': [False, (True, [t.id for t in api_fit_turrets])],
+        'iterations': iterations})
+    after = time()
+    print('done with cap sim benchmark')  # ruff:ignore[print]
+    delta = after - before
+    ips = iterations / delta
+    print(f'{iterations} iterations done in {delta:.3f} seconds, {ips:.2f} iterations per second')  # ruff:ignore[print]
+
+
+# ruff:ignore[missing-type-function-argument, missing-return-type-undocumented-public-function]
 def test_benchmark_try_fit_items(client, consts):
     setup_eve_data(client=client, data=client._get_default_eve_data())  # ruff:ignore[private-member-access]
     api_sol = client.create_sol(sec_zone=consts.ApiSecZone.hisec)
