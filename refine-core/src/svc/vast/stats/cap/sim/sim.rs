@@ -260,22 +260,15 @@ impl CapSim {
             // Simple output has just one instance, so shortcut is used - those instances are
             // scheduled without instance iterator
             Output::Simple(simple_output) => {
-                if let Some(output_duration_limit) = output_duration_limit
-                    && simple_output.delay > output_duration_limit
-                {
-                    return;
-                }
-                let event = CapSimEvent::new(
-                    base_time + simple_output.delay,
-                    CapSimEventData::CapChange(CapSimEventCapChange {
-                        amount: simple_output.instance,
-                        direction,
-                    }),
+                Self::schedule_instance(
+                    current_events,
+                    &mut schedule_delayed,
+                    base_time,
+                    simple_output.delay,
+                    simple_output.instance,
+                    output_duration_limit,
+                    direction,
                 );
-                match simple_output.delay == PValue::ZERO {
-                    true => current_events.push(event),
-                    false => schedule_delayed(event),
-                }
             }
             // Complex ones are using full-blown iterator with instance processing
             Output::Complex(..) => Self::schedule_output_instances(
@@ -296,27 +289,52 @@ impl CapSim {
         output_duration_limit: Option<PValue>,
         direction: Direction,
     ) {
-        let mut extra_delay = PValue::ZERO;
+        let mut delay = PValue::ZERO;
         for output_event in output_iter {
-            extra_delay += output_event.time_passed;
-            if let Some(output_duration_limit) = output_duration_limit
-                && extra_delay > output_duration_limit
-            {
+            delay += output_event.time_passed;
+            if !Self::schedule_instance(
+                current_events,
+                &mut schedule_delayed,
+                base_time,
+                delay,
+                output_event.instance,
+                output_duration_limit,
+                direction,
+            ) {
                 return;
             }
-            let event = CapSimEvent::new(
-                base_time + extra_delay,
-                CapSimEventData::CapChange(CapSimEventCapChange {
-                    amount: output_event.instance,
-                    direction,
-                }),
-            );
-            // Base time is time of event being processed
-            match extra_delay == PValue::ZERO {
-                true => current_events.push(event),
-                false => schedule_delayed(event),
-            }
         }
+    }
+    // Returns false if instance happens after output duration limit, and was not scheduled because
+    // of that
+    #[inline(always)]
+    fn schedule_instance(
+        current_events: &mut Vec<CapSimEvent>,
+        schedule_delayed: &mut impl FnMut(CapSimEvent),
+        base_time: PValue,
+        delay: PValue,
+        instance: PValue,
+        output_duration_limit: Option<PValue>,
+        direction: Direction,
+    ) -> bool {
+        if let Some(output_duration_limit) = output_duration_limit
+            && delay > output_duration_limit
+        {
+            return false;
+        }
+        let event = CapSimEvent::new(
+            base_time + delay,
+            CapSimEventData::CapChange(CapSimEventCapChange {
+                amount: instance,
+                direction,
+            }),
+        );
+        // Base time is time of event being processed
+        match delay == PValue::ZERO {
+            true => current_events.push(event),
+            false => schedule_delayed(event),
+        }
+        true
     }
     fn get_next_event_source(&self) -> Option<EventSource> {
         // Give priority for "current" time events
