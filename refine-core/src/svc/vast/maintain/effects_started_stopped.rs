@@ -1,6 +1,6 @@
 use crate::{
     misc::EffectSpec,
-    rd::{RAttrConsts, REffect, RcEffect},
+    rd::{RAttrConsts, REffect, REffectDisallows, RcEffect},
     svc::{Vast, vast::val::EffectSecZoneInfo},
     ud::{UFitId, UItem, UItemId},
 };
@@ -111,47 +111,30 @@ impl Vast {
                             .mods_active_cloaks
                             .insert(EffectSpec::new(item_uid, effect.rid));
                     }
-                    if effect.disallows_cloak {
+                    if !effect.disallows.is_empty() {
                         let fit_data = self.get_fit_data_mut(module.get_fit_uid());
-                        fit_data
-                            .mod_effects_disallow_cloak
-                            .insert(EffectSpec::new(item_uid, effect.rid));
-                    }
-                    if effect.disallows_warp {
-                        let fit_data = self.get_fit_data_mut(module.get_fit_uid());
-                        fit_data
-                            .mod_effects_disallow_warp
-                            .insert(EffectSpec::new(item_uid, effect.rid));
-                    }
-                    if effect.disallows_jump_gate {
-                        let fit_data = self.get_fit_data_mut(module.get_fit_uid());
-                        fit_data
-                            .mod_effects_disallow_jump_gate
-                            .insert(EffectSpec::new(item_uid, effect.rid));
-                    }
-                    if effect.disallows_jump_wh {
-                        let fit_data = self.get_fit_data_mut(module.get_fit_uid());
-                        fit_data
-                            .mod_effects_disallow_jump_wh
-                            .insert(EffectSpec::new(item_uid, effect.rid));
-                    }
-                    if effect.disallows_jump_drive {
-                        let fit_data = self.get_fit_data_mut(module.get_fit_uid());
-                        fit_data
-                            .mod_effects_disallow_jump_drive
-                            .insert(EffectSpec::new(item_uid, effect.rid));
-                    }
-                    if effect.disallows_dock {
-                        let fit_data = self.get_fit_data_mut(module.get_fit_uid());
-                        fit_data
-                            .mod_effects_disallow_dock
-                            .insert(EffectSpec::new(item_uid, effect.rid));
-                    }
-                    if effect.disallows_tether {
-                        let fit_data = self.get_fit_data_mut(module.get_fit_uid());
-                        fit_data
-                            .mod_effects_disallow_tether
-                            .insert(EffectSpec::new(item_uid, effect.rid));
+                        let espec = EffectSpec::new(item_uid, effect.rid);
+                        if effect.disallows.contains(REffectDisallows::CLOAK) {
+                            fit_data.mod_effects_disallow_cloak.insert(espec);
+                        }
+                        if effect.disallows.contains(REffectDisallows::WARP) {
+                            fit_data.mod_effects_disallow_warp.insert(espec);
+                        }
+                        if effect.disallows.contains(REffectDisallows::JUMP_GATE) {
+                            fit_data.mod_effects_disallow_jump_gate.insert(espec);
+                        }
+                        if effect.disallows.contains(REffectDisallows::JUMP_WH) {
+                            fit_data.mod_effects_disallow_jump_wh.insert(espec);
+                        }
+                        if effect.disallows.contains(REffectDisallows::JUMP_DRIVE) {
+                            fit_data.mod_effects_disallow_jump_drive.insert(espec);
+                        }
+                        if effect.disallows.contains(REffectDisallows::DOCK) {
+                            fit_data.mod_effects_disallow_dock.insert(espec);
+                        }
+                        if effect.disallows.contains(REffectDisallows::TETHER) {
+                            fit_data.mod_effects_disallow_tether.insert(espec);
+                        }
                     }
                 }
             }
@@ -258,47 +241,30 @@ impl Vast {
                             .mods_active_cloaks
                             .remove(&EffectSpec::new(item_uid, effect.rid));
                     }
-                    if effect.disallows_cloak {
+                    if !effect.disallows.is_empty() {
                         let fit_data = self.get_fit_data_mut(module.get_fit_uid());
-                        fit_data
-                            .mod_effects_disallow_cloak
-                            .remove(&EffectSpec::new(item_uid, effect.rid));
-                    }
-                    if effect.disallows_warp {
-                        let fit_data = self.get_fit_data_mut(module.get_fit_uid());
-                        fit_data
-                            .mod_effects_disallow_warp
-                            .remove(&EffectSpec::new(item_uid, effect.rid));
-                    }
-                    if effect.disallows_jump_gate {
-                        let fit_data = self.get_fit_data_mut(module.get_fit_uid());
-                        fit_data
-                            .mod_effects_disallow_jump_gate
-                            .remove(&EffectSpec::new(item_uid, effect.rid));
-                    }
-                    if effect.disallows_jump_wh {
-                        let fit_data = self.get_fit_data_mut(module.get_fit_uid());
-                        fit_data
-                            .mod_effects_disallow_jump_wh
-                            .remove(&EffectSpec::new(item_uid, effect.rid));
-                    }
-                    if effect.disallows_jump_drive {
-                        let fit_data = self.get_fit_data_mut(module.get_fit_uid());
-                        fit_data
-                            .mod_effects_disallow_jump_drive
-                            .remove(&EffectSpec::new(item_uid, effect.rid));
-                    }
-                    if effect.disallows_dock {
-                        let fit_data = self.get_fit_data_mut(module.get_fit_uid());
-                        fit_data
-                            .mod_effects_disallow_dock
-                            .remove(&EffectSpec::new(item_uid, effect.rid));
-                    }
-                    if effect.disallows_tether {
-                        let fit_data = self.get_fit_data_mut(module.get_fit_uid());
-                        fit_data
-                            .mod_effects_disallow_tether
-                            .remove(&EffectSpec::new(item_uid, effect.rid));
+                        let espec = EffectSpec::new(item_uid, effect.rid);
+                        if effect.disallows.contains(REffectDisallows::CLOAK) {
+                            fit_data.mod_effects_disallow_cloak.remove(&espec);
+                        }
+                        if effect.disallows.contains(REffectDisallows::WARP) {
+                            fit_data.mod_effects_disallow_warp.remove(&espec);
+                        }
+                        if effect.disallows.contains(REffectDisallows::JUMP_GATE) {
+                            fit_data.mod_effects_disallow_jump_gate.remove(&espec);
+                        }
+                        if effect.disallows.contains(REffectDisallows::JUMP_WH) {
+                            fit_data.mod_effects_disallow_jump_wh.remove(&espec);
+                        }
+                        if effect.disallows.contains(REffectDisallows::JUMP_DRIVE) {
+                            fit_data.mod_effects_disallow_jump_drive.remove(&espec);
+                        }
+                        if effect.disallows.contains(REffectDisallows::DOCK) {
+                            fit_data.mod_effects_disallow_dock.remove(&espec);
+                        }
+                        if effect.disallows.contains(REffectDisallows::TETHER) {
+                            fit_data.mod_effects_disallow_tether.remove(&espec);
+                        }
                     }
                 }
             }

@@ -5,9 +5,9 @@ use crate::{
         NEffectGeneralOutputGetter,
     },
     rd::{
-        RAttrId, RBuffId, REffectBuff, REffectBuffScope, REffectCharge, REffectChargeLoc, REffectEcm, REffectId,
-        REffectLocalOpcSpec, REffectMining, REffectModifier, REffectNeut, REffectProjModSpec, REffectProjOpcSpec,
-        REffectProjecteeFilter, REffectSpoolAttrs, RItem, RItemListId, RState,
+        RAttrId, RBuffId, REffectBuff, REffectBuffScope, REffectCharge, REffectChargeLoc, REffectDisallows, REffectEcm,
+        REffectId, REffectLocalOpcSpec, REffectMining, REffectModifier, REffectNeut, REffectProjModSpec,
+        REffectProjOpcSpec, REffectProjecteeFilter, REffectSpoolAttrs, RItem, RItemListId, RState,
     },
     svc::calc::CalcCustomModifier,
     util::RMap,
@@ -38,13 +38,7 @@ pub(crate) struct REffect {
     pub(crate) is_blockable_offensive_modifier: bool,
     pub(crate) banned_in_hisec: bool,
     pub(crate) banned_in_lowsec: bool,
-    pub(crate) disallows_cloak: bool,
-    pub(crate) disallows_warp: bool,
-    pub(crate) disallows_jump_gate: bool,
-    pub(crate) disallows_jump_wh: bool,
-    pub(crate) disallows_jump_drive: bool,
-    pub(crate) disallows_dock: bool,
-    pub(crate) disallows_tether: bool,
+    pub(crate) disallows: REffectDisallows,
     pub(crate) do_not_prevent_tether: bool,
     // References to attributes which are used to describe some effect properties
     pub(crate) discharge_attr_rid: Option<RAttrId>,
@@ -132,27 +126,10 @@ impl REffect {
             is_assist: a_effect.is_assist && state == RState::Active,
             banned_in_hisec: a_effect.banned_in_hisec && state == RState::Active,
             banned_in_lowsec: a_effect.banned_in_lowsec && state == RState::Active,
-            disallows_cloak: n_effect
-                .map(|n| n.disallows_cloak.is_some() && state == RState::Active)
-                .unwrap_or(false),
-            disallows_warp: n_effect
-                .map(|n| n.disallows_warp.is_some() && state == RState::Active)
-                .unwrap_or(false),
-            disallows_jump_gate: n_effect
-                .map(|n| n.disallows_jump_gate.is_some() && state == RState::Active)
-                .unwrap_or(false),
-            disallows_jump_wh: n_effect
-                .map(|n| n.disallows_jump_wh.is_some() && state == RState::Active)
-                .unwrap_or(false),
-            disallows_jump_drive: n_effect
-                .map(|n| n.disallows_jump_drive.is_some() && state == RState::Active)
-                .unwrap_or(false),
-            disallows_dock: n_effect
-                .map(|n| n.disallows_dock.is_some() && state == RState::Active)
-                .unwrap_or(false),
-            disallows_tether: n_effect
-                .map(|n| n.disallows_tether.is_some() && state == RState::Active)
-                .unwrap_or(false),
+            disallows: n_effect
+                .filter(|_| state == RState::Active)
+                .map(REffectDisallows::from_n_effect)
+                .unwrap_or(REffectDisallows::empty()),
             do_not_prevent_tether: n_effect.map(|n| n.do_not_prevent_tether).unwrap_or(false),
             // Fields which depend on data not available during instantiation
             buff: Default::default(),
