@@ -28,6 +28,12 @@ impl CapSimEvent {
     pub(super) fn set_time(&mut self, time: PValue) {
         self.key = self.key.with_time(time);
     }
+    #[inline(always)]
+    fn is_injector_tie(&self, other: &Self) -> bool {
+        // Non-short-circuiting operator is used, since key equality is unpredictable, while
+        // injector ties are almost non-existent
+        self.key.is_injector() & (self.key == other.key)
+    }
     #[cold]
     #[inline(never)]
     fn cmp_injectors(&self, other: &Self) -> Ordering {
@@ -41,6 +47,36 @@ impl PartialOrd for CapSimEvent {
     #[inline(always)]
     fn partial_cmp(&self, other: &Self) -> Option<Ordering> {
         Some(self.cmp(other))
+    }
+    // Comparison operators are used by binary heap. They compare keys directly, which is cheaper
+    // than producing an ordering first
+    #[inline(always)]
+    fn lt(&self, other: &Self) -> bool {
+        match self.is_injector_tie(other) {
+            true => self.cmp_injectors(other).is_lt(),
+            false => self.key < other.key,
+        }
+    }
+    #[inline(always)]
+    fn le(&self, other: &Self) -> bool {
+        match self.is_injector_tie(other) {
+            true => self.cmp_injectors(other).is_le(),
+            false => self.key <= other.key,
+        }
+    }
+    #[inline(always)]
+    fn gt(&self, other: &Self) -> bool {
+        match self.is_injector_tie(other) {
+            true => self.cmp_injectors(other).is_gt(),
+            false => self.key > other.key,
+        }
+    }
+    #[inline(always)]
+    fn ge(&self, other: &Self) -> bool {
+        match self.is_injector_tie(other) {
+            true => self.cmp_injectors(other).is_ge(),
+            false => self.key >= other.key,
+        }
     }
 }
 impl Ord for CapSimEvent {
