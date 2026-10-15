@@ -32,13 +32,14 @@ impl Ord for CapSimEvent {
         // - events which have lower time are processed earlier
         // - with equal time, order of processing:
         //   - cycle check events
-        //   - injector ready events
+        //   - injector ready events, from highest injection to lowest, then from fastest cycle to
+        //     slowest
         //   - cap gain events, from highest to lowest
         match other.get_time_key().cmp(&self.get_time_key()) {
             Ordering::Equal => match (&self.data, &other.data) {
                 (CapSimEventData::CycleCheck(..), CapSimEventData::CycleCheck(..)) => Ordering::Equal,
                 (CapSimEventData::CycleCheck(..), _) => Ordering::Greater,
-                (CapSimEventData::InjectorReady(..), CapSimEventData::InjectorReady(..)) => Ordering::Equal,
+                (CapSimEventData::InjectorReady(e1), CapSimEventData::InjectorReady(e2)) => e1.cmp_priority(e2),
                 (CapSimEventData::InjectorReady(..), _) => Ordering::Greater,
                 (CapSimEventData::CapChange(e1), CapSimEventData::CapChange(e2)) => {
                     match (e1.direction, e2.direction) {
@@ -61,7 +62,9 @@ impl PartialEq<Self> for CapSimEvent {
         }
         match (&self.data, &other.data) {
             (CapSimEventData::CycleCheck(..), CapSimEventData::CycleCheck(..)) => true,
-            (CapSimEventData::InjectorReady(..), CapSimEventData::InjectorReady(..)) => true,
+            (CapSimEventData::InjectorReady(e1), CapSimEventData::InjectorReady(e2)) => {
+                e1.cmp_priority(e2) == Ordering::Equal
+            }
             (CapSimEventData::CapChange(e1), CapSimEventData::CapChange(e2)) => e1.amount.eq(&e2.amount),
             _ => false,
         }
@@ -88,6 +91,18 @@ pub(super) struct CapSimEventInjector {
     pub(super) cycle_iter: PrefetchPeekable<AggrIter<PValue>>,
 }
 impl CapSimEventInjector {
+    // Injectors which inject more are processed first, then injectors with faster cycle
+    fn cmp_priority(&self, other: &Self) -> Ordering {
+        self.get_immediate_instance()
+            .unwrap_or(PValue::ZERO)
+            .cmp(&other.get_immediate_instance().unwrap_or(PValue::ZERO))
+            .then_with(|| other.get_cycle_duration().cmp(&self.get_cycle_duration()))
+    }
+    fn get_cycle_duration(&self) -> Option<PValue> {
+        self.cycle_iter
+            .peek()
+            .map(|cycle_iter_item| cycle_iter_item.cycle_duration)
+    }
     pub(super) fn get_immediate_instance(&self) -> Option<PValue> {
         self.cycle_iter
             .peek()
