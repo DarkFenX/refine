@@ -11,7 +11,8 @@ use crate::{
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Ordering key is moved out of boxes to allow faster access
 pub(super) struct CapSimEvent {
-    // Events are ordered by this key, except for injector events with equal key
+    // Events are ordered by this key. Injector events with equal key need extra comparison, which
+    // is done by the injector-specific comparison method
     key: CapSimEventKey,
     pub(super) data: CapSimEventData,
 }
@@ -28,19 +29,11 @@ impl CapSimEvent {
     pub(super) fn set_time(&mut self, time: PValue) {
         self.key = self.key.with_time(time);
     }
-    #[inline(always)]
-    fn is_injector_tie(&self, other: &Self) -> bool {
-        // Non-short-circuiting operator is used, since key equality is unpredictable, while
-        // injector ties are almost non-existent
-        self.key.is_injector() & (self.key == other.key)
-    }
-    #[cold]
-    #[inline(never)]
-    fn cmp_injectors(&self, other: &Self) -> Ordering {
-        match (&self.data, &other.data) {
+    pub(super) fn cmp_injector(&self, other: &Self) -> Ordering {
+        self.key.cmp(&other.key).then_with(|| match (&self.data, &other.data) {
             (CapSimEventData::InjectorReady(e1), CapSimEventData::InjectorReady(e2)) => e1.cmp_priority(e2),
             _ => Ordering::Equal,
-        }
+        })
     }
 }
 impl PartialOrd for CapSimEvent {
@@ -48,49 +41,16 @@ impl PartialOrd for CapSimEvent {
     fn partial_cmp(&self, other: &Self) -> Option<Ordering> {
         Some(self.cmp(other))
     }
-    // Comparison operators are used by binary heap. They compare keys directly, which is cheaper
-    // than producing an ordering first
-    #[inline(always)]
-    fn lt(&self, other: &Self) -> bool {
-        match self.is_injector_tie(other) {
-            true => self.cmp_injectors(other).is_lt(),
-            false => self.key < other.key,
-        }
-    }
-    #[inline(always)]
-    fn le(&self, other: &Self) -> bool {
-        match self.is_injector_tie(other) {
-            true => self.cmp_injectors(other).is_le(),
-            false => self.key <= other.key,
-        }
-    }
-    #[inline(always)]
-    fn gt(&self, other: &Self) -> bool {
-        match self.is_injector_tie(other) {
-            true => self.cmp_injectors(other).is_gt(),
-            false => self.key > other.key,
-        }
-    }
-    #[inline(always)]
-    fn ge(&self, other: &Self) -> bool {
-        match self.is_injector_tie(other) {
-            true => self.cmp_injectors(other).is_ge(),
-            false => self.key >= other.key,
-        }
-    }
 }
 impl Ord for CapSimEvent {
     #[inline(always)]
     fn cmp(&self, other: &Self) -> Ordering {
-        match self.key.cmp(&other.key) {
-            Ordering::Equal if self.key.is_injector() => self.cmp_injectors(other),
-            result => result,
-        }
+        self.key.cmp(&other.key)
     }
 }
 impl PartialEq<Self> for CapSimEvent {
     fn eq(&self, other: &Self) -> bool {
-        self.cmp(other) == Ordering::Equal
+        self.key == other.key
     }
 }
 impl Eq for CapSimEvent {}
@@ -131,9 +91,6 @@ impl CapSimEventKey {
     }
     fn get_time(self) -> PValue {
         PValue::from_f64_unchecked(f64::from_bits(!((self.0 >> 64) as u64)))
-    }
-    fn is_injector(self) -> bool {
-        self.0 as u64 == PRIO_INJECTOR
     }
 }
 

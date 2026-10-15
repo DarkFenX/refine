@@ -26,6 +26,10 @@ pub(super) struct CapSim {
     tau: Option<PValue>,
     exp_cache: ExpCache,
     events: BinaryHeap<CapSimEvent>,
+    /// Injector ready events, sorted so that the next one is the last. They are kept out of the
+    /// heap, since there are just a few of them, and their ordering is more expensive than
+    /// ordering of other events.
+    injector_events: Vec<CapSimEvent>,
     /// Cap change events which happen at the time of event being processed. They are kept out of
     /// the heap, since they would be pushed to it and popped from it right away.
     current_events: Vec<CapSimEvent>,
@@ -52,13 +56,16 @@ impl CapSim {
         max_cap: PValue,
         recharge_duration: Option<PValue>,
         events: BinaryHeap<CapSimEvent>,
+        mut injector_events: Vec<CapSimEvent>,
     ) -> Self {
+        injector_events.sort_by(|a, b| a.cmp_injector(b));
         Self {
             max_cap: max_cap.into_value(),
             max_pcap: max_cap,
             tau: recharge_duration.map(|v| v / PValue::from_f64_unchecked(5.0)),
             exp_cache: ExpCache::new(),
             events,
+            injector_events,
             current_events: Vec::new(),
             delayed_events: Vec::new(),
             injectors: Vec::new(),
@@ -139,6 +146,7 @@ impl CapSim {
                     }
                 }
                 Some(EventSource::Current(idx)) => self.current_events.swap_remove(idx),
+                Some(EventSource::Injector) => self.injector_events.pop().unwrap(),
                 None => break,
             };
             let event_time = event.get_time();
@@ -319,21 +327,27 @@ impl CapSim {
         }
     }
     fn get_next_event_source(&self) -> Option<EventSource> {
+        let mut source = None;
+        let mut source_event = None;
         // Give priority for "current" time events
-        let Some((current_idx, current_event)) =
-            self.current_events.iter().enumerate().max_by(|(_, a), (_, b)| a.cmp(b))
-        else {
-            return match self.events.is_empty() {
-                true => None,
-                false => Some(EventSource::Heap),
-            };
-        };
+        if let Some((idx, event)) = self.current_events.iter().enumerate().max_by(|(_, a), (_, b)| a.cmp(b)) {
+            source = Some(EventSource::Current(idx));
+            source_event = Some(event);
+        }
         // Not all the "current" time events are stored in special container, so double-check in the
         // heap
-        match self.events.peek() {
-            Some(heap_event) if heap_event > current_event => Some(EventSource::Heap),
-            _ => Some(EventSource::Current(current_idx)),
+        if let Some(event) = self.events.peek()
+            && source_event.is_none_or(|source_event| event > source_event)
+        {
+            source = Some(EventSource::Heap);
+            source_event = Some(event);
         }
+        if let Some(event) = self.injector_events.last()
+            && source_event.is_none_or(|source_event| event > source_event)
+        {
+            source = Some(EventSource::Injector);
+        }
+        source
     }
     fn use_injector(&mut self, mut injector_data: Box<CapSimEventInjector>) {
         // Check if injector can cycle
@@ -356,10 +370,12 @@ impl CapSim {
                 Direction::Gain,
             );
             // Schedule next cycle
-            self.events.push(CapSimEvent::new(
+            let event = CapSimEvent::new(
                 self.time + cycle_iter_item.cycle_duration,
                 CapSimEventData::InjectorReady(injector_data),
-            ));
+            );
+            let idx = self.injector_events.partition_point(|v| v.cmp_injector(&event).is_lt());
+            self.injector_events.insert(idx, event);
         }
     }
     fn inject_emergency(&mut self, needed_cap_total: PValue) {
@@ -410,7 +426,7 @@ impl CapSim {
         }
     }
     fn check_no_events(&self) -> Option<StatCapSim> {
-        match self.events.is_empty() && self.current_events.is_empty() {
+        match self.events.is_empty() && self.current_events.is_empty() && self.injector_events.is_empty() {
             // When there are no events, return 100% if there is some cap regen, or initial cap
             // value if cap is not regenerating
             true => Some(match self.tau {
@@ -425,6 +441,7 @@ impl CapSim {
 enum EventSource {
     Heap,
     Current(usize),
+    Injector,
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////

@@ -33,7 +33,7 @@ pub(in crate::svc::vast::stats::cap::sim) fn prepare_events(
     nosf_projectee_item_uid: Option<UItemId>,
     fit_data: &VastFitData,
     cap_item_uid: UItemId,
-) -> BinaryHeap<CapSimEvent> {
+) -> (BinaryHeap<CapSimEvent>, Vec<CapSimEvent>) {
     let cycling_options = CyclingOptions::Sim(CycleOptionsSim { optional_reloads, .. });
     let mut merger = Merger::new();
     fill_consumers(
@@ -77,8 +77,16 @@ pub(in crate::svc::vast::stats::cap::sim) fn prepare_events(
     );
     let mut events = BinaryHeap::new();
     merger.into_sim_events(&mut events);
-    fill_injectors(reuse_cseq_map, ctx, calc, &mut events, cycling_options, fit_data);
-    events
+    let mut injector_events = Vec::new();
+    fill_injectors(
+        reuse_cseq_map,
+        ctx,
+        calc,
+        &mut injector_events,
+        cycling_options,
+        fit_data,
+    );
+    (events, injector_events)
 }
 
 fn fill_consumers(
@@ -252,7 +260,7 @@ fn fill_injectors(
     reuse_cseq_map: &mut CseqMap,
     ctx: &SvcCtx,
     calc: &mut Calc,
-    events: &mut BinaryHeap<CapSimEvent>,
+    injector_events: &mut Vec<CapSimEvent>,
     cycling_options: CyclingOptions,
     fit_data: &VastFitData,
 ) {
@@ -268,7 +276,7 @@ fn fill_injectors(
             let Some(iter_data) = aggr_local_iter(ctx, calc, item_uid, effect, cseq, ospec, ()) else {
                 continue;
             };
-            events.push(CapSimEvent::new(
+            injector_events.push(CapSimEvent::new(
                 PValue::ZERO,
                 CapSimEventData::InjectorReady(Box::new(CapSimEventInjector {
                     cycle_iter: PrefetchPeekable::new(iter_data.iter()),

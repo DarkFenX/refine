@@ -36,7 +36,7 @@ impl Vast {
         };
         let start_cap = max_cap * cap_perc.into_pvalue();
         let fit_data = self.get_fit_data(ship.get_fit_uid());
-        let events = prepare_events(
+        let (events, injector_events) = prepare_events(
             reuse_cseq_map,
             ctx,
             calc,
@@ -47,7 +47,7 @@ impl Vast {
             fit_data,
             item_uid,
         );
-        let mut sim = CapSim::new(start_cap, max_cap, recharge_time_s, events);
+        let mut sim = CapSim::new(start_cap, max_cap, recharge_time_s, events, injector_events);
         Ok(sim.run())
     }
 }
