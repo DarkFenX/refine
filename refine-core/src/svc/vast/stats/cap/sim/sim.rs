@@ -26,6 +26,9 @@ pub(super) struct CapSim {
     tau: Option<PValue>,
     exp_cache: ExpCache,
     events: BinaryHeap<CapSimEvent>,
+    // Cap change events which happen at the time of event being processed. They are kept out of the
+    // heap, since they would be pushed to it and popped from it right away
+    current_events: Vec<CapSimEvent>,
     /// Injectors available for immediate use
     #[expect(clippy::vec_box)]
     injectors: Vec<Box<CapSimEventInjector>>,
@@ -53,6 +56,7 @@ impl CapSim {
             tau: recharge_duration.map(|v| v / PValue::from_f64_unchecked(5.0)),
             exp_cache: ExpCache::new(),
             events,
+            current_events: Vec::new(),
             injectors: Vec::new(),
             time: PValue::ZERO,
             cap: start_cap.into_value(),
@@ -70,7 +74,7 @@ impl CapSim {
         if let Some(result) = self.check_no_events() {
             return result;
         }
-        while let Some(event) = self.events.pop() {
+        while let Some(event) = self.pop_event() {
             let event_time = event.time;
             match event.data {
                 CapSimEventData::CycleCheck(mut event_data) => {
@@ -226,13 +230,32 @@ impl CapSim {
             {
                 return;
             }
-            self.events.push(CapSimEvent {
+            let event = CapSimEvent {
                 time: base_time + extra_delay,
                 data: CapSimEventData::CapChange(CapSimEventCapChange {
                     amount: output_event.instance,
                     direction,
                 }),
-            });
+            };
+            // Base time is time of event being processed
+            match extra_delay == PValue::ZERO {
+                true => self.current_events.push(event),
+                false => self.events.push(event),
+            }
+        }
+    }
+    fn pop_event(&mut self) -> Option<CapSimEvent> {
+        // Give priority for "current" time events
+        let Some((current_idx, current_event)) =
+            self.current_events.iter().enumerate().max_by(|(_, a), (_, b)| a.cmp(b))
+        else {
+            return self.events.pop();
+        };
+        // Not all the "current" time events are stored in special container, so double-check in the
+        // heap
+        match self.events.peek() {
+            Some(heap_event) if heap_event > current_event => self.events.pop(),
+            _ => Some(self.current_events.swap_remove(current_idx)),
         }
     }
     fn use_injector(&mut self, mut injector_data: Box<CapSimEventInjector>) {
@@ -308,7 +331,7 @@ impl CapSim {
         }
     }
     fn check_no_events(&self) -> Option<StatCapSim> {
-        match self.events.is_empty() {
+        match self.events.is_empty() && self.current_events.is_empty() {
             // When there are no events, return 100% if there is some cap regen, or initial cap
             // value if cap is not regenerating
             true => Some(match self.tau {
