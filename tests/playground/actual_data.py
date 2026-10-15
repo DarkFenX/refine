@@ -37,7 +37,7 @@ def test_benchmark_attr_calc(client, consts):
             api_fit_batch.add_skill(type_id=eve_skill_id, level=5)
         api_fit_batch.set_ship(type_id=11184)  # Crusader
         # ruff:ignore[commented-out-code]
-        # api_fit_batch.add_module(type_id=4403, rack=consts.ApiRack.low, state=consts.ApiModuleState.active)  # RAH
+        # api_fit_batch.add_module(type_id=4403, rack=consts.ApiRack.low, state=consts.ApiModuleState.active)
     iterations = 1000000
     print()  # ruff:ignore[print]
     print('starting attr-calc benchmark')  # ruff:ignore[print]
@@ -68,7 +68,8 @@ def test_benchmark_stats(client, consts):
         api_src_fit_batch.add_booster(type_id=28674)  # Synth drop
         api_src_fit_batch.add_booster(type_id=28672)  # Synth crash
         api_src_fit_batch.add_booster(type_id=45999)  # Pyro 2
-        api_src_fit_batch.set_ship(type_id=32311, coordinates=(0, 0, 0), movement=(0, 0, 1))  # NTyphoon
+        # NTyphoon
+        api_src_fit_batch.set_ship(type_id=32311, coordinates=(0, 0, 0), movement=(0, 0, 1))
         # T2 800mms with hail
         for _ in range(4):
             api_src_fit_batch.add_module(
@@ -168,7 +169,8 @@ def test_benchmark_cap_sim(client, consts):
         api_fit_batch.add_booster(type_id=28678)  # Synth frentix
         api_fit_batch.add_booster(type_id=9950)  # Std blue pill
         api_fit_batch.add_booster(type_id=46000)  # Pyro 3
-        api_nm = api_fit_batch.set_ship(type_id=17736, coordinates=(0, 0, 0), movement=(0, 0, 1))  # NM
+        # NM
+        api_nm = api_fit_batch.set_ship(type_id=17736, coordinates=(0, 0, 0), movement=(0, 0, 1))
         # T2 mega pulses with conflag
         api_fit_turrets.extend(api_fit_batch.add_module(
             type_id=3057,
@@ -223,7 +225,8 @@ def test_benchmark_cap_sim(client, consts):
         api_basi_fit_batch.set_character(type_id=1373)
         for eve_skill_id in get_skill_type_ids():
             api_basi_fit_batch.add_skill(type_id=eve_skill_id, level=5)
-        api_basi_fit_batch.set_ship(type_id=11985, coordinates=(0, 0, 0), movement=(0, 0, 1))  # Basi
+        # Basi
+        api_basi_fit_batch.set_ship(type_id=11985, coordinates=(0, 0, 0), movement=(0, 0, 1))
         # LETs
         for _ in range(3):
             api_basi_fit_batch.add_module(
@@ -237,7 +240,8 @@ def test_benchmark_cap_sim(client, consts):
         api_praxis_fit_batch.set_character(type_id=1373)
         for eve_skill_id in get_skill_type_ids():
             api_praxis_fit_batch.add_skill(type_id=eve_skill_id, level=5)
-        api_praxis_fit_batch.set_ship(type_id=47466, coordinates=(0, 0, 0), movement=(0, 0, 1))  # Praxis
+        # Praxis
+        api_praxis_fit_batch.set_ship(type_id=47466, coordinates=(0, 0, 0), movement=(0, 0, 1))
         # T2 heavy neuts
         for _ in range(7):
             api_praxis_fit_batch.add_module(
