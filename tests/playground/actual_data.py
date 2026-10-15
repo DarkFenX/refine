@@ -136,8 +136,10 @@ def test_benchmark_stats(client, consts):
     print('starting stats benchmark')  # ruff:ignore[print]
     before = time()
     api_sol.benchmark(command={
-        'type': 'stats', 'fit_id': api_src_fit.id,
-        'projectee_item_id': api_tgt_ship.id, 'iterations': iterations})
+        'type': 'stats',
+        'fit_id': api_src_fit.id,
+        'projectee_item_id': api_tgt_ship.id,
+        'iterations': iterations})
     after = time()
     print('done with stats benchmark')  # ruff:ignore[print]
     delta = after - before
