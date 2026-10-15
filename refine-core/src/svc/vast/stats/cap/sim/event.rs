@@ -25,6 +25,9 @@ impl CapSimEvent {
     pub(super) fn get_time(&self) -> PValue {
         self.key.get_time()
     }
+    pub(super) fn set_time(&mut self, time: PValue) {
+        self.key = self.key.with_time(time);
+    }
     #[cold]
     #[inline(never)]
     fn cmp_injectors(&self, other: &Self) -> Ordering {
@@ -86,6 +89,9 @@ impl CapSimEventKey {
             },
         };
         Self(((!get_bits(time) as u128) << 64) | prio as u128)
+    }
+    fn with_time(self, time: PValue) -> Self {
+        Self(((!get_bits(time) as u128) << 64) | (self.0 as u64) as u128)
     }
     fn get_time(self) -> PValue {
         PValue::from_f64_unchecked(f64::from_bits(!((self.0 >> 64) as u64)))

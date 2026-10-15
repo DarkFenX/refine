@@ -1,4 +1,4 @@
-use std::collections::BinaryHeap;
+use std::collections::{BinaryHeap, binary_heap::PeekMut};
 
 use super::event::{CapSimEvent, CapSimEventCapChange, CapSimEventData, CapSimEventInjector};
 use crate::{
@@ -74,44 +74,59 @@ impl CapSim {
         if let Some(result) = self.check_no_events() {
             return result;
         }
-        while let Some(event) = self.pop_event() {
-            let event_time = event.get_time();
-            match event.data {
-                CapSimEventData::CycleCheck(mut event_data) => {
-                    // Check if it can cycle altogether
-                    match event_data.cycle_iter.next() {
-                        Some(cycle_iter_item) => {
-                            // Add outputs for this cycle
-                            self.schedule_cycle_output(
-                                event_time,
-                                cycle_iter_item.output.into_instance_iter(),
-                                cycle_iter_item.output_duration_limit,
-                                event_data.direction,
-                            );
-                            // Schedule next cycle check, reusing allocation of the current event.
-                            // Cycle iter and direction stay the same, only time needs updating
-                            self.events.push(CapSimEvent::new(
-                                event_time + cycle_iter_item.cycle_duration,
-                                CapSimEventData::CycleCheck(event_data),
-                            ));
-                        }
-                        // When some module is done with cycling (non-repeating modules like CEHE),
-                        // check if there are any events left, and if there are some, reset extra
-                        // data used for stability value calculation.
-                        None => {
-                            if let Some(result) = self.check_no_events() {
-                                return result;
+        loop {
+            let event = match self.get_next_event_source() {
+                Some(EventSource::Heap) => {
+                    let mut heap_event = self.events.peek_mut().unwrap();
+                    let event_time = heap_event.get_time();
+                    match &mut heap_event.data {
+                        // Cycle check events are updated in place, to avoid removing them from the
+                        // heap and adding them back
+                        CapSimEventData::CycleCheck(event_data) => {
+                            // Check if it can cycle altogether
+                            match event_data.cycle_iter.next() {
+                                Some(cycle_iter_item) => {
+                                    let direction = event_data.direction;
+                                    // Schedule next cycle check
+                                    heap_event.set_time(event_time + cycle_iter_item.cycle_duration);
+                                    drop(heap_event);
+                                    // Add outputs for this cycle
+                                    self.schedule_cycle_output(
+                                        event_time,
+                                        cycle_iter_item.output.into_instance_iter(),
+                                        cycle_iter_item.output_duration_limit,
+                                        direction,
+                                    );
+                                }
+                                // When some module is done with cycling (non-repeating modules
+                                // like CEHE), check if there are any events left, and if there are
+                                // some, reset extra data used for stability value calculation.
+                                None => {
+                                    PeekMut::pop(heap_event);
+                                    if let Some(result) = self.check_no_events() {
+                                        return result;
+                                    }
+                                    self.only_gains = true;
+                                    self.wm_high_time = event_time;
+                                    self.wm_high_cap = self.cap;
+                                    self.wm_low_time = event_time;
+                                    self.wm_low_cap = self.cap;
+                                    self.wm_aux_high = self.cap;
+                                    self.wm_aux_low = self.cap;
+                                }
                             }
-                            self.only_gains = true;
-                            self.wm_high_time = event_time;
-                            self.wm_high_cap = self.cap;
-                            self.wm_low_time = event_time;
-                            self.wm_low_cap = self.cap;
-                            self.wm_aux_high = self.cap;
-                            self.wm_aux_low = self.cap;
+                            continue;
                         }
+                        _ => PeekMut::pop(heap_event),
                     }
                 }
+                Some(EventSource::Current(idx)) => self.current_events.swap_remove(idx),
+                None => break,
+            };
+            let event_time = event.get_time();
+            match event.data {
+                // Cycle checks are processed in heap
+                CapSimEventData::CycleCheck(..) => unreachable!(),
                 CapSimEventData::InjectorReady(event_data) => {
                     // Update basic sim state according to time progression
                     if event_time > TIME_LIMIT {
@@ -244,18 +259,21 @@ impl CapSim {
             }
         }
     }
-    fn pop_event(&mut self) -> Option<CapSimEvent> {
+    fn get_next_event_source(&self) -> Option<EventSource> {
         // Give priority for "current" time events
         let Some((current_idx, current_event)) =
             self.current_events.iter().enumerate().max_by(|(_, a), (_, b)| a.cmp(b))
         else {
-            return self.events.pop();
+            return match self.events.is_empty() {
+                true => None,
+                false => Some(EventSource::Heap),
+            };
         };
         // Not all the "current" time events are stored in special container, so double-check in the
         // heap
         match self.events.peek() {
-            Some(heap_event) if heap_event > current_event => self.events.pop(),
-            _ => Some(self.current_events.swap_remove(current_idx)),
+            Some(heap_event) if heap_event > current_event => Some(EventSource::Heap),
+            _ => Some(EventSource::Current(current_idx)),
         }
     }
     fn use_injector(&mut self, mut injector_data: Box<CapSimEventInjector>) {
@@ -341,6 +359,11 @@ impl CapSim {
             false => None,
         }
     }
+}
+
+enum EventSource {
+    Heap,
+    Current(usize),
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
