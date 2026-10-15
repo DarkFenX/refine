@@ -47,7 +47,8 @@ impl Calc {
             return;
         }
         let dps_profile = ctx.u_data.get_fit_rah_incoming_dps(fit);
-        let mut tick_history = ROrdSet::new();
+        // Most simulations find a loop within this many ticks
+        let mut tick_history = ROrdSet::with_capacity(16);
         // Run "zero" simulation tick - write initial results and record initial state in history
         let mut tick_history_entry = ItemDataVec::with_capacity(item_datas.len());
         for item_data in item_datas.iter() {

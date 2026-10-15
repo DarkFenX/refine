@@ -14,8 +14,14 @@ impl<V> Default for ROrdSet<V> {
     }
 }
 impl<V> ROrdSet<V> {
+    #[expect(dead_code)]
     pub(crate) fn new() -> Self {
         Self::default()
+    }
+    pub(crate) fn with_capacity(capacity: usize) -> Self {
+        Self {
+            data: IndexSet::with_capacity_and_hasher(capacity, Default::default()),
+        }
     }
 }
 

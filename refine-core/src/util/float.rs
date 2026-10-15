@@ -1,6 +1,6 @@
 use crate::def::SERVER_TICK_HZ;
 
-pub(crate) const FLOAT_TOLERANCE: f64 = 0.0000000001;
+pub(crate) const FLOAT_TOLERANCE: f64 = 1e-10;
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Math
@@ -10,15 +10,54 @@ pub(crate) fn sig_round(val: f64, sig_digits: u32) -> f64 {
     if val == 0.0 {
         return val;
     }
-    let highest_magnitude = val.abs().log10().floor() as i32;
+    let highest_magnitude = get_magnitude(val.abs());
     let digits = -highest_magnitude - 1 + sig_digits as i32;
     round(val, digits)
 }
 
 /// Round number to a specific digit after decimal dot.
 pub(crate) fn round(val: f64, digits: i32) -> f64 {
-    let mul = 10.0_f64.powi(digits);
+    let mul = pow10(digits);
     (val * mul).round() / mul
+}
+
+// Precalculated powers of 10
+const POW10_MIN: i32 = -22;
+const POW10_MAX: i32 = 22;
+const POW10: [f64; (POW10_MAX - POW10_MIN + 1) as usize] = {
+    let mut table = [0.0; (POW10_MAX - POW10_MIN + 1) as usize];
+    let mut pos_val = 1.0;
+    let mut exp = 0;
+    while exp <= POW10_MAX {
+        table[(exp - POW10_MIN) as usize] = pos_val;
+        table[(-exp - POW10_MIN) as usize] = 1.0 / pos_val;
+        pos_val *= 10.0;
+        exp += 1;
+    }
+    table
+};
+
+fn pow10(exp: i32) -> f64 {
+    match (POW10_MIN..=POW10_MAX).contains(&exp) {
+        true => POW10[(exp - POW10_MIN) as usize],
+        false => 10.0_f64.powi(exp),
+    }
+}
+
+fn get_magnitude(abs_val: f64) -> i32 {
+    // Estimate via binary exponent, which can be lower than actual value by up to 2, or higher by 1
+    let bin_exp = ((abs_val.to_bits() >> 52) & 0x7ff) as i32 - 1023;
+    let mut magnitude = (bin_exp * 1233) >> 12;
+    if magnitude <= POW10_MIN || magnitude >= POW10_MAX - 2 {
+        return abs_val.log10().floor() as i32;
+    }
+    if abs_val < POW10[(magnitude - POW10_MIN) as usize] {
+        magnitude -= 1;
+    }
+    while abs_val >= POW10[(magnitude + 1 - POW10_MIN) as usize] {
+        magnitude += 1;
+    }
+    magnitude
 }
 
 /// Sum with positive zero as additive identity, to avoid having -0.0 exposed in e.g. stats
