@@ -248,8 +248,6 @@ impl CapSim {
             self.wm_aux_low = self.cap;
         }
     }
-    // Cap change events which happen at base time are added to current events, while delayed ones
-    // are passed to the scheduling function
     fn schedule_cycle_output(
         current_events: &mut Vec<CapSimEvent>,
         mut schedule_delayed: impl FnMut(CapSimEvent),
@@ -259,7 +257,8 @@ impl CapSim {
         direction: Direction,
     ) {
         match output {
-            // Simple output has just one instance, so it is scheduled without instance iterator
+            // Simple output has just one instance, so shortcut is used - those instances are
+            // scheduled without instance iterator
             Output::Simple(simple_output) => {
                 if let Some(output_duration_limit) = output_duration_limit
                     && simple_output.delay > output_duration_limit
@@ -278,6 +277,7 @@ impl CapSim {
                     false => schedule_delayed(event),
                 }
             }
+            // Complex ones are using full-blown iterator with instance processing
             Output::Complex(..) => Self::schedule_output_instances(
                 current_events,
                 schedule_delayed,
