@@ -2,7 +2,14 @@ use std::cmp::Ordering;
 
 use crate::{
     PValue,
-    svc::vast::{aggr::AggrIter, stats::cap::sim::shared::Direction},
+    svc::{
+        cycle::CycleSeq,
+        output::Output,
+        vast::{
+            aggr::{AggrIter, AggrIterData},
+            stats::cap::sim::shared::Direction,
+        },
+    },
     util::PrefetchPeekable,
 };
 
@@ -111,7 +118,7 @@ pub(super) enum CapSimEventData {
 }
 
 pub(super) struct CapSimEventCycleCheck {
-    pub(super) cycle_iter: AggrIter<PValue>,
+    pub(super) source: CapSimCycleSource,
     pub(super) direction: Direction,
     // Cap change which happens at the end of current cycle, i.e. when this event is processed next.
     // It is kept here instead of the heap, to avoid adding it to the heap and removing it
@@ -144,4 +151,53 @@ impl CapSimEventInjector {
 pub(super) struct CapSimEventCapChange {
     pub(super) amount: PValue,
     pub(super) direction: Direction,
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Cycle source
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Periodic sources are infinitely repeating cycles with the same simple output, which is most
+// commonly seen in actual fits. All their cycles are the same, so cycle data is calculated just
+// once, instead of going through cycle iterator and output instance iterator every cycle
+pub(super) enum CapSimCycleSource {
+    Periodic(CapSimPeriodic),
+    Generic(Box<AggrIter<PValue>>),
+}
+impl CapSimCycleSource {
+    // Sources which never produce any output are not needed for the sim, and None is returned
+    pub(super) fn new(iter_data: &AggrIterData<PValue>) -> Option<Self> {
+        if let AggrIterData::Regular(inner) = iter_data
+            && let CycleSeq::LoopSin(..) = inner.get_cseq()
+            && let Some(item) = iter_data.iter().next()
+            && let Output::Simple(output) = item.output
+        {
+            let placement = match item.output_duration_limit {
+                Some(limit) if output.delay > limit => return None,
+                _ if output.delay == PValue::ZERO => CapSimOutputPlacement::CycleStart,
+                _ if output.delay == item.cycle_duration => CapSimOutputPlacement::CycleEnd,
+                _ => CapSimOutputPlacement::Delayed(output.delay),
+            };
+            return Some(Self::Periodic(CapSimPeriodic {
+                cycle_duration: item.cycle_duration,
+                amount: output.instance,
+                placement,
+            }));
+        }
+        Some(Self::Generic(Box::new(iter_data.iter())))
+    }
+}
+
+#[derive(Copy, Clone)]
+pub(super) struct CapSimPeriodic {
+    pub(super) cycle_duration: PValue,
+    pub(super) amount: PValue,
+    pub(super) placement: CapSimOutputPlacement,
+}
+
+// Placement of output of a periodic source cycle relatively to the cycle
+#[derive(Copy, Clone)]
+pub(super) enum CapSimOutputPlacement {
+    CycleStart,
+    CycleEnd,
+    Delayed(PValue),
 }

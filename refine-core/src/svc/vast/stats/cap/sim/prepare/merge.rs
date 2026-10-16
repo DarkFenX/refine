@@ -9,7 +9,7 @@ use crate::{
         vast::{
             aggr::{AggrHardDtSimple, AggrIterData, AggrPartData},
             stats::cap::sim::{
-                event::{CapSimEvent, CapSimEventCycleCheck, CapSimEventData},
+                event::{CapSimCycleSource, CapSimEvent, CapSimEventCycleCheck, CapSimEventData},
                 shared::Direction,
             },
         },
@@ -75,10 +75,13 @@ impl Merger {
     }
     fn convert(merge_group: Vec<MergeEntry>, direction: Direction, events: &mut QuaternaryHeap<CapSimEvent>) {
         for entry in merge_group {
+            let Some(source) = CapSimCycleSource::new(&entry.iter_data) else {
+                continue;
+            };
             events.push(CapSimEvent::new(
                 entry.start_delay,
                 CapSimEventData::CycleCheck(Box::new(CapSimEventCycleCheck {
-                    cycle_iter: entry.iter_data.iter(),
+                    source,
                     direction,
                     cycle_end_event: None,
                 })),

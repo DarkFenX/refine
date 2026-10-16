@@ -1,6 +1,8 @@
 use dary_heap::{PeekMut, QuaternaryHeap};
 
-use super::event::{CapSimEvent, CapSimEventCapChange, CapSimEventData, CapSimEventInjector};
+use super::event::{
+    CapSimCycleSource, CapSimEvent, CapSimEventCapChange, CapSimEventData, CapSimEventInjector, CapSimOutputPlacement,
+};
 use crate::{
     PValue, UnitInterval, Value,
     svc::{
@@ -96,8 +98,37 @@ impl CapSim {
                             if let Some(cycle_end_event) = event_data.cycle_end_event.take() {
                                 self.current_events.push(cycle_end_event);
                             }
+                            let cycle_iter = match &mut event_data.source {
+                                CapSimCycleSource::Periodic(periodic) => {
+                                    let periodic = *periodic;
+                                    let next_time = event_time + periodic.cycle_duration;
+                                    let data = CapSimEventData::CapChange(CapSimEventCapChange {
+                                        amount: periodic.amount,
+                                        direction: event_data.direction,
+                                    });
+                                    match periodic.placement {
+                                        CapSimOutputPlacement::CycleStart => {
+                                            self.current_events.push(CapSimEvent::new(event_time, data))
+                                        }
+                                        // Cycle end event slot was emptied above
+                                        CapSimOutputPlacement::CycleEnd => {
+                                            event_data.cycle_end_event = Some(CapSimEvent::new(next_time, data))
+                                        }
+                                        CapSimOutputPlacement::Delayed(delay) => {
+                                            self.delayed_events.push(CapSimEvent::new(event_time + delay, data))
+                                        }
+                                    }
+                                    heap_event.set_time(next_time);
+                                    drop(heap_event);
+                                    for event in self.delayed_events.drain(..) {
+                                        self.events.push(event);
+                                    }
+                                    continue;
+                                }
+                                CapSimCycleSource::Generic(cycle_iter) => cycle_iter,
+                            };
                             // Check if it can cycle altogether
-                            match event_data.cycle_iter.next() {
+                            match cycle_iter.next() {
                                 Some(cycle_iter_item) => {
                                     let next_time = event_time + cycle_iter_item.cycle_duration;
                                     let direction = event_data.direction;
