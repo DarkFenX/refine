@@ -38,7 +38,7 @@ def test_benchmark_attr_calc(client, consts):
         api_fit_batch.set_ship(type_id=11184)  # Crusader
         # ruff:ignore[commented-out-code]
         # api_fit_batch.add_module(type_id=4403, rack=consts.ApiRack.low, state=consts.ApiModuleState.active)
-    iterations = 1000000
+    iterations = 3000000
     print()  # ruff:ignore[print]
     print('starting attr-calc benchmark')  # ruff:ignore[print]
     before = time()
@@ -252,7 +252,7 @@ def test_benchmark_cap_sim(client, consts):
                 state=consts.ApiModuleState.active,
                 proj_item_ids=[api_nm.id])
 
-    iterations = 2000
+    iterations = 5000
     print()  # ruff:ignore[print]
     print('starting cap sim benchmark')  # ruff:ignore[print]
     before = time()
@@ -335,7 +335,7 @@ def test_benchmark_try_fit_items(client, consts):
             api_fit_batch.add_drone(type_id=2446, state=consts.ApiMinionState.in_bay)
     api_val = api_fit.validate(options=ValOptions(default=True))
     assert api_val.passed is True
-    iterations = 1000
+    iterations = 2000
     try_fit_type_ids = get_try_fit_type_ids()
     options = ValOptions(default=True).to_dict()
     print()  # ruff:ignore[print]
