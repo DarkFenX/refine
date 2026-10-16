@@ -1,5 +1,6 @@
 use crate::{
     ItemId, PValue,
+    rd::RItemBase,
     svc::{SvcCtx, vast::VastFitData},
     ud::UItemId,
     util::RSet,
@@ -59,4 +60,8 @@ impl VastFitData {
             false => Some(ValChargeVolumeFail { charges }),
         }
     }
+}
+
+pub(in crate::svc::vast) fn is_charge_volume_mismatch(cont_rib: &RItemBase, charge_rib: &RItemBase) -> bool {
+    cont_rib.capacity < charge_rib.volume
 }

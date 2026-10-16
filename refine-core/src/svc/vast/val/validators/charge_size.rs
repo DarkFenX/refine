@@ -1,5 +1,6 @@
 use crate::{
     ItemId, Value,
+    rd::RItemBase,
     svc::{SvcCtx, vast::VastFitData},
     ud::UItemId,
     util::RSet,
@@ -66,4 +67,9 @@ impl VastFitData {
             false => Some(ValChargeSizeFail { charges }),
         }
     }
+}
+
+// Charge size mismatch happens when parent module requires some charge size
+pub(in crate::svc::vast) fn is_charge_size_mismatch(cont_rib: &RItemBase, charge_rib: &RItemBase) -> bool {
+    cont_rib.charge_size.is_some() && cont_rib.charge_size != charge_rib.charge_size
 }

@@ -4,11 +4,10 @@ use crate::{
         Calc, SvcCtx, Vast,
         vast::{
             ValOptionsInt, ValOptionsSolInt,
-            shared::{
-                is_charge_cont_group_mismatch, is_charge_group_mismatch, is_charge_size_mismatch,
-                is_charge_volume_mismatch,
+            val::{
+                ValKind, ValOptionInt, is_charge_cont_group_mismatch, is_charge_group_mismatch,
+                is_charge_size_mismatch, is_charge_volume_mismatch,
             },
-            val::{ValKind, ValOptionInt},
         },
     },
     ud::{UData, UFitId, UItemId},

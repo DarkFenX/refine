@@ -5,7 +5,8 @@ pub(crate) use options::{ValOptionsInt, ValOptionsSolInt};
 pub use result::{ValResultFit, ValResultSol};
 pub(in crate::svc::vast) use validators::{
     EffectSecZoneInfo, ValFighterSquadSizeFighterStored, ValItemKindItemStored, ValModuleStateModuleStored,
-    ValSrqSkillStored,
+    ValSrqSkillStored, is_charge_cont_group_mismatch, is_charge_group_mismatch, is_charge_size_mismatch,
+    is_charge_volume_mismatch,
 };
 pub use validators::{
     ValActivationBlockedFail, ValCapitalModFail, ValCapitalModInfo, ValChargeGroupChargeInfo, ValChargeGroupFail,

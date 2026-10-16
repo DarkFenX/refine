@@ -1,8 +1,12 @@
 pub use activation_blocked::ValActivationBlockedFail;
 pub use capital_module::{ValCapitalModFail, ValCapitalModInfo};
+pub(in crate::svc::vast) use charge_group::is_charge_group_mismatch;
 pub use charge_group::{ValChargeGroupChargeInfo, ValChargeGroupFail};
+pub(in crate::svc::vast) use charge_parent_group::is_charge_cont_group_mismatch;
 pub use charge_parent_group::{ValChargeParentGroupChargeInfo, ValChargeParentGroupFail};
+pub(in crate::svc::vast) use charge_size::is_charge_size_mismatch;
 pub use charge_size::{ValChargeSizeChargeInfo, ValChargeSizeFail};
+pub(in crate::svc::vast) use charge_volume::is_charge_volume_mismatch;
 pub use charge_volume::{ValChargeVolumeChargeInfo, ValChargeVolumeFail};
 pub use cloaking_blocked::ValCloakingBlockedFail;
 pub use drone_group::{ValDroneGroupFail, ValDroneGroupInfo};

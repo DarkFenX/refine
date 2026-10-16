@@ -9,11 +9,11 @@ use crate::{
         Vast,
         vast::{
             ValShipKind, VastFitData,
-            shared::{
+            val::{
+                ValFighterSquadSizeFighterStored, ValItemKindItemStored, ValSrqSkillStored,
                 is_charge_cont_group_mismatch, is_charge_group_mismatch, is_charge_size_mismatch,
                 is_charge_volume_mismatch,
             },
-            val::{ValFighterSquadSizeFighterStored, ValItemKindItemStored, ValSrqSkillStored},
         },
     },
     ud::{UData, UFitId, UItem, UItemId, UModule, UShipKind},

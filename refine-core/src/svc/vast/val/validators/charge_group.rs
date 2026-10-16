@@ -1,5 +1,6 @@
 use crate::{
     ItemGrpId, ItemId,
+    rd::RItemBase,
     svc::{SvcCtx, vast::VastFitData},
     ud::UItemId,
     util::RSet,
@@ -72,5 +73,12 @@ impl VastFitData {
             true => None,
             false => Some(ValChargeGroupFail { charges }),
         }
+    }
+}
+
+pub(in crate::svc::vast) fn is_charge_group_mismatch(cont_rib: &RItemBase, charge_rib: &RItemBase) -> bool {
+    match &cont_rib.charge_limit {
+        Some(charge_limit) => !charge_limit.group_ids.contains(&charge_rib.grp_id),
+        None => false,
     }
 }
