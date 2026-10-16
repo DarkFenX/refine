@@ -39,6 +39,7 @@ pub use ship_stance::ValShipStanceFail;
 pub use skill_reqs::{ValSrqFail, ValSrqItemInfo, ValSrqSkillInfo};
 pub(in crate::svc::vast) use skill_reqs::{ValSrqSkillStored, is_skill_level_missing};
 pub use slot_count::ValSlotCountFail;
+pub(in crate::svc::vast) use slot_index::is_slot_index_taken;
 pub use slot_index::{ValSlotIndexFail, ValSlotIndexSlotInfo};
 pub use unusable_cap::{ValUnusableCapFail, ValUnusableCapItemInfo};
 pub use unusable_resource::{ValUnusableResFail, ValUnusableResItemInfo};

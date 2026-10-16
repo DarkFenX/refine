@@ -10,7 +10,7 @@ use crate::{
                 ValKind, ValOptionInt, get_fit_ship_rig_size, get_fit_ship_type_group, get_item_vs_ship_kind_mismatch,
                 is_capital_module, is_charge_cont_group_mismatch, is_charge_group_mismatch, is_charge_size_mismatch,
                 is_charge_volume_mismatch, is_drone_group_mismatch, is_rig_size_mismatch, is_ship_limit_met,
-                is_ship_subcap, is_skill_level_missing,
+                is_ship_subcap, is_skill_level_missing, is_slot_index_taken,
             },
         },
     },
@@ -30,6 +30,7 @@ impl Vast {
         options: &ValOptionsInt,
     ) -> bool {
         let fit = u_data.fits.get(fit_uid);
+        let fit_data = self.get_fit_data(fit_uid);
         let is_module = matches!(
             item_kind,
             DetectedItemKind::ModuleHigh | DetectedItemKind::ModuleMid | DetectedItemKind::ModuleLow
@@ -89,9 +90,30 @@ impl Vast {
         {
             return false;
         }
+        if let ValOptionInt::Enabled(..) = options.get(ValKind::ImplantSlotIndex)
+            && item_kind == DetectedItemKind::Implant
+            && let Some(slot) = item_rib.implant_slot
+            && is_slot_index_taken(&fit_data.slotted_implants, slot)
+        {
+            return false;
+        }
+        if let ValOptionInt::Enabled(..) = options.get(ValKind::BoosterSlotIndex)
+            && item_kind == DetectedItemKind::Booster
+            && let Some(slot) = item_rib.booster_slot
+            && is_slot_index_taken(&fit_data.slotted_boosters, slot)
+        {
+            return false;
+        }
+        if let ValOptionInt::Enabled(..) = options.get(ValKind::SubsystemSlotIndex)
+            && item_kind == DetectedItemKind::Subsystem
+            && let Some(slot) = item_rib.subsystem_slot
+            && is_slot_index_taken(&fit_data.slotted_subsystems, slot)
+        {
+            return false;
+        }
         if let ValOptionInt::Enabled(..) = options.get(ValKind::DroneGroup)
             && item_kind == DetectedItemKind::Drone
-            && is_drone_group_mismatch(&self.get_fit_data(fit_uid).drone_group_limit, item_rib)
+            && is_drone_group_mismatch(&fit_data.drone_group_limit, item_rib)
         {
             return false;
         }

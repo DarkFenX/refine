@@ -104,3 +104,8 @@ fn validate_slot_index_verbose(
         false => Some(ValSlotIndexFail { slot_users }),
     }
 }
+
+// Slot is taken when some item uses it already; any other item put into it fails validation
+pub(in crate::svc::vast) fn is_slot_index_taken(data: &RMapRSet<SlotIndex, UItemId>, slot: SlotIndex) -> bool {
+    data.get(&slot).len() > 0
+}
