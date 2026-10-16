@@ -214,14 +214,26 @@ impl VastFitData {
         ////////////////////////////////////////////////////////////////////////////////////////////
         // Validation-related - restrictions between ship type/attribute and its items
         ////////////////////////////////////////////////////////////////////////////////////////////
-        for item_uid in self.ship_limited_items.keys() {
+        for item_uid in self.ship_limited_items.iter() {
             item_uid.consistency_check(u_data, true)?;
+        }
+        for item_uid in self.ship_limit_mismatches.iter() {
+            item_uid.consistency_check(u_data, true)?;
+            if !self.ship_limited_items.contains(item_uid) {
+                return Err(Default::default());
+            }
         }
         for (item_uid, val) in self.rigs_rig_size.iter() {
             // This container can store info about non-loaded rigs
             item_uid.consistency_check(u_data, false)?;
             if let Some(val) = val {
                 val.consistency_check()?;
+            }
+        }
+        for item_uid in self.rig_size_mismatches.iter() {
+            item_uid.consistency_check(u_data, true)?;
+            if !self.rigs_rig_size.contains_key(item_uid) {
+                return Err(Default::default());
             }
         }
         for item_uid in self.mods_rigs_svcs_vs_ship_kind.keys() {

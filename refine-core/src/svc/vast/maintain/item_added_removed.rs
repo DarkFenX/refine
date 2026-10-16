@@ -7,7 +7,7 @@ use crate::{
 };
 
 impl Vast {
-    pub(in crate::svc) fn item_added(&mut self, item_uid: UItemId, item: &UItem) {
+    pub(in crate::svc) fn item_added(&mut self, u_data: &UData, item_uid: UItemId, item: &UItem) {
         if !item.is_loaded() {
             match item.get_fit_uid() {
                 Some(fit_uid) => {
@@ -18,6 +18,12 @@ impl Vast {
                     self.not_loaded.insert(item_uid);
                 }
             }
+        }
+        // Ship type is known regardless of ship being loaded, during loads/unloads it is updated
+        // separately
+        if let UItem::Ship(ship) = item {
+            let fit_data = self.get_fit_data_mut(ship.get_fit_uid());
+            fit_data.refresh_ship_limit_mismatches(u_data, Some(ship.get_type_aid()), None);
         }
         if let UItem::Skill(skill) = item {
             // Go through all items which need this skill and update their missing skills
@@ -56,6 +62,11 @@ impl Vast {
                     self.not_loaded.remove(&item_uid);
                 }
             }
+        }
+        // Without ship, no item with ship limit can be fit
+        if let UItem::Ship(ship) = item {
+            let fit_data = self.get_fit_data_mut(ship.get_fit_uid());
+            fit_data.refresh_ship_limit_mismatches(u_data, None, None);
         }
         if let UItem::Skill(skill) = item {
             // Go through all items which need this skill and update their missing skills

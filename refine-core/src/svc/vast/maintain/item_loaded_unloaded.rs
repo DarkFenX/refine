@@ -1,22 +1,20 @@
 use itertools::chain;
 
 use crate::{
-    Count, ModRack,
+    Count,
     ad::AItemCatId,
     misc::DetectedItemKind,
-    rd::{RItemBase, RShipKind},
     svc::{
         Vast,
         vast::{
-            ValShipKind, VastFitData,
+            ValShipKind,
             val::{
-                ValFighterSquadSizeFighterStored, ValItemKindItemStored, ValSrqSkillStored,
-                is_charge_cont_group_mismatch, is_charge_group_mismatch, is_charge_size_mismatch,
-                is_charge_volume_mismatch,
+                ValFighterSquadSizeFighterStored, ValSrqSkillStored, get_fit_ship_rig_size, is_capital_module,
+                is_drone_group_mismatch, is_rig_size_mismatch, is_skill_level_missing,
             },
         },
     },
-    ud::{UData, UFitId, UItem, UItemId, UModule, UShipKind},
+    ud::{UData, UItem, UItemId, UShipKind},
     util::RMap,
 };
 
@@ -35,10 +33,7 @@ impl Vast {
             for (&skill_item_aid, &required_lvl) in a_srqs.iter() {
                 fit_data.srqs_skill_item_map.add_entry(skill_item_aid, item_uid);
                 let current_lvl = fit.skills.get(&skill_item_aid).map(|v| v.level);
-                if match current_lvl {
-                    Some(current_lvl) => current_lvl < required_lvl,
-                    None => true,
-                } {
+                if is_skill_level_missing(current_lvl, required_lvl) {
                     missing_skills.insert(
                         skill_item_aid,
                         ValSrqSkillStored {
@@ -55,30 +50,25 @@ impl Vast {
         match item {
             UItem::Booster(booster) => {
                 let booster_rib = booster.get_r_item_base().unwrap();
-                item_kind_add(fit_data, item_uid, booster_rib.detected_kind, DetectedItemKind::Booster);
+                fit_data.item_kind_add(item_uid, booster_rib.detected_kind, DetectedItemKind::Booster);
                 if let Some(slot) = booster_rib.booster_slot {
                     fit_data.slotted_boosters.add_entry(slot, item_uid);
                 }
             }
             UItem::Character(character) => {
                 let character_rib = character.get_r_item_base().unwrap();
-                item_kind_add(
-                    fit_data,
-                    item_uid,
-                    character_rib.detected_kind,
-                    DetectedItemKind::Character,
-                );
+                fit_data.item_kind_add(item_uid, character_rib.detected_kind, DetectedItemKind::Character);
             }
             UItem::Charge(charge) => {
                 let charge_rib = charge.get_r_item_base().unwrap();
                 let cont_uid = charge.get_cont_item_uid();
                 let cont_item = u_data.items.get(cont_uid);
-                item_kind_add(fit_data, item_uid, charge_rib.detected_kind, DetectedItemKind::Charge);
+                fit_data.item_kind_add(item_uid, charge_rib.detected_kind, DetectedItemKind::Charge);
                 if let Some(cont_rib) = cont_item.get_r_item_base() {
-                    handle_charge_group_add(fit_data, cont_uid, cont_rib, item_uid, charge_rib);
-                    handle_charge_cont_group_add(fit_data, cont_uid, cont_rib, item_uid, charge_rib);
-                    handle_charge_size_add(fit_data, cont_uid, cont_rib, item_uid, charge_rib);
-                    handle_charge_volume_add(fit_data, cont_uid, cont_rib, item_uid, charge_rib);
+                    fit_data.handle_charge_group_add(cont_uid, cont_rib, item_uid, charge_rib);
+                    fit_data.handle_charge_cont_group_add(cont_uid, cont_rib, item_uid, charge_rib);
+                    fit_data.handle_charge_size_add(cont_uid, cont_rib, item_uid, charge_rib);
+                    fit_data.handle_charge_volume_add(cont_uid, cont_rib, item_uid, charge_rib);
                 }
                 if charge_rib.sec_zone_limitable {
                     fit_data.sec_zone_unactivable.insert(item_uid);
@@ -87,21 +77,18 @@ impl Vast {
             UItem::Drone(drone) => {
                 let drone_rib = drone.get_r_item_base().unwrap();
                 let drone_rifd = drone.get_r_item_flex_data().unwrap();
-                item_kind_add(fit_data, item_uid, drone_rib.detected_kind, DetectedItemKind::Drone);
+                fit_data.item_kind_add(item_uid, drone_rib.detected_kind, DetectedItemKind::Drone);
                 fit_data.drones_volume.insert(item_uid, drone_rib.volume);
                 if let Some(bandwidth) = drone_rifd.bandwidth_use {
                     fit_data.drones_bandwidth.insert(item_uid, bandwidth);
                 };
-                if !fit_data.drone_group_limit.is_empty() {
-                    let drone_rib = drone.get_r_item_base().unwrap();
-                    if !fit_data.drone_group_limit.contains(&drone_rib.grp_id) {
-                        fit_data.drone_groups.insert(item_uid, drone_rib.grp_id);
-                    }
+                if is_drone_group_mismatch(&fit_data.drone_group_limit, drone_rib) {
+                    fit_data.drone_groups.insert(item_uid, drone_rib.grp_id);
                 }
             }
             UItem::Fighter(fighter) => {
                 let fighter_rib = fighter.get_r_item_base().unwrap();
-                item_kind_add(fit_data, item_uid, fighter_rib.detected_kind, DetectedItemKind::Fighter);
+                fit_data.item_kind_add(item_uid, fighter_rib.detected_kind, DetectedItemKind::Fighter);
                 let count = fighter.get_count_info().unwrap();
                 fit_data
                     .fighters_volume
@@ -136,7 +123,7 @@ impl Vast {
             }
             UItem::Implant(implant) => {
                 let implant_rib = implant.get_r_item_base().unwrap();
-                item_kind_add(fit_data, item_uid, implant_rib.detected_kind, DetectedItemKind::Implant);
+                fit_data.item_kind_add(item_uid, implant_rib.detected_kind, DetectedItemKind::Implant);
                 if let Some(slot) = implant_rib.implant_slot {
                     fit_data.slotted_implants.add_entry(slot, item_uid);
                 }
@@ -144,12 +131,7 @@ impl Vast {
             UItem::Module(module) => {
                 let module_rib = module.get_r_item_base().unwrap();
                 let module_rifd = module.get_r_item_flex_data().unwrap();
-                item_kind_add(
-                    fit_data,
-                    item_uid,
-                    module_rib.detected_kind,
-                    get_module_expected_kind(module),
-                );
+                fit_data.module_item_kind_add(item_uid, module_rib.detected_kind, module);
                 if module_rib.takes_turret_hardpoint {
                     fit_data.mods_turret.insert(item_uid);
                 }
@@ -160,7 +142,7 @@ impl Vast {
                     fit_data.mods_fitted_cloaks += Count::ONE;
                 }
                 if let Some(ship_limit) = &module_rib.ship_limit {
-                    fit_data.ship_limited_items.insert(item_uid, ship_limit.clone());
+                    fit_data.ship_limit_add(u_data, fit_uid, item_uid, ship_limit);
                 }
                 if let Some(item_grp_aid) = module_rib.val_fitted_group_id {
                     fit_data
@@ -175,10 +157,10 @@ impl Vast {
                 if let Some(charge_uid) = module.get_charge_uid() {
                     let charge_item = u_data.items.get(charge_uid);
                     if let Some(charge_rib) = charge_item.get_r_item_base() {
-                        handle_charge_group_add(fit_data, item_uid, module_rib, charge_uid, charge_rib);
-                        handle_charge_cont_group_add(fit_data, item_uid, module_rib, charge_uid, charge_rib);
-                        handle_charge_size_add(fit_data, item_uid, module_rib, charge_uid, charge_rib);
-                        handle_charge_volume_add(fit_data, item_uid, module_rib, charge_uid, charge_rib);
+                        fit_data.handle_charge_group_add(item_uid, module_rib, charge_uid, charge_rib);
+                        fit_data.handle_charge_cont_group_add(item_uid, module_rib, charge_uid, charge_rib);
+                        fit_data.handle_charge_size_add(item_uid, module_rib, charge_uid, charge_rib);
+                        fit_data.handle_charge_volume_add(item_uid, module_rib, charge_uid, charge_rib);
                     }
                 }
                 if let Some(max_fitted) = module_rib.max_type_fitted {
@@ -186,7 +168,7 @@ impl Vast {
                         .mods_svcs_max_type_fitted
                         .add_entry(module.get_type_aid(), item_uid, max_fitted);
                 }
-                if let Some(RShipKind::CapitalShip) = module_rib.item_ship_kind {
+                if is_capital_module(module_rib) {
                     fit_data.mods_capital.insert(item_uid, module_rib.volume);
                 }
                 if let Some(sec_class) = module_rib.online_max_sec_class {
@@ -198,15 +180,21 @@ impl Vast {
                 if !module_rib.cap_consumers.is_empty() {
                     fit_data.mods_cap_consumers.insert(item_uid);
                 }
-                item_vs_ship_kind_add(u_data, fit_data, item_uid, module_rib.cat_id, module.get_fit_uid());
+                fit_data.item_vs_ship_kind_add(u_data, item_uid, module_rib.cat_id, module.get_fit_uid());
             }
             UItem::Rig(rig) => {
                 let rig_rib = rig.get_r_item_base().unwrap();
                 let rig_rifd = rig.get_r_item_flex_data().unwrap();
-                item_kind_add(fit_data, item_uid, rig_rib.detected_kind, DetectedItemKind::Rig);
+                fit_data.item_kind_add(item_uid, rig_rib.detected_kind, DetectedItemKind::Rig);
                 fit_data.rigs_rig_size.insert(item_uid, rig_rib.rig_size);
+                if is_rig_size_mismatch(
+                    rig_rib.rig_size,
+                    get_fit_ship_rig_size(u_data, u_data.fits.get(fit_uid)),
+                ) {
+                    fit_data.rig_size_mismatches.insert(item_uid);
+                }
                 if let Some(ship_limit) = &rig_rib.ship_limit {
-                    fit_data.ship_limited_items.insert(item_uid, ship_limit.clone());
+                    fit_data.ship_limit_add(u_data, fit_uid, item_uid, ship_limit);
                 }
                 if let Some(item_grp_aid) = rig_rib.val_fitted_group_id {
                     fit_data
@@ -221,14 +209,14 @@ impl Vast {
                 if rig_rib.sec_zone_limitable {
                     fit_data.sec_zone_fitted.insert(item_uid);
                 }
-                item_vs_ship_kind_add(u_data, fit_data, item_uid, rig_rib.cat_id, rig.get_fit_uid());
+                fit_data.item_vs_ship_kind_add(u_data, item_uid, rig_rib.cat_id, rig.get_fit_uid());
             }
             UItem::Service(service) => {
                 let service_rib = service.get_r_item_base().unwrap();
                 let service_rifd = service.get_r_item_flex_data().unwrap();
-                item_kind_add(fit_data, item_uid, service_rib.detected_kind, DetectedItemKind::Service);
+                fit_data.item_kind_add(item_uid, service_rib.detected_kind, DetectedItemKind::Service);
                 if let Some(ship_limit) = &service_rib.ship_limit {
-                    fit_data.ship_limited_items.insert(item_uid, ship_limit.clone());
+                    fit_data.ship_limit_add(u_data, fit_uid, item_uid, ship_limit);
                 }
                 if let Some(item_grp_aid) = service_rib.val_fitted_group_id {
                     fit_data
@@ -251,12 +239,12 @@ impl Vast {
                 if let Some(sec_class) = service_rib.online_max_sec_class {
                     fit_data.sec_zone_unonlineable_class.insert(item_uid, sec_class);
                 }
-                item_vs_ship_kind_add(u_data, fit_data, item_uid, service_rib.cat_id, service.get_fit_uid());
+                fit_data.item_vs_ship_kind_add(u_data, item_uid, service_rib.cat_id, service.get_fit_uid());
             }
             UItem::Ship(ship) => {
                 let fit = u_data.fits.get(fit_uid);
                 let ship_rib = ship.get_r_item_base().unwrap();
-                item_kind_add(fit_data, item_uid, ship_rib.detected_kind, DetectedItemKind::Ship);
+                fit_data.item_kind_add(item_uid, ship_rib.detected_kind, DetectedItemKind::Ship);
                 // If new ship limits drones which can be used, fill the mismatch data up
                 if let Some(drone_limit) = &ship_rib.drone_limit {
                     fit_data.drone_group_limit.extend(drone_limit.group_ids.iter());
@@ -279,6 +267,9 @@ impl Vast {
                 if ship_rib.enables_conduit {
                     fit_data.conduit_enablers.insert(item_uid);
                 }
+                // Group and rig size become known when ship is loaded
+                fit_data.refresh_ship_limit_mismatches(u_data, Some(ship.get_type_aid()), Some(ship_rib.grp_id));
+                fit_data.refresh_rig_size_mismatches(ship_rib.rig_size);
                 // Ship/structure modules are not enforced when ship is not set. When we get one,
                 // fill the data container up
                 for item_uid in chain!(
@@ -305,34 +296,29 @@ impl Vast {
             }
             UItem::Skill(skill) => {
                 let skill_rib = skill.get_r_item_base().unwrap();
-                item_kind_add(fit_data, item_uid, skill_rib.detected_kind, DetectedItemKind::Skill);
+                fit_data.item_kind_add(item_uid, skill_rib.detected_kind, DetectedItemKind::Skill);
             }
             UItem::Stance(stance) => {
                 let stance_rib = stance.get_r_item_base().unwrap();
-                item_kind_add(fit_data, item_uid, stance_rib.detected_kind, DetectedItemKind::Stance);
+                fit_data.item_kind_add(item_uid, stance_rib.detected_kind, DetectedItemKind::Stance);
                 if let Some(ship_limit) = &stance_rib.ship_limit {
-                    fit_data.ship_limited_items.insert(item_uid, ship_limit.clone());
+                    fit_data.ship_limit_add(u_data, fit_uid, item_uid, ship_limit);
                 }
             }
             UItem::Subsystem(subsystem) => {
                 let subsystem_rib = subsystem.get_r_item_base().unwrap();
-                item_kind_add(
-                    fit_data,
-                    item_uid,
-                    subsystem_rib.detected_kind,
-                    DetectedItemKind::Subsystem,
-                );
+                fit_data.item_kind_add(item_uid, subsystem_rib.detected_kind, DetectedItemKind::Subsystem);
                 if let Some(slot) = subsystem_rib.subsystem_slot {
                     fit_data.slotted_subsystems.add_entry(slot, item_uid);
                 }
                 if let Some(ship_limit) = &subsystem_rib.ship_limit {
-                    fit_data.ship_limited_items.insert(item_uid, ship_limit.clone());
+                    fit_data.ship_limit_add(u_data, fit_uid, item_uid, ship_limit);
                 }
             }
             _ => (),
         }
     }
-    pub(in crate::svc) fn item_unloaded(&mut self, item_uid: &UItemId, item: &UItem) {
+    pub(in crate::svc) fn item_unloaded(&mut self, u_data: &UData, item_uid: &UItemId, item: &UItem) {
         let Some(fit_uid) = item.get_fit_uid() else {
             return;
         };
@@ -349,23 +335,18 @@ impl Vast {
         match item {
             UItem::Booster(booster) => {
                 let booster_rib = booster.get_r_item_base().unwrap();
-                item_kind_remove(fit_data, item_uid, booster_rib.detected_kind, DetectedItemKind::Booster);
+                fit_data.item_kind_remove(item_uid, booster_rib.detected_kind, DetectedItemKind::Booster);
                 if let Some(slot) = booster_rib.booster_slot {
                     fit_data.slotted_boosters.remove_entry(slot, item_uid);
                 }
             }
             UItem::Character(character) => {
                 let character_rib = character.get_r_item_base().unwrap();
-                item_kind_remove(
-                    fit_data,
-                    item_uid,
-                    character_rib.detected_kind,
-                    DetectedItemKind::Character,
-                );
+                fit_data.item_kind_remove(item_uid, character_rib.detected_kind, DetectedItemKind::Character);
             }
             UItem::Charge(charge) => {
                 let charge_rib = charge.get_r_item_base().unwrap();
-                item_kind_remove(fit_data, item_uid, charge_rib.detected_kind, DetectedItemKind::Charge);
+                fit_data.item_kind_remove(item_uid, charge_rib.detected_kind, DetectedItemKind::Charge);
                 fit_data.charge_group.remove(item_uid);
                 if charge_rib.cont_limit.is_some() {
                     fit_data.charge_cont_group.remove(item_uid);
@@ -379,7 +360,7 @@ impl Vast {
             UItem::Drone(drone) => {
                 let drone_rib = drone.get_r_item_base().unwrap();
                 let drone_rifd = drone.get_r_item_flex_data().unwrap();
-                item_kind_remove(fit_data, item_uid, drone_rib.detected_kind, DetectedItemKind::Drone);
+                fit_data.item_kind_remove(item_uid, drone_rib.detected_kind, DetectedItemKind::Drone);
                 fit_data.drones_volume.remove(item_uid);
                 if drone_rifd.bandwidth_use.is_some() {
                     fit_data.drones_bandwidth.remove(item_uid);
@@ -390,7 +371,7 @@ impl Vast {
             }
             UItem::Fighter(fighter) => {
                 let fighter_rib = fighter.get_r_item_base().unwrap();
-                item_kind_remove(fit_data, item_uid, fighter_rib.detected_kind, DetectedItemKind::Fighter);
+                fit_data.item_kind_remove(item_uid, fighter_rib.detected_kind, DetectedItemKind::Fighter);
                 fit_data.fighters_volume.remove(item_uid);
                 let count = fighter.get_count_info().unwrap();
                 if count.current > count.max {
@@ -417,7 +398,7 @@ impl Vast {
             }
             UItem::Implant(implant) => {
                 let implant_rib = implant.get_r_item_base().unwrap();
-                item_kind_remove(fit_data, item_uid, implant_rib.detected_kind, DetectedItemKind::Implant);
+                fit_data.item_kind_remove(item_uid, implant_rib.detected_kind, DetectedItemKind::Implant);
                 if let Some(slot) = implant_rib.implant_slot {
                     fit_data.slotted_implants.remove_entry(slot, item_uid);
                 }
@@ -425,12 +406,7 @@ impl Vast {
             UItem::Module(module) => {
                 let module_rib = module.get_r_item_base().unwrap();
                 let module_rifd = module.get_r_item_flex_data().unwrap();
-                item_kind_remove(
-                    fit_data,
-                    item_uid,
-                    module_rib.detected_kind,
-                    get_module_expected_kind(module),
-                );
+                fit_data.module_item_kind_remove(item_uid, module_rib.detected_kind, module);
                 if module_rib.takes_turret_hardpoint {
                     fit_data.mods_turret.remove(item_uid);
                 }
@@ -442,6 +418,7 @@ impl Vast {
                 }
                 if module_rib.ship_limit.is_some() {
                     fit_data.ship_limited_items.remove(item_uid);
+                    fit_data.ship_limit_mismatches.remove(item_uid);
                 }
                 if let Some(item_grp_aid) = module_rib.val_fitted_group_id {
                     fit_data
@@ -461,7 +438,7 @@ impl Vast {
                     }
                     fit_data.charge_volume.remove(&charge_uid);
                 }
-                if let Some(RShipKind::CapitalShip) = module_rib.item_ship_kind {
+                if is_capital_module(module_rib) {
                     fit_data.mods_capital.remove(item_uid);
                 }
                 if module_rib.max_type_fitted.is_some() {
@@ -483,10 +460,12 @@ impl Vast {
             UItem::Rig(rig) => {
                 let rig_rib = rig.get_r_item_base().unwrap();
                 let rig_rifd = rig.get_r_item_flex_data().unwrap();
-                item_kind_remove(fit_data, item_uid, rig_rib.detected_kind, DetectedItemKind::Rig);
+                fit_data.item_kind_remove(item_uid, rig_rib.detected_kind, DetectedItemKind::Rig);
                 fit_data.rigs_rig_size.remove(item_uid);
+                fit_data.rig_size_mismatches.remove(item_uid);
                 if rig_rib.ship_limit.is_some() {
                     fit_data.ship_limited_items.remove(item_uid);
+                    fit_data.ship_limit_mismatches.remove(item_uid);
                 }
                 if let Some(item_grp_aid) = rig_rib.val_fitted_group_id {
                     fit_data
@@ -504,9 +483,10 @@ impl Vast {
             UItem::Service(service) => {
                 let service_rib = service.get_r_item_base().unwrap();
                 let service_rifd = service.get_r_item_flex_data().unwrap();
-                item_kind_remove(fit_data, item_uid, service_rib.detected_kind, DetectedItemKind::Service);
+                fit_data.item_kind_remove(item_uid, service_rib.detected_kind, DetectedItemKind::Service);
                 if service_rib.ship_limit.is_some() {
                     fit_data.ship_limited_items.remove(item_uid);
+                    fit_data.ship_limit_mismatches.remove(item_uid);
                 }
                 if let Some(item_grp_aid) = service_rib.val_fitted_group_id {
                     fit_data
@@ -531,7 +511,7 @@ impl Vast {
             }
             UItem::Ship(ship) => {
                 let ship_rib = ship.get_r_item_base().unwrap();
-                item_kind_remove(fit_data, item_uid, ship_rib.detected_kind, DetectedItemKind::Ship);
+                fit_data.item_kind_remove(item_uid, ship_rib.detected_kind, DetectedItemKind::Ship);
                 // If any drone group limits were defined, clear the mismatch data
                 if !fit_data.drone_group_limit.is_empty() {
                     fit_data.drone_group_limit.clear();
@@ -547,159 +527,34 @@ impl Vast {
                     fit_data.conduit_enablers.remove(item_uid);
                 }
                 fit_data.mods_rigs_svcs_vs_ship_kind.clear();
+                // Unloaded ship still has type, but no group and rig size
+                fit_data.refresh_ship_limit_mismatches(u_data, Some(ship.get_type_aid()), None);
+                fit_data.rig_size_mismatches.clear();
             }
             UItem::Skill(skill) => {
                 let skill_rib = skill.get_r_item_base().unwrap();
-                item_kind_remove(fit_data, item_uid, skill_rib.detected_kind, DetectedItemKind::Skill);
+                fit_data.item_kind_remove(item_uid, skill_rib.detected_kind, DetectedItemKind::Skill);
             }
             UItem::Stance(stance) => {
                 let item_rib = stance.get_r_item_base().unwrap();
-                item_kind_remove(fit_data, item_uid, item_rib.detected_kind, DetectedItemKind::Stance);
+                fit_data.item_kind_remove(item_uid, item_rib.detected_kind, DetectedItemKind::Stance);
                 if item_rib.ship_limit.is_some() {
                     fit_data.ship_limited_items.remove(item_uid);
+                    fit_data.ship_limit_mismatches.remove(item_uid);
                 }
             }
             UItem::Subsystem(subsystem) => {
                 let subsystem_rib = subsystem.get_r_item_base().unwrap();
-                item_kind_remove(
-                    fit_data,
-                    item_uid,
-                    subsystem_rib.detected_kind,
-                    DetectedItemKind::Subsystem,
-                );
+                fit_data.item_kind_remove(item_uid, subsystem_rib.detected_kind, DetectedItemKind::Subsystem);
                 if let Some(slot) = subsystem_rib.subsystem_slot {
                     fit_data.slotted_subsystems.remove_entry(slot, item_uid);
                 }
                 if subsystem_rib.ship_limit.is_some() {
                     fit_data.ship_limited_items.remove(item_uid);
+                    fit_data.ship_limit_mismatches.remove(item_uid);
                 }
             }
             _ => (),
         }
-    }
-}
-
-fn get_module_expected_kind(module: &UModule) -> DetectedItemKind {
-    match module.get_rack() {
-        ModRack::High => DetectedItemKind::ModuleHigh,
-        ModRack::Mid => DetectedItemKind::ModuleMid,
-        ModRack::Low => DetectedItemKind::ModuleLow,
-    }
-}
-fn item_kind_add(
-    fit_data: &mut VastFitData,
-    item_uid: UItemId,
-    item_kind: Option<DetectedItemKind>,
-    expected_kind: DetectedItemKind,
-) {
-    if item_kind != Some(expected_kind) {
-        fit_data.item_kind.insert(
-            item_uid,
-            ValItemKindItemStored {
-                kind: item_kind,
-                expected_kind,
-            },
-        );
-    }
-}
-fn item_kind_remove(
-    fit_data: &mut VastFitData,
-    item_uid: &UItemId,
-    item_kind: Option<DetectedItemKind>,
-    expected_kind: DetectedItemKind,
-) {
-    if item_kind != Some(expected_kind) {
-        fit_data.item_kind.remove(item_uid);
-    }
-}
-fn item_vs_ship_kind_add(
-    u_data: &UData,
-    fit_data: &mut VastFitData,
-    item_uid: UItemId,
-    item_cat: AItemCatId,
-    fit_uid: UFitId,
-) {
-    let fit = u_data.fits.get(fit_uid);
-    let Some(ship_uid) = fit.ship else {
-        return;
-    };
-    match item_cat {
-        AItemCatId::MODULE => match fit.ship_kind {
-            UShipKind::Ship => (),
-            UShipKind::Structure => {
-                fit_data.mods_rigs_svcs_vs_ship_kind.insert(item_uid, ValShipKind::Ship);
-            }
-            UShipKind::Unknown => {
-                let ship = u_data.items.get(ship_uid);
-                if ship.is_loaded() {
-                    fit_data.mods_rigs_svcs_vs_ship_kind.insert(item_uid, ValShipKind::Ship);
-                }
-            }
-        },
-        AItemCatId::STRUCTURE_MODULE => match fit.ship_kind {
-            UShipKind::Ship => {
-                fit_data
-                    .mods_rigs_svcs_vs_ship_kind
-                    .insert(item_uid, ValShipKind::Structure);
-            }
-            UShipKind::Structure => (),
-            UShipKind::Unknown => {
-                let ship = u_data.items.get(ship_uid);
-                if ship.is_loaded() {
-                    fit_data
-                        .mods_rigs_svcs_vs_ship_kind
-                        .insert(item_uid, ValShipKind::Structure);
-                }
-            }
-        },
-        _ => (),
-    }
-}
-
-fn handle_charge_group_add(
-    fit_data: &mut VastFitData,
-    cont_uid: UItemId,
-    cont_rib: &RItemBase,
-    charge_uid: UItemId,
-    charge_rib: &RItemBase,
-) {
-    if is_charge_group_mismatch(cont_rib, charge_rib) {
-        fit_data.charge_group.insert(charge_uid, cont_uid);
-    }
-}
-
-fn handle_charge_cont_group_add(
-    fit_data: &mut VastFitData,
-    cont_uid: UItemId,
-    cont_rib: &RItemBase,
-    charge_uid: UItemId,
-    charge_rib: &RItemBase,
-) {
-    if is_charge_cont_group_mismatch(cont_rib, charge_rib) {
-        fit_data.charge_cont_group.insert(charge_uid, cont_uid);
-    }
-}
-
-fn handle_charge_size_add(
-    fit_data: &mut VastFitData,
-    cont_uid: UItemId,
-    cont_rib: &RItemBase,
-    charge_uid: UItemId,
-    charge_rib: &RItemBase,
-) {
-    if is_charge_size_mismatch(cont_rib, charge_rib) {
-        fit_data.charge_size.insert(charge_uid, cont_uid);
-    }
-}
-
-fn handle_charge_volume_add(
-    fit_data: &mut VastFitData,
-    cont_uid: UItemId,
-    cont_rib: &RItemBase,
-    charge_uid: UItemId,
-    charge_rib: &RItemBase,
-) {
-    if is_charge_volume_mismatch(cont_rib, charge_rib) {
-        fit_data.charge_volume.insert(charge_uid, cont_uid);
     }
 }

@@ -26,6 +26,13 @@ impl SolarSystem {
             let Some(item_kind) = r_item.base.detected_kind else {
                 continue;
             };
+            // Skip items which fail static checks
+            if !self
+                .svc
+                .validate_item_static_fast(&self.u_data, fit_uid, &r_item.base, item_kind, val_options)
+            {
+                continue;
+            }
             match item_kind {
                 DetectedItemKind::Booster => {
                     let booster_uid = self.internal_add_booster(fit_uid, *type_aid);
@@ -39,8 +46,7 @@ impl SolarSystem {
                 // TODO: expensive - HTTP module copies solar system before trying to fit anyway
                 DetectedItemKind::Charge => {
                     for &module_uid in chargeable_module_uids.iter() {
-                        // Skip modules which fail charge validations based on item types only,
-                        // without putting the charge into them
+                        // Skip modules which fail static charge checks
                         if !self
                             .svc
                             .validate_charge_static_fast(&self.u_data, module_uid, *type_aid, val_options)

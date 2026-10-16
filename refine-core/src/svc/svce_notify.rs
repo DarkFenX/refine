@@ -29,7 +29,7 @@ impl Svc {
     pub(crate) fn notify_item_added(&mut self, u_data: &UData, item_uid: UItemId, item: &UItem) {
         let svc_ctx = &SvcCtx::new(u_data, &self.eff_projs);
         self.calc.item_added(svc_ctx, item_uid, item);
-        self.vast.item_added(item_uid, item);
+        self.vast.item_added(u_data, item_uid, item);
     }
     pub(crate) fn notify_item_removed(&mut self, u_data: &UData, item_uid: UItemId, item: &UItem) {
         let svc_ctx = &SvcCtx::new(u_data, &self.eff_projs);
@@ -50,7 +50,7 @@ impl Svc {
     pub(crate) fn notify_item_unloaded(&mut self, u_data: &UData, item_uid: UItemId, item: &UItem) {
         let svc_ctx = &SvcCtx::new(u_data, &self.eff_projs);
         self.calc.item_unloaded(svc_ctx, item_uid, item);
-        self.vast.item_unloaded(&item_uid, item);
+        self.vast.item_unloaded(u_data, &item_uid, item);
     }
     pub(crate) fn notify_base_attr_value_changed(&mut self, u_data: &UData, item_uid: UItemId, attr_rid: RAttrId) {
         let svc_ctx = &SvcCtx::new(u_data, &self.eff_projs);

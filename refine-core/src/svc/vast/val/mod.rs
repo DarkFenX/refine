@@ -5,8 +5,10 @@ pub(crate) use options::{ValOptionsInt, ValOptionsSolInt};
 pub use result::{ValResultFit, ValResultSol};
 pub(in crate::svc::vast) use validators::{
     EffectSecZoneInfo, ValFighterSquadSizeFighterStored, ValItemKindItemStored, ValModuleStateModuleStored,
-    ValSrqSkillStored, is_charge_cont_group_mismatch, is_charge_group_mismatch, is_charge_size_mismatch,
-    is_charge_volume_mismatch,
+    ValSrqSkillStored, get_fit_ship_rig_size, get_fit_ship_type_group, get_item_vs_ship_kind_mismatch,
+    is_capital_module, is_charge_cont_group_mismatch, is_charge_group_mismatch, is_charge_size_mismatch,
+    is_charge_volume_mismatch, is_drone_group_mismatch, is_rig_size_mismatch, is_ship_limit_met, is_ship_subcap,
+    is_skill_level_missing,
 };
 pub use validators::{
     ValActivationBlockedFail, ValCapitalModFail, ValCapitalModInfo, ValChargeGroupChargeInfo, ValChargeGroupFail,
@@ -27,5 +29,6 @@ pub use validators::{
 mod kinds;
 mod options;
 mod result;
-mod validate;
+mod validate_full;
+mod validate_static;
 mod validators;

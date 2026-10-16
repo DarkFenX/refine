@@ -3,12 +3,15 @@ use itertools::Itertools;
 use crate::{
     ItemId, PValue,
     def::MAX_SUBCAP_MODULE_VOLUME,
-    rd::RShipKind,
+    rd::{RItemBase, RShipKind},
     svc::{SvcCtx, vast::VastFitData},
     ud::{UItemId, UShip},
     util::RSet,
 };
 
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Result
+////////////////////////////////////////////////////////////////////////////////////////////////////
 #[cfg_attr(
     feature = "serde",
     cfg_eval,
@@ -33,6 +36,9 @@ pub struct ValCapitalModInfo {
     pub volume: PValue,
 }
 
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Validators
+////////////////////////////////////////////////////////////////////////////////////////////////////
 impl VastFitData {
     // Fast validations
     pub(in crate::svc::vast::val) fn validate_capital_module_fast(
@@ -79,7 +85,10 @@ impl VastFitData {
     }
 }
 
-fn is_ship_subcap(ship: Option<&UShip>) -> bool {
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Helpers
+////////////////////////////////////////////////////////////////////////////////////////////////////
+pub(in crate::svc::vast) fn is_ship_subcap(ship: Option<&UShip>) -> bool {
     let Some(ship) = ship else {
         return false;
     };
@@ -87,4 +96,8 @@ fn is_ship_subcap(ship: Option<&UShip>) -> bool {
         return false;
     };
     matches!(ship_rib.ship_kind, Some(RShipKind::Ship))
+}
+
+pub(in crate::svc::vast) fn is_capital_module(module_rib: &RItemBase) -> bool {
+    matches!(module_rib.item_ship_kind, Some(RShipKind::CapitalShip))
 }

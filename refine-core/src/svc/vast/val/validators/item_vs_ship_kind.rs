@@ -2,11 +2,15 @@ use itertools::Itertools;
 
 use crate::{
     ItemId,
+    ad::AItemCatId,
     svc::{SvcCtx, vast::VastFitData},
-    ud::{UFit, UItemId, UShipKind},
+    ud::{UData, UFit, UFitId, UItemId, UShipKind},
     util::RSet,
 };
 
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Result
+////////////////////////////////////////////////////////////////////////////////////////////////////
 #[cfg_attr(
     feature = "serde",
     cfg_eval,
@@ -50,6 +54,9 @@ impl ValShipKind {
     }
 }
 
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Validators
+////////////////////////////////////////////////////////////////////////////////////////////////////
 impl VastFitData {
     // Fast validations
     pub(in crate::svc::vast::val) fn validate_item_vs_ship_kind_fast(&self, kfs: &RSet<UItemId>) -> bool {
@@ -80,5 +87,45 @@ impl VastFitData {
                 items,
             }),
         }
+    }
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Helpers
+////////////////////////////////////////////////////////////////////////////////////////////////////
+impl VastFitData {
+    pub(in crate::svc::vast) fn item_vs_ship_kind_add(
+        &mut self,
+        u_data: &UData,
+        item_uid: UItemId,
+        item_cat: AItemCatId,
+        fit_uid: UFitId,
+    ) {
+        if let Some(ship_kind) = get_item_vs_ship_kind_mismatch(u_data, u_data.fits.get(fit_uid), item_cat) {
+            self.mods_rigs_svcs_vs_ship_kind.insert(item_uid, ship_kind);
+        }
+    }
+}
+
+// Ship kind an item of given category needs, when the fit ship is of another kind. Not enforced
+// without ship, and for non-loaded ships
+pub(in crate::svc::vast) fn get_item_vs_ship_kind_mismatch(
+    u_data: &UData,
+    fit: &UFit,
+    item_cat: AItemCatId,
+) -> Option<ValShipKind> {
+    let ship_uid = fit.ship?;
+    match item_cat {
+        AItemCatId::MODULE => match fit.ship_kind {
+            UShipKind::Ship => None,
+            UShipKind::Structure => Some(ValShipKind::Ship),
+            UShipKind::Unknown => u_data.items.get(ship_uid).is_loaded().then_some(ValShipKind::Ship),
+        },
+        AItemCatId::STRUCTURE_MODULE => match fit.ship_kind {
+            UShipKind::Ship => Some(ValShipKind::Structure),
+            UShipKind::Structure => None,
+            UShipKind::Unknown => u_data.items.get(ship_uid).is_loaded().then_some(ValShipKind::Structure),
+        },
+        _ => None,
     }
 }

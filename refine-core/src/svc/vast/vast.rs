@@ -6,7 +6,7 @@ use crate::{
         NEffectBreacherOutputGetter, NEffectDmgOutputGetter, NEffectEcmOutputGetter, NEffectGeneralOutputGetter,
         NEffectMiningOutputGetter,
     },
-    rd::{REffectId, REffectLocalOpcSpec, REffectProjOpcSpec, RItemListId, RItemShipLimit},
+    rd::{REffectId, REffectLocalOpcSpec, REffectProjOpcSpec, RItemListId},
     svc::vast::{
         ValShipKind,
         val::{
@@ -96,8 +96,10 @@ pub(in crate::svc) struct VastFitData {
     pub(in crate::svc::vast) slotted_boosters: RMapRSet<SlotIndex, UItemId>,
     pub(in crate::svc::vast) slotted_subsystems: RMapRSet<SlotIndex, UItemId>,
     // Validation-related - restrictions between ship type/attribute and its items
-    pub(in crate::svc::vast) ship_limited_items: RMap<UItemId, RItemShipLimit>,
+    pub(in crate::svc::vast) ship_limited_items: RSet<UItemId>,
+    pub(in crate::svc::vast) ship_limit_mismatches: RSet<UItemId>,
     pub(in crate::svc::vast) rigs_rig_size: RMap<UItemId, Option<Value>>,
+    pub(in crate::svc::vast) rig_size_mismatches: RSet<UItemId>,
     pub(in crate::svc::vast) mods_rigs_svcs_vs_ship_kind: RMap<UItemId, ValShipKind>,
     pub(in crate::svc::vast) mods_capital: RMap<UItemId, PValue>,
     pub(in crate::svc::vast) drone_group_limit: Vec<AItemGrpId>,
@@ -216,8 +218,10 @@ impl VastFitData {
             slotted_boosters: RMapRSet::new(),
             slotted_subsystems: RMapRSet::new(),
             // Validation-related - restrictions between ship type/attribute and its items
-            ship_limited_items: RMap::new(),
+            ship_limited_items: RSet::new(),
+            ship_limit_mismatches: RSet::new(),
             rigs_rig_size: RMap::new(),
+            rig_size_mismatches: RSet::new(),
             mods_rigs_svcs_vs_ship_kind: RMap::new(),
             mods_capital: RMap::new(),
             drone_group_limit: Vec::new(),

@@ -1,19 +1,16 @@
 use itertools::Itertools;
 
 use crate::{
-    ItemId,
+    ItemId, ModRack,
     svc::{SvcCtx, vast::VastFitData},
-    ud::UItemId,
+    ud::{UItemId, UModule},
     util::RSet,
     val::DetectedItemKind,
 };
 
-#[derive(Copy, Clone)]
-pub(in crate::svc::vast) struct ValItemKindItemStored {
-    pub(in crate::svc::vast) kind: Option<DetectedItemKind>,
-    pub(in crate::svc::vast) expected_kind: DetectedItemKind,
-}
-
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Result
+////////////////////////////////////////////////////////////////////////////////////////////////////
 #[cfg_attr(
     feature = "serde",
     cfg_eval,
@@ -38,6 +35,9 @@ pub struct ValItemKindItemInfo {
     pub expected_kind: DetectedItemKind,
 }
 
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Validators
+////////////////////////////////////////////////////////////////////////////////////////////////////
 impl VastFitData {
     // Fast validations
     pub(in crate::svc::vast::val) fn validate_item_kind_fast(&self, kfs: &RSet<UItemId>) -> bool {
@@ -68,5 +68,67 @@ impl VastFitData {
             true => None,
             false => Some(ValItemKindFail { item_kinds }),
         }
+    }
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Helpers
+////////////////////////////////////////////////////////////////////////////////////////////////////
+#[derive(Copy, Clone)]
+pub(in crate::svc::vast) struct ValItemKindItemStored {
+    pub(in crate::svc::vast) kind: Option<DetectedItemKind>,
+    pub(in crate::svc::vast) expected_kind: DetectedItemKind,
+}
+
+impl VastFitData {
+    pub(in crate::svc::vast) fn item_kind_add(
+        &mut self,
+        item_uid: UItemId,
+        item_kind: Option<DetectedItemKind>,
+        expected_kind: DetectedItemKind,
+    ) {
+        if item_kind != Some(expected_kind) {
+            self.item_kind.insert(
+                item_uid,
+                ValItemKindItemStored {
+                    kind: item_kind,
+                    expected_kind,
+                },
+            );
+        }
+    }
+    pub(in crate::svc::vast) fn item_kind_remove(
+        &mut self,
+        item_uid: &UItemId,
+        item_kind: Option<DetectedItemKind>,
+        expected_kind: DetectedItemKind,
+    ) {
+        if item_kind != Some(expected_kind) {
+            self.item_kind.remove(item_uid);
+        }
+    }
+    pub(in crate::svc::vast) fn module_item_kind_add(
+        &mut self,
+        item_uid: UItemId,
+        item_kind: Option<DetectedItemKind>,
+        module: &UModule,
+    ) {
+        self.item_kind_add(item_uid, item_kind, get_module_expected_kind(module));
+    }
+    pub(in crate::svc::vast) fn module_item_kind_remove(
+        &mut self,
+        item_uid: &UItemId,
+        item_kind: Option<DetectedItemKind>,
+        module: &UModule,
+    ) {
+        self.item_kind_remove(item_uid, item_kind, get_module_expected_kind(module));
+    }
+}
+
+fn get_module_expected_kind(module: &UModule) -> DetectedItemKind {
+    match module.get_rack() {
+        ModRack::High => DetectedItemKind::ModuleHigh,
+        ModRack::Mid => DetectedItemKind::ModuleMid,
+        ModRack::Low => DetectedItemKind::ModuleLow,
     }
 }

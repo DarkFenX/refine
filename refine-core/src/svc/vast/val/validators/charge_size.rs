@@ -6,6 +6,9 @@ use crate::{
     util::RSet,
 };
 
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Result
+////////////////////////////////////////////////////////////////////////////////////////////////////
 #[cfg_attr(
     feature = "serde",
     cfg_eval,
@@ -32,6 +35,9 @@ pub struct ValChargeSizeChargeInfo {
     pub allowed_size: Value,
 }
 
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Validators
+////////////////////////////////////////////////////////////////////////////////////////////////////
 impl VastFitData {
     // Fast validations
     pub(in crate::svc::vast::val) fn validate_charge_size_fast(&self, kfs: &RSet<UItemId>) -> bool {
@@ -65,6 +71,23 @@ impl VastFitData {
         match charges.is_empty() {
             true => None,
             false => Some(ValChargeSizeFail { charges }),
+        }
+    }
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Helpers
+////////////////////////////////////////////////////////////////////////////////////////////////////
+impl VastFitData {
+    pub(in crate::svc::vast) fn handle_charge_size_add(
+        &mut self,
+        cont_uid: UItemId,
+        cont_rib: &RItemBase,
+        charge_uid: UItemId,
+        charge_rib: &RItemBase,
+    ) {
+        if is_charge_size_mismatch(cont_rib, charge_rib) {
+            self.charge_size.insert(charge_uid, cont_uid);
         }
     }
 }

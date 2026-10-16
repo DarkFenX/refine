@@ -8,12 +8,9 @@ use crate::{
     util::RSet,
 };
 
-#[derive(Copy, Clone)]
-pub(in crate::svc::vast) struct ValSrqSkillStored {
-    pub(in crate::svc::vast) current_lvl: Option<SkillLevel>,
-    pub(in crate::svc::vast) required_lvl: SkillLevel,
-}
-
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Result
+////////////////////////////////////////////////////////////////////////////////////////////////////
 #[cfg_attr(
     feature = "serde",
     cfg_eval,
@@ -50,6 +47,9 @@ pub struct ValSrqSkillInfo {
     pub required_lvl: SkillLevel,
 }
 
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Validators
+////////////////////////////////////////////////////////////////////////////////////////////////////
 impl VastFitData {
     // Fast validations
     pub(in crate::svc::vast::val) fn validate_skill_reqs_fast(&self, kfs: &RSet<UItemId>) -> bool {
@@ -86,5 +86,21 @@ impl VastFitData {
             true => None,
             false => Some(ValSrqFail { items }),
         }
+    }
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Helpers
+////////////////////////////////////////////////////////////////////////////////////////////////////
+#[derive(Copy, Clone)]
+pub(in crate::svc::vast) struct ValSrqSkillStored {
+    pub(in crate::svc::vast) current_lvl: Option<SkillLevel>,
+    pub(in crate::svc::vast) required_lvl: SkillLevel,
+}
+
+pub(in crate::svc::vast) fn is_skill_level_missing(current_lvl: Option<SkillLevel>, required_lvl: SkillLevel) -> bool {
+    match current_lvl {
+        Some(current_lvl) => current_lvl < required_lvl,
+        None => true,
     }
 }
