@@ -1,6 +1,6 @@
 use crate::{
     ItemId, PValue, UnitInterval, Value,
-    nd::NEffectOutputGetter,
+    nd::{NEffectGeneralOutputGetter, NEffectOutputGetter},
     rd::RItemCapConsumer,
     svc::{Calc, SvcCtx, vast::VastFitData},
     ud::{UItem, UItemId},
@@ -106,6 +106,7 @@ impl VastFitData {
     }
 }
 
+#[inline(always)]
 fn get_cap_consumption_instance(
     ctx: &SvcCtx,
     calc: &mut Calc,
@@ -114,11 +115,16 @@ fn get_cap_consumption_instance(
     cap_consumer: &RItemCapConsumer,
 ) -> Option<PValue> {
     let r_effect = ctx.u_data.r_data.get_effect_by_rid(cap_consumer.effect_rid);
-    let mut cap_consumed = cap_consumer
-        .opc_spec
-        .base
-        .get(ctx, calc, item_uid, r_effect, ())?
-        .get_instance();
+    let mut cap_consumed = match cap_consumer.opc_spec.base {
+        // Same value the getter returns as output instance, without building whole output
+        NEffectGeneralOutputGetter::CapConsumer => PValue::from_value_clamped(calc.get_item_oattr_ffb_dogma(
+            ctx,
+            item_uid,
+            r_effect.discharge_attr_rid,
+            Value::ZERO,
+        )),
+        base => base.get(ctx, calc, item_uid, r_effect, ())?.get_instance(),
+    };
     // Just assume chargedness is 100% when there is a charge for simplicity. The only case it's
     // needed in this case (ASBs) chargedness is ignored anyway.
     if let Some(charge_mult_getter) = cap_consumer.opc_spec.charge_mult
