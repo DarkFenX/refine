@@ -39,6 +39,14 @@ impl SolarSystem {
                 // TODO: expensive - HTTP module copies solar system before trying to fit anyway
                 DetectedItemKind::Charge => {
                     for &module_uid in chargeable_module_uids.iter() {
+                        // Skip modules which fail charge validations based on item types only,
+                        // without putting the charge into them
+                        if !self
+                            .svc
+                            .validate_charge_static_fast(&self.u_data, module_uid, *type_aid, val_options)
+                        {
+                            continue;
+                        }
                         let charge_uid = self.internal_set_module_charge(module_uid, *type_aid);
                         if self.internal_validate_fit_fast(fit_uid, val_options) {
                             valid.push(*type_aid);

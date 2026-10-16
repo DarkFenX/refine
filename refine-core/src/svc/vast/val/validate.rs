@@ -1,12 +1,17 @@
 use crate::{
+    ad::AItemId,
     svc::{
         Calc, SvcCtx, Vast,
         vast::{
             ValOptionsInt, ValOptionsSolInt,
+            shared::{
+                is_charge_cont_group_mismatch, is_charge_group_mismatch, is_charge_size_mismatch,
+                is_charge_volume_mismatch,
+            },
             val::{ValKind, ValOptionInt},
         },
     },
-    ud::UFitId,
+    ud::{UData, UFitId, UItemId},
     val::{ValResultFit, ValResultSol},
 };
 
@@ -457,6 +462,45 @@ impl Vast {
         // No known items use it, only fighter drones used to have it
         if let ValOptionInt::Enabled(opts) = options.get(ValKind::DroneGroup)
             && !fit_data.validate_drone_group_fast(&opts.kfs)
+        {
+            return false;
+        }
+        true
+    }
+    // Charge validations which depend only on types of a charge and its container. Allows to check
+    // if a charge fails them without putting it into the container. Validation passes if there
+    // is not enough data to tell
+    pub(in crate::svc) fn validate_charge_static_fast(
+        &self,
+        u_data: &UData,
+        cont_uid: UItemId,
+        charge_type_aid: AItemId,
+        options: &ValOptionsInt,
+    ) -> bool {
+        let Some(cont_rib) = u_data.items.get(cont_uid).get_r_item_base() else {
+            return true;
+        };
+        let Some(charge_r_item) = u_data.r_data.get_item_by_aid(&charge_type_aid) else {
+            return true;
+        };
+        let charge_rib = &charge_r_item.base;
+        if let ValOptionInt::Enabled(..) = options.get(ValKind::ChargeGroup)
+            && is_charge_group_mismatch(cont_rib, charge_rib)
+        {
+            return false;
+        }
+        if let ValOptionInt::Enabled(..) = options.get(ValKind::ChargeParentGroup)
+            && is_charge_cont_group_mismatch(cont_rib, charge_rib)
+        {
+            return false;
+        }
+        if let ValOptionInt::Enabled(..) = options.get(ValKind::ChargeSize)
+            && is_charge_size_mismatch(cont_rib, charge_rib)
+        {
+            return false;
+        }
+        if let ValOptionInt::Enabled(..) = options.get(ValKind::ChargeVolume)
+            && is_charge_volume_mismatch(cont_rib, charge_rib)
         {
             return false;
         }

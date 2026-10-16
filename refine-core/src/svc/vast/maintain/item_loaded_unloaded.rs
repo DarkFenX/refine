@@ -2,13 +2,17 @@ use itertools::chain;
 
 use crate::{
     Count, ModRack,
-    ad::{AItemCatId, AItemGrpId},
+    ad::AItemCatId,
     misc::DetectedItemKind,
     rd::{RItemBase, RShipKind},
     svc::{
         Vast,
         vast::{
             ValShipKind, VastFitData,
+            shared::{
+                is_charge_cont_group_mismatch, is_charge_group_mismatch, is_charge_size_mismatch,
+                is_charge_volume_mismatch,
+            },
             val::{ValFighterSquadSizeFighterStored, ValItemKindItemStored, ValSrqSkillStored},
         },
     },
@@ -71,8 +75,8 @@ impl Vast {
                 let cont_item = u_data.items.get(cont_uid);
                 item_kind_add(fit_data, item_uid, charge_rib.detected_kind, DetectedItemKind::Charge);
                 if let Some(cont_rib) = cont_item.get_r_item_base() {
-                    handle_charge_group_add(fit_data, cont_uid, cont_rib, item_uid, &charge_rib.grp_id);
-                    handle_charge_cont_group_add(fit_data, cont_uid, &cont_rib.grp_id, item_uid, charge_rib);
+                    handle_charge_group_add(fit_data, cont_uid, cont_rib, item_uid, charge_rib);
+                    handle_charge_cont_group_add(fit_data, cont_uid, cont_rib, item_uid, charge_rib);
                     handle_charge_size_add(fit_data, cont_uid, cont_rib, item_uid, charge_rib);
                     handle_charge_volume_add(fit_data, cont_uid, cont_rib, item_uid, charge_rib);
                 }
@@ -171,8 +175,8 @@ impl Vast {
                 if let Some(charge_uid) = module.get_charge_uid() {
                     let charge_item = u_data.items.get(charge_uid);
                     if let Some(charge_rib) = charge_item.get_r_item_base() {
-                        handle_charge_group_add(fit_data, item_uid, module_rib, charge_uid, &charge_rib.grp_id);
-                        handle_charge_cont_group_add(fit_data, item_uid, &module_rib.grp_id, charge_uid, charge_rib);
+                        handle_charge_group_add(fit_data, item_uid, module_rib, charge_uid, charge_rib);
+                        handle_charge_cont_group_add(fit_data, item_uid, module_rib, charge_uid, charge_rib);
                         handle_charge_size_add(fit_data, item_uid, module_rib, charge_uid, charge_rib);
                         handle_charge_volume_add(fit_data, item_uid, module_rib, charge_uid, charge_rib);
                     }
@@ -657,11 +661,9 @@ fn handle_charge_group_add(
     cont_uid: UItemId,
     cont_rib: &RItemBase,
     charge_uid: UItemId,
-    charge_group_aid: &AItemGrpId,
+    charge_rib: &RItemBase,
 ) {
-    if let Some(charge_limit) = &cont_rib.charge_limit
-        && !charge_limit.group_ids.contains(charge_group_aid)
-    {
+    if is_charge_group_mismatch(cont_rib, charge_rib) {
         fit_data.charge_group.insert(charge_uid, cont_uid);
     }
 }
@@ -669,13 +671,11 @@ fn handle_charge_group_add(
 fn handle_charge_cont_group_add(
     fit_data: &mut VastFitData,
     cont_uid: UItemId,
-    cont_group_aid: &AItemGrpId,
+    cont_rib: &RItemBase,
     charge_uid: UItemId,
     charge_rib: &RItemBase,
 ) {
-    if let Some(charge_cont_limit) = &charge_rib.cont_limit
-        && !charge_cont_limit.group_ids.contains(cont_group_aid)
-    {
+    if is_charge_cont_group_mismatch(cont_rib, charge_rib) {
         fit_data.charge_cont_group.insert(charge_uid, cont_uid);
     }
 }
@@ -687,8 +687,7 @@ fn handle_charge_size_add(
     charge_uid: UItemId,
     charge_rib: &RItemBase,
 ) {
-    // Charge size mismatch happens when parent module requires some charge size
-    if cont_rib.charge_size.is_some() && cont_rib.charge_size != charge_rib.charge_size {
+    if is_charge_size_mismatch(cont_rib, charge_rib) {
         fit_data.charge_size.insert(charge_uid, cont_uid);
     }
 }
@@ -700,7 +699,7 @@ fn handle_charge_volume_add(
     charge_uid: UItemId,
     charge_rib: &RItemBase,
 ) {
-    if cont_rib.capacity < charge_rib.volume {
+    if is_charge_volume_mismatch(cont_rib, charge_rib) {
         fit_data.charge_volume.insert(charge_uid, cont_uid);
     }
 }

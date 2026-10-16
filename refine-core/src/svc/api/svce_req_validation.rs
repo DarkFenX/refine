@@ -1,9 +1,10 @@
 use crate::{
+    ad::AItemId,
     svc::{
         Svc, SvcCtx,
         vast::{ValOptionsInt, ValOptionsSolInt, ValResultFit, ValResultSol},
     },
-    ud::{UData, UFitId},
+    ud::{UData, UFitId, UItemId},
 };
 
 impl Svc {
@@ -18,6 +19,16 @@ impl Svc {
     pub(crate) fn validate_fit_fast(&mut self, u_data: &UData, fit_uid: UFitId, options: &ValOptionsInt) -> bool {
         self.vast
             .validate_fit_fast(&SvcCtx::new(u_data, &self.eff_projs), &mut self.calc, fit_uid, options)
+    }
+    pub(crate) fn validate_charge_static_fast(
+        &self,
+        u_data: &UData,
+        cont_uid: UItemId,
+        charge_type_aid: AItemId,
+        options: &ValOptionsInt,
+    ) -> bool {
+        self.vast
+            .validate_charge_static_fast(u_data, cont_uid, charge_type_aid, options)
     }
     pub(crate) fn validate_fit_verbose(
         &mut self,
