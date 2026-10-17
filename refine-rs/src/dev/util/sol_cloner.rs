@@ -27,7 +27,7 @@ impl<'a> SolClonerInner<'a> {
             allocated: Vec::with_capacity(tokio_rayon::rayon::current_num_threads()),
         }
     }
-    pub(in crate::dev) fn get(&mut self) -> Box<rc::SolarSystem> {
+    pub(in crate::dev) fn take(&mut self) -> Box<rc::SolarSystem> {
         match self.allocated.pop() {
             Some(sol) => sol,
             None => Box::new(self.original.clone()),

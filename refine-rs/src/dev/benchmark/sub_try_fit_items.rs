@@ -40,11 +40,12 @@ impl DevBenchmarkTryFitItemsCmd {
     pub(super) fn execute(self, core_sol: &mut rc::SolarSystem) {
         let cloner = SolCloner::new(core_sol);
         let chunk_size = usize::max(
-            400,
-            (self.type_ids.len() as f64 / tokio_rayon::rayon::current_num_threads() as f64 / 4.0).ceil() as usize,
+            100,
+            (self.type_ids.len() as f64 / tokio_rayon::rayon::current_num_threads() as f64 / 16.0).ceil() as usize,
         );
-        self.type_ids.par_chunks(chunk_size).for_each(|chunk| {
-            let mut inner_sol = cloner.lock().get();
+        // with_max_len() ensures each chunk goes to a separate rayon worker
+        self.type_ids.par_chunks(chunk_size).with_max_len(1).for_each(|chunk| {
+            let mut inner_sol = cloner.lock().take();
             let mut inner_fit = inner_sol.get_fit_mut(&self.fit_id).unwrap();
             inner_fit.benchmark_try_items(chunk, &self.val_options, self.iterations);
             cloner.lock().put(inner_sol);
