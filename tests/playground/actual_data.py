@@ -335,7 +335,7 @@ def test_benchmark_try_fit_items(client, consts):
             api_fit_batch.add_drone(type_id=2446, state=consts.ApiMinionState.in_bay)
     api_val = api_fit.validate(options=ValOptions(default=True))
     assert api_val.passed is True
-    iterations = 2000
+    iterations = 5000
     try_fit_type_ids = get_try_fit_type_ids()
     options = ValOptions(default=True).to_dict()
     print()  # ruff:ignore[print]
