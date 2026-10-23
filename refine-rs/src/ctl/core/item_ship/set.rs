@@ -99,11 +99,18 @@ impl<F> ShipSetCmdCtxFitGen<F> {
 
 impl ShipSetCmd {
     pub(in crate::ctl) fn execute(self, core_fit: &mut rc::FitMut) -> AddedItemIdsResp {
-        let mut core_ship = core_fit.set_ship(self.type_id, self.coordinates, self.movement);
-        if let Some(state) = self.state {
+        let Self {
+            type_id,
+            state,
+            coordinates,
+            movement,
+            effect_modes,
+        } = self;
+        let mut core_ship = core_fit.set_ship(type_id, coordinates, movement);
+        if let Some(state) = state {
             core_ship.set_state(state);
         }
-        self.effect_modes.apply(&mut core_ship);
+        effect_modes.apply(&mut core_ship);
         AddedItemIdsResp::from_core_ship(core_ship)
     }
 }

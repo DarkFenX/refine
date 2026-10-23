@@ -71,9 +71,10 @@ mod custom_serde_ad {
         where
             S: Serializer,
         {
+            let Self { attr_merge, full } = self;
             let mut tuple = serializer.serialize_tuple(FIELDS)?;
-            tuple.serialize_element(&self.attr_merge)?;
-            tuple.serialize_element(&self.full)?;
+            tuple.serialize_element(attr_merge)?;
+            tuple.serialize_element(full)?;
             tuple.end()
         }
     }

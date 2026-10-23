@@ -85,8 +85,13 @@ impl<F> ServiceAddCmdCtxFitGen<F> {
 
 impl ServiceAddCmd {
     pub(in crate::ctl) fn execute(self, core_fit: &mut rc::FitMut) -> AddedItemIdsResp {
-        let mut core_service = core_fit.add_service(self.type_id, self.state);
-        self.effect_modes.apply(&mut core_service);
+        let Self {
+            type_id,
+            state,
+            effect_modes,
+        } = self;
+        let mut core_service = core_fit.add_service(type_id, state);
+        effect_modes.apply(&mut core_service);
         AddedItemIdsResp::from_core_service(core_service)
     }
 }

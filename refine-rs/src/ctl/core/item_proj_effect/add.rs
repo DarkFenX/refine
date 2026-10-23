@@ -74,12 +74,18 @@ impl ProjEffectAddCmd {
         self,
         core_sol: &mut rc::SolarSystem,
     ) -> Result<AddedItemIdsResp, ProjEffectAddError> {
-        let mut core_proj_effect = core_sol.add_proj_effect(self.type_id);
-        if let Some(state) = self.state {
+        let Self {
+            type_id,
+            state,
+            proj_item_ids,
+            effect_modes,
+        } = self;
+        let mut core_proj_effect = core_sol.add_proj_effect(type_id);
+        if let Some(state) = state {
             core_proj_effect.set_state(state);
         }
-        self.effect_modes.apply(&mut core_proj_effect);
-        for projectee_item_id in self.proj_item_ids.iter() {
+        effect_modes.apply(&mut core_proj_effect);
+        for projectee_item_id in proj_item_ids.iter() {
             core_proj_effect.add_proj(projectee_item_id)?;
         }
         Ok(AddedItemIdsResp::from_core_proj_effect(core_proj_effect))

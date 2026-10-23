@@ -94,14 +94,19 @@ impl<I> ServiceChangeCmdCtxItemGen<I> {
 
 impl ServiceChangeCmd {
     pub(in crate::ctl) fn execute(self, core_item: &mut rc::ItemMut) -> Result<ChangedItemIdsResp, ServiceChangeError> {
+        let Self {
+            type_id,
+            state,
+            effect_modes,
+        } = self;
         let core_service = core_item.dc_service()?;
-        if let Some(type_id) = self.type_id {
+        if let Some(type_id) = type_id {
             core_service.set_type_id(type_id);
         }
-        if let Some(state) = self.state {
+        if let Some(state) = state {
             core_service.set_state(state);
         }
-        self.effect_modes.apply(core_service);
+        effect_modes.apply(core_service);
         Ok(ChangedItemIdsResp::default())
     }
 }

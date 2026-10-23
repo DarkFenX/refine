@@ -30,12 +30,20 @@ impl FleetStatsOptionsResolved {
         }
     }
     pub(super) fn complete_extended_defaults(&mut self) {
-        StatOptionInt::complete_blank_with_default(&mut self.dmg);
-        StatOptionExt::complete_blank_with_default(&mut self.mps);
-        StatOptionInt::complete_blank_with_default(&mut self.outgoing_nps);
-        StatOptionInt::complete_blank_with_default(&mut self.outgoing_rps);
-        StatOptionInt::complete_blank_with_default(&mut self.outgoing_cps);
-        StatOptionExt::complete_blank_with_default(&mut self.mass);
+        let Self {
+            dmg,
+            mps,
+            outgoing_nps,
+            outgoing_rps,
+            outgoing_cps,
+            mass,
+        } = self;
+        StatOptionInt::complete_blank_with_default(dmg);
+        StatOptionExt::complete_blank_with_default(mps);
+        StatOptionInt::complete_blank_with_default(outgoing_nps);
+        StatOptionInt::complete_blank_with_default(outgoing_rps);
+        StatOptionInt::complete_blank_with_default(outgoing_cps);
+        StatOptionExt::complete_blank_with_default(mass);
     }
 }
 
@@ -44,11 +52,19 @@ impl FleetStatsOptionsResolved {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl FleetStatsOptionsResolved {
     pub(in crate::stats) fn is_any_stat_requested(&self) -> bool {
-        self.dmg.is_some()
-            || self.mps.is_some()
-            || self.outgoing_nps.is_some()
-            || self.outgoing_rps.is_some()
-            || self.outgoing_cps.is_some()
-            || self.mass.is_some()
+        let Self {
+            dmg,
+            mps,
+            outgoing_nps,
+            outgoing_rps,
+            outgoing_cps,
+            mass,
+        } = self;
+        dmg.is_some()
+            || mps.is_some()
+            || outgoing_nps.is_some()
+            || outgoing_rps.is_some()
+            || outgoing_cps.is_some()
+            || mass.is_some()
     }
 }

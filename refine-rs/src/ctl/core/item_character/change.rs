@@ -187,13 +187,18 @@ impl CharacterChangeCmd {
         Ok(self.execute(core_character))
     }
     fn execute(self, core_character: &mut rc::CharacterMut) -> ChangedItemIdsResp {
-        if let Some(type_id) = self.type_id {
+        let Self {
+            type_id,
+            state,
+            effect_modes,
+        } = self;
+        if let Some(type_id) = type_id {
             core_character.set_type_id(type_id);
         }
-        if let Some(state) = self.state {
+        if let Some(state) = state {
             core_character.set_state(state);
         }
-        self.effect_modes.apply(core_character);
+        effect_modes.apply(core_character);
         ChangedItemIdsResp::default()
     }
 }

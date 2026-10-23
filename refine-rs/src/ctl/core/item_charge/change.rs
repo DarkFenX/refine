@@ -94,14 +94,19 @@ impl<I> ChargeChangeCmdCtxItemGen<I> {
 
 impl ChargeChangeCmd {
     pub(in crate::ctl) fn execute(self, core_item: &mut rc::ItemMut) -> Result<ChangedItemIdsResp, ChargeChangeError> {
+        let Self {
+            type_id,
+            state,
+            effect_modes,
+        } = self;
         let core_charge = core_item.dc_charge()?;
-        if let Some(type_id) = self.type_id {
+        if let Some(type_id) = type_id {
             core_charge.set_type_id(type_id);
         }
-        if let Some(state) = self.state {
+        if let Some(state) = state {
             core_charge.set_state(state);
         }
-        self.effect_modes.apply(core_charge);
+        effect_modes.apply(core_charge);
         Ok(ChangedItemIdsResp::default())
     }
 }

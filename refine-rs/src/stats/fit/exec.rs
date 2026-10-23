@@ -17,197 +17,260 @@ use crate::{
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl FitStatsOptionsResolved {
     pub(in crate::stats) fn execute(&self, core_fit: &mut rc::FitMut) -> FitStats {
+        let Self {
+            dmg,
+            mps,
+            outgoing_nps,
+            outgoing_rps,
+            outgoing_cps,
+            cpu,
+            powergrid,
+            calibration,
+            drone_bay_volume,
+            drone_bandwidth,
+            fighter_bay_volume,
+            high_slots,
+            mid_slots,
+            low_slots,
+            turret_slots,
+            launcher_slots,
+            rig_slots,
+            service_slots,
+            subsystem_slots,
+            launched_drones,
+            launched_fighters,
+            launched_light_fighters,
+            launched_heavy_fighters,
+            launched_support_fighters,
+            launched_st_light_fighters,
+            launched_st_heavy_fighters,
+            launched_st_support_fighters,
+            resists,
+            hp,
+            ehp,
+            wc_ehp,
+            rps,
+            erps,
+            breach_resist,
+            cap_amount,
+            cap_balance,
+            cap_sim,
+            neut_resist,
+            locks,
+            lock_range,
+            scan_res,
+            sensors,
+            dscan_range,
+            probing_size,
+            incoming_jam,
+            speed,
+            agility,
+            align_time,
+            sig_radius,
+            mass,
+            warp_speed,
+            max_warp_range,
+            jump,
+            drone_control_range,
+            can_warp,
+            can_jump_gate,
+            can_jump_wormhole,
+            can_jump_drive,
+            can_dock_station,
+            can_dock_citadel,
+            can_tether,
+        } = self;
         let mut stats = FitStats { .. };
         // Fit output stats
-        if let Some(options) = &self.dmg {
+        if let Some(options) = dmg {
             stats.dmg = get_dmg_stats(core_fit, options);
         }
-        if let Some(options) = &self.mps {
+        if let Some(options) = mps {
             stats.mps = get_mps_stats(core_fit, options);
         }
-        if let Some(options) = &self.outgoing_nps {
+        if let Some(options) = outgoing_nps {
             stats.outgoing_nps = get_outgoing_nps_stats(core_fit, options);
         }
-        if let Some(options) = &self.outgoing_cps {
+        if let Some(options) = outgoing_cps {
             stats.outgoing_cps = get_outgoing_cps_stats(core_fit, options);
         }
-        if let Some(options) = &self.outgoing_rps {
+        if let Some(options) = outgoing_rps {
             stats.outgoing_rps = get_outgoing_rps_stats(core_fit, options);
         }
         // Fit resources
-        if self.cpu {
+        if *cpu {
             stats.cpu = StatResult::from_stat(core_fit.get_stat_cpu());
         }
-        if self.powergrid {
+        if *powergrid {
             stats.powergrid = StatResult::from_stat(core_fit.get_stat_powergrid());
         }
-        if self.calibration {
+        if *calibration {
             stats.calibration = StatResult::from_stat(core_fit.get_stat_calibration());
         }
-        if self.drone_bay_volume {
+        if *drone_bay_volume {
             stats.drone_bay_volume = StatResult::from_stat(core_fit.get_stat_drone_bay_volume());
         }
-        if self.drone_bandwidth {
+        if *drone_bandwidth {
             stats.drone_bandwidth = StatResult::from_stat(core_fit.get_stat_drone_bandwidth());
         }
-        if self.fighter_bay_volume {
+        if *fighter_bay_volume {
             stats.fighter_bay_volume = StatResult::from_stat(core_fit.get_stat_fighter_bay_volume());
         }
         // Fit slots
-        if self.high_slots {
+        if *high_slots {
             stats.high_slots = StatResult::from_stat(core_fit.get_stat_high_slots());
         }
-        if self.mid_slots {
+        if *mid_slots {
             stats.mid_slots = StatResult::from_stat(core_fit.get_stat_mid_slots());
         }
-        if self.low_slots {
+        if *low_slots {
             stats.low_slots = StatResult::from_stat(core_fit.get_stat_low_slots());
         }
-        if self.turret_slots {
+        if *turret_slots {
             stats.turret_slots = StatResult::from_stat(core_fit.get_stat_turret_slots());
         }
-        if self.launcher_slots {
+        if *launcher_slots {
             stats.launcher_slots = StatResult::from_stat(core_fit.get_stat_launcher_slots());
         }
-        if self.rig_slots {
+        if *rig_slots {
             stats.rig_slots = StatResult::from_stat(core_fit.get_stat_rig_slots());
         }
-        if self.service_slots {
+        if *service_slots {
             stats.service_slots = StatResult::from_stat(core_fit.get_stat_service_slots());
         }
-        if self.subsystem_slots {
+        if *subsystem_slots {
             stats.subsystem_slots = StatResult::from_stat(core_fit.get_stat_subsystem_slots());
         }
-        if self.launched_drones {
+        if *launched_drones {
             stats.launched_drones = StatResult::from_stat(core_fit.get_stat_launched_drones());
         }
-        if self.launched_fighters {
+        if *launched_fighters {
             stats.launched_fighters = StatResult::from_stat(core_fit.get_stat_launched_fighters());
         }
-        if self.launched_light_fighters {
+        if *launched_light_fighters {
             stats.launched_light_fighters = StatResult::from_stat(core_fit.get_stat_launched_light_fighters());
         }
-        if self.launched_heavy_fighters {
+        if *launched_heavy_fighters {
             stats.launched_heavy_fighters = StatResult::from_stat(core_fit.get_stat_launched_heavy_fighters());
         }
-        if self.launched_support_fighters {
+        if *launched_support_fighters {
             stats.launched_support_fighters = StatResult::from_stat(core_fit.get_stat_launched_support_fighters());
         }
-        if self.launched_st_light_fighters {
+        if *launched_st_light_fighters {
             stats.launched_st_light_fighters = StatResult::from_stat(core_fit.get_stat_launched_st_light_fighters());
         }
-        if self.launched_st_heavy_fighters {
+        if *launched_st_heavy_fighters {
             stats.launched_st_heavy_fighters = StatResult::from_stat(core_fit.get_stat_launched_st_heavy_fighters());
         }
-        if self.launched_st_support_fighters {
+        if *launched_st_support_fighters {
             stats.launched_st_support_fighters =
                 StatResult::from_stat(core_fit.get_stat_launched_st_support_fighters());
         }
         // Ship tank
-        if self.resists {
+        if *resists {
             stats.resists = StatResult::from_result_outer(core_fit.get_stat_resists());
         }
-        if self.hp {
+        if *hp {
             stats.hp = StatResult::from_result_outer(core_fit.get_stat_hp());
         }
-        if let Some(options) = &self.ehp {
+        if let Some(options) = ehp {
             stats.ehp = get_ehp_stats(core_fit, options);
         }
-        if self.wc_ehp {
+        if *wc_ehp {
             stats.wc_ehp = StatResult::from_result_outer(core_fit.get_stat_wc_ehp());
         }
-        if let Some(options) = &self.rps {
+        if let Some(options) = rps {
             stats.rps = get_rps_stats(core_fit, options);
         }
-        if let Some(options) = &self.erps {
+        if let Some(options) = erps {
             stats.erps = get_erps_stats(core_fit, options);
         }
-        if self.breach_resist {
+        if *breach_resist {
             stats.breach_resist = StatResult::from_result_outer(core_fit.get_stat_breach_resist());
         }
         // Ship cap
-        if self.cap_amount {
+        if *cap_amount {
             stats.cap_amount = StatResult::from_result_outer(core_fit.get_stat_cap_amount());
         }
-        if let Some(options) = &self.cap_balance {
+        if let Some(options) = cap_balance {
             stats.cap_balance = get_cap_balance_stats(core_fit, options);
         }
-        if let Some(options) = &self.cap_sim {
+        if let Some(options) = cap_sim {
             stats.cap_sim = get_cap_sim_stats(core_fit, options);
         }
-        if self.neut_resist {
+        if *neut_resist {
             stats.neut_resist = StatResult::from_result_outer(core_fit.get_stat_neut_resist());
         }
         // Ship sensors
-        if self.locks {
+        if *locks {
             stats.locks = StatResult::from_result_outer(core_fit.get_stat_locks());
         }
-        if self.lock_range {
+        if *lock_range {
             stats.lock_range = StatResult::from_result_outer(core_fit.get_stat_lock_range());
         }
-        if self.scan_res {
+        if *scan_res {
             stats.scan_res = StatResult::from_result_outer(core_fit.get_stat_scan_res());
         }
-        if self.sensors {
+        if *sensors {
             stats.sensors = StatResult::from_result_outer(core_fit.get_stat_sensors());
         }
-        if self.dscan_range {
+        if *dscan_range {
             stats.dscan_range = StatResult::from_result_outer(core_fit.get_stat_dscan_range());
         }
-        if self.probing_size {
+        if *probing_size {
             stats.probing_size = StatResult::from_result_outer(core_fit.get_stat_probing_size());
         }
-        if let Some(options) = &self.incoming_jam {
+        if let Some(options) = incoming_jam {
             stats.incoming_jam = get_incoming_jam_stats(core_fit, options);
         }
         // Ship mobility
-        if self.speed {
+        if *speed {
             stats.speed = StatResult::from_result_outer(core_fit.get_stat_speed());
         }
-        if self.agility {
+        if *agility {
             stats.agility = StatResult::from_result_outer(core_fit.get_stat_agility());
         }
-        if self.align_time {
+        if *align_time {
             stats.align_time = StatResult::from_result_outer(core_fit.get_stat_align_time());
         }
-        if self.sig_radius {
+        if *sig_radius {
             stats.sig_radius = StatResult::from_result_outer(core_fit.get_stat_sig_radius());
         }
-        if let Some(options) = &self.mass {
+        if let Some(options) = mass {
             stats.mass = get_mass_stats(core_fit, options);
         }
-        if self.warp_speed {
+        if *warp_speed {
             stats.warp_speed = StatResult::from_result_outer(core_fit.get_stat_warp_speed());
         }
-        if self.max_warp_range {
+        if *max_warp_range {
             stats.max_warp_range = StatResult::from_result_outer(core_fit.get_stat_max_warp_range());
         }
-        if let Some(options) = &self.jump {
+        if let Some(options) = jump {
             stats.jump = get_jump_stats(core_fit, options);
         }
         // Ship misc stats
-        if self.drone_control_range {
+        if *drone_control_range {
             stats.drone_control_range = StatResult::from_result_outer(core_fit.get_stat_drone_control_range());
         }
-        if self.can_warp {
+        if *can_warp {
             stats.can_warp = StatResult::from_result_outer(core_fit.get_stat_can_warp());
         }
-        if self.can_jump_gate {
+        if *can_jump_gate {
             stats.can_jump_gate = StatResult::from_result_outer(core_fit.get_stat_can_jump_gate());
         }
-        if self.can_jump_wormhole {
+        if *can_jump_wormhole {
             stats.can_jump_wormhole = StatResult::from_result_outer(core_fit.get_stat_can_jump_wormhole());
         }
-        if self.can_jump_drive {
+        if *can_jump_drive {
             stats.can_jump_drive = StatResult::from_result_outer(core_fit.get_stat_can_jump_drive());
         }
-        if self.can_dock_station {
+        if *can_dock_station {
             stats.can_dock_station = StatResult::from_result_outer(core_fit.get_stat_can_dock_station());
         }
-        if self.can_dock_citadel {
+        if *can_dock_citadel {
             stats.can_dock_citadel = StatResult::from_result_outer(core_fit.get_stat_can_dock_citadel());
         }
-        if self.can_tether {
+        if *can_tether {
             stats.can_tether = StatResult::from_result_outer(core_fit.get_stat_can_tether());
         }
         stats

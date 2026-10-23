@@ -94,14 +94,19 @@ impl<I> ImplantChangeCmdCtxItemGen<I> {
 
 impl ImplantChangeCmd {
     pub(in crate::ctl) fn execute(self, core_item: &mut rc::ItemMut) -> Result<ChangedItemIdsResp, ImplantChangeError> {
+        let Self {
+            type_id,
+            state,
+            effect_modes,
+        } = self;
         let core_implant = core_item.dc_implant()?;
-        if let Some(type_id) = self.type_id {
+        if let Some(type_id) = type_id {
             core_implant.set_type_id(type_id);
         }
-        if let Some(state) = self.state {
+        if let Some(state) = state {
             core_implant.set_state(state);
         }
-        self.effect_modes.apply(core_implant);
+        effect_modes.apply(core_implant);
         Ok(ChangedItemIdsResp::default())
     }
 }

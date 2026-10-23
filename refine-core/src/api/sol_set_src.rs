@@ -90,10 +90,28 @@ impl SolarSystem {
         self.load_items(&item_uids);
     }
     fn unload_items(&mut self, item_uids: &ItemUIds) {
-        for &booster_uid in item_uids.boosters.iter() {
+        let ItemUIds {
+            boosters,
+            characters,
+            charges,
+            drones,
+            fighters,
+            fw_effects,
+            implants,
+            modules,
+            proj_effects,
+            rigs,
+            services,
+            ships,
+            skills,
+            stances,
+            subsystems,
+            sw_effects,
+        } = item_uids;
+        for &booster_uid in boosters.iter() {
             SolarSystem::util_remove_booster(&mut self.u_data, &mut self.svc, booster_uid, &mut self.cache.eupdates);
         }
-        for &character_uid in item_uids.characters.iter() {
+        for &character_uid in characters.iter() {
             SolarSystem::util_remove_character(
                 &mut self.u_data,
                 &mut self.svc,
@@ -101,13 +119,13 @@ impl SolarSystem {
                 &mut self.cache.eupdates,
             );
         }
-        for &charge_uid in item_uids.charges.iter() {
+        for &charge_uid in charges.iter() {
             SolarSystem::util_remove_charge(&mut self.u_data, &mut self.svc, charge_uid, &mut self.cache.eupdates);
         }
-        for &drone_uid in item_uids.drones.iter() {
+        for &drone_uid in drones.iter() {
             SolarSystem::util_remove_drone(&mut self.u_data, &mut self.svc, drone_uid, &mut self.cache.eupdates);
         }
-        for &fighter_uid in item_uids.fighters.iter() {
+        for &fighter_uid in fighters.iter() {
             SolarSystem::util_remove_fighter_with_acs(
                 &mut self.u_data,
                 &mut self.svc,
@@ -116,7 +134,7 @@ impl SolarSystem {
                 &mut self.cache.eupdates,
             );
         }
-        for &fw_effect_uid in item_uids.fw_effects.iter() {
+        for &fw_effect_uid in fw_effects.iter() {
             SolarSystem::util_remove_fw_effect(
                 &mut self.u_data,
                 &mut self.svc,
@@ -124,10 +142,10 @@ impl SolarSystem {
                 &mut self.cache.eupdates,
             );
         }
-        for &implant_uid in item_uids.implants.iter() {
+        for &implant_uid in implants.iter() {
             SolarSystem::util_remove_implant(&mut self.u_data, &mut self.svc, implant_uid, &mut self.cache.eupdates);
         }
-        for &module_uid in item_uids.modules.iter() {
+        for &module_uid in modules.iter() {
             SolarSystem::util_remove_module_with_charge_act(
                 &mut self.u_data,
                 &mut self.svc,
@@ -135,7 +153,7 @@ impl SolarSystem {
                 &mut self.cache.eupdates,
             );
         }
-        for &proj_effect_uid in item_uids.proj_effects.iter() {
+        for &proj_effect_uid in proj_effects.iter() {
             SolarSystem::util_remove_proj_effect(
                 &mut self.u_data,
                 &mut self.svc,
@@ -143,22 +161,22 @@ impl SolarSystem {
                 &mut self.cache.eupdates,
             );
         }
-        for &rig_uid in item_uids.rigs.iter() {
+        for &rig_uid in rigs.iter() {
             SolarSystem::util_remove_rig(&mut self.u_data, &mut self.svc, rig_uid, &mut self.cache.eupdates);
         }
-        for &service_uid in item_uids.services.iter() {
+        for &service_uid in services.iter() {
             SolarSystem::util_remove_service(&mut self.u_data, &mut self.svc, service_uid, &mut self.cache.eupdates);
         }
-        for &ship_uid in item_uids.ships.iter() {
+        for &ship_uid in ships.iter() {
             SolarSystem::util_remove_ship(&mut self.u_data, &mut self.svc, ship_uid, &mut self.cache.eupdates);
         }
-        for &skill_uid in item_uids.skills.iter() {
+        for &skill_uid in skills.iter() {
             SolarSystem::util_remove_skill(&mut self.u_data, &mut self.svc, skill_uid, &mut self.cache.eupdates);
         }
-        for &stance_uid in item_uids.stances.iter() {
+        for &stance_uid in stances.iter() {
             SolarSystem::util_remove_stance(&mut self.u_data, &mut self.svc, stance_uid, &mut self.cache.eupdates);
         }
-        for &subsystem_uid in item_uids.subsystems.iter() {
+        for &subsystem_uid in subsystems.iter() {
             SolarSystem::util_remove_subsystem(
                 &mut self.u_data,
                 &mut self.svc,
@@ -166,7 +184,7 @@ impl SolarSystem {
                 &mut self.cache.eupdates,
             );
         }
-        for &sw_effect_uid in item_uids.sw_effects.iter() {
+        for &sw_effect_uid in sw_effects.iter() {
             SolarSystem::util_remove_sw_effect(
                 &mut self.u_data,
                 &mut self.svc,
@@ -176,19 +194,37 @@ impl SolarSystem {
         }
     }
     fn load_items(&mut self, item_uids: &ItemUIds) {
-        for &booster_uid in item_uids.boosters.iter() {
+        let ItemUIds {
+            boosters,
+            characters,
+            charges,
+            drones,
+            fighters,
+            fw_effects,
+            implants,
+            modules,
+            proj_effects,
+            rigs,
+            services,
+            ships,
+            skills,
+            stances,
+            subsystems,
+            sw_effects,
+        } = item_uids;
+        for &booster_uid in boosters.iter() {
             SolarSystem::util_add_booster(&mut self.u_data, &mut self.svc, booster_uid, &mut self.cache.eupdates);
         }
-        for &character_uid in item_uids.characters.iter() {
+        for &character_uid in characters.iter() {
             SolarSystem::util_add_character(&mut self.u_data, &mut self.svc, character_uid, &mut self.cache.eupdates);
         }
-        for &charge_uid in item_uids.charges.iter() {
+        for &charge_uid in charges.iter() {
             SolarSystem::util_add_charge(&mut self.u_data, &mut self.svc, charge_uid, &mut self.cache.eupdates);
         }
-        for &drone_uid in item_uids.drones.iter() {
+        for &drone_uid in drones.iter() {
             SolarSystem::util_add_drone(&mut self.u_data, &mut self.svc, drone_uid, &mut self.cache.eupdates);
         }
-        for &fighter_uid in item_uids.fighters.iter() {
+        for &fighter_uid in fighters.iter() {
             SolarSystem::util_add_fighter_with_acs(
                 &mut self.u_data,
                 &mut self.svc,
@@ -197,13 +233,13 @@ impl SolarSystem {
                 &mut self.cache.eupdates,
             );
         }
-        for &fw_effect_uid in item_uids.fw_effects.iter() {
+        for &fw_effect_uid in fw_effects.iter() {
             SolarSystem::util_add_fw_effect(&mut self.u_data, &mut self.svc, fw_effect_uid, &mut self.cache.eupdates);
         }
-        for &implant_uid in item_uids.implants.iter() {
+        for &implant_uid in implants.iter() {
             SolarSystem::util_add_implant(&mut self.u_data, &mut self.svc, implant_uid, &mut self.cache.eupdates);
         }
-        for &module_uid in item_uids.modules.iter() {
+        for &module_uid in modules.iter() {
             SolarSystem::util_add_module_with_charge_act(
                 &mut self.u_data,
                 &mut self.svc,
@@ -211,7 +247,7 @@ impl SolarSystem {
                 &mut self.cache.eupdates,
             );
         }
-        for &proj_effect_uid in item_uids.proj_effects.iter() {
+        for &proj_effect_uid in proj_effects.iter() {
             SolarSystem::util_add_proj_effect(
                 &mut self.u_data,
                 &mut self.svc,
@@ -219,25 +255,25 @@ impl SolarSystem {
                 &mut self.cache.eupdates,
             );
         }
-        for &rig_uid in item_uids.rigs.iter() {
+        for &rig_uid in rigs.iter() {
             SolarSystem::util_add_rig(&mut self.u_data, &mut self.svc, rig_uid, &mut self.cache.eupdates);
         }
-        for &service_uid in item_uids.services.iter() {
+        for &service_uid in services.iter() {
             SolarSystem::util_add_service(&mut self.u_data, &mut self.svc, service_uid, &mut self.cache.eupdates);
         }
-        for &ship_uid in item_uids.ships.iter() {
+        for &ship_uid in ships.iter() {
             SolarSystem::util_add_ship(&mut self.u_data, &mut self.svc, ship_uid, &mut self.cache.eupdates);
         }
-        for &skill_uid in item_uids.skills.iter() {
+        for &skill_uid in skills.iter() {
             SolarSystem::util_add_skill(&mut self.u_data, &mut self.svc, skill_uid, &mut self.cache.eupdates);
         }
-        for &stance_uid in item_uids.stances.iter() {
+        for &stance_uid in stances.iter() {
             SolarSystem::util_add_stance(&mut self.u_data, &mut self.svc, stance_uid, &mut self.cache.eupdates);
         }
-        for &subsystem_uid in item_uids.subsystems.iter() {
+        for &subsystem_uid in subsystems.iter() {
             SolarSystem::util_add_subsystem(&mut self.u_data, &mut self.svc, subsystem_uid, &mut self.cache.eupdates);
         }
-        for &sw_effect_uid in item_uids.sw_effects.iter() {
+        for &sw_effect_uid in sw_effects.iter() {
             SolarSystem::util_add_sw_effect(&mut self.u_data, &mut self.svc, sw_effect_uid, &mut self.cache.eupdates);
         }
     }

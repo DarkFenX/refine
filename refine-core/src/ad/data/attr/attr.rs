@@ -28,13 +28,21 @@ mod custom_serde_ad {
         where
             S: Serializer,
         {
+            let Self {
+                id,
+                penalizable,
+                hig,
+                def_val,
+                min_attr_id,
+                max_attr_id,
+            } = self;
             let mut tuple = serializer.serialize_tuple(FIELDS)?;
-            tuple.serialize_element(&self.id)?;
-            tuple.serialize_element(&self.penalizable)?;
-            tuple.serialize_element(&self.hig)?;
-            tuple.serialize_element(&self.def_val)?;
-            tuple.serialize_element(&self.min_attr_id)?;
-            tuple.serialize_element(&self.max_attr_id)?;
+            tuple.serialize_element(id)?;
+            tuple.serialize_element(penalizable)?;
+            tuple.serialize_element(hig)?;
+            tuple.serialize_element(def_val)?;
+            tuple.serialize_element(min_attr_id)?;
+            tuple.serialize_element(max_attr_id)?;
             tuple.end()
         }
     }

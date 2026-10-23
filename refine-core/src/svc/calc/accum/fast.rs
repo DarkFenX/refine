@@ -162,43 +162,57 @@ impl ModAccumFast {
         val
     }
     pub(in crate::svc::calc) fn reset(&mut self) {
-        if self.touched.is_empty() {
+        let Self {
+            touched,
+            pre_assign,
+            pre_mul,
+            pre_div,
+            add,
+            sub,
+            post_mul,
+            post_div,
+            post_perc,
+            post_assign,
+            extra_add,
+            extra_mul,
+        } = self;
+        if touched.is_empty() {
             return;
         }
-        if self.touched.contains(SubAccums::PRE_ASSIGN) {
-            self.pre_assign.reset();
+        if touched.contains(SubAccums::PRE_ASSIGN) {
+            pre_assign.reset();
         }
-        if self.touched.contains(SubAccums::PRE_MUL) {
-            self.pre_mul.reset();
+        if touched.contains(SubAccums::PRE_MUL) {
+            pre_mul.reset();
         }
-        if self.touched.contains(SubAccums::PRE_DIV) {
-            self.pre_div.reset();
+        if touched.contains(SubAccums::PRE_DIV) {
+            pre_div.reset();
         }
-        if self.touched.contains(SubAccums::ADD) {
-            self.add.reset();
+        if touched.contains(SubAccums::ADD) {
+            add.reset();
         }
-        if self.touched.contains(SubAccums::SUB) {
-            self.sub.reset();
+        if touched.contains(SubAccums::SUB) {
+            sub.reset();
         }
-        if self.touched.contains(SubAccums::POST_MUL) {
-            self.post_mul.reset();
+        if touched.contains(SubAccums::POST_MUL) {
+            post_mul.reset();
         }
-        if self.touched.contains(SubAccums::POST_DIV) {
-            self.post_div.reset();
+        if touched.contains(SubAccums::POST_DIV) {
+            post_div.reset();
         }
-        if self.touched.contains(SubAccums::POST_PERC) {
-            self.post_perc.reset();
+        if touched.contains(SubAccums::POST_PERC) {
+            post_perc.reset();
         }
-        if self.touched.contains(SubAccums::POST_ASSIGN) {
-            self.post_assign.reset();
+        if touched.contains(SubAccums::POST_ASSIGN) {
+            post_assign.reset();
         }
-        if self.touched.contains(SubAccums::EXTRA_ADD) {
-            self.extra_add.reset();
+        if touched.contains(SubAccums::EXTRA_ADD) {
+            extra_add.reset();
         }
-        if self.touched.contains(SubAccums::EXTRA_MUL) {
-            self.extra_mul.reset();
+        if touched.contains(SubAccums::EXTRA_MUL) {
+            extra_mul.reset();
         }
-        self.touched = SubAccums::empty();
+        *touched = SubAccums::empty();
     }
 }
 

@@ -8,7 +8,7 @@ use crate::{
             rels::{Fk, KeyDb, KeyPart, Pk},
         },
     },
-    ed::{EAbil, EAttr, EBuff, EDataCont, EEffect, EItem, EItemAbil, EItemGroup, EItemList},
+    ed::{EAbil, EAttr, EBuff, EData, EDataCont, EEffect, EItem, EItemAbil, EItemGroup, EItemList},
     util::{LibNamed, RMap, RSet},
 };
 
@@ -30,33 +30,52 @@ impl ADataGenerator {
 impl ADataGenerator {
     fn fk_check(&mut self) {
         let pkdb = KeyDb::new_pkdb(&self.e_data);
-        fk_check_referer(&self.e_data.items, &pkdb, &self.support, &mut self.a_data.warnings);
-        fk_check_referer(&self.e_data.groups, &pkdb, &self.support, &mut self.a_data.warnings);
-        fk_check_referer(&self.e_data.item_lists, &pkdb, &self.support, &mut self.a_data.warnings);
-        fk_check_referer(&self.e_data.attrs, &pkdb, &self.support, &mut self.a_data.warnings);
-        fk_check_referer(&self.e_data.item_attrs, &pkdb, &self.support, &mut self.a_data.warnings);
-        fk_check_referer(&self.e_data.effects, &pkdb, &self.support, &mut self.a_data.warnings);
-        fk_check_referer(
-            &self.e_data.item_effects,
-            &pkdb,
-            &self.support,
-            &mut self.a_data.warnings,
-        );
-        fk_check_referer(&self.e_data.abils, &pkdb, &self.support, &mut self.a_data.warnings);
-        fk_check_referer(&self.e_data.item_abils, &pkdb, &self.support, &mut self.a_data.warnings);
-        fk_check_referer(&self.e_data.buffs, &pkdb, &self.support, &mut self.a_data.warnings);
-        fk_check_referer(&self.e_data.item_buffs, &pkdb, &self.support, &mut self.a_data.warnings);
-        fk_check_referer(&self.e_data.muta_items, &pkdb, &self.support, &mut self.a_data.warnings);
-        fk_check_referer(&self.e_data.muta_attrs, &pkdb, &self.support, &mut self.a_data.warnings);
+        let EData {
+            items,
+            groups,
+            item_lists,
+            attrs,
+            item_attrs,
+            effects,
+            item_effects,
+            abils,
+            item_abils,
+            buffs,
+            item_buffs,
+            muta_items,
+            muta_attrs,
+        } = &self.e_data;
+        fk_check_referer(items, &pkdb, &self.support, &mut self.a_data.warnings);
+        fk_check_referer(groups, &pkdb, &self.support, &mut self.a_data.warnings);
+        fk_check_referer(item_lists, &pkdb, &self.support, &mut self.a_data.warnings);
+        fk_check_referer(attrs, &pkdb, &self.support, &mut self.a_data.warnings);
+        fk_check_referer(item_attrs, &pkdb, &self.support, &mut self.a_data.warnings);
+        fk_check_referer(effects, &pkdb, &self.support, &mut self.a_data.warnings);
+        fk_check_referer(item_effects, &pkdb, &self.support, &mut self.a_data.warnings);
+        fk_check_referer(abils, &pkdb, &self.support, &mut self.a_data.warnings);
+        fk_check_referer(item_abils, &pkdb, &self.support, &mut self.a_data.warnings);
+        fk_check_referer(buffs, &pkdb, &self.support, &mut self.a_data.warnings);
+        fk_check_referer(item_buffs, &pkdb, &self.support, &mut self.a_data.warnings);
+        fk_check_referer(muta_items, &pkdb, &self.support, &mut self.a_data.warnings);
+        fk_check_referer(muta_attrs, &pkdb, &self.support, &mut self.a_data.warnings);
     }
 }
 fn fk_check_referer<T>(rer_cont: &EDataCont<T>, pkdb: &KeyDb, adg_supp: &AdgSupport, a_warnings: &mut ADataWarnings)
 where
     T: Fk + LibNamed,
 {
+    let KeyDb {
+        items,
+        groups,
+        item_lists,
+        attrs,
+        effects,
+        abils,
+        buffs,
+    } = pkdb;
     fk_check_referee(
         rer_cont,
-        &pkdb.items,
+        items,
         adg_supp,
         a_warnings,
         T::get_item_fks,
@@ -64,7 +83,7 @@ where
     );
     fk_check_referee(
         rer_cont,
-        &pkdb.groups,
+        groups,
         adg_supp,
         a_warnings,
         T::get_group_fks,
@@ -72,7 +91,7 @@ where
     );
     fk_check_referee(
         rer_cont,
-        &pkdb.item_lists,
+        item_lists,
         adg_supp,
         a_warnings,
         T::get_item_list_fks,
@@ -80,7 +99,7 @@ where
     );
     fk_check_referee(
         rer_cont,
-        &pkdb.attrs,
+        attrs,
         adg_supp,
         a_warnings,
         T::get_attr_fks,
@@ -88,7 +107,7 @@ where
     );
     fk_check_referee(
         rer_cont,
-        &pkdb.effects,
+        effects,
         adg_supp,
         a_warnings,
         T::get_effect_fks,
@@ -96,7 +115,7 @@ where
     );
     fk_check_referee(
         rer_cont,
-        &pkdb.abils,
+        abils,
         adg_supp,
         a_warnings,
         T::get_abil_fks,
@@ -104,7 +123,7 @@ where
     );
     fk_check_referee(
         rer_cont,
-        &pkdb.buffs,
+        buffs,
         adg_supp,
         a_warnings,
         T::get_buff_fks,

@@ -182,40 +182,52 @@ impl<I> FighterChangeCmdCtxItemGen<I> {
 
 impl FighterChangeCmd {
     pub(in crate::ctl) fn execute(self, core_item: &mut rc::ItemMut) -> Result<ChangedItemIdsResp, FighterChangeError> {
+        let Self {
+            type_id,
+            state,
+            count_override,
+            rearm_minion_override,
+            coordinates,
+            movement,
+            add_proj_item_ids,
+            rm_proj_item_ids,
+            abilities,
+            effect_modes,
+        } = self;
         let mut resp = ChangedItemIdsResp::default();
         let core_fighter = core_item.dc_fighter()?;
-        for projectee_item_id in self.rm_proj_item_ids.iter() {
+        for projectee_item_id in rm_proj_item_ids.iter() {
             core_fighter.get_proj_mut(projectee_item_id)?.remove();
         }
-        if let Some(type_id) = self.type_id {
+        if let Some(type_id) = type_id {
             core_fighter.set_type_id(type_id);
             // Autocharges are recreated when type ID changes, so report their IDs
             resp.add_core_fighter_autocharges(core_fighter);
         }
-        if let Some(state) = self.state {
+        if let Some(state) = state {
             core_fighter.set_state(state);
         }
-        match self.count_override {
+        match count_override {
             TriStateField::Value(count_override) => core_fighter.set_count_override(Some(count_override)),
             TriStateField::None => core_fighter.set_count_override(None),
             TriStateField::Absent => (),
         }
-        self.abilities.apply(core_fighter);
-        match self.rearm_minion_override {
+        abilities.apply(core_fighter);
+        match rearm_minion_override {
             TriStateField::Value(rearm_minion_override) => {
                 core_fighter.set_rearm_minion_override(Some(rearm_minion_override))
             }
             TriStateField::None => core_fighter.set_rearm_minion_override(None),
             TriStateField::Absent => (),
         }
-        if let Some(coordinates) = self.coordinates {
+        if let Some(coordinates) = coordinates {
             core_fighter.set_coordinates(coordinates);
         }
-        if let Some(movement) = self.movement {
+        if let Some(movement) = movement {
             core_fighter.set_movement(movement);
         }
-        self.effect_modes.apply(core_fighter);
-        for projectee_item_id in self.add_proj_item_ids.iter() {
+        effect_modes.apply(core_fighter);
+        for projectee_item_id in add_proj_item_ids.iter() {
             core_fighter.add_proj(projectee_item_id)?;
         }
         Ok(resp)

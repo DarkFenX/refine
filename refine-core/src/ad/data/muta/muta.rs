@@ -25,10 +25,11 @@ mod custom_serde_ad {
         where
             S: Serializer,
         {
+            let Self { id, items, attrs } = self;
             let mut tuple = serializer.serialize_tuple(FIELDS)?;
-            tuple.serialize_element(&self.id)?;
-            tuple.serialize_element(&self.items)?;
-            tuple.serialize_element(&self.attrs)?;
+            tuple.serialize_element(id)?;
+            tuple.serialize_element(items)?;
+            tuple.serialize_element(attrs)?;
             tuple.end()
         }
     }

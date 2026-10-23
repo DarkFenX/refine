@@ -179,17 +179,28 @@ impl<I> DroneChangeCmdCtxItemGen<I> {
 
 impl DroneChangeCmd {
     pub(in crate::ctl) fn execute(self, core_item: &mut rc::ItemMut) -> Result<ChangedItemIdsResp, DroneChangeError> {
+        let Self {
+            type_id,
+            state,
+            mutation,
+            npc_prop_override,
+            coordinates,
+            movement,
+            add_proj_item_ids,
+            rm_proj_item_ids,
+            effect_modes,
+        } = self;
         let core_drone = core_item.dc_drone()?;
-        for projectee_item_id in self.rm_proj_item_ids.iter() {
+        for projectee_item_id in rm_proj_item_ids.iter() {
             core_drone.get_proj_mut(projectee_item_id)?.remove();
         }
-        if let Some(type_id) = self.type_id {
+        if let Some(type_id) = type_id {
             core_drone.set_type_id(type_id);
         }
-        if let Some(state) = self.state {
+        if let Some(state) = state {
             core_drone.set_state(state);
         }
-        match &self.mutation {
+        match &mutation {
             TriStateField::Value(mutation) => {
                 // Mutates item or updates existing mutation
                 if let Some(mutator_id) = mutation.mutator_id {
@@ -213,19 +224,19 @@ impl DroneChangeCmd {
             }
             TriStateField::Absent => (),
         }
-        match self.npc_prop_override {
+        match npc_prop_override {
             TriStateField::Value(npc_prop_override) => core_drone.set_npc_prop_override(Some(npc_prop_override)),
             TriStateField::None => core_drone.set_npc_prop_override(None),
             TriStateField::Absent => (),
         }
-        if let Some(coordinates) = self.coordinates {
+        if let Some(coordinates) = coordinates {
             core_drone.set_coordinates(coordinates);
         }
-        if let Some(movement) = self.movement {
+        if let Some(movement) = movement {
             core_drone.set_movement(movement);
         }
-        self.effect_modes.apply(core_drone);
-        for projectee_item_id in self.add_proj_item_ids.iter() {
+        effect_modes.apply(core_drone);
+        for projectee_item_id in add_proj_item_ids.iter() {
             core_drone.add_proj(projectee_item_id)?;
         }
         Ok(ChangedItemIdsResp::default())

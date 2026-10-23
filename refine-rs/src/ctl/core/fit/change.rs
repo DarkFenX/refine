@@ -132,7 +132,12 @@ impl<L, F> FitChangeCmdCtxFitGen<L, F> {
 
 impl FitChangeCmd {
     pub(in crate::ctl) fn execute(self, core_fit: &mut rc::FitMut) -> Result<(), FitChangeError> {
-        match self.fleet_id {
+        let Self {
+            fleet_id,
+            sec_status,
+            rah_incoming_dps,
+        } = self;
+        match fleet_id {
             TriStateField::Value(fleet_id) => core_fit.set_fleet(&fleet_id)?,
             TriStateField::None => match core_fit.unset_fleet() {
                 Ok(..) => (),
@@ -141,10 +146,10 @@ impl FitChangeCmd {
             },
             TriStateField::Absent => (),
         }
-        if let Some(sec_status) = self.sec_status {
+        if let Some(sec_status) = sec_status {
             core_fit.set_sec_status(sec_status);
         }
-        match self.rah_incoming_dps {
+        match rah_incoming_dps {
             TriStateField::Value(rah_incoming_dps) => core_fit.set_rah_incoming_dps(rah_incoming_dps),
             TriStateField::None => match core_fit.remove_rah_incoming_dps() {
                 Ok(..) => (),

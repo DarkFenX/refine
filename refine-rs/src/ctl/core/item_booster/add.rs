@@ -98,12 +98,18 @@ impl<F> BoosterAddCmdCtxFitGen<F> {
 
 impl BoosterAddCmd {
     pub(in crate::ctl) fn execute(self, core_fit: &mut rc::FitMut) -> AddedItemIdsResp {
-        let mut core_booster = core_fit.add_booster(self.type_id);
-        if let Some(state) = self.state {
+        let Self {
+            type_id,
+            state,
+            side_effects,
+            effect_modes,
+        } = self;
+        let mut core_booster = core_fit.add_booster(type_id);
+        if let Some(state) = state {
             core_booster.set_state(state);
         }
-        self.side_effects.apply(&mut core_booster);
-        self.effect_modes.apply(&mut core_booster);
+        side_effects.apply(&mut core_booster);
+        effect_modes.apply(&mut core_booster);
         AddedItemIdsResp::from_core_booster(core_booster)
     }
 }

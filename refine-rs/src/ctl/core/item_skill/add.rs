@@ -90,11 +90,17 @@ impl<F> SkillAddCmdCtxFitGen<F> {
 
 impl SkillAddCmd {
     pub(in crate::ctl) fn execute(self, core_fit: &mut rc::FitMut) -> Result<AddedItemIdsResp, SkillAddError> {
-        let mut core_skill = core_fit.add_skill(self.type_id, self.level)?;
-        if let Some(state) = self.state {
+        let Self {
+            type_id,
+            level,
+            state,
+            effect_modes,
+        } = self;
+        let mut core_skill = core_fit.add_skill(type_id, level)?;
+        if let Some(state) = state {
             core_skill.set_state(state);
         }
-        self.effect_modes.apply(&mut core_skill);
+        effect_modes.apply(&mut core_skill);
         Ok(AddedItemIdsResp::from_core_skill(core_skill))
     }
 }

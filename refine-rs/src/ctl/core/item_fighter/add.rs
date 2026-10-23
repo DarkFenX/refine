@@ -151,16 +151,27 @@ impl<F, I> FighterAddCmdCtxFitGen<F, I> {
 
 impl FighterAddCmd {
     pub(in crate::ctl) fn execute(self, core_fit: &mut rc::FitMut) -> Result<AddedItemIdsResp, FighterAddError> {
-        let mut core_fighter = core_fit.add_fighter(self.type_id, self.state, self.coordinates, self.movement);
-        if let Some(count_override) = self.count_override {
+        let Self {
+            type_id,
+            state,
+            count_override,
+            rearm_minion_override,
+            coordinates,
+            movement,
+            proj_item_ids,
+            abilities,
+            effect_modes,
+        } = self;
+        let mut core_fighter = core_fit.add_fighter(type_id, state, coordinates, movement);
+        if let Some(count_override) = count_override {
             core_fighter.set_count_override(Some(count_override));
         }
-        self.abilities.apply(&mut core_fighter);
-        if let Some(rearm_minion_override) = self.rearm_minion_override {
+        abilities.apply(&mut core_fighter);
+        if let Some(rearm_minion_override) = rearm_minion_override {
             core_fighter.set_rearm_minion_override(Some(rearm_minion_override));
         }
-        self.effect_modes.apply(&mut core_fighter);
-        for projectee_item_id in self.proj_item_ids.iter() {
+        effect_modes.apply(&mut core_fighter);
+        for projectee_item_id in proj_item_ids.iter() {
             core_fighter.add_proj(projectee_item_id)?;
         }
         Ok(AddedItemIdsResp::from_core_fighter(core_fighter))

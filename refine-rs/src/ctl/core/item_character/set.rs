@@ -89,11 +89,16 @@ impl<F> CharacterSetCmdCtxFitGen<F> {
 
 impl CharacterSetCmd {
     pub(in crate::ctl) fn execute(self, core_fit: &mut rc::FitMut) -> AddedItemIdsResp {
-        let mut core_character = core_fit.set_character(self.type_id);
-        if let Some(state) = self.state {
+        let Self {
+            type_id,
+            state,
+            effect_modes,
+        } = self;
+        let mut core_character = core_fit.set_character(type_id);
+        if let Some(state) = state {
             core_character.set_state(state);
         }
-        self.effect_modes.apply(&mut core_character);
+        effect_modes.apply(&mut core_character);
         AddedItemIdsResp::from_core_character(core_character)
     }
 }

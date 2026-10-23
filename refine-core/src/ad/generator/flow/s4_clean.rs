@@ -47,19 +47,34 @@ where
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl ADataGenerator {
     fn trash_all(&mut self, trash: &mut EData) {
-        move_data(&mut self.e_data.items, &mut trash.items, |_| true);
-        move_data(&mut self.e_data.groups, &mut trash.groups, |_| true);
-        move_data(&mut self.e_data.item_lists, &mut trash.item_lists, |_| true);
-        move_data(&mut self.e_data.attrs, &mut trash.attrs, |_| true);
-        move_data(&mut self.e_data.item_attrs, &mut trash.item_attrs, |_| true);
-        move_data(&mut self.e_data.effects, &mut trash.effects, |_| true);
-        move_data(&mut self.e_data.item_effects, &mut trash.item_effects, |_| true);
-        move_data(&mut self.e_data.abils, &mut trash.abils, |_| true);
-        move_data(&mut self.e_data.item_abils, &mut trash.item_abils, |_| true);
-        move_data(&mut self.e_data.buffs, &mut trash.buffs, |_| true);
-        move_data(&mut self.e_data.item_buffs, &mut trash.item_buffs, |_| true);
-        move_data(&mut self.e_data.muta_items, &mut trash.muta_items, |_| true);
-        move_data(&mut self.e_data.muta_attrs, &mut trash.muta_attrs, |_| true);
+        let EData {
+            items,
+            groups,
+            item_lists,
+            attrs,
+            item_attrs,
+            effects,
+            item_effects,
+            abils,
+            item_abils,
+            buffs,
+            item_buffs,
+            muta_items,
+            muta_attrs,
+        } = &mut self.e_data;
+        move_data(items, &mut trash.items, |_| true);
+        move_data(groups, &mut trash.groups, |_| true);
+        move_data(item_lists, &mut trash.item_lists, |_| true);
+        move_data(attrs, &mut trash.attrs, |_| true);
+        move_data(item_attrs, &mut trash.item_attrs, |_| true);
+        move_data(effects, &mut trash.effects, |_| true);
+        move_data(item_effects, &mut trash.item_effects, |_| true);
+        move_data(abils, &mut trash.abils, |_| true);
+        move_data(item_abils, &mut trash.item_abils, |_| true);
+        move_data(buffs, &mut trash.buffs, |_| true);
+        move_data(item_buffs, &mut trash.item_buffs, |_| true);
+        move_data(muta_items, &mut trash.muta_items, |_| true);
+        move_data(muta_attrs, &mut trash.muta_attrs, |_| true);
     }
     fn restore_core_items(&mut self, trash: &mut EData) {
         let cats = [
@@ -182,23 +197,34 @@ impl ADataGenerator {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl ADataGenerator {
     fn record_stats(&mut self, trash: &EData) {
-        record_cont_stats(&self.e_data.items, &trash.items, &mut self.a_data.warnings);
-        record_cont_stats(&self.e_data.groups, &trash.groups, &mut self.a_data.warnings);
-        record_cont_stats(&self.e_data.item_lists, &trash.item_lists, &mut self.a_data.warnings);
-        record_cont_stats(&self.e_data.attrs, &trash.attrs, &mut self.a_data.warnings);
-        record_cont_stats(&self.e_data.item_attrs, &trash.item_attrs, &mut self.a_data.warnings);
-        record_cont_stats(&self.e_data.effects, &trash.effects, &mut self.a_data.warnings);
-        record_cont_stats(
-            &self.e_data.item_effects,
-            &trash.item_effects,
-            &mut self.a_data.warnings,
-        );
-        record_cont_stats(&self.e_data.abils, &trash.abils, &mut self.a_data.warnings);
-        record_cont_stats(&self.e_data.item_abils, &trash.item_abils, &mut self.a_data.warnings);
-        record_cont_stats(&self.e_data.buffs, &trash.buffs, &mut self.a_data.warnings);
-        record_cont_stats(&self.e_data.item_buffs, &trash.item_buffs, &mut self.a_data.warnings);
-        record_cont_stats(&self.e_data.muta_items, &trash.muta_items, &mut self.a_data.warnings);
-        record_cont_stats(&self.e_data.muta_attrs, &trash.muta_attrs, &mut self.a_data.warnings);
+        let EData {
+            items,
+            groups,
+            item_lists,
+            attrs,
+            item_attrs,
+            effects,
+            item_effects,
+            abils,
+            item_abils,
+            buffs,
+            item_buffs,
+            muta_items,
+            muta_attrs,
+        } = &self.e_data;
+        record_cont_stats(items, &trash.items, &mut self.a_data.warnings);
+        record_cont_stats(groups, &trash.groups, &mut self.a_data.warnings);
+        record_cont_stats(item_lists, &trash.item_lists, &mut self.a_data.warnings);
+        record_cont_stats(attrs, &trash.attrs, &mut self.a_data.warnings);
+        record_cont_stats(item_attrs, &trash.item_attrs, &mut self.a_data.warnings);
+        record_cont_stats(effects, &trash.effects, &mut self.a_data.warnings);
+        record_cont_stats(item_effects, &trash.item_effects, &mut self.a_data.warnings);
+        record_cont_stats(abils, &trash.abils, &mut self.a_data.warnings);
+        record_cont_stats(item_abils, &trash.item_abils, &mut self.a_data.warnings);
+        record_cont_stats(buffs, &trash.buffs, &mut self.a_data.warnings);
+        record_cont_stats(item_buffs, &trash.item_buffs, &mut self.a_data.warnings);
+        record_cont_stats(muta_items, &trash.muta_items, &mut self.a_data.warnings);
+        record_cont_stats(muta_attrs, &trash.muta_attrs, &mut self.a_data.warnings);
     }
 }
 

@@ -38,11 +38,16 @@ impl SwEffectAddCmd {
 
 impl SwEffectAddCmd {
     pub(in crate::ctl) fn execute(self, core_sol: &mut rc::SolarSystem) -> AddedItemIdsResp {
-        let mut core_sw_effect = core_sol.add_sw_effect(self.type_id);
-        if let Some(state) = self.state {
+        let Self {
+            type_id,
+            state,
+            effect_modes,
+        } = self;
+        let mut core_sw_effect = core_sol.add_sw_effect(type_id);
+        if let Some(state) = state {
             core_sw_effect.set_state(state);
         }
-        self.effect_modes.apply(&mut core_sw_effect);
+        effect_modes.apply(&mut core_sw_effect);
         AddedItemIdsResp::from_core_sw_effect(core_sw_effect)
     }
 }

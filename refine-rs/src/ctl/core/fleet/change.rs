@@ -120,10 +120,14 @@ impl<L, F> FleetChangeCmdCtxFleetGen<L, F> {
 
 impl FleetChangeCmd {
     pub(crate) fn execute(self, core_fleet: &mut rc::FleetMut) -> Result<(), FleetChangeError> {
-        for fit_id in self.rm_fit_ids.iter() {
+        let Self {
+            add_fit_ids,
+            rm_fit_ids,
+        } = self;
+        for fit_id in rm_fit_ids.iter() {
             core_fleet.remove_fit(fit_id)?;
         }
-        for fit_id in self.add_fit_ids.iter() {
+        for fit_id in add_fit_ids.iter() {
             core_fleet.add_fit(fit_id)?;
         }
         Ok(())

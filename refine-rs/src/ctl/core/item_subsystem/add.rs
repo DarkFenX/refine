@@ -89,11 +89,16 @@ impl<F> SubsystemAddCmdCtxFitGen<F> {
 
 impl SubsystemAddCmd {
     pub(in crate::ctl) fn execute(self, core_fit: &mut rc::FitMut) -> AddedItemIdsResp {
-        let mut core_subsystem = core_fit.add_subsystem(self.type_id);
-        if let Some(state) = self.state {
+        let Self {
+            type_id,
+            state,
+            effect_modes,
+        } = self;
+        let mut core_subsystem = core_fit.add_subsystem(type_id);
+        if let Some(state) = state {
             core_subsystem.set_state(state);
         }
-        self.effect_modes.apply(&mut core_subsystem);
+        effect_modes.apply(&mut core_subsystem);
         AddedItemIdsResp::from_core_subsystem(core_subsystem)
     }
 }

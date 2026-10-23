@@ -157,19 +157,83 @@ impl FitStatsOptionsResolved {
         }
     }
     pub(super) fn complete_extended_defaults(&mut self) {
-        StatOptionInt::complete_blank_with_default(&mut self.dmg);
-        StatOptionExt::complete_blank_with_default(&mut self.mps);
-        StatOptionInt::complete_blank_with_default(&mut self.outgoing_nps);
-        StatOptionInt::complete_blank_with_default(&mut self.outgoing_rps);
-        StatOptionInt::complete_blank_with_default(&mut self.outgoing_cps);
-        StatOptionExt::complete_blank_with_default(&mut self.ehp);
-        StatOptionExt::complete_blank_with_default(&mut self.rps);
-        StatOptionExt::complete_blank_with_default(&mut self.erps);
-        StatOptionInt::complete_blank_with_default(&mut self.cap_balance);
-        StatOptionInt::complete_blank_with_default(&mut self.cap_sim);
-        StatOptionExt::complete_blank_with_default(&mut self.incoming_jam);
-        StatOptionExt::complete_blank_with_default(&mut self.mass);
-        StatOptionExt::complete_blank_with_default(&mut self.jump);
+        let Self {
+            dmg,
+            mps,
+            outgoing_nps,
+            outgoing_rps,
+            outgoing_cps,
+            ehp,
+            rps,
+            erps,
+            cap_balance,
+            cap_sim,
+            incoming_jam,
+            mass,
+            jump,
+            // Flags have no extended options to complete
+            cpu: _,
+            powergrid: _,
+            calibration: _,
+            drone_bay_volume: _,
+            drone_bandwidth: _,
+            fighter_bay_volume: _,
+            high_slots: _,
+            mid_slots: _,
+            low_slots: _,
+            turret_slots: _,
+            launcher_slots: _,
+            rig_slots: _,
+            service_slots: _,
+            subsystem_slots: _,
+            launched_drones: _,
+            launched_fighters: _,
+            launched_light_fighters: _,
+            launched_heavy_fighters: _,
+            launched_support_fighters: _,
+            launched_st_light_fighters: _,
+            launched_st_heavy_fighters: _,
+            launched_st_support_fighters: _,
+            resists: _,
+            hp: _,
+            wc_ehp: _,
+            breach_resist: _,
+            cap_amount: _,
+            neut_resist: _,
+            locks: _,
+            lock_range: _,
+            scan_res: _,
+            sensors: _,
+            dscan_range: _,
+            probing_size: _,
+            speed: _,
+            agility: _,
+            align_time: _,
+            sig_radius: _,
+            warp_speed: _,
+            max_warp_range: _,
+            drone_control_range: _,
+            can_warp: _,
+            can_jump_gate: _,
+            can_jump_wormhole: _,
+            can_jump_drive: _,
+            can_dock_station: _,
+            can_dock_citadel: _,
+            can_tether: _,
+        } = self;
+        StatOptionInt::complete_blank_with_default(dmg);
+        StatOptionExt::complete_blank_with_default(mps);
+        StatOptionInt::complete_blank_with_default(outgoing_nps);
+        StatOptionInt::complete_blank_with_default(outgoing_rps);
+        StatOptionInt::complete_blank_with_default(outgoing_cps);
+        StatOptionExt::complete_blank_with_default(ehp);
+        StatOptionExt::complete_blank_with_default(rps);
+        StatOptionExt::complete_blank_with_default(erps);
+        StatOptionInt::complete_blank_with_default(cap_balance);
+        StatOptionInt::complete_blank_with_default(cap_sim);
+        StatOptionExt::complete_blank_with_default(incoming_jam);
+        StatOptionExt::complete_blank_with_default(mass);
+        StatOptionExt::complete_blank_with_default(jump);
     }
 }
 
@@ -178,74 +242,137 @@ impl FitStatsOptionsResolved {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl FitStatsOptionsResolved {
     pub(in crate::stats) fn is_any_stat_requested(&self) -> bool {
+        let Self {
+            dmg,
+            mps,
+            outgoing_nps,
+            outgoing_rps,
+            outgoing_cps,
+            cpu,
+            powergrid,
+            calibration,
+            drone_bay_volume,
+            drone_bandwidth,
+            fighter_bay_volume,
+            high_slots,
+            mid_slots,
+            low_slots,
+            turret_slots,
+            launcher_slots,
+            rig_slots,
+            service_slots,
+            subsystem_slots,
+            launched_drones,
+            launched_fighters,
+            launched_light_fighters,
+            launched_heavy_fighters,
+            launched_support_fighters,
+            launched_st_light_fighters,
+            launched_st_heavy_fighters,
+            launched_st_support_fighters,
+            resists,
+            hp,
+            ehp,
+            wc_ehp,
+            rps,
+            erps,
+            breach_resist,
+            cap_amount,
+            cap_balance,
+            cap_sim,
+            neut_resist,
+            locks,
+            lock_range,
+            scan_res,
+            sensors,
+            dscan_range,
+            probing_size,
+            incoming_jam,
+            speed,
+            agility,
+            align_time,
+            sig_radius,
+            mass,
+            warp_speed,
+            max_warp_range,
+            jump,
+            drone_control_range,
+            can_warp,
+            can_jump_gate,
+            can_jump_wormhole,
+            can_jump_drive,
+            can_dock_station,
+            can_dock_citadel,
+            can_tether,
+        } = self;
         // Fit output stats
-        self.dmg.is_some()
-            || self.mps.is_some()
-            || self.outgoing_nps.is_some()
-            || self.outgoing_rps.is_some()
-            || self.outgoing_cps.is_some()
+        dmg.is_some()
+            || mps.is_some()
+            || outgoing_nps.is_some()
+            || outgoing_rps.is_some()
+            || outgoing_cps.is_some()
             // Fit resources
-            || self.cpu
-            || self.powergrid
-            || self.calibration
-            || self.drone_bay_volume
-            || self.drone_bandwidth
-            || self.fighter_bay_volume
+            || *cpu
+            || *powergrid
+            || *calibration
+            || *drone_bay_volume
+            || *drone_bandwidth
+            || *fighter_bay_volume
             // Fit slots
-            || self.high_slots
-            || self.mid_slots
-            || self.low_slots
-            || self.turret_slots
-            || self.launcher_slots
-            || self.rig_slots
-            || self.service_slots
-            || self.subsystem_slots
-            || self.launched_drones
-            || self.launched_fighters
-            || self.launched_light_fighters
-            || self.launched_heavy_fighters
-            || self.launched_support_fighters
-            || self.launched_st_light_fighters
-            || self.launched_st_heavy_fighters
-            || self.launched_st_support_fighters
+            || *high_slots
+            || *mid_slots
+            || *low_slots
+            || *turret_slots
+            || *launcher_slots
+            || *rig_slots
+            || *service_slots
+            || *subsystem_slots
+            || *launched_drones
+            || *launched_fighters
+            || *launched_light_fighters
+            || *launched_heavy_fighters
+            || *launched_support_fighters
+            || *launched_st_light_fighters
+            || *launched_st_heavy_fighters
+            || *launched_st_support_fighters
             // Ship tank
-            || self.resists
-            || self.hp
-            || self.ehp.is_some()
-            || self.wc_ehp
-            || self.rps.is_some()
-            || self.erps.is_some()
-            || self.breach_resist
+            || *resists
+            || *hp
+            || ehp.is_some()
+            || *wc_ehp
+            || rps.is_some()
+            || erps.is_some()
+            || *breach_resist
             // Ship cap
-            || self.cap_amount
-            || self.cap_balance.is_some()
-            || self.cap_sim.is_some()
-            || self.neut_resist
+            || *cap_amount
+            || cap_balance.is_some()
+            || cap_sim.is_some()
+            || *neut_resist
             // Ship sensors
-            || self.locks
-            || self.lock_range
-            || self.scan_res
-            || self.sensors
-            || self.dscan_range
-            || self.probing_size
-            || self.incoming_jam.is_some()
+            || *locks
+            || *lock_range
+            || *scan_res
+            || *sensors
+            || *dscan_range
+            || *probing_size
+            || incoming_jam.is_some()
             // Ship mobility
-            || self.speed
-            || self.agility
-            || self.align_time
-            || self.sig_radius
-            || self.mass.is_some()
-            || self.warp_speed
-            || self.max_warp_range
-            || self.jump.is_some()
+            || *speed
+            || *agility
+            || *align_time
+            || *sig_radius
+            || mass.is_some()
+            || *warp_speed
+            || *max_warp_range
+            || jump.is_some()
             // Ship misc stats
-            || self.drone_control_range
-            || self.can_warp
-            || self.can_jump_gate
-            || self.can_jump_wormhole
-            || self.can_jump_drive
-            || self.can_dock_station
-            || self.can_dock_citadel
-            || self.can_tether
+            || *drone_control_range
+            || *can_warp
+            || *can_jump_gate
+            || *can_jump_wormhole
+            || *can_jump_drive
+            || *can_dock_station
+            || *can_dock_citadel
+            || *can_tether
     }
 }

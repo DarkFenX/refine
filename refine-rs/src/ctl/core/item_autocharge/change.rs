@@ -92,11 +92,12 @@ impl AutochargeChangeCmd {
         self,
         core_item: &mut rc::ItemMut,
     ) -> Result<ChangedItemIdsResp, AutochargeChangeError> {
+        let Self { state, effect_modes } = self;
         let core_autocharge = core_item.dc_autocharge()?;
-        if let Some(state) = self.state {
+        if let Some(state) = state {
             core_autocharge.set_state(state);
         }
-        self.effect_modes.apply(core_autocharge);
+        effect_modes.apply(core_autocharge);
         Ok(ChangedItemIdsResp::default())
     }
 }

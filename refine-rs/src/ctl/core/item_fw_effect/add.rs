@@ -89,11 +89,16 @@ impl<F> FwEffectAddCmdCtxFitGen<F> {
 
 impl FwEffectAddCmd {
     pub(in crate::ctl) fn execute(self, core_fit: &mut rc::FitMut) -> AddedItemIdsResp {
-        let mut core_fw_effect = core_fit.add_fw_effect(self.type_id);
-        if let Some(state) = self.state {
+        let Self {
+            type_id,
+            state,
+            effect_modes,
+        } = self;
+        let mut core_fw_effect = core_fit.add_fw_effect(type_id);
+        if let Some(state) = state {
             core_fw_effect.set_state(state);
         }
-        self.effect_modes.apply(&mut core_fw_effect);
+        effect_modes.apply(&mut core_fw_effect);
         AddedItemIdsResp::from_core_fw_effect(core_fw_effect)
     }
 }

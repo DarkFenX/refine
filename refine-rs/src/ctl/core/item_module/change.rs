@@ -189,21 +189,33 @@ impl<I> ModuleChangeCmdCtxItemGen<I> {
 
 impl ModuleChangeCmd {
     pub(in crate::ctl) fn execute(self, core_item: &mut rc::ItemMut) -> Result<ChangedItemIdsResp, ModuleChangeError> {
+        let Self {
+            type_id,
+            move_,
+            state,
+            mutation,
+            charge_type_id,
+            spool_override,
+            optional_reload_override,
+            add_proj_item_ids,
+            rm_proj_item_ids,
+            effect_modes,
+        } = self;
         let mut resp = ChangedItemIdsResp::default();
         let core_module = core_item.dc_module()?;
-        for projectee_item_id in self.rm_proj_item_ids.iter() {
+        for projectee_item_id in rm_proj_item_ids.iter() {
             core_module.get_proj_mut(projectee_item_id)?.remove();
         }
-        if let Some(type_id) = self.type_id {
+        if let Some(type_id) = type_id {
             core_module.set_type_id(type_id);
         }
-        if let Some(move_) = self.move_ {
+        if let Some(move_) = move_ {
             core_module.move_(move_);
         }
-        if let Some(state) = self.state {
+        if let Some(state) = state {
             core_module.set_state(state);
         }
-        match &self.mutation {
+        match &mutation {
             TriStateField::Value(mutation) => {
                 // Mutates item or updates existing mutation
                 if let Some(mutator_id) = mutation.mutator_id {
@@ -227,7 +239,7 @@ impl ModuleChangeCmd {
             }
             TriStateField::Absent => (),
         }
-        match self.charge_type_id {
+        match charge_type_id {
             TriStateField::Value(charge_type_id) => {
                 let core_charge = core_module.set_charge_type_id(charge_type_id);
                 // Set response charge ID only if we actually did it
@@ -241,20 +253,20 @@ impl ModuleChangeCmd {
             }
             TriStateField::Absent => (),
         }
-        match self.spool_override {
+        match spool_override {
             TriStateField::Value(spool_override) => core_module.set_spool_override(Some(spool_override)),
             TriStateField::None => core_module.set_spool_override(None),
             TriStateField::Absent => (),
         }
-        match self.optional_reload_override {
+        match optional_reload_override {
             TriStateField::Value(optional_reload_override) => {
                 core_module.set_optional_reload_override(Some(optional_reload_override))
             }
             TriStateField::None => core_module.set_optional_reload_override(None),
             TriStateField::Absent => (),
         }
-        self.effect_modes.apply(core_module);
-        for projectee_item_id in self.add_proj_item_ids.iter() {
+        effect_modes.apply(core_module);
+        for projectee_item_id in add_proj_item_ids.iter() {
             core_module.add_proj(projectee_item_id)?;
         }
         Ok(resp)

@@ -87,10 +87,14 @@ mod custom_serde {
         where
             S: Serializer,
         {
+            let Self {
+                direction: Direction { azimuth, elevation },
+                speed,
+            } = self;
             let mut tuple = serializer.serialize_tuple(FIELDS)?;
-            tuple.serialize_element(&self.direction.azimuth)?;
-            tuple.serialize_element(&self.direction.elevation)?;
-            tuple.serialize_element(&self.speed)?;
+            tuple.serialize_element(azimuth)?;
+            tuple.serialize_element(elevation)?;
+            tuple.serialize_element(speed)?;
             tuple.end()
         }
     }

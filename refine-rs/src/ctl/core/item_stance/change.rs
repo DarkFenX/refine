@@ -187,13 +187,18 @@ impl StanceChangeCmd {
         Ok(self.execute(core_stance))
     }
     fn execute(self, core_stance: &mut rc::StanceMut) -> ChangedItemIdsResp {
-        if let Some(type_id) = self.type_id {
+        let Self {
+            type_id,
+            state,
+            effect_modes,
+        } = self;
+        if let Some(type_id) = type_id {
             core_stance.set_type_id(type_id);
         }
-        if let Some(state) = self.state {
+        if let Some(state) = state {
             core_stance.set_state(state);
         }
-        self.effect_modes.apply(core_stance);
+        effect_modes.apply(core_stance);
         ChangedItemIdsResp::default()
     }
 }

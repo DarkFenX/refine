@@ -89,11 +89,16 @@ impl<F> ImplantAddCmdCtxFitGen<F> {
 
 impl ImplantAddCmd {
     pub(in crate::ctl) fn execute(self, core_fit: &mut rc::FitMut) -> AddedItemIdsResp {
-        let mut core_implant = core_fit.add_implant(self.type_id);
-        if let Some(state) = self.state {
+        let Self {
+            type_id,
+            state,
+            effect_modes,
+        } = self;
+        let mut core_implant = core_fit.add_implant(type_id);
+        if let Some(state) = state {
             core_implant.set_state(state);
         }
-        self.effect_modes.apply(&mut core_implant);
+        effect_modes.apply(&mut core_implant);
         AddedItemIdsResp::from_core_implant(core_implant)
     }
 }

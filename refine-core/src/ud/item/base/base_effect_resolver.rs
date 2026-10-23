@@ -27,10 +27,16 @@ impl UEffectUpdates {
         }
     }
     pub(in crate::ud::item) fn clear(&mut self) {
-        self.to_start.clear();
-        self.to_stop.clear();
-        self.charge = None;
-        self.autocharges.clear();
+        let Self {
+            to_start,
+            to_stop,
+            charge,
+            autocharges,
+        } = self;
+        to_start.clear();
+        to_stop.clear();
+        *charge = None;
+        autocharges.clear();
     }
 }
 

@@ -97,14 +97,19 @@ impl FwEffectChangeCmd {
         self,
         core_item: &mut rc::ItemMut,
     ) -> Result<ChangedItemIdsResp, FwEffectChangeError> {
+        let Self {
+            type_id,
+            state,
+            effect_modes,
+        } = self;
         let core_fw_effect = core_item.dc_fw_effect()?;
-        if let Some(type_id) = self.type_id {
+        if let Some(type_id) = type_id {
             core_fw_effect.set_type_id(type_id);
         }
-        if let Some(state) = self.state {
+        if let Some(state) = state {
             core_fw_effect.set_state(state);
         }
-        self.effect_modes.apply(core_fw_effect);
+        effect_modes.apply(core_fw_effect);
         Ok(ChangedItemIdsResp::default())
     }
 }

@@ -473,262 +473,331 @@ impl Vast {
         let fit_data = self.get_fit_data(fit_uid);
         let ship = fit.ship.map(|v| ctx.u_data.items.get(v).dc_ship().unwrap());
         let mut result = ValResultFit { .. };
+        let ValResultFit {
+            not_loaded_item,
+            item_kind,
+            skill_reqs,
+            implant_slot_index,
+            booster_slot_index,
+            cpu,
+            powergrid,
+            ship_limit,
+            max_group_fitted,
+            max_group_online,
+            max_group_active,
+            max_type_fitted,
+            item_vs_ship_kind,
+            high_slot_count,
+            mid_slot_count,
+            low_slot_count,
+            turret_slot_count,
+            launcher_slot_count,
+            module_state,
+            capital_module,
+            overload_skill,
+            unusable_cap,
+            charge_group,
+            charge_parent_group,
+            charge_size,
+            charge_volume,
+            rig_slot_count,
+            calibration,
+            rig_size,
+            service_slot_count,
+            subsystem_slot_count,
+            subsystem_slot_index,
+            ship_stance,
+            drone_bay_volume,
+            launched_drone_count,
+            drone_bandwidth,
+            unlaunchable_drone_slot,
+            unlaunchable_drone_bandwidth,
+            drone_group,
+            fighter_bay_volume,
+            launched_fighter_count,
+            launched_light_fighter_count,
+            launched_heavy_fighter_count,
+            launched_support_fighter_count,
+            launched_st_light_fighter_count,
+            launched_st_heavy_fighter_count,
+            launched_st_support_fighter_count,
+            unlaunchable_fighter,
+            unlaunchable_light_fighter,
+            unlaunchable_heavy_fighter,
+            unlaunchable_support_fighter,
+            unlaunchable_st_light_fighter,
+            unlaunchable_st_heavy_fighter,
+            unlaunchable_st_support_fighter,
+            fighter_squad_size,
+            activation_blocked,
+            effect_stopper,
+            cloaking_blocked,
+            projectee_filter,
+            assist_immunity,
+            offense_immunity,
+            resist_immunity,
+            sec_zone_fitted,
+            sec_zone_online,
+            sec_zone_active,
+            sec_zone_unonlineable,
+            sec_zone_unactivable,
+            sec_zone_effect,
+        } = &mut result;
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         // Generic
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         if let ValOptionInt::Enabled(opts) = options.get(ValKind::NotLoadedItem) {
-            result.not_loaded_item = fit_data.validate_not_loaded_item_verbose(&opts.kfs, ctx);
+            *not_loaded_item = fit_data.validate_not_loaded_item_verbose(&opts.kfs, ctx);
         }
         if let ValOptionInt::Enabled(opts) = options.get(ValKind::ItemKind) {
-            result.item_kind = fit_data.validate_item_kind_verbose(&opts.kfs, ctx);
+            *item_kind = fit_data.validate_item_kind_verbose(&opts.kfs, ctx);
         }
         if let ValOptionInt::Enabled(opts) = options.get(ValKind::SkillReqs) {
-            result.skill_reqs = fit_data.validate_skill_reqs_verbose(&opts.kfs, ctx);
+            *skill_reqs = fit_data.validate_skill_reqs_verbose(&opts.kfs, ctx);
         }
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         // Implants/boosters
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         if let ValOptionInt::Enabled(opts) = options.get(ValKind::ImplantSlotIndex) {
-            result.implant_slot_index = fit_data.validate_implant_slot_index_verbose(&opts.kfs, ctx);
+            *implant_slot_index = fit_data.validate_implant_slot_index_verbose(&opts.kfs, ctx);
         }
         if let ValOptionInt::Enabled(opts) = options.get(ValKind::BoosterSlotIndex) {
-            result.booster_slot_index = fit_data.validate_booster_slot_index_verbose(&opts.kfs, ctx);
+            *booster_slot_index = fit_data.validate_booster_slot_index_verbose(&opts.kfs, ctx);
         }
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         // Shared between mod-alike items
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         if let ValOptionInt::Enabled(opts) = options.get(ValKind::Cpu) {
-            result.cpu = fit_data.validate_cpu_verbose(&opts.kfs, ctx, calc, fit);
+            *cpu = fit_data.validate_cpu_verbose(&opts.kfs, ctx, calc, fit);
         }
         if let ValOptionInt::Enabled(opts) = options.get(ValKind::Powergrid) {
-            result.powergrid = fit_data.validate_powergrid_verbose(&opts.kfs, ctx, calc, fit);
+            *powergrid = fit_data.validate_powergrid_verbose(&opts.kfs, ctx, calc, fit);
         }
         if let ValOptionInt::Enabled(opts) = options.get(ValKind::ShipLimit) {
-            result.ship_limit = fit_data.validate_ship_limit_verbose(&opts.kfs, ctx, ship);
+            *ship_limit = fit_data.validate_ship_limit_verbose(&opts.kfs, ctx, ship);
         }
         if let ValOptionInt::Enabled(opts) = options.get(ValKind::MaxGroupFitted) {
-            result.max_group_fitted = fit_data.validate_max_group_fitted_verbose(&opts.kfs, ctx, calc);
+            *max_group_fitted = fit_data.validate_max_group_fitted_verbose(&opts.kfs, ctx, calc);
         }
         if let ValOptionInt::Enabled(opts) = options.get(ValKind::MaxGroupOnline) {
-            result.max_group_online = fit_data.validate_max_group_online_verbose(&opts.kfs, ctx, calc);
+            *max_group_online = fit_data.validate_max_group_online_verbose(&opts.kfs, ctx, calc);
         }
         if let ValOptionInt::Enabled(opts) = options.get(ValKind::MaxGroupActive) {
-            result.max_group_active = fit_data.validate_max_group_active_verbose(&opts.kfs, ctx, calc);
+            *max_group_active = fit_data.validate_max_group_active_verbose(&opts.kfs, ctx, calc);
         }
         if let ValOptionInt::Enabled(opts) = options.get(ValKind::MaxTypeFitted) {
-            result.max_type_fitted = fit_data.validate_max_type_fitted_verbose(&opts.kfs, ctx);
+            *max_type_fitted = fit_data.validate_max_type_fitted_verbose(&opts.kfs, ctx);
         }
         if let ValOptionInt::Enabled(opts) = options.get(ValKind::ItemVsShipKind) {
-            result.item_vs_ship_kind = fit_data.validate_item_vs_ship_kind_verbose(&opts.kfs, ctx, fit);
+            *item_vs_ship_kind = fit_data.validate_item_vs_ship_kind_verbose(&opts.kfs, ctx, fit);
         }
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         // Modules
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         if let ValOptionInt::Enabled(opts) = options.get(ValKind::HighSlotCount) {
-            result.high_slot_count = fit_data.validate_high_slot_count_verbose(&opts.kfs, ctx, calc, fit);
+            *high_slot_count = fit_data.validate_high_slot_count_verbose(&opts.kfs, ctx, calc, fit);
         }
         if let ValOptionInt::Enabled(opts) = options.get(ValKind::MidSlotCount) {
-            result.mid_slot_count = fit_data.validate_mid_slot_count_verbose(&opts.kfs, ctx, calc, fit);
+            *mid_slot_count = fit_data.validate_mid_slot_count_verbose(&opts.kfs, ctx, calc, fit);
         }
         if let ValOptionInt::Enabled(opts) = options.get(ValKind::LowSlotCount) {
-            result.low_slot_count = fit_data.validate_low_slot_count_verbose(&opts.kfs, ctx, calc, fit);
+            *low_slot_count = fit_data.validate_low_slot_count_verbose(&opts.kfs, ctx, calc, fit);
         }
         if let ValOptionInt::Enabled(opts) = options.get(ValKind::TurretSlotCount) {
-            result.turret_slot_count = fit_data.validate_turret_slot_count_verbose(&opts.kfs, ctx, calc, fit);
+            *turret_slot_count = fit_data.validate_turret_slot_count_verbose(&opts.kfs, ctx, calc, fit);
         }
         if let ValOptionInt::Enabled(opts) = options.get(ValKind::LauncherSlotCount) {
-            result.launcher_slot_count = fit_data.validate_launcher_slot_count_verbose(&opts.kfs, ctx, calc, fit);
+            *launcher_slot_count = fit_data.validate_launcher_slot_count_verbose(&opts.kfs, ctx, calc, fit);
         }
         if let ValOptionInt::Enabled(opts) = options.get(ValKind::ModuleState) {
-            result.module_state = fit_data.validate_module_state_verbose(&opts.kfs, ctx);
+            *module_state = fit_data.validate_module_state_verbose(&opts.kfs, ctx);
         }
         if let ValOptionInt::Enabled(opts) = options.get(ValKind::CapitalModule) {
-            result.capital_module = fit_data.validate_capital_module_verbose(&opts.kfs, ctx, ship);
+            *capital_module = fit_data.validate_capital_module_verbose(&opts.kfs, ctx, ship);
         }
         if let ValOptionInt::Enabled(opts) = options.get(ValKind::OverloadSkill) {
-            result.overload_skill = fit_data.validate_overload_skill_verbose(&opts.kfs, ctx, fit);
+            *overload_skill = fit_data.validate_overload_skill_verbose(&opts.kfs, ctx, fit);
         }
         if let ValOptionInt::Enabled(opts) = options.get(ValKind::UnusableCap) {
-            result.unusable_cap = fit_data.validate_unusable_cap_verbose(&opts.kfs, ctx, calc, fit.ship);
+            *unusable_cap = fit_data.validate_unusable_cap_verbose(&opts.kfs, ctx, calc, fit.ship);
         }
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         // Charges
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         if let ValOptionInt::Enabled(opts) = options.get(ValKind::ChargeGroup) {
-            result.charge_group = fit_data.validate_charge_group_verbose(&opts.kfs, ctx);
+            *charge_group = fit_data.validate_charge_group_verbose(&opts.kfs, ctx);
         }
         if let ValOptionInt::Enabled(opts) = options.get(ValKind::ChargeParentGroup) {
-            result.charge_parent_group = fit_data.validate_charge_cont_group_verbose(&opts.kfs, ctx);
+            *charge_parent_group = fit_data.validate_charge_cont_group_verbose(&opts.kfs, ctx);
         }
         if let ValOptionInt::Enabled(opts) = options.get(ValKind::ChargeSize) {
-            result.charge_size = fit_data.validate_charge_size_verbose(&opts.kfs, ctx);
+            *charge_size = fit_data.validate_charge_size_verbose(&opts.kfs, ctx);
         }
         if let ValOptionInt::Enabled(opts) = options.get(ValKind::ChargeVolume) {
-            result.charge_volume = fit_data.validate_charge_volume_verbose(&opts.kfs, ctx);
+            *charge_volume = fit_data.validate_charge_volume_verbose(&opts.kfs, ctx);
         }
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         // Rigs
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         if let ValOptionInt::Enabled(opts) = options.get(ValKind::RigSlotCount) {
-            result.rig_slot_count = fit_data.validate_rig_slot_count_verbose(&opts.kfs, ctx, calc, fit);
+            *rig_slot_count = fit_data.validate_rig_slot_count_verbose(&opts.kfs, ctx, calc, fit);
         }
         if let ValOptionInt::Enabled(opts) = options.get(ValKind::Calibration) {
-            result.calibration = fit_data.validate_calibration_verbose(&opts.kfs, ctx, calc, fit);
+            *calibration = fit_data.validate_calibration_verbose(&opts.kfs, ctx, calc, fit);
         }
         if let ValOptionInt::Enabled(opts) = options.get(ValKind::RigSize) {
-            result.rig_size = fit_data.validate_rig_size_verbose(&opts.kfs, ctx, ship);
+            *rig_size = fit_data.validate_rig_size_verbose(&opts.kfs, ctx, ship);
         }
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         // Services
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         if let ValOptionInt::Enabled(opts) = options.get(ValKind::ServiceSlotCount) {
-            result.service_slot_count = fit_data.validate_service_slot_count_verbose(&opts.kfs, ctx, calc, fit);
+            *service_slot_count = fit_data.validate_service_slot_count_verbose(&opts.kfs, ctx, calc, fit);
         }
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         // T3 subsystems/stances
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         if let ValOptionInt::Enabled(opts) = options.get(ValKind::SubsystemSlotCount) {
-            result.subsystem_slot_count = fit_data.validate_subsystem_slot_count_verbose(&opts.kfs, ctx, calc, fit);
+            *subsystem_slot_count = fit_data.validate_subsystem_slot_count_verbose(&opts.kfs, ctx, calc, fit);
         }
         if let ValOptionInt::Enabled(opts) = options.get(ValKind::SubsystemSlotIndex) {
-            result.subsystem_slot_index = fit_data.validate_subsystem_slot_index_verbose(&opts.kfs, ctx);
+            *subsystem_slot_index = fit_data.validate_subsystem_slot_index_verbose(&opts.kfs, ctx);
         }
         if let ValOptionInt::Enabled(opts) = options.get(ValKind::ShipStance) {
-            result.ship_stance = fit_data.validate_ship_stance_verbose(&opts.kfs, ctx, fit, ship);
+            *ship_stance = fit_data.validate_ship_stance_verbose(&opts.kfs, ctx, fit, ship);
         }
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         // Drones
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         if let ValOptionInt::Enabled(opts) = options.get(ValKind::DroneBayVolume) {
-            result.drone_bay_volume = fit_data.validate_drone_bay_volume_verbose(&opts.kfs, ctx, calc, fit);
+            *drone_bay_volume = fit_data.validate_drone_bay_volume_verbose(&opts.kfs, ctx, calc, fit);
         }
         if let ValOptionInt::Enabled(opts) = options.get(ValKind::LaunchedDroneCount) {
-            result.launched_drone_count = fit_data.validate_launched_drone_count_verbose(&opts.kfs, ctx, calc, fit);
+            *launched_drone_count = fit_data.validate_launched_drone_count_verbose(&opts.kfs, ctx, calc, fit);
         }
         if let ValOptionInt::Enabled(opts) = options.get(ValKind::DroneBandwidth) {
-            result.drone_bandwidth = fit_data.validate_drone_bandwidth_verbose(&opts.kfs, ctx, calc, fit);
+            *drone_bandwidth = fit_data.validate_drone_bandwidth_verbose(&opts.kfs, ctx, calc, fit);
         }
         if let ValOptionInt::Enabled(opts) = options.get(ValKind::UnlaunchableDroneSlot) {
-            result.unlaunchable_drone_slot =
-                fit_data.validate_unlaunchable_drone_slot_verbose(&opts.kfs, ctx, calc, fit);
+            *unlaunchable_drone_slot = fit_data.validate_unlaunchable_drone_slot_verbose(&opts.kfs, ctx, calc, fit);
         }
         if let ValOptionInt::Enabled(opts) = options.get(ValKind::UnlaunchableDroneBandwidth) {
-            result.unlaunchable_drone_bandwidth =
+            *unlaunchable_drone_bandwidth =
                 fit_data.validate_unlaunchable_drone_bandwidth_verbose(&opts.kfs, ctx, calc, fit);
         }
         if let ValOptionInt::Enabled(opts) = options.get(ValKind::DroneGroup) {
-            result.drone_group = fit_data.validate_drone_group_verbose(&opts.kfs, ctx);
+            *drone_group = fit_data.validate_drone_group_verbose(&opts.kfs, ctx);
         }
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         // Fighters
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         if let ValOptionInt::Enabled(opts) = options.get(ValKind::FighterBayVolume) {
-            result.fighter_bay_volume = fit_data.validate_fighter_bay_volume_verbose(&opts.kfs, ctx, calc, fit);
+            *fighter_bay_volume = fit_data.validate_fighter_bay_volume_verbose(&opts.kfs, ctx, calc, fit);
         }
         if let ValOptionInt::Enabled(opts) = options.get(ValKind::LaunchedFighterCount) {
-            result.launched_fighter_count = fit_data.validate_launched_fighter_count_verbose(&opts.kfs, ctx, calc, fit);
+            *launched_fighter_count = fit_data.validate_launched_fighter_count_verbose(&opts.kfs, ctx, calc, fit);
         }
         if let ValOptionInt::Enabled(opts) = options.get(ValKind::LaunchedLightFighterCount) {
-            result.launched_light_fighter_count =
+            *launched_light_fighter_count =
                 fit_data.validate_launched_light_fighter_count_verbose(&opts.kfs, ctx, calc, fit);
         }
         if let ValOptionInt::Enabled(opts) = options.get(ValKind::LaunchedHeavyFighterCount) {
-            result.launched_heavy_fighter_count =
+            *launched_heavy_fighter_count =
                 fit_data.validate_launched_heavy_fighter_count_verbose(&opts.kfs, ctx, calc, fit);
         }
         if let ValOptionInt::Enabled(opts) = options.get(ValKind::LaunchedSupportFighterCount) {
-            result.launched_support_fighter_count =
+            *launched_support_fighter_count =
                 fit_data.validate_launched_support_fighter_count_verbose(&opts.kfs, ctx, calc, fit);
         }
         if let ValOptionInt::Enabled(opts) = options.get(ValKind::LaunchedStLightFighterCount) {
-            result.launched_st_light_fighter_count =
+            *launched_st_light_fighter_count =
                 fit_data.validate_launched_st_light_fighter_count_verbose(&opts.kfs, ctx, calc, fit);
         }
         if let ValOptionInt::Enabled(opts) = options.get(ValKind::LaunchedStHeavyFighterCount) {
-            result.launched_st_heavy_fighter_count =
+            *launched_st_heavy_fighter_count =
                 fit_data.validate_launched_st_heavy_fighter_count_verbose(&opts.kfs, ctx, calc, fit);
         }
         if let ValOptionInt::Enabled(opts) = options.get(ValKind::LaunchedStSupportFighterCount) {
-            result.launched_st_support_fighter_count =
+            *launched_st_support_fighter_count =
                 fit_data.validate_launched_st_support_fighter_count_verbose(&opts.kfs, ctx, calc, fit);
         }
         if let ValOptionInt::Enabled(opts) = options.get(ValKind::UnlaunchableFighter) {
-            result.unlaunchable_fighter = fit_data.validate_unlaunchable_fighter_verbose(&opts.kfs, ctx, calc, fit);
+            *unlaunchable_fighter = fit_data.validate_unlaunchable_fighter_verbose(&opts.kfs, ctx, calc, fit);
         }
         if let ValOptionInt::Enabled(opts) = options.get(ValKind::UnlaunchableLightFighter) {
-            result.unlaunchable_light_fighter =
+            *unlaunchable_light_fighter =
                 fit_data.validate_unlaunchable_light_fighter_verbose(&opts.kfs, ctx, calc, fit);
         }
         if let ValOptionInt::Enabled(opts) = options.get(ValKind::UnlaunchableHeavyFighter) {
-            result.unlaunchable_heavy_fighter =
+            *unlaunchable_heavy_fighter =
                 fit_data.validate_unlaunchable_heavy_fighter_verbose(&opts.kfs, ctx, calc, fit);
         }
         if let ValOptionInt::Enabled(opts) = options.get(ValKind::UnlaunchableSupportFighter) {
-            result.unlaunchable_support_fighter =
+            *unlaunchable_support_fighter =
                 fit_data.validate_unlaunchable_support_fighter_verbose(&opts.kfs, ctx, calc, fit);
         }
         if let ValOptionInt::Enabled(opts) = options.get(ValKind::UnlaunchableStLightFighter) {
-            result.unlaunchable_st_light_fighter =
+            *unlaunchable_st_light_fighter =
                 fit_data.validate_unlaunchable_st_light_fighter_verbose(&opts.kfs, ctx, calc, fit);
         }
         if let ValOptionInt::Enabled(opts) = options.get(ValKind::UnlaunchableStHeavyFighter) {
-            result.unlaunchable_st_heavy_fighter =
+            *unlaunchable_st_heavy_fighter =
                 fit_data.validate_unlaunchable_st_heavy_fighter_verbose(&opts.kfs, ctx, calc, fit);
         }
         if let ValOptionInt::Enabled(opts) = options.get(ValKind::UnlaunchableStSupportFighter) {
-            result.unlaunchable_st_support_fighter =
+            *unlaunchable_st_support_fighter =
                 fit_data.validate_unlaunchable_st_support_fighter_verbose(&opts.kfs, ctx, calc, fit);
         }
         if let ValOptionInt::Enabled(opts) = options.get(ValKind::FighterSquadSize) {
-            result.fighter_squad_size = fit_data.validate_fighter_squad_size_verbose(&opts.kfs, ctx);
+            *fighter_squad_size = fit_data.validate_fighter_squad_size_verbose(&opts.kfs, ctx);
         }
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         // Projection, destination side
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         if let ValOptionInt::Enabled(opts) = options.get(ValKind::ActivationBlocked) {
-            result.activation_blocked = fit_data.validate_activation_blocked_verbose(&opts.kfs, ctx, calc);
+            *activation_blocked = fit_data.validate_activation_blocked_verbose(&opts.kfs, ctx, calc);
         }
         if let ValOptionInt::Enabled(opts) = options.get(ValKind::EffectStopper) {
-            result.effect_stopper = fit_data.validate_effect_stopper_verbose(&opts.kfs, ctx, calc);
+            *effect_stopper = fit_data.validate_effect_stopper_verbose(&opts.kfs, ctx, calc);
         }
         if let ValOptionInt::Enabled(opts) = options.get(ValKind::CloakingBlocked) {
-            result.cloaking_blocked = fit_data.validate_cloaking_blocked_verbose(&opts.kfs, ctx, calc, fit);
+            *cloaking_blocked = fit_data.validate_cloaking_blocked_verbose(&opts.kfs, ctx, calc, fit);
         }
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         // Projection, source side
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         if let ValOptionInt::Enabled(opts) = options.get(ValKind::ProjecteeFilter) {
-            result.projectee_filter = fit_data.validate_projectee_filter_verbose(&opts.kfs, ctx);
+            *projectee_filter = fit_data.validate_projectee_filter_verbose(&opts.kfs, ctx);
         }
         if let ValOptionInt::Enabled(opts) = options.get(ValKind::AssistImmunity) {
-            result.assist_immunity = self.validate_assist_immunity_verbose(fit_data, &opts.kfs, ctx, calc);
+            *assist_immunity = self.validate_assist_immunity_verbose(fit_data, &opts.kfs, ctx, calc);
         }
         if let ValOptionInt::Enabled(opts) = options.get(ValKind::OffenseImmunity) {
-            result.offense_immunity = self.validate_offense_immunity_verbose(fit_data, &opts.kfs, ctx, calc);
+            *offense_immunity = self.validate_offense_immunity_verbose(fit_data, &opts.kfs, ctx, calc);
         }
         if let ValOptionInt::Enabled(opts) = options.get(ValKind::ResistImmunity) {
-            result.resist_immunity = self.validate_resist_immunity_verbose(fit_data, &opts.kfs, ctx, calc);
+            *resist_immunity = self.validate_resist_immunity_verbose(fit_data, &opts.kfs, ctx, calc);
         }
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         // Sec zone
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         if let ValOptionInt::Enabled(opts) = options.get(ValKind::SecZoneFitted) {
-            result.sec_zone_fitted = fit_data.validate_sec_zone_fitted_verbose(&opts.kfs, ctx, calc);
+            *sec_zone_fitted = fit_data.validate_sec_zone_fitted_verbose(&opts.kfs, ctx, calc);
         }
         if let ValOptionInt::Enabled(opts) = options.get(ValKind::SecZoneOnline) {
-            result.sec_zone_online = fit_data.validate_sec_zone_online_verbose(&opts.kfs, ctx);
+            *sec_zone_online = fit_data.validate_sec_zone_online_verbose(&opts.kfs, ctx);
         }
         if let ValOptionInt::Enabled(opts) = options.get(ValKind::SecZoneActive) {
-            result.sec_zone_active = fit_data.validate_sec_zone_active_verbose(&opts.kfs, ctx, calc);
+            *sec_zone_active = fit_data.validate_sec_zone_active_verbose(&opts.kfs, ctx, calc);
         }
         if let ValOptionInt::Enabled(opts) = options.get(ValKind::SecZoneUnonlineable) {
-            result.sec_zone_unonlineable = fit_data.validate_sec_zone_unonlineable_verbose(&opts.kfs, ctx);
+            *sec_zone_unonlineable = fit_data.validate_sec_zone_unonlineable_verbose(&opts.kfs, ctx);
         }
         if let ValOptionInt::Enabled(opts) = options.get(ValKind::SecZoneUnactivable) {
-            result.sec_zone_unactivable = fit_data.validate_sec_zone_unactivable_verbose(&opts.kfs, ctx, calc);
+            *sec_zone_unactivable = fit_data.validate_sec_zone_unactivable_verbose(&opts.kfs, ctx, calc);
         }
         if let ValOptionInt::Enabled(opts) = options.get(ValKind::SecZoneEffect) {
-            result.sec_zone_effect = fit_data.validate_sec_zone_effect_verbose(&opts.kfs, ctx);
+            *sec_zone_effect = fit_data.validate_sec_zone_effect_verbose(&opts.kfs, ctx);
         }
         result
     }

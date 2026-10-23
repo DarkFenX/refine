@@ -43,25 +43,45 @@ mod custom_serde_ad {
         where
             S: Serializer,
         {
+            let Self {
+                id,
+                category,
+                state,
+                modifiers,
+                stopped_effect_ids,
+                buff,
+                weapons_timer,
+                is_assist,
+                is_offense,
+                banned_in_hisec,
+                banned_in_lowsec,
+                discharge_attr_id,
+                duration_attr_id,
+                range_attr_id,
+                falloff_attr_id,
+                track_attr_id,
+                chance_attr_id,
+                resist_attr_id,
+            } = self;
             let mut tuple = serializer.serialize_tuple(FIELDS)?;
-            tuple.serialize_element(&self.id)?;
-            tuple.serialize_element(&self.category)?;
-            tuple.serialize_element(&self.state)?;
-            tuple.serialize_element(&self.modifiers)?;
-            tuple.serialize_element(&self.stopped_effect_ids)?;
-            tuple.serialize_element(&self.buff)?;
-            tuple.serialize_element(&self.weapons_timer)?;
-            tuple.serialize_element(&self.is_assist)?;
-            tuple.serialize_element(&self.is_offense)?;
-            tuple.serialize_element(&self.banned_in_hisec)?;
-            tuple.serialize_element(&self.banned_in_lowsec)?;
-            tuple.serialize_element(&self.discharge_attr_id)?;
-            tuple.serialize_element(&self.duration_attr_id)?;
-            tuple.serialize_element(&self.range_attr_id)?;
-            tuple.serialize_element(&self.falloff_attr_id)?;
-            tuple.serialize_element(&self.track_attr_id)?;
-            tuple.serialize_element(&self.chance_attr_id)?;
-            tuple.serialize_element(&self.resist_attr_id)?;
+            tuple.serialize_element(id)?;
+            tuple.serialize_element(category)?;
+            tuple.serialize_element(state)?;
+            tuple.serialize_element(modifiers)?;
+            tuple.serialize_element(stopped_effect_ids)?;
+            tuple.serialize_element(buff)?;
+            tuple.serialize_element(weapons_timer)?;
+            tuple.serialize_element(is_assist)?;
+            tuple.serialize_element(is_offense)?;
+            tuple.serialize_element(banned_in_hisec)?;
+            tuple.serialize_element(banned_in_lowsec)?;
+            tuple.serialize_element(discharge_attr_id)?;
+            tuple.serialize_element(duration_attr_id)?;
+            tuple.serialize_element(range_attr_id)?;
+            tuple.serialize_element(falloff_attr_id)?;
+            tuple.serialize_element(track_attr_id)?;
+            tuple.serialize_element(chance_attr_id)?;
+            tuple.serialize_element(resist_attr_id)?;
             tuple.end()
         }
     }

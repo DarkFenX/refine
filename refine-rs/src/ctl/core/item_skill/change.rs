@@ -99,17 +99,23 @@ impl<I> SkillChangeCmdCtxItemGen<I> {
 
 impl SkillChangeCmd {
     pub(in crate::ctl) fn execute(self, core_item: &mut rc::ItemMut) -> Result<ChangedItemIdsResp, SkillChangeError> {
+        let Self {
+            type_id,
+            level,
+            state,
+            effect_modes,
+        } = self;
         let core_skill = core_item.dc_skill()?;
-        if let Some(type_id) = self.type_id {
+        if let Some(type_id) = type_id {
             core_skill.set_type_id(type_id)?;
         }
-        if let Some(level) = self.level {
+        if let Some(level) = level {
             core_skill.set_level(level);
         }
-        if let Some(state) = self.state {
+        if let Some(state) = state {
             core_skill.set_state(state);
         }
-        self.effect_modes.apply(core_skill);
+        effect_modes.apply(core_skill);
         Ok(ChangedItemIdsResp::default())
     }
 }

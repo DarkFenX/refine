@@ -80,9 +80,10 @@ mod custom_serde_ad_entry {
         where
             S: Serializer,
         {
+            let Self { id, data } = self;
             let mut tuple = serializer.serialize_tuple(FIELDS)?;
-            tuple.serialize_element(&self.id)?;
-            tuple.serialize_element(&self.data)?;
+            tuple.serialize_element(id)?;
+            tuple.serialize_element(data)?;
             tuple.end()
         }
     }

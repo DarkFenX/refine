@@ -97,14 +97,19 @@ impl SubsystemChangeCmd {
         self,
         core_item: &mut rc::ItemMut,
     ) -> Result<ChangedItemIdsResp, SubsystemChangeError> {
+        let Self {
+            type_id,
+            state,
+            effect_modes,
+        } = self;
         let core_subsystem = core_item.dc_subsystem()?;
-        if let Some(type_id) = self.type_id {
+        if let Some(type_id) = type_id {
             core_subsystem.set_type_id(type_id);
         }
-        if let Some(state) = self.state {
+        if let Some(state) = state {
             core_subsystem.set_state(state);
         }
-        self.effect_modes.apply(core_subsystem);
+        effect_modes.apply(core_subsystem);
         Ok(ChangedItemIdsResp::default())
     }
 }

@@ -52,12 +52,19 @@ mod custom_serde_dps {
         where
             S: Serializer,
         {
+            let Self {
+                em,
+                thermal,
+                kinetic,
+                explosive,
+                breacher,
+            } = self;
             let mut seq = serializer.serialize_seq(None)?;
-            seq.serialize_element(&self.em)?;
-            seq.serialize_element(&self.thermal)?;
-            seq.serialize_element(&self.kinetic)?;
-            seq.serialize_element(&self.explosive)?;
-            if let Some(breacher) = &self.breacher {
+            seq.serialize_element(em)?;
+            seq.serialize_element(thermal)?;
+            seq.serialize_element(kinetic)?;
+            seq.serialize_element(explosive)?;
+            if let Some(breacher) = breacher {
                 seq.serialize_element(breacher)?;
             }
             seq.end()
@@ -113,9 +120,13 @@ mod custom_serde_breacher {
         where
             S: Serializer,
         {
+            let Self {
+                absolute_max,
+                relative_max,
+            } = self;
             let mut tuple = serializer.serialize_tuple(FIELDS)?;
-            tuple.serialize_element(&self.absolute_max)?;
-            tuple.serialize_element(&self.relative_max)?;
+            tuple.serialize_element(absolute_max)?;
+            tuple.serialize_element(relative_max)?;
             tuple.end()
         }
     }

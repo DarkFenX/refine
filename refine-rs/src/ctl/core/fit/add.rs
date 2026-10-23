@@ -78,14 +78,19 @@ impl<L> FitAddCmdGen<L> {
 
 impl FitAddCmd {
     pub(crate) fn execute(self, core_sol: &mut rc::SolarSystem) -> Result<AddedFitIdResp, FitAddError> {
+        let Self {
+            fleet_id,
+            sec_status,
+            rah_incoming_dps,
+        } = self;
         let mut core_fit = core_sol.add_fit();
-        if let Some(fleet_id) = self.fleet_id {
+        if let Some(fleet_id) = fleet_id {
             core_fit.set_fleet(&fleet_id)?;
         }
-        if let Some(sec_status) = self.sec_status {
+        if let Some(sec_status) = sec_status {
             core_fit.set_sec_status(sec_status);
         }
-        if let Some(rah_incoming_dps) = self.rah_incoming_dps {
+        if let Some(rah_incoming_dps) = rah_incoming_dps {
             core_fit.set_rah_incoming_dps(rah_incoming_dps);
         }
         Ok(AddedFitIdResp::from_core_fit(core_fit))

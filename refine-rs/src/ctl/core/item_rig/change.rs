@@ -94,14 +94,19 @@ impl<I> RigChangeCmdCtxItemGen<I> {
 
 impl RigChangeCmd {
     pub(in crate::ctl) fn execute(self, core_item: &mut rc::ItemMut) -> Result<ChangedItemIdsResp, RigChangeError> {
+        let Self {
+            type_id,
+            state,
+            effect_modes,
+        } = self;
         let core_rig = core_item.dc_rig()?;
-        if let Some(type_id) = self.type_id {
+        if let Some(type_id) = type_id {
             core_rig.set_type_id(type_id);
         }
-        if let Some(state) = self.state {
+        if let Some(state) = state {
             core_rig.set_state(state);
         }
-        self.effect_modes.apply(core_rig);
+        effect_modes.apply(core_rig);
         Ok(ChangedItemIdsResp::default())
     }
 }

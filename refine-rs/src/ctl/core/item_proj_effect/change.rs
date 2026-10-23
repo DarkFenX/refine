@@ -144,18 +144,25 @@ impl ProjEffectChangeCmd {
         self,
         core_item: &mut rc::ItemMut,
     ) -> Result<ChangedItemIdsResp, ProjEffectChangeError> {
+        let Self {
+            type_id,
+            state,
+            add_proj_item_ids,
+            rm_proj_item_ids,
+            effect_modes,
+        } = self;
         let core_proj_effect = core_item.dc_proj_effect()?;
-        for projectee_item_id in self.rm_proj_item_ids.iter() {
+        for projectee_item_id in rm_proj_item_ids.iter() {
             core_proj_effect.get_proj_mut(projectee_item_id)?.remove();
         }
-        if let Some(type_id) = self.type_id {
+        if let Some(type_id) = type_id {
             core_proj_effect.set_type_id(type_id);
         }
-        if let Some(state) = self.state {
+        if let Some(state) = state {
             core_proj_effect.set_state(state);
         }
-        self.effect_modes.apply(core_proj_effect);
-        for projectee_item_id in self.add_proj_item_ids.iter() {
+        effect_modes.apply(core_proj_effect);
+        for projectee_item_id in add_proj_item_ids.iter() {
             core_proj_effect.add_proj(projectee_item_id)?;
         }
         Ok(ChangedItemIdsResp::default())

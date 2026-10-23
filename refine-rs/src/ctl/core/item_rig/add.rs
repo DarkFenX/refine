@@ -89,11 +89,16 @@ impl<F> RigAddCmdCtxFitGen<F> {
 
 impl RigAddCmd {
     pub(in crate::ctl) fn execute(self, core_fit: &mut rc::FitMut) -> AddedItemIdsResp {
-        let mut core_rig = core_fit.add_rig(self.type_id);
-        if let Some(state) = self.state {
+        let Self {
+            type_id,
+            state,
+            effect_modes,
+        } = self;
+        let mut core_rig = core_fit.add_rig(type_id);
+        if let Some(state) = state {
             core_rig.set_state(state);
         }
-        self.effect_modes.apply(&mut core_rig);
+        effect_modes.apply(&mut core_rig);
         AddedItemIdsResp::from_core_rig(core_rig)
     }
 }

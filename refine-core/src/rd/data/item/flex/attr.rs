@@ -96,21 +96,34 @@ impl RItemFlexData {
         self.fill_derived(attr_aid_rid_map, attr_consts);
     }
     fn fill_derived(&mut self, attr_aid_rid_map: &RMap<AAttrId, RAttrId>, attr_consts: &RAttrConsts) {
+        let Self {
+            attrs,
+            bandwidth_use,
+            remote_resist_attr_rid,
+            is_mobile,
+            entity_mwd,
+            specs_reactivation_delay,
+            specs_disallow_repeats,
+            max_group_fitted_limited,
+            max_group_online_limited,
+            max_group_active_limited,
+            overload_td_lvl,
+        } = self;
         // Unmutated and unmodified attribute values
-        self.bandwidth_use = get_bandwidth_use(&self.attrs, attr_consts);
-        self.remote_resist_attr_rid = get_remote_resist_attr_id(&self.attrs, attr_consts, attr_aid_rid_map);
+        *bandwidth_use = get_bandwidth_use(attrs, attr_consts);
+        *remote_resist_attr_rid = get_remote_resist_attr_id(attrs, attr_consts, attr_aid_rid_map);
         // Mobility
-        self.is_mobile = get_is_mobile(&self.attrs, attr_consts);
-        self.entity_mwd = get_entity_has_mwd(&self.attrs, attr_consts);
+        *is_mobile = get_is_mobile(attrs, attr_consts);
+        *entity_mwd = get_entity_has_mwd(attrs, attr_consts);
         // Module cycle flags
-        self.specs_reactivation_delay = specifies_reactivation_delay(&self.attrs, attr_consts);
-        self.specs_disallow_repeats = specifies_disallow_repeats(&self.attrs, attr_consts);
+        *specs_reactivation_delay = specifies_reactivation_delay(attrs, attr_consts);
+        *specs_disallow_repeats = specifies_disallow_repeats(attrs, attr_consts);
         // Is item limitable by an appropriate "max group" limit
-        self.max_group_fitted_limited = get_max_group_fitted_limited(&self.attrs, attr_consts);
-        self.max_group_online_limited = get_max_group_online_limited(&self.attrs, attr_consts);
-        self.max_group_active_limited = get_max_group_active_limited(&self.attrs, attr_consts);
+        *max_group_fitted_limited = get_max_group_fitted_limited(attrs, attr_consts);
+        *max_group_online_limited = get_max_group_online_limited(attrs, attr_consts);
+        *max_group_active_limited = get_max_group_active_limited(attrs, attr_consts);
         // Misc
-        self.overload_td_lvl = get_overload_td_lvl(&self.attrs, attr_consts);
+        *overload_td_lvl = get_overload_td_lvl(attrs, attr_consts);
     }
 }
 

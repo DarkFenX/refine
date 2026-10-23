@@ -197,19 +197,26 @@ impl ShipChangeCmd {
         Ok(self.execute(core_ship))
     }
     fn execute(self, core_ship: &mut rc::ShipMut) -> ChangedItemIdsResp {
-        if let Some(type_id) = self.type_id {
+        let Self {
+            type_id,
+            state,
+            coordinates,
+            movement,
+            effect_modes,
+        } = self;
+        if let Some(type_id) = type_id {
             core_ship.set_type_id(type_id);
         }
-        if let Some(state) = self.state {
+        if let Some(state) = state {
             core_ship.set_state(state);
         }
-        if let Some(coordinates) = self.coordinates {
+        if let Some(coordinates) = coordinates {
             core_ship.set_coordinates(coordinates);
         }
-        if let Some(movement) = self.movement {
+        if let Some(movement) = movement {
             core_ship.set_movement(movement);
         }
-        self.effect_modes.apply(core_ship);
+        effect_modes.apply(core_ship);
         ChangedItemIdsResp::default()
     }
 }

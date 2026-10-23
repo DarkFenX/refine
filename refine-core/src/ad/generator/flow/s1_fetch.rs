@@ -1,6 +1,6 @@
 use crate::{
     ad::{ADataGenerator, ADataWarnings},
-    ed::{EDataCont, EveDataHandler, err::EveDataHandlerError},
+    ed::{EData, EDataCont, EveDataHandler, err::EveDataHandlerError},
     util::LibNamed,
 };
 
@@ -10,19 +10,34 @@ impl ADataGenerator {
         ed_handler: &EveDataHandler,
     ) -> Result<(), EveDataHandlerError> {
         self.e_data = ed_handler.get_impl().get_data()?;
-        record_warnings(&mut self.e_data.items, &mut self.a_data.warnings);
-        record_warnings(&mut self.e_data.groups, &mut self.a_data.warnings);
-        record_warnings(&mut self.e_data.item_lists, &mut self.a_data.warnings);
-        record_warnings(&mut self.e_data.attrs, &mut self.a_data.warnings);
-        record_warnings(&mut self.e_data.item_attrs, &mut self.a_data.warnings);
-        record_warnings(&mut self.e_data.effects, &mut self.a_data.warnings);
-        record_warnings(&mut self.e_data.item_effects, &mut self.a_data.warnings);
-        record_warnings(&mut self.e_data.abils, &mut self.a_data.warnings);
-        record_warnings(&mut self.e_data.item_abils, &mut self.a_data.warnings);
-        record_warnings(&mut self.e_data.buffs, &mut self.a_data.warnings);
-        record_warnings(&mut self.e_data.item_buffs, &mut self.a_data.warnings);
-        record_warnings(&mut self.e_data.muta_items, &mut self.a_data.warnings);
-        record_warnings(&mut self.e_data.muta_attrs, &mut self.a_data.warnings);
+        let EData {
+            items,
+            groups,
+            item_lists,
+            attrs,
+            item_attrs,
+            effects,
+            item_effects,
+            abils,
+            item_abils,
+            buffs,
+            item_buffs,
+            muta_items,
+            muta_attrs,
+        } = &mut self.e_data;
+        record_warnings(items, &mut self.a_data.warnings);
+        record_warnings(groups, &mut self.a_data.warnings);
+        record_warnings(item_lists, &mut self.a_data.warnings);
+        record_warnings(attrs, &mut self.a_data.warnings);
+        record_warnings(item_attrs, &mut self.a_data.warnings);
+        record_warnings(effects, &mut self.a_data.warnings);
+        record_warnings(item_effects, &mut self.a_data.warnings);
+        record_warnings(abils, &mut self.a_data.warnings);
+        record_warnings(item_abils, &mut self.a_data.warnings);
+        record_warnings(buffs, &mut self.a_data.warnings);
+        record_warnings(item_buffs, &mut self.a_data.warnings);
+        record_warnings(muta_items, &mut self.a_data.warnings);
+        record_warnings(muta_attrs, &mut self.a_data.warnings);
         Ok(())
     }
 }

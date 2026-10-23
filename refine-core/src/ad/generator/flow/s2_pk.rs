@@ -2,25 +2,40 @@
 
 use crate::{
     ad::{ADataGenerator, ADataWarnings, generator::rels::Pk},
-    ed::EDataCont,
+    ed::{EData, EDataCont},
     util::{LibNamed, RSet},
 };
 
 impl ADataGenerator {
     pub(in crate::ad::generator) fn dedup_pks(&mut self) {
-        dedup_pks_vec(&mut self.e_data.items, &mut self.a_data.warnings);
-        dedup_pks_vec(&mut self.e_data.groups, &mut self.a_data.warnings);
-        dedup_pks_vec(&mut self.e_data.item_lists, &mut self.a_data.warnings);
-        dedup_pks_vec(&mut self.e_data.attrs, &mut self.a_data.warnings);
-        dedup_pks_vec(&mut self.e_data.item_attrs, &mut self.a_data.warnings);
-        dedup_pks_vec(&mut self.e_data.effects, &mut self.a_data.warnings);
-        dedup_pks_vec(&mut self.e_data.item_effects, &mut self.a_data.warnings);
-        dedup_pks_vec(&mut self.e_data.abils, &mut self.a_data.warnings);
-        dedup_pks_vec(&mut self.e_data.item_abils, &mut self.a_data.warnings);
-        dedup_pks_vec(&mut self.e_data.buffs, &mut self.a_data.warnings);
-        dedup_pks_vec(&mut self.e_data.item_buffs, &mut self.a_data.warnings);
-        dedup_pks_vec(&mut self.e_data.muta_items, &mut self.a_data.warnings);
-        dedup_pks_vec(&mut self.e_data.muta_attrs, &mut self.a_data.warnings);
+        let EData {
+            items,
+            groups,
+            item_lists,
+            attrs,
+            item_attrs,
+            effects,
+            item_effects,
+            abils,
+            item_abils,
+            buffs,
+            item_buffs,
+            muta_items,
+            muta_attrs,
+        } = &mut self.e_data;
+        dedup_pks_vec(items, &mut self.a_data.warnings);
+        dedup_pks_vec(groups, &mut self.a_data.warnings);
+        dedup_pks_vec(item_lists, &mut self.a_data.warnings);
+        dedup_pks_vec(attrs, &mut self.a_data.warnings);
+        dedup_pks_vec(item_attrs, &mut self.a_data.warnings);
+        dedup_pks_vec(effects, &mut self.a_data.warnings);
+        dedup_pks_vec(item_effects, &mut self.a_data.warnings);
+        dedup_pks_vec(abils, &mut self.a_data.warnings);
+        dedup_pks_vec(item_abils, &mut self.a_data.warnings);
+        dedup_pks_vec(buffs, &mut self.a_data.warnings);
+        dedup_pks_vec(item_buffs, &mut self.a_data.warnings);
+        dedup_pks_vec(muta_items, &mut self.a_data.warnings);
+        dedup_pks_vec(muta_attrs, &mut self.a_data.warnings);
     }
 }
 

@@ -109,19 +109,61 @@ impl ItemStatsOptionsResolved {
         }
     }
     pub(super) fn complete_extended_defaults(&mut self) {
-        StatOptionInt::complete_blank_with_default(&mut self.dmg);
-        StatOptionExt::complete_blank_with_default(&mut self.mps);
-        StatOptionInt::complete_blank_with_default(&mut self.outgoing_nps);
-        StatOptionInt::complete_blank_with_default(&mut self.outgoing_rps);
-        StatOptionInt::complete_blank_with_default(&mut self.outgoing_cps);
-        StatOptionExt::complete_blank_with_default(&mut self.ehp);
-        StatOptionExt::complete_blank_with_default(&mut self.rps);
-        StatOptionExt::complete_blank_with_default(&mut self.erps);
-        StatOptionInt::complete_blank_with_default(&mut self.cap_balance);
-        StatOptionInt::complete_blank_with_default(&mut self.cap_sim);
-        StatOptionExt::complete_blank_with_default(&mut self.incoming_jam);
-        StatOptionExt::complete_blank_with_default(&mut self.mass);
-        StatOptionExt::complete_blank_with_default(&mut self.jump);
+        let Self {
+            dmg,
+            mps,
+            outgoing_nps,
+            outgoing_rps,
+            outgoing_cps,
+            ehp,
+            rps,
+            erps,
+            cap_balance,
+            cap_sim,
+            incoming_jam,
+            mass,
+            jump,
+            // Flags have no extended options to complete
+            resists: _,
+            hp: _,
+            wc_ehp: _,
+            breach_resist: _,
+            cap_amount: _,
+            neut_resist: _,
+            locks: _,
+            lock_range: _,
+            scan_res: _,
+            sensors: _,
+            dscan_range: _,
+            probing_size: _,
+            speed: _,
+            agility: _,
+            align_time: _,
+            sig_radius: _,
+            warp_speed: _,
+            max_warp_range: _,
+            drone_control_range: _,
+            can_warp: _,
+            can_jump_gate: _,
+            can_jump_wormhole: _,
+            can_jump_drive: _,
+            can_dock_station: _,
+            can_dock_citadel: _,
+            can_tether: _,
+        } = self;
+        StatOptionInt::complete_blank_with_default(dmg);
+        StatOptionExt::complete_blank_with_default(mps);
+        StatOptionInt::complete_blank_with_default(outgoing_nps);
+        StatOptionInt::complete_blank_with_default(outgoing_rps);
+        StatOptionInt::complete_blank_with_default(outgoing_cps);
+        StatOptionExt::complete_blank_with_default(ehp);
+        StatOptionExt::complete_blank_with_default(rps);
+        StatOptionExt::complete_blank_with_default(erps);
+        StatOptionInt::complete_blank_with_default(cap_balance);
+        StatOptionInt::complete_blank_with_default(cap_sim);
+        StatOptionExt::complete_blank_with_default(incoming_jam);
+        StatOptionExt::complete_blank_with_default(mass);
+        StatOptionExt::complete_blank_with_default(jump);
     }
 }
 
@@ -130,50 +172,91 @@ impl ItemStatsOptionsResolved {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl ItemStatsOptionsResolved {
     pub(in crate::stats) fn is_any_stat_requested(&self) -> bool {
+        let Self {
+            dmg,
+            mps,
+            outgoing_nps,
+            outgoing_rps,
+            outgoing_cps,
+            resists,
+            hp,
+            ehp,
+            wc_ehp,
+            rps,
+            erps,
+            breach_resist,
+            cap_amount,
+            cap_balance,
+            cap_sim,
+            neut_resist,
+            locks,
+            lock_range,
+            scan_res,
+            sensors,
+            dscan_range,
+            probing_size,
+            incoming_jam,
+            speed,
+            agility,
+            align_time,
+            sig_radius,
+            mass,
+            warp_speed,
+            max_warp_range,
+            jump,
+            drone_control_range,
+            can_warp,
+            can_jump_gate,
+            can_jump_wormhole,
+            can_jump_drive,
+            can_dock_station,
+            can_dock_citadel,
+            can_tether,
+        } = self;
         // Output
-        self.dmg.is_some()
-            || self.mps.is_some()
-            || self.outgoing_nps.is_some()
-            || self.outgoing_rps.is_some()
-            || self.outgoing_cps.is_some()
+        dmg.is_some()
+            || mps.is_some()
+            || outgoing_nps.is_some()
+            || outgoing_rps.is_some()
+            || outgoing_cps.is_some()
             // Tank
-            || self.resists
-            || self.hp
-            || self.ehp.is_some()
-            || self.wc_ehp
-            || self.rps.is_some()
-            || self.erps.is_some()
-            || self.breach_resist
+            || *resists
+            || *hp
+            || ehp.is_some()
+            || *wc_ehp
+            || rps.is_some()
+            || erps.is_some()
+            || *breach_resist
             // Cap
-            || self.cap_amount
-            || self.cap_balance.is_some()
-            || self.cap_sim.is_some()
-            || self.neut_resist
+            || *cap_amount
+            || cap_balance.is_some()
+            || cap_sim.is_some()
+            || *neut_resist
             // Sensors
-            || self.locks
-            || self.lock_range
-            || self.scan_res
-            || self.sensors
-            || self.dscan_range
-            || self.probing_size
-            || self.incoming_jam.is_some()
+            || *locks
+            || *lock_range
+            || *scan_res
+            || *sensors
+            || *dscan_range
+            || *probing_size
+            || incoming_jam.is_some()
             // Mobility
-            || self.speed
-            || self.agility
-            || self.align_time
-            || self.sig_radius
-            || self.mass.is_some()
-            || self.warp_speed
-            || self.max_warp_range
-            || self.jump.is_some()
+            || *speed
+            || *agility
+            || *align_time
+            || *sig_radius
+            || mass.is_some()
+            || *warp_speed
+            || *max_warp_range
+            || jump.is_some()
             // Misc
-            || self.drone_control_range
-            || self.can_warp
-            || self.can_jump_gate
-            || self.can_jump_wormhole
-            || self.can_jump_drive
-            || self.can_dock_station
-            || self.can_dock_citadel
-            || self.can_tether
+            || *drone_control_range
+            || *can_warp
+            || *can_jump_gate
+            || *can_jump_wormhole
+            || *can_jump_drive
+            || *can_dock_station
+            || *can_dock_citadel
+            || *can_tether
     }
 }

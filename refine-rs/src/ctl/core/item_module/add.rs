@@ -152,22 +152,34 @@ impl<F, I> ModuleAddCmdCtxFitGen<F, I> {
 
 impl ModuleAddCmd {
     pub(in crate::ctl) fn execute(self, core_fit: &mut rc::FitMut) -> Result<AddedItemIdsResp, ModuleAddError> {
-        let mut core_module = core_fit.add_module(self.rack, self.add_mode, self.type_id, self.state);
-        if let Some(mutation) = self.mutation.as_ref() {
+        let Self {
+            rack,
+            add_mode,
+            type_id,
+            state,
+            mutation,
+            charge_type_id,
+            spool_override,
+            optional_reload_override,
+            proj_item_ids,
+            effect_modes,
+        } = self;
+        let mut core_module = core_fit.add_module(rack, add_mode, type_id, state);
+        if let Some(mutation) = mutation.as_ref() {
             let mut core_mutation = core_module.mutate(mutation.mutator_id).unwrap();
             mutation.apply_attrs(&mut core_mutation);
         }
-        if let Some(charge_type_id) = self.charge_type_id {
+        if let Some(charge_type_id) = charge_type_id {
             core_module.set_charge_type_id(charge_type_id);
         }
-        if let Some(spool_override) = self.spool_override {
+        if let Some(spool_override) = spool_override {
             core_module.set_spool_override(Some(spool_override));
         }
-        if let Some(optional_reload_override) = self.optional_reload_override {
+        if let Some(optional_reload_override) = optional_reload_override {
             core_module.set_optional_reload_override(Some(optional_reload_override));
         }
-        self.effect_modes.apply(&mut core_module);
-        for projectee_item_id in self.proj_item_ids.iter() {
+        effect_modes.apply(&mut core_module);
+        for projectee_item_id in proj_item_ids.iter() {
             core_module.add_proj(projectee_item_id)?;
         }
         Ok(AddedItemIdsResp::from_core_module(core_module))

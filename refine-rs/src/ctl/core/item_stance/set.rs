@@ -89,11 +89,16 @@ impl<F> StanceSetCmdCtxFitGen<F> {
 
 impl StanceSetCmd {
     pub(in crate::ctl) fn execute(self, core_fit: &mut rc::FitMut) -> AddedItemIdsResp {
-        let mut core_stance = core_fit.set_stance(self.type_id);
-        if let Some(state) = self.state {
+        let Self {
+            type_id,
+            state,
+            effect_modes,
+        } = self;
+        let mut core_stance = core_fit.set_stance(type_id);
+        if let Some(state) = state {
             core_stance.set_state(state);
         }
-        self.effect_modes.apply(&mut core_stance);
+        effect_modes.apply(&mut core_stance);
         AddedItemIdsResp::from_core_stance(core_stance)
     }
 }

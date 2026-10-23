@@ -102,15 +102,21 @@ impl<I> BoosterChangeCmdCtxItemGen<I> {
 
 impl BoosterChangeCmd {
     pub(in crate::ctl) fn execute(self, core_item: &mut rc::ItemMut) -> Result<ChangedItemIdsResp, BoosterChangeError> {
+        let Self {
+            type_id,
+            state,
+            side_effects,
+            effect_modes,
+        } = self;
         let core_booster = core_item.dc_booster()?;
-        if let Some(type_id) = self.type_id {
+        if let Some(type_id) = type_id {
             core_booster.set_type_id(type_id);
         }
-        if let Some(state) = self.state {
+        if let Some(state) = state {
             core_booster.set_state(state);
         }
-        self.side_effects.apply(core_booster);
-        self.effect_modes.apply(core_booster);
+        side_effects.apply(core_booster);
+        effect_modes.apply(core_booster);
         Ok(ChangedItemIdsResp::default())
     }
 }
