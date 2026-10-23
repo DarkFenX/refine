@@ -62,7 +62,8 @@ pub struct ModuleRacks {
 }
 impl ModuleRacks {
     pub fn is_empty(&self) -> bool {
-        self.high.is_empty() && self.mid.is_empty() && self.low.is_empty()
+        let Self { high, mid, low } = self;
+        high.is_empty() && mid.is_empty() && low.is_empty()
     }
 }
 

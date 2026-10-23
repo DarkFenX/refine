@@ -10,10 +10,13 @@ use crate::{
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl HasImpact for DmgKinds<PValue> {
     fn has_impact(&self) -> bool {
-        self.em != PValue::ZERO
-            || self.thermal != PValue::ZERO
-            || self.kinetic != PValue::ZERO
-            || self.explosive != PValue::ZERO
+        let Self {
+            em,
+            thermal,
+            kinetic,
+            explosive,
+        } = self;
+        *em != PValue::ZERO || *thermal != PValue::ZERO || *kinetic != PValue::ZERO || *explosive != PValue::ZERO
     }
 }
 impl InstanceDuration for DmgKinds<PValue> {
@@ -53,10 +56,16 @@ where
     T: std::ops::AddAssign<T>,
 {
     fn add_assign(&mut self, rhs: DmgKinds<T>) {
-        self.em += rhs.em;
-        self.thermal += rhs.thermal;
-        self.kinetic += rhs.kinetic;
-        self.explosive += rhs.explosive;
+        let Self {
+            em,
+            thermal,
+            kinetic,
+            explosive,
+        } = self;
+        *em += rhs.em;
+        *thermal += rhs.thermal;
+        *kinetic += rhs.kinetic;
+        *explosive += rhs.explosive;
     }
 }
 impl<T> std::ops::Mul<PValue> for DmgKinds<T>
@@ -78,10 +87,16 @@ where
     T: std::ops::MulAssign<PValue>,
 {
     fn mul_assign(&mut self, rhs: PValue) {
-        self.em *= rhs;
-        self.thermal *= rhs;
-        self.kinetic *= rhs;
-        self.explosive *= rhs;
+        let Self {
+            em,
+            thermal,
+            kinetic,
+            explosive,
+        } = self;
+        *em *= rhs;
+        *thermal *= rhs;
+        *kinetic *= rhs;
+        *explosive *= rhs;
     }
 }
 impl<T> std::ops::Div<PValue> for DmgKinds<T>

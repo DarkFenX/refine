@@ -32,15 +32,25 @@ pub struct Affector {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl Modification {
     pub(in crate::api) fn from_calc(calc_mod_info: CalcModInfo, u_data: &UData) -> Self {
+        let CalcModInfo {
+            op,
+            initial_str,
+            range_mult,
+            resist_mult,
+            stacking_mult,
+            applied_str,
+            affectors,
+            // Not exposed
+            effect_rid: _,
+        } = calc_mod_info;
         Self {
-            op: calc_mod_info.op,
-            initial_str: calc_mod_info.initial_str,
-            range_mult: calc_mod_info.range_mult,
-            resist_mult: calc_mod_info.resist_mult,
-            stacking_mult: calc_mod_info.stacking_mult,
-            applied_str: calc_mod_info.applied_str,
-            affectors: calc_mod_info
-                .affectors
+            op,
+            initial_str,
+            range_mult,
+            resist_mult,
+            stacking_mult,
+            applied_str,
+            affectors: affectors
                 .into_iter()
                 .map(|calc_affector| Affector::from_calc(calc_affector, u_data))
                 .collect(),
@@ -50,11 +60,10 @@ impl Modification {
 
 impl Affector {
     pub(in crate::api) fn from_calc(calc_affector: CalcModInfoAffector, u_data: &UData) -> Self {
+        let CalcModInfoAffector { item_uid, attr_rid } = calc_affector;
         Self {
-            item_id: u_data.items.ext_id_by_int_id(calc_affector.item_uid),
-            attr_id: calc_affector
-                .attr_rid
-                .map(|attr_rid| AttrId::from_aid(u_data.r_data.get_attr_by_rid(attr_rid).aid)),
+            item_id: u_data.items.ext_id_by_int_id(item_uid),
+            attr_id: attr_rid.map(|attr_rid| AttrId::from_aid(u_data.r_data.get_attr_by_rid(attr_rid).aid)),
         }
     }
 }

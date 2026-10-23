@@ -1,4 +1,4 @@
-use crate::ad::AData;
+use crate::ad::{AData, ADataWarnings};
 
 /// Info about data source: how it was made, and what warnings were encountered while making it.
 #[derive(Clone)]
@@ -71,14 +71,24 @@ pub struct SrcWarnings {
 }
 impl SrcWarnings {
     pub fn is_empty(&self) -> bool {
-        self.eve_data_fetch.is_empty()
-            && self.adg_pk_duplicates.is_empty()
-            && self.adg_cleanup.is_empty()
-            && self.adg_validation.is_empty()
-            && self.adg_conversion_main.is_empty()
-            && self.adg_customization.is_empty()
-            && self.adg_conversion_aux.is_empty()
-            && self.cache_write.is_none()
+        let Self {
+            eve_data_fetch,
+            adg_pk_duplicates,
+            adg_cleanup,
+            adg_validation,
+            adg_conversion_main,
+            adg_customization,
+            adg_conversion_aux,
+            cache_write,
+        } = self;
+        eve_data_fetch.is_empty()
+            && adg_pk_duplicates.is_empty()
+            && adg_cleanup.is_empty()
+            && adg_validation.is_empty()
+            && adg_conversion_main.is_empty()
+            && adg_customization.is_empty()
+            && adg_conversion_aux.is_empty()
+            && cache_write.is_none()
     }
 }
 
@@ -87,14 +97,23 @@ impl SrcWarnings {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl SrcWarnings {
     pub(super) fn from_adapted_warnings(a_data: &mut AData) -> Self {
+        let ADataWarnings {
+            data_fetch,
+            pk_duplicates,
+            cleanup,
+            validation,
+            conversion_main,
+            customization,
+            conversion_aux,
+        } = std::mem::take(&mut a_data.warnings);
         Self {
-            eve_data_fetch: std::mem::take(&mut a_data.warnings.data_fetch),
-            adg_pk_duplicates: std::mem::take(&mut a_data.warnings.pk_duplicates),
-            adg_cleanup: std::mem::take(&mut a_data.warnings.cleanup),
-            adg_validation: std::mem::take(&mut a_data.warnings.validation),
-            adg_conversion_main: std::mem::take(&mut a_data.warnings.conversion_main),
-            adg_customization: std::mem::take(&mut a_data.warnings.customization),
-            adg_conversion_aux: std::mem::take(&mut a_data.warnings.conversion_aux),
+            eve_data_fetch: data_fetch,
+            adg_pk_duplicates: pk_duplicates,
+            adg_cleanup: cleanup,
+            adg_validation: validation,
+            adg_conversion_main: conversion_main,
+            adg_customization: customization,
+            adg_conversion_aux: conversion_aux,
             cache_write: None,
         }
     }

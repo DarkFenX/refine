@@ -36,45 +36,65 @@ pub struct StatDmgEntryBreacherRaw {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl StatDmg {
     pub(in crate::stats) fn from_core(core_stat: rc::stats::StatDmg) -> Self {
+        let rc::stats::StatDmg { dps, volley } = core_stat;
         Self {
-            dps: StatDmgEntry::from_core(core_stat.dps),
-            volley: StatDmgEntry::from_core(core_stat.volley),
+            dps: StatDmgEntry::from_core(dps),
+            volley: StatDmgEntry::from_core(volley),
         }
     }
     pub(in crate::stats) fn from_core_applied(core_stat: rc::stats::StatDmgApplied) -> Self {
+        let rc::stats::StatDmgApplied { dps, volley } = core_stat;
         Self {
-            dps: StatDmgEntry::from_core_applied(core_stat.dps),
-            volley: StatDmgEntry::from_core_applied(core_stat.volley),
+            dps: StatDmgEntry::from_core_applied(dps),
+            volley: StatDmgEntry::from_core_applied(volley),
         }
     }
 }
 
 impl StatDmgEntry {
     fn from_core(core_stat: rc::stats::StatDmgEntry) -> Self {
+        let rc::stats::StatDmgEntry {
+            em,
+            thermal,
+            kinetic,
+            explosive,
+            breacher,
+        } = core_stat;
         Self {
-            em: core_stat.em,
-            thermal: core_stat.thermal,
-            kinetic: core_stat.kinetic,
-            explosive: core_stat.explosive,
-            breacher: StatDmgEntryBreacher::from_core(core_stat.breacher),
+            em,
+            thermal,
+            kinetic,
+            explosive,
+            breacher: StatDmgEntryBreacher::from_core(breacher),
         }
     }
     fn from_core_applied(core_stat: rc::stats::StatDmgEntryApplied) -> Self {
+        let rc::stats::StatDmgEntryApplied {
+            em,
+            thermal,
+            kinetic,
+            explosive,
+            breacher,
+        } = core_stat;
         Self {
-            em: core_stat.em,
-            thermal: core_stat.thermal,
-            kinetic: core_stat.kinetic,
-            explosive: core_stat.explosive,
-            breacher: StatDmgEntryBreacher::from_core_applied(core_stat.breacher),
+            em,
+            thermal,
+            kinetic,
+            explosive,
+            breacher: StatDmgEntryBreacher::from_core_applied(breacher),
         }
     }
 }
 
 impl StatDmgEntryBreacher {
     fn from_core(core_stat: rc::stats::StatDmgEntryBreacher) -> Self {
+        let rc::stats::StatDmgEntryBreacher {
+            absolute_max,
+            relative_max,
+        } = core_stat;
         Self::Raw(StatDmgEntryBreacherRaw {
-            absolute_max: core_stat.absolute_max,
-            relative_max: core_stat.relative_max,
+            absolute_max,
+            relative_max,
         })
     }
     fn from_core_applied(core_value: PValue) -> Self {

@@ -4,7 +4,10 @@ use crate::{
         AEffectModStrength, AEffectModifier, AEffectModifiers, AEffectStopIds, AEffectWeaponsTimerApplication,
         AEffects, AItemGrpId, AItemId, AModifierSrq, AOp, AState, generator::get_abil_effect,
     },
-    ed::{EAbil, EAttrId, EData, EEffectCatId, EEffectId, EEffectMod, EEffectModArg, EItemGrpId, EItemId, EPrimitive},
+    ed::{
+        EAbil, EAttrId, EData, EEffect, EEffectCatId, EEffectId, EEffectMod, EEffectModArg, EItemGrpId, EItemId,
+        EPrimitive,
+    },
     util::{RMap, RSet},
 };
 
@@ -12,7 +15,21 @@ impl ADataGenerator {
     pub(super) fn conv_effects(&mut self) {
         let mut a_effects = RMap::new();
         for e_effect in self.e_data.effects.data.iter() {
-            let state = match e_effect.category_id {
+            let EEffect {
+                id,
+                category_id,
+                is_assistance,
+                is_offensive,
+                discharge_attr_id,
+                duration_attr_id,
+                range_attr_id,
+                falloff_attr_id,
+                tracking_attr_id,
+                usage_chance_attr_id,
+                resist_attr_id,
+                mods,
+            } = e_effect;
+            let state = match *category_id {
                 EEffectCatId::PASSIVE => AState::Offline,
                 EEffectCatId::ACTIVE => AState::Active,
                 EEffectCatId::TARGET => AState::Active,
@@ -20,35 +37,35 @@ impl ADataGenerator {
                 EEffectCatId::OVERLOAD => AState::Overload,
                 EEffectCatId::SYSTEM => AState::Offline,
                 _ => {
-                    let warning = format!("{} uses unknown effect category {}", e_effect, e_effect.category_id);
+                    let warning = format!("{} uses unknown effect category {}", e_effect, category_id);
                     self.a_data.warnings.conversion_main.push(warning);
                     continue;
                 }
             };
             let mut a_effect = AEffect {
-                id: AEffectId::from_eid(e_effect.id),
-                category: AEffectCatId::from_eid(e_effect.category_id),
+                id: AEffectId::from_eid(*id),
+                category: AEffectCatId::from_eid(*category_id),
                 state,
                 modifiers: AEffectModifiers::new(),
                 stopped_effect_ids: AEffectStopIds::new(),
-                buff: self.support.eff_buff_map.get(&e_effect.id).cloned(),
-                weapons_timer: match e_effect.is_offensive {
+                buff: self.support.eff_buff_map.get(id).cloned(),
+                weapons_timer: match *is_offensive {
                     true => Some(AEffectWeaponsTimerApplication::Effect),
                     false => None,
                 },
-                is_assist: e_effect.is_assistance,
-                is_offense: e_effect.is_offensive,
+                is_assist: *is_assistance,
+                is_offense: *is_offensive,
                 banned_in_hisec: false,
                 banned_in_lowsec: false,
-                discharge_attr_id: e_effect.discharge_attr_id.map(AAttrId::from_eid),
-                duration_attr_id: e_effect.duration_attr_id.map(AAttrId::from_eid),
-                range_attr_id: e_effect.range_attr_id.map(AAttrId::from_eid),
-                falloff_attr_id: e_effect.falloff_attr_id.map(AAttrId::from_eid),
-                track_attr_id: e_effect.tracking_attr_id.map(AAttrId::from_eid),
-                chance_attr_id: e_effect.usage_chance_attr_id.map(AAttrId::from_eid),
-                resist_attr_id: e_effect.resist_attr_id.map(AAttrId::from_eid),
+                discharge_attr_id: discharge_attr_id.map(AAttrId::from_eid),
+                duration_attr_id: duration_attr_id.map(AAttrId::from_eid),
+                range_attr_id: range_attr_id.map(AAttrId::from_eid),
+                falloff_attr_id: falloff_attr_id.map(AAttrId::from_eid),
+                track_attr_id: tracking_attr_id.map(AAttrId::from_eid),
+                chance_attr_id: usage_chance_attr_id.map(AAttrId::from_eid),
+                resist_attr_id: resist_attr_id.map(AAttrId::from_eid),
             };
-            for e_modifier in e_effect.mods.iter() {
+            for e_modifier in mods.iter() {
                 // Process effect stoppers first
                 match extract_stopper(e_modifier) {
                     Ok(Some(effect_id)) => {

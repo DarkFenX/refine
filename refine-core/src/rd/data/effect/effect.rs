@@ -108,12 +108,33 @@ impl REffect {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl REffect {
     pub(in crate::rd::data) fn from_a_effect(effect_rid: REffectId, a_effect: &AEffect) -> Self {
-        let n_effect = N_EFFECT_MAP.get(&a_effect.id);
-        let state = RState::from_a_state(&a_effect.state);
+        let AEffect {
+            id,
+            category,
+            state,
+            weapons_timer,
+            is_assist,
+            banned_in_hisec,
+            banned_in_lowsec,
+            // Converted when runtime data is filled, since they refer to other entities
+            modifiers: _,
+            stopped_effect_ids: _,
+            buff: _,
+            is_offense: _,
+            discharge_attr_id: _,
+            duration_attr_id: _,
+            range_attr_id: _,
+            falloff_attr_id: _,
+            track_attr_id: _,
+            chance_attr_id: _,
+            resist_attr_id: _,
+        } = a_effect;
+        let n_effect = N_EFFECT_MAP.get(id);
+        let state = RState::from_a_state(state);
         Self {
-            aid: a_effect.id,
+            aid: *id,
             rid: effect_rid,
-            category: a_effect.category,
+            category: *category,
             state,
             charge: n_effect
                 .and_then(|n| n.charge.as_ref())
@@ -122,10 +143,10 @@ impl REffect {
             cloaks_carrier: n_effect.map(|n| n.cloaks_carrier).unwrap_or(false),
             kills_item: n_effect.map(|n| n.kills_item.is_some()).unwrap_or(false),
             dmg_kind: n_effect.and_then(|n| n.dmg_kind),
-            weapons_timer: a_effect.weapons_timer.is_some() && state == RState::Active,
-            is_assist: a_effect.is_assist && state == RState::Active,
-            banned_in_hisec: a_effect.banned_in_hisec && state == RState::Active,
-            banned_in_lowsec: a_effect.banned_in_lowsec && state == RState::Active,
+            weapons_timer: weapons_timer.is_some() && state == RState::Active,
+            is_assist: *is_assist && state == RState::Active,
+            banned_in_hisec: *banned_in_hisec && state == RState::Active,
+            banned_in_lowsec: *banned_in_lowsec && state == RState::Active,
             disallows: n_effect
                 .filter(|_| state == RState::Active)
                 .map(REffectDisallows::from_n_effect)

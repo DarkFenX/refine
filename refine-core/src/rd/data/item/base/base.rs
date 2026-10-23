@@ -126,24 +126,45 @@ pub(crate) struct RItemBase {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl RItemBase {
     pub(in crate::rd::data::item) fn from_a_item(a_item: &AItem) -> Self {
+        let AItem {
+            id,
+            grp_id,
+            cat_id,
+            abil_ids,
+            srqs,
+            max_state,
+            val_fitted_group_id,
+            val_online_group_id,
+            val_active_group_id,
+            is_cloak,
+            is_ice_harvester,
+            disallowed_in_wspace,
+            enables_portal,
+            // Converted into item flex data
+            attrs: _,
+            // Converted when runtime data is filled, since they refer to other entities
+            effects: _,
+            defeff_id: _,
+            proj_buff_item_list_ids: _,
+            fleet_buff_item_list_ids: _,
+        } = a_item;
         Self {
-            aid: a_item.id,
-            grp_id: a_item.grp_id,
-            cat_id: a_item.cat_id,
-            abil_ids: a_item.abil_ids.iter().copied().collect(),
-            srqs: a_item
-                .srqs
+            aid: *id,
+            grp_id: *grp_id,
+            cat_id: *cat_id,
+            abil_ids: abil_ids.iter().copied().collect(),
+            srqs: srqs
                 .iter()
                 .map(|a_skill_req| (a_skill_req.id, SkillLevel::from_a_skill_level(a_skill_req.level)))
                 .collect(),
-            is_cloak: a_item.is_cloak,
-            is_ice_harvester: a_item.is_ice_harvester,
-            enables_portal: a_item.enables_portal,
-            val_fitted_group_id: a_item.val_fitted_group_id,
-            val_online_group_id: a_item.val_online_group_id,
-            val_active_group_id: a_item.val_active_group_id,
-            max_state: RState::from_a_state(&a_item.max_state),
-            disallowed_in_wspace: a_item.disallowed_in_wspace,
+            is_cloak: *is_cloak,
+            is_ice_harvester: *is_ice_harvester,
+            enables_portal: *enables_portal,
+            val_fitted_group_id: *val_fitted_group_id,
+            val_online_group_id: *val_online_group_id,
+            val_active_group_id: *val_active_group_id,
+            max_state: RState::from_a_state(max_state),
+            disallowed_in_wspace: *disallowed_in_wspace,
             // Fields which depend on data not available on adapted item
             effects: Default::default(),
             defeff_rid: Default::default(),

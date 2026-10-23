@@ -128,16 +128,25 @@ pub(crate) struct StatCapBlcSrcKindsInt {
 }
 impl StatCapBlcSrcKindsInt {
     pub(crate) fn from_pub(pub_opts: &StatCapBlcSrcKinds, u_data: &UData) -> Result<Self, ProjecteeUidError> {
+        let StatCapBlcSrcKinds {
+            default,
+            regen,
+            cap_injectors,
+            nosfs,
+            consumers,
+            incoming_transfers,
+            incoming_neuts,
+        } = pub_opts;
         Ok(Self {
-            regen: pub_opts.regen.is_enabled(pub_opts.default),
-            cap_injectors: pub_opts.cap_injectors.is_enabled(pub_opts.default),
-            nosfs: match pub_opts.nosfs.is_enabled(pub_opts.default) {
+            regen: regen.is_enabled(*default),
+            cap_injectors: cap_injectors.is_enabled(*default),
+            nosfs: match nosfs.is_enabled(*default) {
                 Some(pub_opt) => Some(StatCapBlcNosfsOptionsInt::from_pub(pub_opt, u_data)?),
                 None => None,
             },
-            consumers: pub_opts.consumers.is_enabled(pub_opts.default),
-            incoming_transfers: pub_opts.incoming_transfers.is_enabled(pub_opts.default),
-            incoming_neuts: pub_opts.incoming_neuts.is_enabled(pub_opts.default),
+            consumers: consumers.is_enabled(*default),
+            incoming_transfers: incoming_transfers.is_enabled(*default),
+            incoming_neuts: incoming_neuts.is_enabled(*default),
         })
     }
 }

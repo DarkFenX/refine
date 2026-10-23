@@ -6,10 +6,18 @@ use crate::{nd::NEffectEcmAmount, num::PValue};
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl HasImpact for NEffectEcmAmount {
     fn has_impact(&self) -> bool {
-        self.radar != PValue::ZERO
-            || self.magnetometric != PValue::ZERO
-            || self.gravimetric != PValue::ZERO
-            || self.ladar != PValue::ZERO
+        let Self {
+            radar,
+            magnetometric,
+            gravimetric,
+            ladar,
+            // Jam duration without jam strength has no impact
+            duration: _,
+        } = self;
+        *radar != PValue::ZERO
+            || *magnetometric != PValue::ZERO
+            || *gravimetric != PValue::ZERO
+            || *ladar != PValue::ZERO
     }
 }
 impl InstanceDuration for NEffectEcmAmount {
@@ -42,9 +50,16 @@ impl std::ops::Mul<PValue> for NEffectEcmAmount {
 }
 impl std::ops::MulAssign<PValue> for NEffectEcmAmount {
     fn mul_assign(&mut self, rhs: PValue) {
-        self.radar *= rhs;
-        self.magnetometric *= rhs;
-        self.gravimetric *= rhs;
-        self.ladar *= rhs;
+        let Self {
+            radar,
+            magnetometric,
+            gravimetric,
+            ladar,
+            duration: _,
+        } = self;
+        *radar *= rhs;
+        *magnetometric *= rhs;
+        *gravimetric *= rhs;
+        *ladar *= rhs;
     }
 }

@@ -31,7 +31,15 @@ impl DpsProfile {
         }
     }
     pub(crate) fn get_sum_regular(&self) -> PValue {
-        self.em + self.thermal + self.kinetic + self.explosive
+        let Self {
+            em,
+            thermal,
+            kinetic,
+            explosive,
+            // Not a regular damage type
+            breacher: _,
+        } = self;
+        *em + *thermal + *kinetic + *explosive
     }
 }
 

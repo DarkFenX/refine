@@ -6,6 +6,7 @@ use crate::{
         AItemBuffItemLists, AItemCatId, AItemEffect, AItemEffects, AItemGrpId, AItemId, AItemSkillReq, AItemSkillReqs,
         AItems, ASkillLevel, AState, AValue, generator::get_abil_effect,
     },
+    ed::{EItem, EItemAbil, EItemAttr, EItemEffect},
     util::RMap,
 };
 
@@ -22,18 +23,27 @@ impl ADataGenerator {
             .collect();
         let mut a_items = RMap::new();
         for e_item in self.e_data.items.data.iter() {
+            let EItem {
+                id,
+                group_id,
+                // Moved to item attributes during normalization
+                capacity: _,
+                mass: _,
+                radius: _,
+                volume: _,
+            } = e_item;
             // Item category ID
-            let Some(&cat_eid) = self.support.grp_cat_map.get(&e_item.group_id) else {
+            let Some(&cat_eid) = self.support.grp_cat_map.get(group_id) else {
                 let warning = format!("unable to find category ID for {e_item}");
                 self.a_data.warnings.conversion_main.push(warning);
                 continue;
             };
             // Item default effect
-            let defeff_eid = defeff_map.get(&e_item.id).copied();
+            let defeff_eid = defeff_map.get(id).copied();
             // Item construction
             let a_item = AItem {
-                id: AItemId::from_eid(e_item.id),
-                grp_id: AItemGrpId::from_eid(e_item.group_id),
+                id: AItemId::from_eid(*id),
+                grp_id: AItemGrpId::from_eid(*group_id),
                 cat_id: AItemCatId::from_eid(cat_eid),
                 attrs: AItemAttrs::new(),
                 effects: AItemEffects::new(),
@@ -57,36 +67,55 @@ impl ADataGenerator {
         }
         // Item attributes
         for e_item_attr in self.e_data.item_attrs.data.iter() {
-            if let Some(a_item) = a_items.get_mut(&AItemId::from_eid(e_item_attr.item_id)) {
+            let EItemAttr {
+                item_id,
+                attr_id,
+                value,
+            } = e_item_attr;
+            if let Some(a_item) = a_items.get_mut(&AItemId::from_eid(*item_id)) {
                 a_item.attrs.insert(AItemAttr {
-                    id: AAttrId::from_eid(e_item_attr.attr_id),
-                    value: AValue::from_efloat(e_item_attr.value),
+                    id: AAttrId::from_eid(*attr_id),
+                    value: AValue::from_efloat(*value),
                 });
             }
         }
         // Item effects & extended effect data from abilities
         for e_item_effect in self.e_data.item_effects.data.iter() {
-            if let Some(a_item) = a_items.get_mut(&AItemId::from_eid(e_item_effect.item_id)) {
+            let EItemEffect {
+                item_id,
+                effect_id,
+                // Used to build default effect map above
+                is_default: _,
+            } = e_item_effect;
+            if let Some(a_item) = a_items.get_mut(&AItemId::from_eid(*item_id)) {
                 a_item.effects.insert(AItemEffect {
-                    id: AEffectId::from_eid(e_item_effect.effect_id),
+                    id: AEffectId::from_eid(*effect_id),
                     ..
                 });
             }
         }
         for e_item_abil in self.e_data.item_abils.data.iter() {
-            let Some(a_item) = a_items.get_mut(&AItemId::from_eid(e_item_abil.item_id)) else {
+            let EItemAbil {
+                item_id,
+                abil_id,
+                cooldown,
+                charge_count,
+                charge_rearm_duration,
+                // Defines order of item abilities, used below
+                slot: _,
+            } = e_item_abil;
+            let Some(a_item) = a_items.get_mut(&AItemId::from_eid(*item_id)) else {
                 continue;
             };
-            let Some(effect_eid) = get_abil_effect(e_item_abil.abil_id) else {
+            let Some(effect_eid) = get_abil_effect(*abil_id) else {
                 continue;
             };
             let Some(a_item_eff_data) = a_item.effects.get_mut(&AEffectId::from_eid(effect_eid)) else {
                 continue;
             };
-            a_item_eff_data.data.ability_cooldown = e_item_abil.cooldown.map(AValue::from_efloat);
-            a_item_eff_data.data.ability_charge_count = e_item_abil.charge_count.map(ACount::from_eint_clamped);
-            a_item_eff_data.data.ability_charge_reload_duration =
-                e_item_abil.charge_rearm_duration.map(AValue::from_efloat);
+            a_item_eff_data.data.ability_cooldown = cooldown.map(AValue::from_efloat);
+            a_item_eff_data.data.ability_charge_count = charge_count.map(ACount::from_eint_clamped);
+            a_item_eff_data.data.ability_charge_reload_duration = charge_rearm_duration.map(AValue::from_efloat);
         }
         // Item abilities
         for e_item_abil in self
@@ -96,8 +125,17 @@ impl ADataGenerator {
             .iter()
             .sorted_unstable_by_key(|e_item_abil| e_item_abil.slot.into_i32())
         {
-            if let Some(a_item) = a_items.get_mut(&AItemId::from_eid(e_item_abil.item_id)) {
-                a_item.abil_ids.insert(AAbilId::from_eid(e_item_abil.abil_id));
+            let EItemAbil {
+                item_id,
+                abil_id,
+                slot: _,
+                // Applied to item effect data above
+                cooldown: _,
+                charge_count: _,
+                charge_rearm_duration: _,
+            } = e_item_abil;
+            if let Some(a_item) = a_items.get_mut(&AItemId::from_eid(*item_id)) {
+                a_item.abil_ids.insert(AAbilId::from_eid(*abil_id));
             }
         }
         // Item skill requirements

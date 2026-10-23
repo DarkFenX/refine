@@ -6,7 +6,8 @@ use crate::{nd::NEffectMiningAmount, num::PValue, util::LibDefault};
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl HasImpact for NEffectMiningAmount {
     fn has_impact(&self) -> bool {
-        self.yield_ != PValue::ZERO || self.drain != PValue::ZERO
+        let Self { yield_, drain } = self;
+        *yield_ != PValue::ZERO || *drain != PValue::ZERO
     }
 }
 impl InstanceDuration for NEffectMiningAmount {
@@ -33,7 +34,8 @@ impl LibDefault for NEffectMiningAmount {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl PartialEq for NEffectMiningAmount {
     fn eq(&self, other: &Self) -> bool {
-        self.yield_ == other.yield_ && self.drain == other.drain
+        let Self { yield_, drain } = self;
+        *yield_ == other.yield_ && *drain == other.drain
     }
 }
 impl Eq for NEffectMiningAmount {}
@@ -52,8 +54,9 @@ impl std::ops::Add<NEffectMiningAmount> for NEffectMiningAmount {
 }
 impl std::ops::AddAssign<NEffectMiningAmount> for NEffectMiningAmount {
     fn add_assign(&mut self, rhs: NEffectMiningAmount) {
-        self.yield_ += rhs.yield_;
-        self.drain += rhs.drain;
+        let Self { yield_, drain } = self;
+        *yield_ += rhs.yield_;
+        *drain += rhs.drain;
     }
 }
 impl std::ops::Mul<PValue> for NEffectMiningAmount {
@@ -67,8 +70,9 @@ impl std::ops::Mul<PValue> for NEffectMiningAmount {
 }
 impl std::ops::MulAssign<PValue> for NEffectMiningAmount {
     fn mul_assign(&mut self, rhs: PValue) {
-        self.yield_ *= rhs;
-        self.drain *= rhs;
+        let Self { yield_, drain } = self;
+        *yield_ *= rhs;
+        *drain *= rhs;
     }
 }
 impl std::ops::Div<PValue> for NEffectMiningAmount {

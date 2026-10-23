@@ -19,11 +19,17 @@ impl REffectModifier {
         a_effect_mod: &AEffectModifier,
         attr_aid_rid_map: &RMap<AAttrId, RAttrId>,
     ) -> Option<Self> {
+        let AEffectModifier {
+            strength,
+            op,
+            affectee_filter,
+            affectee_attr_id,
+        } = a_effect_mod;
         Some(Self {
-            strength: REffectModStrength::try_from_a_mod_strength(&a_effect_mod.strength, attr_aid_rid_map)?,
-            op: a_effect_mod.op,
-            affectee_filter: a_effect_mod.affectee_filter,
-            affectee_attr_rid: *attr_aid_rid_map.get(&a_effect_mod.affectee_attr_id)?,
+            strength: REffectModStrength::try_from_a_mod_strength(strength, attr_aid_rid_map)?,
+            op: *op,
+            affectee_filter: *affectee_filter,
+            affectee_attr_rid: *attr_aid_rid_map.get(affectee_attr_id)?,
         })
     }
 }

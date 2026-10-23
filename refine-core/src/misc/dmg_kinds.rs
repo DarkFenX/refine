@@ -15,7 +15,13 @@ impl<T> DmgKinds<T> {
     where
         T: Copy + std::ops::Add<T, Output = T>,
     {
-        self.em + self.thermal + self.kinetic + self.explosive
+        let Self {
+            em,
+            thermal,
+            kinetic,
+            explosive,
+        } = self;
+        *em + *thermal + *kinetic + *explosive
     }
 }
 impl<T> std::ops::Index<usize> for DmgKinds<T> {

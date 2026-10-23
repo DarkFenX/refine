@@ -5,42 +5,50 @@ use crate::{
         ABuffId, AData, ADataGenerator, AEffect, AEffectBuff, AEffectBuffDuration, AEffectBuffFull, AEffectBuffScope,
         AEffectCatId, AEffectId, AEffectModStrength, AItemEffect, AItemId, AItemListId, AState, AValue,
     },
-    ed::EItemBuffData,
+    ed::{EItemBuff, EItemBuffData},
 };
 
 impl ADataGenerator {
     pub(super) fn apply_item_buffs(&mut self) {
         for e_item_buff in self.e_data.item_buffs.data.iter() {
-            let item_aid = AItemId::from_eid(e_item_buff.item_id);
+            let EItemBuff {
+                item_id,
+                system_wide_buffs,
+                system_emitter_buffs,
+                proxy_effect_buffs,
+                proxy_trigger_buffs,
+                ship_link_buffs,
+            } = e_item_buff;
+            let item_aid = AItemId::from_eid(*item_id);
             if !self.a_data.items.data.contains_key(&item_aid) {
                 continue;
             }
             process_buffs(
-                &e_item_buff.system_wide_buffs,
+                system_wide_buffs,
                 &mut self.a_data,
                 item_aid,
                 AEffectId::SystemWide(item_aid),
             );
             process_buffs(
-                &e_item_buff.system_emitter_buffs,
+                system_emitter_buffs,
                 &mut self.a_data,
                 item_aid,
                 AEffectId::SystemEmitter(item_aid),
             );
             process_buffs(
-                &e_item_buff.proxy_effect_buffs,
+                proxy_effect_buffs,
                 &mut self.a_data,
                 item_aid,
                 AEffectId::ProxyEffect(item_aid),
             );
             process_buffs(
-                &e_item_buff.proxy_trigger_buffs,
+                proxy_trigger_buffs,
                 &mut self.a_data,
                 item_aid,
                 AEffectId::ProxyTrigger(item_aid),
             );
             process_buffs(
-                &e_item_buff.ship_link_buffs,
+                ship_link_buffs,
                 &mut self.a_data,
                 item_aid,
                 AEffectId::ShipLink(item_aid),

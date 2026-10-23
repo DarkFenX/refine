@@ -137,41 +137,51 @@ fn log_reason(core_src: &rc::Src) {
 
 fn log_warnings(core_src: &rc::Src) {
     let core_info = core_src.get_info();
+    let rc::src::SrcWarnings {
+        eve_data_fetch,
+        adg_pk_duplicates,
+        adg_cleanup,
+        adg_validation,
+        adg_conversion_main,
+        adg_customization,
+        adg_conversion_aux,
+        cache_write,
+    } = &core_info.warnings;
     // Report data fetching errors under EVE data handler span, since that's where they originate
     // from
     tracing::error_span!("edh").in_scope(|| {
-        for warning in core_info.warnings.eve_data_fetch.iter() {
+        for warning in eve_data_fetch.iter() {
             tracing::warn!("{}", warning);
         }
     });
     tracing::error_span!("adg").in_scope(|| {
-        for warning in core_info.warnings.adg_pk_duplicates.iter() {
+        for warning in adg_pk_duplicates.iter() {
             tracing::warn!("{}", warning);
         }
         // Cleanup is a normal process, so just record those "warnings" as infos
-        match core_info.warnings.adg_cleanup.is_empty() {
+        match adg_cleanup.is_empty() {
             true => tracing::info!("no unused data found during cleanup"),
             false => {
-                for warning in core_info.warnings.adg_cleanup.iter() {
+                for warning in adg_cleanup.iter() {
                     tracing::info!("{}", warning);
                 }
             }
         }
-        for warning in core_info.warnings.adg_validation.iter() {
+        for warning in adg_validation.iter() {
             tracing::warn!("{}", warning);
         }
-        for warning in core_info.warnings.adg_conversion_main.iter() {
+        for warning in adg_conversion_main.iter() {
             tracing::warn!("{}", warning);
         }
         // Customization errors are fairly low-priority, log those as infos as well
-        for warning in core_info.warnings.adg_customization.iter() {
+        for warning in adg_customization.iter() {
             tracing::info!("{}", warning);
         }
-        for warning in core_info.warnings.adg_conversion_aux.iter() {
+        for warning in adg_conversion_aux.iter() {
             tracing::warn!("{}", warning);
         }
     });
-    if let Some(warning) = core_info.warnings.cache_write.as_ref() {
+    if let Some(warning) = cache_write.as_ref() {
         tracing::error_span!("adc").in_scope(|| {
             tracing::warn!("{}", warning);
         });

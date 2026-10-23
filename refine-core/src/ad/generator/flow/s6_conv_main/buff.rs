@@ -3,6 +3,7 @@ use crate::{
         AAttrId, ABuff, ABuffAffecteeFilter, ABuffAggrMode, ABuffId, ABuffModifier, ABuffs, ADataGenerator, AItemGrpId,
         AItemId, AModifierSrq, AOp,
     },
+    ed::EBuff,
     util::RMap,
 };
 
@@ -10,7 +11,16 @@ impl ADataGenerator {
     pub(super) fn conv_buffs(&mut self) {
         let mut a_buffs = RMap::new();
         for e_buff in self.e_data.buffs.data.iter() {
-            let op = match conv_buff_op(&e_buff.operation) {
+            let EBuff {
+                id,
+                aggregate_mode,
+                operation,
+                item_mods,
+                loc_mods,
+                locgroup_mods,
+                locsrq_mods,
+            } = e_buff;
+            let op = match conv_buff_op(operation) {
                 Ok(op) => op,
                 Err(e) => {
                     let warning = format!("{e_buff}: {e}");
@@ -18,7 +28,7 @@ impl ADataGenerator {
                     continue;
                 }
             };
-            let aggr_mode = match conv_buff_aggr_mode(&e_buff.aggregate_mode) {
+            let aggr_mode = match conv_buff_aggr_mode(aggregate_mode) {
                 Ok(am) => am,
                 Err(e) => {
                     let warning = format!("{e_buff}: {e}");
@@ -27,26 +37,26 @@ impl ADataGenerator {
                 }
             };
             let mut a_mods = Vec::new();
-            a_mods.extend(e_buff.item_mods.iter().map(|e_item_mod| ABuffModifier {
+            a_mods.extend(item_mods.iter().map(|e_item_mod| ABuffModifier {
                 affectee_filter: ABuffAffecteeFilter::Direct,
                 affectee_attr_id: AAttrId::from_eid(e_item_mod.attr_id),
             }));
-            a_mods.extend(e_buff.loc_mods.iter().map(|e_loc_mod| ABuffModifier {
+            a_mods.extend(loc_mods.iter().map(|e_loc_mod| ABuffModifier {
                 affectee_filter: ABuffAffecteeFilter::Loc,
                 affectee_attr_id: AAttrId::from_eid(e_loc_mod.attr_id),
             }));
-            a_mods.extend(e_buff.locgroup_mods.iter().map(|e_locgroup_mod| ABuffModifier {
+            a_mods.extend(locgroup_mods.iter().map(|e_locgroup_mod| ABuffModifier {
                 affectee_filter: ABuffAffecteeFilter::LocGrp(AItemGrpId::from_eid(e_locgroup_mod.group_id)),
                 affectee_attr_id: AAttrId::from_eid(e_locgroup_mod.attr_id),
             }));
-            a_mods.extend(e_buff.locsrq_mods.iter().map(|e_locsrq_mod| ABuffModifier {
+            a_mods.extend(locsrq_mods.iter().map(|e_locsrq_mod| ABuffModifier {
                 affectee_filter: ABuffAffecteeFilter::LocSrq(AModifierSrq::ItemId(AItemId::from_eid(
                     e_locsrq_mod.skill_id,
                 ))),
                 affectee_attr_id: AAttrId::from_eid(e_locsrq_mod.attr_id),
             }));
             let a_buff = ABuff {
-                id: ABuffId::from_eid(e_buff.id),
+                id: ABuffId::from_eid(*id),
                 aggr_mode,
                 op,
                 mods: a_mods.into_iter().collect(),
