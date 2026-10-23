@@ -58,10 +58,16 @@ impl REffectProjModSpec {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl REffectProjModSpec {
     pub(crate) fn consistency_check(&self, u_data: &UData) -> DebugResult {
-        for attr_rid in self.proj_attr_rids.into_iter().flatten() {
+        let Self {
+            proj_attr_rids,
+            resist,
+            // Not checked
+            proj_mult: _,
+        } = self;
+        for attr_rid in proj_attr_rids.iter().flatten() {
             attr_rid.consistency_check(u_data)?;
         }
-        if let Some(resist) = &self.resist {
+        if let Some(resist) = resist {
             resist.consistency_check(u_data)?;
         }
         Ok(())

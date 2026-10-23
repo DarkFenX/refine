@@ -113,22 +113,27 @@ impl ItemAttrData {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl ItemAttrData {
     pub(super) fn consistency_check(&self) -> DebugResult {
+        let Self {
+            dense_positions,
+            dense_entries,
+            sparse,
+        } = self;
         // Each dense entry has to be referenced by the position of its attribute
         let mut referenced = 0;
-        for (index, &position) in self.dense_positions.iter().enumerate() {
+        for (index, &position) in dense_positions.iter().enumerate() {
             if position == NO_ENTRY {
                 continue;
             }
-            match self.dense_entries.get(position as usize) {
+            match dense_entries.get(position as usize) {
                 Some((attr_rid, _)) if attr_rid.index() == index => referenced += 1,
                 _ => return Err(Default::default()),
             }
         }
-        if referenced != self.dense_entries.len() {
+        if referenced != dense_entries.len() {
             return Err(Default::default());
         }
         // Densely stored attributes are never stored in the map
-        if self.sparse.keys().any(|attr_rid| attr_rid.index() < DENSE_ATTR_COUNT) {
+        if sparse.keys().any(|attr_rid| attr_rid.index() < DENSE_ATTR_COUNT) {
             return Err(Default::default());
         }
         Ok(())

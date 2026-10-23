@@ -16,8 +16,9 @@ pub(crate) struct RItemCapConsumer {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl RItemCapConsumer {
     pub(crate) fn consistency_check(&self, u_data: &UData) -> DebugResult {
-        self.effect_rid.consistency_check(u_data)?;
-        self.opc_spec.consistency_check(u_data)?;
+        let Self { effect_rid, opc_spec } = self;
+        effect_rid.consistency_check(u_data)?;
+        opc_spec.consistency_check(u_data)?;
         Ok(())
     }
 }

@@ -20,8 +20,9 @@ impl AttrSpec {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl AttrSpec {
     pub(crate) fn consistency_check(&self, u_data: &UData, check_item_load: bool) -> DebugResult {
-        self.item_uid.consistency_check(u_data, check_item_load)?;
-        self.attr_rid.consistency_check(u_data)?;
+        let Self { item_uid, attr_rid } = self;
+        item_uid.consistency_check(u_data, check_item_load)?;
+        attr_rid.consistency_check(u_data)?;
         Ok(())
     }
 }

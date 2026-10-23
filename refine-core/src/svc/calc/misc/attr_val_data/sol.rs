@@ -60,7 +60,13 @@ impl AttrValData {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl AttrValData {
     pub(in crate::svc::calc) fn consistency_check(&self, u_data: &UData) -> DebugResult {
-        for (item_uid, item_data) in self.data.iter() {
+        let Self {
+            data,
+            // Spare containers
+            spare_dense: _,
+            spare_sparse: _,
+        } = self;
+        for (item_uid, item_data) in data.iter() {
             item_uid.consistency_check(u_data, true)?;
             item_data.consistency_check()?;
             for (attr_rid, attr_entry) in item_data.iter() {

@@ -132,10 +132,24 @@ impl RItemFlexData {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl RItemFlexData {
     pub(crate) fn consistency_check(&self, u_data: &UData) -> DebugResult {
-        for attr_rid in self.attrs.keys() {
+        let Self {
+            attrs,
+            remote_resist_attr_rid,
+            // Not checked
+            bandwidth_use: _,
+            is_mobile: _,
+            entity_mwd: _,
+            specs_reactivation_delay: _,
+            specs_disallow_repeats: _,
+            max_group_fitted_limited: _,
+            max_group_online_limited: _,
+            max_group_active_limited: _,
+            overload_td_lvl: _,
+        } = self;
+        for attr_rid in attrs.keys() {
             attr_rid.consistency_check(u_data)?;
         }
-        if let Some(attr_rid) = self.remote_resist_attr_rid {
+        if let Some(attr_rid) = *remote_resist_attr_rid {
             attr_rid.consistency_check(u_data)?;
         }
         Ok(())

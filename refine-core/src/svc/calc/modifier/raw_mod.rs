@@ -246,16 +246,29 @@ impl RawModId {
 
 impl RawModifier {
     pub(in crate::svc::calc) fn consistency_check(&self, u_data: &UData) -> DebugResult {
-        self.affector_espec.consistency_check(u_data, true)?;
-        self.strength.consistency_check(u_data)?;
-        self.affectee_attr_rid.consistency_check(u_data)?;
-        if let Some(attr_rid) = self.buff_type_attr_rid.as_ref() {
+        let Self {
+            affector_espec,
+            strength,
+            affectee_attr_rid,
+            buff_type_attr_rid,
+            proj_spec,
+            resist_attr_rid,
+            // Not checked
+            kind: _,
+            op: _,
+            aggr_mode: _,
+            affectee_filter: _,
+        } = self;
+        affector_espec.consistency_check(u_data, true)?;
+        strength.consistency_check(u_data)?;
+        affectee_attr_rid.consistency_check(u_data)?;
+        if let Some(attr_rid) = buff_type_attr_rid.as_ref() {
             attr_rid.consistency_check(u_data)?;
         }
-        if let Some(mspec) = self.proj_spec.as_ref() {
+        if let Some(mspec) = proj_spec.as_ref() {
             mspec.consistency_check(u_data)?;
         }
-        if let Some(attr_rid) = self.resist_attr_rid.as_ref() {
+        if let Some(attr_rid) = resist_attr_rid.as_ref() {
             attr_rid.consistency_check(u_data)?;
         }
         Ok(())

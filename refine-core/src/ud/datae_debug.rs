@@ -6,19 +6,34 @@ use crate::{
 
 impl UData {
     pub(crate) fn consistency_check(&self) -> DebugResult {
+        let Self {
+            fleets,
+            fits,
+            sw_effects,
+            proj_effects,
+            items,
+            // Not checked
+            r_data: _,
+            sec_zone: _,
+            default_incoming_dps: _,
+            default_spool: _,
+            default_npc_prop: _,
+            default_optional_reloads: _,
+            default_rearm_minions: _,
+        } = self;
         let mut seen_items = Vec::new();
         // Fleets
-        for fleet in self.fleets.values() {
+        for fleet in fleets.values() {
             fleet.consistency_check(self)?;
         }
         // Fits
-        for fit in self.fits.values() {
+        for fit in fits.values() {
             fit.consistency_check(self, &mut seen_items)?;
         }
         // System-wide effects
-        for &sw_effect_uid in self.sw_effects.iter() {
+        for &sw_effect_uid in sw_effects.iter() {
             seen_items.push(sw_effect_uid);
-            let Some(item) = self.items.try_get(sw_effect_uid) else {
+            let Some(item) = items.try_get(sw_effect_uid) else {
                 return Err(Default::default());
             };
             if !matches!(item, UItem::SwEffect(..)) {
@@ -27,9 +42,9 @@ impl UData {
             item.consistency_check(self)?;
         }
         // Projected effects
-        for &proj_effect_uid in self.proj_effects.iter() {
+        for &proj_effect_uid in proj_effects.iter() {
             seen_items.push(proj_effect_uid);
-            let item = match self.items.try_get(proj_effect_uid) {
+            let item = match items.try_get(proj_effect_uid) {
                 Some(item) => item,
                 None => return Err(Default::default()),
             };
@@ -43,13 +58,13 @@ impl UData {
             return Err(Default::default());
         }
         // Check if we have any unreferenced items
-        if !self.items.keys().all(|item_uid| seen_items.contains(&item_uid)) {
+        if !items.keys().all(|item_uid| seen_items.contains(&item_uid)) {
             return Err(Default::default());
         }
         // Checks for internal container consistency
-        self.items.consistency_check()?;
-        self.fits.consistency_check()?;
-        self.fleets.consistency_check()?;
+        items.consistency_check()?;
+        fits.consistency_check()?;
+        fleets.consistency_check()?;
         Ok(())
     }
 }

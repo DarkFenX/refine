@@ -80,7 +80,12 @@ impl CalcCustomModStrength {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl CalcCustomModStrength {
     pub(in crate::svc::calc) fn consistency_check(&self, u_data: &UData) -> DebugResult {
-        if let Some(attr_rid) = self.affector_attr_rid {
+        let Self {
+            affector_attr_rid,
+            // Not checked
+            kind: _,
+        } = self;
+        if let Some(attr_rid) = *affector_attr_rid {
             attr_rid.consistency_check(u_data)?;
         }
         Ok(())

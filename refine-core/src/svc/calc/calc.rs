@@ -39,13 +39,24 @@ impl Calc {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl Calc {
     pub(in crate::svc) fn consistency_check(&self, u_data: &UData) -> DebugResult {
-        self.attrs.consistency_check(u_data)?;
-        self.rmods.consistency_check(u_data)?;
-        self.std.consistency_check(u_data, &self.rmods)?;
-        self.buffs.consistency_check(u_data, &self.rmods)?;
-        self.deps.consistency_check(u_data)?;
-        self.revs.consistency_check(u_data, &self.rmods)?;
-        self.rah.consistency_check(u_data)?;
+        let Self {
+            attrs,
+            rmods,
+            std,
+            buffs,
+            deps,
+            revs,
+            rah,
+            // Scratch containers
+            reuse: _,
+        } = self;
+        attrs.consistency_check(u_data)?;
+        rmods.consistency_check(u_data)?;
+        std.consistency_check(u_data, rmods)?;
+        buffs.consistency_check(u_data, rmods)?;
+        deps.consistency_check(u_data)?;
+        revs.consistency_check(u_data, rmods)?;
+        rah.consistency_check(u_data)?;
         Ok(())
     }
 }

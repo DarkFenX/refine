@@ -62,10 +62,24 @@ where
     BG: NEffectOutputGetter,
 {
     pub(crate) fn consistency_check(&self, u_data: &UData) -> DebugResult {
-        if let Some(resist) = &self.resist {
+        let Self {
+            resist,
+            local_limit_attr_id,
+            remote_limit_attr_id,
+            // Not checked
+            base: _,
+            charge_mult: _,
+            spoolable: _,
+            proj_mult_str: _,
+            proj_mult_chance: _,
+        } = self;
+        if let Some(resist) = resist {
             resist.consistency_check(u_data)?;
         }
-        if let Some(attr_rid) = &self.remote_limit_attr_id {
+        if let Some(attr_rid) = local_limit_attr_id {
+            attr_rid.consistency_check(u_data)?;
+        }
+        if let Some(attr_rid) = remote_limit_attr_id {
             attr_rid.consistency_check(u_data)?;
         }
         Ok(())
