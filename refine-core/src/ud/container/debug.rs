@@ -12,8 +12,15 @@ where
     ExtId: Eq + Hash,
 {
     pub(in crate::ud) fn consistency_check(&self) -> DebugResult {
-        let seen_data: RSet<_> = self.data.iter().map(|(int_id, _)| int_id).collect();
-        let seen_map: RSet<_> = self.ext_id_to_int_id.values().copied().collect();
+        let Self {
+            data,
+            ext_id_to_int_id,
+            // Not checked
+            counter: _,
+            phantom: _,
+        } = self;
+        let seen_data: RSet<_> = data.iter().map(|(int_id, _)| int_id).collect();
+        let seen_map: RSet<_> = ext_id_to_int_id.values().copied().collect();
         if seen_data.difference(&seen_map).next().is_some() || seen_map.difference(&seen_data).next().is_some() {
             return Err(Default::default());
         }

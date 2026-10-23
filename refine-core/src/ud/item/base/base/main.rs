@@ -16,19 +16,19 @@ use crate::{
 #[derive(Clone)]
 pub(in crate::ud::item) struct UItemBase {
     // User-defined data
-    item_id: ItemId,
-    type_aid: AItemId,
-    state: RState,
+    pub(super) item_id: ItemId,
+    pub(super) type_aid: AItemId,
+    pub(super) state: RState,
     pub(super) effect_modes: UEffectModes,
     // Source-dependent data
-    cache: Option<ItemBaseCache>,
+    pub(super) cache: Option<ItemBaseCache>,
 }
 
 #[derive(Clone)]
-struct ItemBaseCache {
-    r_item: RcItem,
+pub(super) struct ItemBaseCache {
+    pub(super) r_item: RcItem,
     /// Running effects, are available only when adapted item is set
-    reffs: REffs,
+    pub(super) reffs: REffs,
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////

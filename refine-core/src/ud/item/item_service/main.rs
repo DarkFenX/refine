@@ -11,7 +11,7 @@ use crate::{
 #[derive(Clone)]
 pub(crate) struct UService {
     pub(super) base: UItemBase,
-    fit_uid: UFitId,
+    pub(super) fit_uid: UFitId,
 }
 impl UService {
     pub(crate) fn new(

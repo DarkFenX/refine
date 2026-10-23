@@ -11,7 +11,7 @@ use crate::{
 #[derive(Clone)]
 pub(crate) struct UBooster {
     pub(super) base: UItemBase,
-    fit_uid: UFitId,
+    pub(super) fit_uid: UFitId,
 }
 impl UBooster {
     pub(crate) fn new(

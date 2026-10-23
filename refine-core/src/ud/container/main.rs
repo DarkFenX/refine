@@ -3,10 +3,10 @@ use std::hash::Hash;
 use crate::util::{LibDefault, LibGetId, LibIncrement, LibNamed, PSlab, RMap, SlabId};
 
 pub(crate) struct UEntityContainer<T, ExtId, IntId, Err> {
-    counter: ExtId,
+    pub(super) counter: ExtId,
     pub(super) data: PSlab<IntId, T>,
     pub(super) ext_id_to_int_id: RMap<ExtId, IntId>,
-    phantom: std::marker::PhantomData<Err>,
+    pub(super) phantom: std::marker::PhantomData<Err>,
 }
 impl<T, ExtId, IntId, Err> UEntityContainer<T, ExtId, IntId, Err>
 where

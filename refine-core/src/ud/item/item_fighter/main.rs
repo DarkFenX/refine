@@ -11,13 +11,13 @@ use crate::{
 #[derive(Clone)]
 pub(crate) struct UFighter {
     pub(super) base: UItemBase,
-    fit_uid: UFitId,
-    count_override: Option<CountNz>,
-    autocharges: UAutocharges,
-    physics: UPhysics,
-    projs: UProjs,
+    pub(super) fit_uid: UFitId,
+    pub(super) count_override: Option<CountNz>,
+    pub(super) autocharges: UAutocharges,
+    pub(super) physics: UPhysics,
+    pub(super) projs: UProjs,
     // Optional settings related to cycling
-    rearm_minion_override: Option<RearmMinion>,
+    pub(super) rearm_minion_override: Option<RearmMinion>,
 }
 impl UFighter {
     pub(crate) fn new(

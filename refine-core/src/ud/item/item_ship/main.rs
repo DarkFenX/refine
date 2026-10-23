@@ -14,9 +14,9 @@ use crate::{
 #[derive(Clone)]
 pub(crate) struct UShip {
     pub(super) base: UItemBase,
-    fit_uid: UFitId,
-    kind: UShipKind,
-    physics: UPhysics,
+    pub(super) fit_uid: UFitId,
+    pub(super) kind: UShipKind,
+    pub(super) physics: UPhysics,
 }
 impl UShip {
     pub(crate) fn new(

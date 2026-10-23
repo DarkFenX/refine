@@ -14,10 +14,10 @@ use crate::{
 #[derive(Clone)]
 pub(crate) struct UDrone {
     pub(super) base: UItemBaseMutable,
-    fit_uid: UFitId,
-    physics: UPhysics,
-    npc_prop_override: Option<NpcProp>,
-    projs: UProjs,
+    pub(super) fit_uid: UFitId,
+    pub(super) physics: UPhysics,
+    pub(super) npc_prop_override: Option<NpcProp>,
+    pub(super) projs: UProjs,
 }
 impl UDrone {
     pub(crate) fn new(

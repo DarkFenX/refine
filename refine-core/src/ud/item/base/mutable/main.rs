@@ -37,7 +37,7 @@ use crate::{
 #[derive(Clone)]
 pub(in crate::ud::item) struct UItemBaseMutable {
     pub(super) base: UItemBase,
-    mutation: Option<ItemMutationData>,
+    pub(super) mutation: Option<ItemMutationData>,
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -459,10 +459,10 @@ impl UItemBaseMutable {
 #[derive(Clone)]
 pub(crate) struct ItemMutationData {
     // User-defined data
-    mutator_type_aid: AItemId,
-    attr_rolls: RMap<AAttrId, UnitInterval>,
+    pub(super) mutator_type_aid: AItemId,
+    pub(super) attr_rolls: RMap<AAttrId, UnitInterval>,
     // Source-dependent data
-    cache: Option<ItemMutationDataCache>,
+    pub(super) cache: Option<ItemMutationDataCache>,
 }
 impl ItemMutationData {
     fn with_attrs(mutator_type_aid: AItemId, attr_rolls: RMap<AAttrId, UnitInterval>) -> Self {
@@ -496,8 +496,8 @@ fn convert_request_to_data(mutation_request: UItemMutationRequest) -> ItemMutati
 
 #[derive(Clone)]
 pub(crate) struct ItemMutationDataCache {
-    base_type_aid: AItemId,
-    mutator: RcMuta,
+    pub(super) base_type_aid: AItemId,
+    pub(super) mutator: RcMuta,
     pub(super) merged_attr_data: RItemFlexData,
 }
 impl ItemMutationDataCache {

@@ -5,24 +5,34 @@ use crate::{
 
 impl UAutocharge {
     pub(in crate::ud::item) fn consistency_check(&self, u_data: &UData) -> DebugResult {
-        self.base.consistency_check(u_data)?;
-        self.get_fit_uid().consistency_check(u_data)?;
+        let Self {
+            base,
+            fit_uid,
+            cont_item_uid,
+            cont_effect_rid,
+            projs,
+            // Not checked
+            activated: _,
+            force_disabled: _,
+        } = self;
+        base.consistency_check(u_data)?;
+        fit_uid.consistency_check(u_data)?;
         // Autocharges should exist only for containers which are loaded
-        self.get_cont_item_uid().consistency_check(u_data, true)?;
+        cont_item_uid.consistency_check(u_data, true)?;
         // Autocharges should exist only for effects available on current source
-        self.get_cont_effect_rid().consistency_check(u_data)?;
+        cont_effect_rid.consistency_check(u_data)?;
         // Effect ID should be available on containing item
         if !u_data
             .items
-            .get(self.get_cont_item_uid())
+            .get(*cont_item_uid)
             .get_r_item_base()
             .unwrap()
             .effects
-            .contains_key(&self.get_cont_effect_rid())
+            .contains_key(cont_effect_rid)
         {
             return Err(Default::default());
         }
-        self.get_projs().consistency_check(u_data)?;
+        projs.consistency_check(u_data)?;
         Ok(())
     }
 }

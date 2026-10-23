@@ -9,7 +9,7 @@ pub(in crate::ud::item) type UEffectModeOverrideIter<'a> = impl ExactSizeIterato
 
 #[derive(Clone)]
 pub(in crate::ud::item) struct UEffectModes {
-    by_aid: RMap<AEffectId, EffectMode>,
+    pub(super) by_aid: RMap<AEffectId, EffectMode>,
     pub(super) by_rid: RMap<REffectId, EffectMode>,
 }
 impl UEffectModes {

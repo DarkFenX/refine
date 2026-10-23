@@ -5,13 +5,21 @@ use crate::{
 
 impl UDrone {
     pub(in crate::ud::item) fn consistency_check(&self, u_data: &UData) -> DebugResult {
-        self.base.consistency_check(u_data)?;
-        self.get_fit_uid().consistency_check(u_data)?;
-        self.get_projs().consistency_check(u_data)?;
+        let Self {
+            base,
+            fit_uid,
+            projs,
+            // Not checked
+            physics: _,
+            npc_prop_override: _,
+        } = self;
+        base.consistency_check(u_data)?;
+        fit_uid.consistency_check(u_data)?;
+        projs.consistency_check(u_data)?;
         // Radius of projector should match radius of drone, radius of projectee should match
         // projectee items
         let drone_radius = self.get_radius();
-        for (projectee_uid, proj_data) in self.get_projs().iter() {
+        for (projectee_uid, proj_data) in projs.iter() {
             let Some(proj_data) = proj_data else {
                 return Err(Default::default());
             };

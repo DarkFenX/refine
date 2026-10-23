@@ -7,16 +7,27 @@ use crate::{
 
 impl UModule {
     pub(in crate::ud::item) fn consistency_check(&self, u_data: &UData) -> DebugResult {
-        self.base.consistency_check(u_data)?;
-        self.get_fit_uid().consistency_check(u_data)?;
-        if let Some(charge_uid) = self.get_charge_uid() {
+        let Self {
+            base,
+            fit_uid,
+            charge_uid,
+            projs,
+            // Not checked
+            rack: _,
+            pos: _,
+            spool_override: _,
+            optional_reload_override: _,
+        } = self;
+        base.consistency_check(u_data)?;
+        fit_uid.consistency_check(u_data)?;
+        if let Some(charge_uid) = charge_uid {
             charge_uid.consistency_check(u_data, false)?;
         }
-        self.get_projs().consistency_check(u_data)?;
+        projs.consistency_check(u_data)?;
         // Radius of projector should match radius of ship, radius of projectee should match
         // projectee items
-        let ship_radius = u_data.get_fit_ship_radius(self.get_fit_uid());
-        for (projectee_uid, proj_data) in self.get_projs().iter() {
+        let ship_radius = u_data.get_fit_ship_radius(*fit_uid);
+        for (projectee_uid, proj_data) in projs.iter() {
             let Some(proj_data) = proj_data else {
                 return Err(Default::default());
             };
@@ -28,8 +39,8 @@ impl UModule {
             }
         }
         // If module has a charge, make sure projections on them match
-        if let Some(charge_uid) = self.get_charge_uid() {
-            let module_projs = self.get_projs().iter().sorted().collect_vec();
+        if let Some(charge_uid) = *charge_uid {
+            let module_projs = projs.iter().sorted().collect_vec();
             let charge_projs = u_data
                 .items
                 .get(charge_uid)

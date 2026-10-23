@@ -11,8 +11,8 @@ use crate::{
 #[derive(Clone)]
 pub(crate) struct USkill {
     pub(super) base: UItemBase,
-    fit_uid: UFitId,
-    level: SkillLevel,
+    pub(super) fit_uid: UFitId,
+    pub(super) level: SkillLevel,
 }
 impl USkill {
     pub(crate) fn new(

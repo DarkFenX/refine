@@ -11,7 +11,7 @@ use crate::{
 #[derive(Clone)]
 pub(crate) struct UStance {
     pub(super) base: UItemBase,
-    fit_uid: UFitId,
+    pub(super) fit_uid: UFitId,
 }
 impl UStance {
     pub(crate) fn new(item_id: ItemId, type_aid: AItemId, fit_uid: UFitId, stance_state: bool, r_data: &RData) -> Self {

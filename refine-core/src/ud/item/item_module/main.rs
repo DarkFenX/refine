@@ -13,14 +13,14 @@ use crate::{
 #[derive(Clone)]
 pub(crate) struct UModule {
     pub(super) base: UItemBaseMutable,
-    fit_uid: UFitId,
-    rack: ModRack,
-    pos: Index,
-    charge_uid: Option<UItemId>,
-    projs: UProjs,
+    pub(super) fit_uid: UFitId,
+    pub(super) rack: ModRack,
+    pub(super) pos: Index,
+    pub(super) charge_uid: Option<UItemId>,
+    pub(super) projs: UProjs,
     // Optional settings related to cycling
-    spool_override: Option<Spool>,
-    optional_reload_override: Option<OptionalReload>,
+    pub(super) spool_override: Option<Spool>,
+    pub(super) optional_reload_override: Option<OptionalReload>,
 }
 impl UModule {
     pub(crate) fn new(

@@ -10,7 +10,7 @@ use crate::{
 #[derive(Clone)]
 pub(crate) struct UProjEffect {
     pub(super) base: UItemBase,
-    projs: UProjs,
+    pub(super) projs: UProjs,
 }
 impl UProjEffect {
     pub(crate) fn new(item_id: ItemId, type_aid: AItemId, proj_effect_state: bool, r_data: &RData) -> Self {

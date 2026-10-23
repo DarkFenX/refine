@@ -6,7 +6,7 @@ use crate::{
 #[derive(Clone)]
 pub(crate) struct UFleet {
     pub(crate) id: FleetId,
-    fits: RSet<UFitId>,
+    pub(super) fits: RSet<UFitId>,
 }
 impl UFleet {
     pub(crate) fn new(id: FleetId) -> Self {

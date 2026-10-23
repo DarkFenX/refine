@@ -7,14 +7,24 @@ use crate::{
 
 impl UFighter {
     pub(in crate::ud::item) fn consistency_check(&self, u_data: &UData) -> DebugResult {
-        self.base.consistency_check(u_data)?;
-        self.get_fit_uid().consistency_check(u_data)?;
-        self.get_autocharges().consistency_check(u_data)?;
-        self.get_projs().consistency_check(u_data)?;
+        let Self {
+            base,
+            fit_uid,
+            autocharges,
+            projs,
+            // Not checked
+            count_override: _,
+            physics: _,
+            rearm_minion_override: _,
+        } = self;
+        base.consistency_check(u_data)?;
+        fit_uid.consistency_check(u_data)?;
+        autocharges.consistency_check(u_data)?;
+        projs.consistency_check(u_data)?;
         // Radius of projector should match radius of drone, radius of projectee should match
         // projectee items
         let fighter_radius = self.get_radius();
-        for (projectee_uid, proj_data) in self.get_projs().iter() {
+        for (projectee_uid, proj_data) in projs.iter() {
             let Some(proj_data) = proj_data else {
                 return Err(Default::default());
             };
@@ -26,9 +36,9 @@ impl UFighter {
             }
         }
         // If fighter has autocharges, make sure projections on them match
-        if !self.get_autocharges().is_empty() {
-            let fighter_projs = self.get_projs().iter().sorted().collect_vec();
-            for autocharge_uid in self.get_autocharges().values() {
+        if !autocharges.is_empty() {
+            let fighter_projs = projs.iter().sorted().collect_vec();
+            for autocharge_uid in autocharges.values() {
                 let autocharge_projs = u_data
                     .items
                     .get(autocharge_uid)

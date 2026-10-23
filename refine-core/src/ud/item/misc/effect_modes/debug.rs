@@ -5,7 +5,12 @@ use crate::{
 
 impl UEffectModes {
     pub(crate) fn consistency_check(&self, u_data: &UData) -> DebugResult {
-        for effect_rid in self.by_rid.keys() {
+        let Self {
+            by_rid,
+            // Not checked
+            by_aid: _,
+        } = self;
+        for effect_rid in by_rid.keys() {
             effect_rid.consistency_check(u_data)?;
         }
         Ok(())

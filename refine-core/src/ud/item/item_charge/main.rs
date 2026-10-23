@@ -11,11 +11,11 @@ use crate::{
 #[derive(Clone)]
 pub(crate) struct UCharge {
     pub(super) base: UItemBase,
-    fit_uid: UFitId,
-    cont_item_uid: UItemId,
-    projs: UProjs,
-    activated: bool,
-    force_disabled: bool,
+    pub(super) fit_uid: UFitId,
+    pub(super) cont_item_uid: UItemId,
+    pub(super) projs: UProjs,
+    pub(super) activated: bool,
+    pub(super) force_disabled: bool,
 }
 impl UCharge {
     pub(crate) fn new(
