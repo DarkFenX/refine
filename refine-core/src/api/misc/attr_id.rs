@@ -1,3 +1,5 @@
+use std::str::FromStr;
+
 use crate::ad::{AAttrId, ACustomAttrId, AEveAttrId};
 
 /// ID of an attribute.
@@ -8,8 +10,7 @@ pub enum AttrId {
 }
 
 /// ID of an attribute defined by EVE data.
-#[cfg_attr(feature = "serde", derive(derive_more::FromStr))]
-#[derive(Copy, Clone, Eq, PartialEq, Hash, Debug, derive_more::Display)]
+#[derive(Copy, Clone, Eq, PartialEq, Hash, Debug, derive_more::Display, derive_more::FromStr)]
 pub struct EveAttrId(i32);
 impl EveAttrId {
     pub const fn from_i32(id: i32) -> Self {
@@ -21,8 +22,7 @@ impl EveAttrId {
 }
 
 /// ID of an attribute defined by the library, with no EVE counterpart.
-#[cfg_attr(feature = "serde", derive(derive_more::FromStr))]
-#[derive(Copy, Clone, Eq, PartialEq, Hash, Debug, derive_more::Display)]
+#[derive(Copy, Clone, Eq, PartialEq, Hash, Debug, derive_more::Display, derive_more::FromStr)]
 pub struct CustomAttrId(i32);
 impl CustomAttrId {
     pub const fn from_i32(id: i32) -> Self {
@@ -66,38 +66,36 @@ impl std::fmt::Display for AttrId {
     }
 }
 
+impl FromStr for AttrId {
+    type Err = AttrIdParseError;
+
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        if let Some(id_str) = s.strip_prefix(EVE_PREFIX) {
+            return Ok(Self::Eve(EveAttrId::from_str(id_str)?));
+        }
+        if let Some(id_str) = s.strip_prefix(CUSTOM_PREFIX) {
+            return Ok(Self::Custom(CustomAttrId::from_str(id_str)?));
+        }
+        Err(AttrIdParseError::InvalidPrefix)
+    }
+}
+
+#[derive(Debug, thiserror::Error)]
+pub enum AttrIdParseError {
+    #[error("invalid prefix, expected \"{eve}\" or \"{custom}\" prefix", eve = EVE_PREFIX, custom = CUSTOM_PREFIX)]
+    InvalidPrefix,
+    #[error(transparent)]
+    InvalidInt(#[from] std::num::ParseIntError),
+}
+
 #[cfg(feature = "serde")]
 mod custom_serde {
-    use std::str::FromStr;
-
     use serde::{
         de::{Deserialize, Deserializer, Error, Visitor},
         ser::{Serialize, Serializer},
     };
 
     use super::*;
-
-    impl FromStr for AttrId {
-        type Err = AttrIdParseError;
-
-        fn from_str(s: &str) -> Result<Self, Self::Err> {
-            if let Some(id_str) = s.strip_prefix(EVE_PREFIX) {
-                return Ok(Self::Eve(EveAttrId::from_str(id_str)?));
-            }
-            if let Some(id_str) = s.strip_prefix(CUSTOM_PREFIX) {
-                return Ok(Self::Custom(CustomAttrId::from_str(id_str)?));
-            }
-            Err(AttrIdParseError::InvalidPrefix)
-        }
-    }
-
-    #[derive(Debug, thiserror::Error)]
-    pub enum AttrIdParseError {
-        #[error("invalid prefix, expected \"{eve}\" or \"{custom}\" prefix", eve = EVE_PREFIX, custom = CUSTOM_PREFIX)]
-        InvalidPrefix,
-        #[error(transparent)]
-        InvalidInt(#[from] std::num::ParseIntError),
-    }
 
     impl Serialize for AttrId {
         fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>

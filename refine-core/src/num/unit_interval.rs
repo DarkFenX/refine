@@ -1,3 +1,5 @@
+use std::str::FromStr;
+
 use ordered_float::OrderedFloat;
 
 use crate::num::{PValue, Value};
@@ -96,29 +98,27 @@ impl std::hash::Hash for UnitInterval {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Custom de/serialization
 ////////////////////////////////////////////////////////////////////////////////////////////////////
+impl FromStr for UnitInterval {
+    type Err = UnitIntervalParseError;
+
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        let value = f64::from_str(s)?;
+        let value = Self::from_f64_clamped(value);
+        Ok(value)
+    }
+}
+
+#[derive(Debug, thiserror::Error)]
+pub enum UnitIntervalParseError {
+    #[error(transparent)]
+    InvalidFloat(#[from] std::num::ParseFloatError),
+}
+
 #[cfg(feature = "serde")]
 mod custom_serde {
-    use std::str::FromStr;
-
     use serde::de::{Deserialize, Deserializer};
 
     use super::*;
-
-    impl FromStr for UnitInterval {
-        type Err = UnitIntervalParseError;
-
-        fn from_str(s: &str) -> Result<Self, Self::Err> {
-            let value = f64::from_str(s)?;
-            let value = Self::from_f64_clamped(value);
-            Ok(value)
-        }
-    }
-
-    #[derive(Debug, thiserror::Error)]
-    pub enum UnitIntervalParseError {
-        #[error(transparent)]
-        InvalidFloat(#[from] std::num::ParseFloatError),
-    }
 
     impl<'de> Deserialize<'de> for UnitInterval {
         fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>

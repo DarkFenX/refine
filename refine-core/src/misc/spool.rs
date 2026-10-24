@@ -1,4 +1,6 @@
-use crate::num::{Count, PValue, UnitInterval};
+use std::str::FromStr;
+
+use crate::num::{Count, CountParseError, PValue, PValueParseError, UnitInterval, UnitIntervalParseError};
 
 /// Controls on which spool cycle spoolable modules will be set.
 #[derive(Copy, Clone, Eq, PartialEq, Debug)]
@@ -54,10 +56,43 @@ impl std::fmt::Display for Spool {
     }
 }
 
+impl FromStr for Spool {
+    type Err = SpoolParseError;
+
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        // Process longer prefixes first in case of conflicting starting letters
+        if let Some(value_str) = s.strip_prefix(SPOOL_SCALE_PREFIX) {
+            return Ok(Self::SpoolScale(UnitInterval::from_str(value_str)?));
+        }
+        if let Some(value_str) = s.strip_prefix(CYCLE_SCALE_PREFIX) {
+            return Ok(Self::CycleScale(UnitInterval::from_str(value_str)?));
+        }
+        if let Some(count_str) = s.strip_prefix(CYCLES_PREFIX) {
+            return Ok(Self::Cycles(Count::from_str(count_str)?));
+        }
+        if let Some(time_str) = s.strip_prefix(TIME_PREFIX) {
+            return Ok(Self::Time(PValue::from_str(time_str)?));
+        }
+        Err(SpoolParseError::InvalidPrefix)
+    }
+}
+
+#[derive(Debug, thiserror::Error)]
+pub enum SpoolParseError {
+    #[error(
+        "invalid prefix, expected \"{CYCLES_PREFIX}\", \"{TIME_PREFIX}\", \"{SPOOL_SCALE_PREFIX}\", or \"{CYCLE_SCALE_PREFIX}\" prefix"
+    )]
+    InvalidPrefix,
+    #[error(transparent)]
+    InvalidCount(#[from] CountParseError),
+    #[error(transparent)]
+    InvalidTime(#[from] PValueParseError),
+    #[error(transparent)]
+    InvalidScale(#[from] UnitIntervalParseError),
+}
+
 #[cfg(feature = "serde")]
 mod custom_serde {
-    use std::str::FromStr;
-
     use serde::{
         de::{Deserialize, Deserializer, Error, Visitor},
         ser::{Serialize, Serializer},
@@ -92,26 +127,7 @@ mod custom_serde {
                 where
                     E: Error,
                 {
-                    if let Some(value_str) = v.strip_prefix(SPOOL_SCALE_PREFIX) {
-                        let value = UnitInterval::from_str(value_str).map_err(Error::custom)?;
-                        return Ok(Self::Value::SpoolScale(value));
-                    }
-                    if let Some(value_str) = v.strip_prefix(CYCLE_SCALE_PREFIX) {
-                        let value = UnitInterval::from_str(value_str).map_err(Error::custom)?;
-                        return Ok(Self::Value::CycleScale(value));
-                    }
-                    if let Some(count_str) = v.strip_prefix(CYCLES_PREFIX) {
-                        let count = Count::from_str(count_str).map_err(Error::custom)?;
-                        return Ok(Self::Value::Cycles(count));
-                    }
-                    if let Some(time_str) = v.strip_prefix(TIME_PREFIX) {
-                        let time = PValue::from_str(time_str).map_err(Error::custom)?;
-                        return Ok(Self::Value::Time(time));
-                    }
-                    let msg = format!(
-                        "expected a number prefixed by \"{CYCLES_PREFIX}\", \"{TIME_PREFIX}\", \"{SPOOL_SCALE_PREFIX}\", or \"{CYCLE_SCALE_PREFIX}\", received \"{v}\""
-                    );
-                    Err(Error::custom(msg))
+                    Self::Value::from_str(v).map_err(Error::custom)
                 }
             }
 

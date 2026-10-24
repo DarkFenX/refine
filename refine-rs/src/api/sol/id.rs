@@ -1,3 +1,5 @@
+use std::str::FromStr;
+
 #[derive(Copy, Clone, Eq, PartialEq, Hash, Debug, derive_more::Display)]
 pub struct SolarSystemId(uuid::Uuid);
 
@@ -13,32 +15,27 @@ impl SolarSystemId {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Custom de/serialization
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-#[cfg(feature = "serde")]
-pub use custom_serde::SolarSystemIdParseError;
+impl FromStr for SolarSystemId {
+    type Err = SolarSystemIdParseError;
+
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        let inner = uuid::Uuid::try_parse(s)?;
+        Ok(Self(inner))
+    }
+}
+
+#[derive(thiserror::Error, Debug)]
+#[error(transparent)]
+pub struct SolarSystemIdParseError(#[from] uuid::Error);
 
 #[cfg(feature = "serde")]
 mod custom_serde {
-    use std::str::FromStr;
-
     use serde::{
         de::{Deserialize, Deserializer, Error, Visitor},
         ser::{Serialize, Serializer},
     };
 
     use super::*;
-
-    impl FromStr for SolarSystemId {
-        type Err = SolarSystemIdParseError;
-
-        fn from_str(s: &str) -> Result<Self, Self::Err> {
-            let inner = uuid::Uuid::try_parse(s)?;
-            Ok(Self(inner))
-        }
-    }
-
-    #[derive(thiserror::Error, Debug)]
-    #[error(transparent)]
-    pub struct SolarSystemIdParseError(#[from] uuid::Error);
 
     impl Serialize for SolarSystemId {
         fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>

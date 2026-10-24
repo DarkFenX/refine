@@ -11,12 +11,8 @@ use crate::{
 /// Float value.
 ///
 /// Unlike regular float types, is totally ordered and hashable.
-#[cfg_attr(
-    feature = "serde",
-    derive(derive_more::FromStr, serde::Serialize, serde::Deserialize),
-    serde(transparent)
-)]
-#[derive(Copy, Clone, Default, Debug, derive_more::Display)]
+#[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize), serde(transparent))]
+#[derive(Copy, Clone, Default, Debug, derive_more::Display, derive_more::FromStr)]
 pub struct Value(f64);
 impl Value {
     pub const fn from_f64(v: f64) -> Self {

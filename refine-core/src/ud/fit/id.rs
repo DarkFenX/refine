@@ -1,4 +1,4 @@
-use std::num::Wrapping;
+use std::{num::Wrapping, str::FromStr};
 
 use crate::util::{LibDefault, LibIncrement};
 
@@ -39,32 +39,27 @@ impl From<FitId> for FitFoundError {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Custom de/serialization
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-#[cfg(feature = "serde")]
-pub use custom_serde::FitIdParseError;
+impl FromStr for FitId {
+    type Err = FitIdParseError;
+
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        let raw = u32::from_str(s)?;
+        Ok(Self(raw))
+    }
+}
+
+#[derive(Debug, thiserror::Error)]
+#[error(transparent)]
+pub struct FitIdParseError(#[from] std::num::ParseIntError);
 
 #[cfg(feature = "serde")]
 mod custom_serde {
-    use std::str::FromStr;
-
     use serde::{
         de::{Deserialize, Deserializer, Error, Visitor},
         ser::{Serialize, Serializer},
     };
 
     use super::*;
-
-    impl FromStr for FitId {
-        type Err = FitIdParseError;
-
-        fn from_str(s: &str) -> Result<Self, Self::Err> {
-            let raw = u32::from_str(s)?;
-            Ok(Self(raw))
-        }
-    }
-
-    #[derive(Debug, thiserror::Error)]
-    #[error(transparent)]
-    pub struct FitIdParseError(#[from] std::num::ParseIntError);
 
     impl Serialize for FitId {
         fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>

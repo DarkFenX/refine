@@ -1,6 +1,6 @@
 pub use abil_id::AbilityId;
-pub use attr_id::{AttrId, CustomAttrId, EveAttrId};
-pub use effect_id::{CustomEffectId, DogmaEffectId, EffectId};
+pub use attr_id::{AttrId, AttrIdParseError, CustomAttrId, EveAttrId};
+pub use effect_id::{CustomEffectId, DogmaEffectId, EffectId, EffectIdParseError};
 pub use item_attr_modifications::{Affector, Modification};
 pub use item_attr_values::ItemAttrValues;
 pub use item_effect::ItemEffectInfo;

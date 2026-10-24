@@ -1,4 +1,6 @@
 pub(crate) use crate::ud::item::ItemMutatedError;
-pub use crate::ud::{fit::FitFoundError, fleet::FleetFoundError, item::ItemFoundError};
-#[cfg(feature = "serde")]
-pub use crate::ud::{fit::FitIdParseError, fleet::FleetIdParseError, item::ItemIdParseError};
+pub use crate::ud::{
+    fit::{FitFoundError, FitIdParseError},
+    fleet::{FleetFoundError, FleetIdParseError},
+    item::{ItemFoundError, ItemIdParseError},
+};

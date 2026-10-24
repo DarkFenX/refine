@@ -1,3 +1,5 @@
+use std::str::FromStr;
+
 use ordered_float::OrderedFloat;
 
 use crate::{
@@ -244,29 +246,27 @@ impl std::iter::Sum<PValue> for PValue {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Custom de/serialization
 ////////////////////////////////////////////////////////////////////////////////////////////////////
+impl FromStr for PValue {
+    type Err = PValueParseError;
+
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        let value = f64::from_str(s)?;
+        let value = Self::from_f64_clamped(value);
+        Ok(value)
+    }
+}
+
+#[derive(Debug, thiserror::Error)]
+pub enum PValueParseError {
+    #[error(transparent)]
+    InvalidFloat(#[from] std::num::ParseFloatError),
+}
+
 #[cfg(feature = "serde")]
 mod custom_serde {
-    use std::str::FromStr;
-
     use serde::de::{Deserialize, Deserializer};
 
     use super::*;
-
-    impl FromStr for PValue {
-        type Err = PValueParseError;
-
-        fn from_str(s: &str) -> Result<Self, Self::Err> {
-            let value = f64::from_str(s)?;
-            let value = Self::from_f64_clamped(value);
-            Ok(value)
-        }
-    }
-
-    #[derive(Debug, thiserror::Error)]
-    pub enum PValueParseError {
-        #[error(transparent)]
-        InvalidFloat(#[from] std::num::ParseFloatError),
-    }
 
     impl<'de> Deserialize<'de> for PValue {
         fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>

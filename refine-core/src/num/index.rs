@@ -1,3 +1,5 @@
+use std::str::FromStr;
+
 /// Zero-based position of an item within an ordered collection, e.g. of a module within its rack.
 ///
 /// Serialization notes: deserialization clamps out-of-range input instead of failing.
@@ -70,37 +72,35 @@ impl std::ops::Sub<Index> for Index {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Custom de/serialization
 ////////////////////////////////////////////////////////////////////////////////////////////////////
+impl FromStr for Index {
+    type Err = IndexParseError;
+
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        if let Ok(value) = i64::from_str(s) {
+            return Ok(Self::from_i64_clamped(value));
+        }
+        let value = f64::from_str(s)?;
+        if !value.is_finite() {
+            return Err(IndexParseError::NotFinite(value));
+        }
+        let value = Self::from_f64_rounded(value);
+        Ok(value)
+    }
+}
+
+#[derive(Debug, thiserror::Error)]
+pub enum IndexParseError {
+    #[error(transparent)]
+    InvalidNumber(#[from] std::num::ParseFloatError),
+    #[error("value {0} is not finite")]
+    NotFinite(f64),
+}
+
 #[cfg(feature = "serde")]
 mod custom_serde {
-    use std::str::FromStr;
-
     use serde::de::{Deserialize, Deserializer, Error, Visitor};
 
     use super::*;
-
-    impl FromStr for Index {
-        type Err = IndexParseError;
-
-        fn from_str(s: &str) -> Result<Self, Self::Err> {
-            if let Ok(value) = i64::from_str(s) {
-                return Ok(Self::from_i64_clamped(value));
-            }
-            let value = f64::from_str(s)?;
-            if !value.is_finite() {
-                return Err(IndexParseError::NotFinite(value));
-            }
-            let value = Self::from_f64_rounded(value);
-            Ok(value)
-        }
-    }
-
-    #[derive(Debug, thiserror::Error)]
-    pub enum IndexParseError {
-        #[error(transparent)]
-        InvalidNumber(#[from] std::num::ParseFloatError),
-        #[error("value {0} is not finite")]
-        NotFinite(f64),
-    }
 
     struct VisitorImpl;
     impl Visitor<'_> for VisitorImpl {

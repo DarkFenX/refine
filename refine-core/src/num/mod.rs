@@ -1,11 +1,11 @@
-pub use count::Count;
-pub use count_nz::{CountNz, CountNzError};
+pub use count::{Count, CountParseError};
+pub use count_nz::{CountNz, CountNzError, CountNzParseError};
 pub use fit_sec_status::{FitSecStatus, FitSecStatusError};
-pub use index::Index;
-pub use pvalue::{PValue, PValueError};
-pub use skill_level::{SkillLevel, SkillLevelError};
+pub use index::{Index, IndexParseError};
+pub use pvalue::{PValue, PValueError, PValueParseError};
+pub use skill_level::{SkillLevel, SkillLevelError, SkillLevelParseError};
 pub use slot_index::SlotIndex;
-pub use unit_interval::{UnitInterval, UnitIntervalError};
+pub use unit_interval::{UnitInterval, UnitIntervalError, UnitIntervalParseError};
 pub use value::Value;
 
 mod count;

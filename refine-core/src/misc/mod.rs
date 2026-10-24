@@ -13,7 +13,7 @@ pub(crate) use option::{DefOption, DefOptionExt};
 pub use optional_reload::OptionalReload;
 pub use rearm_minion::RearmMinion;
 pub use sec_zone::{SecZone, SecZoneCorruption};
-pub use spool::{ItemSpoolInfo, Spool};
+pub use spool::{ItemSpoolInfo, Spool, SpoolParseError};
 pub(crate) use xyz::Xyz;
 
 mod attr_spec;

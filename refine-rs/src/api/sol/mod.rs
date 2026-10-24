@@ -1,6 +1,4 @@
-pub use id::SolarSystemId;
-#[cfg(feature = "serde")]
-pub use id::SolarSystemIdParseError;
+pub use id::{SolarSystemId, SolarSystemIdParseError};
 pub use refine_add_sol::SolAddError;
 pub use refine_get_sol::SolGetError;
 pub use sol::SolarSystem;

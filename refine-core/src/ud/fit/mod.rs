@@ -1,8 +1,6 @@
 pub(crate) use container::UFits;
 pub(crate) use fit::UFit;
-#[cfg(feature = "serde")]
-pub use id::FitIdParseError;
-pub use id::{FitFoundError, FitId};
+pub use id::{FitFoundError, FitId, FitIdParseError};
 pub(crate) use item_vec::{UItemVec, UItemVecShiftDir};
 pub(crate) use skill::UFitSkill;
 pub(crate) use uid::UFitId;

@@ -1,12 +1,9 @@
-#[cfg(feature = "serde")]
 pub use rc::err::{FitIdParseError, FleetIdParseError, ItemIdParseError};
 
-#[cfg(feature = "serde")]
-pub use crate::api::SolarSystemIdParseError;
 pub use crate::{
     api::{
         FitGetError, FitHybridBatchError, FleetGetError, ItemGetError, SolAddError, SolFittingAppError, SolGetError,
-        SolHybridBatchError, SolRemoveError, SolSwitchSrcError,
+        SolHybridBatchError, SolRemoveError, SolSwitchSrcError, SolarSystemIdParseError,
     },
     ctl::{
         AutochargeChangeError, BoosterChangeError, CharacterChangeError, ChargeChangeError, DroneAddError,

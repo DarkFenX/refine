@@ -1,4 +1,4 @@
-use std::num::Wrapping;
+use std::{num::Wrapping, str::FromStr};
 
 use crate::util::{LibDefault, LibIncrement};
 
@@ -39,32 +39,27 @@ impl From<FleetId> for FleetFoundError {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Custom de/serialization
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-#[cfg(feature = "serde")]
-pub use custom_serde::FleetIdParseError;
+impl FromStr for FleetId {
+    type Err = FleetIdParseError;
+
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        let raw = u32::from_str(s)?;
+        Ok(Self(raw))
+    }
+}
+
+#[derive(Debug, thiserror::Error)]
+#[error(transparent)]
+pub struct FleetIdParseError(#[from] std::num::ParseIntError);
 
 #[cfg(feature = "serde")]
 mod custom_serde {
-    use std::str::FromStr;
-
     use serde::{
         de::{Deserialize, Deserializer, Error, Visitor},
         ser::{Serialize, Serializer},
     };
 
     use super::*;
-
-    impl FromStr for FleetId {
-        type Err = FleetIdParseError;
-
-        fn from_str(s: &str) -> Result<Self, Self::Err> {
-            let raw = u32::from_str(s)?;
-            Ok(Self(raw))
-        }
-    }
-
-    #[derive(Debug, thiserror::Error)]
-    #[error(transparent)]
-    pub struct FleetIdParseError(#[from] std::num::ParseIntError);
 
     impl Serialize for FleetId {
         fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>

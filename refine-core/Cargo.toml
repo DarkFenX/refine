@@ -14,7 +14,7 @@ angle-sc = ">=2.0.1"
 bitflags = ">=2.13.2"
 cranelift-entity = ">=0.136.3"
 dary_heap = ">=0.3.9"
-derive_more = { version = ">=2.1.1", features = ["display"] }
+derive_more = { version = ">=2.1.1", features = ["display", "from_str"] }
 indexmap = ">=2.14.2"
 itertools = ">=0.15.0"
 lender = ">=0.8.0"
@@ -30,5 +30,5 @@ smallvec = ">=1.16.3"
 thiserror = ">=2.0.21"
 
 [features]
-serde = ["dep:refine-serde", "dep:serde", "dep:serde_tuple", "dep:serde_with", "derive_more/from_str"]
-serde-ad = ["dep:serde", "dep:serde_repr", "dep:serde_tuple", "derive_more/from_str"]
+serde = ["dep:refine-serde", "dep:serde", "dep:serde_tuple", "dep:serde_with"]
+serde-ad = ["dep:serde", "dep:serde_repr", "dep:serde_tuple"]

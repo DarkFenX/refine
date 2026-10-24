@@ -1,3 +1,5 @@
+use std::str::FromStr;
+
 use crate::{
     ItemTypeId,
     ad::{ACustomEffectId, ADogmaEffectId, AEffectId},
@@ -23,8 +25,7 @@ pub enum EffectId {
 }
 
 /// ID of an effect defined by EVE data.
-#[cfg_attr(feature = "serde", derive(derive_more::FromStr))]
-#[derive(Copy, Clone, Eq, PartialEq, Hash, Debug, derive_more::Display)]
+#[derive(Copy, Clone, Eq, PartialEq, Hash, Debug, derive_more::Display, derive_more::FromStr)]
 pub struct DogmaEffectId(i32);
 impl DogmaEffectId {
     pub const fn from_i32(id: i32) -> Self {
@@ -36,8 +37,7 @@ impl DogmaEffectId {
 }
 
 /// ID of an effect defined by the library, with no EVE counterpart.
-#[cfg_attr(feature = "serde", derive(derive_more::FromStr))]
-#[derive(Copy, Clone, Eq, PartialEq, Hash, Debug, derive_more::Display)]
+#[derive(Copy, Clone, Eq, PartialEq, Hash, Debug, derive_more::Display, derive_more::FromStr)]
 pub struct CustomEffectId(i32);
 impl CustomEffectId {
     pub const fn from_i32(id: i32) -> Self {
@@ -101,56 +101,54 @@ impl std::fmt::Display for EffectId {
     }
 }
 
+impl FromStr for EffectId {
+    type Err = EffectIdParseError;
+
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        // Process longer prefixes first in case of conflicting starting letters
+        if let Some(id_str) = s.strip_prefix(SYSWIDE_PREFIX) {
+            return Ok(Self::SystemWide(ItemTypeId::from_str(id_str)?));
+        }
+        if let Some(id_str) = s.strip_prefix(SYSEMIT_PREFIX) {
+            return Ok(Self::SystemEmitter(ItemTypeId::from_str(id_str)?));
+        }
+        if let Some(id_str) = s.strip_prefix(PROXYEFF_PREFIX) {
+            return Ok(Self::ProxyEffect(ItemTypeId::from_str(id_str)?));
+        }
+        if let Some(id_str) = s.strip_prefix(PROXYTRIG_PREFIX) {
+            return Ok(Self::ProxyTrigger(ItemTypeId::from_str(id_str)?));
+        }
+        if let Some(id_str) = s.strip_prefix(SHIPLINK_PREFIX) {
+            return Ok(Self::ShipLink(ItemTypeId::from_str(id_str)?));
+        }
+        if let Some(id_str) = s.strip_prefix(DOGMA_PREFIX) {
+            return Ok(Self::Dogma(DogmaEffectId::from_str(id_str)?));
+        }
+        if let Some(id_str) = s.strip_prefix(CUSTOM_PREFIX) {
+            return Ok(Self::Custom(CustomEffectId::from_str(id_str)?));
+        }
+        Err(EffectIdParseError::InvalidPrefix)
+    }
+}
+
+#[derive(Debug, thiserror::Error)]
+pub enum EffectIdParseError {
+    #[error(
+        "invalid prefix, expected \"{DOGMA_PREFIX}\", \"{SYSWIDE_PREFIX}\", \"{SYSEMIT_PREFIX}\", \"{PROXYEFF_PREFIX}\", \"{PROXYTRIG_PREFIX}\", \"{SHIPLINK_PREFIX}\", or \"{CUSTOM_PREFIX}\" prefix"
+    )]
+    InvalidPrefix,
+    #[error(transparent)]
+    InvalidInt(#[from] std::num::ParseIntError),
+}
+
 #[cfg(feature = "serde")]
 mod custom_serde {
-    use std::str::FromStr;
-
     use serde::{
         de::{Deserialize, Deserializer, Error, Visitor},
         ser::{Serialize, Serializer},
     };
 
     use super::*;
-
-    impl FromStr for EffectId {
-        type Err = EffectIdParseError;
-
-        fn from_str(s: &str) -> Result<Self, Self::Err> {
-            // Process longer prefixes first in case of conflicting starting letters
-            if let Some(id_str) = s.strip_prefix(SYSWIDE_PREFIX) {
-                return Ok(Self::SystemWide(ItemTypeId::from_str(id_str)?));
-            }
-            if let Some(id_str) = s.strip_prefix(SYSEMIT_PREFIX) {
-                return Ok(Self::SystemEmitter(ItemTypeId::from_str(id_str)?));
-            }
-            if let Some(id_str) = s.strip_prefix(PROXYEFF_PREFIX) {
-                return Ok(Self::ProxyEffect(ItemTypeId::from_str(id_str)?));
-            }
-            if let Some(id_str) = s.strip_prefix(PROXYTRIG_PREFIX) {
-                return Ok(Self::ProxyTrigger(ItemTypeId::from_str(id_str)?));
-            }
-            if let Some(id_str) = s.strip_prefix(SHIPLINK_PREFIX) {
-                return Ok(Self::ShipLink(ItemTypeId::from_str(id_str)?));
-            }
-            if let Some(id_str) = s.strip_prefix(DOGMA_PREFIX) {
-                return Ok(Self::Dogma(DogmaEffectId::from_str(id_str)?));
-            }
-            if let Some(id_str) = s.strip_prefix(CUSTOM_PREFIX) {
-                return Ok(Self::Custom(CustomEffectId::from_str(id_str)?));
-            }
-            Err(EffectIdParseError::InvalidPrefix)
-        }
-    }
-
-    #[derive(Debug, thiserror::Error)]
-    pub enum EffectIdParseError {
-        #[error(
-            "invalid prefix, expected \"{DOGMA_PREFIX}\", \"{SYSWIDE_PREFIX}\", \"{SYSEMIT_PREFIX}\", \"{PROXYEFF_PREFIX}\", \"{PROXYTRIG_PREFIX}\", \"{SHIPLINK_PREFIX}\", or \"{CUSTOM_PREFIX}\" prefix"
-        )]
-        InvalidPrefix,
-        #[error(transparent)]
-        InvalidInt(#[from] std::num::ParseIntError),
-    }
 
     impl Serialize for EffectId {
         fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
