@@ -103,3 +103,39 @@ pub enum SrcAliasStrictInitError {
     #[error("invalid last char \"{0}\"")]
     InvalidLastChar(char),
 }
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Custom de/serialization
+////////////////////////////////////////////////////////////////////////////////////////////////////
+#[cfg(feature = "serde")]
+mod custom_serde {
+    use serde::de::{Deserialize, Deserializer, Error, Visitor};
+
+    use super::*;
+
+    impl<'de> Deserialize<'de> for SrcAlias {
+        fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
+        where
+            D: Deserializer<'de>,
+        {
+            struct VisitorImpl;
+
+            impl<'de> Visitor<'de> for VisitorImpl {
+                type Value = SrcAlias;
+
+                fn expecting(&self, formatter: &mut std::fmt::Formatter) -> std::fmt::Result {
+                    formatter.write_str("string with source alias")
+                }
+
+                fn visit_str<E>(self, v: &str) -> Result<Self::Value, E>
+                where
+                    E: Error,
+                {
+                    Self::Value::try_pruned(v).map_err(Error::custom)
+                }
+            }
+
+            deserializer.deserialize_string(VisitorImpl)
+        }
+    }
+}
