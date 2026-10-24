@@ -28,7 +28,7 @@ pub(crate) async fn limit_request_body_size(State(limit): State<BodyLimit>, req:
         // case
         None => {
             let (parts, body) = req.into_parts();
-            match to_bytes(body, limit.max_request_body_size as usize).await {
+            match to_bytes(body, limit.max_request_body_size.saturating_cast()).await {
                 Ok(bytes) => next.run(Request::from_parts(parts, Body::from(bytes))).await,
                 // Errors might happen because the limit has been broken, and due to other reasons;
                 // figure out the cause and respond accordingly

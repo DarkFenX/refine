@@ -1,4 +1,5 @@
 #![feature(error_reporter)]
+#![feature(integer_casts)]
 
 mod err;
 mod handlers;

@@ -126,7 +126,7 @@ impl PValue {
         Self(self.0.powi(n))
     }
     pub(crate) fn pow_count(self, n: Count) -> Self {
-        Self(self.0.powi(n.into_u32() as i32))
+        Self(self.0.powi(n.into_u32().saturating_cast()))
     }
     pub(crate) fn pow_pvalue(self, n: Self) -> Self {
         Self(self.0.powf(n.into_f64()))

@@ -77,7 +77,7 @@ impl From<SkillLevel> for i32 {
 mod custom_serde {
     use std::str::FromStr;
 
-    use serde::de::{Deserialize, Deserializer, Visitor};
+    use serde::de::{Deserialize, Deserializer, Error, Visitor};
 
     use super::*;
 
@@ -85,8 +85,14 @@ mod custom_serde {
         type Err = SkillLevelParseError;
 
         fn from_str(s: &str) -> Result<Self, Self::Err> {
-            let value = i32::from_str(s)?;
-            let value = Self::from_i32_clamped(value);
+            if let Ok(value) = i64::from_str(s) {
+                return Ok(Self::from_i64_clamped(value));
+            }
+            let value = f64::from_str(s)?;
+            if !value.is_finite() {
+                return Err(SkillLevelParseError::NotFinite(value));
+            }
+            let value = Self::from_f64_rounded(value);
             Ok(value)
         }
     }
@@ -94,7 +100,9 @@ mod custom_serde {
     #[derive(Debug, thiserror::Error)]
     pub enum SkillLevelParseError {
         #[error(transparent)]
-        InvalidInt(#[from] std::num::ParseIntError),
+        InvalidNumber(#[from] std::num::ParseFloatError),
+        #[error("value {0} is not finite")]
+        NotFinite(f64),
     }
 
     struct VisitorImpl;
@@ -111,8 +119,14 @@ mod custom_serde {
         fn visit_i64<E>(self, v: i64) -> Result<Self::Value, E> {
             Ok(SkillLevel::from_i64_clamped(v))
         }
-        fn visit_f64<E>(self, v: f64) -> Result<Self::Value, E> {
-            Ok(SkillLevel::from_f64_rounded(v))
+        fn visit_f64<E>(self, v: f64) -> Result<Self::Value, E>
+        where
+            E: Error,
+        {
+            match v.is_finite() {
+                true => Ok(SkillLevel::from_f64_rounded(v)),
+                false => Err(Error::custom(SkillLevelParseError::NotFinite(v))),
+            }
         }
     }
 

@@ -5,16 +5,20 @@ use crate::{
 };
 
 /// Count of something, e.g. of max locked targets of a ship.
-#[cfg_attr(
-    feature = "serde",
-    derive(derive_more::FromStr, serde::Serialize, serde::Deserialize),
-    serde(transparent)
-)]
+///
+/// Serialization notes: deserialization clamps out-of-range input instead of failing.
+#[cfg_attr(feature = "serde", derive(serde::Serialize), serde(transparent))]
 #[derive(Copy, Clone, Eq, PartialEq, Ord, PartialOrd, Hash, Default, Debug, derive_more::Display)]
 pub struct Count(u32);
 impl Count {
     pub const fn from_u32(value: u32) -> Self {
         Self(value)
+    }
+    pub const fn from_u64_clamped(value: u64) -> Self {
+        Self(value.saturating_cast())
+    }
+    pub const fn from_i64_clamped(value: i64) -> Self {
+        Self(value.saturating_cast())
     }
     pub const fn into_u32(self) -> u32 {
         self.0
@@ -37,6 +41,9 @@ impl Count {
 impl Count {
     pub(crate) fn from_usize(value: usize) -> Self {
         Self(value.saturating_cast())
+    }
+    pub(crate) fn from_f64_rounded(value: f64) -> Self {
+        Self(round_f64_to_u32(value))
     }
     pub(crate) fn from_value_trunced(value: Value) -> Self {
         Self(trunc_f64_to_u32(value.into_f64()))
@@ -154,5 +161,75 @@ impl std::ops::Rem<Count> for Count {
     type Output = Count;
     fn rem(self, rhs: Count) -> Self::Output {
         Count(self.0 % rhs.0)
+    }
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Custom de/serialization
+////////////////////////////////////////////////////////////////////////////////////////////////////
+#[cfg(feature = "serde")]
+mod custom_serde {
+    use std::str::FromStr;
+
+    use serde::de::{Deserialize, Deserializer, Error, Visitor};
+
+    use super::*;
+
+    impl FromStr for Count {
+        type Err = CountParseError;
+
+        fn from_str(s: &str) -> Result<Self, Self::Err> {
+            if let Ok(value) = i64::from_str(s) {
+                return Ok(Self::from_i64_clamped(value));
+            }
+            let value = f64::from_str(s)?;
+            if !value.is_finite() {
+                return Err(CountParseError::NotFinite(value));
+            }
+            let value = Self::from_f64_rounded(value);
+            Ok(value)
+        }
+    }
+
+    #[derive(Debug, thiserror::Error)]
+    pub enum CountParseError {
+        #[error(transparent)]
+        InvalidNumber(#[from] std::num::ParseFloatError),
+        #[error("value {0} is not finite")]
+        NotFinite(f64),
+    }
+
+    struct VisitorImpl;
+    impl Visitor<'_> for VisitorImpl {
+        type Value = Count;
+
+        fn expecting(&self, formatter: &mut std::fmt::Formatter) -> std::fmt::Result {
+            formatter.write_str("number with count")
+        }
+
+        fn visit_u64<E>(self, v: u64) -> Result<Self::Value, E> {
+            Ok(Count::from_u64_clamped(v))
+        }
+        fn visit_i64<E>(self, v: i64) -> Result<Self::Value, E> {
+            Ok(Count::from_i64_clamped(v))
+        }
+        fn visit_f64<E>(self, v: f64) -> Result<Self::Value, E>
+        where
+            E: Error,
+        {
+            match v.is_finite() {
+                true => Ok(Count::from_f64_rounded(v)),
+                false => Err(Error::custom(CountParseError::NotFinite(v))),
+            }
+        }
+    }
+
+    impl<'de> Deserialize<'de> for Count {
+        fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
+        where
+            D: Deserializer<'de>,
+        {
+            deserializer.deserialize_u32(VisitorImpl)
+        }
     }
 }

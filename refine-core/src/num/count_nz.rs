@@ -1,6 +1,9 @@
 use std::num::NonZeroU32;
 
-use crate::num::{PValue, Value};
+use crate::{
+    num::{PValue, Value},
+    util::round_f64_to_u32,
+};
 
 const DEFAULT: NonZeroU32 = NonZeroU32::MIN;
 
@@ -19,6 +22,12 @@ impl CountNz {
     }
     pub const fn from_u32_clamped(count: u32) -> Self {
         Self(NonZeroU32::try_from(count).unwrap_or(DEFAULT))
+    }
+    pub const fn from_u64_clamped(count: u64) -> Self {
+        Self::from_u32_clamped(count.saturating_cast())
+    }
+    pub const fn from_i64_clamped(count: i64) -> Self {
+        Self::from_u32_clamped(count.saturating_cast())
     }
     pub const fn into_u32(self) -> u32 {
         self.0.get()
@@ -40,14 +49,7 @@ impl CountNz {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl CountNz {
     pub(crate) fn from_f64_rounded(count: f64) -> Self {
-        Self(
-            NonZeroU32::try_from(
-                count
-                    .clamp(NonZeroU32::MIN.get() as f64, NonZeroU32::MAX.get() as f64)
-                    .round() as u32,
-            )
-            .unwrap(),
-        )
+        Self::from_u32_clamped(round_f64_to_u32(count))
     }
     pub(crate) fn into_value(self) -> Value {
         Value::from_f64(self.0.get() as f64)
@@ -76,16 +78,67 @@ const impl Default for CountNz {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 #[cfg(feature = "serde")]
 mod custom_serde {
-    use serde::de::{Deserialize, Deserializer};
+    use std::str::FromStr;
+
+    use serde::de::{Deserialize, Deserializer, Error, Visitor};
 
     use super::*;
+
+    impl FromStr for CountNz {
+        type Err = CountNzParseError;
+
+        fn from_str(s: &str) -> Result<Self, Self::Err> {
+            if let Ok(value) = i64::from_str(s) {
+                return Ok(Self::from_i64_clamped(value));
+            }
+            let value = f64::from_str(s)?;
+            if !value.is_finite() {
+                return Err(CountNzParseError::NotFinite(value));
+            }
+            let value = Self::from_f64_rounded(value);
+            Ok(value)
+        }
+    }
+
+    #[derive(Debug, thiserror::Error)]
+    pub enum CountNzParseError {
+        #[error(transparent)]
+        InvalidNumber(#[from] std::num::ParseFloatError),
+        #[error("value {0} is not finite")]
+        NotFinite(f64),
+    }
+
+    struct VisitorImpl;
+    impl Visitor<'_> for VisitorImpl {
+        type Value = CountNz;
+
+        fn expecting(&self, formatter: &mut std::fmt::Formatter) -> std::fmt::Result {
+            formatter.write_str("number with non-zero count")
+        }
+
+        fn visit_u64<E>(self, v: u64) -> Result<Self::Value, E> {
+            Ok(CountNz::from_u64_clamped(v))
+        }
+        fn visit_i64<E>(self, v: i64) -> Result<Self::Value, E> {
+            Ok(CountNz::from_i64_clamped(v))
+        }
+        fn visit_f64<E>(self, v: f64) -> Result<Self::Value, E>
+        where
+            E: Error,
+        {
+            match v.is_finite() {
+                true => Ok(CountNz::from_f64_rounded(v)),
+                false => Err(Error::custom(CountNzParseError::NotFinite(v))),
+            }
+        }
+    }
 
     impl<'de> Deserialize<'de> for CountNz {
         fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
         where
             D: Deserializer<'de>,
         {
-            u32::deserialize(deserializer).map(CountNz::from_u32_clamped)
+            deserializer.deserialize_u32(VisitorImpl)
         }
     }
 }
