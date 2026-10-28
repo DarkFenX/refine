@@ -9,7 +9,7 @@ pub(crate) struct SolMapGuarded {
 impl SolMapGuarded {
     pub(crate) fn new() -> Self {
         Self {
-            inner: RwLock::new(RMap::new()),
+            inner: RwLock::new(RMap::default()),
         }
     }
     pub(crate) fn read(&self) -> RwLockReadGuard<'_, RMap<SolarSystemId, SolInnerGuarded>> {

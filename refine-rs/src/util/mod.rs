@@ -1,5 +1,3 @@
-pub(crate) use map::RMap;
-pub(crate) use set::RSet;
+pub(crate) use storage::{RMap, RSet};
 
-mod map;
-mod set;
+mod storage;

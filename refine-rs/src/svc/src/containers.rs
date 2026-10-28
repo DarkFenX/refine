@@ -31,7 +31,7 @@ pub(crate) struct SrcAliasData {
 impl SrcAliasData {
     fn new() -> Self {
         Self {
-            map: RMap::new(),
+            map: RMap::default(),
             default: None,
         }
     }
@@ -46,7 +46,7 @@ pub(crate) struct SrcAliasLocksGuarded {
 impl SrcAliasLocksGuarded {
     pub(crate) fn new() -> Self {
         Self {
-            inner: parking_lot::Mutex::new(RSet::new()),
+            inner: parking_lot::Mutex::new(RSet::default()),
         }
     }
     pub(crate) fn reserve(&self, alias: SrcAlias) -> Option<SrcAliasLocksReservation<'_>> {

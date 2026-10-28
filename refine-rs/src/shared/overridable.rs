@@ -47,7 +47,7 @@ where
     fn default() -> Self {
         Self {
             default: V::default(),
-            overrides: RMap::new(),
+            overrides: RMap::default(),
         }
     }
 }
@@ -85,7 +85,7 @@ where
     fn default() -> Self {
         Self {
             default: V::default(),
-            override_refs: RMap::new(),
+            override_refs: RMap::default(),
             override_vals: Vec::new(),
         }
     }
@@ -165,7 +165,10 @@ where
     {
         let mut heavy = Self {
             default: compact.default.into(),
-            override_refs: RMap::with_capacity(compact.overrides.iter().map(|(_, keys)| keys.len()).sum()),
+            override_refs: RMap::with_capacity_and_hasher(
+                compact.overrides.iter().map(|(_, keys)| keys.len()).sum(),
+                Default::default(),
+            ),
             override_vals: Vec::with_capacity(compact.overrides.len()),
         };
         for (value, keys) in compact.overrides.into_iter() {
@@ -179,7 +182,7 @@ impl<K, V> OvrdMapLight<K, V> {
     pub(crate) fn from_default(default: V) -> Self {
         Self {
             default,
-            overrides: RMap::new(),
+            overrides: RMap::default(),
         }
     }
     pub(crate) fn from_compact_with_br_resolution<B>(compact_br: OvrdCompact<B, V>, ctl_cmd_resps: &CmdResps) -> Self
@@ -189,7 +192,10 @@ impl<K, V> OvrdMapLight<K, V> {
         B: BrResolveFallible<Target = K>,
     {
         let default_value = compact_br.default;
-        let mut overrides = RMap::with_capacity(calc_needed_space(default_value, &compact_br.overrides));
+        let mut overrides = RMap::with_capacity_and_hasher(
+            calc_needed_space(default_value, &compact_br.overrides),
+            Default::default(),
+        );
         for (override_value, override_keys_br) in compact_br.overrides.into_iter() {
             // Getter falls back to default, do not add entries with it
             if override_value == default_value {
@@ -243,10 +249,13 @@ mod custom_serde {
             Ok(match OverridableFormats::deserialize(deserializer)? {
                 OverridableFormats::Simple(default) => Self {
                     default,
-                    overrides: RMap::new(),
+                    overrides: RMap::default(),
                 },
                 OverridableFormats::Extended(default, overrides) => {
-                    let mut map = RMap::with_capacity(overrides.iter().map(|(_, keys)| keys.len()).sum());
+                    let mut map = RMap::with_capacity_and_hasher(
+                        overrides.iter().map(|(_, keys)| keys.len()).sum(),
+                        Default::default(),
+                    );
                     map.extend(
                         overrides
                             .into_iter()
