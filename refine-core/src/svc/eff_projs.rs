@@ -1,0 +1,106 @@
+use crate::{
+    misc::EffectSpec,
+    ud::{UData, UItemId, UProjData},
+    util::RMap,
+};
+
+/// Holds info about effect projections
+#[derive(Clone)]
+pub(crate) struct EffProjs {
+    proj_datas: RMap<(EffectSpec, UItemId), UProjData>,
+}
+impl EffProjs {
+    pub(in crate::svc) fn new() -> Self {
+        Self {
+            proj_datas: RMap::new(),
+        }
+    }
+    // Query methods
+    pub(in crate::svc) fn get_proj_data(
+        &self,
+        projector_espec: EffectSpec,
+        projectee_uid: UItemId,
+    ) -> Option<UProjData> {
+        self.proj_datas.get(&(projector_espec, projectee_uid)).copied()
+    }
+    pub(in crate::svc) fn get_or_make_proj_data(
+        &self,
+        u_data: &UData,
+        projector_espec: EffectSpec,
+        projectee_uid: UItemId,
+    ) -> UProjData {
+        match self.proj_datas.get(&(projector_espec, projectee_uid)) {
+            Some(u_proj_data) => *u_proj_data,
+            None => {
+                let projector_u_item = u_data.items.get(projector_espec.item_uid);
+                let projectee_u_item = u_data.items.get(projectee_uid);
+                UProjData::from_physics_with_radii(
+                    projector_u_item.get_carrier_physics(u_data),
+                    projectee_u_item.get_carrier_physics(u_data),
+                    Some(projector_u_item.get_carrier_radius(u_data)),
+                    Some(projectee_u_item.get_carrier_radius(u_data)),
+                )
+            }
+        }
+    }
+    // Modification methods
+    pub(in crate::svc) fn add_proj_data(
+        &mut self,
+        projector_espec: EffectSpec,
+        projectee_uid: UItemId,
+        proj_data: Option<UProjData>,
+    ) {
+        if let Some(proj_data) = proj_data {
+            self.proj_datas.insert((projector_espec, projectee_uid), proj_data);
+        }
+    }
+    pub(in crate::svc) fn change_proj_data(
+        &mut self,
+        projector_espec: EffectSpec,
+        projectee_uid: UItemId,
+        proj_data: Option<UProjData>,
+    ) {
+        match proj_data {
+            Some(proj_data) => self.proj_datas.insert((projector_espec, projectee_uid), proj_data),
+            None => self.proj_datas.remove(&(projector_espec, projectee_uid)),
+        };
+    }
+    pub(in crate::svc) fn remove_proj_data(&mut self, affector_espec: EffectSpec, affectee_uid: UItemId) {
+        self.proj_datas.remove(&(affector_espec, affectee_uid));
+    }
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Debugging
+////////////////////////////////////////////////////////////////////////////////////////////////////
+#[cfg(feature = "dev")]
+mod debug {
+    use super::*;
+    use crate::dbg::DebugResult;
+
+    impl EffProjs {
+        pub(crate) fn consistency_check(&self, u_data: &UData) -> DebugResult {
+            for ((projector_espec, projectee_uid), svc_proj_data) in self.proj_datas.iter() {
+                projector_espec.consistency_check(u_data, true)?;
+                // Projectees are not necessarily loaded
+                projectee_uid.consistency_check(u_data, false)?;
+                svc_proj_data.consistency_check()?;
+                let Some(projector_projs) = u_data.items.get(projector_espec.item_uid).get_projs() else {
+                    return Err(Default::default());
+                };
+                let Some(Some(u_proj_data)) = projector_projs.get(projectee_uid) else {
+                    // Error in either of cases:
+                    // - when user data item has no projection data - since projection register is
+                    // supposed to track only relations with projection data
+                    // - no projection defined on user data item
+                    return Err(Default::default());
+                };
+                // If datas are defined on both, data mismatch is an error
+                if u_proj_data != *svc_proj_data {
+                    return Err(Default::default());
+                }
+            }
+            Ok(())
+        }
+    }
+}

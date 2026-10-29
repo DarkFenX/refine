@@ -1,0 +1,241 @@
+use crate::{
+    CountNz, EffectMode, FighterCountInfo, ItemId, ItemKind, MinionState, PValue, RearmMinion,
+    ad::{AEffectId, AItemId},
+    rd::{RData, REffectId, RItemBase, RItemFlexData, RState},
+    ud::{
+        UEffectUpdates, UFitId, UPhysics, UProjs,
+        item::{REffs, UAutocharges, UEffectModeOverrideIter, UItemBase},
+    },
+};
+
+#[derive(Clone)]
+pub(crate) struct UFighter {
+    base: UItemBase,
+    fit_uid: UFitId,
+    count_override: Option<CountNz>,
+    autocharges: UAutocharges,
+    physics: UPhysics,
+    projs: UProjs,
+    // Optional settings related to cycling
+    rearm_minion_override: Option<RearmMinion>,
+}
+impl UFighter {
+    pub(crate) fn new(
+        item_id: ItemId,
+        type_aid: AItemId,
+        fit_uid: UFitId,
+        fighter_state: MinionState,
+        physics: UPhysics,
+        r_data: &RData,
+    ) -> Self {
+        Self {
+            base: UItemBase::new(item_id, type_aid, fighter_state.into_r_state(), r_data),
+            fit_uid,
+            count_override: None,
+            autocharges: UAutocharges::new(),
+            physics,
+            projs: UProjs::new(),
+            rearm_minion_override: None,
+        }
+    }
+    pub(in crate::ud::item) fn get_item_kind() -> ItemKind {
+        ItemKind::Fighter
+    }
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Item base methods
+////////////////////////////////////////////////////////////////////////////////////////////////////
+impl UFighter {
+    // User data
+    pub(crate) fn get_item_id(&self) -> ItemId {
+        self.base.get_item_id()
+    }
+    pub(crate) fn get_type_aid(&self) -> AItemId {
+        self.base.get_type_aid()
+    }
+    pub(crate) fn set_type_aid(&mut self, type_aid: AItemId, r_data: &RData) {
+        self.base.set_type_aid(type_aid, r_data);
+    }
+    pub(crate) fn get_state(&self) -> RState {
+        self.base.get_state()
+    }
+    pub(crate) fn get_reffs(&self) -> Option<&REffs> {
+        self.base.get_reffs()
+    }
+    pub(crate) fn update_reffs(&mut self, reuse_eupdates: &mut UEffectUpdates, r_data: &RData) {
+        self.base.update_reffs(reuse_eupdates, r_data, true, false);
+    }
+    pub(in crate::ud::item) fn stop_all_reffs(&mut self, reuse_eupdates: &mut UEffectUpdates, r_data: &RData) {
+        self.base.stop_all_reffs(reuse_eupdates, r_data, true, false)
+    }
+    pub(crate) fn get_effect_mode_by_rid(&self, effect_rid: &REffectId) -> EffectMode {
+        self.base.get_effect_mode_by_rid(effect_rid)
+    }
+    pub(in crate::ud::item) fn iter_effect_mode_overrides(&self) -> UEffectModeOverrideIter<'_> {
+        self.base.iter_effect_mode_overrides()
+    }
+    pub(in crate::ud::item) fn set_effect_mode(
+        &mut self,
+        effect_aid: AEffectId,
+        effect_mode: EffectMode,
+        r_data: &RData,
+    ) {
+        self.base.set_effect_mode(effect_aid, effect_mode, r_data)
+    }
+    pub(in crate::ud::item) fn set_effect_modes(
+        &mut self,
+        effect_modes: impl Iterator<Item = (AEffectId, EffectMode)>,
+        r_data: &RData,
+    ) {
+        self.base.set_effect_modes(effect_modes, r_data)
+    }
+    // Runtime data
+    pub(crate) fn get_r_item_base(&self) -> Option<&RItemBase> {
+        self.base.get_r_item_base()
+    }
+    pub(crate) fn get_r_item_flex_data(&self) -> Option<&RItemFlexData> {
+        self.base.get_r_item_flex_data()
+    }
+    pub(crate) fn is_loaded(&self) -> bool {
+        self.base.is_loaded()
+    }
+    pub(in crate::ud::item) fn r_data_changed(&mut self, r_data: &RData) {
+        self.base.r_data_changed(r_data);
+        self.autocharges.clear();
+    }
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Item-specific methods
+////////////////////////////////////////////////////////////////////////////////////////////////////
+impl UFighter {
+    pub(crate) fn get_fighter_state(&self) -> MinionState {
+        MinionState::from_r_state(self.base.get_state())
+    }
+    pub(crate) fn set_fighter_state(&mut self, state: MinionState) {
+        self.base.set_state(state.into_r_state())
+    }
+    pub(crate) fn get_fit_uid(&self) -> UFitId {
+        self.fit_uid
+    }
+    pub(crate) fn get_current_count(&self) -> Option<CountNz> {
+        let rib = self.get_r_item_base()?;
+        Some(match self.count_override {
+            Some(count_override) => count_override,
+            None => rib.max_fighter_count,
+        })
+    }
+    pub(crate) fn get_count_info(&self) -> Option<FighterCountInfo> {
+        let rib = self.get_r_item_base()?;
+        Some(match self.count_override {
+            Some(count_override) => FighterCountInfo {
+                current: count_override,
+                max: rib.max_fighter_count,
+            },
+            None => FighterCountInfo {
+                current: rib.max_fighter_count,
+                max: rib.max_fighter_count,
+            },
+        })
+    }
+    pub(crate) fn get_count_override(&self) -> Option<CountNz> {
+        self.count_override
+    }
+    pub(crate) fn set_count_override(&mut self, count_override: Option<CountNz>) {
+        self.count_override = count_override
+    }
+    pub(crate) fn get_autocharges(&self) -> &UAutocharges {
+        &self.autocharges
+    }
+    pub(crate) fn get_autocharges_mut(&mut self) -> &mut UAutocharges {
+        &mut self.autocharges
+    }
+    pub(crate) fn get_physics(&self) -> &UPhysics {
+        &self.physics
+    }
+    pub(in crate::ud::item) fn get_radius(&self) -> PValue {
+        match self.get_r_item_base() {
+            Some(rib) => rib.radius,
+            None => PValue::ZERO,
+        }
+    }
+    pub(crate) fn get_physics_mut(&mut self) -> &mut UPhysics {
+        &mut self.physics
+    }
+    pub(crate) fn get_projs(&self) -> &UProjs {
+        &self.projs
+    }
+    pub(crate) fn get_projs_mut(&mut self) -> &mut UProjs {
+        &mut self.projs
+    }
+    pub(crate) fn get_rearm_minion_override(&self) -> Option<RearmMinion> {
+        self.rearm_minion_override
+    }
+    pub(crate) fn set_rearm_minion_override(&mut self, rearm_minion_override: Option<RearmMinion>) {
+        self.rearm_minion_override = rearm_minion_override
+    }
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Debugging
+////////////////////////////////////////////////////////////////////////////////////////////////////
+#[cfg(feature = "dev")]
+mod debug {
+    use itertools::Itertools;
+
+    use super::*;
+    use crate::{dbg::DebugResult, ud::UData};
+
+    impl UFighter {
+        pub(in crate::ud::item) fn consistency_check(&self, u_data: &UData) -> DebugResult {
+            let Self {
+                base,
+                fit_uid,
+                autocharges,
+                projs,
+                // Not checked
+                count_override: _,
+                physics: _,
+                rearm_minion_override: _,
+            } = self;
+            base.consistency_check(u_data)?;
+            fit_uid.consistency_check(u_data)?;
+            autocharges.consistency_check(u_data)?;
+            projs.consistency_check(u_data)?;
+            // Radius of projector should match radius of drone, radius of projectee should match
+            // projectee items
+            let fighter_radius = self.get_radius();
+            for (projectee_uid, proj_data) in projs.iter() {
+                let Some(proj_data) = proj_data else {
+                    return Err(Default::default());
+                };
+                if proj_data.get_src_radius() != fighter_radius {
+                    return Err(Default::default());
+                }
+                if proj_data.get_tgt_radius() != u_data.items.get(projectee_uid).get_direct_radius() {
+                    return Err(Default::default());
+                }
+            }
+            // If fighter has autocharges, make sure projections on them match
+            if !autocharges.is_empty() {
+                let fighter_projs = projs.iter().sorted().collect_vec();
+                for autocharge_uid in autocharges.values() {
+                    let autocharge_projs = u_data
+                        .items
+                        .get(autocharge_uid)
+                        .dc_autocharge()
+                        .unwrap()
+                        .get_projs()
+                        .iter()
+                        .sorted()
+                        .collect_vec();
+                    if fighter_projs != autocharge_projs {
+                        return Err(Default::default());
+                    }
+                }
+            }
+            Ok(())
+        }
+    }
+}

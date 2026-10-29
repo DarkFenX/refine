@@ -36,8 +36,8 @@ use crate::{
 ///   values fetched from calc.
 #[derive(Clone)]
 pub(in crate::ud::item) struct UItemBaseMutable {
-    pub(super) base: UItemBase,
-    pub(super) mutation: Option<ItemMutationData>,
+    base: UItemBase,
+    mutation: Option<ItemMutationData>,
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -459,10 +459,10 @@ impl UItemBaseMutable {
 #[derive(Clone)]
 pub(crate) struct ItemMutationData {
     // User-defined data
-    pub(super) mutator_type_aid: AItemId,
-    pub(super) attr_rolls: RMap<AAttrId, UnitInterval>,
+    mutator_type_aid: AItemId,
+    attr_rolls: RMap<AAttrId, UnitInterval>,
     // Source-dependent data
-    pub(super) cache: Option<ItemMutationDataCache>,
+    cache: Option<ItemMutationDataCache>,
 }
 impl ItemMutationData {
     fn with_attrs(mutator_type_aid: AItemId, attr_rolls: RMap<AAttrId, UnitInterval>) -> Self {
@@ -496,9 +496,9 @@ fn convert_request_to_data(mutation_request: UItemMutationRequest) -> ItemMutati
 
 #[derive(Clone)]
 pub(crate) struct ItemMutationDataCache {
-    pub(super) base_type_aid: AItemId,
-    pub(super) mutator: RcMuta,
-    pub(super) merged_attr_data: RItemFlexData,
+    base_type_aid: AItemId,
+    mutator: RcMuta,
+    merged_attr_data: RItemFlexData,
 }
 impl ItemMutationDataCache {
     pub(crate) fn get_base_type_aid(&self) -> AItemId {
@@ -597,5 +597,53 @@ pub(crate) fn get_combined_attr_values(base_r_item: Option<&RcItem>, mutated_r_i
             attrs
         }
         None => mutated_r_item.attr_data.attrs.clone(),
+    }
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Debugging
+////////////////////////////////////////////////////////////////////////////////////////////////////
+#[cfg(feature = "dev")]
+mod debug {
+    use super::*;
+    use crate::{dbg::DebugResult, ud::UData};
+
+    impl UItemBaseMutable {
+        pub(in crate::ud::item) fn consistency_check(&self, u_data: &UData) -> DebugResult {
+            let Self { base, mutation } = self;
+            base.consistency_check(u_data)?;
+            if let Some(mutation_data) = mutation {
+                mutation_data.consistency_check(u_data)?;
+            }
+            Ok(())
+        }
+    }
+
+    impl ItemMutationData {
+        fn consistency_check(&self, u_data: &UData) -> DebugResult {
+            let Self {
+                cache,
+                // Not checked
+                mutator_type_aid: _,
+                attr_rolls: _,
+            } = self;
+            if let Some(mutation_cache) = cache {
+                mutation_cache.consistency_check(u_data)?;
+            }
+            Ok(())
+        }
+    }
+
+    impl ItemMutationDataCache {
+        fn consistency_check(&self, u_data: &UData) -> DebugResult {
+            let Self {
+                merged_attr_data,
+                // Not checked
+                base_type_aid: _,
+                mutator: _,
+            } = self;
+            merged_attr_data.consistency_check(u_data)?;
+            Ok(())
+        }
     }
 }
