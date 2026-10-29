@@ -86,9 +86,10 @@ def test_separate(client, consts):
 
 def test_known_failures(client, consts):
     eve_size_attr_id = client.mk_eve_attr(id_=consts.EveAttr.charge_size)
-    eve_charge1_id = client.mk_eve_item(attrs={eve_size_attr_id: 2})
-    eve_charge2_id = client.mk_eve_item(attrs={eve_size_attr_id: 3})
-    eve_module_id = client.mk_eve_item(attrs={eve_size_attr_id: 2})
+    eve_capacity_attr_id = client.mk_eve_attr(id_=consts.EveAttr.capacity)
+    eve_charge1_id = client.mk_eve_charge(attrs={eve_size_attr_id: 2})
+    eve_charge2_id = client.mk_eve_charge(attrs={eve_size_attr_id: 3})
+    eve_module_id = client.mk_eve_item(attrs={eve_size_attr_id: 2, eve_capacity_attr_id: 1})
     eve_other_id = client.mk_eve_item()
     client.create_sources()
     api_sol = client.create_sol()
@@ -113,6 +114,10 @@ def test_known_failures(client, consts):
     assert api_val.passed is True
     with check_no_field():
         api_val.details  # ruff:ignore[useless-expression]
+    api_fit.check_try_fit_items(
+        val_options=ValOptions(charge_size=[api_module2.charge.id, api_module3.charge.id]),
+        passing=[eve_charge1_id],
+        failing=[eve_charge2_id])
 
 
 def test_rounding(client, consts):

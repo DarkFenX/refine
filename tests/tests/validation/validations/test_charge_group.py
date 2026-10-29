@@ -132,12 +132,13 @@ def test_multiple_different(client, consts):
 
 
 def test_known_failures(client, consts):
-    eve_grp1_id = client.mk_eve_item_group()
-    eve_grp2_id = client.mk_eve_item_group()
+    eve_grp1_id = client.mk_eve_charge_group()
+    eve_grp2_id = client.mk_eve_charge_group()
     eve_group_attr_id = client.mk_eve_attr(id_=consts.EveAttr.charge_group1, unit_id=consts.EveAttrUnit.group_id)
-    eve_charge1_id = client.mk_eve_item(grp_id=eve_grp1_id)
-    eve_charge2_id = client.mk_eve_item(grp_id=eve_grp2_id)
-    eve_module_id = client.mk_eve_item(attrs={eve_group_attr_id: eve_grp1_id})
+    eve_capacity_attr_id = client.mk_eve_attr(id_=consts.EveAttr.capacity)
+    eve_charge1_id = client.mk_eve_charge(grp_id=eve_grp1_id)
+    eve_charge2_id = client.mk_eve_charge(grp_id=eve_grp2_id)
+    eve_module_id = client.mk_eve_item(attrs={eve_group_attr_id: eve_grp1_id, eve_capacity_attr_id: 1})
     eve_other_id = client.mk_eve_item()
     client.create_sources()
     api_sol = client.create_sol()
@@ -162,6 +163,10 @@ def test_known_failures(client, consts):
     assert api_val.passed is True
     with check_no_field():
         api_val.details  # ruff:ignore[useless-expression]
+    api_fit.check_try_fit_items(
+        val_options=ValOptions(charge_group=[api_module2.charge.id, api_module3.charge.id]),
+        passing=[eve_charge1_id],
+        failing=[eve_charge2_id])
 
 
 def test_rounding(client, consts):
