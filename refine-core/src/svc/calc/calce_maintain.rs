@@ -133,7 +133,7 @@ impl Calc {
         let mut reuse_items = self.reuse.items.take();
         let mut reuse_cmods = self.reuse.cmods.take();
         for effect in effects.iter() {
-            self.generate_mods_for_effect(&mut reuse_rmods, ctx, item_uid, item, effect);
+            self.generate_mods_for_effect(&mut reuse_rmods, ctx.u_data, item_uid, item, effect);
             self.reg_raw_mods(
                 &mut reuse_rmod_ids,
                 &mut reuse_items,

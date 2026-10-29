@@ -21,10 +21,6 @@ impl RawModStorage {
     pub(in crate::svc::calc) fn get_rmod(&self, rmod_id: RawModId) -> &RawModifier {
         self.data.get(rmod_id).unwrap()
     }
-    #[cfg(feature = "dev")]
-    pub(in crate::svc::calc) fn try_get_rmod(&self, rmod_id: RawModId) -> Option<&RawModifier> {
-        self.data.get(rmod_id)
-    }
     pub(in crate::svc::calc) fn get_cmod(&self, ckey: &CtxModKey) -> CtxModifier {
         CtxModifier::from_ckey(*self.get_rmod(ckey.rmod_id), *ckey)
     }
@@ -77,6 +73,16 @@ mod debug {
     use crate::{dbg::DebugResult, ud::UData};
 
     impl RawModStorage {
+        pub(in crate::svc::calc) fn try_get_rmod(&self, rmod_id: RawModId) -> Option<&RawModifier> {
+            self.data.get(rmod_id)
+        }
+        pub(in crate::svc::calc) fn iter_by_espec(
+            &self,
+        ) -> impl Iterator<Item = (&EffectSpec, impl Iterator<Item = &RawModifier>)> {
+            self.by_espec
+                .iter()
+                .map(|(espec, rmod_ids)| (espec, rmod_ids.filter_map(|&rmod_id| self.data.get(rmod_id))))
+        }
         pub(in crate::svc::calc) fn consistency_check(&self, u_data: &UData) -> DebugResult {
             let Self { data, by_espec } = self;
             for (rmod_id, rmod) in data.iter() {
@@ -88,6 +94,15 @@ mod debug {
             }
             for (espec, rmod_ids) in by_espec.iter() {
                 espec.consistency_check(u_data, true)?;
+                // Modifiers can be registered only for running effects
+                if !u_data
+                    .items
+                    .get(espec.item_uid)
+                    .get_reffs()
+                    .is_some_and(|reffs| reffs.contains(&espec.effect_rid))
+                {
+                    return Err(Default::default());
+                }
                 for &rmod_id in rmod_ids {
                     if data.get(rmod_id).is_none() {
                         return Err(Default::default());

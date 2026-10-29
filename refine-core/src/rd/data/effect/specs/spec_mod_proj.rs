@@ -5,6 +5,7 @@ use crate::{
     util::RMap,
 };
 
+#[cfg_attr(feature = "dev", derive(PartialEq))]
 #[derive(Copy, Clone)]
 pub(crate) struct REffectProjModSpec {
     pub(crate) proj_mult: Option<NEffectProjMultGetter>,

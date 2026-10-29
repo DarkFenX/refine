@@ -30,6 +30,7 @@ impl SlabId for RawModId {
     }
 }
 
+#[cfg_attr(feature = "dev", derive(PartialEq))]
 #[derive(Copy, Clone)]
 pub(in crate::svc::calc) struct RawModifier {
     pub(in crate::svc::calc) kind: ModifierKind,

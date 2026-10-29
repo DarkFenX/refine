@@ -12,6 +12,7 @@ use crate::{
     ud::UItemId,
 };
 
+#[cfg_attr(feature = "dev", derive(PartialEq))]
 #[derive(Copy, Clone)]
 pub(crate) enum CalcCustomModifier {
     PropSpeed,
@@ -28,6 +29,7 @@ impl CalcCustomModifier {
     }
 }
 
+#[cfg_attr(feature = "dev", derive(PartialEq))]
 #[derive(Copy, Clone)]
 pub(in crate::svc::calc::modifier) struct CalcCustomModStrength {
     pub(in crate::svc::calc::modifier) kind: CalcCustomModifier,

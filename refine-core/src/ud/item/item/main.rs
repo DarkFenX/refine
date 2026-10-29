@@ -615,7 +615,29 @@ mod debug {
                 Self::Stance(stance) => stance.consistency_check(u_data),
                 Self::Subsystem(subsystem) => subsystem.consistency_check(u_data),
                 Self::SwEffect(sw_effect) => sw_effect.consistency_check(u_data),
+            }?;
+            self.reffs_consistency_check(u_data)
+        }
+        fn reffs_consistency_check(&self, u_data: &UData) -> DebugResult {
+            let (Some(item_rib), Some(reffs)) = (self.get_r_item_base(), self.get_reffs()) else {
+                return Ok(());
+            };
+            // Running effects have to belong to item type in current data, otherwise they are left
+            // over from previous data
+            if reffs
+                .iter()
+                .any(|effect_rid| !item_rib.effects.contains_key(effect_rid))
+            {
+                return Err(Default::default());
             }
+            // Running effects have to be up to date with item state and effect modes
+            let mut item = self.clone();
+            let mut eupdates = UEffectUpdates::new();
+            item.update_reffs(&mut eupdates, &u_data.r_data);
+            if !eupdates.to_start.is_empty() || !eupdates.to_stop.is_empty() {
+                return Err(Default::default());
+            }
+            Ok(())
         }
     }
 }

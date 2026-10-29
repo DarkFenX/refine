@@ -58,6 +58,32 @@ mod debug {
             deps.consistency_check(u_data)?;
             revs.consistency_check(u_data, rmods)?;
             rah.consistency_check(u_data)?;
+            self.rmods_source_consistency_check(u_data)?;
+            Ok(())
+        }
+        // Modifiers registered for an effect have to be the ones the effect generates from current
+        // data, otherwise they were generated from some other data
+        fn rmods_source_consistency_check(&self, u_data: &UData) -> DebugResult {
+            let mut generated_rmods = Vec::new();
+            for (espec, rmods) in self.rmods.iter_by_espec() {
+                let item = u_data.items.get(espec.item_uid);
+                let effect = u_data.r_data.get_effect_by_rid(espec.effect_rid);
+                self.generate_mods_for_effect(&mut generated_rmods, u_data, espec.item_uid, item, effect);
+                for rmod in rmods {
+                    // Modifiers of partially defined buffs depend on attribute values, and are not
+                    // generated here
+                    if rmod.buff_type_attr_rid.is_some() {
+                        continue;
+                    }
+                    // Not every generated modifier gets registered
+                    match generated_rmods.iter().position(|v| v == rmod) {
+                        Some(idx) => {
+                            generated_rmods.swap_remove(idx);
+                        }
+                        None => return Err(Default::default()),
+                    }
+                }
+            }
             Ok(())
         }
     }

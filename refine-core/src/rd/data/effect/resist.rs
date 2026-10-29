@@ -5,6 +5,7 @@ use crate::{
     util::RMap,
 };
 
+#[cfg_attr(feature = "dev", derive(PartialEq))]
 #[derive(Copy, Clone)]
 pub(crate) enum REffectResist {
     /// Resistance attribute ID

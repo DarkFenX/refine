@@ -12,9 +12,9 @@ use crate::{
 
 impl Calc {
     pub(super) fn generate_mods_for_effect(
-        &mut self,
+        &self,
         reuse_rmods: &mut Vec<RawModifier>,
-        ctx: &SvcCtx,
+        u_data: &UData,
         item_uid: UItemId,
         item: &UItem,
         effect: &REffect,
@@ -22,7 +22,7 @@ impl Calc {
         reuse_rmods.clear();
         // Regular modifiers
         for effect_mod in effect.modifiers.iter() {
-            match RawModifier::try_from_effect_mod(ctx.u_data, item_uid, item, effect, effect_mod) {
+            match RawModifier::try_from_effect_mod(u_data, item_uid, item, effect, effect_mod) {
                 Some(raw_mod) => reuse_rmods.push(raw_mod),
                 None => continue,
             };
@@ -32,9 +32,9 @@ impl Calc {
             for buff_full in effect_buff.full.iter() {
                 match buff_full.strength {
                     REffectModStrength::Attr(buff_str_attr_rid) => {
-                        let buff = ctx.u_data.r_data.get_buff_by_rid(buff_full.buff_rid);
+                        let buff = u_data.r_data.get_buff_by_rid(buff_full.buff_rid);
                         add_buff_mods_with_attr(
-                            ctx.u_data,
+                            u_data,
                             reuse_rmods,
                             item_uid,
                             item,
@@ -46,9 +46,9 @@ impl Calc {
                         )
                     }
                     REffectModStrength::Hardcoded(buff_str) => {
-                        let buff = ctx.u_data.r_data.get_buff_by_rid(buff_full.buff_rid);
+                        let buff = u_data.r_data.get_buff_by_rid(buff_full.buff_rid);
                         add_buff_mods_with_hardcoded(
-                            ctx.u_data,
+                            u_data,
                             reuse_rmods,
                             item_uid,
                             item,
@@ -63,10 +63,8 @@ impl Calc {
         }
         // Custom modifiers
         if let Some(custom_mod) = effect.calc_custom_mod
-            && let Some(rmod) = custom_mod.make_rmod(
-                ctx.u_data.r_data.get_attr_consts(),
-                EffectSpec::new(item_uid, effect.rid),
-            )
+            && let Some(rmod) =
+                custom_mod.make_rmod(u_data.r_data.get_attr_consts(), EffectSpec::new(item_uid, effect.rid))
         {
             reuse_rmods.push(rmod);
         }

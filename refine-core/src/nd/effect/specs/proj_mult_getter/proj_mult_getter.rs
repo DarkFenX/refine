@@ -21,6 +21,7 @@ use crate::{
     ud::{UItemId, UProjData},
 };
 
+#[cfg_attr(feature = "dev", derive(PartialEq))]
 #[derive(Copy, Clone)]
 pub(crate) enum NEffectProjMultGetter {
     Null,
