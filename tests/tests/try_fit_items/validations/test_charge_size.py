@@ -1,3 +1,4 @@
+from fw import approx
 from fw.api import ValOptions
 
 
@@ -75,10 +76,9 @@ def test_modified_module(client, consts):
     api_fit = api_sol.create_fit()
     api_fit.add_implant(type_id=eve_implant_id)
     api_fit.set_ship(type_id=eve_ship)
-    api_module = api_fit.add_module(type_id=eve_module_id, charge_type_id=eve_charge1_id)
-    # Action
-    api_module.change_module(charge_type_id=eve_charge2_id)
+    api_module = api_fit.add_module(type_id=eve_module_id, charge_type_id=eve_charge2_id)
     # Verification
+    assert api_module.update().attrs[eve_size_attr_id].modified == approx(2)
     api_fit.check_try_fit_items(
         val_options=ValOptions(charge_size=True),
         passing=[eve_charge2_id],
@@ -106,10 +106,9 @@ def test_modified_charge(client, consts):
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
     api_fit.add_implant(type_id=eve_implant_id)
-    api_module = api_fit.add_module(type_id=eve_module_id, charge_type_id=eve_charge1_id)
-    # Action
-    api_module.change_module(charge_type_id=eve_charge2_id)
+    api_module = api_fit.add_module(type_id=eve_module_id, charge_type_id=eve_charge2_id)
     # Verification
+    assert api_module.charge.update().attrs[eve_size_attr_id].modified == approx(1)
     api_fit.check_try_fit_items(
         val_options=ValOptions(charge_size=True),
         passing=[eve_charge2_id],
@@ -154,11 +153,8 @@ def test_non_positive(client, consts):
     client.create_sources()
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
-    api_module1 = api_fit.add_module(type_id=eve_module1_id, charge_type_id=eve_charge2_id)
-    api_module2 = api_fit.add_module(type_id=eve_module2_id, charge_type_id=eve_charge1_id)
-    # Action
-    api_module1.change_module(charge_type_id=eve_charge1_id)
-    api_module2.change_module(charge_type_id=eve_charge2_id)
+    api_fit.add_module(type_id=eve_module1_id, charge_type_id=eve_charge1_id)
+    api_fit.add_module(type_id=eve_module2_id, charge_type_id=eve_charge2_id)
     # Verification
     api_fit.check_try_fit_items(
         val_options=ValOptions(charge_size=True),
@@ -176,10 +172,7 @@ def test_no_value_module(client, consts):
     api_fit = api_sol.create_fit()
     api_fit.add_module(type_id=eve_module_id, charge_type_id=eve_charge_id)
     # Verification
-    api_fit.check_try_fit_items(
-        val_options=ValOptions(charge_size=True),
-        passing=[eve_charge_id],
-        failing=[])
+    api_fit.check_try_fit_items(val_options=ValOptions(charge_size=True), passing=[eve_charge_id], failing=[])
 
 
 def test_no_attr(client, consts):
@@ -192,7 +185,4 @@ def test_no_attr(client, consts):
     api_fit = api_sol.create_fit()
     api_fit.add_module(type_id=eve_module_id, charge_type_id=eve_charge_id)
     # Verification - validation is ignored if attribute does not exist
-    api_fit.check_try_fit_items(
-        val_options=ValOptions(charge_size=True),
-        passing=[eve_charge_id],
-        failing=[])
+    api_fit.check_try_fit_items(val_options=ValOptions(charge_size=True), passing=[eve_charge_id], failing=[])

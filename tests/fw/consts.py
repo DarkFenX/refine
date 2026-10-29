@@ -1,6 +1,8 @@
 from enum import Enum, IntEnum, StrEnum, unique
 
-
+####################################################################################################
+# EVE
+####################################################################################################
 @unique
 class EveItem(IntEnum):
     missile_launcher_operation = 3319
@@ -625,7 +627,9 @@ class CustomEffect(IntEnum):
     aar_paste_boost = 2
     missile_flight_time = 3
 
-
+####################################################################################################
+# API
+####################################################################################################
 @unique
 class ApiSecZone(StrEnum):
     hisec = 'hisec'
@@ -684,13 +688,6 @@ class ApiMinionState(StrEnum):
 class ApiMutationType(StrEnum):
     effective = 'effective'
     dormant = 'dormant'
-
-
-@unique
-class ApiRack(StrEnum):
-    high = 'high'
-    mid = 'mid'
-    low = 'low'
 
 
 @unique
@@ -869,6 +866,15 @@ class ApiItemInfoMode(StrEnum):
 class ApiValInfoMode(StrEnum):
     simple = 'simple'
     detailed = 'detailed'
+
+####################################################################################################
+# General
+####################################################################################################
+@unique
+class Rack(StrEnum):
+    high = 'high'
+    mid = 'mid'
+    low = 'low'
 
 
 @unique

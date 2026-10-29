@@ -37,7 +37,7 @@ def test_benchmark_attr_calc(client, consts):
             api_fit_batch.add_skill(type_id=eve_skill_id, level=5)
         api_fit_batch.set_ship(type_id=11184)  # Crusader
         # ruff:ignore[commented-out-code]
-        # api_fit_batch.add_module(type_id=4403, rack=consts.ApiRack.low, state=consts.ApiModuleState.active)
+        # api_fit_batch.add_module(type_id=4403, rack=consts.Rack.low, state=consts.ApiModuleState.active)
     iterations = 3000000
     print()  # ruff:ignore[print]
     print('starting attr-calc benchmark')  # ruff:ignore[print]
@@ -74,41 +74,41 @@ def test_benchmark_stats(client, consts):
         for _ in range(4):
             api_src_fit_batch.add_module(
                 type_id=2929,
-                rack=consts.ApiRack.high,
+                rack=consts.Rack.high,
                 state=consts.ApiModuleState.overload,
                 charge_type_id=12779)
         # T2 torpedo launchers with EM rages
         for _ in range(4):
             api_src_fit_batch.add_module(
                 type_id=2420,
-                rack=consts.ApiRack.high,
+                rack=consts.Rack.high,
                 state=consts.ApiModuleState.overload,
                 charge_type_id=24523)
         # Enduring 500MN
-        api_src_fit_batch.add_module(type_id=5945, rack=consts.ApiRack.mid, state=consts.ApiModuleState.active)
+        api_src_fit_batch.add_module(type_id=5945, rack=consts.Rack.mid, state=consts.ApiModuleState.active)
         # T2 med cap booster with navy 800
         api_src_fit_batch.add_module(
             type_id=2024,
-            rack=consts.ApiRack.mid,
+            rack=consts.Rack.mid,
             state=consts.ApiModuleState.active,
             charge_type_id=32014)
         # T2 EM hardener
-        api_src_fit_batch.add_module(type_id=2301, rack=consts.ApiRack.mid, state=consts.ApiModuleState.active)
+        api_src_fit_batch.add_module(type_id=2301, rack=consts.Rack.mid, state=consts.ApiModuleState.active)
         # T2 scram
-        api_src_fit_batch.add_module(type_id=448, rack=consts.ApiRack.mid, state=consts.ApiModuleState.active)
+        api_src_fit_batch.add_module(type_id=448, rack=consts.Rack.mid, state=consts.ApiModuleState.active)
         # T2 multispec
-        api_src_fit_batch.add_module(type_id=2281, rack=consts.ApiRack.mid, state=consts.ApiModuleState.active)
+        api_src_fit_batch.add_module(type_id=2281, rack=consts.Rack.mid, state=consts.ApiModuleState.active)
         # T2 DC
-        api_src_fit_batch.add_module(type_id=2048, rack=consts.ApiRack.low, state=consts.ApiModuleState.online)
+        api_src_fit_batch.add_module(type_id=2048, rack=consts.Rack.low, state=consts.ApiModuleState.online)
         # T2 gyrostabs
         for _ in range(2):
-            api_src_fit_batch.add_module(type_id=519, rack=consts.ApiRack.low, state=consts.ApiModuleState.online)
+            api_src_fit_batch.add_module(type_id=519, rack=consts.Rack.low, state=consts.ApiModuleState.online)
         # T2 BCS'
         for _ in range(2):
-            api_src_fit_batch.add_module(type_id=22291, rack=consts.ApiRack.low, state=consts.ApiModuleState.online)
+            api_src_fit_batch.add_module(type_id=22291, rack=consts.Rack.low, state=consts.ApiModuleState.online)
         # T2 DDAs
         for _ in range(2):
-            api_src_fit_batch.add_module(type_id=4405, rack=consts.ApiRack.low, state=consts.ApiModuleState.online)
+            api_src_fit_batch.add_module(type_id=4405, rack=consts.Rack.low, state=consts.ApiModuleState.online)
         # T2 therm rig
         api_src_fit_batch.add_rig(type_id=26436)
         # T1 CDFEs
@@ -129,7 +129,7 @@ def test_benchmark_stats(client, consts):
         # Nightmare
         api_tgt_ship = api_tgt_fit_batch.set_ship(type_id=17736, coordinates=(0, 20000, 0), movement=(180, 0, 1))
         # T2 AB
-        api_tgt_fit_batch.add_module(type_id=12068, rack=consts.ApiRack.mid, state=consts.ApiModuleState.active)
+        api_tgt_fit_batch.add_module(type_id=12068, rack=consts.Rack.mid, state=consts.ApiModuleState.active)
 
     iterations = 1000000
     print()  # ruff:ignore[print]
@@ -176,39 +176,39 @@ def test_benchmark_cap_sim(client, consts):
         # T2 mega pulses with conflag
         api_fit_turrets.extend(api_fit_batch.add_module(
             type_id=3057,
-            rack=consts.ApiRack.high,
+            rack=consts.Rack.high,
             state=consts.ApiModuleState.active,
             charge_type_id=12816) for _ in range(4))
         # X-type heavy neut
-        api_fit_batch.add_module(type_id=37631, rack=consts.ApiRack.high, state=consts.ApiModuleState.active)
+        api_fit_batch.add_module(type_id=37631, rack=consts.Rack.high, state=consts.ApiModuleState.active)
         # A-type med neut
-        api_fit_batch.add_module(type_id=37627, rack=consts.ApiRack.high, state=consts.ApiModuleState.active)
+        api_fit_batch.add_module(type_id=37627, rack=consts.Rack.high, state=consts.ApiModuleState.active)
         # Pith X-type XLSB
-        api_fit_batch.add_module(type_id=19208, rack=consts.ApiRack.mid, state=consts.ApiModuleState.active)
+        api_fit_batch.add_module(type_id=19208, rack=consts.Rack.mid, state=consts.ApiModuleState.active)
         # TS heavy cap booster
         api_fit_batch.add_module(
             type_id=14174,
-            rack=consts.ApiRack.mid,
+            rack=consts.Rack.mid,
             state=consts.ApiModuleState.active,
             charge_type_id=41490)
         # TS point
-        api_fit_batch.add_module(type_id=14248, rack=consts.ApiRack.mid, state=consts.ApiModuleState.active)
+        api_fit_batch.add_module(type_id=14248, rack=consts.Rack.mid, state=consts.ApiModuleState.active)
         # Gist X-type AB
-        api_fit_batch.add_module(type_id=18676, rack=consts.ApiRack.mid, state=consts.ApiModuleState.active)
+        api_fit_batch.add_module(type_id=18676, rack=consts.Rack.mid, state=consts.ApiModuleState.active)
         # FN web
-        api_fit_batch.add_module(type_id=17559, rack=consts.ApiRack.mid, state=consts.ApiModuleState.active)
+        api_fit_batch.add_module(type_id=17559, rack=consts.Rack.mid, state=consts.ApiModuleState.active)
         # MJD
-        api_fit_batch.add_module(type_id=4383, rack=consts.ApiRack.mid, state=consts.ApiModuleState.active)
+        api_fit_batch.add_module(type_id=4383, rack=consts.Rack.mid, state=consts.ApiModuleState.active)
         # Pithum C-type multispec
-        api_fit_batch.add_module(type_id=4349, rack=consts.ApiRack.mid, state=consts.ApiModuleState.active)
+        api_fit_batch.add_module(type_id=4349, rack=consts.Rack.mid, state=consts.ApiModuleState.active)
         # T2 DC
-        api_fit_batch.add_module(type_id=2048, rack=consts.ApiRack.low, state=consts.ApiModuleState.online)
+        api_fit_batch.add_module(type_id=2048, rack=consts.Rack.low, state=consts.ApiModuleState.online)
         # TS heat sinks
         for _ in range(3):
-            api_fit_batch.add_module(type_id=13943, rack=consts.ApiRack.low, state=consts.ApiModuleState.online)
+            api_fit_batch.add_module(type_id=13943, rack=consts.Rack.low, state=consts.ApiModuleState.online)
         # T2 nanos
         for _ in range(2):
-            api_fit_batch.add_module(type_id=2605, rack=consts.ApiRack.low, state=consts.ApiModuleState.online)
+            api_fit_batch.add_module(type_id=2605, rack=consts.Rack.low, state=consts.ApiModuleState.online)
         api_fit_batch.add_rig(type_id=26388)  # T2 locus
         api_fit_batch.add_rig(type_id=26436)  # T2 EM rig
         api_fit_batch.add_rig(type_id=26322)  # T2 hyper
@@ -233,7 +233,7 @@ def test_benchmark_cap_sim(client, consts):
         for _ in range(3):
             api_basi_fit_batch.add_module(
                 type_id=12102,
-                rack=consts.ApiRack.high,
+                rack=consts.Rack.high,
                 state=consts.ApiModuleState.active,
                 proj_item_ids=[api_nm.id])
 
@@ -248,7 +248,7 @@ def test_benchmark_cap_sim(client, consts):
         for _ in range(7):
             api_praxis_fit_batch.add_module(
                 type_id=12271,
-                rack=consts.ApiRack.high,
+                rack=consts.Rack.high,
                 state=consts.ApiModuleState.active,
                 proj_item_ids=[api_nm.id])
 
@@ -290,38 +290,38 @@ def test_benchmark_try_fit_items(client, consts):
         for _ in range(3):
             api_fit_batch.add_module(
                 type_id=2929,
-                rack=consts.ApiRack.high,
+                rack=consts.Rack.high,
                 state=consts.ApiModuleState.overload,
                 charge_type_id=12779)
         # T2 torpedo launchers with thermal rages
         for _ in range(3):
             api_fit_batch.add_module(
                 type_id=2420,
-                rack=consts.ApiRack.high,
+                rack=consts.Rack.high,
                 state=consts.ApiModuleState.overload,
                 charge_type_id=2811)
         # Enduring 500MN
-        api_fit_batch.add_module(type_id=5945, rack=consts.ApiRack.mid, state=consts.ApiModuleState.active)
+        api_fit_batch.add_module(type_id=5945, rack=consts.Rack.mid, state=consts.ApiModuleState.active)
         # T2 med cap booster with navy 800
         api_fit_batch.add_module(
             type_id=2024,
-            rack=consts.ApiRack.mid,
+            rack=consts.Rack.mid,
             state=consts.ApiModuleState.active,
             charge_type_id=32014)
         # T2 EM hardener
-        api_fit_batch.add_module(type_id=2301, rack=consts.ApiRack.mid, state=consts.ApiModuleState.active)
+        api_fit_batch.add_module(type_id=2301, rack=consts.Rack.mid, state=consts.ApiModuleState.active)
         # T2 scram
-        api_fit_batch.add_module(type_id=448, rack=consts.ApiRack.mid, state=consts.ApiModuleState.active)
+        api_fit_batch.add_module(type_id=448, rack=consts.Rack.mid, state=consts.ApiModuleState.active)
         # T2 DC
-        api_fit_batch.add_module(type_id=2048, rack=consts.ApiRack.low, state=consts.ApiModuleState.online)
+        api_fit_batch.add_module(type_id=2048, rack=consts.Rack.low, state=consts.ApiModuleState.online)
         # T2 gyrostabs
         for _ in range(2):
-            api_fit_batch.add_module(type_id=519, rack=consts.ApiRack.low, state=consts.ApiModuleState.online)
+            api_fit_batch.add_module(type_id=519, rack=consts.Rack.low, state=consts.ApiModuleState.online)
         # T2 BCS'
         for _ in range(2):
-            api_fit_batch.add_module(type_id=22291, rack=consts.ApiRack.low, state=consts.ApiModuleState.online)
+            api_fit_batch.add_module(type_id=22291, rack=consts.Rack.low, state=consts.ApiModuleState.online)
         # T2 DDA
-        api_fit_batch.add_module(type_id=4405, rack=consts.ApiRack.low, state=consts.ApiModuleState.online)
+        api_fit_batch.add_module(type_id=4405, rack=consts.Rack.low, state=consts.ApiModuleState.online)
         # T2 therm rig
         api_fit_batch.add_rig(type_id=26436)
         # T1 CDFEs
@@ -380,7 +380,7 @@ def test_try_fit_items_nphoon(client, consts):
             api_sol_batch.add_module(
                 fit_id=api_fit.id,
                 type_id=2929,
-                rack=consts.ApiRack.high,
+                rack=consts.Rack.high,
                 state=consts.ApiModuleState.overload,
                 charge_type_id=12779)
         # T2 torpedo launchers with thermal rages
@@ -388,59 +388,59 @@ def test_try_fit_items_nphoon(client, consts):
             api_sol_batch.add_module(
                 fit_id=api_fit.id,
                 type_id=2420,
-                rack=consts.ApiRack.high,
+                rack=consts.Rack.high,
                 state=consts.ApiModuleState.overload,
                 charge_type_id=2811)
         # 500MN
         api_sol_batch.add_module(
             fit_id=api_fit.id,
             type_id=5945,
-            rack=consts.ApiRack.mid,
+            rack=consts.Rack.mid,
             state=consts.ApiModuleState.active)
         # T2 med cap booster with navy 800
         api_sol_batch.add_module(
             fit_id=api_fit.id,
             type_id=2024,
-            rack=consts.ApiRack.mid,
+            rack=consts.Rack.mid,
             state=consts.ApiModuleState.active,
             charge_type_id=32014)
         # EM hard
         api_sol_batch.add_module(
             fit_id=api_fit.id,
             type_id=2301,
-            rack=consts.ApiRack.mid,
+            rack=consts.Rack.mid,
             state=consts.ApiModuleState.active)
         # Scram
         api_sol_batch.add_module(
             fit_id=api_fit.id,
             type_id=448,
-            rack=consts.ApiRack.mid,
+            rack=consts.Rack.mid,
             state=consts.ApiModuleState.active)
         # DC
         api_sol_batch.add_module(
             fit_id=api_fit.id,
             type_id=2048,
-            rack=consts.ApiRack.low,
+            rack=consts.Rack.low,
             state=consts.ApiModuleState.online)
         for _ in range(2):
             # Gyro
             api_sol_batch.add_module(
                 fit_id=api_fit.id,
                 type_id=519,
-                rack=consts.ApiRack.low,
+                rack=consts.Rack.low,
                 state=consts.ApiModuleState.online)
         for _ in range(2):
             # BCS
             api_sol_batch.add_module(
                 fit_id=api_fit.id,
                 type_id=22291,
-                rack=consts.ApiRack.low,
+                rack=consts.Rack.low,
                 state=consts.ApiModuleState.online)
         # T2 DDA
         api_sol_batch.add_module(
             fit_id=api_fit.id,
             type_id=4405,
-            rack=consts.ApiRack.low,
+            rack=consts.Rack.low,
             state=consts.ApiModuleState.online)
         # T2 therm rig
         api_sol_batch.add_rig(fit_id=api_fit.id, type_id=26436)
@@ -482,7 +482,7 @@ def test_stacking(client, consts):
             for _ in range(8):
                 api_fit_s_batch.add_module(
                     type_id=1964,
-                    rack=consts.ApiRack.mid,
+                    rack=consts.Rack.mid,
                     state=consts.ApiModuleState.active,
                     charge_type_id=29011,
                     proj_item_ids=[api_male.id])
@@ -528,41 +528,41 @@ def test_stats(client, consts):
         for _ in range(4):
             api_src_fit_batch.add_module(
                 type_id=2929,
-                rack=consts.ApiRack.high,
+                rack=consts.Rack.high,
                 state=consts.ApiModuleState.overload,
                 charge_type_id=12779)
         # T2 torpedo launchers with EM rages
         for _ in range(4):
             api_src_fit_batch.add_module(
                 type_id=2420,
-                rack=consts.ApiRack.high,
+                rack=consts.Rack.high,
                 state=consts.ApiModuleState.overload,
                 charge_type_id=24523)
         # Enduring 500MN
-        api_src_fit_batch.add_module(type_id=5945, rack=consts.ApiRack.mid, state=consts.ApiModuleState.active)
+        api_src_fit_batch.add_module(type_id=5945, rack=consts.Rack.mid, state=consts.ApiModuleState.active)
         # T2 med cap booster with navy 800
         api_src_fit_batch.add_module(
             type_id=2024,
-            rack=consts.ApiRack.mid,
+            rack=consts.Rack.mid,
             state=consts.ApiModuleState.active,
             charge_type_id=32014)
         # T2 EM hardener
-        api_src_fit_batch.add_module(type_id=2301, rack=consts.ApiRack.mid, state=consts.ApiModuleState.active)
+        api_src_fit_batch.add_module(type_id=2301, rack=consts.Rack.mid, state=consts.ApiModuleState.active)
         # T2 scram
-        api_src_fit_batch.add_module(type_id=448, rack=consts.ApiRack.mid, state=consts.ApiModuleState.active)
+        api_src_fit_batch.add_module(type_id=448, rack=consts.Rack.mid, state=consts.ApiModuleState.active)
         # T2 multispec
-        api_src_fit_batch.add_module(type_id=2281, rack=consts.ApiRack.mid, state=consts.ApiModuleState.active)
+        api_src_fit_batch.add_module(type_id=2281, rack=consts.Rack.mid, state=consts.ApiModuleState.active)
         # T2 DC
-        api_src_fit_batch.add_module(type_id=2048, rack=consts.ApiRack.low, state=consts.ApiModuleState.online)
+        api_src_fit_batch.add_module(type_id=2048, rack=consts.Rack.low, state=consts.ApiModuleState.online)
         # T2 gyrostabs
         for _ in range(2):
-            api_src_fit_batch.add_module(type_id=519, rack=consts.ApiRack.low, state=consts.ApiModuleState.online)
+            api_src_fit_batch.add_module(type_id=519, rack=consts.Rack.low, state=consts.ApiModuleState.online)
         # T2 BCS'
         for _ in range(2):
-            api_src_fit_batch.add_module(type_id=22291, rack=consts.ApiRack.low, state=consts.ApiModuleState.online)
+            api_src_fit_batch.add_module(type_id=22291, rack=consts.Rack.low, state=consts.ApiModuleState.online)
         # T2 DDAs
         for _ in range(2):
-            api_src_fit_batch.add_module(type_id=4405, rack=consts.ApiRack.low, state=consts.ApiModuleState.online)
+            api_src_fit_batch.add_module(type_id=4405, rack=consts.Rack.low, state=consts.ApiModuleState.online)
         # T2 therm rig
         api_src_fit_batch.add_rig(type_id=26436)
         # T1 CDFEs
@@ -583,7 +583,7 @@ def test_stats(client, consts):
         # Nightmare
         api_tgt_ship = api_tgt_fit_batch.set_ship(type_id=17736, coordinates=(0, 20000, 0), movement=(180, 0, 1))
         # T2 AB
-        api_tgt_fit_batch.add_module(type_id=12068, rack=consts.ApiRack.mid, state=consts.ApiModuleState.active)
+        api_tgt_fit_batch.add_module(type_id=12068, rack=consts.Rack.mid, state=consts.ApiModuleState.active)
 
     api_src_fit_stats = api_src_fit.get_stats(options=FitStatsOptions(
         dmg=[StatsOptionFitDmg(projectee_item_id=api_tgt_ship.id)],

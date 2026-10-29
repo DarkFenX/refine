@@ -15,7 +15,7 @@ def test_local_aar(client, consts):
     api_fit = api_sol.create_fit()
     api_aar_item = api_fit.add_module(
         type_id=eve_aar_item_id,
-        rack=consts.ApiRack.low,
+        rack=consts.Rack.low,
         charge_type_id=eve_paste_item_id)
     # Verification
     api_aar_item.update()
@@ -43,7 +43,7 @@ def test_remote_aar(client, consts):
     api_fit = api_sol.create_fit()
     api_aar_item = api_fit.add_module(
         type_id=eve_aar_item_id,
-        rack=consts.ApiRack.high,
+        rack=consts.Rack.high,
         charge_type_id=eve_paste_item_id)
     # Verification
     api_aar_item.update()
@@ -68,7 +68,7 @@ def test_charge_switch(client, consts):
     client.create_sources()
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
-    api_aar_item = api_fit.add_module(type_id=eve_aar_item_id, rack=consts.ApiRack.low)
+    api_aar_item = api_fit.add_module(type_id=eve_aar_item_id, rack=consts.Rack.low)
     # Verification
     api_aar_item.update()
     assert api_aar_item.attrs[eve_affectee_attr_id].modified == approx(100)
@@ -103,7 +103,7 @@ def test_charge_type_id_switch(client, consts):
     api_fit = api_sol.create_fit()
     api_aar_item = api_fit.add_module(
         type_id=eve_aar_item_id,
-        rack=consts.ApiRack.low,
+        rack=consts.Rack.low,
         charge_type_id=eve_paste_item_id)
     # Verification
     api_aar_item.update()
@@ -148,7 +148,7 @@ def test_mult_change(client, consts):
     api_fit.set_ship(type_id=eve_ship_id)
     api_aar_item = api_fit.add_module(
         type_id=eve_aar_item_id,
-        rack=consts.ApiRack.low,
+        rack=consts.Rack.low,
         charge_type_id=eve_paste_item_id)
     # Verification
     assert api_aar_item.update().attrs[eve_aar_affectee_attr_id].modified == approx(300)
@@ -185,7 +185,7 @@ def test_penalties(client, consts):
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
     api_fit.set_ship(type_id=eve_ship_id)
-    api_aar = api_fit.add_module(type_id=eve_aar_id, rack=consts.ApiRack.low, charge_type_id=eve_paste_id)
+    api_aar = api_fit.add_module(type_id=eve_aar_id, rack=consts.Rack.low, charge_type_id=eve_paste_id)
     api_rig = api_fit.add_rig(type_id=eve_rig_id)
     # Verification
     api_aar.update()
@@ -218,7 +218,7 @@ def test_state(client, consts):
     api_fit = api_sol.create_fit()
     api_aar_item = api_fit.add_module(
         type_id=eve_aar_item_id,
-        rack=consts.ApiRack.low,
+        rack=consts.Rack.low,
         state=consts.ApiModuleState.active,
         charge_type_id=eve_paste_item_id)
     # Verification

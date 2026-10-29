@@ -1,3 +1,4 @@
+from fw import approx
 from fw.api import ValOptions
 
 
@@ -75,10 +76,9 @@ def test_modified_module(client, consts):
     api_fit = api_sol.create_fit()
     api_fit.add_implant(type_id=eve_implant_id)
     api_fit.set_ship(type_id=eve_ship)
-    api_module = api_fit.add_module(type_id=eve_module_id, charge_type_id=eve_charge1_id)
-    # Action
-    api_module.change_module(charge_type_id=eve_charge2_id)
+    api_module = api_fit.add_module(type_id=eve_module_id, charge_type_id=eve_charge2_id)
     # Verification
+    assert api_module.update().attrs[eve_capacity_attr_id].modified == approx(2)
     api_fit.check_try_fit_items(
         val_options=ValOptions(charge_volume=True),
         passing=[eve_charge2_id],
@@ -106,10 +106,9 @@ def test_modified_charge(client, consts):
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
     api_fit.add_implant(type_id=eve_implant_id)
-    api_module = api_fit.add_module(type_id=eve_module_id, charge_type_id=eve_charge1_id)
-    # Action
-    api_module.change_module(charge_type_id=eve_charge2_id)
+    api_module = api_fit.add_module(type_id=eve_module_id, charge_type_id=eve_charge2_id)
     # Verification
+    assert api_module.charge.update().attrs[eve_vol_attr_id].modified == approx(0.8)
     api_fit.check_try_fit_items(
         val_options=ValOptions(charge_volume=True),
         passing=[eve_charge2_id],
@@ -127,10 +126,7 @@ def test_mutation_module(client, consts):
     client.create_sources()
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
-    api_module = api_fit.add_module(type_id=eve_base_module_id, charge_type_id=eve_charge1_id)
-    # Action
-    api_module.change_module(mutation=eve_mutator_id)
-    api_module.change_module(charge_type_id=eve_charge2_id)
+    api_fit.add_module(type_id=eve_base_module_id, mutation=eve_mutator_id, charge_type_id=eve_charge2_id)
     # Verification
     api_fit.check_try_fit_items(
         val_options=ValOptions(charge_volume=True),
@@ -148,7 +144,4 @@ def test_no_value_charge(client, consts):
     api_fit = api_sol.create_fit()
     api_fit.add_module(type_id=eve_module_id, charge_type_id=eve_charge_id)
     # Verification
-    api_fit.check_try_fit_items(
-        val_options=ValOptions(charge_volume=True),
-        passing=[eve_charge_id],
-        failing=[])
+    api_fit.check_try_fit_items(val_options=ValOptions(charge_volume=True), passing=[eve_charge_id], failing=[])

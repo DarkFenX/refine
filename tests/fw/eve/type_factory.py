@@ -1,6 +1,6 @@
 import typing
 
-from fw.consts import EveEffCat, EveEffect, EveItemCat, EveItemGrp
+from fw.consts import EveAttr, EveEffCat, EveEffect, EveItemCat, EveItemGrp, Rack
 from fw.util import Absent, Default
 from .data_manager import EveDataManager
 from .types import BuffModifier, EffectModifier, ItemAbilityData
@@ -12,6 +12,9 @@ if typing.TYPE_CHECKING:
 
 class EveTypeFactory(EveDataManager):
 
+    ################################################################################################
+    # Allocation
+    ################################################################################################
     def alloc_item_id(self, *, datas: list[EveObjects] | type[Default] = Default) -> int:
         if datas is Default:
             datas = [self._get_default_eve_data()]
@@ -82,6 +85,9 @@ class EveTypeFactory(EveDataManager):
             data.alloc_abil_id(id_=id_)
         return id_
 
+    ################################################################################################
+    # Items & groups
+    ################################################################################################
     def mk_eve_item(
             self, *,
             datas: list[EveObjects] | type[Default] = Default,
@@ -144,6 +150,283 @@ class EveTypeFactory(EveDataManager):
                 volume=0.0 if volume is Default else volume)
         return id_
 
+    def mk_eve_booster(
+            self, *,
+            datas: list[EveObjects] | type[Default] = Default,
+            id_: int | type[Default] = Default,
+            grp_id: int | type[Default] = Default,
+            attrs: dict[int, float] | type[Default] = Default,
+            eff_ids: list[int] | type[Absent | Default] = Default,
+            defeff_id: int | type[Absent | Default] | None = Default,
+            srqs: dict[int, int] | type[Absent | Default] = Default,
+            capacity: float | type[Absent | Default] = Default,
+            mass: float | type[Absent | Default] = Default,
+            radius: float | type[Absent | Default] = Default,
+            volume: float | type[Absent | Default] = Default,
+            slot: float | type[Default] = Default,
+    ) -> int:
+        if datas is Default:
+            datas = [self._get_default_eve_data()]
+        slot_attr_id = self.__mk_eve_attr_if_absent(datas=datas, id_=EveAttr.boosterness)
+        if slot is Default:
+            slot = 1
+        item_attrs = {slot_attr_id: slot}
+        if attrs is not Default:
+            item_attrs.update(attrs)
+        return self.mk_eve_item(
+            datas=datas,
+            id_=id_,
+            grp_id=grp_id,
+            cat_id=EveItemCat.implant,
+            attrs=item_attrs,
+            eff_ids=eff_ids,
+            defeff_id=defeff_id,
+            srqs=srqs,
+            capacity=capacity,
+            mass=mass,
+            radius=radius,
+            volume=volume)
+
+    def mk_eve_charge(
+            self, *,
+            datas: list[EveObjects] | type[Default] = Default,
+            id_: int | type[Default] = Default,
+            grp_id: int | type[Default] = Default,
+            attrs: dict[int, float] | type[Absent | Default] = Default,
+            eff_ids: list[int] | type[Absent | Default] = Default,
+            defeff_id: int | type[Absent | Default] | None = Default,
+            srqs: dict[int, int] | type[Absent | Default] = Default,
+            capacity: float | type[Absent | Default] = Default,
+            mass: float | type[Absent | Default] = Default,
+            radius: float | type[Absent | Default] = Default,
+            volume: float | type[Absent | Default] = Default,
+    ) -> int:
+        return self.mk_eve_item(
+            datas=datas,
+            id_=id_,
+            grp_id=grp_id,
+            cat_id=EveItemCat.charge,
+            attrs=attrs,
+            eff_ids=eff_ids,
+            defeff_id=defeff_id,
+            srqs=srqs,
+            capacity=capacity,
+            mass=mass,
+            radius=radius,
+            volume=volume)
+
+    def mk_eve_drone(
+            self, *,
+            datas: list[EveObjects] | type[Default] = Default,
+            id_: int | type[Default] = Default,
+            grp_id: int | type[Default] = Default,
+            attrs: dict[int, float] | type[Absent | Default] = Default,
+            eff_ids: list[int] | type[Absent | Default] = Default,
+            defeff_id: int | type[Absent | Default] | None = Default,
+            srqs: dict[int, int] | type[Absent | Default] = Default,
+            capacity: float | type[Absent | Default] = Default,
+            mass: float | type[Absent | Default] = Default,
+            radius: float | type[Absent | Default] = Default,
+            volume: float | type[Absent | Default] = Default,
+    ) -> int:
+        return self.mk_eve_item(
+            datas=datas,
+            id_=id_,
+            grp_id=grp_id,
+            cat_id=EveItemCat.drone,
+            attrs=attrs,
+            eff_ids=eff_ids,
+            defeff_id=defeff_id,
+            srqs=srqs,
+            capacity=capacity,
+            mass=mass,
+            radius=radius,
+            volume=volume)
+
+    def mk_eve_implant(
+            self, *,
+            datas: list[EveObjects] | type[Default] = Default,
+            id_: int | type[Default] = Default,
+            grp_id: int | type[Default] = Default,
+            attrs: dict[int, float] | type[Default] = Default,
+            eff_ids: list[int] | type[Absent | Default] = Default,
+            defeff_id: int | type[Absent | Default] | None = Default,
+            srqs: dict[int, int] | type[Absent | Default] = Default,
+            capacity: float | type[Absent | Default] = Default,
+            mass: float | type[Absent | Default] = Default,
+            radius: float | type[Absent | Default] = Default,
+            volume: float | type[Absent | Default] = Default,
+            slot: float | type[Default] = Default,
+    ) -> int:
+        if datas is Default:
+            datas = [self._get_default_eve_data()]
+        slot_attr_id = self.__mk_eve_attr_if_absent(datas=datas, id_=EveAttr.implantness)
+        if slot is Default:
+            slot = 1
+        item_attrs = {slot_attr_id: slot}
+        if attrs is not Default:
+            item_attrs.update(attrs)
+        return self.mk_eve_item(
+            datas=datas,
+            id_=id_,
+            grp_id=grp_id,
+            cat_id=EveItemCat.implant,
+            attrs=item_attrs,
+            eff_ids=eff_ids,
+            defeff_id=defeff_id,
+            srqs=srqs,
+            capacity=capacity,
+            mass=mass,
+            radius=radius,
+            volume=volume)
+
+    def mk_eve_fighter(
+            self, *,
+            datas: list[EveObjects] | type[Default] = Default,
+            id_: int | type[Default] = Default,
+            grp_id: int | type[Default] = Default,
+            attrs: dict[int, float] | type[Absent | Default] = Default,
+            eff_ids: list[int] | type[Absent | Default] = Default,
+            defeff_id: int | type[Absent | Default] | None = Default,
+            abils: list[ItemAbilityData] | type[Absent] = Absent,
+            srqs: dict[int, int] | type[Absent | Default] = Default,
+            capacity: float | type[Absent | Default] = Default,
+            mass: float | type[Absent | Default] = Default,
+            radius: float | type[Absent | Default] = Default,
+            volume: float | type[Absent | Default] = Default,
+    ) -> int:
+        return self.mk_eve_item(
+            datas=datas,
+            id_=id_,
+            grp_id=grp_id,
+            cat_id=EveItemCat.fighter,
+            attrs=attrs,
+            eff_ids=eff_ids,
+            defeff_id=defeff_id,
+            abils=abils,
+            srqs=srqs,
+            capacity=capacity,
+            mass=mass,
+            radius=radius,
+            volume=volume)
+
+    def mk_eve_module(
+            self, *,
+            datas: list[EveObjects] | type[Default] = Default,
+            id_: int | type[Default] = Default,
+            grp_id: int | type[Default] = Default,
+            cat_id: int | type[Default] = Default,
+            attrs: dict[int, float] | type[Absent | Default] = Default,
+            eff_ids: list[int] | type[Default] = Default,
+            defeff_id: int | type[Absent | Default] | None = Default,
+            srqs: dict[int, int] | type[Absent | Default] = Default,
+            capacity: float | type[Absent | Default] = Default,
+            mass: float | type[Absent | Default] = Default,
+            radius: float | type[Absent | Default] = Default,
+            volume: float | type[Absent | Default] = Default,
+            rack: Rack | type[Default] = Default,
+    ) -> int:
+        if datas is Default:
+            datas = [self._get_default_eve_data()]
+        if rack is Default:
+            rack = Rack.high
+        rack_effect_id = {
+            Rack.high: EveEffect.hi_power,
+            Rack.mid: EveEffect.med_power,
+            Rack.low: EveEffect.lo_power}[rack]
+        item_eff_ids = [
+            self.__mk_eve_effect_if_absent(datas=datas, id_=rack_effect_id),
+            self.__mk_eve_online_effect_if_absent(datas=datas)]
+        if eff_ids is not Default:
+            for eff_id in eff_ids:
+                if eff_id not in item_eff_ids:
+                    item_eff_ids.append(eff_id)
+        return self.mk_eve_item(
+            datas=datas,
+            id_=id_,
+            grp_id=grp_id,
+            cat_id=EveItemCat.module if cat_id is Default else cat_id,
+            attrs=attrs,
+            eff_ids=item_eff_ids,
+            defeff_id=defeff_id,
+            srqs=srqs,
+            capacity=capacity,
+            mass=mass,
+            radius=radius,
+            volume=volume)
+
+    def mk_eve_rig(
+            self, *,
+            datas: list[EveObjects] | type[Default] = Default,
+            id_: int | type[Default] = Default,
+            grp_id: int | type[Default] = Default,
+            cat_id: int | type[Default] = Default,
+            attrs: dict[int, float] | type[Absent | Default] = Default,
+            eff_ids: list[int] | type[Default] = Default,
+            defeff_id: int | type[Absent | Default] | None = Default,
+            srqs: dict[int, int] | type[Absent | Default] = Default,
+            capacity: float | type[Absent | Default] = Default,
+            mass: float | type[Absent | Default] = Default,
+            radius: float | type[Absent | Default] = Default,
+            volume: float | type[Absent | Default] = Default,
+    ) -> int:
+        if datas is Default:
+            datas = [self._get_default_eve_data()]
+        item_eff_ids = [self.__mk_eve_effect_if_absent(datas=datas, id_=EveEffect.rig_slot)]
+        if eff_ids is not Default:
+            for eff_id in eff_ids:
+                if eff_id not in item_eff_ids:
+                    item_eff_ids.append(eff_id)
+        return self.mk_eve_item(
+            datas=datas,
+            id_=id_,
+            grp_id=grp_id,
+            cat_id=EveItemCat.module if cat_id is Default else cat_id,
+            attrs=attrs,
+            eff_ids=item_eff_ids,
+            defeff_id=defeff_id,
+            srqs=srqs,
+            capacity=capacity,
+            mass=mass,
+            radius=radius,
+            volume=volume)
+
+    def mk_eve_service(
+            self, *,
+            datas: list[EveObjects] | type[Default] = Default,
+            id_: int | type[Default] = Default,
+            grp_id: int | type[Default] = Default,
+            cat_id: int | type[Default] = Default,
+            attrs: dict[int, float] | type[Absent | Default] = Default,
+            eff_ids: list[int] | type[Default] = Default,
+            defeff_id: int | type[Absent | Default] | None = Default,
+            srqs: dict[int, int] | type[Absent | Default] = Default,
+            capacity: float | type[Absent | Default] = Default,
+            mass: float | type[Absent | Default] = Default,
+            radius: float | type[Absent | Default] = Default,
+            volume: float | type[Absent | Default] = Default,
+    ) -> int:
+        if datas is Default:
+            datas = [self._get_default_eve_data()]
+        item_eff_ids = [self.__mk_eve_effect_if_absent(datas=datas, id_=EveEffect.service_slot)]
+        if eff_ids is not Default:
+            for eff_id in eff_ids:
+                if eff_id not in item_eff_ids:
+                    item_eff_ids.append(eff_id)
+        return self.mk_eve_item(
+            datas=datas,
+            id_=id_,
+            grp_id=grp_id,
+            cat_id=EveItemCat.structure_module if cat_id is Default else cat_id,
+            attrs=attrs,
+            eff_ids=item_eff_ids,
+            defeff_id=defeff_id,
+            srqs=srqs,
+            capacity=capacity,
+            mass=mass,
+            radius=radius,
+            volume=volume)
+
     def mk_eve_ship(
             self, *,
             datas: list[EveObjects] | type[Default] = Default,
@@ -200,7 +483,7 @@ class EveTypeFactory(EveDataManager):
             radius=radius,
             volume=volume)
 
-    def mk_eve_drone(
+    def mk_eve_subsystem(
             self, *,
             datas: list[EveObjects] | type[Default] = Default,
             id_: int | type[Default] = Default,
@@ -218,7 +501,7 @@ class EveTypeFactory(EveDataManager):
             datas=datas,
             id_=id_,
             grp_id=grp_id,
-            cat_id=EveItemCat.drone,
+            cat_id=EveItemCat.subsystem,
             attrs=attrs,
             eff_ids=eff_ids,
             defeff_id=defeff_id,
@@ -228,63 +511,23 @@ class EveTypeFactory(EveDataManager):
             radius=radius,
             volume=volume)
 
-    def mk_eve_fighter(
-            self, *,
-            datas: list[EveObjects] | type[Default] = Default,
-            id_: int | type[Default] = Default,
-            grp_id: int | type[Default] = Default,
-            attrs: dict[int, float] | type[Absent | Default] = Default,
-            eff_ids: list[int] | type[Absent | Default] = Default,
-            defeff_id: int | type[Absent | Default] | None = Default,
-            abils: list[ItemAbilityData] | type[Absent] = Absent,
-            srqs: dict[int, int] | type[Absent | Default] = Default,
-            capacity: float | type[Absent | Default] = Default,
-            mass: float | type[Absent | Default] = Default,
-            radius: float | type[Absent | Default] = Default,
-            volume: float | type[Absent | Default] = Default,
-    ) -> int:
-        return self.mk_eve_item(
-            datas=datas,
-            id_=id_,
-            grp_id=grp_id,
-            cat_id=EveItemCat.fighter,
-            attrs=attrs,
-            eff_ids=eff_ids,
-            defeff_id=defeff_id,
-            abils=abils,
-            srqs=srqs,
-            capacity=capacity,
-            mass=mass,
-            radius=radius,
-            volume=volume)
+    def __mk_eve_attr_if_absent(self, *, datas: list[EveObjects], id_: int) -> int:
+        for data in datas:
+            if not data.attributes.get(id_):
+                self.mk_eve_attr(datas=[data], id_=id_)
+        return id_
 
-    def mk_eve_charge(
-            self, *,
-            datas: list[EveObjects] | type[Default] = Default,
-            id_: int | type[Default] = Default,
-            grp_id: int | type[Default] = Default,
-            attrs: dict[int, float] | type[Absent | Default] = Default,
-            eff_ids: list[int] | type[Absent | Default] = Default,
-            defeff_id: int | type[Absent | Default] | None = Default,
-            srqs: dict[int, int] | type[Absent | Default] = Default,
-            capacity: float | type[Absent | Default] = Default,
-            mass: float | type[Absent | Default] = Default,
-            radius: float | type[Absent | Default] = Default,
-            volume: float | type[Absent | Default] = Default,
-    ) -> int:
-        return self.mk_eve_item(
-            datas=datas,
-            id_=id_,
-            grp_id=grp_id,
-            cat_id=EveItemCat.charge,
-            attrs=attrs,
-            eff_ids=eff_ids,
-            defeff_id=defeff_id,
-            srqs=srqs,
-            capacity=capacity,
-            mass=mass,
-            radius=radius,
-            volume=volume)
+    def __mk_eve_effect_if_absent(self, *, datas: list[EveObjects], id_: int) -> int:
+        for data in datas:
+            if not data.effects.get(id_):
+                self.mk_eve_effect(datas=[data], id_=id_)
+        return id_
+
+    def __mk_eve_online_effect_if_absent(self, *, datas: list[EveObjects]) -> int:
+        for data in datas:
+            if not data.effects.get(EveEffect.online):
+                self.mk_eve_online_effect(datas=[data])
+        return EveEffect.online
 
     def mk_eve_item_group(
             self, *,
@@ -302,19 +545,12 @@ class EveTypeFactory(EveDataManager):
                 cat_id=EveItemCat.module if cat_id is Default else cat_id)
         return id_
 
-    def mk_eve_ship_group(
+    def mk_eve_charge_group(
             self, *,
             datas: list[EveObjects] | type[Default] = Default,
             id_: int | type[Default] = Default,
     ) -> int:
-        return self.mk_eve_item_group(datas=datas, id_=id_, cat_id=EveItemCat.ship)
-
-    def mk_eve_struct_group(
-            self, *,
-            datas: list[EveObjects] | type[Default] = Default,
-            id_: int | type[Default] = Default,
-    ) -> int:
-        return self.mk_eve_item_group(datas=datas, id_=id_, cat_id=EveItemCat.structure)
+        return self.mk_eve_item_group(datas=datas, id_=id_, cat_id=EveItemCat.charge)
 
     def mk_eve_drone_group(
             self, *,
@@ -330,13 +566,23 @@ class EveTypeFactory(EveDataManager):
     ) -> int:
         return self.mk_eve_item_group(datas=datas, id_=id_, cat_id=EveItemCat.fighter)
 
-    def mk_eve_charge_group(
+    def mk_eve_ship_group(
             self, *,
             datas: list[EveObjects] | type[Default] = Default,
             id_: int | type[Default] = Default,
     ) -> int:
-        return self.mk_eve_item_group(datas=datas, id_=id_, cat_id=EveItemCat.charge)
+        return self.mk_eve_item_group(datas=datas, id_=id_, cat_id=EveItemCat.ship)
 
+    def mk_eve_struct_group(
+            self, *,
+            datas: list[EveObjects] | type[Default] = Default,
+            id_: int | type[Default] = Default,
+    ) -> int:
+        return self.mk_eve_item_group(datas=datas, id_=id_, cat_id=EveItemCat.structure)
+
+    ################################################################################################
+    # Item lists
+    ################################################################################################
     def mk_eve_item_list(
             self, *,
             datas: list[EveObjects] | type[Default] = Default,
@@ -363,6 +609,9 @@ class EveTypeFactory(EveDataManager):
                 exc_cat_ids=[] if exc_cat_ids is Default else exc_cat_ids)
         return id_
 
+    ################################################################################################
+    # Attributes
+    ################################################################################################
     def mk_eve_attr(
             self, *,
             datas: list[EveObjects] | type[Default] = Default,
@@ -389,6 +638,9 @@ class EveTypeFactory(EveDataManager):
                 unit_id=Absent if unit_id is Default else unit_id)
         return id_
 
+    ################################################################################################
+    # Effects
+    ################################################################################################
     def mk_eve_effect(
             self, *,
             datas: list[EveObjects] | type[Default] = Default,
@@ -463,6 +715,9 @@ class EveTypeFactory(EveDataManager):
             affectee_attr_id=affectee_attr_id,
             effect_id=effect_id)
 
+    ################################################################################################
+    # Buffs
+    ################################################################################################
     def mk_eve_buff(
             self, *,
             datas: list[EveObjects] | type[Default] = Default,
@@ -501,6 +756,9 @@ class EveTypeFactory(EveDataManager):
             group_id=group_id,
             skill_id=skill_id)
 
+    ################################################################################################
+    # Abilities
+    ################################################################################################
     def mk_eve_abil(
             self, *,
             datas: list[EveObjects] | type[Default] = Default,
@@ -533,6 +791,9 @@ class EveTypeFactory(EveDataManager):
             charge_count=charge_count,
             charge_rearm_time=charge_rearm_time)
 
+    ################################################################################################
+    # Mutations
+    ################################################################################################
     def mk_eve_mutator(
             self, *,
             datas: list[EveObjects] | type[Default] = Default,

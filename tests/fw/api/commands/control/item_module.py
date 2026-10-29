@@ -7,7 +7,7 @@ from fw.util import Absent, conditional_insert
 
 if typing.TYPE_CHECKING:
     from fw.api.aliases import MutaAdd, MutaChange
-    from fw.consts import ApiEffMode, ApiModAddMode, ApiModMvMode, ApiModuleState, ApiOptionalReload, ApiRack
+    from fw.consts import ApiEffMode, ApiModAddMode, ApiModMvMode, ApiModuleState, ApiOptionalReload, Rack
 
 
 @dataclasses.dataclass(kw_only=True)
@@ -40,7 +40,7 @@ class BaseCtlModuleCmd(BaseCommand):
 @dataclasses.dataclass(kw_only=True)
 class BaseCtlModuleAddCmd(BaseCtlModuleCmd):
 
-    rack: ApiRack
+    rack: Rack
     add_mode: ApiModAddMode | dict[ApiModAddMode, int] | type[Absent]
     mutation: MutaAdd | type[Absent]
     proj_item_ids: list[str] | type[Absent]

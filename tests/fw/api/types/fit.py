@@ -31,9 +31,9 @@ from fw.consts import (
     ApiModAddMode,
     ApiModRmMode,
     ApiModuleState,
-    ApiRack,
     ApiServiceState,
     ApiValInfoMode,
+    Rack,
 )
 from fw.util import Absent, AttrDict, AttrHookDef, is_subset
 
@@ -256,7 +256,8 @@ class Fit(AttrDict):
     ) -> None:
         # Fit which fails validation by itself makes try-fit fail every item, so check the fit first
         assert self.validate_single(options=val_options, val_info_mode=ApiValInfoMode.simple).passed is True
-        assert self.try_fit_items(type_ids=[*passing, *failing], val_options=val_options) == passing
+        # Try-fit is not guaranteed to keep order or duplicates
+        assert set(self.try_fit_items(type_ids=[*passing, *failing], val_options=val_options)) == set(passing)
 
     def change(
             self, *,
@@ -489,7 +490,7 @@ class Fit(AttrDict):
     def add_module(
             self, *,
             type_id: int,
-            rack: ApiRack = ApiRack.high,
+            rack: Rack = Rack.high,
             add_mode: ApiModAddMode | dict[ApiModAddMode, int] | type[Absent] = ApiModAddMode.equip,
             state: ApiModuleState = ApiModuleState.offline,
             mutation: MutaAdd | type[Absent] = Absent,

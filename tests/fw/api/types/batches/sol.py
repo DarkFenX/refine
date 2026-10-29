@@ -63,7 +63,7 @@ from fw.api.types.fit import Fit
 from fw.api.types.fleet import Fleet
 from fw.api.types.stats import FitBatchStats, FleetBatchStats, ItemBatchStats, SolBatchStats
 from fw.api.types.validation import FitValResult, SolValResult
-from fw.consts import ApiMinionState, ApiModAddMode, ApiModuleState, ApiRack, ApiServiceState
+from fw.consts import ApiMinionState, ApiModAddMode, ApiModuleState, ApiServiceState, Rack
 from fw.util import Absent
 from .base import BaseCmdBatchCtx, DataFillKind, EntityData
 
@@ -526,7 +526,7 @@ class SolCmdBatchCtx(BaseCmdBatchCtx):
             self, *,
             fit_id: str,
             type_id: int,
-            rack: ApiRack = ApiRack.high,
+            rack: Rack = Rack.high,
             add_mode: ApiModAddMode | dict[ApiModAddMode, int] | type[Absent] = ApiModAddMode.equip,
             state: ApiModuleState = ApiModuleState.offline,
             mutation: MutaAdd | type[Absent] = Absent,

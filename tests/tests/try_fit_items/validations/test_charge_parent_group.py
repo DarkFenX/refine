@@ -1,3 +1,4 @@
+from fw import approx
 from fw.api import ValOptions
 
 
@@ -55,20 +56,14 @@ def test_multiple_different(client, consts):
     api_fit = api_sol.create_fit()
     api_module1 = api_fit.add_module(type_id=eve_module1_id, charge_type_id=eve_charge_id)
     # Verification
-    api_fit.check_try_fit_items(
-        val_options=ValOptions(charge_parent_group=True),
-        passing=[eve_charge_id],
-        failing=[])
+    api_fit.check_try_fit_items(val_options=ValOptions(charge_parent_group=True), passing=[eve_charge_id], failing=[])
     # Action
     api_module1.remove()
     api_module2 = api_fit.add_module(type_id=eve_module2_id, charge_type_id=eve_charge_id)
     api_module2.remove()
     api_fit.add_module(type_id=eve_module3_id, charge_type_id=eve_charge_id)
     # Verification
-    api_fit.check_try_fit_items(
-        val_options=ValOptions(charge_parent_group=True),
-        passing=[eve_charge_id],
-        failing=[])
+    api_fit.check_try_fit_items(val_options=ValOptions(charge_parent_group=True), passing=[eve_charge_id], failing=[])
 
 
 def test_known_failures(client, consts):
@@ -112,20 +107,14 @@ def test_rounding(client, consts):
     api_fit = api_sol.create_fit()
     api_module1 = api_fit.add_module(type_id=eve_module1_id, charge_type_id=eve_charge_id)
     # Verification
-    api_fit.check_try_fit_items(
-        val_options=ValOptions(charge_parent_group=True),
-        passing=[eve_charge_id],
-        failing=[])
+    api_fit.check_try_fit_items(val_options=ValOptions(charge_parent_group=True), passing=[eve_charge_id], failing=[])
     # Action
     api_module1.remove()
     api_module2 = api_fit.add_module(type_id=eve_module3_id, charge_type_id=eve_charge_id)
     api_module2.remove()
     api_fit.add_module(type_id=eve_module2_id, charge_type_id=eve_charge_id)
     # Verification
-    api_fit.check_try_fit_items(
-        val_options=ValOptions(charge_parent_group=True),
-        passing=[eve_charge_id],
-        failing=[])
+    api_fit.check_try_fit_items(val_options=ValOptions(charge_parent_group=True), passing=[eve_charge_id], failing=[])
 
 
 def test_modified(client, consts):
@@ -134,8 +123,9 @@ def test_modified(client, consts):
     eve_grp2_id = client.mk_eve_item_group()
     eve_group_attr_id = client.mk_eve_attr(id_=consts.EveAttr.launcher_group, unit_id=consts.EveAttrUnit.group_id)
     eve_capacity_attr_id = client.mk_eve_attr(id_=consts.EveAttr.capacity)
-    eve_module1_id = client.mk_eve_item(grp_id=eve_grp1_id, attrs={eve_capacity_attr_id: 1})
-    eve_module2_id = client.mk_eve_item(grp_id=eve_grp2_id, attrs={eve_capacity_attr_id: 1})
+    eve_module_id = client.mk_eve_item(grp_id=eve_grp2_id, attrs={eve_capacity_attr_id: 1})
+    # Create an item which has the group, just to prevent the group from being cleaned up
+    client.mk_eve_item(grp_id=eve_grp1_id)
     eve_charge_id = client.mk_eve_charge(attrs={eve_group_attr_id: eve_grp2_id}, srqs={eve_skill_id: 1})
     eve_mod_attr_id = client.mk_eve_attr()
     eve_mod = client.mk_eve_effect_mod(
@@ -153,14 +143,10 @@ def test_modified(client, consts):
     api_fit = api_sol.create_fit()
     api_fit.add_implant(type_id=eve_implant_id)
     api_fit.set_ship(type_id=eve_ship)
-    api_module = api_fit.add_module(type_id=eve_module1_id, charge_type_id=eve_charge_id)
-    # Action
-    api_module.change_module(type_id=eve_module2_id)
+    api_module = api_fit.add_module(type_id=eve_module_id, charge_type_id=eve_charge_id)
     # Verification
-    api_fit.check_try_fit_items(
-        val_options=ValOptions(charge_parent_group=True),
-        passing=[eve_charge_id],
-        failing=[])
+    assert api_module.charge.update().attrs[eve_group_attr_id].modified == approx(eve_grp1_id)
+    api_fit.check_try_fit_items(val_options=ValOptions(charge_parent_group=True), passing=[eve_charge_id], failing=[])
 
 
 def test_mutation(client, consts):
@@ -206,7 +192,4 @@ def test_no_attr(client, consts):
     api_fit = api_sol.create_fit()
     api_fit.add_module(type_id=eve_module_id, charge_type_id=eve_charge_id)
     # Verification - limits defined with attribute which doesn't exist are ignored
-    api_fit.check_try_fit_items(
-        val_options=ValOptions(charge_parent_group=True),
-        passing=[eve_charge_id],
-        failing=[])
+    api_fit.check_try_fit_items(val_options=ValOptions(charge_parent_group=True), passing=[eve_charge_id], failing=[])

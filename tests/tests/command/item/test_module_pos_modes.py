@@ -13,7 +13,7 @@ def test_add_append(client, consts):
     api_fit = api_sol.create_fit()
     api_module1 = api_fit.add_module(
         type_id=eve_module_id,
-        rack=consts.ApiRack.high,
+        rack=consts.Rack.high,
         add_mode=consts.ApiModAddMode.append)
     # Verification
     assert flatten(rack=api_fit.update().modules.high) == [api_module1.id]
@@ -21,7 +21,7 @@ def test_add_append(client, consts):
     # Action
     api_module2 = api_fit.add_module(
         type_id=eve_module_id,
-        rack=consts.ApiRack.high,
+        rack=consts.Rack.high,
         add_mode=consts.ApiModAddMode.append)
     # Verification
     assert flatten(rack=api_fit.update().modules.high) == [api_module1.id, api_module2.id]
@@ -30,7 +30,7 @@ def test_add_append(client, consts):
     # Action
     api_module3 = api_fit.add_module(
         type_id=eve_module_id,
-        rack=consts.ApiRack.high,
+        rack=consts.Rack.high,
         add_mode={consts.ApiModAddMode.insert: 3})
     # Verification
     assert flatten(rack=api_fit.update().modules.high) == [api_module1.id, api_module2.id, None, api_module3.id]
@@ -40,7 +40,7 @@ def test_add_append(client, consts):
     # Action
     api_module4 = api_fit.add_module(
         type_id=eve_module_id,
-        rack=consts.ApiRack.high,
+        rack=consts.Rack.high,
         add_mode=consts.ApiModAddMode.append)
     # Verification
     assert flatten(rack=api_fit.update().modules.high) == [
@@ -58,7 +58,7 @@ def test_add_equip(client, consts):
     api_fit = api_sol.create_fit()
     api_module1 = api_fit.add_module(
         type_id=eve_module_id,
-        rack=consts.ApiRack.high,
+        rack=consts.Rack.high,
         add_mode=consts.ApiModAddMode.equip)
     # Verification
     assert flatten(rack=api_fit.update().modules.high) == [api_module1.id]
@@ -66,7 +66,7 @@ def test_add_equip(client, consts):
     # Action
     api_module2 = api_fit.add_module(
         type_id=eve_module_id,
-        rack=consts.ApiRack.high,
+        rack=consts.Rack.high,
         add_mode=consts.ApiModAddMode.equip)
     # Verification
     assert flatten(rack=api_fit.update().modules.high) == [api_module1.id, api_module2.id]
@@ -75,7 +75,7 @@ def test_add_equip(client, consts):
     # Action
     api_module3 = api_fit.add_module(
         type_id=eve_module_id,
-        rack=consts.ApiRack.high,
+        rack=consts.Rack.high,
         add_mode={consts.ApiModAddMode.insert: 4})
     # Verification
     assert flatten(rack=api_fit.update().modules.high) == [api_module1.id, api_module2.id, None, None, api_module3.id]
@@ -85,7 +85,7 @@ def test_add_equip(client, consts):
     # Action
     api_module4 = api_fit.add_module(
         type_id=eve_module_id,
-        rack=consts.ApiRack.high,
+        rack=consts.Rack.high,
         add_mode=consts.ApiModAddMode.equip)
     # Verification
     assert flatten(rack=api_fit.update().modules.high) == [
@@ -103,7 +103,7 @@ def test_add_insert(client, consts):
     api_fit = api_sol.create_fit()
     api_module1 = api_fit.add_module(
         type_id=eve_module_id,
-        rack=consts.ApiRack.high,
+        rack=consts.Rack.high,
         add_mode={consts.ApiModAddMode.insert: 0})
     # Verification
     assert flatten(rack=api_fit.update().modules.high) == [api_module1.id]
@@ -111,7 +111,7 @@ def test_add_insert(client, consts):
     # Action
     api_module2 = api_fit.add_module(
         type_id=eve_module_id,
-        rack=consts.ApiRack.high,
+        rack=consts.Rack.high,
         add_mode={consts.ApiModAddMode.insert: 2})
     # Verification
     assert flatten(rack=api_fit.update().modules.high) == [api_module1.id, None, api_module2.id]
@@ -120,7 +120,7 @@ def test_add_insert(client, consts):
     # Action
     api_module3 = api_fit.add_module(
         type_id=eve_module_id,
-        rack=consts.ApiRack.high,
+        rack=consts.Rack.high,
         add_mode={consts.ApiModAddMode.insert: 5})
     # Verification
     assert flatten(rack=api_fit.update().modules.high) == [
@@ -131,7 +131,7 @@ def test_add_insert(client, consts):
     # Action
     api_module4 = api_fit.add_module(
         type_id=eve_module_id,
-        rack=consts.ApiRack.high,
+        rack=consts.Rack.high,
         add_mode={consts.ApiModAddMode.insert: 2})
     # Verification
     assert flatten(rack=api_fit.update().modules.high) == [
@@ -149,7 +149,7 @@ def test_add_replace(client, consts):
     api_fit = api_sol.create_fit()
     api_module1 = api_fit.add_module(
         type_id=eve_module_id,
-        rack=consts.ApiRack.high,
+        rack=consts.Rack.high,
         add_mode={consts.ApiModAddMode.replace: 0})
     # Verification
     assert flatten(rack=api_fit.update().modules.high) == [api_module1.id]
@@ -157,7 +157,7 @@ def test_add_replace(client, consts):
     # Action
     api_module2 = api_fit.add_module(
         type_id=eve_module_id,
-        rack=consts.ApiRack.high,
+        rack=consts.Rack.high,
         add_mode={consts.ApiModAddMode.replace: 2})
     # Verification
     assert flatten(rack=api_fit.update().modules.high) == [api_module1.id, None, api_module2.id]
@@ -166,7 +166,7 @@ def test_add_replace(client, consts):
     # Action
     api_module3 = api_fit.add_module(
         type_id=eve_module_id,
-        rack=consts.ApiRack.high,
+        rack=consts.Rack.high,
         add_mode={consts.ApiModAddMode.replace: 5})
     # Verification
     assert flatten(rack=api_fit.update().modules.high) == [
@@ -177,7 +177,7 @@ def test_add_replace(client, consts):
     # Action
     api_module4 = api_fit.add_module(
         type_id=eve_module_id,
-        rack=consts.ApiRack.high,
+        rack=consts.Rack.high,
         add_mode={consts.ApiModAddMode.replace: 3})
     # Verification
     assert flatten(rack=api_fit.update().modules.high) == [
@@ -189,7 +189,7 @@ def test_add_replace(client, consts):
     # Action
     api_module5 = api_fit.add_module(
         type_id=eve_module_id,
-        rack=consts.ApiRack.high,
+        rack=consts.Rack.high,
         add_mode={consts.ApiModAddMode.replace: 2})
     # Verification
     assert flatten(rack=api_fit.update().modules.high) == [
@@ -208,7 +208,7 @@ def test_add_absent(client, consts):
     # Verification
     api_fit.add_module(
         type_id=eve_module_id,
-        rack=consts.ApiRack.high,
+        rack=consts.Rack.high,
         add_mode=Absent,
         status_code=400,
         json_predicate={
@@ -223,15 +223,15 @@ def test_move_swap(client, consts):
     api_fit = api_sol.create_fit()
     api_module1 = api_fit.add_module(
         type_id=eve_module_id,
-        rack=consts.ApiRack.high,
+        rack=consts.Rack.high,
         add_mode={consts.ApiModAddMode.replace: 1})
     api_module2 = api_fit.add_module(
         type_id=eve_module_id,
-        rack=consts.ApiRack.high,
+        rack=consts.Rack.high,
         add_mode={consts.ApiModAddMode.replace: 3})
     api_module3 = api_fit.add_module(
         type_id=eve_module_id,
-        rack=consts.ApiRack.high,
+        rack=consts.Rack.high,
         add_mode={consts.ApiModAddMode.replace: 5})
     # Verification
     assert flatten(rack=api_fit.update().modules.high) == [
@@ -288,23 +288,23 @@ def test_move_shift(client, consts):
     api_fit = api_sol.create_fit()
     api_module1 = api_fit.add_module(
         type_id=eve_module_id,
-        rack=consts.ApiRack.high,
+        rack=consts.Rack.high,
         add_mode={consts.ApiModAddMode.replace: 0})
     api_module2 = api_fit.add_module(
         type_id=eve_module_id,
-        rack=consts.ApiRack.high,
+        rack=consts.Rack.high,
         add_mode={consts.ApiModAddMode.replace: 1})
     api_module3 = api_fit.add_module(
         type_id=eve_module_id,
-        rack=consts.ApiRack.high,
+        rack=consts.Rack.high,
         add_mode={consts.ApiModAddMode.replace: 2})
     api_module4 = api_fit.add_module(
         type_id=eve_module_id,
-        rack=consts.ApiRack.high,
+        rack=consts.Rack.high,
         add_mode={consts.ApiModAddMode.replace: 3})
     api_module5 = api_fit.add_module(
         type_id=eve_module_id,
-        rack=consts.ApiRack.high,
+        rack=consts.Rack.high,
         add_mode={consts.ApiModAddMode.replace: 4})
     # Verification
     assert flatten(rack=api_fit.update().modules.high) == [
@@ -393,23 +393,23 @@ def test_remove_remove(client, consts):
     api_fit = api_sol.create_fit()
     api_module1 = api_fit.add_module(
         type_id=eve_module_id,
-        rack=consts.ApiRack.high,
+        rack=consts.Rack.high,
         add_mode={consts.ApiModAddMode.replace: 1})
     api_module2 = api_fit.add_module(
         type_id=eve_module_id,
-        rack=consts.ApiRack.high,
+        rack=consts.Rack.high,
         add_mode={consts.ApiModAddMode.replace: 3})
     api_module3 = api_fit.add_module(
         type_id=eve_module_id,
-        rack=consts.ApiRack.high,
+        rack=consts.Rack.high,
         add_mode={consts.ApiModAddMode.replace: 5})
     api_module4 = api_fit.add_module(
         type_id=eve_module_id,
-        rack=consts.ApiRack.high,
+        rack=consts.Rack.high,
         add_mode={consts.ApiModAddMode.replace: 6})
     api_module5 = api_fit.add_module(
         type_id=eve_module_id,
-        rack=consts.ApiRack.high,
+        rack=consts.Rack.high,
         add_mode={consts.ApiModAddMode.replace: 7})
     # Verification
     assert flatten(rack=api_fit.update().modules.high) == [
@@ -462,15 +462,15 @@ def test_remove_free(client, consts):
     api_fit = api_sol.create_fit()
     api_module1 = api_fit.add_module(
         type_id=eve_module_id,
-        rack=consts.ApiRack.high,
+        rack=consts.Rack.high,
         add_mode={consts.ApiModAddMode.replace: 1})
     api_module2 = api_fit.add_module(
         type_id=eve_module_id,
-        rack=consts.ApiRack.high,
+        rack=consts.Rack.high,
         add_mode={consts.ApiModAddMode.replace: 3})
     api_module3 = api_fit.add_module(
         type_id=eve_module_id,
-        rack=consts.ApiRack.high,
+        rack=consts.Rack.high,
         add_mode={consts.ApiModAddMode.replace: 5})
     # Verification
     assert flatten(rack=api_fit.update().modules.high) == [
@@ -505,15 +505,15 @@ def test_remove_absent(client, consts):
     api_fit = api_sol.create_fit()
     api_module1 = api_fit.add_module(
         type_id=eve_module_id,
-        rack=consts.ApiRack.high,
+        rack=consts.Rack.high,
         add_mode={consts.ApiModAddMode.replace: 1})
     api_module2 = api_fit.add_module(
         type_id=eve_module_id,
-        rack=consts.ApiRack.high,
+        rack=consts.Rack.high,
         add_mode={consts.ApiModAddMode.replace: 3})
     api_module3 = api_fit.add_module(
         type_id=eve_module_id,
-        rack=consts.ApiRack.high,
+        rack=consts.Rack.high,
         add_mode={consts.ApiModAddMode.replace: 5})
     # Verification
     assert flatten(rack=api_fit.update().modules.high) == [

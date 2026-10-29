@@ -10,7 +10,7 @@ def test_fail_single(client, consts):
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
     api_fit.set_ship(type_id=eve_ship_id)
-    api_module = api_fit.add_module(type_id=eve_module_id, rack=consts.ApiRack.mid, state=consts.ApiModuleState.offline)
+    api_module = api_fit.add_module(type_id=eve_module_id, rack=consts.Rack.mid, state=consts.ApiModuleState.offline)
     # Verification
     api_stats = api_fit.get_stats(options=FitStatsOptions(mid_slots=True))
     assert api_stats.mid_slots.one() == (1, 0)
@@ -30,14 +30,14 @@ def test_fail_multiple_ship(client, consts):
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
     api_fit.set_ship(type_id=eve_ship_id)
-    api_fit.add_module(type_id=eve_module_id, rack=consts.ApiRack.mid, state=consts.ApiModuleState.offline)
+    api_fit.add_module(type_id=eve_module_id, rack=consts.Rack.mid, state=consts.ApiModuleState.offline)
     api_module2 = api_fit.add_module(
         type_id=eve_module_id,
-        rack=consts.ApiRack.mid,
+        rack=consts.Rack.mid,
         state=consts.ApiModuleState.offline)
     api_module3 = api_fit.add_module(
         type_id=eve_module_id,
-        rack=consts.ApiRack.mid,
+        rack=consts.Rack.mid,
         state=consts.ApiModuleState.offline)
     # Verification
     api_stats = api_fit.get_stats(options=FitStatsOptions(mid_slots=True))
@@ -58,14 +58,14 @@ def test_fail_multiple_struct(client, consts):
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
     api_fit.set_ship(type_id=eve_struct_id)
-    api_fit.add_module(type_id=eve_module_id, rack=consts.ApiRack.mid, state=consts.ApiModuleState.offline)
+    api_fit.add_module(type_id=eve_module_id, rack=consts.Rack.mid, state=consts.ApiModuleState.offline)
     api_module2 = api_fit.add_module(
         type_id=eve_module_id,
-        rack=consts.ApiRack.mid,
+        rack=consts.Rack.mid,
         state=consts.ApiModuleState.offline)
     api_module3 = api_fit.add_module(
         type_id=eve_module_id,
-        rack=consts.ApiRack.mid,
+        rack=consts.Rack.mid,
         state=consts.ApiModuleState.offline)
     # Verification
     api_stats = api_fit.get_stats(options=FitStatsOptions(mid_slots=True))
@@ -88,7 +88,7 @@ def test_holes(client, consts):
     api_fit.set_ship(type_id=eve_ship_id)
     api_module1 = api_fit.add_module(
         type_id=eve_module_id,
-        rack=consts.ApiRack.mid,
+        rack=consts.Rack.mid,
         state=consts.ApiModuleState.offline,
         add_mode={consts.ApiModAddMode.insert: 5})
     # Verification
@@ -102,7 +102,7 @@ def test_holes(client, consts):
     # Action
     api_fit.add_module(
         type_id=eve_module_id,
-        rack=consts.ApiRack.mid,
+        rack=consts.Rack.mid,
         state=consts.ApiModuleState.offline,
         add_mode={consts.ApiModAddMode.insert: 2})
     # Verification
@@ -132,7 +132,7 @@ def test_equal(client, consts):
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
     api_fit.set_ship(type_id=eve_ship_id)
-    api_fit.add_module(type_id=eve_module_id, rack=consts.ApiRack.mid, state=consts.ApiModuleState.offline)
+    api_fit.add_module(type_id=eve_module_id, rack=consts.Rack.mid, state=consts.ApiModuleState.offline)
     # Verification
     api_stats = api_fit.get_stats(options=FitStatsOptions(mid_slots=True))
     assert api_stats.mid_slots.one() == (1, 1)
@@ -154,7 +154,7 @@ def test_known_failures(client, consts):
     api_fit.set_ship(type_id=eve_ship_id)
     api_module1 = api_fit.add_module(
         type_id=eve_module_id,
-        rack=consts.ApiRack.mid,
+        rack=consts.Rack.mid,
         state=consts.ApiModuleState.offline,
         add_mode={consts.ApiModAddMode.replace: 0})
     # Verification - check case with KF specified, but used <= max being true
@@ -167,7 +167,7 @@ def test_known_failures(client, consts):
     # Action
     api_module2 = api_fit.add_module(
         type_id=eve_module_id,
-        rack=consts.ApiRack.mid,
+        rack=consts.Rack.mid,
         state=consts.ApiModuleState.offline,
         add_mode={consts.ApiModAddMode.replace: 2})
     # Verification - check case with KF specified, but used <= max being true
@@ -180,7 +180,7 @@ def test_known_failures(client, consts):
     # Action
     api_module3 = api_fit.add_module(
         type_id=eve_module_id,
-        rack=consts.ApiRack.mid,
+        rack=consts.Rack.mid,
         state=consts.ApiModuleState.offline,
         add_mode={consts.ApiModAddMode.replace: 6})
     # Verification
@@ -198,7 +198,7 @@ def test_known_failures(client, consts):
     # Action
     api_module4 = api_fit.add_module(
         type_id=eve_module_id,
-        rack=consts.ApiRack.mid,
+        rack=consts.Rack.mid,
         state=consts.ApiModuleState.offline,
         add_mode={consts.ApiModAddMode.replace: 4})
     # Verification
@@ -225,7 +225,7 @@ def test_known_failures(client, consts):
     # Action
     api_fit.add_module(
         type_id=eve_module_id,
-        rack=consts.ApiRack.mid,
+        rack=consts.Rack.mid,
         state=consts.ApiModuleState.offline,
         add_mode={consts.ApiModAddMode.replace: 1})
     # Verification - module has been added within slot limit, so it does not trigger anything
@@ -238,7 +238,7 @@ def test_known_failures(client, consts):
     # Action
     api_module6 = api_fit.add_module(
         type_id=eve_module_id,
-        rack=consts.ApiRack.mid,
+        rack=consts.Rack.mid,
         state=consts.ApiModuleState.offline,
         add_mode={consts.ApiModAddMode.replace: 3})
     # Verification
@@ -268,7 +268,7 @@ def test_modified_max(client, consts):
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
     api_ship = api_fit.set_ship(type_id=eve_ship_id)
-    api_module = api_fit.add_module(type_id=eve_module_id, rack=consts.ApiRack.mid, state=consts.ApiModuleState.offline)
+    api_module = api_fit.add_module(type_id=eve_module_id, rack=consts.Rack.mid, state=consts.ApiModuleState.offline)
     # Verification
     assert api_ship.update().attrs[eve_max_attr_id].modified == approx(0)
     api_stats = api_fit.get_stats(options=FitStatsOptions(mid_slots=True))
@@ -299,7 +299,7 @@ def test_fractional_max(client, consts):
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
     api_fit.set_ship(type_id=eve_ship1_id)
-    api_module = api_fit.add_module(type_id=eve_module_id, rack=consts.ApiRack.mid, state=consts.ApiModuleState.offline)
+    api_module = api_fit.add_module(type_id=eve_module_id, rack=consts.Rack.mid, state=consts.ApiModuleState.offline)
     # Verification
     api_stats = api_fit.get_stats(options=FitStatsOptions(mid_slots=True))
     assert api_stats.mid_slots.one() == (1, 0)
@@ -325,7 +325,7 @@ def test_no_ship(client, consts):
     client.create_sources()
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
-    api_module = api_fit.add_module(type_id=eve_module_id, rack=consts.ApiRack.mid, state=consts.ApiModuleState.offline)
+    api_module = api_fit.add_module(type_id=eve_module_id, rack=consts.Rack.mid, state=consts.ApiModuleState.offline)
     # Verification
     api_stats = api_fit.get_stats(options=FitStatsOptions(mid_slots=True))
     assert api_stats.mid_slots.one() == (1, None)
@@ -344,7 +344,7 @@ def test_no_value_max(client, consts):
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
     api_fit.set_ship(type_id=eve_ship_id)
-    api_module = api_fit.add_module(type_id=eve_module_id, rack=consts.ApiRack.mid, state=consts.ApiModuleState.offline)
+    api_module = api_fit.add_module(type_id=eve_module_id, rack=consts.Rack.mid, state=consts.ApiModuleState.offline)
     # Verification
     api_stats = api_fit.get_stats(options=FitStatsOptions(mid_slots=True))
     assert api_stats.mid_slots.one() == (1, 0)
@@ -363,7 +363,7 @@ def test_no_attr_max(client, consts):
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
     api_fit.set_ship(type_id=eve_ship_id)
-    api_module = api_fit.add_module(type_id=eve_module_id, rack=consts.ApiRack.mid, state=consts.ApiModuleState.offline)
+    api_module = api_fit.add_module(type_id=eve_module_id, rack=consts.Rack.mid, state=consts.ApiModuleState.offline)
     # Verification - when output attr does not exist, it is assumed to be 0
     api_val = api_fit.validate(options=ValOptions(mid_slot_count=True))
     assert api_val.passed is False
@@ -381,7 +381,7 @@ def test_not_loaded_user(client, consts):
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
     api_fit.set_ship(type_id=eve_ship_id)
-    api_module = api_fit.add_module(type_id=eve_module_id, rack=consts.ApiRack.mid, state=consts.ApiModuleState.offline)
+    api_module = api_fit.add_module(type_id=eve_module_id, rack=consts.Rack.mid, state=consts.ApiModuleState.offline)
     # Verification
     api_stats = api_fit.get_stats(options=FitStatsOptions(mid_slots=True))
     assert api_stats.mid_slots.one() == (1, 0)
@@ -400,7 +400,7 @@ def test_not_loaded_ship(client, consts):
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
     api_fit.set_ship(type_id=eve_ship_id)
-    api_module = api_fit.add_module(type_id=eve_module_id, rack=consts.ApiRack.mid, state=consts.ApiModuleState.offline)
+    api_module = api_fit.add_module(type_id=eve_module_id, rack=consts.Rack.mid, state=consts.ApiModuleState.offline)
     # Verification
     api_stats = api_fit.get_stats(options=FitStatsOptions(mid_slots=True))
     assert api_stats.mid_slots.one() == (1, None)
@@ -420,7 +420,7 @@ def test_criterion_module_state(client, consts):
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
     api_fit.set_ship(type_id=eve_ship_id)
-    api_module = api_fit.add_module(type_id=eve_module_id, rack=consts.ApiRack.mid, state=consts.ApiModuleState.offline)
+    api_module = api_fit.add_module(type_id=eve_module_id, rack=consts.Rack.mid, state=consts.ApiModuleState.offline)
     # Verification
     api_stats = api_fit.get_stats(options=FitStatsOptions(mid_slots=True))
     assert api_stats.mid_slots.one() == (1, 0)
@@ -450,8 +450,8 @@ def test_criterion_rack(client, consts):
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
     api_fit.set_ship(type_id=eve_ship_id)
-    api_fit.add_module(type_id=eve_module_id, rack=consts.ApiRack.high, state=consts.ApiModuleState.offline)
-    api_fit.add_module(type_id=eve_module_id, rack=consts.ApiRack.low, state=consts.ApiModuleState.offline)
+    api_fit.add_module(type_id=eve_module_id, rack=consts.Rack.high, state=consts.ApiModuleState.offline)
+    api_fit.add_module(type_id=eve_module_id, rack=consts.Rack.low, state=consts.ApiModuleState.offline)
     # Verification
     api_stats = api_fit.get_stats(options=FitStatsOptions(mid_slots=True))
     assert api_stats.mid_slots.one() == (0, 0)
@@ -481,7 +481,7 @@ def test_criterion_item_kind(client, consts):
     api_fit.add_implant(type_id=eve_item_id)
     api_module = api_fit.add_module(
         type_id=eve_item_id,
-        rack=consts.ApiRack.mid,
+        rack=consts.Rack.mid,
         state=consts.ApiModuleState.overload,
         charge_type_id=eve_item_id)
     api_fit.add_rig(type_id=eve_item_id)
@@ -508,7 +508,7 @@ def test_stat_not_requested(client, consts):
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
     api_fit.set_ship(type_id=eve_ship_id)
-    api_fit.add_module(type_id=eve_module_id, rack=consts.ApiRack.mid, state=consts.ApiModuleState.offline)
+    api_fit.add_module(type_id=eve_module_id, rack=consts.Rack.mid, state=consts.ApiModuleState.offline)
     # Verification
     api_stats = api_fit.get_stats(options=FitStatsOptions(mid_slots=False))
     with check_no_field():

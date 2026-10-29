@@ -149,7 +149,7 @@ def test_same_item_attr_different_effects(client, consts):
     api_fit = api_sol.create_fit()
     api_fit.set_ship(type_id=eve_ship_id)
     api_fit.add_rig(type_id=eve_affector_item_id)
-    api_item = api_fit.add_module(type_id=eve_affectee_item_id, rack=consts.ApiRack.mid)
+    api_item = api_fit.add_module(type_id=eve_affectee_item_id, rack=consts.Rack.mid)
     # Verification
     api_item.update()
     assert api_item.attrs[eve_affectee_attr_id].modified == approx(120)

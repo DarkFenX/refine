@@ -59,7 +59,7 @@ def test_proj_add_change_outgoing(client, consts):
     api_affector_fit.set_ship(type_id=eve_affector_ship_id, coordinates=(0, 0, 0))
     api_affector_module = api_affector_fit.add_module(
         type_id=eve_affector_module_id,
-        rack=consts.ApiRack.high,
+        rack=consts.Rack.high,
         state=consts.ApiModuleState.active,
         charge_type_id=eve_affector_charge_id)
     api_affector_module.change_module(effect_modes={eve_effect1_id: consts.ApiEffMode.state_compliance})
@@ -185,7 +185,7 @@ def test_switch_ship_outgoing(client, consts):
     api_affector_fit = api_sol.create_fit()
     api_affector_module = api_affector_fit.add_module(
         type_id=eve_affector_module_id,
-        rack=consts.ApiRack.low,
+        rack=consts.Rack.low,
         state=consts.ApiModuleState.active,
         charge_type_id=eve_affector_charge_id)
     api_affector_module.change_module(effect_modes={eve_effect1_id: consts.ApiEffMode.state_compliance})
@@ -292,7 +292,7 @@ def test_switch_type_id_outgoing(client, consts):
     api_affector_ship = api_affector_fit.set_ship(type_id=eve_affector_ship1_id, coordinates=(0, 0, 0))
     api_affector_module = api_affector_fit.add_module(
         type_id=eve_affector_module_id,
-        rack=consts.ApiRack.low,
+        rack=consts.Rack.low,
         state=consts.ApiModuleState.active,
         charge_type_id=eve_affector_charge_id)
     api_affector_module.change_module(effect_modes={eve_effect1_id: consts.ApiEffMode.state_compliance})
@@ -461,7 +461,7 @@ def test_switch_src_outgoing(client, consts):
     api_affector_fit.set_ship(type_id=eve_affector_ship_id, coordinates=(0, 0, 0))
     api_affector_module = api_affector_fit.add_module(
         type_id=eve_affector_module_id,
-        rack=consts.ApiRack.low,
+        rack=consts.Rack.low,
         state=consts.ApiModuleState.active,
         charge_type_id=eve_affector_charge_id)
     api_affector_module.change_module(effect_modes={eve_effect1_id: consts.ApiEffMode.state_compliance})
@@ -635,7 +635,7 @@ def test_modified_radius_outgoing(client, consts):
     api_affector_ship = api_affector_fit.set_ship(type_id=eve_affector_ship_id, coordinates=(0, 0, 0))
     api_affector_module = api_affector_fit.add_module(
         type_id=eve_affector_module_id,
-        rack=consts.ApiRack.low,
+        rack=consts.Rack.low,
         state=consts.ApiModuleState.active,
         charge_type_id=eve_affector_charge_id)
     api_affector_module.change_module(effect_modes={eve_effect1_id: consts.ApiEffMode.state_compliance})
@@ -786,7 +786,7 @@ def test_affector_ship_absent(client, consts):
     api_affector_fit = api_sol.create_fit()
     api_affector_module = api_affector_fit.add_module(
         type_id=eve_affector_module_id,
-        rack=consts.ApiRack.high,
+        rack=consts.Rack.high,
         state=consts.ApiModuleState.active,
         charge_type_id=eve_affector_charge_id)
     api_affector_module.change_module(effect_modes={eve_effect1_id: consts.ApiEffMode.state_compliance})

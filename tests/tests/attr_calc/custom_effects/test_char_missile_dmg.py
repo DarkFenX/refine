@@ -40,14 +40,14 @@ def test_filter(client, consts):
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
     api_fit.set_character(type_id=eve_item_char_id)
-    api_fit.add_module(type_id=eve_item_bcs_id, rack=consts.ApiRack.low, state=consts.ApiModuleState.online)
+    api_fit.add_module(type_id=eve_item_bcs_id, rack=consts.Rack.low, state=consts.ApiModuleState.online)
     api_launcher1 = api_fit.add_module(
         type_id=eve_item_launcher_id,
-        rack=consts.ApiRack.high,
+        rack=consts.Rack.high,
         charge_type_id=eve_item_missile_id)
     api_launcher2 = api_fit.add_module(
         type_id=eve_item_launcher_id,
-        rack=consts.ApiRack.high,
+        rack=consts.Rack.high,
         charge_type_id=eve_item_nonmissile_id)
     api_launcher1.update()
     api_launcher2.update()
@@ -124,7 +124,7 @@ def test_penalization(client, consts):
     api_magnetar = api_sol.add_sw_effect(type_id=eve_item_magnetar_id)
     api_launcher = api_fit.add_module(
         type_id=eve_item_launcher_id,
-        rack=consts.ApiRack.high,
+        rack=consts.Rack.high,
         charge_type_id=eve_item_missile_id)
     api_launcher.update()
     # Just check values
@@ -206,7 +206,7 @@ def test_state(client, consts):
     api_char = api_fit.set_character(type_id=eve_item_char_id)
     api_launcher = api_fit.add_module(
         type_id=eve_item_launcher_id,
-        rack=consts.ApiRack.high,
+        rack=consts.Rack.high,
         charge_type_id=eve_item_missile_id)
     # Verification
     api_launcher.update()

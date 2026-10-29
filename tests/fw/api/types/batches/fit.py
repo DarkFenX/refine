@@ -43,7 +43,7 @@ from fw.api.commands import (
 )
 from fw.api.types.stats import FitBatchStats, ItemBatchStats
 from fw.api.types.validation import FitValResult
-from fw.consts import ApiMinionState, ApiModAddMode, ApiModuleState, ApiRack, ApiServiceState
+from fw.consts import ApiMinionState, ApiModAddMode, ApiModuleState, ApiServiceState, Rack
 from fw.util import Absent
 from .base import BaseCmdBatchCtx
 
@@ -390,7 +390,7 @@ class FitCmdBatchCtx(BaseCmdBatchCtx):
     def add_module(
             self, *,
             type_id: int,
-            rack: ApiRack = ApiRack.high,
+            rack: Rack = Rack.high,
             add_mode: ApiModAddMode | dict[ApiModAddMode, int] | type[Absent] = ApiModAddMode.equip,
             state: ApiModuleState = ApiModuleState.offline,
             mutation: MutaAdd | type[Absent] = Absent,
