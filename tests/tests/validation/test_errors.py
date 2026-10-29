@@ -5,7 +5,7 @@ def test_sol_param_malformed(client):
     client.create_sources()
     api_sol = client.create_sol()
     # Verification
-    api_sol.validate_direct(
+    api_sol.validate_single(
         options=ValOptions(cpu=True),
         val_info_mode='random',
         status_code=400,

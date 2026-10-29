@@ -185,7 +185,7 @@ class SolarSystem(AttrDict):
             return result_detailed
         return None
 
-    def validate_direct(
+    def validate_single(
             self, *,
             fit_ids: list[str] | type[Absent | Default] = Default,
             options: ValOptions | type[Absent],
