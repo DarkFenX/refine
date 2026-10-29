@@ -119,9 +119,6 @@ impl SolarSystem {
                 &mut self.cache.eupdates,
             );
         }
-        for &charge_uid in charges.iter() {
-            SolarSystem::util_remove_charge(&mut self.u_data, &mut self.svc, charge_uid, &mut self.cache.eupdates);
-        }
         for &drone_uid in drones.iter() {
             SolarSystem::util_remove_drone(&mut self.u_data, &mut self.svc, drone_uid, &mut self.cache.eupdates);
         }
@@ -192,6 +189,10 @@ impl SolarSystem {
                 &mut self.cache.eupdates,
             );
         }
+        // Charges go last, since unloading its containing item can deactivate the charge
+        for &charge_uid in charges.iter() {
+            SolarSystem::util_remove_charge(&mut self.u_data, &mut self.svc, charge_uid, &mut self.cache.eupdates);
+        }
     }
     fn load_items(&mut self, item_uids: &ItemUIds) {
         let ItemUIds {
@@ -212,14 +213,15 @@ impl SolarSystem {
             subsystems,
             sw_effects,
         } = item_uids;
+        // Charges go first, other items which contain them can activate them later
+        for &charge_uid in charges.iter() {
+            SolarSystem::util_add_charge(&mut self.u_data, &mut self.svc, charge_uid, &mut self.cache.eupdates);
+        }
         for &booster_uid in boosters.iter() {
             SolarSystem::util_add_booster(&mut self.u_data, &mut self.svc, booster_uid, &mut self.cache.eupdates);
         }
         for &character_uid in characters.iter() {
             SolarSystem::util_add_character(&mut self.u_data, &mut self.svc, character_uid, &mut self.cache.eupdates);
-        }
-        for &charge_uid in charges.iter() {
-            SolarSystem::util_add_charge(&mut self.u_data, &mut self.svc, charge_uid, &mut self.cache.eupdates);
         }
         for &drone_uid in drones.iter() {
             SolarSystem::util_add_drone(&mut self.u_data, &mut self.svc, drone_uid, &mut self.cache.eupdates);
