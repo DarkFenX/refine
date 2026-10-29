@@ -31,8 +31,6 @@ pub(in crate::svc) use vast::Vast;
 use vast::VastFitData;
 
 mod aggr;
-#[cfg(feature = "dev")]
-mod debug;
 mod maintain;
 mod shared;
 mod stats;

@@ -19,8 +19,6 @@ pub(crate) use item::{
 mod container;
 mod data;
 mod datae_access;
-#[cfg(feature = "dev")]
-mod datae_debug;
 pub(crate) mod err;
 mod fit;
 mod fleet;
