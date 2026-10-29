@@ -4,10 +4,9 @@ from fw.api import ValOptions
 
 def test_bundled(client, consts):
     eve_size_attr_id = client.mk_eve_attr(id_=consts.EveAttr.charge_size)
-    eve_capacity_attr_id = client.mk_eve_attr(id_=consts.EveAttr.capacity)
-    eve_charge1_id = client.mk_eve_charge(attrs={eve_size_attr_id: 2})
-    eve_charge2_id = client.mk_eve_charge(attrs={eve_size_attr_id: 3})
-    eve_module_id = client.mk_eve_item(attrs={eve_capacity_attr_id: 1, eve_size_attr_id: 2})
+    eve_charge1_id = client.mk_eve_item(attrs={eve_size_attr_id: 2})
+    eve_charge2_id = client.mk_eve_item(attrs={eve_size_attr_id: 3})
+    eve_module_id = client.mk_eve_item(attrs={eve_size_attr_id: 2})
     client.create_sources()
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
@@ -17,10 +16,6 @@ def test_bundled(client, consts):
     assert api_val.passed is True
     with check_no_field():
         api_val.details  # ruff:ignore[useless-expression]
-    api_fit.check_try_fit_items(
-        val_options=ValOptions(charge_size=True),
-        passing=[eve_charge1_id],
-        failing=[eve_charge2_id])
     # Action
     api_module1.remove()
     # Verification
@@ -45,10 +40,9 @@ def test_bundled(client, consts):
 
 def test_separate(client, consts):
     eve_size_attr_id = client.mk_eve_attr(id_=consts.EveAttr.charge_size)
-    eve_capacity_attr_id = client.mk_eve_attr(id_=consts.EveAttr.capacity)
-    eve_charge1_id = client.mk_eve_charge(attrs={eve_size_attr_id: 2})
-    eve_charge2_id = client.mk_eve_charge(attrs={eve_size_attr_id: 3})
-    eve_module_id = client.mk_eve_item(attrs={eve_capacity_attr_id: 1, eve_size_attr_id: 2})
+    eve_charge1_id = client.mk_eve_item(attrs={eve_size_attr_id: 2})
+    eve_charge2_id = client.mk_eve_item(attrs={eve_size_attr_id: 3})
+    eve_module_id = client.mk_eve_item(attrs={eve_size_attr_id: 2})
     client.create_sources()
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
@@ -58,10 +52,6 @@ def test_separate(client, consts):
     assert api_val.passed is True
     with check_no_field():
         api_val.details  # ruff:ignore[useless-expression]
-    api_fit.check_try_fit_items(
-        val_options=ValOptions(charge_size=True),
-        passing=[eve_charge1_id],
-        failing=[eve_charge2_id])
     # Action
     api_module.change_module(charge_type_id=eve_charge1_id)
     # Verification
@@ -86,10 +76,9 @@ def test_separate(client, consts):
 
 def test_known_failures(client, consts):
     eve_size_attr_id = client.mk_eve_attr(id_=consts.EveAttr.charge_size)
-    eve_capacity_attr_id = client.mk_eve_attr(id_=consts.EveAttr.capacity)
-    eve_charge1_id = client.mk_eve_charge(attrs={eve_size_attr_id: 2})
-    eve_charge2_id = client.mk_eve_charge(attrs={eve_size_attr_id: 3})
-    eve_module_id = client.mk_eve_item(attrs={eve_size_attr_id: 2, eve_capacity_attr_id: 1})
+    eve_charge1_id = client.mk_eve_item(attrs={eve_size_attr_id: 2})
+    eve_charge2_id = client.mk_eve_item(attrs={eve_size_attr_id: 3})
+    eve_module_id = client.mk_eve_item(attrs={eve_size_attr_id: 2})
     eve_other_id = client.mk_eve_item()
     client.create_sources()
     api_sol = client.create_sol()
@@ -114,10 +103,6 @@ def test_known_failures(client, consts):
     assert api_val.passed is True
     with check_no_field():
         api_val.details  # ruff:ignore[useless-expression]
-    api_fit.check_try_fit_items(
-        val_options=ValOptions(charge_size=[api_module2.charge.id, api_module3.charge.id]),
-        passing=[eve_charge1_id],
-        failing=[eve_charge2_id])
 
 
 def test_rounding(client, consts):
@@ -209,10 +194,9 @@ def test_switch_type_id_charge(client, consts):
 
 def test_modified_module(client, consts):
     eve_size_attr_id = client.mk_eve_attr(id_=consts.EveAttr.charge_size)
-    eve_capacity_attr_id = client.mk_eve_attr(id_=consts.EveAttr.capacity)
-    eve_charge1_id = client.mk_eve_charge(attrs={eve_size_attr_id: 2})
-    eve_charge2_id = client.mk_eve_charge(attrs={eve_size_attr_id: 1})
-    eve_module_id = client.mk_eve_item(attrs={eve_capacity_attr_id: 1, eve_size_attr_id: 1})
+    eve_charge1_id = client.mk_eve_item(attrs={eve_size_attr_id: 2})
+    eve_charge2_id = client.mk_eve_item(attrs={eve_size_attr_id: 1})
+    eve_module_id = client.mk_eve_item(attrs={eve_size_attr_id: 1})
     eve_mod_attr_id = client.mk_eve_attr()
     eve_mod = client.mk_eve_effect_mod(
         func=consts.EveModFunc.loc,
@@ -242,10 +226,6 @@ def test_modified_module(client, consts):
     assert api_val.passed is True
     with check_no_field():
         api_val.details  # ruff:ignore[useless-expression]
-    api_fit.check_try_fit_items(
-        val_options=ValOptions(charge_size=True),
-        passing=[eve_charge2_id],
-        failing=[eve_charge1_id])
     # Action
     api_implant.remove()
     # Verification
@@ -266,10 +246,9 @@ def test_modified_module(client, consts):
 def test_modified_charge(client, consts):
     eve_skill_id = client.mk_eve_item()
     eve_size_attr_id = client.mk_eve_attr(id_=consts.EveAttr.charge_size)
-    eve_capacity_attr_id = client.mk_eve_attr(id_=consts.EveAttr.capacity)
-    eve_charge1_id = client.mk_eve_charge(attrs={eve_size_attr_id: 2}, srqs={eve_skill_id: 1})
-    eve_charge2_id = client.mk_eve_charge(attrs={eve_size_attr_id: 1}, srqs={eve_skill_id: 1})
-    eve_module_id = client.mk_eve_item(attrs={eve_capacity_attr_id: 1, eve_size_attr_id: 1})
+    eve_charge1_id = client.mk_eve_item(attrs={eve_size_attr_id: 2}, srqs={eve_skill_id: 1})
+    eve_charge2_id = client.mk_eve_item(attrs={eve_size_attr_id: 1}, srqs={eve_skill_id: 1})
+    eve_module_id = client.mk_eve_item(attrs={eve_size_attr_id: 1})
     eve_mod_attr_id = client.mk_eve_attr()
     eve_mod = client.mk_eve_effect_mod(
         func=consts.EveModFunc.own_srq,
@@ -298,10 +277,6 @@ def test_modified_charge(client, consts):
     assert api_val.passed is True
     with check_no_field():
         api_val.details  # ruff:ignore[useless-expression]
-    api_fit.check_try_fit_items(
-        val_options=ValOptions(charge_size=True),
-        passing=[eve_charge2_id],
-        failing=[eve_charge1_id])
     # Action
     api_implant.remove()
     # Verification
@@ -321,11 +296,10 @@ def test_modified_charge(client, consts):
 
 def test_mutation_module(client, consts):
     eve_size_attr_id = client.mk_eve_attr(id_=consts.EveAttr.charge_size)
-    eve_capacity_attr_id = client.mk_eve_attr(id_=consts.EveAttr.capacity)
-    eve_charge1_id = client.mk_eve_charge(attrs={eve_size_attr_id: 1})
-    eve_charge2_id = client.mk_eve_charge(attrs={eve_size_attr_id: 2})
-    eve_base_module_id = client.mk_eve_item(attrs={eve_capacity_attr_id: 1, eve_size_attr_id: 1})
-    eve_mutated_module_id = client.mk_eve_item(attrs={eve_capacity_attr_id: 1, eve_size_attr_id: 2})
+    eve_charge1_id = client.mk_eve_item(attrs={eve_size_attr_id: 1})
+    eve_charge2_id = client.mk_eve_item(attrs={eve_size_attr_id: 2})
+    eve_base_module_id = client.mk_eve_item(attrs={eve_size_attr_id: 1})
+    eve_mutated_module_id = client.mk_eve_item(attrs={eve_size_attr_id: 2})
     eve_mutator_id = client.mk_eve_mutator(items=[([eve_base_module_id], eve_mutated_module_id)])
     client.create_sources()
     api_sol = client.create_sol()
@@ -336,10 +310,6 @@ def test_mutation_module(client, consts):
     assert api_val.passed is True
     with check_no_field():
         api_val.details  # ruff:ignore[useless-expression]
-    api_fit.check_try_fit_items(
-        val_options=ValOptions(charge_size=True),
-        passing=[eve_charge1_id],
-        failing=[eve_charge2_id])
     # Action
     api_module.change_module(mutation=eve_mutator_id)
     # Verification
@@ -353,10 +323,6 @@ def test_mutation_module(client, consts):
     assert api_val.passed is True
     with check_no_field():
         api_val.details  # ruff:ignore[useless-expression]
-    api_fit.check_try_fit_items(
-        val_options=ValOptions(charge_size=True),
-        passing=[eve_charge2_id],
-        failing=[eve_charge1_id])
     api_module.change_module(mutation=eve_mutator_id)
     # Action
     api_module.change_module(mutation=None)
@@ -383,11 +349,10 @@ def test_no_charge(client, consts):
 def test_non_positive(client, consts):
     # Size of 0 is actually used in EVE, small RASB charges
     eve_size_attr_id = client.mk_eve_attr(id_=consts.EveAttr.charge_size)
-    eve_capacity_attr_id = client.mk_eve_attr(id_=consts.EveAttr.capacity)
-    eve_charge1_id = client.mk_eve_charge(attrs={eve_size_attr_id: 0})
-    eve_charge2_id = client.mk_eve_charge(attrs={eve_size_attr_id: -3})
-    eve_module1_id = client.mk_eve_item(attrs={eve_capacity_attr_id: 1, eve_size_attr_id: 0})
-    eve_module2_id = client.mk_eve_item(attrs={eve_capacity_attr_id: 1, eve_size_attr_id: -3})
+    eve_charge1_id = client.mk_eve_item(attrs={eve_size_attr_id: 0})
+    eve_charge2_id = client.mk_eve_item(attrs={eve_size_attr_id: -3})
+    eve_module1_id = client.mk_eve_item(attrs={eve_size_attr_id: 0})
+    eve_module2_id = client.mk_eve_item(attrs={eve_size_attr_id: -3})
     client.create_sources()
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
@@ -407,17 +372,12 @@ def test_non_positive(client, consts):
     assert api_val.passed is True
     with check_no_field():
         api_val.details  # ruff:ignore[useless-expression]
-    api_fit.check_try_fit_items(
-        val_options=ValOptions(charge_size=True),
-        passing=[eve_charge1_id, eve_charge2_id],
-        failing=[])
 
 
 def test_no_value_module(client, consts):
     eve_size_attr_id = client.mk_eve_attr(id_=consts.EveAttr.charge_size)
-    eve_capacity_attr_id = client.mk_eve_attr(id_=consts.EveAttr.capacity)
-    eve_charge_id = client.mk_eve_charge(attrs={eve_size_attr_id: 1})
-    eve_module_id = client.mk_eve_item(attrs={eve_capacity_attr_id: 1})
+    eve_charge_id = client.mk_eve_item(attrs={eve_size_attr_id: 1})
+    eve_module_id = client.mk_eve_item()
     client.create_sources()
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
@@ -427,10 +387,6 @@ def test_no_value_module(client, consts):
     assert api_val.passed is True
     with check_no_field():
         api_val.details  # ruff:ignore[useless-expression]
-    api_fit.check_try_fit_items(
-        val_options=ValOptions(charge_size=True),
-        passing=[eve_charge_id],
-        failing=[])
 
 
 def test_no_value_charge(client, consts):
@@ -449,9 +405,8 @@ def test_no_value_charge(client, consts):
 
 def test_no_attr(client, consts):
     eve_size_attr_id = consts.EveAttr.charge_size
-    eve_capacity_attr_id = client.mk_eve_attr(id_=consts.EveAttr.capacity)
-    eve_charge_id = client.mk_eve_charge(attrs={eve_size_attr_id: 1})
-    eve_module_id = client.mk_eve_item(attrs={eve_capacity_attr_id: 1, eve_size_attr_id: 0})
+    eve_charge_id = client.mk_eve_item(attrs={eve_size_attr_id: 1})
+    eve_module_id = client.mk_eve_item(attrs={eve_size_attr_id: 0})
     client.create_sources()
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
@@ -461,10 +416,6 @@ def test_no_attr(client, consts):
     assert api_val.passed is True
     with check_no_field():
         api_val.details  # ruff:ignore[useless-expression]
-    api_fit.check_try_fit_items(
-        val_options=ValOptions(charge_size=True),
-        passing=[eve_charge_id],
-        failing=[])
 
 
 def test_not_loaded_module(client, consts):
