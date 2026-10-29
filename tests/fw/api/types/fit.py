@@ -181,7 +181,7 @@ class Fit(AttrDict):
             return result_detailed
         return None
 
-    def validate_direct(
+    def validate_single(
             self, *,
             options: ValOptions | type[Absent],
             val_info_mode: ApiValInfoMode | type[Absent] = Absent,
@@ -247,6 +247,16 @@ class Fit(AttrDict):
         if resp.status_code == 200:
             return resp.json()
         return None
+
+    def check_try_fit_items(
+            self, *,
+            val_options: ValOptions,
+            passing: list[int],
+            failing: list[int],
+    ) -> None:
+        # Fit which fails validation by itself makes try-fit fail every item, so check the fit first
+        assert self.validate_single(options=val_options, val_info_mode=ApiValInfoMode.simple).passed is True
+        assert self.try_fit_items(type_ids=[*passing, *failing], val_options=val_options) == passing
 
     def change(
             self, *,

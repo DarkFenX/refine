@@ -258,6 +258,34 @@ class EveTypeFactory(EveDataManager):
             radius=radius,
             volume=volume)
 
+    def mk_eve_charge(
+            self, *,
+            datas: list[EveObjects] | type[Default] = Default,
+            id_: int | type[Default] = Default,
+            grp_id: int | type[Default] = Default,
+            attrs: dict[int, float] | type[Absent | Default] = Default,
+            eff_ids: list[int] | type[Absent | Default] = Default,
+            defeff_id: int | type[Absent | Default] | None = Default,
+            srqs: dict[int, int] | type[Absent | Default] = Default,
+            capacity: float | type[Absent | Default] = Default,
+            mass: float | type[Absent | Default] = Default,
+            radius: float | type[Absent | Default] = Default,
+            volume: float | type[Absent | Default] = Default,
+    ) -> int:
+        return self.mk_eve_item(
+            datas=datas,
+            id_=id_,
+            grp_id=grp_id,
+            cat_id=EveItemCat.charge,
+            attrs=attrs,
+            eff_ids=eff_ids,
+            defeff_id=defeff_id,
+            srqs=srqs,
+            capacity=capacity,
+            mass=mass,
+            radius=radius,
+            volume=volume)
+
     def mk_eve_item_group(
             self, *,
             datas: list[EveObjects] | type[Default] = Default,
@@ -301,6 +329,13 @@ class EveTypeFactory(EveDataManager):
             id_: int | type[Default] = Default,
     ) -> int:
         return self.mk_eve_item_group(datas=datas, id_=id_, cat_id=EveItemCat.fighter)
+
+    def mk_eve_charge_group(
+            self, *,
+            datas: list[EveObjects] | type[Default] = Default,
+            id_: int | type[Default] = Default,
+    ) -> int:
+        return self.mk_eve_item_group(datas=datas, id_=id_, cat_id=EveItemCat.charge)
 
     def mk_eve_item_list(
             self, *,

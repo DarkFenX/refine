@@ -17,7 +17,7 @@ def test_fit_param_malformed(client):
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
     # Verification
-    api_fit.validate_direct(
+    api_fit.validate_single(
         options=ValOptions(cpu=True),
         val_info_mode='random',
         status_code=400,
