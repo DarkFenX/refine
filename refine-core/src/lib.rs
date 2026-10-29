@@ -109,6 +109,7 @@ pub use ud::{FitId, FleetId, ItemId};
 
 pub mod ad;
 mod api;
+#[cfg(feature = "dev")]
 mod dbg;
 mod def;
 pub mod ed;

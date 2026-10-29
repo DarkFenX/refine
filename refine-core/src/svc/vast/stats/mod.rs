@@ -1,5 +1,7 @@
+#[cfg(feature = "dev")]
+pub(crate) use cap::StatCapBlcNosfsOptionsInt;
 pub use cap::{StatCapBlcNosfs, StatCapBlcRegen, StatCapBlcSrcKinds, StatCapSim, StatCapSimStagger};
-pub(crate) use cap::{StatCapBlcNosfsOptionsInt, StatCapBlcSrcKindsInt, StatCapSimStaggerInt};
+pub(crate) use cap::{StatCapBlcSrcKindsInt, StatCapSimStaggerInt};
 pub use charge_options::StatItemChargeOptions;
 pub use crit_options::StatCritOptions;
 pub use dmg::{StatDmg, StatDmgApplied, StatDmgEntry, StatDmgEntryApplied, StatDmgEntryBreacher, StatDmgItemKinds};

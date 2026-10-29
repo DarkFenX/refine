@@ -1,7 +1,6 @@
 use crate::{
-    dbg::DebugResult,
-    svc::calc::{ModContext, RawModId, RawModifier, registers::RawModStorage},
-    ud::{UData, UFitId, UItemId},
+    svc::calc::{ModContext, RawModId, RawModifier},
+    ud::{UFitId, UItemId},
 };
 
 /// CtxModifier's identity, stored in registers to avoid storing full modifiers.
@@ -52,30 +51,36 @@ impl CtxModifier {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Debugging
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-impl CtxModKey {
-    pub(in crate::svc::calc) fn consistency_check(&self, u_data: &UData, rmods: &RawModStorage) -> DebugResult {
-        match rmods.try_get_rmod(self.rmod_id) {
-            Some(rmod) => CtxModifier::from_ckey(*rmod, *self).consistency_check(u_data),
-            None => Err(Default::default()),
-        }
-    }
-}
+#[cfg(feature = "dev")]
+mod debug {
+    use super::*;
+    use crate::{dbg::DebugResult, svc::calc::registers::RawModStorage, ud::UData};
 
-impl CtxModifier {
-    pub(in crate::svc::calc) fn consistency_check(&self, u_data: &UData) -> DebugResult {
-        let Self { rmod, ctx } = self;
-        match *ctx {
-            // Item modifier is applied to is not necessarily loaded (e.g. a module projected to a
-            // non-loaded ship)
-            ModContext::None => (),
-            ModContext::Item(item_uid) => item_uid.consistency_check(u_data, false)?,
-            ModContext::Fit(fit_uid) => fit_uid.consistency_check(u_data)?,
-            ModContext::FitItem(fit_uid, item_uid) => {
-                fit_uid.consistency_check(u_data)?;
-                item_uid.consistency_check(u_data, false)?;
+    impl CtxModKey {
+        pub(in crate::svc::calc) fn consistency_check(&self, u_data: &UData, rmods: &RawModStorage) -> DebugResult {
+            match rmods.try_get_rmod(self.rmod_id) {
+                Some(rmod) => CtxModifier::from_ckey(*rmod, *self).consistency_check(u_data),
+                None => Err(Default::default()),
             }
         }
-        rmod.consistency_check(u_data)?;
-        Ok(())
+    }
+
+    impl CtxModifier {
+        pub(in crate::svc::calc) fn consistency_check(&self, u_data: &UData) -> DebugResult {
+            let Self { rmod, ctx } = self;
+            match *ctx {
+                // Item modifier is applied to is not necessarily loaded (e.g. a module projected to
+                // a non-loaded ship)
+                ModContext::None => (),
+                ModContext::Item(item_uid) => item_uid.consistency_check(u_data, false)?,
+                ModContext::Fit(fit_uid) => fit_uid.consistency_check(u_data)?,
+                ModContext::FitItem(fit_uid, item_uid) => {
+                    fit_uid.consistency_check(u_data)?;
+                    item_uid.consistency_check(u_data, false)?;
+                }
+            }
+            rmod.consistency_check(u_data)?;
+            Ok(())
+        }
     }
 }

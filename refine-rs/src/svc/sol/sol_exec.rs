@@ -46,6 +46,7 @@ impl<'r> SolarSystem<'r> {
             .exec_standard(move || func(&mut core_sol_guarded.lock()))
             .await
     }
+    #[cfg(feature = "dev")]
     pub(crate) async fn exec_heavy_infallible<F, R>(&mut self, func: F) -> R
     where
         F: FnOnce(&mut rc::SolarSystem) -> R + Send + 'static,

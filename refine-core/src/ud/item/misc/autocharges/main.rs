@@ -18,6 +18,7 @@ impl UAutocharges {
     pub(crate) fn values(&self) -> impl ExactSizeIterator<Item = UItemId> {
         self.data.values().copied()
     }
+    #[cfg(feature = "dev")]
     pub(crate) fn is_empty(&self) -> bool {
         self.data.is_empty()
     }

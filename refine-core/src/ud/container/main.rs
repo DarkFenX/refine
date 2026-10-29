@@ -53,6 +53,7 @@ where
     pub(crate) fn ext_id_by_int_id(&self, int_id: IntId) -> ExtId {
         self.get(int_id).lib_get_id()
     }
+    #[cfg(feature = "dev")]
     pub(crate) fn try_get(&self, int_id: IntId) -> Option<&T> {
         self.data.get(int_id)
     }
@@ -78,6 +79,7 @@ where
     pub(crate) fn keys(&self) -> impl ExactSizeIterator<Item = IntId> {
         self.ext_id_to_int_id.values().copied()
     }
+    #[cfg(feature = "dev")]
     pub(crate) fn values(&self) -> impl ExactSizeIterator<Item = &T> {
         self.ext_id_to_int_id
             .values()

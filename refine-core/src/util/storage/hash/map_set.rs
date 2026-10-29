@@ -136,6 +136,7 @@ where
     pub(crate) fn values(&self) -> impl ExactSizeIterator<Item = impl ExactSizeIterator<Item = &V>> {
         self.data.values().map(|v| v.iter())
     }
+    #[cfg(feature = "dev")]
     pub(crate) fn contains_entry(&self, key: &K, value: &V) -> bool {
         match self.data.get(key) {
             Some(values) => values.contains(value),
@@ -200,6 +201,7 @@ where
             Self::Many(set) => Either::Right(set.iter()),
         }
     }
+    #[cfg(feature = "dev")]
     fn contains(&self, value: &V) -> bool {
         match self {
             Self::One(old_value) => old_value == value,

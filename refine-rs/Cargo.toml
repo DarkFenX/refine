@@ -25,6 +25,7 @@ tracing = ">=0.1.44"
 uuid = { version = ">=1.29.0", features = ["fast-rng", "v4"] }
 
 [features]
+dev = ["rc/dev"]
 serde = [
     "dep:serde",
     "dep:serde_tuple",

@@ -1,9 +1,7 @@
 use crate::{
     ad::{AAttrId, AEffect},
-    dbg::DebugResult,
     nd::NEffectResist,
     rd::RAttrId,
-    ud::UData,
     util::RMap,
 };
 
@@ -41,13 +39,19 @@ impl REffectResist {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Debugging
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-impl REffectResist {
-    pub(in crate::rd) fn consistency_check(&self, u_data: &UData) -> DebugResult {
-        match self {
-            REffectResist::Attr(attr_rid) => attr_rid.consistency_check(u_data)?,
-            REffectResist::AttrRef(attr_rid) => attr_rid.consistency_check(u_data)?,
-            REffectResist::RemoteResistance => (),
+#[cfg(feature = "dev")]
+mod debug {
+    use super::*;
+    use crate::{dbg::DebugResult, ud::UData};
+
+    impl REffectResist {
+        pub(in crate::rd) fn consistency_check(&self, u_data: &UData) -> DebugResult {
+            match self {
+                REffectResist::Attr(attr_rid) => attr_rid.consistency_check(u_data)?,
+                REffectResist::AttrRef(attr_rid) => attr_rid.consistency_check(u_data)?,
+                REffectResist::RemoteResistance => (),
+            }
+            Ok(())
         }
-        Ok(())
     }
 }

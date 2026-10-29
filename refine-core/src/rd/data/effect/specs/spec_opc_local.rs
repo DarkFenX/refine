@@ -1,9 +1,7 @@
 use crate::{
     ad::AAttrId,
-    dbg::DebugResult,
     nd::{NEffectChargeMultGetter, NEffectLocalOpcSpec, NEffectOutputGetter},
     rd::RAttrId,
-    ud::UData,
     util::RMap,
 };
 
@@ -41,20 +39,26 @@ where
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Debugging
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-impl<BG> REffectLocalOpcSpec<BG>
-where
-    BG: NEffectOutputGetter,
-{
-    pub(crate) fn consistency_check(&self, u_data: &UData) -> DebugResult {
-        let Self {
-            limit_attr_rid,
-            // Not checked
-            base: _,
-            charge_mult: _,
-        } = self;
-        if let Some(attr_rid) = *limit_attr_rid {
-            attr_rid.consistency_check(u_data)?;
+#[cfg(feature = "dev")]
+mod debug {
+    use super::*;
+    use crate::{dbg::DebugResult, ud::UData};
+
+    impl<BG> REffectLocalOpcSpec<BG>
+    where
+        BG: NEffectOutputGetter,
+    {
+        pub(crate) fn consistency_check(&self, u_data: &UData) -> DebugResult {
+            let Self {
+                limit_attr_rid,
+                // Not checked
+                base: _,
+                charge_mult: _,
+            } = self;
+            if let Some(attr_rid) = *limit_attr_rid {
+                attr_rid.consistency_check(u_data)?;
+            }
+            Ok(())
         }
-        Ok(())
     }
 }

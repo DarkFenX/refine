@@ -5,6 +5,7 @@ pub(crate) use uid::UFleetId;
 
 mod container;
 mod fleet;
+#[cfg(feature = "dev")]
 mod fleete_debug;
 mod id;
 mod uid;

@@ -52,6 +52,7 @@ where
     H3: BuildHasher,
 {
     // Query methods
+    #[cfg(feature = "dev")]
     pub(crate) fn iter(&self) -> impl ExactSizeIterator<Item = (&K1, &MapMap<K2, K3, V, H2, H3>)> {
         self.data.iter()
     }

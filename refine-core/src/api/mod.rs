@@ -29,6 +29,7 @@ pub use sol_ctl_affectors::CtlAffectors;
 pub use util::MutIter;
 
 mod default;
+#[cfg(feature = "dev")]
 mod dev;
 mod fit;
 mod fleet;

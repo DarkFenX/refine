@@ -1,3 +1,5 @@
+#[cfg(feature = "dev")]
+pub(crate) use stats::StatCapBlcNosfsOptionsInt;
 pub use stats::{
     StatAgilityError, StatCapBlcNosfs, StatCapBlcRegen, StatCapBlcSrcKinds, StatCapSim, StatCapSimStagger,
     StatCritOptions, StatDmg, StatDmgApplied, StatDmgEntry, StatDmgEntryApplied, StatDmgEntryBreacher,
@@ -8,7 +10,7 @@ pub use stats::{
     StatResistsLayer, StatResource, StatRps, StatRpsLayer, StatRpsLayerRegen, StatSensors, StatSensorsKind, StatSlot,
     StatTimeOptions, StatTimeOptionsBurst, StatTimeOptionsSim, StatWarpSpeedError,
 };
-pub(crate) use stats::{StatCapBlcNosfsOptionsInt, StatCapBlcSrcKindsInt, StatCapSimStaggerInt};
+pub(crate) use stats::{StatCapBlcSrcKindsInt, StatCapSimStaggerInt};
 pub use val::{
     ValActivationBlockedFail, ValCapitalModFail, ValCapitalModInfo, ValChargeGroupChargeInfo, ValChargeGroupFail,
     ValChargeParentGroupChargeInfo, ValChargeParentGroupFail, ValChargeSizeChargeInfo, ValChargeSizeFail,
@@ -29,6 +31,7 @@ pub(in crate::svc) use vast::Vast;
 use vast::VastFitData;
 
 mod aggr;
+#[cfg(feature = "dev")]
 mod debug;
 mod maintain;
 mod shared;

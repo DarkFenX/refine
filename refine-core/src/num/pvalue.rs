@@ -5,7 +5,6 @@ use ordered_float::OrderedFloat;
 use crate::{
     Count, UnitInterval, Value,
     ad::AValue,
-    dbg::DebugResult,
     def::{SERVER_TICK_HZ, SERVER_TICK_S},
     util::{FLOAT_TOLERANCE, ceil_tick, ceil_unerr, floor_tick, floor_unerr, sig_round, sum_pai_owned},
 };
@@ -281,11 +280,17 @@ mod custom_serde {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Debug checks
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-impl PValue {
-    pub(crate) fn consistency_check(&self) -> DebugResult {
-        match self.0.is_finite() {
-            true => Ok(()),
-            false => Err(Default::default()),
+#[cfg(feature = "dev")]
+mod debug {
+    use super::*;
+    use crate::dbg::DebugResult;
+
+    impl PValue {
+        pub(crate) fn consistency_check(&self) -> DebugResult {
+            match self.0.is_finite() && self.0 >= 0.0 {
+                true => Ok(()),
+                false => Err(Default::default()),
+            }
         }
     }
 }

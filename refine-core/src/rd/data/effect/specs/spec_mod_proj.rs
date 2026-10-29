@@ -1,9 +1,7 @@
 use crate::{
     ad::{AAttrId, AEffect},
-    dbg::DebugResult,
     nd::{NEffectProjModSpec, NEffectProjMultGetter},
     rd::{RAttrId, REffectResist},
-    ud::UData,
     util::RMap,
 };
 
@@ -56,20 +54,26 @@ impl REffectProjModSpec {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Debugging
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-impl REffectProjModSpec {
-    pub(crate) fn consistency_check(&self, u_data: &UData) -> DebugResult {
-        let Self {
-            proj_attr_rids,
-            resist,
-            // Not checked
-            proj_mult: _,
-        } = self;
-        for attr_rid in proj_attr_rids.iter().flatten() {
-            attr_rid.consistency_check(u_data)?;
+#[cfg(feature = "dev")]
+mod debug {
+    use super::*;
+    use crate::{dbg::DebugResult, ud::UData};
+
+    impl REffectProjModSpec {
+        pub(crate) fn consistency_check(&self, u_data: &UData) -> DebugResult {
+            let Self {
+                proj_attr_rids,
+                resist,
+                // Not checked
+                proj_mult: _,
+            } = self;
+            for attr_rid in proj_attr_rids.iter().flatten() {
+                attr_rid.consistency_check(u_data)?;
+            }
+            if let Some(resist) = resist {
+                resist.consistency_check(u_data)?;
+            }
+            Ok(())
         }
-        if let Some(resist) = resist {
-            resist.consistency_check(u_data)?;
-        }
-        Ok(())
     }
 }

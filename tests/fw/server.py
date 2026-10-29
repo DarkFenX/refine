@@ -27,7 +27,12 @@ def build_server(*, proj_root: Path, optimized: bool) -> None:
     http_path = proj_root / 'refine-http'
     os.chdir(http_path)
     subprocess.run(
-        ['cargo', 'build', '--package=refine-http', f'--profile={get_profile_name(optimized=optimized)}'],
+        [
+            'cargo',
+            'build',
+            '--package=refine-http',
+            '--features=dev',
+            f'--profile={get_profile_name(optimized=optimized)}'],
         stdout=subprocess.DEVNULL,
         stderr=subprocess.DEVNULL,
         check=True)

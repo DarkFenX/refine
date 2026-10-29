@@ -21,6 +21,7 @@ impl RawModStorage {
     pub(in crate::svc::calc) fn get_rmod(&self, rmod_id: RawModId) -> &RawModifier {
         self.data.get(rmod_id).unwrap()
     }
+    #[cfg(feature = "dev")]
     pub(in crate::svc::calc) fn try_get_rmod(&self, rmod_id: RawModId) -> Option<&RawModifier> {
         self.data.get(rmod_id)
     }

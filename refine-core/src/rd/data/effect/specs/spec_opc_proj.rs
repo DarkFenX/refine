@@ -1,9 +1,7 @@
 use crate::{
     ad::{AAttrId, AEffect},
-    dbg::DebugResult,
     nd::{NEffectChargeMultGetter, NEffectOutputGetter, NEffectProjMultGetter, NEffectProjOpcSpec},
     rd::{RAttrId, REffectResist},
-    ud::UData,
     util::RMap,
 };
 
@@ -57,31 +55,37 @@ where
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Debugging
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-impl<BG> REffectProjOpcSpec<BG>
-where
-    BG: NEffectOutputGetter,
-{
-    pub(crate) fn consistency_check(&self, u_data: &UData) -> DebugResult {
-        let Self {
-            resist,
-            local_limit_attr_id,
-            remote_limit_attr_id,
-            // Not checked
-            base: _,
-            charge_mult: _,
-            spoolable: _,
-            proj_mult_str: _,
-            proj_mult_chance: _,
-        } = self;
-        if let Some(resist) = resist {
-            resist.consistency_check(u_data)?;
+#[cfg(feature = "dev")]
+mod debug {
+    use super::*;
+    use crate::{dbg::DebugResult, ud::UData};
+
+    impl<BG> REffectProjOpcSpec<BG>
+    where
+        BG: NEffectOutputGetter,
+    {
+        pub(crate) fn consistency_check(&self, u_data: &UData) -> DebugResult {
+            let Self {
+                resist,
+                local_limit_attr_id,
+                remote_limit_attr_id,
+                // Not checked
+                base: _,
+                charge_mult: _,
+                spoolable: _,
+                proj_mult_str: _,
+                proj_mult_chance: _,
+            } = self;
+            if let Some(resist) = resist {
+                resist.consistency_check(u_data)?;
+            }
+            if let Some(attr_rid) = local_limit_attr_id {
+                attr_rid.consistency_check(u_data)?;
+            }
+            if let Some(attr_rid) = remote_limit_attr_id {
+                attr_rid.consistency_check(u_data)?;
+            }
+            Ok(())
         }
-        if let Some(attr_rid) = local_limit_attr_id {
-            attr_rid.consistency_check(u_data)?;
-        }
-        if let Some(attr_rid) = remote_limit_attr_id {
-            attr_rid.consistency_check(u_data)?;
-        }
-        Ok(())
     }
 }

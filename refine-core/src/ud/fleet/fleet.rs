@@ -15,6 +15,7 @@ impl UFleet {
     pub(crate) fn iter_fits(&self) -> impl ExactSizeIterator<Item = UFitId> {
         self.fits.iter().copied()
     }
+    #[cfg(feature = "dev")]
     pub(crate) fn contains_fit(&self, fit: &UFitId) -> bool {
         self.fits.contains(fit)
     }

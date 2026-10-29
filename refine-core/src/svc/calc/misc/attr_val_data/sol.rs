@@ -1,6 +1,5 @@
 use super::{attr::AttrEntry, item::ItemAttrData};
 use crate::{
-    dbg::DebugResult,
     rd::RAttrId,
     svc::calc::{ItemAttrPostproc, misc::Reuse},
     ud::{UData, UItem, UItemId},
@@ -58,26 +57,32 @@ impl AttrValData {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Debug
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-impl AttrValData {
-    pub(in crate::svc::calc) fn consistency_check(&self, u_data: &UData) -> DebugResult {
-        let Self {
-            data,
-            // Spare containers
-            spare_dense: _,
-            spare_sparse: _,
-        } = self;
-        for (item_uid, item_data) in data.iter() {
-            item_uid.consistency_check(u_data, true)?;
-            item_data.consistency_check()?;
-            for (attr_rid, attr_entry) in item_data.iter() {
-                attr_rid.consistency_check(u_data)?;
-                if let Some(attr_val) = attr_entry.value {
-                    attr_val.base.consistency_check()?;
-                    attr_val.dogma.consistency_check()?;
-                    attr_val.extra.consistency_check()?;
+#[cfg(feature = "dev")]
+mod debug {
+    use super::*;
+    use crate::{dbg::DebugResult, ud::UData};
+
+    impl AttrValData {
+        pub(in crate::svc::calc) fn consistency_check(&self, u_data: &UData) -> DebugResult {
+            let Self {
+                data,
+                // Spare containers
+                spare_dense: _,
+                spare_sparse: _,
+            } = self;
+            for (item_uid, item_data) in data.iter() {
+                item_uid.consistency_check(u_data, true)?;
+                item_data.consistency_check()?;
+                for (attr_rid, attr_entry) in item_data.iter() {
+                    attr_rid.consistency_check(u_data)?;
+                    if let Some(attr_val) = attr_entry.value {
+                        attr_val.base.consistency_check()?;
+                        attr_val.dogma.consistency_check()?;
+                        attr_val.extra.consistency_check()?;
+                    }
                 }
             }
+            Ok(())
         }
-        Ok(())
     }
 }

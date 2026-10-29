@@ -1,7 +1,6 @@
 use super::attr::AttrEntry;
 use crate::{
     ad::AAttrId,
-    dbg::DebugResult,
     rd::RAttrId,
     svc::calc::{CalcAttrVals, ItemAttrPostproc},
     util::{RMap, SlabId},
@@ -111,31 +110,37 @@ impl ItemAttrData {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Debug
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-impl ItemAttrData {
-    pub(super) fn consistency_check(&self) -> DebugResult {
-        let Self {
-            dense_positions,
-            dense_entries,
-            sparse,
-        } = self;
-        // Each dense entry has to be referenced by the position of its attribute
-        let mut referenced = 0;
-        for (index, &position) in dense_positions.iter().enumerate() {
-            if position == NO_ENTRY {
-                continue;
+#[cfg(feature = "dev")]
+mod debug {
+    use super::*;
+    use crate::dbg::DebugResult;
+
+    impl ItemAttrData {
+        pub(in crate::svc::calc::misc::attr_val_data) fn consistency_check(&self) -> DebugResult {
+            let Self {
+                dense_positions,
+                dense_entries,
+                sparse,
+            } = self;
+            // Each dense entry has to be referenced by the position of its attribute
+            let mut referenced = 0;
+            for (index, &position) in dense_positions.iter().enumerate() {
+                if position == NO_ENTRY {
+                    continue;
+                }
+                match dense_entries.get(position as usize) {
+                    Some((attr_rid, _)) if attr_rid.index() == index => referenced += 1,
+                    _ => return Err(Default::default()),
+                }
             }
-            match dense_entries.get(position as usize) {
-                Some((attr_rid, _)) if attr_rid.index() == index => referenced += 1,
-                _ => return Err(Default::default()),
+            if referenced != dense_entries.len() {
+                return Err(Default::default());
             }
+            // Densely stored attributes are never stored in the map
+            if sparse.keys().any(|attr_rid| attr_rid.index() < DENSE_ATTR_COUNT) {
+                return Err(Default::default());
+            }
+            Ok(())
         }
-        if referenced != dense_entries.len() {
-            return Err(Default::default());
-        }
-        // Densely stored attributes are never stored in the map
-        if sparse.keys().any(|attr_rid| attr_rid.index() < DENSE_ATTR_COUNT) {
-            return Err(Default::default());
-        }
-        Ok(())
     }
 }

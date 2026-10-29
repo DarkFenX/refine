@@ -1,3 +1,4 @@
+#[cfg(feature = "dev")]
 pub(crate) use dev::{dev_benchmark_sol, dev_check_sol};
 pub(crate) use fit::{add_fit, batch_fit, change_fit, get_fit, remove_fit};
 pub(crate) use fleet::{add_fleet, change_fleet, get_fleet, remove_fleet};
@@ -9,6 +10,7 @@ pub(crate) use stats::{get_fit_stats, get_fleet_stats, get_item_stats};
 pub(crate) use try_fit_items::try_fit_items;
 pub(crate) use validate::{validate_fit, validate_sol};
 
+#[cfg(feature = "dev")]
 mod dev;
 mod fit;
 mod fleet;

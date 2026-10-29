@@ -1,8 +1,6 @@
 use crate::{
-    dbg::DebugResult,
     nd::NEffectGeneralOutputGetter,
     rd::{REffectId, REffectLocalOpcSpec},
-    ud::UData,
 };
 
 #[derive(Copy, Clone)]
@@ -14,11 +12,17 @@ pub(crate) struct RItemCapConsumer {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Debugging
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-impl RItemCapConsumer {
-    pub(crate) fn consistency_check(&self, u_data: &UData) -> DebugResult {
-        let Self { effect_rid, opc_spec } = self;
-        effect_rid.consistency_check(u_data)?;
-        opc_spec.consistency_check(u_data)?;
-        Ok(())
+#[cfg(feature = "dev")]
+mod debug {
+    use super::*;
+    use crate::{dbg::DebugResult, ud::UData};
+
+    impl RItemCapConsumer {
+        pub(crate) fn consistency_check(&self, u_data: &UData) -> DebugResult {
+            let Self { effect_rid, opc_spec } = self;
+            effect_rid.consistency_check(u_data)?;
+            opc_spec.consistency_check(u_data)?;
+            Ok(())
+        }
     }
 }

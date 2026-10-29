@@ -2,7 +2,6 @@ use smallvec::{SmallVec, smallvec};
 
 use super::custom::CalcCustomModStrength;
 use crate::{
-    dbg::DebugResult,
     misc::EffectSpec,
     num::Value,
     rd::RAttrId,
@@ -10,7 +9,7 @@ use crate::{
         SvcCtx,
         calc::{Calc, CalcModInfoAffector, ItemAddRemoveReviser},
     },
-    ud::{UData, UItemId},
+    ud::UItemId,
 };
 
 #[derive(Copy, Clone)]
@@ -64,13 +63,19 @@ impl ModStrength {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Debugging
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-impl ModStrength {
-    pub(in crate::svc::calc) fn consistency_check(&self, u_data: &UData) -> DebugResult {
-        match self {
-            Self::Attr(attr_rid) => attr_rid.consistency_check(u_data)?,
-            Self::Hardcoded(..) => (),
-            Self::Custom(custom_str) => custom_str.consistency_check(u_data)?,
+#[cfg(feature = "dev")]
+mod debug {
+    use super::*;
+    use crate::{dbg::DebugResult, ud::UData};
+
+    impl ModStrength {
+        pub(in crate::svc::calc) fn consistency_check(&self, u_data: &UData) -> DebugResult {
+            match self {
+                Self::Attr(attr_rid) => attr_rid.consistency_check(u_data)?,
+                Self::Hardcoded(..) => (),
+                Self::Custom(custom_str) => custom_str.consistency_check(u_data)?,
+            }
+            Ok(())
         }
-        Ok(())
     }
 }

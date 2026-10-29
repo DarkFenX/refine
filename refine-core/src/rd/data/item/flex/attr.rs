@@ -7,9 +7,7 @@ use super::getters::{
 use crate::{
     SkillLevel, Value,
     ad::{AAttrId, AItem, AItemId},
-    dbg::DebugResult,
     rd::{RAttrConsts, RAttrId, RData, RItemBase},
-    ud::UData,
     util::RMap,
 };
 
@@ -130,28 +128,34 @@ impl RItemFlexData {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Debugging
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-impl RItemFlexData {
-    pub(crate) fn consistency_check(&self, u_data: &UData) -> DebugResult {
-        let Self {
-            attrs,
-            remote_resist_attr_rid,
-            // Not checked
-            bandwidth_use: _,
-            is_mobile: _,
-            entity_mwd: _,
-            specs_reactivation_delay: _,
-            specs_disallow_repeats: _,
-            max_group_fitted_limited: _,
-            max_group_online_limited: _,
-            max_group_active_limited: _,
-            overload_td_lvl: _,
-        } = self;
-        for attr_rid in attrs.keys() {
-            attr_rid.consistency_check(u_data)?;
+#[cfg(feature = "dev")]
+mod debug {
+    use super::*;
+    use crate::{dbg::DebugResult, ud::UData};
+
+    impl RItemFlexData {
+        pub(crate) fn consistency_check(&self, u_data: &UData) -> DebugResult {
+            let Self {
+                attrs,
+                remote_resist_attr_rid,
+                // Not checked
+                bandwidth_use: _,
+                is_mobile: _,
+                entity_mwd: _,
+                specs_reactivation_delay: _,
+                specs_disallow_repeats: _,
+                max_group_fitted_limited: _,
+                max_group_online_limited: _,
+                max_group_active_limited: _,
+                overload_td_lvl: _,
+            } = self;
+            for attr_rid in attrs.keys() {
+                attr_rid.consistency_check(u_data)?;
+            }
+            if let Some(attr_rid) = *remote_resist_attr_rid {
+                attr_rid.consistency_check(u_data)?;
+            }
+            Ok(())
         }
-        if let Some(attr_rid) = *remote_resist_attr_rid {
-            attr_rid.consistency_check(u_data)?;
-        }
-        Ok(())
     }
 }

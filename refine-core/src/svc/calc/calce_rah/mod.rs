@@ -8,6 +8,7 @@ pub(in crate::svc::calc) use postproc::{
 mod calce_maintain;
 mod calce_sim;
 mod data;
+#[cfg(feature = "dev")]
 mod debug;
 mod item_data;
 mod item_history_entry;

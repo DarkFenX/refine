@@ -2,7 +2,6 @@ use smallvec::SmallVec;
 
 use crate::{
     ad::AEffectCatId,
-    dbg::DebugResult,
     misc::EffectSpec,
     num::Value,
     rd::{
@@ -13,7 +12,7 @@ use crate::{
         SvcCtx,
         calc::{
             AffecteeFilter, AggrMode, Calc, CalcModInfoAffector, CalcOp, ItemAddRemoveReviser, Location, ModifierKind,
-            modifier::ModStrength, registers::RawModStorage,
+            modifier::ModStrength,
         },
     },
     ud::{UData, UItem, UItemId},
@@ -235,42 +234,48 @@ fn get_effect_mod_kind(effect_cat: AEffectCatId, affectee_filter: &AffecteeFilte
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Debugging
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-impl RawModId {
-    pub(in crate::svc::calc) fn consistency_check(&self, u_data: &UData, rmods: &RawModStorage) -> DebugResult {
-        match rmods.try_get_rmod(*self) {
-            Some(rmod) => rmod.consistency_check(u_data),
-            None => Err(Default::default()),
+#[cfg(feature = "dev")]
+mod debug {
+    use super::*;
+    use crate::{dbg::DebugResult, svc::calc::registers::RawModStorage, ud::UData};
+
+    impl RawModId {
+        pub(in crate::svc::calc) fn consistency_check(&self, u_data: &UData, rmods: &RawModStorage) -> DebugResult {
+            match rmods.try_get_rmod(*self) {
+                Some(rmod) => rmod.consistency_check(u_data),
+                None => Err(Default::default()),
+            }
         }
     }
-}
 
-impl RawModifier {
-    pub(in crate::svc::calc) fn consistency_check(&self, u_data: &UData) -> DebugResult {
-        let Self {
-            affector_espec,
-            strength,
-            affectee_attr_rid,
-            buff_type_attr_rid,
-            proj_spec,
-            resist_attr_rid,
-            // Not checked
-            kind: _,
-            op: _,
-            aggr_mode: _,
-            affectee_filter: _,
-        } = self;
-        affector_espec.consistency_check(u_data, true)?;
-        strength.consistency_check(u_data)?;
-        affectee_attr_rid.consistency_check(u_data)?;
-        if let Some(attr_rid) = buff_type_attr_rid.as_ref() {
-            attr_rid.consistency_check(u_data)?;
+    impl RawModifier {
+        pub(in crate::svc::calc) fn consistency_check(&self, u_data: &UData) -> DebugResult {
+            let Self {
+                affector_espec,
+                strength,
+                affectee_attr_rid,
+                buff_type_attr_rid,
+                proj_spec,
+                resist_attr_rid,
+                // Not checked
+                kind: _,
+                op: _,
+                aggr_mode: _,
+                affectee_filter: _,
+            } = self;
+            affector_espec.consistency_check(u_data, true)?;
+            strength.consistency_check(u_data)?;
+            affectee_attr_rid.consistency_check(u_data)?;
+            if let Some(attr_rid) = buff_type_attr_rid.as_ref() {
+                attr_rid.consistency_check(u_data)?;
+            }
+            if let Some(mspec) = proj_spec.as_ref() {
+                mspec.consistency_check(u_data)?;
+            }
+            if let Some(attr_rid) = resist_attr_rid.as_ref() {
+                attr_rid.consistency_check(u_data)?;
+            }
+            Ok(())
         }
-        if let Some(mspec) = proj_spec.as_ref() {
-            mspec.consistency_check(u_data)?;
-        }
-        if let Some(attr_rid) = resist_attr_rid.as_ref() {
-            attr_rid.consistency_check(u_data)?;
-        }
-        Ok(())
     }
 }

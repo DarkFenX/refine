@@ -83,11 +83,13 @@ pub(crate) async fn setup_server() {
         .route("/sol/{sol_id}/item/{item_id}", get(handlers::get_item))
         .route("/sol/{sol_id}/item/{item_id}", patch(handlers::change_item))
         .route("/sol/{sol_id}/item/{item_id}", delete(handlers::remove_item))
-        .route("/sol/{sol_id}/item/{item_id}/stats", post(handlers::get_item_stats))
-        // Development-related handlers
+        .route("/sol/{sol_id}/item/{item_id}/stats", post(handlers::get_item_stats));
+    // Development-related handlers
+    #[cfg(feature = "dev")]
+    let router = router
         .route("/sol/{sol_id}/check", get(handlers::dev_check_sol))
-        .route("/sol/{sol_id}/benchmark", post(handlers::dev_benchmark_sol))
-        .with_state(state);
+        .route("/sol/{sol_id}/benchmark", post(handlers::dev_benchmark_sol));
+    let router = router.with_state(state);
 
     // Middleware
     let body_limit = BodyLimit {

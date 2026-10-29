@@ -2,7 +2,6 @@ use smallvec::SmallVec;
 
 use super::{aar_paste, missile_flight_time, prop_speed, reviser::ItemAddRemoveReviser};
 use crate::{
-    dbg::DebugResult,
     misc::EffectSpec,
     num::Value,
     rd::{RAttrConsts, RAttrId},
@@ -10,7 +9,7 @@ use crate::{
         SvcCtx,
         calc::{Calc, CalcModInfoAffector, RawModifier},
     },
-    ud::{UData, UItemId},
+    ud::UItemId,
 };
 
 #[derive(Copy, Clone)]
@@ -78,16 +77,22 @@ impl CalcCustomModStrength {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Debugging
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-impl CalcCustomModStrength {
-    pub(in crate::svc::calc) fn consistency_check(&self, u_data: &UData) -> DebugResult {
-        let Self {
-            affector_attr_rid,
-            // Not checked
-            kind: _,
-        } = self;
-        if let Some(attr_rid) = *affector_attr_rid {
-            attr_rid.consistency_check(u_data)?;
+#[cfg(feature = "dev")]
+mod debug {
+    use super::*;
+    use crate::{dbg::DebugResult, ud::UData};
+
+    impl CalcCustomModStrength {
+        pub(in crate::svc::calc) fn consistency_check(&self, u_data: &UData) -> DebugResult {
+            let Self {
+                affector_attr_rid,
+                // Not checked
+                kind: _,
+            } = self;
+            if let Some(attr_rid) = *affector_attr_rid {
+                attr_rid.consistency_check(u_data)?;
+            }
+            Ok(())
         }
-        Ok(())
     }
 }

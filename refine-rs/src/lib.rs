@@ -47,6 +47,7 @@ pub use src::{Src, SrcAlias};
 
 mod api;
 mod ctl;
+#[cfg(feature = "dev")]
 pub mod dev;
 pub mod err;
 mod hyb;

@@ -1,11 +1,7 @@
-use crate::{
-    dbg::DebugResult,
-    svc::calc::{
-        calce_rah::RahSim,
-        misc::{AttrValData, CalcReuse},
-        registers::{BuffRegister, DependencyRegister, RawModStorage, RevisionRegister, StandardRegister},
-    },
-    ud::UData,
+use crate::svc::calc::{
+    calce_rah::RahSim,
+    misc::{AttrValData, CalcReuse},
+    registers::{BuffRegister, DependencyRegister, RawModStorage, RevisionRegister, StandardRegister},
 };
 
 #[derive(Clone)]
@@ -37,26 +33,32 @@ impl Calc {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Debugging
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-impl Calc {
-    pub(in crate::svc) fn consistency_check(&self, u_data: &UData) -> DebugResult {
-        let Self {
-            attrs,
-            rmods,
-            std,
-            buffs,
-            deps,
-            revs,
-            rah,
-            // Scratch containers
-            reuse: _,
-        } = self;
-        attrs.consistency_check(u_data)?;
-        rmods.consistency_check(u_data)?;
-        std.consistency_check(u_data, rmods)?;
-        buffs.consistency_check(u_data, rmods)?;
-        deps.consistency_check(u_data)?;
-        revs.consistency_check(u_data, rmods)?;
-        rah.consistency_check(u_data)?;
-        Ok(())
+#[cfg(feature = "dev")]
+mod debug {
+    use super::*;
+    use crate::{dbg::DebugResult, ud::UData};
+
+    impl Calc {
+        pub(in crate::svc) fn consistency_check(&self, u_data: &UData) -> DebugResult {
+            let Self {
+                attrs,
+                rmods,
+                std,
+                buffs,
+                deps,
+                revs,
+                rah,
+                // Scratch containers
+                reuse: _,
+            } = self;
+            attrs.consistency_check(u_data)?;
+            rmods.consistency_check(u_data)?;
+            std.consistency_check(u_data, rmods)?;
+            buffs.consistency_check(u_data, rmods)?;
+            deps.consistency_check(u_data)?;
+            revs.consistency_check(u_data, rmods)?;
+            rah.consistency_check(u_data)?;
+            Ok(())
+        }
     }
 }

@@ -29,6 +29,7 @@ where
     pub(crate) fn get_mut(&mut self, id: I) -> Option<&mut V> {
         self.data.get_mut(id).and_then(|v| v.as_mut())
     }
+    #[cfg(feature = "dev")]
     pub(crate) fn iter(&self) -> impl Iterator<Item = (I, &V)> {
         self.data
             .iter()
@@ -71,6 +72,7 @@ where
     pub(crate) fn get_mut(&mut self, id: I) -> &mut V {
         self.inner.get_mut(id).unwrap()
     }
+    #[cfg(feature = "dev")]
     pub(crate) fn iter(&self) -> impl Iterator<Item = (I, &V)> {
         self.inner.iter()
     }

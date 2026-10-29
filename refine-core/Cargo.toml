@@ -30,5 +30,6 @@ smallvec = ">=1.16.3"
 thiserror = ">=2.0.21"
 
 [features]
+dev = []
 serde = ["dep:refine-serde", "dep:serde", "dep:serde_tuple", "dep:serde_with"]
 serde-ad = ["dep:serde", "dep:serde_repr", "dep:serde_tuple"]

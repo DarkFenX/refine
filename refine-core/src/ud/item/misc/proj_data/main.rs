@@ -52,6 +52,7 @@ impl UProjData {
     pub(crate) fn get_range_c2s(&self) -> PValue {
         calc_range_c2s(self.range_c2c, self.tgt_radius)
     }
+    #[cfg(feature = "dev")]
     pub(crate) fn get_src_radius(&self) -> PValue {
         self.src_radius
     }

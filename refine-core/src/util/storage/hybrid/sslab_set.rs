@@ -71,6 +71,7 @@ where
             None => self.empty.iter(),
         }
     }
+    #[cfg(feature = "dev")]
     pub(crate) fn iter(&self) -> impl Iterator<Item = (I, impl ExactSizeIterator<Item = &V>)> {
         self.data.iter().map(|(k, v)| (k, v.iter()))
     }

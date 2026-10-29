@@ -2,7 +2,6 @@ use ordered_float::OrderedFloat;
 
 use crate::{
     ad::AValue,
-    dbg::DebugResult,
     def::AU,
     num::PValue,
     util::{FLOAT_TOLERANCE, round, sig_round, sum_pai_owned, sum_pai_ref},
@@ -257,11 +256,17 @@ impl<'a> std::iter::Product<&'a Value> for Value {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Debug checks
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-impl Value {
-    pub(crate) fn consistency_check(&self) -> DebugResult {
-        match self.0.is_finite() {
-            true => Ok(()),
-            false => Err(Default::default()),
+#[cfg(feature = "dev")]
+mod debug {
+    use super::*;
+    use crate::dbg::DebugResult;
+
+    impl Value {
+        pub(crate) fn consistency_check(&self) -> DebugResult {
+            match self.0.is_finite() {
+                true => Ok(()),
+                false => Err(Default::default()),
+            }
         }
     }
 }
