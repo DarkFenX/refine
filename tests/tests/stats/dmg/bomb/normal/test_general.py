@@ -17,8 +17,7 @@ def test_state(client, consts):
     eve_module_id = make_eve_launcher(
         client=client, basic_info=eve_basic_info, capacity=300,
         cycle_time=10000, disallow_repeating_activation=1, reactivation_delay=67500, reload_time=10000)
-    eve_charge_id = make_eve_bomb(
-        client=client, basic_info=eve_basic_info, dmgs=(7250, 0, 0, 0), volume=75)
+    eve_charge_id = make_eve_bomb(client=client, basic_info=eve_basic_info, dmgs=(7250, 0, 0, 0), volume=75)
     client.create_sources()
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
@@ -141,8 +140,7 @@ def test_stacking(client, consts):
     eve_module_id = make_eve_launcher(
         client=client, basic_info=eve_basic_info, capacity=300,
         cycle_time=10000, disallow_repeating_activation=1, reactivation_delay=67500, reload_time=10000)
-    eve_charge_id = make_eve_bomb(
-        client=client, basic_info=eve_basic_info, dmgs=(7250, 0, 0, 0), volume=75)
+    eve_charge_id = make_eve_bomb(client=client, basic_info=eve_basic_info, dmgs=(7250, 0, 0, 0), volume=75)
     client.create_sources()
     api_sol = client.create_sol()
     api_fit1 = api_sol.create_fit()
@@ -168,8 +166,7 @@ def test_item_kind(client, consts):
     eve_module_id = make_eve_launcher(
         client=client, basic_info=eve_basic_info, capacity=300,
         cycle_time=10000, disallow_repeating_activation=1, reactivation_delay=67500, reload_time=10000)
-    eve_charge_id = make_eve_bomb(
-        client=client, basic_info=eve_basic_info, dmgs=(7250, 0, 0, 0), volume=75)
+    eve_charge_id = make_eve_bomb(client=client, basic_info=eve_basic_info, dmgs=(7250, 0, 0, 0), volume=75)
     client.create_sources()
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
@@ -205,8 +202,7 @@ def test_include_charges(client, consts):
     eve_module_id = make_eve_launcher(
         client=client, basic_info=eve_basic_info, capacity=300,
         cycle_time=10000, disallow_repeating_activation=1, reactivation_delay=67500, reload_time=10000)
-    eve_charge_id = make_eve_bomb(
-        client=client, basic_info=eve_basic_info, dmgs=(7250, 0, 0, 0), volume=75)
+    eve_charge_id = make_eve_bomb(client=client, basic_info=eve_basic_info, dmgs=(7250, 0, 0, 0), volume=75)
     client.create_sources()
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
@@ -241,8 +237,7 @@ def test_time(client, consts):
     eve_module_id = make_eve_launcher(
         client=client, basic_info=eve_basic_info, capacity=300,
         cycle_time=10000, disallow_repeating_activation=1, reactivation_delay=67500, reload_time=10000)
-    eve_charge_id = make_eve_bomb(
-        client=client, basic_info=eve_basic_info, dmgs=(7250, 0, 0, 0), volume=75)
+    eve_charge_id = make_eve_bomb(client=client, basic_info=eve_basic_info, dmgs=(7250, 0, 0, 0), volume=75)
     client.create_sources()
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()

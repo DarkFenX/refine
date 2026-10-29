@@ -295,10 +295,7 @@ def test_local_asb_ship_modified_and_rep_hp_limit(client, consts):
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
     api_ship = api_fit.set_ship(type_id=eve_ship_id)
-    api_fit.add_module(
-        type_id=eve_rep_item_id,
-        state=consts.ApiModuleState.active,
-        charge_type_id=eve_charge_item_id)
+    api_fit.add_module(type_id=eve_rep_item_id, state=consts.ApiModuleState.active, charge_type_id=eve_charge_item_id)
     # Verification - reps are limited from 1500 / cycle to 1000 / cycle
     api_fit_stats = api_fit.get_stats(options=FitStatsOptions(hp=True))
     assert api_fit_stats.hp.one().shield == (approx(1000), approx(9000), 0)
@@ -344,10 +341,7 @@ def test_local_asb_drone_fighter(client, consts):
     api_fit = api_sol.create_fit()
     api_drone = api_fit.add_drone(type_id=eve_drone_id)
     api_fighter = api_fit.add_fighter(type_id=eve_fighter_id)
-    api_fit.add_module(
-        type_id=eve_rep_item_id,
-        state=consts.ApiModuleState.active,
-        charge_type_id=eve_charge_item_id)
+    api_fit.add_module(type_id=eve_rep_item_id, state=consts.ApiModuleState.active, charge_type_id=eve_charge_item_id)
     # Verification - drone and fighter are not affected by ASB
     api_drone_stats = api_drone.get_stats(options=ItemStatsOptions(hp=True))
     assert api_drone_stats.hp.one().shield == (approx(1728), 0, 0)
@@ -510,10 +504,7 @@ def test_local_aar_ship_modified_and_rep_hp_limit(client, consts):
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
     api_ship = api_fit.set_ship(type_id=eve_ship_id)
-    api_fit.add_module(
-        type_id=eve_rep_item_id,
-        state=consts.ApiModuleState.active,
-        charge_type_id=eve_charge_item_id)
+    api_fit.add_module(type_id=eve_rep_item_id, state=consts.ApiModuleState.active, charge_type_id=eve_charge_item_id)
     # Verification - reps are limited from 1500 / cycle to 1000 / cycle
     api_fit_stats = api_fit.get_stats(options=FitStatsOptions(hp=True))
     assert api_fit_stats.hp.one().shield == (approx(2000), 0, 0)
@@ -560,10 +551,7 @@ def test_local_aar_drone_fighter(client, consts):
     api_fit = api_sol.create_fit()
     api_drone = api_fit.add_drone(type_id=eve_drone_id)
     api_fighter = api_fit.add_fighter(type_id=eve_fighter_id)
-    api_fit.add_module(
-        type_id=eve_rep_item_id,
-        state=consts.ApiModuleState.active,
-        charge_type_id=eve_charge_item_id)
+    api_fit.add_module(type_id=eve_rep_item_id, state=consts.ApiModuleState.active, charge_type_id=eve_charge_item_id)
     # Verification - drone and fighter are not affected by AAR
     api_drone_stats = api_drone.get_stats(options=ItemStatsOptions(hp=True))
     assert api_drone_stats.hp.one().shield == (approx(1728), 0, 0)

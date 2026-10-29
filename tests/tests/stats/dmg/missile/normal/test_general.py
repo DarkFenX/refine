@@ -16,8 +16,7 @@ def test_state(client, consts):
     eve_basic_info = setup_dmg_basics(client=client, consts=consts)
     eve_module_id = make_eve_launcher(
         client=client, basic_info=eve_basic_info, capacity=2, cycle_time=7900, reload_time=10000)
-    eve_charge_id = make_eve_missile(
-        client=client, basic_info=eve_basic_info, dmgs=(2450, 0, 0, 0), volume=0.05)
+    eve_charge_id = make_eve_missile(client=client, basic_info=eve_basic_info, dmgs=(2450, 0, 0, 0), volume=0.05)
     client.create_sources()
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
@@ -139,8 +138,7 @@ def test_stacking(client, consts):
     eve_basic_info = setup_dmg_basics(client=client, consts=consts)
     eve_module_id = make_eve_launcher(
         client=client, basic_info=eve_basic_info, capacity=2, cycle_time=7900, reload_time=10000)
-    eve_charge_id = make_eve_missile(
-        client=client, basic_info=eve_basic_info, dmgs=(2450, 0, 0, 0), volume=0.05)
+    eve_charge_id = make_eve_missile(client=client, basic_info=eve_basic_info, dmgs=(2450, 0, 0, 0), volume=0.05)
     client.create_sources()
     api_sol = client.create_sol()
     api_fit1 = api_sol.create_fit()
@@ -165,8 +163,7 @@ def test_item_kind(client, consts):
     eve_basic_info = setup_dmg_basics(client=client, consts=consts)
     eve_module_id = make_eve_launcher(
         client=client, basic_info=eve_basic_info, capacity=2, cycle_time=7900, reload_time=10000)
-    eve_charge_id = make_eve_missile(
-        client=client, basic_info=eve_basic_info, dmgs=(2450, 0, 0, 0), volume=0.05)
+    eve_charge_id = make_eve_missile(client=client, basic_info=eve_basic_info, dmgs=(2450, 0, 0, 0), volume=0.05)
     client.create_sources()
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
@@ -201,8 +198,7 @@ def test_include_charges(client, consts):
     eve_basic_info = setup_dmg_basics(client=client, consts=consts)
     eve_module_id = make_eve_launcher(
         client=client, basic_info=eve_basic_info, capacity=2, cycle_time=7900, reload_time=10000)
-    eve_charge_id = make_eve_missile(
-        client=client, basic_info=eve_basic_info, dmgs=(2450, 0, 0, 0), volume=0.05)
+    eve_charge_id = make_eve_missile(client=client, basic_info=eve_basic_info, dmgs=(2450, 0, 0, 0), volume=0.05)
     client.create_sources()
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
@@ -234,8 +230,7 @@ def test_time(client, consts):
     eve_basic_info = setup_dmg_basics(client=client, consts=consts)
     eve_module_id = make_eve_launcher(
         client=client, basic_info=eve_basic_info, capacity=2, cycle_time=7900, reload_time=10000)
-    eve_charge_id = make_eve_missile(
-        client=client, basic_info=eve_basic_info, dmgs=(2450, 0, 0, 0), volume=0.05)
+    eve_charge_id = make_eve_missile(client=client, basic_info=eve_basic_info, dmgs=(2450, 0, 0, 0), volume=0.05)
     client.create_sources()
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()

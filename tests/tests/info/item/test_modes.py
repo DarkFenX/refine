@@ -17,9 +17,7 @@ def test_info_modes(client, consts):
     client.create_sources()
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
-    api_item = api_fit.add_module(
-        type_id=eve_item_id,
-        effect_modes={eve_effect_id: consts.ApiEffMode.force_run})
+    api_item = api_fit.add_module(type_id=eve_item_id, effect_modes={eve_effect_id: consts.ApiEffMode.force_run})
     api_item_id = api_item.id
     # ID only
     api_item.update(item_info_mode=consts.ApiItemInfoMode.id)

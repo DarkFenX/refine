@@ -227,9 +227,7 @@ def test_offense_buff(client, consts):
     api_tgt_fit = api_sol.create_fit()
     api_tgt_ship = api_tgt_fit.set_ship(type_id=eve_affectee_ship_id)
     api_src_fit = api_sol.create_fit()
-    api_src_module = api_src_fit.add_module(
-        type_id=eve_affector_module_id,
-        state=consts.ApiModuleState.active)
+    api_src_module = api_src_fit.add_module(type_id=eve_affector_module_id, state=consts.ApiModuleState.active)
     api_src_module.change_module(add_proj_item_ids=[api_tgt_ship.id])
     # Verification - check that effect is applied, and check that validation is passed
     api_tgt_ship.update()
@@ -394,16 +392,12 @@ def test_offense_src_mutation(client, consts):
         op=consts.EveModOp.post_assign,
         affector_attr_id=eve_effect_attr_id,
         affectee_attr_id=eve_effect_attr_id)
-    eve_src_base_effect_id = client.mk_eve_effect(
-        cat_id=consts.EveEffCat.target,
-        is_offensive=True)
+    eve_src_base_effect_id = client.mk_eve_effect(cat_id=consts.EveEffCat.target, is_offensive=True)
     eve_src_mutated_effect_id = client.mk_eve_effect(
         cat_id=consts.EveEffCat.target,
         is_offensive=True,
         mod_info=[eve_src_mod])
-    eve_src_base_item_id = client.mk_eve_item(
-        eff_ids=[eve_src_base_effect_id],
-        defeff_id=eve_src_base_effect_id)
+    eve_src_base_item_id = client.mk_eve_item(eff_ids=[eve_src_base_effect_id], defeff_id=eve_src_base_effect_id)
     eve_src_mutated_item_id = client.mk_eve_item(
         eff_ids=[eve_src_mutated_effect_id],
         defeff_id=eve_src_mutated_effect_id)

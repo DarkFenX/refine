@@ -50,17 +50,9 @@ def test_ship_dps_profiles(client, consts):
         StatsOptionErps(incoming_dps=(0, 0, 0, 0)),
         StatsOptionErps(incoming_dps=(0, 0, 1, 1))]
     api_fit_stats = api_tgt_fit.get_stats(options=FitStatsOptions(erps=api_stat_options))
-    (api_fit_uniform,
-     api_fit_default,
-     api_fit_negative,
-     api_fit_zero,
-     api_fit_kin_exp) = api_fit_stats.erps
+    (api_fit_uniform, api_fit_default, api_fit_negative, api_fit_zero, api_fit_kin_exp) = api_fit_stats.erps
     api_ship_stats = api_tgt_ship.get_stats(options=ItemStatsOptions(erps=api_stat_options))
-    (api_ship_uniform,
-     api_ship_default,
-     api_ship_negative,
-     api_ship_zero,
-     api_ship_kin_exp) = api_ship_stats.erps
+    (api_ship_uniform, api_ship_default, api_ship_negative, api_ship_zero, api_ship_kin_exp) = api_ship_stats.erps
     assert api_fit_uniform.shield == [
         approx(5714.285714), approx(2455.428571), approx(2455.428571), approx(31.746032), approx(1.428571)]
     assert api_fit_uniform.armor == [approx(6153.846153), approx(2644.307692), approx(2644.307692), approx(1.538462)]
@@ -135,11 +127,7 @@ def test_drone_dps_profiles(client, consts):
         StatsOptionErps(incoming_dps=(0, 0, 0, 0)),
         StatsOptionErps(incoming_dps=(0, 0, 1, 1))]
     api_drone_stats = api_tgt_drone.get_stats(options=ItemStatsOptions(erps=api_stat_options))
-    (api_drone_uniform,
-     api_drone_default,
-     api_drone_negative,
-     api_drone_zero,
-     api_drone_kin_exp) = api_drone_stats.erps
+    (api_drone_uniform, api_drone_default, api_drone_negative, api_drone_zero, api_drone_kin_exp) = api_drone_stats.erps
     assert api_drone_uniform.shield == [0, approx(78.16092), approx(78.16092), approx(9.931034), approx(1.37931)]
     assert api_drone_uniform.armor == [0, approx(83.40192), approx(83.40192), approx(1.481481)]
     assert api_drone_uniform.hull == [0, approx(19.166667), approx(19.166667), approx(1)]
@@ -308,8 +296,7 @@ def test_time(client, consts):
         [approx(4444.444444), approx(1909.777778), ANY_VALUE, ANY_VALUE, ANY_VALUE],
         [approx(6956.521739), approx(2989.217391), ANY_VALUE, ANY_VALUE],
         [approx(5970.149254), approx(2565.373134), ANY_VALUE, ANY_VALUE]]
-    api_tgt_ship_stats = api_tgt_ship.get_stats(options=ItemStatsOptions(
-        erps=[StatsOptionErps(time=StatTimeBurst())]))
+    api_tgt_ship_stats = api_tgt_ship.get_stats(options=ItemStatsOptions(erps=[StatsOptionErps(time=StatTimeBurst())]))
     assert api_tgt_ship_stats.erps.one() == [
         [approx(4444.444444), approx(1909.777778), ANY_VALUE, ANY_VALUE, ANY_VALUE],
         [approx(6956.521739), approx(2989.217391), ANY_VALUE, ANY_VALUE],

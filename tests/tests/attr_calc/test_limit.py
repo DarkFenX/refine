@@ -14,9 +14,7 @@ def test_default_max(client, consts):
         affector_attr_id=eve_affector_attr_id,
         affectee_attr_id=eve_limitee_attr_id)
     eve_effect_id = client.mk_eve_effect(mod_info=[eve_mod])
-    eve_item_id = client.mk_eve_item(
-        attrs={eve_limitee_attr_id: 3, eve_affector_attr_id: 6},
-        eff_ids=[eve_effect_id])
+    eve_item_id = client.mk_eve_item(attrs={eve_limitee_attr_id: 3, eve_affector_attr_id: 6}, eff_ids=[eve_effect_id])
     client.create_sources()
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
@@ -47,9 +45,7 @@ def test_default_min(client, consts):
         affector_attr_id=eve_affector_attr_id,
         affectee_attr_id=eve_limitee_attr_id)
     eve_effect_id = client.mk_eve_effect(mod_info=[eve_mod])
-    eve_item_id = client.mk_eve_item(
-        attrs={eve_limitee_attr_id: 3, eve_affector_attr_id: 6},
-        eff_ids=[eve_effect_id])
+    eve_item_id = client.mk_eve_item(attrs={eve_limitee_attr_id: 3, eve_affector_attr_id: 6}, eff_ids=[eve_effect_id])
     client.create_sources()
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()

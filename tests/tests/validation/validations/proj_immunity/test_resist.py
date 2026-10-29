@@ -381,9 +381,7 @@ def test_src_mutation(client, consts):
         attrs={eve_resist_def_attr_id: eve_resist_attr2_id},
         eff_ids=[eve_src_effect_id],
         defeff_id=eve_src_effect_id)
-    eve_src_base_item2_id = client.mk_eve_item(
-        eff_ids=[eve_src_effect_id],
-        defeff_id=eve_src_effect_id)
+    eve_src_base_item2_id = client.mk_eve_item(eff_ids=[eve_src_effect_id], defeff_id=eve_src_effect_id)
     eve_src_mutated_item2_id = client.mk_eve_item(
         attrs={eve_resist_def_attr_id: eve_resist_attr3_id},
         eff_ids=[eve_src_effect_id],

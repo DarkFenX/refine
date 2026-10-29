@@ -138,8 +138,7 @@ def test_group_multiple_different(client, consts):
     assert api_val.passed is False
     assert api_val.details.ship_limit.ship_type_id == eve_disallowed_ship_id
     assert api_val.details.ship_limit.ship_group_id == eve_disallowed_grp_id
-    assert api_val.details.ship_limit.items == {
-        api_module.id: ([], sorted([eve_allowed_grp1_id, eve_allowed_grp2_id]))}
+    assert api_val.details.ship_limit.items == {api_module.id: ([], sorted([eve_allowed_grp1_id, eve_allowed_grp2_id]))}
     # Action
     api_fit.set_ship(type_id=eve_allowed_ship_id)
     # Verification
@@ -172,8 +171,7 @@ def test_group_multiple_same_rounding(client, consts):
     assert api_val.passed is False
     assert api_val.details.ship_limit.ship_type_id == eve_disallowed_ship_id
     assert api_val.details.ship_limit.ship_group_id == eve_disallowed_grp_id
-    assert api_val.details.ship_limit.items == {
-        api_module.id: ([], sorted([eve_allowed_grp1_id, eve_allowed_grp2_id]))}
+    assert api_val.details.ship_limit.items == {api_module.id: ([], sorted([eve_allowed_grp1_id, eve_allowed_grp2_id]))}
     # Action
     api_fit.set_ship(type_id=eve_allowed_ship_id)
     # Verification

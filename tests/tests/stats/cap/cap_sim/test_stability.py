@@ -303,8 +303,7 @@ def test_zeroed_negative_events(client, consts):
         defeff_id=eve_neut_effect_id)
     eve_tgt_ship1_id = client.mk_eve_ship(
         attrs={eve_ship_amount_attr_id: 225, eve_sig_radius_attr_id: 1, eve_regen_attr_id: 90000})
-    eve_tgt_ship2_id = client.mk_eve_ship(
-        attrs={eve_ship_amount_attr_id: 225, eve_sig_radius_attr_id: 1})
+    eve_tgt_ship2_id = client.mk_eve_ship(attrs={eve_ship_amount_attr_id: 225, eve_sig_radius_attr_id: 1})
     client.create_sources()
     api_sol = client.create_sol()
     api_src_fit = api_sol.create_fit()
@@ -374,8 +373,7 @@ def test_zeroed_negative_events_with_self_killer(client, consts):
         defeff_id=eve_sk_effect_id)
     eve_tgt_ship1_id = client.mk_eve_ship(
         attrs={eve_ship_amount_attr_id: 60000, eve_sig_radius_attr_id: 1, eve_regen_attr_id: 2767500})
-    eve_tgt_ship2_id = client.mk_eve_ship(
-        attrs={eve_ship_amount_attr_id: 60000, eve_sig_radius_attr_id: 1})
+    eve_tgt_ship2_id = client.mk_eve_ship(attrs={eve_ship_amount_attr_id: 60000, eve_sig_radius_attr_id: 1})
     client.create_sources()
     api_sol = client.create_sol()
     api_src_fit = api_sol.create_fit()
@@ -745,9 +743,7 @@ def test_ancil_shield(client, consts):
     api_fit_stats = api_fit.get_stats(options=FitStatsOptions(cap_sim=[
         StatsOptionCapSim(optional_reloads=consts.ApiOptionalReload.disabled),
         StatsOptionCapSim(optional_reloads=consts.ApiOptionalReload.on_empty)]))
-    assert api_fit_stats.cap_sim == [
-        {consts.ApiCapSimResult.time: approx(6)},
-        {consts.ApiCapSimResult.time: approx(6)}]
+    assert api_fit_stats.cap_sim == [{consts.ApiCapSimResult.time: approx(6)}, {consts.ApiCapSimResult.time: approx(6)}]
     api_ship_stats = api_ship.get_stats(options=ItemStatsOptions(cap_sim=[
         StatsOptionCapSim(optional_reloads=consts.ApiOptionalReload.disabled),
         StatsOptionCapSim(optional_reloads=consts.ApiOptionalReload.on_empty)]))

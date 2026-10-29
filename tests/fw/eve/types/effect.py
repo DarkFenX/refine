@@ -28,21 +28,9 @@ class Effect:
 
     def to_primitives(self, *, primitive_data: EvePrimitives) -> None:
         effect_entry = {'effectID': self.id}
-        conditional_insert(
-            container=effect_entry,
-            path=['effectCategory'],
-            value=self.category_id,
-            cast_to=int)
-        conditional_insert(
-            container=effect_entry,
-            path=['isAssistance'],
-            value=self.is_assistance,
-            cast_to=int)
-        conditional_insert(
-            container=effect_entry,
-            path=['isOffensive'],
-            value=self.is_offensive,
-            cast_to=int)
+        conditional_insert(container=effect_entry, path=['effectCategory'], value=self.category_id, cast_to=int)
+        conditional_insert(container=effect_entry, path=['isAssistance'], value=self.is_assistance, cast_to=int)
+        conditional_insert(container=effect_entry, path=['isOffensive'], value=self.is_offensive, cast_to=int)
         conditional_insert(
             container=effect_entry,
             path=['dischargeAttributeID'],

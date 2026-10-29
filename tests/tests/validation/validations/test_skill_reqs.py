@@ -476,9 +476,7 @@ def test_item_kinds(client, consts):
     eve_skill_id = client.mk_eve_item()
     eve_item_id = client.mk_eve_item(srqs={eve_skill_id: 3})
     eve_ac_attr_id = client.mk_eve_attr(id_=consts.EveAttr.ftr_abil_launch_bomb_type)
-    eve_ac_effect_id = client.mk_eve_effect(
-        id_=consts.EveEffect.ftr_abil_launch_bomb,
-        cat_id=consts.EveEffCat.active)
+    eve_ac_effect_id = client.mk_eve_effect(id_=consts.EveEffect.ftr_abil_launch_bomb, cat_id=consts.EveEffCat.active)
     eve_fighter_id = client.mk_eve_item(
         attrs={eve_ac_attr_id: eve_item_id},
         eff_ids=[eve_ac_effect_id],

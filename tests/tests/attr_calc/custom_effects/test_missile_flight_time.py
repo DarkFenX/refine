@@ -5,18 +5,12 @@ def test_missile_kinds(client, consts):
     eve_flight_time_attr_id = client.mk_eve_attr(id_=consts.EveAttr.explosion_delay)
     eve_speed_attr_id = client.mk_eve_attr(id_=consts.EveAttr.max_velocity)
     eve_radius_attr_id = client.mk_eve_attr(id_=consts.EveAttr.radius)
-    eve_regular_effect_id = client.mk_eve_effect(
-        id_=consts.EveEffect.missile_launching,
-        cat_id=consts.EveEffCat.target)
+    eve_regular_effect_id = client.mk_eve_effect(id_=consts.EveEffect.missile_launching, cat_id=consts.EveEffCat.target)
     eve_defender_effect_id = client.mk_eve_effect(
         id_=consts.EveEffect.defender_missile_launching,
         cat_id=consts.EveEffCat.active)
-    eve_fof_effect_id = client.mk_eve_effect(
-        id_=consts.EveEffect.fof_missile_launching,
-        cat_id=consts.EveEffCat.active)
-    eve_dot_effect_id = client.mk_eve_effect(
-        id_=consts.EveEffect.dot_missile_launching,
-        cat_id=consts.EveEffCat.target)
+    eve_fof_effect_id = client.mk_eve_effect(id_=consts.EveEffect.fof_missile_launching, cat_id=consts.EveEffCat.active)
+    eve_dot_effect_id = client.mk_eve_effect(id_=consts.EveEffect.dot_missile_launching, cat_id=consts.EveEffCat.target)
     eve_regular_missile_id = client.mk_eve_item(
         attrs={eve_speed_attr_id: 500, eve_flight_time_attr_id: 10000},
         eff_ids=[eve_regular_effect_id],
@@ -54,9 +48,7 @@ def test_mod_info(client, consts):
     eve_flight_time_attr_id = client.mk_eve_attr(id_=consts.EveAttr.explosion_delay)
     eve_speed_attr_id = client.mk_eve_attr(id_=consts.EveAttr.max_velocity)
     eve_radius_attr_id = client.mk_eve_attr(id_=consts.EveAttr.radius)
-    eve_effect_id = client.mk_eve_effect(
-        id_=consts.EveEffect.missile_launching,
-        cat_id=consts.EveEffCat.target)
+    eve_effect_id = client.mk_eve_effect(id_=consts.EveEffect.missile_launching, cat_id=consts.EveEffCat.target)
     eve_missile_id = client.mk_eve_item(
         attrs={eve_speed_attr_id: 500, eve_flight_time_attr_id: 10000},
         eff_ids=[eve_effect_id],
@@ -86,9 +78,7 @@ def test_isolation(client, consts):
     eve_flight_time_attr_id = client.mk_eve_attr(id_=consts.EveAttr.explosion_delay)
     eve_speed_attr_id = client.mk_eve_attr(id_=consts.EveAttr.max_velocity)
     eve_radius_attr_id = client.mk_eve_attr(id_=consts.EveAttr.radius)
-    eve_effect_id = client.mk_eve_effect(
-        id_=consts.EveEffect.missile_launching,
-        cat_id=consts.EveEffCat.target)
+    eve_effect_id = client.mk_eve_effect(id_=consts.EveEffect.missile_launching, cat_id=consts.EveEffCat.target)
     eve_missile_id = client.mk_eve_item(
         attrs={eve_speed_attr_id: 500, eve_flight_time_attr_id: 10000},
         eff_ids=[eve_effect_id],
@@ -111,9 +101,7 @@ def test_state(client, consts):
     eve_flight_time_attr_id = client.mk_eve_attr(id_=consts.EveAttr.explosion_delay)
     eve_speed_attr_id = client.mk_eve_attr(id_=consts.EveAttr.max_velocity)
     eve_radius_attr_id = client.mk_eve_attr(id_=consts.EveAttr.radius)
-    eve_effect_id = client.mk_eve_effect(
-        id_=consts.EveEffect.missile_launching,
-        cat_id=consts.EveEffCat.target)
+    eve_effect_id = client.mk_eve_effect(id_=consts.EveEffect.missile_launching, cat_id=consts.EveEffCat.target)
     eve_missile_id = client.mk_eve_item(
         attrs={eve_speed_attr_id: 500, eve_flight_time_attr_id: 10000},
         eff_ids=[eve_effect_id],
@@ -152,9 +140,7 @@ def test_dogma_interaction(client, consts):
     eve_flight_time_attr_id = client.mk_eve_attr(id_=consts.EveAttr.explosion_delay)
     eve_speed_attr_id = client.mk_eve_attr(id_=consts.EveAttr.max_velocity)
     eve_radius_attr_id = client.mk_eve_attr(id_=consts.EveAttr.radius)
-    eve_missile_effect_id = client.mk_eve_effect(
-        id_=consts.EveEffect.missile_launching,
-        cat_id=consts.EveEffCat.target)
+    eve_missile_effect_id = client.mk_eve_effect(id_=consts.EveEffect.missile_launching, cat_id=consts.EveEffCat.target)
     eve_missile_id = client.mk_eve_item(
         attrs={eve_speed_attr_id: 500, eve_flight_time_attr_id: 10000},
         eff_ids=[eve_missile_effect_id],
@@ -193,9 +179,7 @@ def test_speed_zero(client, consts):
     eve_flight_time_attr_id = client.mk_eve_attr(id_=consts.EveAttr.explosion_delay)
     eve_speed_attr_id = client.mk_eve_attr(id_=consts.EveAttr.max_velocity)
     eve_radius_attr_id = client.mk_eve_attr(id_=consts.EveAttr.radius)
-    eve_effect_id = client.mk_eve_effect(
-        id_=consts.EveEffect.missile_launching,
-        cat_id=consts.EveEffCat.target)
+    eve_effect_id = client.mk_eve_effect(id_=consts.EveEffect.missile_launching, cat_id=consts.EveEffCat.target)
     eve_missile_id = client.mk_eve_item(
         attrs={eve_speed_attr_id: 0, eve_flight_time_attr_id: 10000},
         eff_ids=[eve_effect_id],
@@ -216,9 +200,7 @@ def test_modifier_ship_change(client, consts):
     eve_flight_time_attr_id = client.mk_eve_attr(id_=consts.EveAttr.explosion_delay)
     eve_speed_attr_id = client.mk_eve_attr(id_=consts.EveAttr.max_velocity)
     eve_radius_attr_id = client.mk_eve_attr(id_=consts.EveAttr.radius)
-    eve_missile_effect_id = client.mk_eve_effect(
-        id_=consts.EveEffect.missile_launching,
-        cat_id=consts.EveEffCat.target)
+    eve_missile_effect_id = client.mk_eve_effect(id_=consts.EveEffect.missile_launching, cat_id=consts.EveEffCat.target)
     eve_missile_id = client.mk_eve_item(
         attrs={eve_speed_attr_id: 500, eve_flight_time_attr_id: 10000},
         eff_ids=[eve_missile_effect_id],
@@ -262,9 +244,7 @@ def test_modifier_switch_type_id_ship(client, consts):
     eve_flight_time_attr_id = client.mk_eve_attr(id_=consts.EveAttr.explosion_delay)
     eve_speed_attr_id = client.mk_eve_attr(id_=consts.EveAttr.max_velocity)
     eve_radius_attr_id = client.mk_eve_attr(id_=consts.EveAttr.radius)
-    eve_missile_effect_id = client.mk_eve_effect(
-        id_=consts.EveEffect.missile_launching,
-        cat_id=consts.EveEffCat.target)
+    eve_missile_effect_id = client.mk_eve_effect(id_=consts.EveEffect.missile_launching, cat_id=consts.EveEffCat.target)
     eve_missile_id = client.mk_eve_item(
         attrs={eve_speed_attr_id: 500, eve_flight_time_attr_id: 10000},
         eff_ids=[eve_missile_effect_id],
@@ -300,9 +280,7 @@ def test_modifier_missile_velocity_changed(client, consts):
     eve_flight_time_attr_id = client.mk_eve_attr(id_=consts.EveAttr.explosion_delay)
     eve_speed_attr_id = client.mk_eve_attr(id_=consts.EveAttr.max_velocity)
     eve_radius_attr_id = client.mk_eve_attr(id_=consts.EveAttr.radius)
-    eve_missile_effect_id = client.mk_eve_effect(
-        id_=consts.EveEffect.missile_launching,
-        cat_id=consts.EveEffCat.target)
+    eve_missile_effect_id = client.mk_eve_effect(id_=consts.EveEffect.missile_launching, cat_id=consts.EveEffCat.target)
     eve_missile_id = client.mk_eve_item(
         attrs={eve_speed_attr_id: 500, eve_flight_time_attr_id: 10000},
         eff_ids=[eve_missile_effect_id],
@@ -345,9 +323,7 @@ def test_modifier_ship_radius_changed(client, consts):
     eve_flight_time_attr_id = client.mk_eve_attr(id_=consts.EveAttr.explosion_delay)
     eve_speed_attr_id = client.mk_eve_attr(id_=consts.EveAttr.max_velocity)
     eve_radius_attr_id = client.mk_eve_attr(id_=consts.EveAttr.radius)
-    eve_missile_effect_id = client.mk_eve_effect(
-        id_=consts.EveEffect.missile_launching,
-        cat_id=consts.EveEffCat.target)
+    eve_missile_effect_id = client.mk_eve_effect(id_=consts.EveEffect.missile_launching, cat_id=consts.EveEffCat.target)
     eve_missile_id = client.mk_eve_item(
         attrs={eve_speed_attr_id: 500, eve_flight_time_attr_id: 10000},
         eff_ids=[eve_missile_effect_id],
@@ -387,9 +363,7 @@ def test_modifier_no_attr_missile_velocity(client, consts):
     eve_flight_time_attr_id = client.mk_eve_attr(id_=consts.EveAttr.explosion_delay)
     eve_speed_attr_id = consts.EveAttr.max_velocity
     eve_radius_attr_id = client.mk_eve_attr(id_=consts.EveAttr.radius)
-    eve_effect_id = client.mk_eve_effect(
-        id_=consts.EveEffect.missile_launching,
-        cat_id=consts.EveEffCat.target)
+    eve_effect_id = client.mk_eve_effect(id_=consts.EveEffect.missile_launching, cat_id=consts.EveEffCat.target)
     eve_missile_id = client.mk_eve_item(
         attrs={eve_speed_attr_id: 500, eve_flight_time_attr_id: 10000},
         eff_ids=[eve_effect_id],
@@ -409,9 +383,7 @@ def test_modifier_no_attr_missile_radius(client, consts):
     eve_flight_time_attr_id = client.mk_eve_attr(id_=consts.EveAttr.explosion_delay)
     eve_speed_attr_id = client.mk_eve_attr(id_=consts.EveAttr.max_velocity)
     eve_radius_attr_id = consts.EveAttr.radius
-    eve_effect_id = client.mk_eve_effect(
-        id_=consts.EveEffect.missile_launching,
-        cat_id=consts.EveEffCat.target)
+    eve_effect_id = client.mk_eve_effect(id_=consts.EveEffect.missile_launching, cat_id=consts.EveEffCat.target)
     eve_missile_id = client.mk_eve_item(
         attrs={eve_speed_attr_id: 500, eve_flight_time_attr_id: 10000},
         eff_ids=[eve_effect_id],
@@ -431,9 +403,7 @@ def test_modifier_ship_not_loaded(client, consts):
     eve_flight_time_attr_id = client.mk_eve_attr(id_=consts.EveAttr.explosion_delay)
     eve_speed_attr_id = client.mk_eve_attr(id_=consts.EveAttr.max_velocity)
     client.mk_eve_attr(id_=consts.EveAttr.radius)
-    eve_effect_id = client.mk_eve_effect(
-        id_=consts.EveEffect.missile_launching,
-        cat_id=consts.EveEffCat.target)
+    eve_effect_id = client.mk_eve_effect(id_=consts.EveEffect.missile_launching, cat_id=consts.EveEffCat.target)
     eve_missile_id = client.mk_eve_item(
         attrs={eve_speed_attr_id: 500, eve_flight_time_attr_id: 10000},
         eff_ids=[eve_effect_id],

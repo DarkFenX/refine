@@ -370,18 +370,15 @@ def test_time_chargeable(client, consts):
     api_fleet_stats = api_fleet.get_stats(options=FleetStatsOptions(
         mps=[StatsOptionFitMining(time=StatTimeBurst())]))
     assert api_fleet_stats.mps.one().ore == [approx(2.126077), approx(57.316985)]
-    api_fit_stats = api_fit.get_stats(options=FitStatsOptions(
-        mps=[StatsOptionFitMining(time=StatTimeBurst())]))
+    api_fit_stats = api_fit.get_stats(options=FitStatsOptions(mps=[StatsOptionFitMining(time=StatTimeBurst())]))
     assert api_fit_stats.mps.one().ore == [approx(2.126077), approx(57.316985)]
-    api_module_stats = api_module.get_stats(options=ItemStatsOptions(
-        mps=[StatsOptionItemMining(time=StatTimeBurst())]))
+    api_module_stats = api_module.get_stats(options=ItemStatsOptions(mps=[StatsOptionItemMining(time=StatTimeBurst())]))
     assert api_module_stats.mps.one().ore == [approx(2.126077), approx(57.316985)]
     # Sim without specified time - looped stats
     api_fleet_stats = api_fleet.get_stats(options=FleetStatsOptions(
         mps=[StatsOptionFitMining(time=StatTimeSim(time=None))]))
     assert api_fleet_stats.mps.one().ore == [approx(2.125831), approx(57.310355)]
-    api_fit_stats = api_fit.get_stats(options=FitStatsOptions(
-        mps=[StatsOptionFitMining(time=StatTimeSim(time=None))]))
+    api_fit_stats = api_fit.get_stats(options=FitStatsOptions(mps=[StatsOptionFitMining(time=StatTimeSim(time=None))]))
     assert api_fit_stats.mps.one().ore == [approx(2.125831), approx(57.310355)]
     api_module_stats = api_module.get_stats(options=ItemStatsOptions(
         mps=[StatsOptionItemMining(time=StatTimeSim(time=None))]))
@@ -390,8 +387,7 @@ def test_time_chargeable(client, consts):
     api_fleet_stats = api_fleet.get_stats(options=FleetStatsOptions(
         mps=[StatsOptionFitMining(time=StatTimeSim(time=32))]))
     assert api_fleet_stats.mps.one().ore == [0, 0]
-    api_fit_stats = api_fit.get_stats(options=FitStatsOptions(
-        mps=[StatsOptionFitMining(time=StatTimeSim(time=32))]))
+    api_fit_stats = api_fit.get_stats(options=FitStatsOptions(mps=[StatsOptionFitMining(time=StatTimeSim(time=32))]))
     assert api_fit_stats.mps.one().ore == [0, 0]
     api_module_stats = api_module.get_stats(options=ItemStatsOptions(
         mps=[StatsOptionItemMining(time=StatTimeSim(time=32))]))
@@ -400,8 +396,7 @@ def test_time_chargeable(client, consts):
     api_fleet_stats = api_fleet.get_stats(options=FleetStatsOptions(
         mps=[StatsOptionFitMining(time=StatTimeSim(time=33))]))
     assert api_fleet_stats.mps.one().ore == [approx(2.093864), approx(56.448545)]
-    api_fit_stats = api_fit.get_stats(options=FitStatsOptions(
-        mps=[StatsOptionFitMining(time=StatTimeSim(time=33))]))
+    api_fit_stats = api_fit.get_stats(options=FitStatsOptions(mps=[StatsOptionFitMining(time=StatTimeSim(time=33))]))
     assert api_fit_stats.mps.one().ore == [approx(2.093864), approx(56.448545)]
     api_module_stats = api_module.get_stats(options=ItemStatsOptions(
         mps=[StatsOptionItemMining(time=StatTimeSim(time=33))]))
@@ -412,19 +407,16 @@ def test_time_chargeable(client, consts):
     api_fleet_stats = api_fleet.get_stats(options=FleetStatsOptions(
         mps=[StatsOptionFitMining(time=StatTimeBurst())]))
     assert api_fleet_stats.mps.one().ore == [approx(2.126077), approx(57.316985)]
-    api_fit_stats = api_fit.get_stats(options=FitStatsOptions(
-        mps=[StatsOptionFitMining(time=StatTimeBurst())]))
+    api_fit_stats = api_fit.get_stats(options=FitStatsOptions(mps=[StatsOptionFitMining(time=StatTimeBurst())]))
     assert api_fit_stats.mps.one().ore == [approx(2.126077), approx(57.316985)]
-    api_module_stats = api_module.get_stats(options=ItemStatsOptions(
-        mps=[StatsOptionItemMining(time=StatTimeBurst())]))
+    api_module_stats = api_module.get_stats(options=ItemStatsOptions(mps=[StatsOptionItemMining(time=StatTimeBurst())]))
     assert api_module_stats.mps.one().ore == [approx(2.126077), approx(57.316985)]
     # Sim without specified time - looped stats. Without charge, mining module is allowed to cycle
     # infinitely, so has the same sim value as burst
     api_fleet_stats = api_fleet.get_stats(options=FleetStatsOptions(
         mps=[StatsOptionFitMining(time=StatTimeSim(time=None))]))
     assert api_fleet_stats.mps.one().ore == [approx(2.126077), approx(57.316985)]
-    api_fit_stats = api_fit.get_stats(options=FitStatsOptions(
-        mps=[StatsOptionFitMining(time=StatTimeSim(time=None))]))
+    api_fit_stats = api_fit.get_stats(options=FitStatsOptions(mps=[StatsOptionFitMining(time=StatTimeSim(time=None))]))
     assert api_fit_stats.mps.one().ore == [approx(2.126077), approx(57.316985)]
     api_module_stats = api_module.get_stats(options=ItemStatsOptions(
         mps=[StatsOptionItemMining(time=StatTimeSim(time=None))]))
@@ -463,18 +455,15 @@ def test_time_unchargeable(client, consts):
     api_fleet_stats = api_fleet.get_stats(options=FleetStatsOptions(
         mps=[StatsOptionFitMining(time=StatTimeBurst())]))
     assert api_fleet_stats.mps.one().ore == [approx(2.126077), approx(57.316985)]
-    api_fit_stats = api_fit.get_stats(options=FitStatsOptions(
-        mps=[StatsOptionFitMining(time=StatTimeBurst())]))
+    api_fit_stats = api_fit.get_stats(options=FitStatsOptions(mps=[StatsOptionFitMining(time=StatTimeBurst())]))
     assert api_fit_stats.mps.one().ore == [approx(2.126077), approx(57.316985)]
-    api_module_stats = api_module.get_stats(options=ItemStatsOptions(
-        mps=[StatsOptionItemMining(time=StatTimeBurst())]))
+    api_module_stats = api_module.get_stats(options=ItemStatsOptions(mps=[StatsOptionItemMining(time=StatTimeBurst())]))
     assert api_module_stats.mps.one().ore == [approx(2.126077), approx(57.316985)]
     # Sim without specified time - looped stats
     api_fleet_stats = api_fleet.get_stats(options=FleetStatsOptions(
         mps=[StatsOptionFitMining(time=StatTimeSim(time=None))]))
     assert api_fleet_stats.mps.one().ore == [approx(2.126077), approx(57.316985)]
-    api_fit_stats = api_fit.get_stats(options=FitStatsOptions(
-        mps=[StatsOptionFitMining(time=StatTimeSim(time=None))]))
+    api_fit_stats = api_fit.get_stats(options=FitStatsOptions(mps=[StatsOptionFitMining(time=StatTimeSim(time=None))]))
     assert api_fit_stats.mps.one().ore == [approx(2.126077), approx(57.316985)]
     api_module_stats = api_module.get_stats(options=ItemStatsOptions(
         mps=[StatsOptionItemMining(time=StatTimeSim(time=None))]))
@@ -483,8 +472,7 @@ def test_time_unchargeable(client, consts):
     api_fleet_stats = api_fleet.get_stats(options=FleetStatsOptions(
         mps=[StatsOptionFitMining(time=StatTimeSim(time=32))]))
     assert api_fleet_stats.mps.one().ore == [0, 0]
-    api_fit_stats = api_fit.get_stats(options=FitStatsOptions(
-        mps=[StatsOptionFitMining(time=StatTimeSim(time=32))]))
+    api_fit_stats = api_fit.get_stats(options=FitStatsOptions(mps=[StatsOptionFitMining(time=StatTimeSim(time=32))]))
     assert api_fit_stats.mps.one().ore == [0, 0]
     api_module_stats = api_module.get_stats(options=ItemStatsOptions(
         mps=[StatsOptionItemMining(time=StatTimeSim(time=32))]))
@@ -493,8 +481,7 @@ def test_time_unchargeable(client, consts):
     api_fleet_stats = api_fleet.get_stats(options=FleetStatsOptions(
         mps=[StatsOptionFitMining(time=StatTimeSim(time=33))]))
     assert api_fleet_stats.mps.one().ore == [approx(2.093864), approx(56.448545)]
-    api_fit_stats = api_fit.get_stats(options=FitStatsOptions(
-        mps=[StatsOptionFitMining(time=StatTimeSim(time=33))]))
+    api_fit_stats = api_fit.get_stats(options=FitStatsOptions(mps=[StatsOptionFitMining(time=StatTimeSim(time=33))]))
     assert api_fit_stats.mps.one().ore == [approx(2.093864), approx(56.448545)]
     api_module_stats = api_module.get_stats(options=ItemStatsOptions(
         mps=[StatsOptionItemMining(time=StatTimeSim(time=33))]))

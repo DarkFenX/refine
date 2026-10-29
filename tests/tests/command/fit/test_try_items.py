@@ -12,9 +12,7 @@ def test_fit(client):
         api_type_ids1 = api_fit_batch.try_fit_items(
             type_ids=[eve_drone_id],
             val_options=ValOptions(not_loaded_item=True))
-        api_type_ids2 = api_fit_batch.try_fit_items(
-            type_ids=[eve_drone_id],
-            val_options=ValOptions())
+        api_type_ids2 = api_fit_batch.try_fit_items(type_ids=[eve_drone_id], val_options=ValOptions())
     # Verification
     assert api_type_ids1 == []
     assert api_type_ids2 == [eve_drone_id]

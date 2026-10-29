@@ -235,9 +235,7 @@ def setup_dmg_basics(
     breacher_effect_id = client.mk_eve_effect(
         id_=consts.EveEffect.dot_missile_launching,
         cat_id=consts.EveEffCat.target)
-    bomb_effect_id = client.mk_eve_effect(
-        id_=consts.EveEffect.bomb_launching,
-        cat_id=consts.EveEffCat.active)
+    bomb_effect_id = client.mk_eve_effect(id_=consts.EveEffect.bomb_launching, cat_id=consts.EveEffCat.active)
     smartbomb_effect_id = client.mk_eve_effect(
         id_=consts.EveEffect.emp_wave,
         cat_id=consts.EveEffCat.active,
@@ -314,8 +312,7 @@ def setup_dmg_basics(
     ftr_abil_missiles_range_attr_id = client.mk_eve_attr(id_=consts.EveAttr.ftr_abil_missiles_range)
     ftr_abil_missiles_exp_radius_attr_id = client.mk_eve_attr(id_=consts.EveAttr.ftr_abil_missiles_expl_radius)
     ftr_abil_missiles_exp_speed_attr_id = client.mk_eve_attr(id_=consts.EveAttr.ftr_abil_missiles_expl_velocity)
-    ftr_abil_missiles_dr_factor_attr_id = client.mk_eve_attr(
-        id_=consts.EveAttr.ftr_abil_missiles_dmg_reduction_factor)
+    ftr_abil_missiles_dr_factor_attr_id = client.mk_eve_attr(id_=consts.EveAttr.ftr_abil_missiles_dmg_reduction_factor)
     ftr_abil_missiles_dr_sens_attr_id = client.mk_eve_attr(id_=consts.EveAttr.ftr_abil_missiles_dmg_reduction_sens)
     ftr_abil_missiles_resist_ref_attr_id = client.mk_eve_attr(id_=consts.EveAttr.ftr_abil_missiles_resist_id)
     ftr_abil_missiles_effect_id = client.mk_eve_effect(
@@ -519,10 +516,7 @@ def make_eve_ship(
 ) -> int:
     attrs = {}
     if hps is not None:
-        hp_attr_ids = (
-            basic_info.shield_hp_attr_id,
-            basic_info.armor_hp_attr_id,
-            basic_info.hull_hp_attr_id)
+        hp_attr_ids = (basic_info.shield_hp_attr_id, basic_info.armor_hp_attr_id, basic_info.hull_hp_attr_id)
         attrs.update({k: v for k, v in zip(hp_attr_ids, hps, strict=True) if v is not None})
     conditional_insert(container=attrs, path=[basic_info.max_velocity_attr_id], value=speed)
     conditional_insert(container=attrs, path=[basic_info.sig_radius_attr_id], value=sig_radius)
@@ -666,10 +660,7 @@ def make_eve_vorton(
     conditional_insert(container=attrs, path=[basic_info.aoe_cloud_size_attr_id], value=exp_radius)
     conditional_insert(container=attrs, path=[basic_info.aoe_velocity_attr_id], value=exp_speed)
     conditional_insert(container=attrs, path=[basic_info.aoe_drf_attr_id], value=drf)
-    return client.mk_eve_item(
-        attrs=attrs,
-        eff_ids=[basic_info.vorton_effect_id],
-        defeff_id=basic_info.vorton_effect_id)
+    return client.mk_eve_item(attrs=attrs, eff_ids=[basic_info.vorton_effect_id], defeff_id=basic_info.vorton_effect_id)
 
 
 def make_eve_charge_normal(
@@ -878,10 +869,7 @@ def make_eve_bomb(
     conditional_insert(container=attrs, path=[basic_info.radius_attr_id], value=radius)
     if neut_resist_attr:
         attrs[basic_info.resist_ref_attr_id] = basic_info.neut_resist_attr_id
-    return client.mk_eve_item(
-        attrs=attrs,
-        eff_ids=[basic_info.bomb_effect_id],
-        defeff_id=basic_info.bomb_effect_id)
+    return client.mk_eve_item(attrs=attrs, eff_ids=[basic_info.bomb_effect_id], defeff_id=basic_info.bomb_effect_id)
 
 
 def make_eve_bomb_guided(
@@ -1180,10 +1168,7 @@ def make_eve_pds(
     conditional_insert(container=attrs, path=[basic_info.capacity_attr_id], value=capacity)
     conditional_insert(container=attrs, path=[basic_info.reload_time_attr_id], value=reload_time)
     conditional_insert(container=attrs, path=[basic_info.emp_field_range_attr_id], value=range_optimal)
-    return client.mk_eve_item(
-        attrs=attrs,
-        eff_ids=[basic_info.pds_effect_id],
-        defeff_id=basic_info.pds_effect_id)
+    return client.mk_eve_item(attrs=attrs, eff_ids=[basic_info.pds_effect_id], defeff_id=basic_info.pds_effect_id)
 
 
 def make_eve_dd_direct_amarr(

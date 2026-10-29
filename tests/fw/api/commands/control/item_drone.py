@@ -45,10 +45,7 @@ class BaseCtlDroneAddCmd(BaseCtlDroneCmd):
 
     def serialize(self) -> dict:
         body = super().serialize()
-        conditional_insert(
-            container=body,
-            path=['mutation'],
-            value=process_muta_add_request(mutation=self.mutation))
+        conditional_insert(container=body, path=['mutation'], value=process_muta_add_request(mutation=self.mutation))
         conditional_insert(container=body, path=['proj_item_ids'], value=self.proj_item_ids)
         return body
 
@@ -98,10 +95,7 @@ class BaseCtlDroneChangeCmd(BaseCtlDroneCmd):
 
     def serialize(self) -> dict:
         body = super().serialize()
-        conditional_insert(
-            container=body,
-            path=['mutation'],
-            value=process_muta_change_request(mutation=self.mutation))
+        conditional_insert(container=body, path=['mutation'], value=process_muta_change_request(mutation=self.mutation))
         conditional_insert(container=body, path=['add_proj_item_ids'], value=self.add_proj_item_ids)
         conditional_insert(container=body, path=['rm_proj_item_ids'], value=self.rm_proj_item_ids)
         return body

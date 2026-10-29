@@ -834,8 +834,7 @@ def test_unexpected_fit_backref_sol(client, consts):
     with api_sol.batch() as api_sol_batch:
         api_fit_main = api_sol_batch.create_fit()
         api_ship_main = api_sol_batch.set_ship(fit_id=api_fit_main.id, type_id=eve_main_ship_id)
-        api_sol_batch.add_module(
-            fit_id=api_fit_main.id, type_id=eve_main_portal_id, state=consts.ApiModuleState.online)
+        api_sol_batch.add_module(fit_id=api_fit_main.id, type_id=eve_main_portal_id, state=consts.ApiModuleState.online)
         api_fit_psg = api_sol_batch.create_fit()
         api_sol_batch.set_ship(fit_id=api_fit_psg.id, type_id=eve_psg_ship_id)
         api_fit_stats = api_sol_batch.get_fit_stats(

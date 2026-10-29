@@ -13,18 +13,9 @@ def test_error_params_malformed(client):
         sol_info_mode='random',
         status_code=400,
         json_predicate={'code': 'PRM-001', 'message': 're:.+'})
-    api_sol.update(
-        fleet_info_mode='random',
-        status_code=400,
-        json_predicate={'code': 'PRM-001', 'message': 're:.+'})
-    api_sol.update(
-        fit_info_mode='random',
-        status_code=400,
-        json_predicate={'code': 'PRM-001', 'message': 're:.+'})
-    api_sol.update(
-        item_info_mode='random',
-        status_code=400,
-        json_predicate={'code': 'PRM-001', 'message': 're:.+'})
+    api_sol.update(fleet_info_mode='random', status_code=400, json_predicate={'code': 'PRM-001', 'message': 're:.+'})
+    api_sol.update(fit_info_mode='random', status_code=400, json_predicate={'code': 'PRM-001', 'message': 're:.+'})
+    api_sol.update(item_info_mode='random', status_code=400, json_predicate={'code': 'PRM-001', 'message': 're:.+'})
 
 
 def test_src_alias(client, consts):

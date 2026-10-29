@@ -112,10 +112,7 @@ def test_local_asb(client, consts):
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
     api_ship = api_fit.set_ship(type_id=eve_ship_id)
-    api_fit.add_module(
-        type_id=eve_rep_item_id,
-        state=consts.ApiModuleState.active,
-        charge_type_id=eve_charge_item_id)
+    api_fit.add_module(type_id=eve_rep_item_id, state=consts.ApiModuleState.active, charge_type_id=eve_charge_item_id)
     # Verification
     api_fit_stats = api_fit.get_stats(options=FitStatsOptions(wc_ehp=True))
     assert api_fit_stats.wc_ehp.one().shield == (approx(1388.333333), approx(2190), 0, approx(1.666667))
@@ -150,10 +147,7 @@ def test_local_aar(client, consts):
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
     api_ship = api_fit.set_ship(type_id=eve_ship_id)
-    api_fit.add_module(
-        type_id=eve_rep_item_id,
-        state=consts.ApiModuleState.active,
-        charge_type_id=eve_charge_item_id)
+    api_fit.add_module(type_id=eve_rep_item_id, state=consts.ApiModuleState.active, charge_type_id=eve_charge_item_id)
     # Verification
     api_fit_stats = api_fit.get_stats(options=FitStatsOptions(wc_ehp=True))
     assert api_fit_stats.wc_ehp.one().shield == (approx(225), 0, 0, approx(1))

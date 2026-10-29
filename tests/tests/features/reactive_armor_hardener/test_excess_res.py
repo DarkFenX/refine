@@ -4,11 +4,7 @@ from tests.features.reactive_armor_hardener import make_eve_rah, make_eve_ship, 
 
 def test_full(client, consts):
     eve_basic_info = setup_rah_basics(client=client, consts=consts)
-    eve_rah_id = make_eve_rah(
-        client=client,
-        basic_info=eve_basic_info,
-        resos=(1, 0, 1, 1),
-        shift_amount=10)
+    eve_rah_id = make_eve_rah(client=client, basic_info=eve_basic_info, resos=(1, 0, 1, 1), shift_amount=10)
     eve_ship_id = make_eve_ship(client=client, basic_info=eve_basic_info, resos=(0.5, 0.65, 0.59, 0.51))
     client.create_sources()
     api_sol = client.create_sol()
@@ -30,11 +26,7 @@ def test_full(client, consts):
 
 def test_excess_slow_stable(client, consts):
     eve_basic_info = setup_rah_basics(client=client, consts=consts)
-    eve_rah_id = make_eve_rah(
-        client=client,
-        basic_info=eve_basic_info,
-        resos=(0.3, 0.5, 0.3, 0.5),
-        shift_amount=10)
+    eve_rah_id = make_eve_rah(client=client, basic_info=eve_basic_info, resos=(0.3, 0.5, 0.3, 0.5), shift_amount=10)
     eve_ship_id = make_eve_ship(client=client, basic_info=eve_basic_info, resos=(0.5, 0.65, 0.59, 0.51))
     client.create_sources()
     api_sol = client.create_sol()
@@ -66,11 +58,7 @@ def test_excess_slow_stable(client, consts):
 
 def test_excess_slow_loop(client, consts):
     eve_basic_info = setup_rah_basics(client=client, consts=consts)
-    eve_rah_id = make_eve_rah(
-        client=client,
-        basic_info=eve_basic_info,
-        resos=(0.3, 0.5, 0.3, 0.5),
-        shift_amount=10)
+    eve_rah_id = make_eve_rah(client=client, basic_info=eve_basic_info, resos=(0.3, 0.5, 0.3, 0.5), shift_amount=10)
     eve_ship_id = make_eve_ship(client=client, basic_info=eve_basic_info, resos=(0.5, 0.65, 0.59, 0.51))
     client.create_sources()
     api_sol = client.create_sol()
@@ -106,11 +94,7 @@ def test_excess_max_takers_no_limit(client, consts):
     # A test where all resonances take resists in 1 sim tick, with excess value getting moved to
     # resist types which took no damage, and this value not being limited by distribution threshold
     eve_basic_info = setup_rah_basics(client=client, consts=consts)
-    eve_rah_id = make_eve_rah(
-        client=client,
-        basic_info=eve_basic_info,
-        resos=(0, 0, 0.2, 0.4),
-        shift_amount=100)
+    eve_rah_id = make_eve_rah(client=client, basic_info=eve_basic_info, resos=(0, 0, 0.2, 0.4), shift_amount=100)
     eve_ship_id = make_eve_ship(client=client, basic_info=eve_basic_info, resos=(0.5, 0.65, 0.59, 0.51))
     client.create_sources()
     api_sol = client.create_sol()
@@ -138,11 +122,7 @@ def test_excess_max_takers_limited(client, consts):
     # A test where all resonances take resists in 1 sim tick, with excess value getting moved to
     # resist types which took no damage, and this value being limited by distribution threshold
     eve_basic_info = setup_rah_basics(client=client, consts=consts)
-    eve_rah_id = make_eve_rah(
-        client=client,
-        basic_info=eve_basic_info,
-        resos=(0.7, 0.5, 0.1, 0.1),
-        shift_amount=100)
+    eve_rah_id = make_eve_rah(client=client, basic_info=eve_basic_info, resos=(0.7, 0.5, 0.1, 0.1), shift_amount=100)
     eve_ship_id = make_eve_ship(client=client, basic_info=eve_basic_info, resos=(0.5, 0.65, 0.59, 0.51))
     client.create_sources()
     api_sol = client.create_sol()

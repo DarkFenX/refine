@@ -125,10 +125,7 @@ def test_mutation_outgoing(client, consts):
         mod_info=[eve_mod])
 
     def make_eve_drone(*, radius: float | None) -> int:
-        attrs = {
-            eve_affector_attr_id: -85,
-            eve_optimal_attr_id: 1000,
-            eve_falloff_attr_id: 10000}
+        attrs = {eve_affector_attr_id: -85, eve_optimal_attr_id: 1000, eve_falloff_attr_id: 10000}
         if radius is not None:
             attrs[eve_radius_attr_id] = radius
         return client.mk_eve_drone(attrs=attrs, eff_ids=[eve_effect_id], defeff_id=eve_effect_id)
@@ -468,10 +465,7 @@ def test_switch_type_id_outgoing(client, consts):
         mod_info=[eve_mod])
 
     def make_eve_drone(*, radius: float | None) -> int:
-        attrs = {
-            eve_affector_attr_id: -85,
-            eve_optimal_attr_id: 1000,
-            eve_falloff_attr_id: 10000}
+        attrs = {eve_affector_attr_id: -85, eve_optimal_attr_id: 1000, eve_falloff_attr_id: 10000}
         if radius is not None:
             attrs[eve_radius_attr_id] = radius
         return client.mk_eve_drone(attrs=attrs, eff_ids=[eve_effect_id], defeff_id=eve_effect_id)

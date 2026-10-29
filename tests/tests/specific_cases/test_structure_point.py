@@ -164,12 +164,8 @@ def test_fighter_mwd_mjd_block(client, consts):
         id_=consts.EveEffect.script_st_warp_scram,
         cat_id=consts.EveEffCat.passive)
     eve_script_id = client.mk_eve_item(eff_ids=[eve_script_effect_id])
-    eve_ftr_mwd_effect_id = client.mk_eve_effect(
-        id_=consts.EveEffect.ftr_abil_mwd,
-        cat_id=consts.EveEffCat.active)
-    eve_ftr_mjd_effect_id = client.mk_eve_effect(
-        id_=consts.EveEffect.ftr_abil_mjd,
-        cat_id=consts.EveEffCat.active)
+    eve_ftr_mwd_effect_id = client.mk_eve_effect(id_=consts.EveEffect.ftr_abil_mwd, cat_id=consts.EveEffCat.active)
+    eve_ftr_mjd_effect_id = client.mk_eve_effect(id_=consts.EveEffect.ftr_abil_mjd, cat_id=consts.EveEffCat.active)
     eve_fighter_id = client.mk_eve_fighter(eff_ids=[eve_ftr_mwd_effect_id, eve_ftr_mjd_effect_id])
     client.create_sources()
     api_sol = client.create_sol()

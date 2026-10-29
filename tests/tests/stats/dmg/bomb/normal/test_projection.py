@@ -150,18 +150,15 @@ def test_range_tick_misaligned(client, consts):
     # Verification
     api_fleet_dmg_stats = api_fleet.get_stats(options=FleetStatsOptions(
         dmg=[StatsOptionFitDmg(projectee_item_id=api_tgt_ship.id)])).dmg.one()
-    assert api_fleet_dmg_stats.dps == [
-        approx(0.09032258), approx(0.09032258), approx(0.09032258), approx(0.09032258)]
+    assert api_fleet_dmg_stats.dps == [approx(0.09032258), approx(0.09032258), approx(0.09032258), approx(0.09032258)]
     assert api_fleet_dmg_stats.volley == [approx(7), approx(7), approx(7), approx(7)]
     api_src_fit_dmg_stats = api_src_fit.get_stats(options=FitStatsOptions(
         dmg=[StatsOptionFitDmg(projectee_item_id=api_tgt_ship.id)])).dmg.one()
-    assert api_src_fit_dmg_stats.dps == [
-        approx(0.09032258), approx(0.09032258), approx(0.09032258), approx(0.09032258)]
+    assert api_src_fit_dmg_stats.dps == [approx(0.09032258), approx(0.09032258), approx(0.09032258), approx(0.09032258)]
     assert api_src_fit_dmg_stats.volley == [approx(7), approx(7), approx(7), approx(7)]
     api_charge_proj_dmg_stats = api_src_module_proj.charge.get_stats(options=ItemStatsOptions(
         dmg=[StatsOptionItemDmg(projectee_item_id=api_tgt_ship.id)])).dmg.one()
-    assert api_charge_proj_dmg_stats.dps == [
-        approx(0.0451613), approx(0.0451613), approx(0.0451613), approx(0.0451613)]
+    assert api_charge_proj_dmg_stats.dps == [approx(0.0451613), approx(0.0451613), approx(0.0451613), approx(0.0451613)]
     assert api_charge_proj_dmg_stats.volley == [approx(3.5), approx(3.5), approx(3.5), approx(3.5)]
     api_charge_nonproj_dmg_stats = api_src_module_nonproj.charge.get_stats(options=ItemStatsOptions(
         dmg=[StatsOptionItemDmg(projectee_item_id=api_tgt_ship.id)])).dmg.one()
@@ -173,18 +170,15 @@ def test_range_tick_misaligned(client, consts):
     # Verification
     api_fleet_dmg_stats = api_fleet.get_stats(options=FleetStatsOptions(
         dmg=[StatsOptionFitDmg(projectee_item_id=api_tgt_ship.id)])).dmg.one()
-    assert api_fleet_dmg_stats.dps == [
-        approx(0.09032258), approx(0.09032258), approx(0.09032258), approx(0.09032258)]
+    assert api_fleet_dmg_stats.dps == [approx(0.09032258), approx(0.09032258), approx(0.09032258), approx(0.09032258)]
     assert api_fleet_dmg_stats.volley == [approx(7), approx(7), approx(7), approx(7)]
     api_src_fit_dmg_stats = api_src_fit.get_stats(options=FitStatsOptions(
         dmg=[StatsOptionFitDmg(projectee_item_id=api_tgt_ship.id)])).dmg.one()
-    assert api_src_fit_dmg_stats.dps == [
-        approx(0.09032258), approx(0.09032258), approx(0.09032258), approx(0.09032258)]
+    assert api_src_fit_dmg_stats.dps == [approx(0.09032258), approx(0.09032258), approx(0.09032258), approx(0.09032258)]
     assert api_src_fit_dmg_stats.volley == [approx(7), approx(7), approx(7), approx(7)]
     api_charge_proj_dmg_stats = api_src_module_proj.charge.get_stats(options=ItemStatsOptions(
         dmg=[StatsOptionItemDmg(projectee_item_id=api_tgt_ship.id)])).dmg.one()
-    assert api_charge_proj_dmg_stats.dps == [
-        approx(0.0451613), approx(0.0451613), approx(0.0451613), approx(0.0451613)]
+    assert api_charge_proj_dmg_stats.dps == [approx(0.0451613), approx(0.0451613), approx(0.0451613), approx(0.0451613)]
     assert api_charge_proj_dmg_stats.volley == [approx(3.5), approx(3.5), approx(3.5), approx(3.5)]
     api_charge_nonproj_dmg_stats = api_src_module_nonproj.charge.get_stats(options=ItemStatsOptions(
         dmg=[StatsOptionItemDmg(projectee_item_id=api_tgt_ship.id)])).dmg.one()
@@ -238,18 +232,15 @@ def test_range_tick_misaligned(client, consts):
     # Verification
     api_fleet_dmg_stats = api_fleet.get_stats(options=FleetStatsOptions(
         dmg=[StatsOptionFitDmg(projectee_item_id=api_tgt_ship.id)])).dmg.one()
-    assert api_fleet_dmg_stats.dps == [
-        approx(0.09032258), approx(0.09032258), approx(0.09032258), approx(0.09032258)]
+    assert api_fleet_dmg_stats.dps == [approx(0.09032258), approx(0.09032258), approx(0.09032258), approx(0.09032258)]
     assert api_fleet_dmg_stats.volley == [approx(7), approx(7), approx(7), approx(7)]
     api_src_fit_dmg_stats = api_src_fit.get_stats(options=FitStatsOptions(
         dmg=[StatsOptionFitDmg(projectee_item_id=api_tgt_ship.id)])).dmg.one()
-    assert api_src_fit_dmg_stats.dps == [
-        approx(0.09032258), approx(0.09032258), approx(0.09032258), approx(0.09032258)]
+    assert api_src_fit_dmg_stats.dps == [approx(0.09032258), approx(0.09032258), approx(0.09032258), approx(0.09032258)]
     assert api_src_fit_dmg_stats.volley == [approx(7), approx(7), approx(7), approx(7)]
     api_charge_proj_dmg_stats = api_src_module_proj.charge.get_stats(options=ItemStatsOptions(
         dmg=[StatsOptionItemDmg(projectee_item_id=api_tgt_ship.id)])).dmg.one()
-    assert api_charge_proj_dmg_stats.dps == [
-        approx(0.0451613), approx(0.0451613), approx(0.0451613), approx(0.0451613)]
+    assert api_charge_proj_dmg_stats.dps == [approx(0.0451613), approx(0.0451613), approx(0.0451613), approx(0.0451613)]
     assert api_charge_proj_dmg_stats.volley == [approx(3.5), approx(3.5), approx(3.5), approx(3.5)]
     api_charge_nonproj_dmg_stats = api_src_module_nonproj.charge.get_stats(options=ItemStatsOptions(
         dmg=[StatsOptionItemDmg(projectee_item_id=api_tgt_ship.id)])).dmg.one()
@@ -261,18 +252,15 @@ def test_range_tick_misaligned(client, consts):
     # Verification
     api_fleet_dmg_stats = api_fleet.get_stats(options=FleetStatsOptions(
         dmg=[StatsOptionFitDmg(projectee_item_id=api_tgt_ship.id)])).dmg.one()
-    assert api_fleet_dmg_stats.dps == [
-        approx(0.09032258), approx(0.09032258), approx(0.09032258), approx(0.09032258)]
+    assert api_fleet_dmg_stats.dps == [approx(0.09032258), approx(0.09032258), approx(0.09032258), approx(0.09032258)]
     assert api_fleet_dmg_stats.volley == [approx(7), approx(7), approx(7), approx(7)]
     api_src_fit_dmg_stats = api_src_fit.get_stats(options=FitStatsOptions(
         dmg=[StatsOptionFitDmg(projectee_item_id=api_tgt_ship.id)])).dmg.one()
-    assert api_src_fit_dmg_stats.dps == [
-        approx(0.09032258), approx(0.09032258), approx(0.09032258), approx(0.09032258)]
+    assert api_src_fit_dmg_stats.dps == [approx(0.09032258), approx(0.09032258), approx(0.09032258), approx(0.09032258)]
     assert api_src_fit_dmg_stats.volley == [approx(7), approx(7), approx(7), approx(7)]
     api_charge_proj_dmg_stats = api_src_module_proj.charge.get_stats(options=ItemStatsOptions(
         dmg=[StatsOptionItemDmg(projectee_item_id=api_tgt_ship.id)])).dmg.one()
-    assert api_charge_proj_dmg_stats.dps == [
-        approx(0.0451613), approx(0.0451613), approx(0.0451613), approx(0.0451613)]
+    assert api_charge_proj_dmg_stats.dps == [approx(0.0451613), approx(0.0451613), approx(0.0451613), approx(0.0451613)]
     assert api_charge_proj_dmg_stats.volley == [approx(3.5), approx(3.5), approx(3.5), approx(3.5)]
     api_charge_nonproj_dmg_stats = api_src_module_nonproj.charge.get_stats(options=ItemStatsOptions(
         dmg=[StatsOptionItemDmg(projectee_item_id=api_tgt_ship.id)])).dmg.one()

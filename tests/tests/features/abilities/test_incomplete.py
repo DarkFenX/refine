@@ -66,11 +66,7 @@ def test_no_item_ability_data(client, consts):
         cat_id=consts.EveEffCat.target)
     eve_abil_id = client.mk_eve_abil(datas=[eve_d1, eve_d2], id_=consts.EveAbil.pulse_cannon)
     eve_fighter_id = client.alloc_item_id(datas=[eve_d1, eve_d2])
-    client.mk_eve_fighter(
-        datas=[eve_d1],
-        id_=eve_fighter_id,
-        eff_ids=[eve_effect_id],
-        defeff_id=eve_effect_id)
+    client.mk_eve_fighter(datas=[eve_d1], id_=eve_fighter_id, eff_ids=[eve_effect_id], defeff_id=eve_effect_id)
     client.mk_eve_fighter(
         datas=[eve_d2],
         id_=eve_fighter_id,

@@ -31,14 +31,8 @@ def test_fail_multiple_ship(client, consts):
     api_fit = api_sol.create_fit()
     api_fit.set_ship(type_id=eve_ship_id)
     api_fit.add_module(type_id=eve_module_id, rack=consts.Rack.low, state=consts.ApiModuleState.offline)
-    api_module2 = api_fit.add_module(
-        type_id=eve_module_id,
-        rack=consts.Rack.low,
-        state=consts.ApiModuleState.offline)
-    api_module3 = api_fit.add_module(
-        type_id=eve_module_id,
-        rack=consts.Rack.low,
-        state=consts.ApiModuleState.offline)
+    api_module2 = api_fit.add_module(type_id=eve_module_id, rack=consts.Rack.low, state=consts.ApiModuleState.offline)
+    api_module3 = api_fit.add_module(type_id=eve_module_id, rack=consts.Rack.low, state=consts.ApiModuleState.offline)
     # Verification
     api_stats = api_fit.get_stats(options=FitStatsOptions(low_slots=True))
     assert api_stats.low_slots.one() == (3, 1)
@@ -59,14 +53,8 @@ def test_fail_multiple_struct(client, consts):
     api_fit = api_sol.create_fit()
     api_fit.set_ship(type_id=eve_struct_id)
     api_fit.add_module(type_id=eve_module_id, rack=consts.Rack.low, state=consts.ApiModuleState.offline)
-    api_module2 = api_fit.add_module(
-        type_id=eve_module_id,
-        rack=consts.Rack.low,
-        state=consts.ApiModuleState.offline)
-    api_module3 = api_fit.add_module(
-        type_id=eve_module_id,
-        rack=consts.Rack.low,
-        state=consts.ApiModuleState.offline)
+    api_module2 = api_fit.add_module(type_id=eve_module_id, rack=consts.Rack.low, state=consts.ApiModuleState.offline)
+    api_module3 = api_fit.add_module(type_id=eve_module_id, rack=consts.Rack.low, state=consts.ApiModuleState.offline)
     # Verification
     api_stats = api_fit.get_stats(options=FitStatsOptions(low_slots=True))
     assert api_stats.low_slots.one() == (3, 1)

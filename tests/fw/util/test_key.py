@@ -13,9 +13,7 @@ class TestKey(tuple):
 
 def frame_to_primitive(*, frame: inspect.FrameInfo, ignore_local_context: bool = False) -> tuple:
     if ignore_local_context:
-        return (
-            frame.filename,
-            frame.function)
+        return (frame.filename, frame.function)
     pos = frame.positions
     return (
         frame.filename,

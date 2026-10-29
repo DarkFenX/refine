@@ -307,8 +307,7 @@ def test_time(client, consts):
     assert api_fit_dmg_stats.volley == [approx(2640), approx(2640), approx(2640), approx(2640)]
     api_charge_dmg_stats = api_module.charge.get_stats(options=ItemStatsOptions(
         dmg=[StatsOptionItemDmg(time=StatTimeSim(time=34))])).dmg.one()
-    assert api_charge_dmg_stats.dps == [
-        approx(155.294118), approx(155.294118), approx(155.294118), approx(155.294118)]
+    assert api_charge_dmg_stats.dps == [approx(155.294118), approx(155.294118), approx(155.294118), approx(155.294118)]
     assert api_charge_dmg_stats.volley == [approx(2640), approx(2640), approx(2640), approx(2640)]
     # Verification - just before reload starts
     api_fleet_dmg_stats = api_fleet.get_stats(options=FleetStatsOptions(

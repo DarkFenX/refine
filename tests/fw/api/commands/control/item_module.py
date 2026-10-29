@@ -49,10 +49,7 @@ class BaseCtlModuleAddCmd(BaseCtlModuleCmd):
         body = super().serialize()
         conditional_insert(container=body, path=['rack'], value=self.rack)
         conditional_insert(container=body, path=['add_mode'], value=self.add_mode)
-        conditional_insert(
-            container=body,
-            path=['mutation'],
-            value=process_muta_add_request(mutation=self.mutation))
+        conditional_insert(container=body, path=['mutation'], value=process_muta_add_request(mutation=self.mutation))
         conditional_insert(container=body, path=['proj_item_ids'], value=self.proj_item_ids)
         return body
 
@@ -104,10 +101,7 @@ class BaseCtlModuleChangeCmd(BaseCtlModuleCmd):
     def serialize(self) -> dict:
         body = super().serialize()
         conditional_insert(container=body, path=['move'], value=self.move)
-        conditional_insert(
-            container=body,
-            path=['mutation'],
-            value=process_muta_change_request(mutation=self.mutation))
+        conditional_insert(container=body, path=['mutation'], value=process_muta_change_request(mutation=self.mutation))
         conditional_insert(container=body, path=['add_proj_item_ids'], value=self.add_proj_item_ids)
         conditional_insert(container=body, path=['rm_proj_item_ids'], value=self.rm_proj_item_ids)
         return body

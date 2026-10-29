@@ -10,8 +10,7 @@ def test_range(client, consts):
         dmg_mult=2.65, spool_step=0.07, spool_max=2.125,
         capacity=5, cycle_time=3500, reload_time=0.01,
         range_optimal=21825, tracking=5.5, sig_resolution=40000)
-    eve_charge_id = make_eve_charge_normal(
-        client=client, basic_info=eve_basic_info, dmgs=(0, 630, 0, 448), volume=0.01)
+    eve_charge_id = make_eve_charge_normal(client=client, basic_info=eve_basic_info, dmgs=(0, 630, 0, 448), volume=0.01)
     eve_src_ship_id = make_eve_ship(client=client, basic_info=eve_basic_info, radius=550, speed=720)
     eve_tgt_ship_id = make_eve_ship(client=client, basic_info=eve_basic_info, radius=88, speed=2600, sig_radius=550)
     client.create_sources()
@@ -71,8 +70,7 @@ def test_application(client, consts):
         dmg_mult=2.65, spool_step=0.07, spool_max=2.125,
         capacity=5, cycle_time=3500, reload_time=0.01,
         range_optimal=21825, tracking=5.5, sig_resolution=40000)
-    eve_charge_id = make_eve_charge_normal(
-        client=client, basic_info=eve_basic_info, dmgs=(0, 630, 0, 448), volume=0.01)
+    eve_charge_id = make_eve_charge_normal(client=client, basic_info=eve_basic_info, dmgs=(0, 630, 0, 448), volume=0.01)
     eve_src_ship_id = make_eve_ship(client=client, basic_info=eve_basic_info, radius=550, speed=720)
     eve_tgt_ship_id = make_eve_ship(client=client, basic_info=eve_basic_info, radius=88, speed=2600, sig_radius=550)
     client.create_sources()
@@ -246,11 +244,9 @@ def test_crit(client, consts):
         dmg_mult=2.65, spool_step=0.07, spool_max=2.125,
         capacity=5, cycle_time=3500, reload_time=0.01,
         range_optimal=21825, tracking=5.5, sig_resolution=40000)
-    eve_charge_id = make_eve_charge_normal(
-        client=client, basic_info=eve_basic_info, dmgs=(0, 630, 0, 448), volume=0.01)
+    eve_charge_id = make_eve_charge_normal(client=client, basic_info=eve_basic_info, dmgs=(0, 630, 0, 448), volume=0.01)
     eve_src_ship_id = make_eve_ship(client=client, basic_info=eve_basic_info, radius=550, speed=720)
-    eve_tgt_ship_id = make_eve_ship(
-        client=client, basic_info=eve_basic_info, radius=88, speed=2600, sig_radius=550)
+    eve_tgt_ship_id = make_eve_ship(client=client, basic_info=eve_basic_info, radius=88, speed=2600, sig_radius=550)
     client.create_sources()
     api_sol = client.create_sol(default_spool=Spool.spool_scale_to_api(val=1))
     api_src_fit = api_sol.create_fit()

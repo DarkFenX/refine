@@ -98,8 +98,7 @@ def test_smartbomb_effect_range_absent(client, consts):
 def test_smartbomb_attr_range_absent(client, consts):
     # No range attr is considered as 0 range
     eve_basic_info = setup_dmg_basics(client=client, consts=consts)
-    eve_module_id = make_eve_smartbomb(
-        client=client, basic_info=eve_basic_info, dmgs=(45, 45, 45, 45), cycle_time=7500)
+    eve_module_id = make_eve_smartbomb(client=client, basic_info=eve_basic_info, dmgs=(45, 45, 45, 45), cycle_time=7500)
     eve_src_ship_id = make_eve_ship(client=client, basic_info=eve_basic_info, radius=550)
     eve_tgt_ship_id = make_eve_ship(client=client, basic_info=eve_basic_info, radius=3000, speed=1000, sig_radius=40)
     client.create_sources()

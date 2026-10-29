@@ -170,8 +170,7 @@ def test_time(client, consts):
 
 
 def test_count_override(client, consts):
-    eve_fighter_id, eve_src_ship_id, _, eve_tgt_ship2_id, _ = setup_fighter_test(
-        client=client, consts=consts)
+    eve_fighter_id, eve_src_ship_id, _, eve_tgt_ship2_id, _ = setup_fighter_test(client=client, consts=consts)
     api_sol = client.create_sol()
     api_src_fit = api_sol.create_fit()
     api_src_fit.set_ship(type_id=eve_src_ship_id, coordinates=(0, 0, 0))

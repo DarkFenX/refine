@@ -438,9 +438,7 @@ def test_insignificant_op_collision(client, consts):
         affector_attr_id=eve_affector_attr_id,
         affectee_attr_id=eve_affectee_attr_id)
     eve_mod_sub_effect_id = client.mk_eve_effect(mod_info=[eve_mod_sub_mod])
-    eve_mod_sub_affector_id = client.mk_eve_item(
-        attrs={eve_affector_attr_id: 100},
-        eff_ids=[eve_mod_sub_effect_id])
+    eve_mod_sub_affector_id = client.mk_eve_item(attrs={eve_affector_attr_id: 100}, eff_ids=[eve_mod_sub_effect_id])
     eve_post_mul_mod = client.mk_eve_effect_mod(
         func=consts.EveModFunc.item,
         loc=consts.EveModLoc.ship,
@@ -448,9 +446,7 @@ def test_insignificant_op_collision(client, consts):
         affector_attr_id=eve_affector_attr_id,
         affectee_attr_id=eve_affectee_attr_id)
     eve_post_mul_effect_id = client.mk_eve_effect(mod_info=[eve_post_mul_mod])
-    eve_post_mul_affector_id = client.mk_eve_item(
-        attrs={eve_affector_attr_id: 0},
-        eff_ids=[eve_post_mul_effect_id])
+    eve_post_mul_affector_id = client.mk_eve_item(attrs={eve_affector_attr_id: 0}, eff_ids=[eve_post_mul_effect_id])
     eve_affectee_id = client.mk_eve_ship(attrs={eve_affectee_attr_id: 100})
     client.create_sources()
     api_sol = client.create_sol()

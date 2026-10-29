@@ -210,8 +210,7 @@ def test_time(client, consts):
     api_tgt_fit_stats = api_tgt_fit.get_stats(options=FitStatsOptions(
         rps=[StatsOptionRps(time=StatTimeBurst())]))
     assert api_tgt_fit_stats.rps.one().shield == [approx(124.666667), approx(196.65), ANY_VALUE, ANY_VALUE]
-    api_tgt_ship_stats = api_tgt_ship.get_stats(options=ItemStatsOptions(
-        rps=[StatsOptionRps(time=StatTimeBurst())]))
+    api_tgt_ship_stats = api_tgt_ship.get_stats(options=ItemStatsOptions(rps=[StatsOptionRps(time=StatTimeBurst())]))
     assert api_tgt_ship_stats.rps.one().shield == [approx(124.666667), approx(196.65), ANY_VALUE, ANY_VALUE]
     # Sim without specified time - looped stats
     api_tgt_fit_stats = api_tgt_fit.get_stats(options=FitStatsOptions(rps=[

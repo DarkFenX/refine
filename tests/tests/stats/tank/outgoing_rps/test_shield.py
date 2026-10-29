@@ -53,8 +53,7 @@ def test_state(client, consts):
     api_stat_options = [
         StatsOptionItemOutRps(state=consts.ApiStatItemState.retain),
         StatsOptionItemOutRps(state=consts.ApiStatItemState.switch)]
-    api_module_normal_stats = api_module_normal.get_stats(options=ItemStatsOptions(
-        outgoing_rps=api_stat_options))
+    api_module_normal_stats = api_module_normal.get_stats(options=ItemStatsOptions(outgoing_rps=api_stat_options))
     assert api_module_normal_stats.outgoing_rps.map(lambda i: i.shield) == [0, approx(63.5)]
     api_module_ancil_stats = api_module_ancil.get_stats(options=ItemStatsOptions(outgoing_rps=api_stat_options))
     assert api_module_ancil_stats.outgoing_rps.map(lambda i: i.shield) == [0, approx(118.75)]

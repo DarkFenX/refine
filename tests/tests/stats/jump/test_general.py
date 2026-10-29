@@ -124,8 +124,7 @@ def test_ship_not_loaded(client, consts):
     eve_bridge_flag_attr_id = client.mk_eve_attr(id_=consts.EveAttr.enable_open_jump_portal)
     client.mk_eve_attr(id_=consts.EveAttr.conduit_jump_passenger_count)
     client.mk_eve_attr(id_=consts.EveAttr.conduit_jump_drive_consumption_amount)
-    eve_bridge_id = client.mk_eve_item(
-        attrs={eve_conduit_flag_attr_id: 1, eve_bridge_flag_attr_id: 1})
+    eve_bridge_id = client.mk_eve_item(attrs={eve_conduit_flag_attr_id: 1, eve_bridge_flag_attr_id: 1})
     eve_ship_id = client.alloc_item_id()
     client.create_sources()
     api_sol = client.create_sol()

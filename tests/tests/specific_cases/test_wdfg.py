@@ -59,9 +59,7 @@ def test_warp_dscript(client, consts):
         id_=consts.EveEffect.ship_mod_focused_warp_disruption_script,
         cat_id=consts.EveEffCat.target,
         is_offensive=True)
-    eve_script_id = client.mk_eve_item(
-        eff_ids=[eve_script_effect_id],
-        defeff_id=eve_script_effect_id)
+    eve_script_id = client.mk_eve_item(eff_ids=[eve_script_effect_id], defeff_id=eve_script_effect_id)
     eve_ship_id = client.mk_eve_ship(attrs={eve_status_attr_id: 0, eve_immunity_attr_id: 1})
     client.create_sources()
     api_sol = client.create_sol()
@@ -141,9 +139,7 @@ def test_warp_sscript(client, consts):
         id_=consts.EveEffect.ship_mod_focused_warp_scrambling_script,
         cat_id=consts.EveEffCat.target,
         is_offensive=True)
-    eve_script_id = client.mk_eve_item(
-        eff_ids=[eve_script_effect_id],
-        defeff_id=eve_script_effect_id)
+    eve_script_id = client.mk_eve_item(eff_ids=[eve_script_effect_id], defeff_id=eve_script_effect_id)
     eve_ship_id = client.mk_eve_ship(attrs={eve_status_attr_id: 0, eve_immunity_attr_id: 1})
     client.create_sources()
     api_sol = client.create_sol()
@@ -219,9 +215,7 @@ def test_gate_dscript(client, consts):
         id_=consts.EveEffect.ship_mod_focused_warp_disruption_script,
         cat_id=consts.EveEffCat.target,
         is_offensive=True)
-    eve_script_id = client.mk_eve_item(
-        eff_ids=[eve_script_effect_id],
-        defeff_id=eve_script_effect_id)
+    eve_script_id = client.mk_eve_item(eff_ids=[eve_script_effect_id], defeff_id=eve_script_effect_id)
     eve_ship_id = client.mk_eve_ship(attrs={eve_status_attr_id: 0, eve_immunity_attr_id: 1})
     client.create_sources()
     api_sol = client.create_sol()
@@ -273,9 +267,7 @@ def test_gate_sscript(client, consts):
         id_=consts.EveEffect.ship_mod_focused_warp_scrambling_script,
         cat_id=consts.EveEffCat.target,
         is_offensive=True)
-    eve_script_id = client.mk_eve_item(
-        eff_ids=[eve_script_effect_id],
-        defeff_id=eve_script_effect_id)
+    eve_script_id = client.mk_eve_item(eff_ids=[eve_script_effect_id], defeff_id=eve_script_effect_id)
     eve_ship_id = client.mk_eve_ship(attrs={eve_status_attr_id: 0, eve_immunity_attr_id: 1})
     client.create_sources()
     api_sol = client.create_sol()
@@ -549,12 +541,8 @@ def test_block_fighter_mwd_mjd_dscript(client, consts):
         id_=consts.EveEffect.ship_mod_focused_warp_disruption_script,
         cat_id=consts.EveEffCat.target)
     eve_script_id = client.mk_eve_item(eff_ids=[eve_script_effect_id], defeff_id=eve_script_effect_id)
-    eve_ftr_mwd_effect_id = client.mk_eve_effect(
-        id_=consts.EveEffect.ftr_abil_mwd,
-        cat_id=consts.EveEffCat.active)
-    eve_ftr_mjd_effect_id = client.mk_eve_effect(
-        id_=consts.EveEffect.ftr_abil_mjd,
-        cat_id=consts.EveEffCat.active)
+    eve_ftr_mwd_effect_id = client.mk_eve_effect(id_=consts.EveEffect.ftr_abil_mwd, cat_id=consts.EveEffCat.active)
+    eve_ftr_mjd_effect_id = client.mk_eve_effect(id_=consts.EveEffect.ftr_abil_mjd, cat_id=consts.EveEffCat.active)
     eve_fighter_id = client.mk_eve_fighter(eff_ids=[eve_ftr_mwd_effect_id, eve_ftr_mjd_effect_id])
     client.create_sources()
     api_sol = client.create_sol()
@@ -586,12 +574,8 @@ def test_block_fighter_mwd_mjd_sscript(client, consts):
         id_=consts.EveEffect.ship_mod_focused_warp_scrambling_script,
         cat_id=consts.EveEffCat.target)
     eve_script_id = client.mk_eve_item(eff_ids=[eve_script_effect_id], defeff_id=eve_script_effect_id)
-    eve_ftr_mwd_effect_id = client.mk_eve_effect(
-        id_=consts.EveEffect.ftr_abil_mwd,
-        cat_id=consts.EveEffCat.active)
-    eve_ftr_mjd_effect_id = client.mk_eve_effect(
-        id_=consts.EveEffect.ftr_abil_mjd,
-        cat_id=consts.EveEffCat.active)
+    eve_ftr_mwd_effect_id = client.mk_eve_effect(id_=consts.EveEffect.ftr_abil_mwd, cat_id=consts.EveEffCat.active)
+    eve_ftr_mjd_effect_id = client.mk_eve_effect(id_=consts.EveEffect.ftr_abil_mjd, cat_id=consts.EveEffCat.active)
     eve_fighter_id = client.mk_eve_fighter(eff_ids=[eve_ftr_mwd_effect_id, eve_ftr_mjd_effect_id])
     client.create_sources()
     api_sol = client.create_sol()

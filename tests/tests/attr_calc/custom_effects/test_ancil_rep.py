@@ -13,10 +13,7 @@ def test_local_aar(client, consts):
     client.create_sources()
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
-    api_aar_item = api_fit.add_module(
-        type_id=eve_aar_item_id,
-        rack=consts.Rack.low,
-        charge_type_id=eve_paste_item_id)
+    api_aar_item = api_fit.add_module(type_id=eve_aar_item_id, rack=consts.Rack.low, charge_type_id=eve_paste_item_id)
     # Verification
     api_aar_item.update()
     assert api_aar_item.attrs[eve_affectee_attr_id].modified == approx(300)
@@ -41,10 +38,7 @@ def test_remote_aar(client, consts):
     client.create_sources()
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
-    api_aar_item = api_fit.add_module(
-        type_id=eve_aar_item_id,
-        rack=consts.Rack.high,
-        charge_type_id=eve_paste_item_id)
+    api_aar_item = api_fit.add_module(type_id=eve_aar_item_id, rack=consts.Rack.high, charge_type_id=eve_paste_item_id)
     # Verification
     api_aar_item.update()
     assert api_aar_item.attrs[eve_affectee_attr_id].modified == approx(300)
@@ -101,10 +95,7 @@ def test_charge_type_id_switch(client, consts):
     client.create_sources()
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
-    api_aar_item = api_fit.add_module(
-        type_id=eve_aar_item_id,
-        rack=consts.Rack.low,
-        charge_type_id=eve_paste_item_id)
+    api_aar_item = api_fit.add_module(type_id=eve_aar_item_id, rack=consts.Rack.low, charge_type_id=eve_paste_item_id)
     # Verification
     api_aar_item.update()
     assert api_aar_item.attrs[eve_affectee_attr_id].modified == approx(300)
@@ -146,10 +137,7 @@ def test_mult_change(client, consts):
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
     api_fit.set_ship(type_id=eve_ship_id)
-    api_aar_item = api_fit.add_module(
-        type_id=eve_aar_item_id,
-        rack=consts.Rack.low,
-        charge_type_id=eve_paste_item_id)
+    api_aar_item = api_fit.add_module(type_id=eve_aar_item_id, rack=consts.Rack.low, charge_type_id=eve_paste_item_id)
     # Verification
     assert api_aar_item.update().attrs[eve_aar_affectee_attr_id].modified == approx(300)
     # Action

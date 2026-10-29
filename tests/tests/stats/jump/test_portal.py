@@ -1056,8 +1056,7 @@ def test_unexpected_fit_backref_fit(client, consts):
     api_fit_psg.set_ship(type_id=eve_psg_ship_id)
     with api_fit_main.batch() as api_fit_batch:
         api_fit_batch.change_fit(sec_status=2.5)
-        api_portal = api_fit_batch.add_module(
-            type_id=eve_portal_id, state=consts.ApiModuleState.active)
+        api_portal = api_fit_batch.add_module(type_id=eve_portal_id, state=consts.ApiModuleState.active)
         api_fit_stats = api_fit_batch.get_fit_stats(
             fit_options=FitStatsOptions(jump=[
                 StatsOptionJump(passenger_fit_ids=['#0', '#10', api_fit_psg.id])]))

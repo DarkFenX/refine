@@ -2,11 +2,7 @@ from fw import approx
 
 
 def setup_immunity_test(*, client, consts, cat_id):
-    return setup_immunity_test_ext(
-        client=client,
-        consts=consts,
-        affector1_cat_id=cat_id,
-        affector2_cat_id=cat_id)
+    return setup_immunity_test_ext(client=client, consts=consts, affector1_cat_id=cat_id, affector2_cat_id=cat_id)
 
 
 def setup_immunity_test_ext(*, client, consts, affector1_cat_id, affector2_cat_id):

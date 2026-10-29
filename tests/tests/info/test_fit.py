@@ -15,10 +15,7 @@ def test_error_params_malformed(client):
         fit_info_mode='random',
         status_code=400,
         json_predicate={'code': 'PRM-001', 'message': 're:.+'})
-    api_fit.update(
-        item_info_mode='random',
-        status_code=400,
-        json_predicate={'code': 'PRM-001', 'message': 're:.+'})
+    api_fit.update(item_info_mode='random', status_code=400, json_predicate={'code': 'PRM-001', 'message': 're:.+'})
 
 
 def test_fleet(client):

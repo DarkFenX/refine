@@ -192,10 +192,7 @@ def test_no_mutation_range(client, consts):
     eve_mutated_item_id = client.alloc_item_id(datas=[eve_d1, eve_d2])
     client.mk_eve_item(datas=[eve_d2], id_=eve_mutated_item_id)
     eve_mutator_id = client.alloc_item_id(datas=[eve_d1, eve_d2])
-    client.mk_eve_mutator(
-        datas=[eve_d1],
-        id_=eve_mutator_id,
-        items=[([eve_base_item_id], eve_mutated_item_id)])
+    client.mk_eve_mutator(datas=[eve_d1], id_=eve_mutator_id, items=[([eve_base_item_id], eve_mutated_item_id)])
     client.mk_eve_mutator(
         datas=[eve_d2],
         id_=eve_mutator_id,

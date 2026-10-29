@@ -111,12 +111,8 @@ def test_structure_modules(client, consts):
     eve_passive_module_id = client.mk_eve_item(
         cat_id=consts.EveItemCat.structure_module,
         eff_ids=[eve_passive_effect_id])
-    eve_online_module_id = client.mk_eve_item(
-        cat_id=consts.EveItemCat.structure_module,
-        eff_ids=[eve_online_effect_id])
-    eve_active_module_id = client.mk_eve_item(
-        cat_id=consts.EveItemCat.structure_module,
-        eff_ids=[eve_active_effect_id])
+    eve_online_module_id = client.mk_eve_item(cat_id=consts.EveItemCat.structure_module, eff_ids=[eve_online_effect_id])
+    eve_active_module_id = client.mk_eve_item(cat_id=consts.EveItemCat.structure_module, eff_ids=[eve_active_effect_id])
     eve_overload_module_id = client.mk_eve_item(
         cat_id=consts.EveItemCat.structure_module,
         eff_ids=[eve_overload_effect_id])
@@ -395,9 +391,7 @@ def test_criterion_item_kind(client, consts):
     eve_autocharge_effect_id = client.mk_eve_effect(
         id_=consts.EveEffect.ftr_abil_launch_bomb,
         cat_id=consts.EveEffCat.active)
-    eve_fighter_id = client.mk_eve_item(
-        attrs={eve_autocharge_attr_id: eve_item_id},
-        eff_ids=[eve_autocharge_effect_id])
+    eve_fighter_id = client.mk_eve_item(attrs={eve_autocharge_attr_id: eve_item_id}, eff_ids=[eve_autocharge_effect_id])
     client.create_sources()
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()

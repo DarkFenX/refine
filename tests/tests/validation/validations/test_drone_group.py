@@ -179,9 +179,7 @@ def test_known_failures(client, consts):
     eve_group1_id = client.mk_eve_item_group()
     eve_group2_id = client.mk_eve_item_group()
     eve_group3_id = client.mk_eve_item_group()
-    eve_limit_attr_id = client.mk_eve_attr(
-        id_=consts.EveAttr.allowed_drone_group1,
-        unit_id=consts.EveAttrUnit.group_id)
+    eve_limit_attr_id = client.mk_eve_attr(id_=consts.EveAttr.allowed_drone_group1, unit_id=consts.EveAttrUnit.group_id)
     eve_ship_id = client.mk_eve_ship(attrs={eve_limit_attr_id: eve_group1_id})
     eve_drone1_id = client.mk_eve_item(grp_id=eve_group1_id)
     eve_drone2_id = client.mk_eve_item(grp_id=eve_group2_id)
@@ -300,8 +298,7 @@ def test_no_attr(client, consts):
         id_=consts.EveAttr.allowed_drone_group2,
         unit_id=consts.EveAttrUnit.group_id)
     eve_ship1_id = client.mk_eve_ship(attrs={eve_limit_attr1_id: eve_group2_id})
-    eve_ship2_id = client.mk_eve_ship(
-        attrs={eve_limit_attr1_id: eve_group1_id, eve_limit_attr2_id: eve_group2_id})
+    eve_ship2_id = client.mk_eve_ship(attrs={eve_limit_attr1_id: eve_group1_id, eve_limit_attr2_id: eve_group2_id})
     eve_drone_id = client.mk_eve_item(grp_id=eve_group1_id)
     client.create_sources()
     api_sol = client.create_sol()

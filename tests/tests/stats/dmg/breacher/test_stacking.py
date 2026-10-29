@@ -175,14 +175,8 @@ def test_cycle_and_reload_gaps(client, consts):
     client.create_sources()
     api_sol = client.create_sol()
     api_src_fit = api_sol.create_fit()
-    api_src_fit.add_module(
-        type_id=eve_module1_id,
-        state=consts.ApiModuleState.active,
-        charge_type_id=eve_charge1_id)
-    api_src_fit.add_module(
-        type_id=eve_module2_id,
-        state=consts.ApiModuleState.active,
-        charge_type_id=eve_charge2_id)
+    api_src_fit.add_module(type_id=eve_module1_id, state=consts.ApiModuleState.active, charge_type_id=eve_charge1_id)
+    api_src_fit.add_module(type_id=eve_module2_id, state=consts.ApiModuleState.active, charge_type_id=eve_charge2_id)
     api_fleet = api_sol.create_fleet(fit_ids=[api_src_fit.id])
     api_tgt_fit = api_sol.create_fit()
     api_tgt_ship = api_tgt_fit.set_ship(type_id=eve_tgt_ship_id)

@@ -397,8 +397,7 @@ def test_no_attr(client, consts):
     # from functioning
     api_val = api_fit.validate(options=ValOptions(charge_group=True))
     assert api_val.passed is False
-    assert api_val.details.charge_group == {
-        api_module.charge.id: (api_module.id, eve_grp1_id, [eve_grp2_id])}
+    assert api_val.details.charge_group == {api_module.charge.id: (api_module.id, eve_grp1_id, [eve_grp2_id])}
 
 
 def test_not_loaded_module(client, consts):

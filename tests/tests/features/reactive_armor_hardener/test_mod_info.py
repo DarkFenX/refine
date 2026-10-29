@@ -4,11 +4,7 @@ from tests.features.reactive_armor_hardener import make_eve_rah, make_eve_ship, 
 
 def test_normal(client, consts):
     eve_basic_info = setup_rah_basics(client=client, consts=consts)
-    eve_rah_id = make_eve_rah(
-        client=client,
-        basic_info=eve_basic_info,
-        resos=(0.85, 0.85, 0.85, 0.85),
-        shift_amount=6)
+    eve_rah_id = make_eve_rah(client=client, basic_info=eve_basic_info, resos=(0.85, 0.85, 0.85, 0.85), shift_amount=6)
     eve_ship_id = make_eve_ship(client=client, basic_info=eve_basic_info, resos=(0.5, 0.65, 0.59, 0.51))
     eve_implant_attr_id = client.mk_eve_attr()
     eve_implant_mods = [
@@ -122,11 +118,7 @@ def test_normal(client, consts):
 def test_incoming(client, consts):
     # Check that incoming modifications are not hidden by RAH sim
     eve_basic_info = setup_rah_basics(client=client, consts=consts)
-    eve_rah_id = make_eve_rah(
-        client=client,
-        basic_info=eve_basic_info,
-        resos=(0.85, 0.85, 0.85, 0.85),
-        shift_amount=6)
+    eve_rah_id = make_eve_rah(client=client, basic_info=eve_basic_info, resos=(0.85, 0.85, 0.85, 0.85), shift_amount=6)
     eve_ship_id = make_eve_ship(client=client, basic_info=eve_basic_info, resos=(0.5, 0.65, 0.59, 0.51))
     eve_implant_attr_id = client.mk_eve_attr()
     eve_implant_mods = [
@@ -188,11 +180,7 @@ def test_incoming(client, consts):
 def test_outgoing_insignificance(client, consts):
     # Check that outgoing modifications use adapted values for insignificance testing
     eve_basic_info = setup_rah_basics(client=client, consts=consts)
-    eve_rah_id = make_eve_rah(
-        client=client,
-        basic_info=eve_basic_info,
-        resos=(1, 1, 1, 0),
-        shift_amount=10)
+    eve_rah_id = make_eve_rah(client=client, basic_info=eve_basic_info, resos=(1, 1, 1, 0), shift_amount=10)
     eve_ship_id = make_eve_ship(client=client, basic_info=eve_basic_info, resos=(0.5, 0.65, 0.59, 0.51))
     eve_implant_attr1_id = client.mk_eve_attr()
     eve_implant_attr2_id = client.mk_eve_attr()

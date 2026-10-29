@@ -55,9 +55,7 @@ def test_on_affector_item(client, consts):
         op=consts.EveModOp.post_percent,
         affector_attr_id=eve_affector_attr_id,
         affectee_attr_id=eve_affectee_attr_id)
-    eve_module_effect_id = client.mk_eve_effect(
-        cat_id=consts.EveEffCat.target,
-        mod_info=[eve_module_mod])
+    eve_module_effect_id = client.mk_eve_effect(cat_id=consts.EveEffCat.target, mod_info=[eve_module_mod])
     eve_affector_module1_id = client.mk_eve_item(
         attrs={eve_affector_attr_id: -60, eve_resist_def_attr_id: eve_resist_attr1_id},
         eff_ids=[eve_module_effect_id],

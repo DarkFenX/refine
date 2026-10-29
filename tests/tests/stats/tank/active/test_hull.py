@@ -166,8 +166,7 @@ def test_time(client, consts):
     api_tgt_fit_stats = api_tgt_fit.get_stats(options=FitStatsOptions(
         rps=[StatsOptionRps(time=StatTimeBurst())]))
     assert api_tgt_fit_stats.rps.one().hull == [approx(5), approx(45.533333), ANY_VALUE]
-    api_tgt_ship_stats = api_tgt_ship.get_stats(options=ItemStatsOptions(
-        rps=[StatsOptionRps(time=StatTimeBurst())]))
+    api_tgt_ship_stats = api_tgt_ship.get_stats(options=ItemStatsOptions(rps=[StatsOptionRps(time=StatTimeBurst())]))
     assert api_tgt_ship_stats.rps.one().hull == [approx(5), approx(45.533333), ANY_VALUE]
     # Sim without specified time - looped stats
     api_tgt_fit_stats = api_tgt_fit.get_stats(options=FitStatsOptions(

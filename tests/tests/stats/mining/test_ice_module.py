@@ -374,18 +374,15 @@ def test_time(client, consts):
     api_fleet_stats = api_fleet.get_stats(options=FleetStatsOptions(
         mps=[StatsOptionFitMining(time=StatTimeBurst())]))
     assert api_fleet_stats.mps.one().ice == [approx(15.37037), approx(19.851852)]
-    api_fit_stats = api_fit.get_stats(options=FitStatsOptions(
-        mps=[StatsOptionFitMining(time=StatTimeBurst())]))
+    api_fit_stats = api_fit.get_stats(options=FitStatsOptions(mps=[StatsOptionFitMining(time=StatTimeBurst())]))
     assert api_fit_stats.mps.one().ice == [approx(15.37037), approx(19.851852)]
-    api_module_stats = api_module.get_stats(options=ItemStatsOptions(
-        mps=[StatsOptionItemMining(time=StatTimeBurst())]))
+    api_module_stats = api_module.get_stats(options=ItemStatsOptions(mps=[StatsOptionItemMining(time=StatTimeBurst())]))
     assert api_module_stats.mps.one().ice == [approx(15.37037), approx(19.851852)]
     # Sim without specified time - looped stats
     api_fleet_stats = api_fleet.get_stats(options=FleetStatsOptions(
         mps=[StatsOptionFitMining(time=StatTimeSim(time=None))]))
     assert api_fleet_stats.mps.one().ice == [approx(15.37037), approx(19.851852)]
-    api_fit_stats = api_fit.get_stats(options=FitStatsOptions(
-        mps=[StatsOptionFitMining(time=StatTimeSim(time=None))]))
+    api_fit_stats = api_fit.get_stats(options=FitStatsOptions(mps=[StatsOptionFitMining(time=StatTimeSim(time=None))]))
     assert api_fit_stats.mps.one().ice == [approx(15.37037), approx(19.851852)]
     api_module_stats = api_module.get_stats(options=ItemStatsOptions(
         mps=[StatsOptionItemMining(time=StatTimeSim(time=None))]))
@@ -394,8 +391,7 @@ def test_time(client, consts):
     api_fleet_stats = api_fleet.get_stats(options=FleetStatsOptions(
         mps=[StatsOptionFitMining(time=StatTimeSim(time=67))]))
     assert api_fleet_stats.mps.one().ice == [0, 0]
-    api_fit_stats = api_fit.get_stats(options=FitStatsOptions(
-        mps=[StatsOptionFitMining(time=StatTimeSim(time=67))]))
+    api_fit_stats = api_fit.get_stats(options=FitStatsOptions(mps=[StatsOptionFitMining(time=StatTimeSim(time=67))]))
     assert api_fit_stats.mps.one().ice == [0, 0]
     api_module_stats = api_module.get_stats(options=ItemStatsOptions(
         mps=[StatsOptionItemMining(time=StatTimeSim(time=67))]))
@@ -404,8 +400,7 @@ def test_time(client, consts):
     api_fleet_stats = api_fleet.get_stats(options=FleetStatsOptions(
         mps=[StatsOptionFitMining(time=StatTimeSim(time=68))]))
     assert api_fleet_stats.mps.one().ice == [approx(15.257353), approx(19.705882)]
-    api_fit_stats = api_fit.get_stats(options=FitStatsOptions(
-        mps=[StatsOptionFitMining(time=StatTimeSim(time=68))]))
+    api_fit_stats = api_fit.get_stats(options=FitStatsOptions(mps=[StatsOptionFitMining(time=StatTimeSim(time=68))]))
     assert api_fit_stats.mps.one().ice == [approx(15.257353), approx(19.705882)]
     api_module_stats = api_module.get_stats(options=ItemStatsOptions(
         mps=[StatsOptionItemMining(time=StatTimeSim(time=68))]))

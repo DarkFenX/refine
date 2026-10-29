@@ -129,10 +129,7 @@ def test_fighter_mjd_cloak(client, consts):
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
     api_fit.set_ship(type_id=eve_ship_id)
-    api_fit.add_fighter(
-        type_id=eve_fighter_id,
-        state=consts.ApiMinionState.engaging,
-        abilities={eve_mjd_abil_id: True})
+    api_fit.add_fighter(type_id=eve_fighter_id, state=consts.ApiMinionState.engaging, abilities={eve_mjd_abil_id: True})
     api_fit.add_module(type_id=eve_cloak_id, state=consts.ApiModuleState.active)
     # Verification
     assert api_fit.validate(options=ValOptions(cloaking_blocked=True)).passed is True

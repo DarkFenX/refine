@@ -5,16 +5,10 @@ def test_specified_same(client, consts):
     # Autocharges which have the same type ID
     eve_autocharge_attr_id = client.mk_eve_attr(id_=consts.EveAttr.ftr_abil_launch_bomb_type)
     eve_attr_id = client.mk_eve_attr()
-    eve_effect_id = client.mk_eve_effect(
-        id_=consts.EveEffect.ftr_abil_launch_bomb,
-        cat_id=consts.EveEffCat.active)
+    eve_effect_id = client.mk_eve_effect(id_=consts.EveEffect.ftr_abil_launch_bomb, cat_id=consts.EveEffCat.active)
     eve_autocharge_id = client.mk_eve_item(attrs={eve_attr_id: 50})
-    eve_fighter1_id = client.mk_eve_fighter(
-        attrs={eve_autocharge_attr_id: eve_autocharge_id},
-        eff_ids=[eve_effect_id])
-    eve_fighter2_id = client.mk_eve_fighter(
-        attrs={eve_autocharge_attr_id: eve_autocharge_id},
-        eff_ids=[eve_effect_id])
+    eve_fighter1_id = client.mk_eve_fighter(attrs={eve_autocharge_attr_id: eve_autocharge_id}, eff_ids=[eve_effect_id])
+    eve_fighter2_id = client.mk_eve_fighter(attrs={eve_autocharge_attr_id: eve_autocharge_id}, eff_ids=[eve_effect_id])
     client.create_sources()
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
@@ -40,9 +34,7 @@ def test_specified_different(client, consts):
     eve_autocharge_attr_id = client.mk_eve_attr(id_=consts.EveAttr.ftr_abil_launch_bomb_type)
     eve_attr1_id = client.mk_eve_attr()
     eve_attr2_id = client.mk_eve_attr()
-    eve_effect_id = client.mk_eve_effect(
-        id_=consts.EveEffect.ftr_abil_launch_bomb,
-        cat_id=consts.EveEffCat.active)
+    eve_effect_id = client.mk_eve_effect(id_=consts.EveEffect.ftr_abil_launch_bomb, cat_id=consts.EveEffCat.active)
     eve_autocharge1_id = client.mk_eve_item(attrs={eve_attr1_id: 50})
     eve_autocharge2_id = client.mk_eve_item(attrs={eve_attr2_id: 70})
     eve_fighter1_id = client.mk_eve_fighter(attrs={eve_autocharge_attr_id: eve_autocharge1_id}, eff_ids=[eve_effect_id])
@@ -70,9 +62,7 @@ def test_specified_different(client, consts):
 def test_valid_to_invalid_reference_to_valid(client, consts):
     eve_autocharge_attr_id = client.mk_eve_attr(id_=consts.EveAttr.ftr_abil_launch_bomb_type)
     eve_attr_id = client.mk_eve_attr()
-    eve_effect_id = client.mk_eve_effect(
-        id_=consts.EveEffect.ftr_abil_launch_bomb,
-        cat_id=consts.EveEffCat.active)
+    eve_effect_id = client.mk_eve_effect(id_=consts.EveEffect.ftr_abil_launch_bomb, cat_id=consts.EveEffCat.active)
     eve_autocharge1_id = client.mk_eve_item(attrs={eve_attr_id: 50})
     eve_autocharge2_id = client.alloc_item_id()
     eve_fighter1_id = client.mk_eve_fighter(attrs={eve_autocharge_attr_id: eve_autocharge1_id}, eff_ids=[eve_effect_id])
@@ -106,9 +96,7 @@ def test_valid_to_invalid_reference_to_valid(client, consts):
 def test_valid_to_no_reference_to_valid(client, consts):
     eve_autocharge_attr_id = client.mk_eve_attr(id_=consts.EveAttr.ftr_abil_launch_bomb_type)
     eve_attr_id = client.mk_eve_attr()
-    eve_effect_id = client.mk_eve_effect(
-        id_=consts.EveEffect.ftr_abil_launch_bomb,
-        cat_id=consts.EveEffCat.active)
+    eve_effect_id = client.mk_eve_effect(id_=consts.EveEffect.ftr_abil_launch_bomb, cat_id=consts.EveEffCat.active)
     eve_autocharge1_id = client.mk_eve_item(attrs={eve_attr_id: 50})
     eve_fighter1_id = client.mk_eve_fighter(attrs={eve_autocharge_attr_id: eve_autocharge1_id}, eff_ids=[eve_effect_id])
     eve_fighter2_id = client.mk_eve_fighter(eff_ids=[eve_effect_id])

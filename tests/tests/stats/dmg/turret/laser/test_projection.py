@@ -285,8 +285,7 @@ def test_crit(client, consts):
         client=client, basic_info=eve_basic_info, dmgs=(20, 12, 0, 0), volume=1,
         get_damaged=1, hp=1, vol_dmg=0.01, vol_chance=0.1)
     eve_src_ship_id = make_eve_ship(client=client, basic_info=eve_basic_info, radius=500, speed=1550)
-    eve_tgt_ship_id = make_eve_ship(
-        client=client, basic_info=eve_basic_info, radius=215, speed=1600, sig_radius=1880)
+    eve_tgt_ship_id = make_eve_ship(client=client, basic_info=eve_basic_info, radius=215, speed=1600, sig_radius=1880)
     client.create_sources()
     api_sol = client.create_sol()
     api_src_fit = api_sol.create_fit()

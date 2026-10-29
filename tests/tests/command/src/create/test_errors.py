@@ -27,9 +27,7 @@ def test_params_malformed(client):
 def test_data_types_key_prefix(client, log):
 
     def hook_data_prim(prim_data: EvePrimitives):
-        prim_data.types = {
-            f'str{k}' if k == eve_item1_id else k: v
-            for k, v in prim_data.types.items()}
+        prim_data.types = {f'str{k}' if k == eve_item1_id else k: v for k, v in prim_data.types.items()}
 
     # Same group ID just to avoid cleanup
     eve_group_id = client.mk_eve_item_group()
@@ -89,9 +87,7 @@ def test_data_types_json_closing_brace_absent(client):
 def test_data_typedogma_key_prefix(client, log):
 
     def hook_data_prim(prim_data: EvePrimitives):
-        prim_data.typedogma = {
-            f'pre{k}' if k == eve_item1_id else k: v
-            for k, v in prim_data.typedogma.items()}
+        prim_data.typedogma = {f'pre{k}' if k == eve_item1_id else k: v for k, v in prim_data.typedogma.items()}
 
     eve_attr_id = client.mk_eve_attr()
     eve_effect_id = client.mk_eve_effect()
@@ -225,9 +221,7 @@ def test_data_dogmaattributes_json_opening_brace_absent(client):
 def test_data_dogmaeffects_key_symbols(client, log):
 
     def hook_data_prim(prim_data: EvePrimitives):
-        prim_data.dogmaeffects = {
-            '#&!' if k == eve_effect1_id else k: v
-            for k, v in prim_data.dogmaeffects.items()}
+        prim_data.dogmaeffects = {'#&!' if k == eve_effect1_id else k: v for k, v in prim_data.dogmaeffects.items()}
 
     eve_effect1_id = client.mk_eve_effect()
     eve_effect2_id = client.mk_eve_effect()

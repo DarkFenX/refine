@@ -10,10 +10,7 @@ def test_fail_single(client, consts):
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
     api_fit.set_ship(type_id=eve_ship_id)
-    api_module = api_fit.add_module(
-        type_id=eve_module_id,
-        rack=consts.Rack.high,
-        state=consts.ApiModuleState.offline)
+    api_module = api_fit.add_module(type_id=eve_module_id, rack=consts.Rack.high, state=consts.ApiModuleState.offline)
     # Verification
     api_stats = api_fit.get_stats(options=FitStatsOptions(high_slots=True))
     assert api_stats.high_slots.one() == (1, 0)
@@ -34,14 +31,8 @@ def test_fail_multiple_ship(client, consts):
     api_fit = api_sol.create_fit()
     api_fit.set_ship(type_id=eve_ship_id)
     api_fit.add_module(type_id=eve_module_id, rack=consts.Rack.high, state=consts.ApiModuleState.offline)
-    api_module2 = api_fit.add_module(
-        type_id=eve_module_id,
-        rack=consts.Rack.high,
-        state=consts.ApiModuleState.offline)
-    api_module3 = api_fit.add_module(
-        type_id=eve_module_id,
-        rack=consts.Rack.high,
-        state=consts.ApiModuleState.offline)
+    api_module2 = api_fit.add_module(type_id=eve_module_id, rack=consts.Rack.high, state=consts.ApiModuleState.offline)
+    api_module3 = api_fit.add_module(type_id=eve_module_id, rack=consts.Rack.high, state=consts.ApiModuleState.offline)
     # Verification
     api_stats = api_fit.get_stats(options=FitStatsOptions(high_slots=True))
     assert api_stats.high_slots.one() == (3, 1)
@@ -62,14 +53,8 @@ def test_fail_multiple_struct(client, consts):
     api_fit = api_sol.create_fit()
     api_fit.set_ship(type_id=eve_struct_id)
     api_fit.add_module(type_id=eve_module_id, rack=consts.Rack.high, state=consts.ApiModuleState.offline)
-    api_module2 = api_fit.add_module(
-        type_id=eve_module_id,
-        rack=consts.Rack.high,
-        state=consts.ApiModuleState.offline)
-    api_module3 = api_fit.add_module(
-        type_id=eve_module_id,
-        rack=consts.Rack.high,
-        state=consts.ApiModuleState.offline)
+    api_module2 = api_fit.add_module(type_id=eve_module_id, rack=consts.Rack.high, state=consts.ApiModuleState.offline)
+    api_module3 = api_fit.add_module(type_id=eve_module_id, rack=consts.Rack.high, state=consts.ApiModuleState.offline)
     # Verification
     api_stats = api_fit.get_stats(options=FitStatsOptions(high_slots=True))
     assert api_stats.high_slots.one() == (3, 1)
@@ -271,10 +256,7 @@ def test_modified_max(client, consts):
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
     api_ship = api_fit.set_ship(type_id=eve_ship_id)
-    api_module = api_fit.add_module(
-        type_id=eve_module_id,
-        rack=consts.Rack.high,
-        state=consts.ApiModuleState.offline)
+    api_module = api_fit.add_module(type_id=eve_module_id, rack=consts.Rack.high, state=consts.ApiModuleState.offline)
     # Verification
     assert api_ship.update().attrs[eve_max_attr_id].modified == approx(0)
     api_stats = api_fit.get_stats(options=FitStatsOptions(high_slots=True))
@@ -305,10 +287,7 @@ def test_fractional_max(client, consts):
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
     api_fit.set_ship(type_id=eve_ship1_id)
-    api_module = api_fit.add_module(
-        type_id=eve_module_id,
-        rack=consts.Rack.high,
-        state=consts.ApiModuleState.offline)
+    api_module = api_fit.add_module(type_id=eve_module_id, rack=consts.Rack.high, state=consts.ApiModuleState.offline)
     # Verification
     api_stats = api_fit.get_stats(options=FitStatsOptions(high_slots=True))
     assert api_stats.high_slots.one() == (1, 0)
@@ -334,10 +313,7 @@ def test_no_ship(client, consts):
     client.create_sources()
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
-    api_module = api_fit.add_module(
-        type_id=eve_module_id,
-        rack=consts.Rack.high,
-        state=consts.ApiModuleState.offline)
+    api_module = api_fit.add_module(type_id=eve_module_id, rack=consts.Rack.high, state=consts.ApiModuleState.offline)
     # Verification
     api_stats = api_fit.get_stats(options=FitStatsOptions(high_slots=True))
     assert api_stats.high_slots.one() == (1, None)
@@ -356,10 +332,7 @@ def test_no_value_max(client, consts):
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
     api_fit.set_ship(type_id=eve_ship_id)
-    api_module = api_fit.add_module(
-        type_id=eve_module_id,
-        rack=consts.Rack.high,
-        state=consts.ApiModuleState.offline)
+    api_module = api_fit.add_module(type_id=eve_module_id, rack=consts.Rack.high, state=consts.ApiModuleState.offline)
     # Verification
     api_stats = api_fit.get_stats(options=FitStatsOptions(high_slots=True))
     assert api_stats.high_slots.one() == (1, 0)
@@ -378,10 +351,7 @@ def test_no_attr_max(client, consts):
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
     api_fit.set_ship(type_id=eve_ship_id)
-    api_module = api_fit.add_module(
-        type_id=eve_module_id,
-        rack=consts.Rack.high,
-        state=consts.ApiModuleState.offline)
+    api_module = api_fit.add_module(type_id=eve_module_id, rack=consts.Rack.high, state=consts.ApiModuleState.offline)
     # Verification - when output attr does not exist, it is assumed to be 0
     api_val = api_fit.validate(options=ValOptions(high_slot_count=True))
     assert api_val.passed is False
@@ -399,10 +369,7 @@ def test_not_loaded_user(client, consts):
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
     api_fit.set_ship(type_id=eve_ship_id)
-    api_module = api_fit.add_module(
-        type_id=eve_module_id,
-        rack=consts.Rack.high,
-        state=consts.ApiModuleState.offline)
+    api_module = api_fit.add_module(type_id=eve_module_id, rack=consts.Rack.high, state=consts.ApiModuleState.offline)
     # Verification
     api_stats = api_fit.get_stats(options=FitStatsOptions(high_slots=True))
     assert api_stats.high_slots.one() == (1, 0)
@@ -421,10 +388,7 @@ def test_not_loaded_ship(client, consts):
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
     api_fit.set_ship(type_id=eve_ship_id)
-    api_module = api_fit.add_module(
-        type_id=eve_module_id,
-        rack=consts.Rack.high,
-        state=consts.ApiModuleState.offline)
+    api_module = api_fit.add_module(type_id=eve_module_id, rack=consts.Rack.high, state=consts.ApiModuleState.offline)
     # Verification
     api_stats = api_fit.get_stats(options=FitStatsOptions(high_slots=True))
     assert api_stats.high_slots.one() == (1, None)
@@ -444,10 +408,7 @@ def test_criterion_module_state(client, consts):
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
     api_fit.set_ship(type_id=eve_ship_id)
-    api_module = api_fit.add_module(
-        type_id=eve_module_id,
-        rack=consts.Rack.high,
-        state=consts.ApiModuleState.offline)
+    api_module = api_fit.add_module(type_id=eve_module_id, rack=consts.Rack.high, state=consts.ApiModuleState.offline)
     # Verification
     api_stats = api_fit.get_stats(options=FitStatsOptions(high_slots=True))
     assert api_stats.high_slots.one() == (1, 0)

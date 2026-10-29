@@ -2,9 +2,7 @@ from fw import check_no_field
 
 
 def test_charge_count(client, consts):
-    eve_primary_effect_id = client.mk_eve_effect(
-        id_=consts.EveEffect.ftr_abil_attack_m,
-        cat_id=consts.EveEffCat.target)
+    eve_primary_effect_id = client.mk_eve_effect(id_=consts.EveEffect.ftr_abil_attack_m, cat_id=consts.EveEffCat.target)
     eve_secondary_effect_id = client.mk_eve_effect(
         id_=consts.EveEffect.ftr_abil_missiles,
         cat_id=consts.EveEffCat.target)

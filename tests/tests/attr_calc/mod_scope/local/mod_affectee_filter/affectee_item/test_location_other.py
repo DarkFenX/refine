@@ -17,9 +17,7 @@ def test_affected_charge_bundled(client, consts):
     client.create_sources()
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
-    api_module = api_fit.add_module(
-        type_id=eve_affector_item_id,
-        charge_type_id=eve_affectee_item_id)
+    api_module = api_fit.add_module(type_id=eve_affector_item_id, charge_type_id=eve_affectee_item_id)
     assert api_module.update().charge.attrs[eve_affectee_attr_id].modified == approx(120)
 
 

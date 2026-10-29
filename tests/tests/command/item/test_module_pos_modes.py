@@ -11,10 +11,7 @@ def test_add_append(client, consts):
     client.create_sources()
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
-    api_module1 = api_fit.add_module(
-        type_id=eve_module_id,
-        rack=consts.Rack.high,
-        add_mode=consts.ApiModAddMode.append)
+    api_module1 = api_fit.add_module(type_id=eve_module_id, rack=consts.Rack.high, add_mode=consts.ApiModAddMode.append)
     # Verification
     assert flatten(rack=api_fit.update().modules.high) == [api_module1.id]
     assert api_module1.update().pos == 0
@@ -56,10 +53,7 @@ def test_add_equip(client, consts):
     client.create_sources()
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
-    api_module1 = api_fit.add_module(
-        type_id=eve_module_id,
-        rack=consts.Rack.high,
-        add_mode=consts.ApiModAddMode.equip)
+    api_module1 = api_fit.add_module(type_id=eve_module_id, rack=consts.Rack.high, add_mode=consts.ApiModAddMode.equip)
     # Verification
     assert flatten(rack=api_fit.update().modules.high) == [api_module1.id]
     assert api_module1.update().pos == 0

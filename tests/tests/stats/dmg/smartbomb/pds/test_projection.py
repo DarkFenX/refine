@@ -35,8 +35,7 @@ def test_range(client, consts):
     assert api_src_fit_dmg_stats.volley == [approx(625), approx(625), approx(625), approx(625)]
     api_module_proj_dmg_stats = api_src_module_proj.get_stats(options=ItemStatsOptions(
         dmg=[StatsOptionItemDmg(projectee_item_id=api_tgt_ship.id)])).dmg.one()
-    assert api_module_proj_dmg_stats.dps == [
-        approx(26.041667), approx(26.041667), approx(26.041667), approx(26.041667)]
+    assert api_module_proj_dmg_stats.dps == [approx(26.041667), approx(26.041667), approx(26.041667), approx(26.041667)]
     assert api_module_proj_dmg_stats.volley == [approx(312.5), approx(312.5), approx(312.5), approx(312.5)]
     api_module_nonproj_dmg_stats = api_src_module_nonproj.get_stats(options=ItemStatsOptions(
         dmg=[StatsOptionItemDmg(projectee_item_id=api_tgt_ship.id)])).dmg.one()

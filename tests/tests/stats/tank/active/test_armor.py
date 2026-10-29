@@ -207,8 +207,7 @@ def test_hp_limit_and_range(client, consts):
     api_tgt_fit = api_sol.create_fit()
     api_tgt_ship = api_tgt_fit.set_ship(type_id=eve_tgt_ship_id, coordinates=(15270, 0, 0))
     api_tgt_fit.add_module(type_id=eve_module_lar_id, state=consts.ApiModuleState.active)
-    api_tgt_fit.add_module(
-        type_id=eve_module_laar_id, state=consts.ApiModuleState.active, charge_type_id=eve_paste_id)
+    api_tgt_fit.add_module(type_id=eve_module_laar_id, state=consts.ApiModuleState.active, charge_type_id=eve_paste_id)
     api_module_rar.change_module(add_proj_item_ids=[api_tgt_ship.id])
     api_module_raar.change_module(add_proj_item_ids=[api_tgt_ship.id])
     api_module_rsar.change_module(add_proj_item_ids=[api_tgt_ship.id])
@@ -292,8 +291,7 @@ def test_time(client, consts):
     api_tgt_fit_stats = api_tgt_fit.get_stats(options=FitStatsOptions(
         rps=[StatsOptionRps(time=StatTimeBurst())]))
     assert api_tgt_fit_stats.rps.one().armor == [approx(96.583333), approx(316.233333), ANY_VALUE]
-    api_tgt_ship_stats = api_tgt_ship.get_stats(options=ItemStatsOptions(
-        rps=[StatsOptionRps(time=StatTimeBurst())]))
+    api_tgt_ship_stats = api_tgt_ship.get_stats(options=ItemStatsOptions(rps=[StatsOptionRps(time=StatTimeBurst())]))
     assert api_tgt_ship_stats.rps.one().armor == [approx(96.583333), approx(316.233333), ANY_VALUE]
     # Sim without specified time - looped stats. Spool value is ignored and just max spool is taken
     api_tgt_fit_stats = api_tgt_fit.get_stats(options=FitStatsOptions(rps=[
