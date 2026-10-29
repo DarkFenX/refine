@@ -8,7 +8,6 @@ use crate::{
 struct ItemUIds {
     boosters: Vec<UItemId>,
     characters: Vec<UItemId>,
-    charges: Vec<UItemId>,
     drones: Vec<UItemId>,
     fighters: Vec<UItemId>,
     fw_effects: Vec<UItemId>,
@@ -28,7 +27,6 @@ impl ItemUIds {
         let mut data = Self {
             boosters: Vec::new(),
             characters: Vec::new(),
-            charges: Vec::new(),
             drones: Vec::new(),
             fighters: Vec::new(),
             fw_effects: Vec::new(),
@@ -49,7 +47,8 @@ impl ItemUIds {
                 UItem::Autocharge(..) => (),
                 UItem::Booster(..) => data.boosters.push(item_uid),
                 UItem::Character(..) => data.characters.push(item_uid),
-                UItem::Charge(..) => data.charges.push(item_uid),
+                // Charges are unloaded/loaded by whichever item is carrying them (e.g. module)
+                UItem::Charge(..) => (),
                 UItem::Drone(..) => data.drones.push(item_uid),
                 UItem::Fighter(..) => data.fighters.push(item_uid),
                 UItem::FwEffect(..) => data.fw_effects.push(item_uid),
@@ -93,7 +92,6 @@ impl SolarSystem {
         let ItemUIds {
             boosters,
             characters,
-            charges,
             drones,
             fighters,
             fw_effects,
@@ -143,7 +141,7 @@ impl SolarSystem {
             SolarSystem::util_remove_implant(&mut self.u_data, &mut self.svc, implant_uid, &mut self.cache.eupdates);
         }
         for &module_uid in modules.iter() {
-            SolarSystem::util_remove_module_with_charge_act(
+            SolarSystem::util_remove_module_with_charge(
                 &mut self.u_data,
                 &mut self.svc,
                 module_uid,
@@ -189,16 +187,11 @@ impl SolarSystem {
                 &mut self.cache.eupdates,
             );
         }
-        // Charges go last, since unloading its containing item can deactivate the charge
-        for &charge_uid in charges.iter() {
-            SolarSystem::util_remove_charge(&mut self.u_data, &mut self.svc, charge_uid, &mut self.cache.eupdates);
-        }
     }
     fn load_items(&mut self, item_uids: &ItemUIds) {
         let ItemUIds {
             boosters,
             characters,
-            charges,
             drones,
             fighters,
             fw_effects,
@@ -213,10 +206,6 @@ impl SolarSystem {
             subsystems,
             sw_effects,
         } = item_uids;
-        // Charges go first, other items which contain them can activate them later
-        for &charge_uid in charges.iter() {
-            SolarSystem::util_add_charge(&mut self.u_data, &mut self.svc, charge_uid, &mut self.cache.eupdates);
-        }
         for &booster_uid in boosters.iter() {
             SolarSystem::util_add_booster(&mut self.u_data, &mut self.svc, booster_uid, &mut self.cache.eupdates);
         }
@@ -242,7 +231,7 @@ impl SolarSystem {
             SolarSystem::util_add_implant(&mut self.u_data, &mut self.svc, implant_uid, &mut self.cache.eupdates);
         }
         for &module_uid in modules.iter() {
-            SolarSystem::util_add_module_with_charge_act(
+            SolarSystem::util_add_module_with_charge(
                 &mut self.u_data,
                 &mut self.svc,
                 module_uid,
