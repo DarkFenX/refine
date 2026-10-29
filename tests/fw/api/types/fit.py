@@ -254,10 +254,9 @@ class Fit(AttrDict):
             passing: list[int],
             failing: list[int],
     ) -> None:
-        # Fit which fails validation by itself makes try-fit fail every item, so check the fit first
-        assert self.validate_single(options=val_options, val_info_mode=ApiValInfoMode.simple).passed is True
+        returned = self.try_fit_items(type_ids=[*passing, *failing], val_options=val_options)
         # Try-fit is not guaranteed to keep order or duplicates
-        assert set(self.try_fit_items(type_ids=[*passing, *failing], val_options=val_options)) == set(passing)
+        assert set(returned) == set(passing)
 
     def change(
             self, *,

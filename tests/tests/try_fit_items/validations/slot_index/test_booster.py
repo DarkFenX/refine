@@ -44,6 +44,14 @@ def test_known_failures(client):
     api_booster3 = api_fit.add_booster(type_id=eve_booster1_id)
     # Verification
     api_fit.check_try_fit_items(
+        val_options=ValOptions(booster_slot_index=[api_booster1.id]),
+        passing=[],
+        failing=[eve_booster3_id, eve_booster1_id, eve_booster2_id])
+    api_fit.check_try_fit_items(
+        val_options=ValOptions(booster_slot_index=[api_booster3.id]),
+        passing=[],
+        failing=[eve_booster3_id, eve_booster1_id, eve_booster2_id])
+    api_fit.check_try_fit_items(
         val_options=ValOptions(booster_slot_index=[api_booster1.id, api_booster3.id]),
         passing=[eve_booster3_id],
         failing=[eve_booster1_id, eve_booster2_id])

@@ -42,6 +42,14 @@ def test_known_failures(client, consts):
     api_fit.add_rig(type_id=eve_rig2_id)
     # Verification
     api_fit.check_try_fit_items(
+        val_options=ValOptions(rig_size=[api_rig1.id]),
+        passing=[],
+        failing=[eve_rig2_id, eve_rig1_id])
+    api_fit.check_try_fit_items(
+        val_options=ValOptions(rig_size=[api_rig2.id]),
+        passing=[],
+        failing=[eve_rig2_id, eve_rig1_id])
+    api_fit.check_try_fit_items(
         val_options=ValOptions(rig_size=[api_rig1.id, api_rig2.id]),
         passing=[eve_rig2_id],
         failing=[eve_rig1_id])

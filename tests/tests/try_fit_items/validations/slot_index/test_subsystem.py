@@ -47,6 +47,14 @@ def test_known_failures(client, consts):
     api_subsystem3 = api_fit.add_subsystem(type_id=eve_subsystem1_id)
     # Verification
     api_fit.check_try_fit_items(
+        val_options=ValOptions(subsystem_slot_index=[api_subsystem1.id]),
+        passing=[],
+        failing=[eve_subsystem3_id, eve_subsystem1_id, eve_subsystem2_id])
+    api_fit.check_try_fit_items(
+        val_options=ValOptions(subsystem_slot_index=[api_subsystem3.id]),
+        passing=[],
+        failing=[eve_subsystem3_id, eve_subsystem1_id, eve_subsystem2_id])
+    api_fit.check_try_fit_items(
         val_options=ValOptions(subsystem_slot_index=[api_subsystem1.id, api_subsystem3.id]),
         passing=[eve_subsystem3_id],
         failing=[eve_subsystem1_id, eve_subsystem2_id])

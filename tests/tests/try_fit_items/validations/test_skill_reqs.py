@@ -220,6 +220,14 @@ def test_known_failures(client):
     api_module2 = api_fit.add_module(type_id=eve_module1_id)
     # Verification
     api_fit.check_try_fit_items(
+        val_options=ValOptions(skill_reqs=[api_module1.id]),
+        passing=[],
+        failing=[eve_module2_id, eve_module1_id])
+    api_fit.check_try_fit_items(
+        val_options=ValOptions(skill_reqs=[api_module2.id]),
+        passing=[],
+        failing=[eve_module2_id, eve_module1_id])
+    api_fit.check_try_fit_items(
         val_options=ValOptions(skill_reqs=[api_module1.id, api_module2.id]),
         passing=[eve_module2_id],
         failing=[eve_module1_id])

@@ -107,6 +107,14 @@ def test_known_failures(client, consts):
     api_drone3 = api_fit.add_drone(type_id=eve_drone3_id, state=consts.ApiMinionState.in_bay)
     # Verification
     api_fit.check_try_fit_items(
+        val_options=ValOptions(drone_group=[api_drone2.id]),
+        passing=[],
+        failing=[eve_drone1_id, eve_drone2_id, eve_drone3_id])
+    api_fit.check_try_fit_items(
+        val_options=ValOptions(drone_group=[api_drone3.id]),
+        passing=[],
+        failing=[eve_drone1_id, eve_drone2_id, eve_drone3_id])
+    api_fit.check_try_fit_items(
         val_options=ValOptions(drone_group=[api_drone2.id, api_drone3.id]),
         passing=[eve_drone1_id],
         failing=[eve_drone2_id, eve_drone3_id])

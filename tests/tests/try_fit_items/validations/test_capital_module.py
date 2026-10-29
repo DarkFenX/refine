@@ -56,6 +56,14 @@ def test_known_failures(client, consts):
     api_module2 = api_fit.add_module(type_id=eve_cap_module_id)
     # Verification
     api_fit.check_try_fit_items(
+        val_options=ValOptions(capital_module=[api_module1.id]),
+        passing=[],
+        failing=[eve_subcap_module_id, eve_cap_module_id])
+    api_fit.check_try_fit_items(
+        val_options=ValOptions(capital_module=[api_module2.id]),
+        passing=[],
+        failing=[eve_subcap_module_id, eve_cap_module_id])
+    api_fit.check_try_fit_items(
         val_options=ValOptions(capital_module=[api_module1.id, api_module2.id]),
         passing=[eve_subcap_module_id],
         failing=[eve_cap_module_id])

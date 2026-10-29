@@ -260,12 +260,28 @@ def test_known_failures(client, consts):
     api_module2 = api_fit.add_module(type_id=eve_limited_module_id)
     # Verification - no ship case has to be checked as well, since there is no-ship logic
     api_fit.check_try_fit_items(
+        val_options=ValOptions(ship_limit=[api_module1.id]),
+        passing=[],
+        failing=[eve_unlimited_module_id, eve_limited_module_id])
+    api_fit.check_try_fit_items(
+        val_options=ValOptions(ship_limit=[api_module2.id]),
+        passing=[],
+        failing=[eve_unlimited_module_id, eve_limited_module_id])
+    api_fit.check_try_fit_items(
         val_options=ValOptions(ship_limit=[api_module1.id, api_module2.id]),
         passing=[eve_unlimited_module_id],
         failing=[eve_limited_module_id])
     # Action
     api_fit.set_ship(type_id=eve_ship_id)
     # Verification
+    api_fit.check_try_fit_items(
+        val_options=ValOptions(ship_limit=[api_module1.id]),
+        passing=[],
+        failing=[eve_unlimited_module_id, eve_limited_module_id])
+    api_fit.check_try_fit_items(
+        val_options=ValOptions(ship_limit=[api_module2.id]),
+        passing=[],
+        failing=[eve_unlimited_module_id, eve_limited_module_id])
     api_fit.check_try_fit_items(
         val_options=ValOptions(ship_limit=[api_module1.id, api_module2.id]),
         passing=[eve_unlimited_module_id],

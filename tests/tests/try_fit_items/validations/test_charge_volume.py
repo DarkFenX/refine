@@ -50,6 +50,14 @@ def test_known_failures(client, consts):
     api_module3 = api_fit.add_module(type_id=eve_module_id, charge_type_id=eve_charge2_id)
     # Verification
     api_fit.check_try_fit_items(
+        val_options=ValOptions(charge_volume=[api_module2.charge.id]),
+        passing=[],
+        failing=[eve_charge1_id, eve_charge2_id])
+    api_fit.check_try_fit_items(
+        val_options=ValOptions(charge_volume=[api_module3.charge.id]),
+        passing=[],
+        failing=[eve_charge1_id, eve_charge2_id])
+    api_fit.check_try_fit_items(
         val_options=ValOptions(charge_volume=[api_module2.charge.id, api_module3.charge.id]),
         passing=[eve_charge1_id],
         failing=[eve_charge2_id])

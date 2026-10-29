@@ -151,6 +151,18 @@ def test_known_failures(client, consts):
     api_ship_service = api_fit.add_service(type_id=eve_ship_item_id)
     # Verification
     api_fit.check_try_fit_items(
+        val_options=ValOptions(item_vs_ship_kind=[api_ship_module.id, api_ship_rig.id]),
+        passing=[],
+        failing=[*eve_struct_item_ids, eve_other_item_id, *eve_ship_item_ids])
+    api_fit.check_try_fit_items(
+        val_options=ValOptions(item_vs_ship_kind=[api_ship_module.id, api_ship_service.id]),
+        passing=[],
+        failing=[*eve_struct_item_ids, eve_other_item_id, *eve_ship_item_ids])
+    api_fit.check_try_fit_items(
+        val_options=ValOptions(item_vs_ship_kind=[api_ship_rig.id, api_ship_service.id]),
+        passing=[],
+        failing=[*eve_struct_item_ids, eve_other_item_id, *eve_ship_item_ids])
+    api_fit.check_try_fit_items(
         val_options=ValOptions(item_vs_ship_kind=[api_ship_module.id, api_ship_rig.id, api_ship_service.id]),
         passing=[*eve_struct_item_ids, eve_other_item_id],
         failing=eve_ship_item_ids)

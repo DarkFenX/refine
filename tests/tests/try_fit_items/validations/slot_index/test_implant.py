@@ -44,6 +44,14 @@ def test_known_failures(client):
     api_implant3 = api_fit.add_implant(type_id=eve_implant1_id)
     # Verification
     api_fit.check_try_fit_items(
+        val_options=ValOptions(implant_slot_index=[api_implant1.id]),
+        passing=[],
+        failing=[eve_implant3_id, eve_implant1_id, eve_implant2_id])
+    api_fit.check_try_fit_items(
+        val_options=ValOptions(implant_slot_index=[api_implant3.id]),
+        passing=[],
+        failing=[eve_implant3_id, eve_implant1_id, eve_implant2_id])
+    api_fit.check_try_fit_items(
         val_options=ValOptions(implant_slot_index=[api_implant1.id, api_implant3.id]),
         passing=[eve_implant3_id],
         failing=[eve_implant1_id, eve_implant2_id])
