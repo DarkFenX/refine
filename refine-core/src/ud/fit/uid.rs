@@ -11,3 +11,21 @@ impl SlabId for UFitId {
         self.0
     }
 }
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Debugging
+////////////////////////////////////////////////////////////////////////////////////////////////////
+#[cfg(feature = "dev")]
+mod debug {
+    use super::*;
+    use crate::{dbg::DebugResult, ud::UData};
+
+    impl UFitId {
+        pub(crate) fn consistency_check(&self, u_data: &UData) -> DebugResult {
+            if u_data.fits.try_get(*self).is_none() {
+                return Err(Default::default());
+            }
+            Ok(())
+        }
+    }
+}

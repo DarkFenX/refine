@@ -11,3 +11,20 @@ impl SlabId for RAttrId {
         self.0
     }
 }
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Debugging
+////////////////////////////////////////////////////////////////////////////////////////////////////
+#[cfg(feature = "dev")]
+mod debug {
+    use super::*;
+    use crate::{dbg::DebugResult, ud::UData};
+
+    impl RAttrId {
+        pub(crate) fn consistency_check(&self, u_data: &UData) -> DebugResult {
+            // Will crash if attr ID is not valid
+            u_data.r_data.get_attr_by_rid(*self);
+            Ok(())
+        }
+    }
+}

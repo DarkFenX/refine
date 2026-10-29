@@ -11,3 +11,20 @@ impl SlabId for REffectId {
         self.0
     }
 }
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Debugging
+////////////////////////////////////////////////////////////////////////////////////////////////////
+#[cfg(feature = "dev")]
+mod debug {
+    use super::*;
+    use crate::{dbg::DebugResult, ud::UData};
+
+    impl REffectId {
+        pub(crate) fn consistency_check(&self, u_data: &UData) -> DebugResult {
+            // Will crash if effect ID is not valid
+            u_data.r_data.get_effect_by_rid(*self);
+            Ok(())
+        }
+    }
+}
