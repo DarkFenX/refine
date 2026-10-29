@@ -16,7 +16,5 @@ pub(crate) mod output;
 mod r_resist_exts;
 mod spool;
 mod svc;
-#[cfg(feature = "dev")]
-mod svce_debug;
 mod svce_notify;
 pub(crate) mod vast;
