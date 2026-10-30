@@ -67,6 +67,15 @@ def test_incorrect_projectee(client, consts):
         StatsOptionItemOutRps(projectee_item_id=api_implant.id),
         StatsOptionItemOutRps(projectee_item_id=api_tgt_ship.id)]))
     assert api_src_module_stats.outgoing_rps == [None, None, (0, approx(62.666667), 0)]
+    # Action
+    api_src_module.change_module(state=consts.ApiModuleState.online)
+    # Verification - options with incorrect projectee item IDs should not leave item state switched
+    api_src_module_stats = api_src_module.get_stats(options=ItemStatsOptions(outgoing_rps=[
+        StatsOptionItemOutRps(state=consts.ApiStatItemState.switch, projectee_item_id=api_tgt_tmp.id),
+        StatsOptionItemOutRps(state=consts.ApiStatItemState.switch, projectee_item_id=api_implant.id),
+        StatsOptionItemOutRps(state=consts.ApiStatItemState.switch, projectee_item_id=api_tgt_ship.id)]))
+    assert api_src_module_stats.outgoing_rps == [None, None, (0, approx(62.666667), 0)]
+    assert api_src_module.update().state == consts.ApiModuleState.online
 
 
 def test_incorrect_projectee_backref_sol(client, consts):

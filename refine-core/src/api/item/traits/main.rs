@@ -182,10 +182,11 @@ pub trait ItemMutCommon: ItemCommon {
         state_options: StatItemStateOptions,
         projectee_item_id: &ItemId,
     ) -> Result<StatDmgApplied, StatItemAppliedError<!>> {
-        let undo_steps = active_stat_prepare(self, charge_options, state_options);
         let item_uid = self.get_uid();
+        // Check projectee before switching states, so that its errors leave states untouched
+        let projectee_uid = self.get_sol().u_data.get_projectee_uid(projectee_item_id)?;
+        let undo_steps = active_stat_prepare(self, charge_options, state_options);
         let sol = self.get_sol_mut();
-        let projectee_uid = sol.u_data.get_projectee_uid(projectee_item_id)?;
         let result = sol
             .svc
             .get_stat_item_dmg_applied(
@@ -247,10 +248,11 @@ pub trait ItemMutCommon: ItemCommon {
         state_options: StatItemStateOptions,
         projectee_item_id: &ItemId,
     ) -> Result<PValue, StatItemAppliedError<!>> {
-        let undo_steps = active_stat_prepare(self, charge_options, state_options);
         let item_uid = self.get_uid();
+        // Check projectee before switching states, so that its errors leave states untouched
+        let projectee_uid = self.get_sol().u_data.get_projectee_uid(projectee_item_id)?;
+        let undo_steps = active_stat_prepare(self, charge_options, state_options);
         let sol = self.get_sol_mut();
-        let projectee_uid = sol.u_data.get_projectee_uid(projectee_item_id)?;
         let result = sol
             .svc
             .get_stat_item_outgoing_nps(
@@ -286,10 +288,11 @@ pub trait ItemMutCommon: ItemCommon {
         state_options: StatItemStateOptions,
         projectee_item_id: &ItemId,
     ) -> Result<StatOutReps, StatItemAppliedError<!>> {
-        let undo_steps = active_stat_prepare(self, StatItemChargeOptions::Exclude, state_options);
         let item_uid = self.get_uid();
+        // Check projectee before switching states, so that its errors leave states untouched
+        let projectee_uid = self.get_sol().u_data.get_projectee_uid(projectee_item_id)?;
+        let undo_steps = active_stat_prepare(self, StatItemChargeOptions::Exclude, state_options);
         let sol = self.get_sol_mut();
-        let projectee_uid = sol.u_data.get_projectee_uid(projectee_item_id)?;
         let result = sol
             .svc
             .get_stat_item_outgoing_rps(
@@ -324,10 +327,11 @@ pub trait ItemMutCommon: ItemCommon {
         state_options: StatItemStateOptions,
         projectee_item_id: &ItemId,
     ) -> Result<PValue, StatItemAppliedError<!>> {
-        let undo_steps = active_stat_prepare(self, StatItemChargeOptions::Exclude, state_options);
         let item_uid = self.get_uid();
+        // Check projectee before switching states, so that its errors leave states untouched
+        let projectee_uid = self.get_sol().u_data.get_projectee_uid(projectee_item_id)?;
+        let undo_steps = active_stat_prepare(self, StatItemChargeOptions::Exclude, state_options);
         let sol = self.get_sol_mut();
-        let projectee_uid = sol.u_data.get_projectee_uid(projectee_item_id)?;
         let result = sol
             .svc
             .get_stat_item_outgoing_cps(
