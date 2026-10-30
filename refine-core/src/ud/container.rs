@@ -53,10 +53,6 @@ where
     pub(crate) fn ext_id_by_int_id(&self, int_id: IntId) -> ExtId {
         self.get(int_id).lib_get_id()
     }
-    #[cfg(feature = "dev")]
-    pub(crate) fn try_get(&self, int_id: IntId) -> Option<&T> {
-        self.data.get(int_id)
-    }
     pub(crate) fn get(&self, int_id: IntId) -> &T {
         // Internal IDs are supposed to be valid throughout whole lib, so just unwrap
         self.data.get(int_id).unwrap()
@@ -79,17 +75,28 @@ where
     pub(crate) fn keys(&self) -> impl ExactSizeIterator<Item = IntId> {
         self.ext_id_to_int_id.values().copied()
     }
-    #[cfg(feature = "dev")]
-    pub(crate) fn values(&self) -> impl ExactSizeIterator<Item = &T> {
-        self.ext_id_to_int_id
-            .values()
-            .map(|&int_id| self.data.get(int_id).unwrap())
-    }
     pub(crate) fn values_mut(&mut self) -> impl ExactSizeIterator<Item = &mut T> {
         self.data.iter_mut().map(|(_, entity)| entity)
     }
     pub(crate) fn len(&self) -> usize {
         self.data.len()
+    }
+    ////////////////////////////////////////////////////////////////////////////////////////////////
+    // Undo support
+    ////////////////////////////////////////////////////////////////////////////////////////////////
+    pub(crate) fn detach(&mut self, int_id: IntId) {
+        let ext_id = self.get(int_id).lib_get_id();
+        self.ext_id_to_int_id.remove(&ext_id);
+    }
+    pub(crate) fn reattach(&mut self, int_id: IntId) {
+        let ext_id = self.get(int_id).lib_get_id();
+        self.ext_id_to_int_id.insert(ext_id, int_id);
+    }
+    pub(crate) fn get_id_counter(&self) -> ExtId {
+        self.counter
+    }
+    pub(crate) fn set_id_counter(&mut self, counter: ExtId) {
+        self.counter = counter;
     }
 }
 impl<T, ExtId, IntId, Err> Clone for UEntityContainer<T, ExtId, IntId, Err>
@@ -121,6 +128,14 @@ mod debug {
         IntId: Hash + SlabId,
         ExtId: Eq + Hash,
     {
+        pub(crate) fn try_get(&self, int_id: IntId) -> Option<&T> {
+            self.data.get(int_id)
+        }
+        pub(crate) fn values(&self) -> impl ExactSizeIterator<Item = &T> {
+            self.ext_id_to_int_id
+                .values()
+                .map(|&int_id| self.data.get(int_id).unwrap())
+        }
         pub(in crate::ud) fn consistency_check(&self) -> DebugResult {
             let Self {
                 data,

@@ -5,7 +5,7 @@
 //! before the change. The pre-rollback state is not exact: it is guaranteed to keep solar system's
 //! user settings, external IDs, and internal IDs of user entities (like fleets, fits, or items).
 
-use crate::{MinionState, ModuleState, ud::UItemId};
+use crate::{ItemId, MinionState, ModuleState, ud::UItemId};
 
 /// Inverse steps of changes done to a solar system while recording.
 #[derive(Clone)]
@@ -27,10 +27,11 @@ impl UndoLog {
         self.steps.push(step);
     }
     /// Starts recording, returning the point changes can be rolled back to.
-    pub(crate) fn savepoint(&mut self) -> UndoSavepoint {
+    pub(crate) fn savepoint(&mut self, item_id_counter: ItemId) -> UndoSavepoint {
         let savepoint = UndoSavepoint {
             len: self.steps.len(),
             was_recording: self.recording,
+            item_id_counter,
         };
         self.recording = true;
         savepoint
@@ -57,13 +58,16 @@ impl UndoLog {
 pub(crate) struct UndoSavepoint {
     len: usize,
     was_recording: bool,
+    // Rollback removes everything added after the savepoint, so ID allocation can resume from here
+    pub(crate) item_id_counter: ItemId,
 }
 
 /// Data needed to revert a single change done to a solar system.
 #[derive(Clone)]
-#[expect(clippy::enum_variant_names)]
 pub(crate) enum UndoStep {
     AutochargeState(UItemId, bool),
+    ChargeAdded(UItemId),
+    ChargeRemoved(UItemId),
     ChargeState(UItemId, bool),
     DroneState(UItemId, MinionState),
     FighterState(UItemId, MinionState),

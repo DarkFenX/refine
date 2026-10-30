@@ -110,11 +110,7 @@ impl<F, I> FitTryItemsCmdCtxFitGen<F, I> {
 
 impl FitTryItemsCmd {
     pub(crate) fn execute(self, core_fit: &mut rc::FitMut) -> Vec<ItemTypeId> {
-        // Execute in cloned sol, since at the present time try_fit_items() changes its state
-        let fit_id = core_fit.get_fit_id();
-        let mut cloned_sol = core_fit.get_sol().clone();
-        let mut cloned_fit = cloned_sol.get_fit_mut(&fit_id).unwrap();
-        cloned_fit.try_items(&self.type_ids, &self.val_options)
+        core_fit.try_items(&self.type_ids, &self.val_options)
     }
 }
 

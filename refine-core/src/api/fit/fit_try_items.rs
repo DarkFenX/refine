@@ -4,7 +4,7 @@ use crate::{
     AddMode, FitMut, ItemTypeId, MinionState, ModRack, ModuleState, PValue, RemoveMode, ServiceState, SolarSystem,
     ad::AItemId,
     rd::RState,
-    svc::vast::{ValOptionsInt, ValOptionsKfsInt},
+    svc::vast::ValOptionsInt,
     ud::{UData, UFitId, UItemId, UPhysics},
     val::{DetectedItemKind, ValOptions},
 };
@@ -15,10 +15,8 @@ use crate::{
 impl<'s> FitMut<'s> {
     pub fn try_items(&mut self, type_ids: &[ItemTypeId], val_options: &ValOptions) -> Vec<ItemTypeId> {
         let type_aids = type_ids.iter().map(|v| v.into_aid()).collect_vec();
-        let mut int_val_options = ValOptionsInt::from_pub(val_options, self.sol);
-        let type_aids = self
-            .sol
-            .internal_fit_try_items(self.uid, &type_aids, &mut int_val_options);
+        let int_val_options = ValOptionsInt::from_pub(val_options, self.sol);
+        let type_aids = self.sol.internal_fit_try_items(self.uid, &type_aids, &int_val_options);
         type_aids.into_iter().map(ItemTypeId::from_aid).collect()
     }
 }
@@ -31,7 +29,7 @@ impl SolarSystem {
         &mut self,
         fit_uid: UFitId,
         type_aids: &[AItemId],
-        val_options: &mut ValOptionsInt,
+        val_options: &ValOptionsInt,
     ) -> Vec<AItemId> {
         let mut valid = Vec::new();
         let mut charge_type_aids = Vec::new();
@@ -176,27 +174,19 @@ impl SolarSystem {
         &mut self,
         fit_uid: UFitId,
         mut charge_type_aids: Vec<AItemId>,
-        val_options: &mut ValOptionsInt,
+        val_options: &ValOptionsInt,
         valid: &mut Vec<AItemId>,
     ) {
         for module_uid in get_chargeable_modules(&self.u_data, fit_uid) {
             if charge_type_aids.is_empty() {
                 break;
             }
-            // Remove charge loaded into the module, including known failures, since tried charges
-            // can reuse its internal ID
-            let old_charge = match self.u_data.items.get(module_uid).get_charge_uid() {
-                Some(old_charge_uid) => {
-                    let old_type_aid = self.u_data.items.get(old_charge_uid).get_type_aid();
-                    let old_kfs = val_options.remove_kf(old_charge_uid);
-                    self.internal_remove_charge(old_charge_uid);
-                    Some(OldCharge {
-                        type_aid: old_type_aid,
-                        kfs: old_kfs,
-                    })
-                }
-                None => None,
-            };
+            // Charge loaded into the module stays detached while charges are tried, so tried
+            // charges never get its internal ID, and rollback puts it back as it was
+            let savepoint = self.internal_savepoint();
+            if let Some(old_charge_uid) = self.u_data.items.get(module_uid).get_charge_uid() {
+                self.internal_remove_charge(old_charge_uid);
+            }
             charge_type_aids.retain(|&charge_type_aid| {
                 // Skip charges which fail static checks
                 if !self
@@ -205,27 +195,18 @@ impl SolarSystem {
                 {
                     return true;
                 }
-                let charge_uid = self.internal_set_module_charge(module_uid, charge_type_aid);
+                let charge_savepoint = self.internal_savepoint();
+                self.internal_set_module_charge(module_uid, charge_type_aid);
                 let charge_valid = self.internal_validate_fit_fast(fit_uid, val_options);
-                self.internal_remove_charge(charge_uid);
+                self.internal_rollback(charge_savepoint);
                 if charge_valid {
                     valid.push(charge_type_aid);
                 }
                 !charge_valid
             });
-            // TODO: put removed charge back instead of creating a new one, once actions can be
-            // TODO: undone - new charge has a different item ID, and lacks old charge settings
-            if let Some(old_charge) = old_charge {
-                let charge_uid = self.internal_set_module_charge(module_uid, old_charge.type_aid);
-                val_options.add_kf(charge_uid, old_charge.kfs);
-            }
+            self.internal_rollback(savepoint);
         }
     }
-}
-
-struct OldCharge {
-    type_aid: AItemId,
-    kfs: ValOptionsKfsInt,
 }
 
 struct ChargeableModule {

@@ -43,28 +43,7 @@ impl ValOptionsInt {
     pub(in crate::svc::vast::val) fn get(&self, kind: ValKind) -> &ValOptionInt {
         &self.0[kind as usize]
     }
-    pub(crate) fn remove_kf(&mut self, item_uid: UItemId) -> ValOptionsKfsInt {
-        let mut kind_idxs = Vec::new();
-        for (kind_idx, option) in self.0.iter_mut().enumerate() {
-            if let ValOptionInt::Enabled(option) = option
-                && option.kfs.remove(&item_uid)
-            {
-                kind_idxs.push(kind_idx);
-            }
-        }
-        ValOptionsKfsInt(kind_idxs)
-    }
-    pub(crate) fn add_kf(&mut self, item_uid: UItemId, option_kfs: ValOptionsKfsInt) {
-        for kind_idx in option_kfs.0 {
-            if let ValOptionInt::Enabled(option) = &mut self.0[kind_idx] {
-                option.kfs.insert(item_uid);
-            }
-        }
-    }
 }
-
-/// Validations an item was a known failure for.
-pub(crate) struct ValOptionsKfsInt(Vec<usize>);
 
 #[derive(Clone)]
 pub(in crate::svc::vast::val) enum ValOptionInt {

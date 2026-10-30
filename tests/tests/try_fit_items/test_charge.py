@@ -130,6 +130,28 @@ def test_replaced(client, consts):
     assert api_module.update().charge.type_id == eve_charge1_id
 
 
+def test_restored(client, consts):
+    eve_capacity_attr_id = client.mk_eve_attr(id_=consts.EveAttr.capacity)
+    eve_effect_id = client.mk_eve_effect()
+    eve_charge1_id = client.mk_eve_charge(eff_ids=[eve_effect_id])
+    eve_charge2_id = client.mk_eve_charge()
+    eve_module_id = client.mk_eve_item(attrs={eve_capacity_attr_id: 1})
+    client.create_sources()
+    api_sol = client.create_sol()
+    api_fit = api_sol.create_fit()
+    api_module = api_fit.add_module(type_id=eve_module_id, charge_type_id=eve_charge1_id)
+    api_charge = api_module.charge
+    api_charge.change_charge(state=False, effect_modes={eve_effect_id: consts.ApiEffMode.force_run})
+    # Verification - charge which is put back after trying charges in its module keeps its item ID
+    # and settings
+    api_fit.check_try_fit_items(val_options=ValOptions(), passing=[eve_charge2_id], failing=[])
+    assert api_module.update().charge.id == api_charge.id
+    api_charge.update()
+    assert api_charge.type_id == eve_charge1_id
+    assert api_charge.state is False
+    assert api_charge.effects[eve_effect_id].mode == consts.ApiEffMode.force_run
+
+
 def test_uncharged_module_preferred(client, consts):
     eve_ban_attr_id = client.mk_eve_attr(id_=consts.EveAttr.disallow_in_empire_space)
     eve_capacity_attr_id = client.mk_eve_attr(id_=consts.EveAttr.capacity)

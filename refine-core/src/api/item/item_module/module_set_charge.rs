@@ -1,9 +1,7 @@
-use itertools::Itertools;
-
 use crate::{
     ad::AItemId,
     api::{ChargeMut, ItemTypeId, ModuleMut},
-    sol::SolarSystem,
+    sol::{SolarSystem, UndoStep},
     ud::{UCharge, UItem, UItemId},
 };
 
@@ -15,60 +13,26 @@ impl SolarSystem {
     ) -> UItemId {
         let u_module = self.u_data.items.get(module_uid).dc_module().unwrap();
         let fit_uid = u_module.get_fit_uid();
-        let module_projs = u_module.get_projs().iter().collect_vec();
-        let mut activated = None;
-        // Remove old charge, if it was set
-        if let Some(old_charge_uid) = u_module.get_charge_uid() {
-            // Remove outgoing projections
-            let old_u_charge = self.u_data.items.get(old_charge_uid).dc_charge().unwrap();
-            activated = Some(old_u_charge.get_activated());
-            if !old_u_charge.get_projs().is_empty() {
-                for (projectee_uid, _) in old_u_charge.get_projs().iter() {
-                    // Update services for charge being removed
-                    SolarSystem::util_remove_item_projection(
-                        &self.u_data,
-                        &mut self.svc,
-                        old_charge_uid,
-                        projectee_uid,
-                    );
-                    // Update user data for charge - do not touch projections container on charge
-                    // itself, because we're removing it anyway
-                    self.rev_projs.unreg_projectee(&old_charge_uid, projectee_uid);
-                }
-                let old_u_charge = self.u_data.items.get_mut(old_charge_uid).dc_charge_mut().unwrap();
-                old_u_charge.get_projs_mut().clear();
-            }
-            // Update services for charge being removed
-            SolarSystem::util_remove_charge(
-                &mut self.u_data,
-                &mut self.svc,
-                old_charge_uid,
-                &mut self.cache.eupdates,
-            );
-            // Update user data for charge - do not update module<->charge references because charge
-            // will be removed, and module will be updated later
-            self.u_data.items.remove(old_charge_uid);
-        };
-        let activated = match activated {
+        let activated = match u_module.get_charge_uid() {
             // Use data from old charge for activation, if it is available
-            Some(activated) => activated,
-            // Otherwise calculate from scratch
-            None => {
-                let module_u_item = self.u_data.items.get(module_uid);
-                let u_module = module_u_item.dc_module().unwrap();
-                match u_module.get_r_item_base() {
-                    Some(rib) if let Some(defeff_rid) = rib.defeff_rid => {
-                        self.u_data.r_data.get_effect_by_rid(defeff_rid).activates_charge()
-                            && u_module.get_reffs().is_some_and(|v| v.contains(&defeff_rid))
-                    }
-                    _ => false,
-                }
+            Some(old_charge_uid) => {
+                let old_u_charge = self.u_data.items.get(old_charge_uid).dc_charge().unwrap();
+                let activated = old_u_charge.get_activated();
+                self.internal_remove_charge(old_charge_uid);
+                activated
             }
+            // Otherwise calculate from scratch
+            None => match u_module.get_r_item_base() {
+                Some(rib) if let Some(defeff_rid) = rib.defeff_rid => {
+                    self.u_data.r_data.get_effect_by_rid(defeff_rid).activates_charge()
+                        && u_module.get_reffs().is_some_and(|v| v.contains(&defeff_rid))
+                }
+                _ => false,
+            },
         };
         // Set new charge
         let charge_item_id = self.u_data.items.alloc_id();
-        // Update user data
-        let u_charge = UCharge::new(
+        let mut u_charge = UCharge::new(
             charge_item_id,
             charge_type_aid,
             fit_uid,
@@ -77,37 +41,36 @@ impl SolarSystem {
             false,
             &self.u_data.r_data,
         );
-        let charge_u_item = UItem::Charge(u_charge);
-        let new_charge_uid = self.u_data.items.add(charge_u_item);
-        let u_module = self.u_data.items.get_mut(module_uid).dc_module_mut().unwrap();
-        u_module.set_charge_uid(Some(new_charge_uid));
-        // Update services
-        SolarSystem::util_add_charge(
-            &mut self.u_data,
-            &mut self.svc,
-            new_charge_uid,
-            &mut self.cache.eupdates,
-        );
-        // Reapply module projections to charge
-        if !module_projs.is_empty() {
-            let new_u_charge = self.u_data.items.get_mut(new_charge_uid).dc_charge_mut().unwrap();
-            for (projectee_uid, range) in module_projs.into_iter() {
-                new_u_charge.get_projs_mut().add(projectee_uid, range);
-                self.rev_projs.reg_projectee(new_charge_uid, projectee_uid);
-            }
-            let new_u_charge = self.u_data.items.get(new_charge_uid).dc_charge().unwrap();
-            for (projectee_uid, range) in new_u_charge.get_projs().iter() {
-                // Update services for charge
-                SolarSystem::util_add_item_projection(
-                    &self.u_data,
-                    &mut self.svc,
-                    new_charge_uid,
-                    projectee_uid,
-                    range,
-                );
-            }
+        // Charge projects whatever its module projects
+        let u_module = self.u_data.items.get(module_uid).dc_module().unwrap();
+        for (projectee_uid, range) in u_module.get_projs().iter() {
+            u_charge.get_projs_mut().add(projectee_uid, range);
         }
-        new_charge_uid
+        let charge_u_item = UItem::Charge(u_charge);
+        let charge_uid = self.u_data.items.add(charge_u_item);
+        self.attach_charge(module_uid, charge_uid);
+        if self.undo.is_recording() {
+            self.undo.record(UndoStep::ChargeAdded(charge_uid));
+        }
+        charge_uid
+    }
+    pub(in crate::api) fn internal_reattach_charge(&mut self, charge_uid: UItemId) {
+        self.u_data.items.reattach(charge_uid);
+        let u_charge = self.u_data.items.get(charge_uid).dc_charge().unwrap();
+        let module_uid = u_charge.get_cont_item_uid();
+        self.attach_charge(module_uid, charge_uid);
+    }
+    fn attach_charge(&mut self, module_uid: UItemId, charge_uid: UItemId) {
+        let u_module = self.u_data.items.get_mut(module_uid).dc_module_mut().unwrap();
+        u_module.set_charge_uid(Some(charge_uid));
+        // Update services
+        SolarSystem::util_add_charge(&mut self.u_data, &mut self.svc, charge_uid, &mut self.cache.eupdates);
+        // Apply projections
+        let u_charge = self.u_data.items.get(charge_uid).dc_charge().unwrap();
+        for (projectee_uid, range) in u_charge.get_projs().iter() {
+            self.rev_projs.reg_projectee(charge_uid, projectee_uid);
+            SolarSystem::util_add_item_projection(&self.u_data, &mut self.svc, charge_uid, projectee_uid, range);
+        }
     }
 }
 
