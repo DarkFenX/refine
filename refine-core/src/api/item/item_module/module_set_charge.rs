@@ -65,12 +65,7 @@ impl SolarSystem {
         u_module.set_charge_uid(Some(charge_uid));
         // Update services
         SolarSystem::util_add_charge(&mut self.u_data, &mut self.svc, charge_uid, &mut self.cache.eupdates);
-        // Apply projections
-        let u_charge = self.u_data.items.get(charge_uid).dc_charge().unwrap();
-        for (projectee_uid, range) in u_charge.get_projs().iter() {
-            self.rev_projs.reg_projectee(charge_uid, projectee_uid);
-            SolarSystem::util_add_item_projection(&self.u_data, &mut self.svc, charge_uid, projectee_uid, range);
-        }
+        SolarSystem::util_reg_item_projs(&self.u_data, &mut self.svc, &mut self.rev_projs, charge_uid);
     }
 }
 

@@ -1,7 +1,7 @@
 use crate::{
     api::{ModuleMut, ProjAddError, RangedProjMut, get_ship_rib},
     err::basic::{ItemReceiveProjError, ProjNotFoundError},
-    sol::SolarSystem,
+    sol::{SolarSystem, UndoStep},
     ud::{ItemId, UItemId, UProjData},
 };
 
@@ -54,6 +54,9 @@ impl SolarSystem {
         // Update services for charge
         if let Some(charge_uid) = charge_uid {
             SolarSystem::util_add_item_projection(&self.u_data, &mut self.svc, charge_uid, projectee_uid, u_proj_data);
+        }
+        if self.undo.is_recording() {
+            self.undo.record(UndoStep::ProjAdded(module_uid, projectee_uid));
         }
         Ok(())
     }

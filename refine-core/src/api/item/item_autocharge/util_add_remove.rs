@@ -13,7 +13,7 @@ struct AutochargeData {
 }
 
 impl SolarSystem {
-    pub(in crate::api::item) fn add_item_autocharges(
+    pub(in crate::api::item) fn util_add_item_autocharges(
         u_data: &mut UData,
         svc: &mut Svc,
         rev_projs: &mut RevProjs,
@@ -109,43 +109,60 @@ impl SolarSystem {
             cont_acs.set(ac_data.effect_rid, ac_data.autocharge_uid);
         }
     }
-    pub(in crate::api::item) fn remove_item_autocharges(
+    pub(in crate::api::item) fn util_remove_item_autocharges(
         u_data: &mut UData,
         svc: &mut Svc,
         rev_projs: &mut RevProjs,
         item_uid: UItemId,
         reuse_eupdates: &mut UEffectUpdates,
     ) {
-        let cont_u_item = u_data.items.get(item_uid);
-        let autocharge_uids = match cont_u_item.get_autocharges() {
+        SolarSystem::util_detach_item_autocharges(u_data, svc, rev_projs, item_uid, reuse_eupdates);
+        // Update items
+        let cont_u_item = u_data.items.get_mut(item_uid);
+        let Some(cont_acs) = cont_u_item.get_autocharges_mut() else {
+            return;
+        };
+        let autocharge_uids = cont_acs.values().collect_vec();
+        cont_acs.clear();
+        for ac_uid in autocharge_uids.into_iter() {
+            u_data.items.remove(ac_uid);
+        }
+    }
+    pub(in crate::api::item) fn util_detach_item_autocharges(
+        u_data: &mut UData,
+        svc: &mut Svc,
+        rev_projs: &mut RevProjs,
+        item_uid: UItemId,
+        reuse_eupdates: &mut UEffectUpdates,
+    ) {
+        let autocharge_uids = match u_data.items.get(item_uid).get_autocharges() {
             Some(cont_acs) => cont_acs.values().collect_vec(),
             None => return,
         };
-        if autocharge_uids.is_empty() {
-            return;
-        }
-        for &autocharge_uid in autocharge_uids.iter() {
-            let u_autocharge = u_data.items.get(autocharge_uid).dc_autocharge().unwrap();
-            if !u_autocharge.get_projs().is_empty() {
-                for projectee_uid in u_autocharge.get_projs().iter_projectees() {
-                    // Remove projections from services
-                    SolarSystem::util_remove_item_projection(u_data, svc, autocharge_uid, projectee_uid);
-                    // Update reverse projections (just because it's convenient to do it here)
-                    rev_projs.unreg_projectee(&autocharge_uid, projectee_uid);
-                }
-                let u_autocharge = u_data.items.get_mut(autocharge_uid).dc_autocharge_mut().unwrap();
-                u_autocharge.get_projs_mut().clear();
-            }
-            // Remove from services
+        for autocharge_uid in autocharge_uids.into_iter() {
+            SolarSystem::util_unreg_item_projs(u_data, svc, rev_projs, autocharge_uid);
             let autocharge_u_item = u_data.items.get_mut(autocharge_uid);
             autocharge_u_item.stop_all_reffs(reuse_eupdates, &u_data.r_data);
             SolarSystem::util_remove_item(u_data, svc, autocharge_uid, reuse_eupdates);
         }
-        // Update items
-        let cont_u_item = u_data.items.get_mut(item_uid);
-        cont_u_item.get_autocharges_mut().unwrap().clear();
-        for ac_uid in autocharge_uids.into_iter() {
-            u_data.items.remove(ac_uid);
+    }
+    /// Adds autocharges an item has in user data to services and to reverse projection tracker.
+    pub(in crate::api::item) fn util_reattach_item_autocharges(
+        u_data: &mut UData,
+        svc: &mut Svc,
+        rev_projs: &mut RevProjs,
+        item_uid: UItemId,
+        reuse_eupdates: &mut UEffectUpdates,
+    ) {
+        let autocharge_uids = match u_data.items.get(item_uid).get_autocharges() {
+            Some(cont_acs) => cont_acs.values().collect_vec(),
+            None => return,
+        };
+        for autocharge_uid in autocharge_uids.into_iter() {
+            let autocharge_u_item = u_data.items.get_mut(autocharge_uid);
+            autocharge_u_item.update_reffs(reuse_eupdates, &u_data.r_data);
+            SolarSystem::util_add_item(u_data, svc, autocharge_uid, reuse_eupdates);
+            SolarSystem::util_reg_item_projs(u_data, svc, rev_projs, autocharge_uid);
         }
     }
 }

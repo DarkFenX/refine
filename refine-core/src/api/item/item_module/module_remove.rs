@@ -2,7 +2,7 @@ use super::shared::get_fit_rack_mut;
 use crate::{
     api::{ModuleMut, RemoveMode},
     num::Index,
-    sol::SolarSystem,
+    sol::{SolarSystem, UndoStep},
     ud::UItemId,
 };
 
@@ -13,29 +13,11 @@ impl SolarSystem {
         let rack = u_module.get_rack();
         let pos = u_module.get_pos();
         let charge_uid = u_module.get_charge_uid();
-        // Remove outgoing projections for both module and charge
-        if !u_module.get_projs().is_empty() {
-            // Remove outgoing projections for module
-            for projectee_uid in u_module.get_projs().iter_projectees() {
-                // Remove module outgoing projections from services
-                SolarSystem::util_remove_item_projection(&self.u_data, &mut self.svc, module_uid, projectee_uid);
-                // Remove module outgoing projections from reverse projection tracker
-                self.rev_projs.unreg_projectee(&module_uid, projectee_uid);
-            }
-            let u_module = self.u_data.items.get_mut(module_uid).dc_module_mut().unwrap();
-            u_module.get_projs_mut().clear();
-            // Remove outgoing projections for charge
-            if let Some(charge_uid) = charge_uid {
-                let u_charge = self.u_data.items.get(charge_uid).dc_charge().unwrap();
-                for projectee_uid in u_charge.get_projs().iter_projectees() {
-                    // Remove charge outgoing projections from services
-                    SolarSystem::util_remove_item_projection(&self.u_data, &mut self.svc, charge_uid, projectee_uid);
-                    // Remove charge outgoing projections from reverse projection tracker
-                    self.rev_projs.unreg_projectee(&charge_uid, projectee_uid);
-                }
-                let u_charge = self.u_data.items.get_mut(charge_uid).dc_charge_mut().unwrap();
-                u_charge.get_projs_mut().clear();
-            }
+        // Remove outgoing projections for both module and charge; they keep them, in case they get
+        // reattached
+        SolarSystem::util_unreg_item_projs(&self.u_data, &mut self.svc, &mut self.rev_projs, module_uid);
+        if let Some(charge_uid) = charge_uid {
+            SolarSystem::util_unreg_item_projs(&self.u_data, &mut self.svc, &mut self.rev_projs, charge_uid);
         }
         // Remove charge from services
         if let Some(charge_uid) = charge_uid {
@@ -43,10 +25,8 @@ impl SolarSystem {
         }
         // Remove module from services
         SolarSystem::util_remove_module(&mut self.u_data, &mut self.svc, module_uid, &mut self.cache.eupdates);
-        // Update user data - not updating module<->charge references because both will be removed
-        if let Some(charge_uid) = charge_uid {
-            self.u_data.items.remove(charge_uid);
-        }
+        // Update user data - not updating module<->charge references because both are discarded
+        // together
         let u_fit_rack = get_fit_rack_mut(&mut self.u_data.fits, fit_uid, rack);
         match pos_mode {
             RemoveMode::Free => u_fit_rack.free(pos),
@@ -57,7 +37,10 @@ impl SolarSystem {
                 }
             }
         }
-        self.u_data.items.remove(module_uid);
+        if let Some(charge_uid) = charge_uid {
+            self.internal_discard_child_item(charge_uid);
+        }
+        self.internal_discard_item(module_uid, |module_uid| UndoStep::ModuleRemoved(module_uid, pos_mode));
     }
 }
 

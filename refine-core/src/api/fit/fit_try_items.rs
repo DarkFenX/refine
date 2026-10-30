@@ -1,7 +1,7 @@
 use itertools::Itertools;
 
 use crate::{
-    AddMode, FitMut, ItemTypeId, MinionState, ModRack, ModuleState, PValue, RemoveMode, ServiceState, SolarSystem,
+    AddMode, FitMut, ItemTypeId, MinionState, ModRack, ModuleState, PValue, ServiceState, SolarSystem,
     ad::AItemId,
     rd::RState,
     svc::vast::ValOptionsInt,
@@ -50,100 +50,89 @@ impl SolarSystem {
             }
             match item_kind {
                 DetectedItemKind::Booster => {
-                    let booster_uid = self.internal_add_booster(fit_uid, *type_aid);
+                    let savepoint = self.internal_savepoint();
+                    self.internal_add_booster(fit_uid, *type_aid);
                     if self.internal_validate_fit_fast(fit_uid, val_options) {
                         valid.push(*type_aid)
                     }
-                    self.internal_remove_booster(booster_uid);
+                    self.internal_rollback(savepoint);
                 }
                 // Charges are tried after all other items
                 DetectedItemKind::Charge => charge_type_aids.push(*type_aid),
                 DetectedItemKind::Drone => {
-                    let drone_uid = self.internal_add_drone(fit_uid, *type_aid, MinionState::InBay, None, u_physics);
+                    let savepoint = self.internal_savepoint();
+                    self.internal_add_drone(fit_uid, *type_aid, MinionState::InBay, None, u_physics);
                     if self.internal_validate_fit_fast(fit_uid, val_options) {
                         valid.push(*type_aid)
                     }
-                    self.internal_remove_drone(drone_uid);
+                    self.internal_rollback(savepoint);
                 }
                 DetectedItemKind::Fighter => {
-                    let fighter_uid = self.internal_add_fighter(fit_uid, *type_aid, MinionState::InBay, u_physics);
+                    let savepoint = self.internal_savepoint();
+                    self.internal_add_fighter(fit_uid, *type_aid, MinionState::InBay, u_physics);
                     if self.internal_validate_fit_fast(fit_uid, val_options) {
                         valid.push(*type_aid)
                     }
-                    self.internal_remove_fighter(fighter_uid);
+                    self.internal_rollback(savepoint);
                 }
                 DetectedItemKind::Implant => {
-                    let implant_uid = self.internal_add_implant(fit_uid, *type_aid);
+                    let savepoint = self.internal_savepoint();
+                    self.internal_add_implant(fit_uid, *type_aid);
                     if self.internal_validate_fit_fast(fit_uid, val_options) {
                         valid.push(*type_aid)
                     }
-                    self.internal_remove_implant(implant_uid);
+                    self.internal_rollback(savepoint);
                 }
                 DetectedItemKind::ModuleHigh => {
-                    let module_uid = self.internal_add_module(
-                        fit_uid,
-                        ModRack::High,
-                        AddMode::Equip,
-                        *type_aid,
-                        conv_state(r_item.base.max_state),
-                        None,
-                        None,
-                    );
+                    let state = conv_state(r_item.base.max_state);
+                    let savepoint = self.internal_savepoint();
+                    self.internal_add_module(fit_uid, ModRack::High, AddMode::Equip, *type_aid, state, None, None);
                     if self.internal_validate_fit_fast(fit_uid, val_options) {
                         valid.push(*type_aid)
                     }
-                    self.internal_remove_module(module_uid, RemoveMode::Free);
+                    self.internal_rollback(savepoint);
                 }
                 DetectedItemKind::ModuleMid => {
-                    let module_uid = self.internal_add_module(
-                        fit_uid,
-                        ModRack::Mid,
-                        AddMode::Equip,
-                        *type_aid,
-                        conv_state(r_item.base.max_state),
-                        None,
-                        None,
-                    );
+                    let state = conv_state(r_item.base.max_state);
+                    let savepoint = self.internal_savepoint();
+                    self.internal_add_module(fit_uid, ModRack::Mid, AddMode::Equip, *type_aid, state, None, None);
                     if self.internal_validate_fit_fast(fit_uid, val_options) {
                         valid.push(*type_aid)
                     }
-                    self.internal_remove_module(module_uid, RemoveMode::Free);
+                    self.internal_rollback(savepoint);
                 }
                 DetectedItemKind::ModuleLow => {
-                    let module_uid = self.internal_add_module(
-                        fit_uid,
-                        ModRack::Low,
-                        AddMode::Equip,
-                        *type_aid,
-                        conv_state(r_item.base.max_state),
-                        None,
-                        None,
-                    );
+                    let state = conv_state(r_item.base.max_state);
+                    let savepoint = self.internal_savepoint();
+                    self.internal_add_module(fit_uid, ModRack::Low, AddMode::Equip, *type_aid, state, None, None);
                     if self.internal_validate_fit_fast(fit_uid, val_options) {
                         valid.push(*type_aid)
                     }
-                    self.internal_remove_module(module_uid, RemoveMode::Free);
+                    self.internal_rollback(savepoint);
                 }
                 DetectedItemKind::Rig => {
-                    let rig_uid = self.internal_add_rig(fit_uid, *type_aid);
+                    let savepoint = self.internal_savepoint();
+                    self.internal_add_rig(fit_uid, *type_aid);
                     if self.internal_validate_fit_fast(fit_uid, val_options) {
                         valid.push(*type_aid)
                     }
-                    self.internal_remove_rig(rig_uid);
+                    self.internal_rollback(savepoint);
                 }
                 DetectedItemKind::Service => {
-                    let service_uid = self.internal_add_service(fit_uid, *type_aid, ServiceState::Online);
+                    let savepoint = self.internal_savepoint();
+                    self.internal_add_service(fit_uid, *type_aid, ServiceState::Online);
                     if self.internal_validate_fit_fast(fit_uid, val_options) {
                         valid.push(*type_aid)
                     }
-                    self.internal_remove_service(service_uid);
+                    self.internal_rollback(savepoint);
                 }
                 DetectedItemKind::Subsystem => {
-                    let subsystem_uid = self.internal_add_subsystem(fit_uid, *type_aid);
+                    let savepoint = self.internal_savepoint();
+                    self.internal_add_subsystem(fit_uid, *type_aid);
                     if self.internal_validate_fit_fast(fit_uid, val_options) {
                         valid.push(*type_aid)
                     }
-                    self.internal_remove_subsystem(subsystem_uid);
+                    self.internal_rollback(savepoint);
                 }
                 _ => continue,
             }

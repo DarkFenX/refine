@@ -1,7 +1,7 @@
 use crate::{
     api::{DroneMut, ProjAddError, RangedProjMut},
     err::basic::{ItemReceiveProjError, ProjNotFoundError},
-    sol::SolarSystem,
+    sol::{SolarSystem, UndoStep},
     ud::{ItemId, UItemId, UProjData},
 };
 
@@ -43,6 +43,9 @@ impl SolarSystem {
         self.rev_projs.reg_projectee(drone_uid, projectee_uid);
         // Update services
         SolarSystem::util_add_item_projection(&self.u_data, &mut self.svc, drone_uid, projectee_uid, u_proj_data);
+        if self.undo.is_recording() {
+            self.undo.record(UndoStep::ProjAdded(drone_uid, projectee_uid));
+        }
         Ok(())
     }
 }

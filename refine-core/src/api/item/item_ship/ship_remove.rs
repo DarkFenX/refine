@@ -1,12 +1,12 @@
 use crate::{
     api::ShipMut,
     num::PValue,
-    sol::SolarSystem,
+    sol::{SolarSystem, UndoStep},
     ud::{UItemId, UShipKind},
 };
 
 impl SolarSystem {
-    pub(in crate::api::item) fn internal_remove_ship(&mut self, ship_uid: UItemId) {
+    pub(in crate::api) fn internal_remove_ship(&mut self, ship_uid: UItemId) {
         let u_ship = self.u_data.items.get(ship_uid).dc_ship().unwrap();
         let fit_uid = u_ship.get_fit_uid();
         // Remove incoming projections
@@ -17,7 +17,7 @@ impl SolarSystem {
         let u_fit = self.u_data.fits.get_mut(fit_uid);
         u_fit.ship = None;
         u_fit.ship_kind = UShipKind::Unknown;
-        self.u_data.items.remove(ship_uid);
+        self.internal_discard_item(ship_uid, UndoStep::ShipRemoved);
         // Update projections outgoing from on-ship items
         SolarSystem::util_update_ship_radius_for_outgoing_projs(&mut self.u_data, &mut self.svc, fit_uid, PValue::ZERO);
     }

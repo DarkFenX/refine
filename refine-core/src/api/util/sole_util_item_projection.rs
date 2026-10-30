@@ -1,11 +1,39 @@
 use super::is_effect_projectable;
 use crate::{
-    sol::SolarSystem,
+    sol::{RevProjs, SolarSystem},
     svc::Svc,
     ud::{UData, UItemId, UProjData},
 };
 
 impl SolarSystem {
+    /// Register projections stored on the item.
+    pub(in crate::api) fn util_reg_item_projs(
+        u_data: &UData,
+        svc: &mut Svc,
+        rev_projs: &mut RevProjs,
+        item_uid: UItemId,
+    ) {
+        if let Some(projs) = u_data.items.get(item_uid).get_projs() {
+            for (projectee_uid, proj_data) in projs.iter() {
+                rev_projs.reg_projectee(item_uid, projectee_uid);
+                SolarSystem::util_add_item_projection(u_data, svc, item_uid, projectee_uid, proj_data);
+            }
+        }
+    }
+    /// Unregister projections stored on the item, but do not remove them from the item itself.
+    pub(in crate::api) fn util_unreg_item_projs(
+        u_data: &UData,
+        svc: &mut Svc,
+        rev_projs: &mut RevProjs,
+        item_uid: UItemId,
+    ) {
+        if let Some(projs) = u_data.items.get(item_uid).get_projs() {
+            for projectee_uid in projs.iter_projectees() {
+                SolarSystem::util_remove_item_projection(u_data, svc, item_uid, projectee_uid);
+                rev_projs.unreg_projectee(&item_uid, projectee_uid);
+            }
+        }
+    }
     pub(in crate::api) fn util_add_item_projection(
         u_data: &UData,
         svc: &mut Svc,

@@ -5,7 +5,7 @@ use crate::{
     api::{FitMut, ItemTypeId, SkillMut},
     err::basic::SkillEveTypeError,
     num::SkillLevel,
-    sol::SolarSystem,
+    sol::{SolarSystem, UndoStep},
     ud::{UFitId, UFitSkill, UItem, UItemId, USkill},
 };
 
@@ -25,6 +25,9 @@ impl SolarSystem {
                 let skill_uid = self.u_data.items.add(item);
                 entry.insert(UFitSkill { skill_uid, level });
                 SolarSystem::util_add_skill(&mut self.u_data, &mut self.svc, skill_uid, &mut self.cache.eupdates);
+                if self.undo.is_recording() {
+                    self.undo.record(UndoStep::SkillAdded(skill_uid));
+                }
                 Ok(skill_uid)
             }
             Entry::Occupied(entry) => Err(SkillEveTypeError {
@@ -33,6 +36,19 @@ impl SolarSystem {
                 item_id: self.u_data.items.ext_id_by_int_id(entry.get().skill_uid),
             }),
         }
+    }
+    pub(in crate::api) fn internal_reattach_skill(&mut self, skill_uid: UItemId) {
+        self.u_data.items.reattach(skill_uid);
+        let u_skill = self.u_data.items.get(skill_uid).dc_skill().unwrap();
+        let u_fit = self.u_data.fits.get_mut(u_skill.get_fit_uid());
+        u_fit.skills.insert(
+            u_skill.get_type_aid(),
+            UFitSkill {
+                skill_uid,
+                level: u_skill.get_level(),
+            },
+        );
+        SolarSystem::util_add_skill(&mut self.u_data, &mut self.svc, skill_uid, &mut self.cache.eupdates);
     }
 }
 

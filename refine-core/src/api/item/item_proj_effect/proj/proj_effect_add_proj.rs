@@ -4,6 +4,7 @@ use crate::{
         ProjAddError,
         basic::{ItemReceiveProjError, ProjNotFoundError},
     },
+    sol::UndoStep,
     ud::UItemId,
 };
 
@@ -39,6 +40,9 @@ impl SolarSystem {
         self.rev_projs.reg_projectee(proj_effect_uid, projectee_uid);
         // Update services
         SolarSystem::util_add_item_projection(&self.u_data, &mut self.svc, proj_effect_uid, projectee_uid, None);
+        if self.undo.is_recording() {
+            self.undo.record(UndoStep::ProjAdded(proj_effect_uid, projectee_uid));
+        }
         Ok(())
     }
 }

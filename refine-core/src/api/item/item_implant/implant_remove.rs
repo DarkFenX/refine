@@ -1,4 +1,8 @@
-use crate::{api::ImplantMut, sol::SolarSystem, ud::UItemId};
+use crate::{
+    api::ImplantMut,
+    sol::{SolarSystem, UndoStep},
+    ud::UItemId,
+};
 
 impl SolarSystem {
     pub(in crate::api) fn internal_remove_implant(&mut self, implant_uid: UItemId) {
@@ -6,7 +10,7 @@ impl SolarSystem {
         let u_implant = self.u_data.items.get(implant_uid).dc_implant().unwrap();
         let u_fit = self.u_data.fits.get_mut(u_implant.get_fit_uid());
         u_fit.implants.remove(&implant_uid);
-        self.u_data.items.remove(implant_uid);
+        self.internal_discard_item(implant_uid, UndoStep::ImplantRemoved);
     }
 }
 

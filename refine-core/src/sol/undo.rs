@@ -5,7 +5,7 @@
 //! before the change. The pre-rollback state is not exact: it is guaranteed to keep solar system's
 //! user settings, external IDs, and internal IDs of user entities (like fleets, fits, or items).
 
-use crate::{ItemId, MinionState, ModuleState, ud::UItemId};
+use crate::{ItemId, MinionState, ModuleState, MoveMode, RemoveMode, ud::UItemId};
 
 /// Inverse steps of changes done to a solar system while recording.
 #[derive(Clone)]
@@ -65,13 +65,48 @@ pub(crate) struct UndoSavepoint {
 /// Data needed to revert a single change done to a solar system.
 #[derive(Clone)]
 pub(crate) enum UndoStep {
+    // Items
     AutochargeState(UItemId, bool),
+    BoosterAdded(UItemId),
+    BoosterRemoved(UItemId),
+    CharacterAdded(UItemId),
+    CharacterRemoved(UItemId),
     ChargeAdded(UItemId),
     ChargeRemoved(UItemId),
     ChargeState(UItemId, bool),
+    DroneAdded(UItemId),
+    DroneRemoved(UItemId),
     DroneState(UItemId, MinionState),
+    FighterAdded(UItemId),
+    FighterRemoved(UItemId),
     FighterState(UItemId, MinionState),
+    FwEffectAdded(UItemId),
+    FwEffectRemoved(UItemId),
+    ImplantAdded(UItemId),
+    ImplantRemoved(UItemId),
+    ModuleAdded(UItemId, RemoveMode),
+    ModuleMoved(UItemId, MoveMode),
+    ModuleRemoved(UItemId, RemoveMode),
     ModuleState(UItemId, ModuleState),
+    ProjEffectAdded(UItemId),
+    ProjEffectRemoved(UItemId),
+    RigAdded(UItemId),
+    RigRemoved(UItemId),
+    ServiceAdded(UItemId),
+    ServiceRemoved(UItemId),
+    ShipAdded(UItemId),
+    ShipRemoved(UItemId),
+    SkillAdded(UItemId),
+    SkillRemoved(UItemId),
+    StanceAdded(UItemId),
+    StanceRemoved(UItemId),
+    SubsystemAdded(UItemId),
+    SubsystemRemoved(UItemId),
+    SwEffectAdded(UItemId),
+    SwEffectRemoved(UItemId),
+    // Item projections - projector and projectee
+    ProjAdded(UItemId, UItemId),
+    ProjRemoved(UItemId, UItemId),
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////

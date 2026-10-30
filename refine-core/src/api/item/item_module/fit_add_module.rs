@@ -4,7 +4,7 @@ use crate::{
     api::{AddMode, FitMut, ItemTypeId, ModuleMut, ModuleState, RemoveMode},
     misc::ModRack,
     num::Index,
-    sol::SolarSystem,
+    sol::{SolarSystem, UndoStep},
     ud::{UCharge, UFitId, UItem, UItemId, UItemMutationRequest, UModule},
 };
 
@@ -89,17 +89,53 @@ impl SolarSystem {
         let u_module = self.u_data.items.get_mut(module_uid).dc_module_mut().unwrap();
         u_module.set_pos(pos);
         u_module.set_charge_uid(charge_uid);
+        self.attach_module(module_uid, charge_uid);
+        if self.undo.is_recording() {
+            // Inserted module shifted other modules, so it has to shift them back when removed
+            let undo_pos_mode = match pos_mode {
+                AddMode::Insert(_) => RemoveMode::Remove,
+                AddMode::Append | AddMode::Equip | AddMode::Replace(_) => RemoveMode::Free,
+            };
+            self.undo.record(UndoStep::ModuleAdded(module_uid, undo_pos_mode));
+        }
+        module_uid
+    }
+    pub(in crate::api) fn internal_reattach_module(&mut self, module_uid: UItemId, pos_mode: RemoveMode) {
+        self.u_data.items.reattach(module_uid);
+        let u_module = self.u_data.items.get(module_uid).dc_module().unwrap();
+        let fit_uid = u_module.get_fit_uid();
+        let rack = u_module.get_rack();
+        let pos = u_module.get_pos();
+        let charge_uid = u_module.get_charge_uid();
+        if let Some(charge_uid) = charge_uid {
+            self.u_data.items.reattach(charge_uid);
+        }
+        // Put module back to the position it was removed from
+        let u_fit_rack = get_fit_rack_mut(&mut self.u_data.fits, fit_uid, rack);
+        match pos_mode {
+            RemoveMode::Free => u_fit_rack.place(pos, module_uid),
+            RemoveMode::Remove => {
+                for shift_module_uid in u_fit_rack.insert(pos, module_uid) {
+                    let shift_u_module = self.u_data.items.get_mut(shift_module_uid).dc_module_mut().unwrap();
+                    shift_u_module.set_pos(shift_u_module.get_pos() + Index::ONE)
+                }
+            }
+        }
+        self.attach_module(module_uid, charge_uid);
+    }
+    fn attach_module(&mut self, module_uid: UItemId, charge_uid: Option<UItemId>) {
         // Add module to services. While adding module, effect updates structure records if charge
         // needs to be activated
         SolarSystem::util_add_module(&mut self.u_data, &mut self.svc, module_uid, &mut self.cache.eupdates);
+        SolarSystem::util_reg_item_projs(&self.u_data, &mut self.svc, &mut self.rev_projs, module_uid);
         if let Some(charge_uid) = charge_uid {
             if self.cache.eupdates.charge.unwrap_or(false) {
                 let u_charge = self.u_data.items.get_mut(charge_uid).dc_charge_mut().unwrap();
                 u_charge.set_activated(true);
             }
             SolarSystem::util_add_charge(&mut self.u_data, &mut self.svc, charge_uid, &mut self.cache.eupdates);
+            SolarSystem::util_reg_item_projs(&self.u_data, &mut self.svc, &mut self.rev_projs, charge_uid);
         }
-        module_uid
     }
 }
 

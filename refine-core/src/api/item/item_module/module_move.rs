@@ -2,7 +2,7 @@ use super::shared::get_fit_rack_mut;
 use crate::{
     api::{ModuleMut, MoveMode},
     num::Index,
-    sol::SolarSystem,
+    sol::{SolarSystem, UndoStep},
     ud::{UItemId, UItemVecShiftDir},
 };
 
@@ -37,6 +37,13 @@ impl SolarSystem {
                     tgt_u_module.set_pos(init_pos);
                 }
             }
+        }
+        if self.undo.is_recording() {
+            let undo_pos_mode = match pos_mode {
+                MoveMode::Shift(_) => MoveMode::Shift(init_pos),
+                MoveMode::Swap(_) => MoveMode::Swap(init_pos),
+            };
+            self.undo.record(UndoStep::ModuleMoved(module_uid, undo_pos_mode));
         }
     }
 }

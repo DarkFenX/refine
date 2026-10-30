@@ -51,9 +51,6 @@ impl UProjs {
     pub(crate) fn is_empty(&self) -> bool {
         self.data.is_empty()
     }
-    pub(crate) fn clear(&mut self) {
-        self.data.clear();
-    }
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////

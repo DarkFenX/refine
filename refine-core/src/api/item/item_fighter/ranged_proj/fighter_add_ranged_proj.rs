@@ -3,7 +3,7 @@ use itertools::Itertools;
 use crate::{
     api::{FighterMut, ProjAddError, ProjMut},
     err::basic::{ItemReceiveProjError, ProjNotFoundError},
-    sol::SolarSystem,
+    sol::{SolarSystem, UndoStep},
     ud::{ItemId, UItemId, UProjData},
 };
 
@@ -59,6 +59,9 @@ impl SolarSystem {
                 projectee_uid,
                 u_proj_data,
             );
+        }
+        if self.undo.is_recording() {
+            self.undo.record(UndoStep::ProjAdded(fighter_uid, projectee_uid));
         }
         Ok(())
     }

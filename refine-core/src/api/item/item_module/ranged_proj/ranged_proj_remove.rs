@@ -1,4 +1,8 @@
-use crate::{err::basic::ProjFoundError, sol::SolarSystem, ud::UItemId};
+use crate::{
+    err::basic::ProjFoundError,
+    sol::{SolarSystem, UndoStep},
+    ud::UItemId,
+};
 
 impl SolarSystem {
     pub(in crate::api::item) fn internal_remove_module_proj(
@@ -31,6 +35,9 @@ impl SolarSystem {
         self.rev_projs.unreg_projectee(&module_uid, projectee_uid);
         let u_module = self.u_data.items.get_mut(module_uid).dc_module_mut().unwrap();
         u_module.get_projs_mut().remove(&projectee_uid);
+        if self.undo.is_recording() {
+            self.undo.record(UndoStep::ProjRemoved(module_uid, projectee_uid));
+        }
         Ok(())
     }
 }

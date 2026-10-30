@@ -1,34 +1,35 @@
-use crate::{api::FighterMut, sol::SolarSystem, ud::UItemId};
+use itertools::Itertools;
+
+use crate::{
+    api::FighterMut,
+    sol::{SolarSystem, UndoStep},
+    ud::UItemId,
+};
 
 impl SolarSystem {
     pub(in crate::api) fn internal_remove_fighter(&mut self, fighter_uid: UItemId) {
         // Remove incoming projections
         self.internal_remove_incoming_projections(fighter_uid);
-        // Remove autocharges with all the associated relations
-        SolarSystem::remove_item_autocharges(
+        // Remove autocharges from services; they are discarded along with the fighter
+        SolarSystem::util_detach_item_autocharges(
             &mut self.u_data,
             &mut self.svc,
             &mut self.rev_projs,
             fighter_uid,
             &mut self.cache.eupdates,
         );
-        // Remove outgoing projections
-        let u_fighter = self.u_data.items.get(fighter_uid).dc_fighter().unwrap();
-        let fit_uid = u_fighter.get_fit_uid();
-        if !u_fighter.get_projs().is_empty() {
-            for projectee_uid in u_fighter.get_projs().iter_projectees() {
-                SolarSystem::util_remove_item_projection(&self.u_data, &mut self.svc, fighter_uid, projectee_uid);
-                self.rev_projs.unreg_projectee(&fighter_uid, projectee_uid);
-            }
-            let u_fighter = self.u_data.items.get_mut(fighter_uid).dc_fighter_mut().unwrap();
-            u_fighter.get_projs_mut().clear();
-        }
+        // Remove outgoing projections; fighter keeps them, in case it gets reattached
+        SolarSystem::util_unreg_item_projs(&self.u_data, &mut self.svc, &mut self.rev_projs, fighter_uid);
         // Update services
         SolarSystem::util_remove_fighter(&mut self.u_data, &mut self.svc, fighter_uid, &mut self.cache.eupdates);
         // Update user data
-        let u_fit = self.u_data.fits.get_mut(fit_uid);
+        let u_fighter = self.u_data.items.get(fighter_uid).dc_fighter().unwrap();
+        let u_fit = self.u_data.fits.get_mut(u_fighter.get_fit_uid());
         u_fit.fighters.remove(&fighter_uid);
-        self.u_data.items.remove(fighter_uid);
+        for autocharge_uid in u_fighter.get_autocharges().values().collect_vec() {
+            self.internal_discard_child_item(autocharge_uid);
+        }
+        self.internal_discard_item(fighter_uid, UndoStep::FighterRemoved);
     }
 }
 

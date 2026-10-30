@@ -1,7 +1,9 @@
+use itertools::Itertools;
+
 use crate::{
     ad::AItemId,
     api::{Coordinates, FighterMut, FitMut, ItemTypeId, MinionState, Movement},
-    sol::SolarSystem,
+    sol::{SolarSystem, UndoStep},
     ud::{UFighter, UFitId, UItem, UItemId, UPhysics},
 };
 
@@ -27,7 +29,31 @@ impl SolarSystem {
             fighter_uid,
             &mut self.cache.eupdates,
         );
+        if self.undo.is_recording() {
+            self.undo.record(UndoStep::FighterAdded(fighter_uid));
+        }
         fighter_uid
+    }
+    pub(in crate::api) fn internal_reattach_fighter(&mut self, fighter_uid: UItemId) {
+        self.u_data.items.reattach(fighter_uid);
+        let u_fighter = self.u_data.items.get(fighter_uid).dc_fighter().unwrap();
+        let fit_uid = u_fighter.get_fit_uid();
+        let autocharge_uids = u_fighter.get_autocharges().values().collect_vec();
+        for autocharge_uid in autocharge_uids {
+            self.u_data.items.reattach(autocharge_uid);
+        }
+        let u_fit = self.u_data.fits.get_mut(fit_uid);
+        u_fit.fighters.insert(fighter_uid);
+        // Add fighter and its existing autocharges to services
+        SolarSystem::util_add_fighter(&mut self.u_data, &mut self.svc, fighter_uid, &mut self.cache.eupdates);
+        SolarSystem::util_reg_item_projs(&self.u_data, &mut self.svc, &mut self.rev_projs, fighter_uid);
+        SolarSystem::util_reattach_item_autocharges(
+            &mut self.u_data,
+            &mut self.svc,
+            &mut self.rev_projs,
+            fighter_uid,
+            &mut self.cache.eupdates,
+        );
     }
 }
 

@@ -1,7 +1,7 @@
 use crate::{
     ad::AItemId,
     api::{Coordinates, FitMut, ItemTypeId, Movement, ShipMut},
-    sol::SolarSystem,
+    sol::{SolarSystem, UndoStep},
     ud::{UFitId, UItem, UItemId, UPhysics, UShip},
 };
 
@@ -20,17 +20,30 @@ impl SolarSystem {
         // Add new ship
         let item_id = self.u_data.items.alloc_id();
         let u_ship = UShip::new(item_id, type_aid, fit_uid, true, physics, &self.u_data.r_data);
-        let ship_kind = u_ship.get_ship_kind();
-        let ship_radius = u_ship.get_radius();
         let u_item = UItem::Ship(u_ship);
         let ship_uid = self.u_data.items.add(u_item);
+        self.attach_ship(fit_uid, ship_uid);
+        if self.undo.is_recording() {
+            self.undo.record(UndoStep::ShipAdded(ship_uid));
+        }
+        ship_uid
+    }
+    pub(in crate::api) fn internal_reattach_ship(&mut self, ship_uid: UItemId) {
+        self.u_data.items.reattach(ship_uid);
+        let u_ship = self.u_data.items.get(ship_uid).dc_ship().unwrap();
+        let fit_uid = u_ship.get_fit_uid();
+        self.attach_ship(fit_uid, ship_uid);
+    }
+    fn attach_ship(&mut self, fit_uid: UFitId, ship_uid: UItemId) {
+        let u_ship = self.u_data.items.get(ship_uid).dc_ship().unwrap();
+        let ship_kind = u_ship.get_ship_kind();
+        let ship_radius = u_ship.get_radius();
         let u_fit = self.u_data.fits.get_mut(fit_uid);
         u_fit.ship = Some(ship_uid);
         u_fit.ship_kind = ship_kind;
         SolarSystem::util_add_ship(&mut self.u_data, &mut self.svc, ship_uid, &mut self.cache.eupdates);
         // Update projections outgoing from on-ship items
         SolarSystem::util_update_ship_radius_for_outgoing_projs(&mut self.u_data, &mut self.svc, fit_uid, ship_radius);
-        ship_uid
     }
 }
 

@@ -1,7 +1,7 @@
 use crate::{
     ad::AItemId,
     api::{ItemTypeId, ProjEffectMut},
-    sol::SolarSystem,
+    sol::{SolarSystem, UndoStep},
     ud::{UItem, UItemId, UProjEffect},
 };
 
@@ -15,6 +15,17 @@ impl SolarSystem {
         let u_proj_effect = UProjEffect::new(item_id, type_aid, true, &self.u_data.r_data);
         let u_item = UItem::ProjEffect(u_proj_effect);
         let proj_effect_uid = self.u_data.items.add(u_item);
+        self.attach_proj_effect(proj_effect_uid);
+        if self.undo.is_recording() {
+            self.undo.record(UndoStep::ProjEffectAdded(proj_effect_uid));
+        }
+        proj_effect_uid
+    }
+    pub(in crate::api) fn internal_reattach_proj_effect(&mut self, proj_effect_uid: UItemId) {
+        self.u_data.items.reattach(proj_effect_uid);
+        self.attach_proj_effect(proj_effect_uid);
+    }
+    fn attach_proj_effect(&mut self, proj_effect_uid: UItemId) {
         self.u_data.proj_effects.insert(proj_effect_uid);
         SolarSystem::util_add_proj_effect(
             &mut self.u_data,
@@ -22,6 +33,6 @@ impl SolarSystem {
             proj_effect_uid,
             &mut self.cache.eupdates,
         );
-        proj_effect_uid
+        SolarSystem::util_reg_item_projs(&self.u_data, &mut self.svc, &mut self.rev_projs, proj_effect_uid);
     }
 }
