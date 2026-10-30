@@ -66,7 +66,12 @@ impl UBooster {
     pub(in crate::ud::item) fn iter_effect_mode_overrides(&self) -> UEffectModeOverrideIter<'_> {
         self.base.iter_effect_mode_overrides()
     }
-    pub(crate) fn set_effect_mode(&mut self, effect_aid: AEffectId, effect_mode: EffectMode, r_data: &RData) {
+    pub(crate) fn set_effect_mode(
+        &mut self,
+        effect_aid: AEffectId,
+        effect_mode: EffectMode,
+        r_data: &RData,
+    ) -> EffectMode {
         self.base.set_effect_mode(effect_aid, effect_mode, r_data)
     }
     pub(in crate::ud::item) fn set_effect_modes(

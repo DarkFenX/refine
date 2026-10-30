@@ -79,7 +79,7 @@ impl UDrone {
         effect_aid: AEffectId,
         effect_mode: EffectMode,
         r_data: &RData,
-    ) {
+    ) -> EffectMode {
         self.base.set_effect_mode(effect_aid, effect_mode, r_data)
     }
     pub(in crate::ud::item) fn set_effect_modes(

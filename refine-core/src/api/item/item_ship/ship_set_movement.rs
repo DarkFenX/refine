@@ -2,7 +2,7 @@ use crate::{
     api::{Movement, ShipMut},
     misc::Xyz,
     num::PValue,
-    sol::SolarSystem,
+    sol::{SolarSystem, UndoStep},
     ud::UItemId,
 };
 
@@ -12,6 +12,10 @@ impl SolarSystem {
         let ship_u_physics = u_ship.get_physics_mut();
         if ship_u_physics.direction == direction && ship_u_physics.speed == speed {
             return;
+        }
+        if self.undo.is_recording() {
+            self.undo
+                .record_physics(UndoStep::ShipPhysics(ship_uid), *ship_u_physics);
         }
         ship_u_physics.direction = direction;
         ship_u_physics.speed = speed;

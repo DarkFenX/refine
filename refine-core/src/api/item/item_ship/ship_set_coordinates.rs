@@ -1,7 +1,7 @@
 use crate::{
     api::{Coordinates, ShipMut},
     misc::Xyz,
-    sol::SolarSystem,
+    sol::{SolarSystem, UndoStep},
     ud::UItemId,
 };
 
@@ -10,6 +10,10 @@ impl SolarSystem {
         let u_ship = self.u_data.items.get_mut(ship_uid).dc_ship_mut().unwrap();
         if u_ship.get_physics().coordinates == coordinates {
             return;
+        }
+        if self.undo.is_recording() {
+            self.undo
+                .record_physics(UndoStep::ShipPhysics(ship_uid), *u_ship.get_physics());
         }
         u_ship.get_physics_mut().coordinates = coordinates;
         SolarSystem::util_update_ship_physics(&mut self.u_data, &self.rev_projs, &mut self.svc, ship_uid);

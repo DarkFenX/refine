@@ -1,10 +1,15 @@
 use crate::{
     sol::{RevProjs, SolarSystem},
     svc::Svc,
-    ud::{UData, UItemId},
+    ud::{UData, UItemId, UPhysics},
 };
 
 impl SolarSystem {
+    pub(in crate::api) fn internal_restore_drone_physics(&mut self, drone_uid: UItemId, physics: UPhysics) {
+        let u_drone = self.u_data.items.get_mut(drone_uid).dc_drone_mut().unwrap();
+        *u_drone.get_physics_mut() = physics;
+        SolarSystem::util_update_drone_physics(&mut self.u_data, &self.rev_projs, &mut self.svc, drone_uid);
+    }
     pub(super) fn util_update_drone_physics(
         u_data: &mut UData,
         rev_projs: &RevProjs,

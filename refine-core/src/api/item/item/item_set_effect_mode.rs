@@ -1,16 +1,23 @@
 use itertools::Itertools;
 
-use crate::{EffectMode, SolarSystem, ad::AEffectId, ud::UItemId};
+use crate::{EffectMode, SolarSystem, ad::AEffectId, sol::UndoStep, ud::UItemId};
 
 impl SolarSystem {
-    pub(in crate::api::item) fn internal_set_effect_id_mode(
+    pub(in crate::api) fn internal_set_effect_id_mode(
         &mut self,
         item_uid: UItemId,
         effect_aid: AEffectId,
         effect_mode: EffectMode,
     ) {
         let u_item = self.u_data.items.get_mut(item_uid);
-        u_item.set_effect_mode(effect_aid, effect_mode, &self.u_data.r_data);
+        let old_effect_mode = u_item.set_effect_mode(effect_aid, effect_mode, &self.u_data.r_data);
+        if old_effect_mode == effect_mode {
+            return;
+        }
+        if self.undo.is_recording() {
+            self.undo
+                .record(UndoStep::ItemEffectMode(item_uid, effect_aid, old_effect_mode));
+        }
         u_item.update_reffs(&mut self.cache.eupdates, &self.u_data.r_data);
         self.effect_mode_update_postprocess(item_uid);
     }
@@ -20,7 +27,18 @@ impl SolarSystem {
         effect_modes: impl Iterator<Item = (AEffectId, EffectMode)>,
     ) {
         let u_item = self.u_data.items.get_mut(item_uid);
-        u_item.set_effect_modes(effect_modes, &self.u_data.r_data);
+        match self.undo.is_recording() {
+            true => {
+                for (effect_aid, effect_mode) in effect_modes {
+                    let old_effect_mode = u_item.set_effect_mode(effect_aid, effect_mode, &self.u_data.r_data);
+                    if old_effect_mode != effect_mode {
+                        self.undo
+                            .record(UndoStep::ItemEffectMode(item_uid, effect_aid, old_effect_mode));
+                    }
+                }
+            }
+            false => u_item.set_effect_modes(effect_modes, &self.u_data.r_data),
+        }
         u_item.update_reffs(&mut self.cache.eupdates, &self.u_data.r_data);
         self.effect_mode_update_postprocess(item_uid);
     }

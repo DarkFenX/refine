@@ -2,7 +2,7 @@ use crate::{
     api::{FighterMut, Movement},
     misc::Xyz,
     num::PValue,
-    sol::SolarSystem,
+    sol::{SolarSystem, UndoStep},
     ud::UItemId,
 };
 
@@ -17,6 +17,10 @@ impl SolarSystem {
         let fighter_u_physics = u_fighter.get_physics_mut();
         if fighter_u_physics.direction == direction && fighter_u_physics.speed == speed {
             return;
+        }
+        if self.undo.is_recording() {
+            self.undo
+                .record_physics(UndoStep::FighterPhysics(fighter_uid), *fighter_u_physics);
         }
         fighter_u_physics.direction = direction;
         fighter_u_physics.speed = speed;

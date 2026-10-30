@@ -1,8 +1,18 @@
-use crate::{api::ProjEffectMut, sol::SolarSystem, ud::UItemId};
+use crate::{
+    api::ProjEffectMut,
+    sol::{SolarSystem, UndoStep},
+    ud::UItemId,
+};
 
 impl SolarSystem {
     pub(in crate::api) fn internal_set_proj_effect_state(&mut self, proj_effect_uid: UItemId, state: bool) {
         let u_proj_effect = self.u_data.items.get_mut(proj_effect_uid).dc_proj_effect_mut().unwrap();
+        if self.undo.is_recording() {
+            self.undo.record(UndoStep::ProjEffectState(
+                proj_effect_uid,
+                u_proj_effect.get_proj_effect_state(),
+            ));
+        }
         let old_a_state = u_proj_effect.get_state();
         u_proj_effect.set_proj_effect_state(state);
         let new_a_state = u_proj_effect.get_state();

@@ -1,7 +1,7 @@
 use crate::{
     api::{Coordinates, DroneMut},
     misc::Xyz,
-    sol::SolarSystem,
+    sol::{SolarSystem, UndoStep},
     ud::UItemId,
 };
 
@@ -10,6 +10,10 @@ impl SolarSystem {
         let u_drone = self.u_data.items.get_mut(drone_uid).dc_drone_mut().unwrap();
         if u_drone.get_physics().coordinates == coordinates {
             return;
+        }
+        if self.undo.is_recording() {
+            self.undo
+                .record_physics(UndoStep::DronePhysics(drone_uid), *u_drone.get_physics());
         }
         u_drone.get_physics_mut().coordinates = coordinates;
         SolarSystem::util_update_drone_physics(&mut self.u_data, &self.rev_projs, &mut self.svc, drone_uid);

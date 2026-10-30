@@ -1,10 +1,15 @@
 use crate::{
     sol::{RevProjs, SolarSystem},
     svc::Svc,
-    ud::{UData, UItemId},
+    ud::{UData, UItemId, UPhysics},
 };
 
 impl SolarSystem {
+    pub(in crate::api) fn internal_restore_ship_physics(&mut self, ship_uid: UItemId, physics: UPhysics) {
+        let u_ship = self.u_data.items.get_mut(ship_uid).dc_ship_mut().unwrap();
+        *u_ship.get_physics_mut() = physics;
+        SolarSystem::util_update_ship_physics(&mut self.u_data, &self.rev_projs, &mut self.svc, ship_uid);
+    }
     pub(super) fn util_update_ship_physics(u_data: &mut UData, rev_projs: &RevProjs, svc: &mut Svc, ship_uid: UItemId) {
         let u_ship = u_data.items.get_mut(ship_uid).dc_ship_mut().unwrap();
         let u_ship_physics = *u_ship.get_physics();

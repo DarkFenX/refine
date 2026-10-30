@@ -1,7 +1,7 @@
 use crate::{
     api::{Coordinates, FighterMut},
     misc::Xyz,
-    sol::SolarSystem,
+    sol::{SolarSystem, UndoStep},
     ud::UItemId,
 };
 
@@ -10,6 +10,10 @@ impl SolarSystem {
         let u_fighter = self.u_data.items.get_mut(fighter_uid).dc_fighter_mut().unwrap();
         if u_fighter.get_physics().coordinates == coordinates {
             return;
+        }
+        if self.undo.is_recording() {
+            self.undo
+                .record_physics(UndoStep::FighterPhysics(fighter_uid), *u_fighter.get_physics());
         }
         u_fighter.get_physics_mut().coordinates = coordinates;
         SolarSystem::util_update_fighter_physics(&mut self.u_data, &self.rev_projs, &mut self.svc, fighter_uid);

@@ -2,7 +2,7 @@ use crate::{
     api::{DroneMut, Movement},
     misc::Xyz,
     num::PValue,
-    sol::SolarSystem,
+    sol::{SolarSystem, UndoStep},
     ud::UItemId,
 };
 
@@ -12,6 +12,10 @@ impl SolarSystem {
         let drone_u_physics = u_drone.get_physics_mut();
         if drone_u_physics.direction == direction && drone_u_physics.speed == speed {
             return;
+        }
+        if self.undo.is_recording() {
+            self.undo
+                .record_physics(UndoStep::DronePhysics(drone_uid), *drone_u_physics);
         }
         drone_u_physics.direction = direction;
         drone_u_physics.speed = speed;

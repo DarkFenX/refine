@@ -1,10 +1,19 @@
-use crate::{api::SkillMut, num::SkillLevel, sol::SolarSystem, ud::UItemId};
+use crate::{
+    api::SkillMut,
+    num::SkillLevel,
+    sol::{SolarSystem, UndoStep},
+    ud::UItemId,
+};
 
 impl SolarSystem {
     pub(in crate::api) fn internal_set_skill_level(&mut self, skill_uid: UItemId, level: SkillLevel) {
         let u_skill = self.u_data.items.get_mut(skill_uid).dc_skill_mut().unwrap();
-        if u_skill.get_level() == level {
+        let old_level = u_skill.get_level();
+        if old_level == level {
             return;
+        }
+        if self.undo.is_recording() {
+            self.undo.record(UndoStep::SkillLevel(skill_uid, old_level));
         }
         u_skill.set_level(level);
         let fit_skill = self

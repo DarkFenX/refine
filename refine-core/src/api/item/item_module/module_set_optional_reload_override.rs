@@ -1,12 +1,24 @@
-use crate::{api::ModuleMut, misc::OptionalReload, sol::SolarSystem, ud::UItemId};
+use crate::{
+    api::ModuleMut,
+    misc::OptionalReload,
+    sol::{SolarSystem, UndoStep},
+    ud::UItemId,
+};
 
 impl SolarSystem {
-    fn internal_set_module_optional_reload_override(
+    pub(in crate::api) fn internal_set_module_optional_reload_override(
         &mut self,
         module_uid: UItemId,
         optional_reload_override: Option<OptionalReload>,
     ) {
         let u_module = self.u_data.items.get_mut(module_uid).dc_module_mut().unwrap();
+        if self.undo.is_recording() {
+            let old_optional_reload_override = u_module.get_optional_reload_override();
+            self.undo.record(UndoStep::ModuleOptionalReloadOverride(
+                module_uid,
+                old_optional_reload_override,
+            ));
+        }
         u_module.set_optional_reload_override(optional_reload_override);
     }
 }

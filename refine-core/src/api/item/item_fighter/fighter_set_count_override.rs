@@ -1,9 +1,24 @@
-use crate::{api::FighterMut, num::CountNz, sol::SolarSystem, ud::UItemId};
+use crate::{
+    api::FighterMut,
+    num::CountNz,
+    sol::{SolarSystem, UndoStep},
+    ud::UItemId,
+};
 
 impl SolarSystem {
-    fn internal_set_fighter_count_override(&mut self, fighter_uid: UItemId, count_override: Option<CountNz>) {
+    pub(in crate::api) fn internal_set_fighter_count_override(
+        &mut self,
+        fighter_uid: UItemId,
+        count_override: Option<CountNz>,
+    ) {
         // Update user data
         let u_fighter = self.u_data.items.get_mut(fighter_uid).dc_fighter_mut().unwrap();
+        if self.undo.is_recording() {
+            self.undo.record(UndoStep::FighterCountOverride(
+                fighter_uid,
+                u_fighter.get_count_override(),
+            ));
+        }
         let old_count = u_fighter.get_current_count();
         u_fighter.set_count_override(count_override);
         let new_count = u_fighter.get_current_count();

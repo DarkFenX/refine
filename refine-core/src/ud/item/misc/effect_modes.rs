@@ -19,7 +19,12 @@ impl UEffectModes {
             by_rid: RMap::new(),
         }
     }
-    // Query methods
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Query methods
+////////////////////////////////////////////////////////////////////////////////////////////////////
+impl UEffectModes {
     pub(in crate::ud::item) fn get_by_rid(&self, effect_rid: &REffectId) -> EffectMode {
         match self.by_rid.get(effect_rid) {
             Some(effect_mode) => *effect_mode,
@@ -38,22 +43,36 @@ impl UEffectModes {
             .iter()
             .map(|(&effect_aid, &effect_mode)| (effect_aid, effect_mode))
     }
-    // Modification methods
-    pub(in crate::ud::item) fn set_by_aid(&mut self, effect_aid: AEffectId, effect_mode: EffectMode, r_data: &RData) {
-        match effect_mode == EffectMode::default() {
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Modification methods
+////////////////////////////////////////////////////////////////////////////////////////////////////
+impl UEffectModes {
+    /// Returns old effect mode
+    pub(in crate::ud::item) fn set_by_aid(
+        &mut self,
+        effect_aid: AEffectId,
+        effect_mode: EffectMode,
+        r_data: &RData,
+    ) -> EffectMode {
+        let old_effect_mode = match effect_mode == EffectMode::default() {
             true => {
-                self.by_aid.remove(&effect_aid);
+                let old_effect_mode = self.by_aid.remove(&effect_aid);
                 if let Some(effect_rid) = r_data.get_effect_rid_by_aid(&effect_aid) {
                     self.by_rid.remove(&effect_rid);
                 }
+                old_effect_mode
             }
             false => {
-                self.by_aid.insert(effect_aid, effect_mode);
+                let old_effect_mode = self.by_aid.insert(effect_aid, effect_mode);
                 if let Some(effect_rid) = r_data.get_effect_rid_by_aid(&effect_aid) {
                     self.by_rid.insert(effect_rid, effect_mode);
                 }
+                old_effect_mode
             }
         };
+        old_effect_mode.unwrap_or_default()
     }
     pub(in crate::ud::item) fn update_rids(&mut self, r_data: &RData) {
         self.by_rid.clear();

@@ -120,8 +120,8 @@ impl UItemBase {
         effect_aid: AEffectId,
         effect_mode: EffectMode,
         r_data: &RData,
-    ) {
-        self.effect_modes.set_by_aid(effect_aid, effect_mode, r_data);
+    ) -> EffectMode {
+        self.effect_modes.set_by_aid(effect_aid, effect_mode, r_data)
     }
     pub(in crate::ud::item) fn set_effect_modes(
         &mut self,

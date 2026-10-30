@@ -1,8 +1,23 @@
-use crate::{api::DroneMut, misc::NpcProp, sol::SolarSystem, ud::UItemId};
+use crate::{
+    api::DroneMut,
+    misc::NpcProp,
+    sol::{SolarSystem, UndoStep},
+    ud::UItemId,
+};
 
 impl SolarSystem {
-    fn internal_set_drone_npc_prop_override(&mut self, drone_uid: UItemId, npc_prop_override: Option<NpcProp>) {
+    pub(in crate::api) fn internal_set_drone_npc_prop_override(
+        &mut self,
+        drone_uid: UItemId,
+        npc_prop_override: Option<NpcProp>,
+    ) {
         let u_drone = self.u_data.items.get_mut(drone_uid).dc_drone_mut().unwrap();
+        if self.undo.is_recording() {
+            self.undo.record(UndoStep::DroneNpcPropOverride(
+                drone_uid,
+                u_drone.get_npc_prop_override(),
+            ));
+        }
         u_drone.set_npc_prop_override(npc_prop_override);
     }
 }

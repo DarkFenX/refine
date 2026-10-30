@@ -215,7 +215,12 @@ impl UItem {
             Self::SwEffect(sw_effect) => sw_effect.iter_effect_mode_overrides(),
         }
     }
-    pub(crate) fn set_effect_mode(&mut self, effect_aid: AEffectId, effect_mode: EffectMode, r_data: &RData) {
+    pub(crate) fn set_effect_mode(
+        &mut self,
+        effect_aid: AEffectId,
+        effect_mode: EffectMode,
+        r_data: &RData,
+    ) -> EffectMode {
         match self {
             Self::Autocharge(autocharge) => autocharge.set_effect_mode(effect_aid, effect_mode, r_data),
             Self::Booster(booster) => booster.set_effect_mode(effect_aid, effect_mode, r_data),

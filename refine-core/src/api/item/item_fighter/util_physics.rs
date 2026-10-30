@@ -3,10 +3,15 @@ use itertools::Itertools;
 use crate::{
     sol::{RevProjs, SolarSystem},
     svc::Svc,
-    ud::{UData, UItemId},
+    ud::{UData, UItemId, UPhysics},
 };
 
 impl SolarSystem {
+    pub(in crate::api) fn internal_restore_fighter_physics(&mut self, fighter_uid: UItemId, physics: UPhysics) {
+        let u_fighter = self.u_data.items.get_mut(fighter_uid).dc_fighter_mut().unwrap();
+        *u_fighter.get_physics_mut() = physics;
+        SolarSystem::util_update_fighter_physics(&mut self.u_data, &self.rev_projs, &mut self.svc, fighter_uid);
+    }
     pub(super) fn util_update_fighter_physics(
         u_data: &mut UData,
         rev_projs: &RevProjs,

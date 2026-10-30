@@ -1,8 +1,16 @@
-use crate::{api::SkillMut, sol::SolarSystem, ud::UItemId};
+use crate::{
+    api::SkillMut,
+    sol::{SolarSystem, UndoStep},
+    ud::UItemId,
+};
 
 impl SolarSystem {
     pub(in crate::api) fn internal_set_skill_state(&mut self, skill_uid: UItemId, state: bool) {
         let u_skill = self.u_data.items.get_mut(skill_uid).dc_skill_mut().unwrap();
+        if self.undo.is_recording() {
+            self.undo
+                .record(UndoStep::SkillState(skill_uid, u_skill.get_skill_state()));
+        }
         let old_a_state = u_skill.get_state();
         u_skill.set_skill_state(state);
         let new_a_state = u_skill.get_state();
