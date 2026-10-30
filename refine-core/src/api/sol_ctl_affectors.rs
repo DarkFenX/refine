@@ -1,7 +1,7 @@
 use std::{cmp::Ordering, collections::hash_map::Entry};
 
 use crate::{
-    api::{ModuleState, Op, UndoStep},
+    api::{ModuleState, Op},
     num::Value,
     rd::{RAttrId, RState},
     sol::SolarSystem,
@@ -50,7 +50,6 @@ impl SolarSystem {
         attr_rid: Option<RAttrId>,
         action: CtlAffectors,
         direction: AffectionDir,
-        reuse_undo_steps: &mut Vec<UndoStep>,
     ) {
         let Some(attr_rid) = attr_rid else {
             return;
@@ -105,8 +104,7 @@ impl SolarSystem {
         }
         // Actually switch states
         for (affector_uid, new_state) in new_states.into_iter() {
-            let undo_step = self.internal_set_module_state(affector_uid, ModuleState::from_r_state(new_state));
-            reuse_undo_steps.push(undo_step);
+            self.internal_set_module_state(affector_uid, ModuleState::from_r_state(new_state));
         }
     }
 }

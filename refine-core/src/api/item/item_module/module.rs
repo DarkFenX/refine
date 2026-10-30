@@ -106,7 +106,7 @@ impl<'s> ModuleMut<'s> {
         get_optional_reload_override(self.sol, self.uid)
     }
     pub fn get_charged_cycle_count(&mut self) -> Option<Count> {
-        let undo_steps = active_stat_prepare(self, StatItemChargeOptions::Exclude, StatItemStateOptions::Switch);
+        let savepoint = active_stat_prepare(self, StatItemChargeOptions::Exclude, StatItemStateOptions::Switch);
         let result = match self
             .sol
             .svc
@@ -115,7 +115,7 @@ impl<'s> ModuleMut<'s> {
             Some(InfCount::Count(count)) => Some(count),
             _ => None,
         };
-        self.sol.internal_undo_steps(undo_steps);
+        self.sol.internal_rollback(savepoint);
         result
     }
     pub fn get_spool_cycle_count(&mut self) -> Option<ItemSpoolInfo> {

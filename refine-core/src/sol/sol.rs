@@ -1,5 +1,5 @@
 use crate::{
-    sol::{cache::SolCache, rev_projs::RevProjs},
+    sol::{UndoLog, cache::SolCache, rev_projs::RevProjs},
     src::Src,
     svc::Svc,
     ud::UData,
@@ -16,6 +16,7 @@ pub struct SolarSystem {
     pub(crate) svc: Svc,
     pub(crate) rev_projs: RevProjs,
     pub(crate) cache: SolCache,
+    pub(crate) undo: UndoLog,
 }
 impl SolarSystem {
     pub fn new(src: &Src) -> Self {
@@ -24,6 +25,7 @@ impl SolarSystem {
             svc: Svc::new(),
             rev_projs: RevProjs::new(),
             cache: SolCache::new(),
+            undo: UndoLog::new(),
         }
     }
 }
@@ -44,6 +46,7 @@ mod debug {
             self.svc.consistency_check(&self.u_data)?;
             // Check solar system helper data containers
             self.rev_projs.consistency_check(&self.u_data)?;
+            self.undo.consistency_check()?;
             Ok(())
         }
     }

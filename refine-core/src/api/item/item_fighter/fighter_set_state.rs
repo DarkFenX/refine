@@ -1,12 +1,15 @@
 use itertools::Itertools;
 
-use crate::{FighterMut, MinionState, SolarSystem, api::UndoStep, ud::UItemId};
+use crate::{FighterMut, MinionState, SolarSystem, sol::UndoStep, ud::UItemId};
 
 impl SolarSystem {
-    pub(in crate::api) fn internal_set_fighter_state(&mut self, fighter_uid: UItemId, state: MinionState) -> UndoStep {
+    pub(in crate::api) fn internal_set_fighter_state(&mut self, fighter_uid: UItemId, state: MinionState) {
         // Update user data for fighter
         let u_fighter = self.u_data.items.get_mut(fighter_uid).dc_fighter_mut().unwrap();
-        let undo_step = UndoStep::FighterState(u_fighter.get_item_id(), u_fighter.get_fighter_state());
+        if self.undo.is_recording() {
+            self.undo
+                .record(UndoStep::FighterState(fighter_uid, u_fighter.get_fighter_state()));
+        }
         let old_state = u_fighter.get_state();
         u_fighter.set_fighter_state(state);
         let new_state = u_fighter.get_state();
@@ -40,7 +43,6 @@ impl SolarSystem {
             ac_activations,
             &mut self.cache.eupdates,
         );
-        undo_step
     }
 }
 

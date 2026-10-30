@@ -157,7 +157,7 @@ pub trait ItemMutCommon: ItemCommon {
         charge_options: StatItemChargeOptions,
         state_options: StatItemStateOptions,
     ) -> Result<StatDmg, StatItemError<!>> {
-        let undo_steps = active_stat_prepare(self, charge_options, state_options);
+        let savepoint = active_stat_prepare(self, charge_options, state_options);
         let item_uid = self.get_uid();
         let sol = self.get_sol_mut();
         let result = sol
@@ -171,7 +171,7 @@ pub trait ItemMutCommon: ItemCommon {
                 charge_options,
             )
             .map_err(|e| StatItemError::from_svc_err(e, &sol.u_data.items));
-        sol.internal_undo_steps(undo_steps);
+        sol.internal_rollback(savepoint);
         result
     }
     fn get_stat_dmg_applied(
@@ -185,7 +185,7 @@ pub trait ItemMutCommon: ItemCommon {
         let item_uid = self.get_uid();
         // Check projectee before switching states, so that its errors leave states untouched
         let projectee_uid = self.get_sol().u_data.get_projectee_uid(projectee_item_id)?;
-        let undo_steps = active_stat_prepare(self, charge_options, state_options);
+        let savepoint = active_stat_prepare(self, charge_options, state_options);
         let sol = self.get_sol_mut();
         let result = sol
             .svc
@@ -199,7 +199,7 @@ pub trait ItemMutCommon: ItemCommon {
                 projectee_uid,
             )
             .map_err(|e| StatItemAppliedError::from_svc_err(e, &sol.u_data.items));
-        sol.internal_undo_steps(undo_steps);
+        sol.internal_rollback(savepoint);
         result
     }
     fn get_stat_mps(
@@ -208,14 +208,14 @@ pub trait ItemMutCommon: ItemCommon {
         resource_kind: StatMiningResourceKind,
         state_options: StatItemStateOptions,
     ) -> Result<StatMining, StatItemError<!>> {
-        let undo_steps = active_stat_prepare(self, StatItemChargeOptions::Exclude, state_options);
+        let savepoint = active_stat_prepare(self, StatItemChargeOptions::Exclude, state_options);
         let item_uid = self.get_uid();
         let sol = self.get_sol_mut();
         let result = sol
             .svc
             .get_stat_item_mps(&mut CseqMap::new(), &sol.u_data, item_uid, time_options, resource_kind)
             .map_err(|e| StatItemError::from_svc_err(e, &sol.u_data.items));
-        sol.internal_undo_steps(undo_steps);
+        sol.internal_rollback(savepoint);
         result
     }
     fn get_stat_outgoing_nps(
@@ -224,7 +224,7 @@ pub trait ItemMutCommon: ItemCommon {
         charge_options: StatItemChargeOptions,
         state_options: StatItemStateOptions,
     ) -> Result<PValue, StatItemError<!>> {
-        let undo_steps = active_stat_prepare(self, charge_options, state_options);
+        let savepoint = active_stat_prepare(self, charge_options, state_options);
         let item_uid = self.get_uid();
         let sol = self.get_sol_mut();
         let result = sol
@@ -238,7 +238,7 @@ pub trait ItemMutCommon: ItemCommon {
                 None,
             )
             .map_err(|e| StatItemError::from_svc_err(e, &sol.u_data.items));
-        sol.internal_undo_steps(undo_steps);
+        sol.internal_rollback(savepoint);
         result
     }
     fn get_stat_outgoing_nps_applied(
@@ -251,7 +251,7 @@ pub trait ItemMutCommon: ItemCommon {
         let item_uid = self.get_uid();
         // Check projectee before switching states, so that its errors leave states untouched
         let projectee_uid = self.get_sol().u_data.get_projectee_uid(projectee_item_id)?;
-        let undo_steps = active_stat_prepare(self, charge_options, state_options);
+        let savepoint = active_stat_prepare(self, charge_options, state_options);
         let sol = self.get_sol_mut();
         let result = sol
             .svc
@@ -264,7 +264,7 @@ pub trait ItemMutCommon: ItemCommon {
                 Some(projectee_uid),
             )
             .map_err(|e| StatItemAppliedError::from_svc_err(e, &sol.u_data.items));
-        sol.internal_undo_steps(undo_steps);
+        sol.internal_rollback(savepoint);
         result
     }
     fn get_stat_outgoing_rps(
@@ -272,14 +272,14 @@ pub trait ItemMutCommon: ItemCommon {
         time_options: StatTimeOptions,
         state_options: StatItemStateOptions,
     ) -> Result<StatOutReps, StatItemError<!>> {
-        let undo_steps = active_stat_prepare(self, StatItemChargeOptions::Exclude, state_options);
+        let savepoint = active_stat_prepare(self, StatItemChargeOptions::Exclude, state_options);
         let item_uid = self.get_uid();
         let sol = self.get_sol_mut();
         let result = sol
             .svc
             .get_stat_item_outgoing_rps(&mut CseqMap::new(), &sol.u_data, item_uid, time_options, None)
             .map_err(|e| StatItemError::from_svc_err(e, &sol.u_data.items));
-        sol.internal_undo_steps(undo_steps);
+        sol.internal_rollback(savepoint);
         result
     }
     fn get_stat_outgoing_rps_applied(
@@ -291,7 +291,7 @@ pub trait ItemMutCommon: ItemCommon {
         let item_uid = self.get_uid();
         // Check projectee before switching states, so that its errors leave states untouched
         let projectee_uid = self.get_sol().u_data.get_projectee_uid(projectee_item_id)?;
-        let undo_steps = active_stat_prepare(self, StatItemChargeOptions::Exclude, state_options);
+        let savepoint = active_stat_prepare(self, StatItemChargeOptions::Exclude, state_options);
         let sol = self.get_sol_mut();
         let result = sol
             .svc
@@ -303,7 +303,7 @@ pub trait ItemMutCommon: ItemCommon {
                 Some(projectee_uid),
             )
             .map_err(|e| StatItemAppliedError::from_svc_err(e, &sol.u_data.items));
-        sol.internal_undo_steps(undo_steps);
+        sol.internal_rollback(savepoint);
         result
     }
     fn get_stat_outgoing_cps(
@@ -311,14 +311,14 @@ pub trait ItemMutCommon: ItemCommon {
         time_options: StatTimeOptions,
         state_options: StatItemStateOptions,
     ) -> Result<PValue, StatItemError<!>> {
-        let undo_steps = active_stat_prepare(self, StatItemChargeOptions::Exclude, state_options);
+        let savepoint = active_stat_prepare(self, StatItemChargeOptions::Exclude, state_options);
         let item_uid = self.get_uid();
         let sol = self.get_sol_mut();
         let result = sol
             .svc
             .get_stat_item_outgoing_cps(&mut CseqMap::new(), &sol.u_data, item_uid, time_options, None)
             .map_err(|e| StatItemError::from_svc_err(e, &sol.u_data.items));
-        sol.internal_undo_steps(undo_steps);
+        sol.internal_rollback(savepoint);
         result
     }
     fn get_stat_outgoing_cps_applied(
@@ -330,7 +330,7 @@ pub trait ItemMutCommon: ItemCommon {
         let item_uid = self.get_uid();
         // Check projectee before switching states, so that its errors leave states untouched
         let projectee_uid = self.get_sol().u_data.get_projectee_uid(projectee_item_id)?;
-        let undo_steps = active_stat_prepare(self, StatItemChargeOptions::Exclude, state_options);
+        let savepoint = active_stat_prepare(self, StatItemChargeOptions::Exclude, state_options);
         let sol = self.get_sol_mut();
         let result = sol
             .svc
@@ -342,7 +342,7 @@ pub trait ItemMutCommon: ItemCommon {
                 Some(projectee_uid),
             )
             .map_err(|e| StatItemAppliedError::from_svc_err(e, &sol.u_data.items));
-        sol.internal_undo_steps(undo_steps);
+        sol.internal_rollback(savepoint);
         result
     }
     ////////////////////////////////////////////////////////////////////////////////////////////////
@@ -552,20 +552,19 @@ pub trait ItemMutCommon: ItemCommon {
     }
     fn get_stat_mass(&mut self, affectors: CtlAffectors) -> Result<PValue, StatItemError<!>> {
         let item_uid = self.get_uid();
-        let mut undo_steps = Vec::new();
         let sol = self.get_sol_mut();
+        let savepoint = sol.internal_savepoint();
         sol.internal_ctl_affectors_switch(
             item_uid,
             sol.u_data.r_data.get_attr_consts().mass,
             affectors,
             AffectionDir::Increase,
-            &mut undo_steps,
         );
         let result = sol
             .svc
             .get_stat_item_mass(&sol.u_data, item_uid)
             .map_err(|e| StatItemError::from_svc_err(e, &sol.u_data.items));
-        sol.internal_undo_steps(undo_steps);
+        sol.internal_rollback(savepoint);
         result
     }
     fn get_stat_warp_speed(&mut self) -> Result<PValue, StatItemError<StatWarpSpeedError>> {
@@ -588,9 +587,9 @@ pub trait ItemMutCommon: ItemCommon {
         passenger_fit_ids: &[FitId],
         passenger_fuel_affectors: CtlAffectors,
     ) -> Result<StatJump, StatItemError<StatJumpError>> {
-        let mut undo_steps = Vec::new();
         let item_uid = self.get_uid();
         let sol = self.get_sol_mut();
+        let savepoint = sol.internal_savepoint();
         let passenger_fit_uids = passenger_fit_ids
             .iter()
             .filter_map(|fit_id| sol.u_data.fits.int_id_by_ext_id(fit_id))
@@ -603,7 +602,6 @@ pub trait ItemMutCommon: ItemCommon {
                 sol.u_data.r_data.get_attr_consts().mass,
                 passenger_fuel_affectors,
                 AffectionDir::Increase,
-                &mut undo_steps,
             );
         }
         // Collect stats
@@ -612,7 +610,7 @@ pub trait ItemMutCommon: ItemCommon {
             .get_stat_item_jump(&sol.u_data, item_uid, range, &passenger_fit_uids)
             .map_err(|e| StatItemError::from_svc_err(e, &sol.u_data.items));
         // Revert item state changes
-        sol.internal_undo_steps(undo_steps);
+        sol.internal_rollback(savepoint);
         result
     }
     ////////////////////////////////////////////////////////////////////////////////////////////////

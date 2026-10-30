@@ -26,7 +26,6 @@ pub use misc::{
 };
 use sol_ctl_affectors::AffectionDir;
 pub use sol_ctl_affectors::CtlAffectors;
-use sol_undo::UndoStep;
 pub use util::MutIter;
 
 mod default;
