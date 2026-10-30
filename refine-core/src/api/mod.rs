@@ -18,7 +18,7 @@ pub use item::{
     SkillTypeIdSetError, Stance, StanceGetError, StanceMut, StatItemAppliedError, StatItemError, StatItemStateOptions,
     Subsystem, SubsystemGetError, SubsystemMut, SwEffect, SwEffectGetError, SwEffectMut,
 };
-use item::{ItemSealed, active_stat_prepare, active_stat_rollback, get_ship_rib, iter_projs, iter_ranged_projs};
+use item::{ItemSealed, active_stat_prepare, get_ship_rib, iter_projs, iter_ranged_projs};
 pub use misc::{
     AbilityId, AddMode, Affector, AttrId, AttrIdParseError, Coordinates, CustomAttrId, CustomEffectId, Direction,
     DogmaEffectId, EffectId, EffectIdParseError, EveAttrId, ItemAttrValues, ItemEffectInfo, ItemGrpId, ItemTypeId,

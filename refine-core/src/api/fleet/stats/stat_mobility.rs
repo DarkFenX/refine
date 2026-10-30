@@ -25,7 +25,7 @@ impl<'s> FleetMut<'s> {
             }
         }
         // Revert item state changes
-        self.sol.internal_ctl_affectors_restore(&mut undo_steps);
+        self.sol.internal_undo_steps(undo_steps);
         fleet_mass
     }
 }

@@ -1,4 +1,4 @@
-pub(in crate::api) use active_stat::{active_stat_prepare, active_stat_rollback};
+pub(in crate::api) use active_stat::active_stat_prepare;
 pub use mutation::{
     AttrMutateRawError, DormantMutation, DormantMutationMut, EffectiveMutation, EffectiveMutationMut, FullMAttr,
     FullMAttrIter, FullMAttrMut, Mutation, MutationAddError, MutationMut, RawMAttr, RawMAttrGetError, RawMAttrIter,

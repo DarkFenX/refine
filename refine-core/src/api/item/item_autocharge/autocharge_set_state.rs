@@ -1,8 +1,13 @@
-use crate::{api::AutochargeMut, sol::SolarSystem, ud::UItemId};
+use crate::{
+    api::{AutochargeMut, UndoStep},
+    sol::SolarSystem,
+    ud::UItemId,
+};
 
 impl SolarSystem {
-    pub(in crate::api::item) fn internal_set_autocharge_state(&mut self, autocharge_uid: UItemId, state: bool) {
+    pub(in crate::api) fn internal_set_autocharge_state(&mut self, autocharge_uid: UItemId, state: bool) -> UndoStep {
         let u_autocharge = self.u_data.items.get_mut(autocharge_uid).dc_autocharge_mut().unwrap();
+        let undo_step = UndoStep::AutochargeState(u_autocharge.get_item_id(), !u_autocharge.get_force_disabled());
         let old_r_state = u_autocharge.get_state();
         u_autocharge.set_force_disabled(!state);
         let new_r_state = u_autocharge.get_state();
@@ -15,11 +20,12 @@ impl SolarSystem {
             new_r_state,
             &self.cache.eupdates,
         );
+        undo_step
     }
 }
 
 impl<'s> AutochargeMut<'s> {
     pub fn set_state(&mut self, state: bool) {
-        self.sol.internal_set_autocharge_state(self.uid, state)
+        self.sol.internal_set_autocharge_state(self.uid, state);
     }
 }

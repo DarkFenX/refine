@@ -109,12 +109,6 @@ impl SolarSystem {
             reuse_undo_steps.push(undo_step);
         }
     }
-    /// Reverts changes done by the controllable affector function.
-    pub(in crate::api) fn internal_ctl_affectors_restore(&mut self, reuse_undo_steps: &mut Vec<UndoStep>) {
-        while let Some(undo_step) = reuse_undo_steps.pop() {
-            self.internal_undo(undo_step);
-        }
-    }
 }
 
 fn needs_switch(mod_info: &CalcModInfo, dir: AffectionDir) -> bool {

@@ -1,7 +1,7 @@
 use crate::{
     Charge, ChargeMut, Count, Fit, FitMut, Index, ItemCommon, ItemMutCommon, ItemSpoolInfo, ModRack, ModuleState,
     OptionalReload, SolarSystem, Spool,
-    api::{ItemSealed, active_stat_prepare, active_stat_rollback},
+    api::{ItemSealed, active_stat_prepare},
     misc::InfCount,
     stats::{StatItemChargeOptions, StatItemStateOptions},
     svc::cycle::CseqMap,
@@ -106,7 +106,7 @@ impl<'s> ModuleMut<'s> {
         get_optional_reload_override(self.sol, self.uid)
     }
     pub fn get_charged_cycle_count(&mut self) -> Option<Count> {
-        let saved_state = active_stat_prepare(self, StatItemChargeOptions::Exclude, StatItemStateOptions::Switch);
+        let undo_steps = active_stat_prepare(self, StatItemChargeOptions::Exclude, StatItemStateOptions::Switch);
         let result = match self
             .sol
             .svc
@@ -115,7 +115,7 @@ impl<'s> ModuleMut<'s> {
             Some(InfCount::Count(count)) => Some(count),
             _ => None,
         };
-        active_stat_rollback(self, saved_state);
+        self.sol.internal_undo_steps(undo_steps);
         result
     }
     pub fn get_spool_cycle_count(&mut self) -> Option<ItemSpoolInfo> {
