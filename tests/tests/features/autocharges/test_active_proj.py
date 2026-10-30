@@ -4,7 +4,7 @@ But autocharges inherit that ability from charges, so test it here nevertheless 
 doesn't crash or doesn't make solar system inconsistent).
 """
 
-from fw import approx
+from fw import approx, check_no_field
 
 
 def test_proj_unproj(client, consts):
@@ -93,6 +93,46 @@ def test_add_remove(client, consts):
     api_affector_fighter2.remove()
     # Verification
     assert api_affectee_ship.update().attrs[eve_affectee_attr_id].modified == approx(1000)
+
+
+def test_projectee_remove(client, consts):
+    eve_autocharge_attr_id = client.mk_eve_attr(id_=consts.EveAttr.ftr_abil_launch_bomb_type)
+    eve_affector_attr_id = client.mk_eve_attr()
+    eve_affectee_attr_id = client.mk_eve_attr()
+    eve_autocharge_effect_id = client.mk_eve_effect(
+        id_=consts.UtilEffect.activates_autocharge,
+        cat_id=consts.EveEffCat.active)
+    eve_mod = client.mk_eve_effect_mod(
+        func=consts.EveModFunc.item,
+        loc=consts.EveModLoc.tgt,
+        op=consts.EveModOp.post_percent,
+        affector_attr_id=eve_affector_attr_id,
+        affectee_attr_id=eve_affectee_attr_id)
+    eve_effect_id = client.mk_eve_effect(cat_id=consts.EveEffCat.target, mod_info=[eve_mod])
+    eve_charge_id = client.mk_eve_item(
+        attrs={eve_affector_attr_id: 20},
+        eff_ids=[eve_effect_id],
+        defeff_id=eve_effect_id)
+    eve_fighter_id = client.mk_eve_fighter(
+        attrs={eve_autocharge_attr_id: eve_charge_id},
+        eff_ids=[eve_autocharge_effect_id],
+        defeff_id=eve_autocharge_effect_id)
+    eve_ship_id = client.mk_eve_ship(attrs={eve_affectee_attr_id: 1000})
+    client.create_sources()
+    api_sol = client.create_sol()
+    api_affectee_fit = api_sol.create_fit()
+    api_affectee_ship = api_affectee_fit.set_ship(type_id=eve_ship_id)
+    api_affector_fit = api_sol.create_fit()
+    api_affector_fighter = api_affector_fit.add_fighter(type_id=eve_fighter_id, state=consts.ApiMinionState.engaging)
+    api_affector_fighter.change_fighter(add_proj_item_ids=[api_affectee_ship.id])
+    # Verification
+    assert api_affectee_ship.update().attrs[eve_affectee_attr_id].modified == approx(1200)
+    # Action
+    api_affectee_ship.remove()
+    # Verification - fighter and its autocharge lose their projections along with the projectee
+    api_affector_fighter.update()
+    with check_no_field():
+        api_affector_fighter.projs  # ruff:ignore[useless-expression]
 
 
 def setup_state_test(*, client, consts):

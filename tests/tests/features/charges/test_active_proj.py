@@ -3,7 +3,7 @@ Some charges have active projectable effects (e.g. wubbles, HIC rays), here we c
 effects are applied/removed in different circumstances.
 """
 
-from fw import approx
+from fw import approx, check_no_field
 
 
 def test_bundled_proj_unproj(client, consts):
@@ -77,6 +77,43 @@ def test_bundled_remove(client, consts):
     api_affector_module.remove()
     # Verification
     assert api_affectee_ship.update().attrs[eve_affectee_attr_id].modified == approx(1000)
+
+
+def test_bundled_projectee_remove(client, consts):
+    eve_affector_attr_id = client.mk_eve_attr()
+    eve_affectee_attr_id = client.mk_eve_attr()
+    eve_mod = client.mk_eve_effect_mod(
+        func=consts.EveModFunc.item,
+        loc=consts.EveModLoc.tgt,
+        op=consts.EveModOp.post_percent,
+        affector_attr_id=eve_affector_attr_id,
+        affectee_attr_id=eve_affectee_attr_id)
+    eve_effect_id = client.mk_eve_effect(cat_id=consts.EveEffCat.target, mod_info=[eve_mod])
+    eve_act_effect_id = client.mk_eve_effect(id_=consts.UtilEffect.activates_charge, cat_id=consts.EveEffCat.active)
+    eve_charge_id = client.mk_eve_item(
+        attrs={eve_affector_attr_id: 20},
+        eff_ids=[eve_effect_id],
+        defeff_id=eve_effect_id)
+    eve_module_id = client.mk_eve_item(eff_ids=[eve_act_effect_id], defeff_id=eve_act_effect_id)
+    eve_ship_id = client.mk_eve_ship(attrs={eve_affectee_attr_id: 1000})
+    client.create_sources()
+    api_sol = client.create_sol()
+    api_affectee_fit = api_sol.create_fit()
+    api_affectee_ship = api_affectee_fit.set_ship(type_id=eve_ship_id)
+    api_affector_fit = api_sol.create_fit()
+    api_affector_module = api_affector_fit.add_module(
+        type_id=eve_module_id,
+        state=consts.ApiModuleState.active,
+        charge_type_id=eve_charge_id)
+    api_affector_module.change_module(add_proj_item_ids=[api_affectee_ship.id])
+    # Verification
+    assert api_affectee_ship.update().attrs[eve_affectee_attr_id].modified == approx(1200)
+    # Action
+    api_affectee_ship.remove()
+    # Verification - module and its charge lose their projections along with the projectee
+    api_affector_module.update()
+    with check_no_field():
+        api_affector_module.projs  # ruff:ignore[useless-expression]
 
 
 def test_charge_charge_uncharge(client, consts):
