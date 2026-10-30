@@ -36,9 +36,15 @@ impl SolarSystem {
                 for u_proj_data in u_autocharge.get_projs_mut().iter_datas_mut() {
                     u_proj_data.update_src_physics(u_physics);
                 }
-                let u_autocharge = u_data.items.get(fighter_uid).dc_autocharge().unwrap();
+                let u_autocharge = u_data.items.get(autocharge_uid).dc_autocharge().unwrap();
                 for (projectee_uid, u_proj_data) in u_autocharge.get_projs().iter_projectees_and_datas() {
-                    SolarSystem::util_change_item_proj_data(u_data, svc, fighter_uid, projectee_uid, Some(u_proj_data));
+                    SolarSystem::util_change_item_proj_data(
+                        u_data,
+                        svc,
+                        autocharge_uid,
+                        projectee_uid,
+                        Some(u_proj_data),
+                    );
                 }
             }
         }

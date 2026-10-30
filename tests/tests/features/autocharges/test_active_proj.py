@@ -316,6 +316,109 @@ def test_range(client, consts):
     assert api_affectee_ship.update().attrs[eve_affectee_attr_id].modified == approx(1200)
 
 
+def test_range_fighter_moved(client, consts):
+    # Check that change of fighter position updates range of its autocharge
+    eve_autocharge_attr_id = client.mk_eve_attr(id_=consts.EveAttr.ftr_abil_launch_bomb_type)
+    eve_affector_attr_id = client.mk_eve_attr()
+    eve_affectee_attr_id = client.mk_eve_attr()
+    eve_optimal_attr_id = client.mk_eve_attr()
+    eve_falloff_attr_id = client.mk_eve_attr()
+    eve_autocharge_effect_id = client.mk_eve_effect(
+        id_=consts.UtilEffect.activates_autocharge,
+        cat_id=consts.EveEffCat.active)
+    eve_mod = client.mk_eve_effect_mod(
+        func=consts.EveModFunc.item,
+        loc=consts.EveModLoc.tgt,
+        op=consts.EveModOp.post_percent,
+        affector_attr_id=eve_affector_attr_id,
+        affectee_attr_id=eve_affectee_attr_id)
+    eve_effect_id = client.mk_eve_effect(
+        id_=consts.UtilEffect.tgt_normal1,
+        cat_id=consts.EveEffCat.target,
+        range_attr_id=eve_optimal_attr_id,
+        falloff_attr_id=eve_falloff_attr_id,
+        mod_info=[eve_mod])
+    eve_charge_id = client.mk_eve_item(
+        attrs={eve_affector_attr_id: 20, eve_optimal_attr_id: 10000, eve_falloff_attr_id: 5000},
+        eff_ids=[eve_effect_id],
+        defeff_id=eve_effect_id)
+    eve_fighter_id = client.mk_eve_fighter(
+        attrs={eve_autocharge_attr_id: eve_charge_id},
+        eff_ids=[eve_autocharge_effect_id],
+        defeff_id=eve_autocharge_effect_id)
+    eve_ship_id = client.mk_eve_ship(attrs={eve_affectee_attr_id: 1000})
+    client.create_sources()
+    api_sol = client.create_sol()
+    api_affectee_fit = api_sol.create_fit()
+    api_affectee_ship = api_affectee_fit.set_ship(type_id=eve_ship_id, coordinates=(10000, 0, 0))
+    api_affector_fit = api_sol.create_fit()
+    api_affector_fighter = api_affector_fit.add_fighter(
+        type_id=eve_fighter_id,
+        state=consts.ApiMinionState.engaging,
+        coordinates=(0, 0, 0))
+    api_affector_fighter.change_fighter(add_proj_item_ids=[api_affectee_ship.id])
+    # Verification
+    assert api_affectee_ship.update().attrs[eve_affectee_attr_id].modified == approx(1200)
+    # Action
+    api_affector_fighter.change_fighter(coordinates=(-5000, 0, 0))
+    # Verification
+    assert api_affectee_ship.update().attrs[eve_affectee_attr_id].modified == approx(1100)
+    # Action
+    api_affector_fighter.change_fighter(coordinates=(0, 0, 0))
+    # Verification
+    assert api_affectee_ship.update().attrs[eve_affectee_attr_id].modified == approx(1200)
+
+
+def test_fighter_movement(client, consts):
+    # Fighter movement does not change range, but it updates autocharge projections the same way as
+    # fighter position change does
+    eve_autocharge_attr_id = client.mk_eve_attr(id_=consts.EveAttr.ftr_abil_launch_bomb_type)
+    eve_affector_attr_id = client.mk_eve_attr()
+    eve_affectee_attr_id = client.mk_eve_attr()
+    eve_optimal_attr_id = client.mk_eve_attr()
+    eve_falloff_attr_id = client.mk_eve_attr()
+    eve_autocharge_effect_id = client.mk_eve_effect(
+        id_=consts.UtilEffect.activates_autocharge,
+        cat_id=consts.EveEffCat.active)
+    eve_mod = client.mk_eve_effect_mod(
+        func=consts.EveModFunc.item,
+        loc=consts.EveModLoc.tgt,
+        op=consts.EveModOp.post_percent,
+        affector_attr_id=eve_affector_attr_id,
+        affectee_attr_id=eve_affectee_attr_id)
+    eve_effect_id = client.mk_eve_effect(
+        id_=consts.UtilEffect.tgt_normal1,
+        cat_id=consts.EveEffCat.target,
+        range_attr_id=eve_optimal_attr_id,
+        falloff_attr_id=eve_falloff_attr_id,
+        mod_info=[eve_mod])
+    eve_charge_id = client.mk_eve_item(
+        attrs={eve_affector_attr_id: 20, eve_optimal_attr_id: 10000, eve_falloff_attr_id: 5000},
+        eff_ids=[eve_effect_id],
+        defeff_id=eve_effect_id)
+    eve_fighter_id = client.mk_eve_fighter(
+        attrs={eve_autocharge_attr_id: eve_charge_id},
+        eff_ids=[eve_autocharge_effect_id],
+        defeff_id=eve_autocharge_effect_id)
+    eve_ship_id = client.mk_eve_ship(attrs={eve_affectee_attr_id: 1000})
+    client.create_sources()
+    api_sol = client.create_sol()
+    api_affectee_fit = api_sol.create_fit()
+    api_affectee_ship = api_affectee_fit.set_ship(type_id=eve_ship_id, coordinates=(10000, 0, 0))
+    api_affector_fit = api_sol.create_fit()
+    api_affector_fighter = api_affector_fit.add_fighter(
+        type_id=eve_fighter_id,
+        state=consts.ApiMinionState.engaging,
+        coordinates=(0, 0, 0))
+    api_affector_fighter.change_fighter(add_proj_item_ids=[api_affectee_ship.id])
+    # Verification
+    assert api_affectee_ship.update().attrs[eve_affectee_attr_id].modified == approx(1200)
+    # Action
+    api_affector_fighter.change_fighter(movement=(90, 0, 1))
+    # Verification
+    assert api_affectee_ship.update().attrs[eve_affectee_attr_id].modified == approx(1200)
+
+
 def test_switch_src(client, consts):
     eve_d1 = client.mk_eve_data()
     eve_d2 = client.mk_eve_data()
