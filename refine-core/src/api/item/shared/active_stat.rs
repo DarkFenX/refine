@@ -268,6 +268,8 @@ fn prepare_charge_parent(sol: &mut SolarSystem, parent_uid: UItemId) -> Option<S
 fn rollback_charge_parent(sol: &mut SolarSystem, parent_info: SavedParentInfo) {
     match parent_info {
         SavedParentInfo::Fighter(fighter_info) => sol.internal_set_fighter_state(fighter_info.uid, fighter_info.state),
-        SavedParentInfo::Module(module_info) => sol.internal_set_module_state(module_info.uid, module_info.state),
+        SavedParentInfo::Module(module_info) => {
+            sol.internal_set_module_state(module_info.uid, module_info.state);
+        }
     }
 }

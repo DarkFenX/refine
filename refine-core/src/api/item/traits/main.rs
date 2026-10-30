@@ -22,7 +22,6 @@ use crate::{
         vast::{StatCapBlcSrcKindsInt, StatCapSimStaggerInt},
     },
     ud::{FitId, ItemId},
-    util::RMap,
 };
 
 /// Methods shared by every item kind.
@@ -549,20 +548,20 @@ pub trait ItemMutCommon: ItemCommon {
     }
     fn get_stat_mass(&mut self, affectors: CtlAffectors) -> Result<PValue, StatItemError<!>> {
         let item_uid = self.get_uid();
-        let mut saved_states = RMap::new();
+        let mut undo_steps = Vec::new();
         let sol = self.get_sol_mut();
         sol.internal_ctl_affectors_switch(
             item_uid,
             sol.u_data.r_data.get_attr_consts().mass,
             affectors,
             AffectionDir::Increase,
-            &mut saved_states,
+            &mut undo_steps,
         );
         let result = sol
             .svc
             .get_stat_item_mass(&sol.u_data, item_uid)
             .map_err(|e| StatItemError::from_svc_err(e, &sol.u_data.items));
-        sol.internal_ctl_affectors_restore(&mut saved_states);
+        sol.internal_ctl_affectors_restore(&mut undo_steps);
         result
     }
     fn get_stat_warp_speed(&mut self) -> Result<PValue, StatItemError<StatWarpSpeedError>> {
@@ -585,7 +584,7 @@ pub trait ItemMutCommon: ItemCommon {
         passenger_fit_ids: &[FitId],
         passenger_fuel_affectors: CtlAffectors,
     ) -> Result<StatJump, StatItemError<StatJumpError>> {
-        let mut saved_states = RMap::new();
+        let mut undo_steps = Vec::new();
         let item_uid = self.get_uid();
         let sol = self.get_sol_mut();
         let passenger_fit_uids = passenger_fit_ids
@@ -600,7 +599,7 @@ pub trait ItemMutCommon: ItemCommon {
                 sol.u_data.r_data.get_attr_consts().mass,
                 passenger_fuel_affectors,
                 AffectionDir::Increase,
-                &mut saved_states,
+                &mut undo_steps,
             );
         }
         // Collect stats
@@ -609,7 +608,7 @@ pub trait ItemMutCommon: ItemCommon {
             .get_stat_item_jump(&sol.u_data, item_uid, range, &passenger_fit_uids)
             .map_err(|e| StatItemError::from_svc_err(e, &sol.u_data.items));
         // Revert item state changes
-        sol.internal_ctl_affectors_restore(&mut saved_states);
+        sol.internal_ctl_affectors_restore(&mut undo_steps);
         result
     }
     ////////////////////////////////////////////////////////////////////////////////////////////////

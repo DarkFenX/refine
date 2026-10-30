@@ -1,7 +1,7 @@
 use std::{cmp::Ordering, collections::hash_map::Entry};
 
 use crate::{
-    api::{ModuleState, Op},
+    api::{ModuleState, Op, UndoStep},
     num::Value,
     rd::{RAttrId, RState},
     sol::SolarSystem,
@@ -50,7 +50,7 @@ impl SolarSystem {
         attr_rid: Option<RAttrId>,
         action: CtlAffectors,
         direction: AffectionDir,
-        reuse_saved_states: &mut RMap<UItemId, RState>,
+        reuse_undo_steps: &mut Vec<UndoStep>,
     ) {
         let Some(attr_rid) = attr_rid else {
             return;
@@ -103,20 +103,17 @@ impl SolarSystem {
                 }
             }
         }
-        // Actually switch states. Saved states can be shared between multiple calls, so keep the
-        // state recorded first, since it is the one items had before any switches
+        // Actually switch states
         for (affector_uid, new_state) in new_states.into_iter() {
-            let saved_state = self.u_data.items.get(affector_uid).get_state();
-            reuse_saved_states.entry(affector_uid).or_insert(saved_state);
-            self.internal_set_module_state(affector_uid, ModuleState::from_r_state(new_state));
+            let undo_step = self.internal_set_module_state(affector_uid, ModuleState::from_r_state(new_state));
+            reuse_undo_steps.push(undo_step);
         }
     }
     /// Reverts changes done by the controllable affector function.
-    pub(in crate::api) fn internal_ctl_affectors_restore(&mut self, reuse_saved_states: &mut RMap<UItemId, RState>) {
-        for (&affector_uid, &saved_state) in reuse_saved_states.iter() {
-            self.internal_set_module_state(affector_uid, ModuleState::from_r_state(saved_state));
+    pub(in crate::api) fn internal_ctl_affectors_restore(&mut self, reuse_undo_steps: &mut Vec<UndoStep>) {
+        while let Some(undo_step) = reuse_undo_steps.pop() {
+            self.internal_undo(undo_step);
         }
-        reuse_saved_states.clear();
     }
 }
 
