@@ -25,11 +25,11 @@ def test_ship_affectors(client, consts):
     client.create_sources()
     api_sol = client.create_sol()
     api_fleet = api_sol.create_fleet()
-    api_fit = api_sol.create_fit(fleet_id=api_fleet.id)
-    api_ship = api_fit.set_ship(type_id=eve_ship_id)
-    api_fit.add_module(type_id=eve_online_module_id, state=consts.ApiModuleState.online)
-    api_fit.add_module(type_id=eve_active_module_id, state=consts.ApiModuleState.active)
-    api_fit.add_module(type_id=eve_active_module_id, state=consts.ApiModuleState.overload)
+    api_fit1 = api_sol.create_fit(fleet_id=api_fleet.id)
+    api_ship1 = api_fit1.set_ship(type_id=eve_ship_id)
+    api_online_module1 = api_fit1.add_module(type_id=eve_online_module_id, state=consts.ApiModuleState.online)
+    api_active_module1 = api_fit1.add_module(type_id=eve_active_module_id, state=consts.ApiModuleState.active)
+    api_overload_module1 = api_fit1.add_module(type_id=eve_active_module_id, state=consts.ApiModuleState.overload)
     # Verification
     api_options = [
         StatsOptionMass(),
@@ -38,10 +38,28 @@ def test_ship_affectors(client, consts):
         StatsOptionMass(affectors=consts.ApiCtlAffector.unmodified)]
     api_fleet_stats = api_fleet.get_stats(options=FleetStatsOptions(mass=api_options))
     assert api_fleet_stats.mass == [approx(175), approx(100), approx(125), approx(175)]
-    api_fit_stats = api_fit.get_stats(options=FitStatsOptions(mass=api_options))
+    api_fit_stats = api_fit1.get_stats(options=FitStatsOptions(mass=api_options))
     assert api_fit_stats.mass == [approx(175), approx(100), approx(125), approx(175)]
-    api_ship_stats = api_ship.get_stats(options=ItemStatsOptions(mass=api_options))
+    api_ship_stats = api_ship1.get_stats(options=ItemStatsOptions(mass=api_options))
     assert api_ship_stats.mass == [approx(175), approx(100), approx(125), approx(175)]
+    # Action
+    api_fit2 = api_sol.create_fit(fleet_id=api_fleet.id)
+    api_fit2.set_ship(type_id=eve_ship_id)
+    api_online_module2 = api_fit2.add_module(type_id=eve_online_module_id, state=consts.ApiModuleState.online)
+    api_active_module2 = api_fit2.add_module(type_id=eve_active_module_id, state=consts.ApiModuleState.active)
+    api_overload_module2 = api_fit2.add_module(type_id=eve_active_module_id, state=consts.ApiModuleState.overload)
+    # Verification - affectors are switched on ships of all fits
+    api_fleet_stats = api_fleet.get_stats(options=FleetStatsOptions(mass=api_options))
+    assert api_fleet_stats.mass == [approx(350), approx(200), approx(250), approx(350)]
+    # Verification - module states are restored after stats are fetched
+    assert api_online_module1.update().state == consts.ApiModuleState.online
+    assert api_active_module1.update().state == consts.ApiModuleState.active
+    assert api_overload_module1.update().state == consts.ApiModuleState.overload
+    assert api_online_module2.update().state == consts.ApiModuleState.online
+    assert api_active_module2.update().state == consts.ApiModuleState.active
+    assert api_overload_module2.update().state == consts.ApiModuleState.overload
+    api_fleet_stats = api_fleet.get_stats(options=FleetStatsOptions(mass=[StatsOptionMass()]))
+    assert api_fleet_stats.mass == [approx(350)]
 
 
 def test_ship_no_value(client, consts):

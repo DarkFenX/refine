@@ -65,6 +65,7 @@ impl SolarSystem {
         let Ok(mod_infos) = self.svc.iter_item_attr_mods(&self.u_data, item_uid, attr_rid) else {
             return;
         };
+        let mut new_states = RMap::new();
         for mod_info in mod_infos {
             // Ignore modifications which are not impacting requested direction
             if !needs_switch(&mod_info, direction) {
@@ -89,7 +90,7 @@ impl SolarSystem {
             if affector_item.get_fit_uid() != Some(fit_uid) {
                 continue;
             }
-            match reuse_saved_states.entry(affector.item_uid) {
+            match new_states.entry(affector.item_uid) {
                 Entry::Occupied(mut entry) => {
                     // If modifier is coming from the same item, overwrite only if new state is
                     // lower
@@ -102,11 +103,12 @@ impl SolarSystem {
                 }
             }
         }
-        // Actually switch states
-        for (&affector_uid, new_state) in reuse_saved_states.iter_mut() {
+        // Actually switch states. Saved states can be shared between multiple calls, so keep the
+        // state recorded first, since it is the one items had before any switches
+        for (affector_uid, new_state) in new_states.into_iter() {
             let saved_state = self.u_data.items.get(affector_uid).get_state();
-            self.internal_set_module_state(affector_uid, ModuleState::from_r_state(*new_state));
-            *new_state = saved_state;
+            reuse_saved_states.entry(affector_uid).or_insert(saved_state);
+            self.internal_set_module_state(affector_uid, ModuleState::from_r_state(new_state));
         }
     }
     /// Reverts changes done by the controllable affector function.

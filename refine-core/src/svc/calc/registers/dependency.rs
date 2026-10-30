@@ -8,10 +8,10 @@ use crate::{
 /// which hold data about regular modifiers.
 #[derive(Clone)]
 pub(in crate::svc::calc) struct DependencyRegister {
-    // Map<affector spec, affectee specs> - this map could be StMapSetL2 with EffectSpec as source in
-    // 3rd generic parameter, just to process collisions - i.e. when the same affector attribute and
-    // affectee attribute are used by dependencies with different sources. But in our case it's not
-    // needed with some external guarantees:
+    // Map<affector spec, affectee specs> - this map could be StMapSetL2 with EffectSpec as source
+    // in 3rd generic parameter, just to process collisions - i.e. when the same affector attribute
+    // and affectee attribute are used by dependencies with different sources. But in our case it's
+    // not needed with some external guarantees:
     // - when a modification source is removed, it clears dependent attribute values
     // - dependencies are re-established on every dependent recalculation
     // So, if effect source is removed (e.g. disabled via force stop mode), it clears up affectee

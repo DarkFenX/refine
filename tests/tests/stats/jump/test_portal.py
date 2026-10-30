@@ -289,72 +289,113 @@ def test_passenger_fuel_affectors(client, consts):
     api_fit_main = api_sol.create_fit()
     api_ship = api_fit_main.set_ship(type_id=eve_main_ship_id)
     api_portal = api_fit_main.add_module(type_id=eve_portal_id, state=consts.ApiModuleState.active)
-    api_fit_psg = api_sol.create_fit()
-    api_fit_psg.set_ship(type_id=eve_psg_ship_id)
-    api_plate = api_fit_psg.add_module(type_id=eve_plate_id, state=consts.ApiModuleState.online)
-    api_prop = api_fit_psg.add_module(type_id=eve_prop_id, state=consts.ApiModuleState.overload)
+    api_fit_psg1 = api_sol.create_fit()
+    api_fit_psg1.set_ship(type_id=eve_psg_ship_id)
+    api_plate1 = api_fit_psg1.add_module(type_id=eve_plate_id, state=consts.ApiModuleState.online)
+    api_prop1 = api_fit_psg1.add_module(type_id=eve_prop_id, state=consts.ApiModuleState.overload)
     # Verification - more fuel with active prop / online plate, less without them
     api_options = [
-        StatsOptionJump(passenger_fit_ids=[api_fit_psg.id]),
-        StatsOptionJump(passenger_fit_ids=[api_fit_psg.id], passenger_fuel_affectors=consts.ApiCtlAffector.offline),
-        StatsOptionJump(passenger_fit_ids=[api_fit_psg.id], passenger_fuel_affectors=consts.ApiCtlAffector.deactivate),
-        StatsOptionJump(passenger_fit_ids=[api_fit_psg.id], passenger_fuel_affectors=consts.ApiCtlAffector.unmodified)]
+        StatsOptionJump(passenger_fit_ids=[api_fit_psg1.id]),
+        StatsOptionJump(passenger_fit_ids=[api_fit_psg1.id], passenger_fuel_affectors=consts.ApiCtlAffector.offline),
+        StatsOptionJump(passenger_fit_ids=[api_fit_psg1.id], passenger_fuel_affectors=consts.ApiCtlAffector.deactivate),
+        StatsOptionJump(passenger_fit_ids=[api_fit_psg1.id], passenger_fuel_affectors=consts.ApiCtlAffector.unmodified)]
     api_fit_stats = api_fit_main.get_stats(options=FitStatsOptions(jump=api_options))
     assert api_fit_stats.jump.map(
-        lambda i: i.portals[api_portal.id].fuel_use_passengers[api_fit_psg.id],
+        lambda i: i.portals[api_portal.id].fuel_use_passengers[api_fit_psg1.id],
     ) == [194, 146, 157, 194]
     api_ship_stats = api_ship.get_stats(options=ItemStatsOptions(jump=api_options))
     assert api_ship_stats.jump.map(
-        lambda i: i.portals[api_portal.id].fuel_use_passengers[api_fit_psg.id],
+        lambda i: i.portals[api_portal.id].fuel_use_passengers[api_fit_psg1.id],
     ) == [194, 146, 157, 194]
     # Action
-    api_prop.change_module(state=consts.ApiModuleState.active)
+    api_prop1.change_module(state=consts.ApiModuleState.active)
     # Verification
     api_options = [
-        StatsOptionJump(passenger_fit_ids=[api_fit_psg.id]),
-        StatsOptionJump(passenger_fit_ids=[api_fit_psg.id], passenger_fuel_affectors=consts.ApiCtlAffector.offline),
-        StatsOptionJump(passenger_fit_ids=[api_fit_psg.id], passenger_fuel_affectors=consts.ApiCtlAffector.deactivate),
-        StatsOptionJump(passenger_fit_ids=[api_fit_psg.id], passenger_fuel_affectors=consts.ApiCtlAffector.unmodified)]
+        StatsOptionJump(passenger_fit_ids=[api_fit_psg1.id]),
+        StatsOptionJump(passenger_fit_ids=[api_fit_psg1.id], passenger_fuel_affectors=consts.ApiCtlAffector.offline),
+        StatsOptionJump(passenger_fit_ids=[api_fit_psg1.id], passenger_fuel_affectors=consts.ApiCtlAffector.deactivate),
+        StatsOptionJump(passenger_fit_ids=[api_fit_psg1.id], passenger_fuel_affectors=consts.ApiCtlAffector.unmodified)]
     api_fit_stats = api_fit_main.get_stats(options=FitStatsOptions(jump=api_options))
     assert api_fit_stats.jump.map(
-        lambda i: i.portals[api_portal.id].fuel_use_passengers[api_fit_psg.id],
+        lambda i: i.portals[api_portal.id].fuel_use_passengers[api_fit_psg1.id],
     ) == [194, 146, 157, 194]
     api_ship_stats = api_ship.get_stats(options=ItemStatsOptions(jump=api_options))
     assert api_ship_stats.jump.map(
-        lambda i: i.portals[api_portal.id].fuel_use_passengers[api_fit_psg.id],
+        lambda i: i.portals[api_portal.id].fuel_use_passengers[api_fit_psg1.id],
     ) == [194, 146, 157, 194]
     # Action
-    api_plate.change_module(state=consts.ApiModuleState.offline)
+    api_plate1.change_module(state=consts.ApiModuleState.offline)
     # Verification
     api_options = [
-        StatsOptionJump(passenger_fit_ids=[api_fit_psg.id]),
-        StatsOptionJump(passenger_fit_ids=[api_fit_psg.id], passenger_fuel_affectors=consts.ApiCtlAffector.offline),
-        StatsOptionJump(passenger_fit_ids=[api_fit_psg.id], passenger_fuel_affectors=consts.ApiCtlAffector.deactivate),
-        StatsOptionJump(passenger_fit_ids=[api_fit_psg.id], passenger_fuel_affectors=consts.ApiCtlAffector.unmodified)]
+        StatsOptionJump(passenger_fit_ids=[api_fit_psg1.id]),
+        StatsOptionJump(passenger_fit_ids=[api_fit_psg1.id], passenger_fuel_affectors=consts.ApiCtlAffector.offline),
+        StatsOptionJump(passenger_fit_ids=[api_fit_psg1.id], passenger_fuel_affectors=consts.ApiCtlAffector.deactivate),
+        StatsOptionJump(passenger_fit_ids=[api_fit_psg1.id], passenger_fuel_affectors=consts.ApiCtlAffector.unmodified)]
     api_fit_stats = api_fit_main.get_stats(options=FitStatsOptions(jump=api_options))
     assert api_fit_stats.jump.map(
-        lambda i: i.portals[api_portal.id].fuel_use_passengers[api_fit_psg.id],
+        lambda i: i.portals[api_portal.id].fuel_use_passengers[api_fit_psg1.id],
     ) == [183, 146, 146, 183]
     api_ship_stats = api_ship.get_stats(options=ItemStatsOptions(jump=api_options))
     assert api_ship_stats.jump.map(
-        lambda i: i.portals[api_portal.id].fuel_use_passengers[api_fit_psg.id],
+        lambda i: i.portals[api_portal.id].fuel_use_passengers[api_fit_psg1.id],
     ) == [183, 146, 146, 183]
     # Action
-    api_prop.change_module(state=consts.ApiModuleState.online)
+    api_prop1.change_module(state=consts.ApiModuleState.online)
     # Verification
     api_options = [
-        StatsOptionJump(passenger_fit_ids=[api_fit_psg.id]),
-        StatsOptionJump(passenger_fit_ids=[api_fit_psg.id], passenger_fuel_affectors=consts.ApiCtlAffector.offline),
-        StatsOptionJump(passenger_fit_ids=[api_fit_psg.id], passenger_fuel_affectors=consts.ApiCtlAffector.deactivate),
-        StatsOptionJump(passenger_fit_ids=[api_fit_psg.id], passenger_fuel_affectors=consts.ApiCtlAffector.unmodified)]
+        StatsOptionJump(passenger_fit_ids=[api_fit_psg1.id]),
+        StatsOptionJump(passenger_fit_ids=[api_fit_psg1.id], passenger_fuel_affectors=consts.ApiCtlAffector.offline),
+        StatsOptionJump(passenger_fit_ids=[api_fit_psg1.id], passenger_fuel_affectors=consts.ApiCtlAffector.deactivate),
+        StatsOptionJump(passenger_fit_ids=[api_fit_psg1.id], passenger_fuel_affectors=consts.ApiCtlAffector.unmodified)]
     api_fit_stats = api_fit_main.get_stats(options=FitStatsOptions(jump=api_options))
     assert api_fit_stats.jump.map(
-        lambda i: i.portals[api_portal.id].fuel_use_passengers[api_fit_psg.id],
+        lambda i: i.portals[api_portal.id].fuel_use_passengers[api_fit_psg1.id],
     ) == [146, 146, 146, 146]
     api_ship_stats = api_ship.get_stats(options=ItemStatsOptions(jump=api_options))
     assert api_ship_stats.jump.map(
-        lambda i: i.portals[api_portal.id].fuel_use_passengers[api_fit_psg.id],
+        lambda i: i.portals[api_portal.id].fuel_use_passengers[api_fit_psg1.id],
     ) == [146, 146, 146, 146]
+    # Action
+    api_plate1.change_module(state=consts.ApiModuleState.online)
+    api_prop1.change_module(state=consts.ApiModuleState.active)
+    api_fit_psg2 = api_sol.create_fit()
+    api_fit_psg2.set_ship(type_id=eve_psg_ship_id)
+    api_plate2 = api_fit_psg2.add_module(type_id=eve_plate_id, state=consts.ApiModuleState.online)
+    api_prop2 = api_fit_psg2.add_module(type_id=eve_prop_id, state=consts.ApiModuleState.active)
+    # Verification - affectors are switched on ships of all passenger fits
+    api_psg_fit_ids = [api_fit_psg1.id, api_fit_psg2.id]
+    api_options = [
+        StatsOptionJump(passenger_fit_ids=api_psg_fit_ids),
+        StatsOptionJump(passenger_fit_ids=api_psg_fit_ids, passenger_fuel_affectors=consts.ApiCtlAffector.offline),
+        StatsOptionJump(passenger_fit_ids=api_psg_fit_ids, passenger_fuel_affectors=consts.ApiCtlAffector.deactivate),
+        StatsOptionJump(passenger_fit_ids=api_psg_fit_ids, passenger_fuel_affectors=consts.ApiCtlAffector.unmodified)]
+    api_fit_stats = api_fit_main.get_stats(options=FitStatsOptions(jump=api_options))
+    assert api_fit_stats.jump.map(
+        lambda i: i.portals[api_portal.id].fuel_use_passengers[api_fit_psg1.id],
+    ) == [194, 146, 157, 194]
+    assert api_fit_stats.jump.map(
+        lambda i: i.portals[api_portal.id].fuel_use_passengers[api_fit_psg2.id],
+    ) == [194, 146, 157, 194]
+    api_ship_stats = api_ship.get_stats(options=ItemStatsOptions(jump=api_options))
+    assert api_ship_stats.jump.map(
+        lambda i: i.portals[api_portal.id].fuel_use_passengers[api_fit_psg1.id],
+    ) == [194, 146, 157, 194]
+    assert api_ship_stats.jump.map(
+        lambda i: i.portals[api_portal.id].fuel_use_passengers[api_fit_psg2.id],
+    ) == [194, 146, 157, 194]
+    # Verification - module states are restored after stats are fetched
+    assert api_plate1.update().state == consts.ApiModuleState.online
+    assert api_prop1.update().state == consts.ApiModuleState.active
+    assert api_plate2.update().state == consts.ApiModuleState.online
+    assert api_prop2.update().state == consts.ApiModuleState.active
+    api_options = [StatsOptionJump(passenger_fit_ids=api_psg_fit_ids)]
+    api_fit_stats = api_fit_main.get_stats(options=FitStatsOptions(jump=api_options))
+    assert api_fit_stats.jump.map(
+        lambda i: i.portals[api_portal.id].fuel_use_passengers[api_fit_psg1.id],
+    ) == [194]
+    assert api_fit_stats.jump.map(
+        lambda i: i.portals[api_portal.id].fuel_use_passengers[api_fit_psg2.id],
+    ) == [194]
 
 
 def test_multiple_portals(client, consts):
