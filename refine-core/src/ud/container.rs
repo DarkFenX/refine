@@ -92,6 +92,9 @@ where
         let ext_id = self.get(int_id).lib_get_id();
         self.ext_id_to_int_id.insert(ext_id, int_id);
     }
+    pub(crate) fn evict(&mut self, int_id: IntId) -> T {
+        self.data.remove(int_id)
+    }
     pub(crate) fn get_id_counter(&self) -> ExtId {
         self.counter
     }

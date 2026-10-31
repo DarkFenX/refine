@@ -9,7 +9,7 @@ use crate::{
     CountNz, DpsProfile, EffectMode, FitId, FitSecStatus, FleetId, ItemId, MinionState, ModuleState, MoveMode, NpcProp,
     OptionalReload, RearmMinion, RemoveMode, SecZone, ServiceState, SkillLevel, Spool,
     ad::{AEffectId, AItemId},
-    ud::{UAttrMutationRequest, UAutocharges, UFitId, UFleetId, UItemId, UPhysics},
+    ud::{UAttrMutationRequest, UAutocharges, UData, UFitId, UFleetId, UItemId, UPhysics},
 };
 
 /// Data needed to revert a single change done to a solar system.
@@ -195,6 +195,66 @@ impl UndoLog {
     pub(crate) fn close(&mut self, savepoint: UndoSavepoint) {
         self.recording = savepoint.was_recording;
     }
+    /// Keeps changes done since the savepoint.
+    ///
+    /// Steps after a nested savepoint stay, so that outer savepoints can still roll them back.
+    /// Committing the outermost savepoint stops recording, clears the log, and evicts entities
+    /// which were unmapped while recording.
+    pub(crate) fn commit(&mut self, savepoint: UndoSavepoint, u_data: &mut UData) {
+        if savepoint.was_recording {
+            return;
+        }
+        for step in self.steps.drain(..) {
+            match step {
+                UndoStep::FleetRemoved(fleet_uid) => {
+                    u_data.fleets.evict(fleet_uid);
+                }
+                UndoStep::FitRemoved(fit_uid) => {
+                    u_data.fits.evict(fit_uid);
+                }
+                // Children are discarded along with their parent, and have no steps of their own
+                UndoStep::FighterRemoved(fighter_uid) => {
+                    let u_item = u_data.items.evict(fighter_uid);
+                    for autocharge_uid in u_item.dc_fighter().unwrap().get_autocharges().values() {
+                        u_data.items.evict(autocharge_uid);
+                    }
+                }
+                UndoStep::ModuleRemoved(module_uid, _) => {
+                    let u_item = u_data.items.evict(module_uid);
+                    if let Some(charge_uid) = u_item.dc_module().unwrap().get_charge_uid() {
+                        u_data.items.evict(charge_uid);
+                    }
+                }
+                UndoStep::BoosterRemoved(item_uid)
+                | UndoStep::CharacterRemoved(item_uid)
+                | UndoStep::ChargeRemoved(item_uid)
+                | UndoStep::DroneRemoved(item_uid)
+                | UndoStep::FwEffectRemoved(item_uid)
+                | UndoStep::ImplantRemoved(item_uid)
+                | UndoStep::ProjEffectRemoved(item_uid)
+                | UndoStep::RigRemoved(item_uid)
+                | UndoStep::ServiceRemoved(item_uid)
+                | UndoStep::ShipRemoved(item_uid)
+                | UndoStep::SkillRemoved(item_uid)
+                | UndoStep::StanceRemoved(item_uid)
+                | UndoStep::SubsystemRemoved(item_uid)
+                | UndoStep::SwEffectRemoved(item_uid) => {
+                    u_data.items.evict(item_uid);
+                }
+                _ => (),
+            }
+        }
+        // Autocharges replaced by fighter type changes
+        for autocharges in self.autocharges.drain(..) {
+            for autocharge_uid in autocharges.values() {
+                u_data.items.evict(autocharge_uid);
+            }
+        }
+        self.dps_profiles.clear();
+        self.physics.clear();
+        self.mutation_attrs.clear();
+        self.recording = false;
+    }
     pub(crate) fn is_recording(&self) -> bool {
         self.recording
     }
@@ -248,7 +308,7 @@ mod debug {
 
     impl UndoLog {
         pub(in crate::sol) fn consistency_check(&self) -> DebugResult {
-            // Changes are recorded only within calls which roll them back or commit them
+            // Changes are recorded only within transactions and calls which roll them back
             if self.recording
                 || !self.steps.is_empty()
                 || !self.dps_profiles.is_empty()
