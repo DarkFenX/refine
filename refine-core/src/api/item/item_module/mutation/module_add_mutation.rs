@@ -1,7 +1,7 @@
 use crate::{
     api::{ItemTypeId, ModuleMut, MutationAddError, MutationMut},
     err::basic::ItemNotMutatedError,
-    sol::SolarSystem,
+    sol::{SolarSystem, UndoStep},
     ud::{UItemId, UItemMutationRequest},
 };
 
@@ -26,6 +26,9 @@ impl SolarSystem {
                 &mut self.cache.eupdates,
             );
             return Err(error);
+        }
+        if self.undo.is_recording() {
+            self.undo.record(UndoStep::ModuleMutationAdded(module_uid));
         }
         SolarSystem::util_add_module_with_charge_act(
             &mut self.u_data,

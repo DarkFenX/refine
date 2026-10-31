@@ -58,11 +58,14 @@ impl UModule {
     pub(crate) fn get_item_id(&self) -> ItemId {
         self.base.get_item_id()
     }
-    pub(crate) fn get_type_aid(&self) -> AItemId {
-        self.base.get_type_aid()
+    pub(crate) fn get_base_type_aid(&self) -> AItemId {
+        self.base.get_base_type_aid()
     }
-    pub(crate) fn set_type_aid(&mut self, type_aid: AItemId, r_data: &RData) {
-        self.base.set_type_aid(type_aid, r_data);
+    pub(crate) fn set_base_type_aid(&mut self, type_aid: AItemId, r_data: &RData) {
+        self.base.set_base_type_aid(type_aid, r_data);
+    }
+    pub(crate) fn get_rendered_type_aid(&self) -> AItemId {
+        self.base.get_rendered_type_aid()
     }
     pub(crate) fn get_state(&self) -> RState {
         self.base.get_state()
@@ -119,13 +122,16 @@ impl UModule {
     pub(crate) fn get_mutation_data(&self) -> Option<&ItemMutationData> {
         self.base.get_mutation_data()
     }
+    pub(crate) fn get_mutator_type_aid(&self) -> Option<AItemId> {
+        self.base.get_mutator_type_aid()
+    }
     pub(crate) fn mutate(&mut self, mutation: UItemMutationRequest, r_data: &RData) -> Result<(), ItemNotMutatedError> {
         self.base.mutate(mutation, r_data)
     }
     pub(crate) fn change_mutation_attrs(
         &mut self,
         r_data: &RData,
-        attr_mutations: Vec<UAttrMutationRequest>,
+        attr_mutations: &mut [UAttrMutationRequest],
     ) -> Result<Vec<RAttrId>, ItemMutatedError> {
         self.base.change_mutation_attrs(r_data, attr_mutations)
     }
@@ -136,7 +142,7 @@ impl UModule {
     ) -> Result<(), ItemMutatedError> {
         self.base.set_mutator_type_aid(mutator_type_aid, r_data)
     }
-    pub(crate) fn unmutate(&mut self, r_data: &RData) -> Result<(), ItemMutatedError> {
+    pub(crate) fn unmutate(&mut self, r_data: &RData) -> Result<ItemMutationData, ItemMutatedError> {
         self.base.unmutate(r_data)
     }
 }

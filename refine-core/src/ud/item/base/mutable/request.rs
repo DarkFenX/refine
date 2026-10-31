@@ -8,6 +8,7 @@ pub(crate) struct UItemMutationRequest {
     pub(crate) attrs: Vec<UAttrMutationRequest>,
 }
 
+#[derive(Copy, Clone)]
 pub(crate) struct UAttrMutationRequest {
     pub(crate) attr_aid: AAttrId,
     pub(crate) roll: Option<UnitInterval>,

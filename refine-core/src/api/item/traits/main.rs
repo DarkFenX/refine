@@ -37,7 +37,7 @@ pub trait ItemCommon: ItemSealed {
         self.get_sol().u_data.items.ext_id_by_int_id(self.get_uid())
     }
     fn get_type_id(&self) -> ItemTypeId {
-        let type_aid = self.get_sol().u_data.items.get(self.get_uid()).get_type_aid();
+        let type_aid = self.get_sol().u_data.items.get(self.get_uid()).get_rendered_type_aid();
         ItemTypeId::from_aid(type_aid)
     }
     fn iter_effects(&self) -> Result<impl ExactSizeIterator<Item = (EffectId, ItemEffectInfo)>, ItemEffectsIterError> {

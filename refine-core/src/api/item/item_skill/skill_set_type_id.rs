@@ -2,7 +2,7 @@ use crate::{
     ad::AItemId,
     api::{ItemTypeId, SkillMut},
     err::basic::SkillEveTypeError,
-    sol::SolarSystem,
+    sol::{SolarSystem, UndoStep},
     ud::UItemId,
     util::LibGetId,
 };
@@ -14,7 +14,7 @@ impl SolarSystem {
         type_aid: AItemId,
     ) -> Result<(), SkillEveTypeError> {
         let u_item = self.u_data.items.get(skill_uid);
-        let old_type_aid = u_item.get_type_aid();
+        let old_type_aid = u_item.get_base_type_aid();
         if old_type_aid == type_aid {
             return Ok(());
         }
@@ -33,6 +33,9 @@ impl SolarSystem {
         // Update type ID and reload adapted data
         let u_skill = self.u_data.items.get_mut(skill_uid).dc_skill_mut().unwrap();
         u_skill.set_type_aid(type_aid, &self.u_data.r_data);
+        if self.undo.is_recording() {
+            self.undo.record(UndoStep::SkillType(skill_uid, old_type_aid));
+        }
         // Update fit skill map
         let u_fit = self.u_data.fits.get_mut(fit_uid);
         let fit_skill = u_fit.skills.remove(&old_type_aid).unwrap();

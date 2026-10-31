@@ -1,7 +1,7 @@
 use crate::{
     api::{FullMAttrMut, item::shared::mutation::resolve_absolutes_into_rolls_with_ids},
     num::Value,
-    ud::UItem,
+    ud::{UAttrMutationRequest, UItem},
 };
 
 impl<'s> FullMAttrMut<'s> {
@@ -14,24 +14,8 @@ impl<'s> FullMAttrMut<'s> {
         let attr_mutation_request = match absolute_value {
             Some(absolute_value) => {
                 let (base_type_aid, mutator_type_aid) = match u_item {
-                    UItem::Drone(drone) => (
-                        drone
-                            .get_mutation_data()
-                            .unwrap()
-                            .get_cache()
-                            .unwrap()
-                            .get_base_type_aid(),
-                        drone.get_mutation_data().unwrap().get_mutator_type_aid(),
-                    ),
-                    UItem::Module(module) => (
-                        module
-                            .get_mutation_data()
-                            .unwrap()
-                            .get_cache()
-                            .unwrap()
-                            .get_base_type_aid(),
-                        module.get_mutation_data().unwrap().get_mutator_type_aid(),
-                    ),
+                    UItem::Drone(drone) => (drone.get_base_type_aid(), drone.get_mutator_type_aid().unwrap()),
+                    UItem::Module(module) => (module.get_base_type_aid(), module.get_mutator_type_aid().unwrap()),
                     _ => unreachable!("unmutable item kind is used in mutation"),
                 };
                 resolve_absolutes_into_rolls_with_ids(
@@ -41,7 +25,10 @@ impl<'s> FullMAttrMut<'s> {
                     &[(self.attr_aid, absolute_value)],
                 )
             }
-            None => Vec::new(),
+            None => vec![UAttrMutationRequest {
+                attr_aid: self.attr_aid,
+                roll: None,
+            }],
         };
         if attr_mutation_request.is_empty() {
             return;

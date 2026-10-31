@@ -166,7 +166,7 @@ impl Vast {
                 if let Some(max_fitted) = module_rib.max_type_fitted {
                     fit_data
                         .mods_svcs_max_type_fitted
-                        .add_entry(module.get_type_aid(), item_uid, max_fitted);
+                        .add_entry(module.get_rendered_type_aid(), item_uid, max_fitted);
                 }
                 if is_capital_module(module_rib) {
                     fit_data.mods_capital.insert(item_uid, module_rib.volume);
@@ -444,7 +444,7 @@ impl Vast {
                 if module_rib.max_type_fitted.is_some() {
                     fit_data
                         .mods_svcs_max_type_fitted
-                        .remove_l2(module.get_type_aid(), item_uid);
+                        .remove_l2(module.get_rendered_type_aid(), item_uid);
                 }
                 if module_rib.online_max_sec_class.is_some() {
                     fit_data.sec_zone_unonlineable_class.remove(item_uid);

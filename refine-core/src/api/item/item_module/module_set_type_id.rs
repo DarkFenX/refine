@@ -1,14 +1,15 @@
 use crate::{
     ad::AItemId,
     api::{ItemTypeId, ModuleMut},
-    sol::SolarSystem,
+    sol::{SolarSystem, UndoStep},
     ud::UItemId,
 };
 
 impl SolarSystem {
     pub(in crate::api) fn internal_set_module_type_aid(&mut self, module_uid: UItemId, type_aid: AItemId) {
         let u_item = self.u_data.items.get(module_uid);
-        if u_item.get_type_aid() == type_aid {
+        let old_type_aid = u_item.get_base_type_aid();
+        if old_type_aid == type_aid {
             return;
         }
         SolarSystem::util_remove_module_with_charge_act(
@@ -18,7 +19,10 @@ impl SolarSystem {
             &mut self.cache.eupdates,
         );
         let u_module = self.u_data.items.get_mut(module_uid).dc_module_mut().unwrap();
-        u_module.set_type_aid(type_aid, &self.u_data.r_data);
+        u_module.set_base_type_aid(type_aid, &self.u_data.r_data);
+        if self.undo.is_recording() {
+            self.undo.record(UndoStep::ModuleType(module_uid, old_type_aid));
+        }
         SolarSystem::util_add_module_with_charge_act(
             &mut self.u_data,
             &mut self.svc,

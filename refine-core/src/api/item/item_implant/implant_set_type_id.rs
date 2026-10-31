@@ -1,19 +1,23 @@
 use crate::{
     ad::AItemId,
     api::{ImplantMut, ItemTypeId},
-    sol::SolarSystem,
+    sol::{SolarSystem, UndoStep},
     ud::UItemId,
 };
 
 impl SolarSystem {
     pub(in crate::api) fn internal_set_implant_type_aid(&mut self, implant_uid: UItemId, type_aid: AItemId) {
         let u_item = self.u_data.items.get(implant_uid);
-        if u_item.get_type_aid() == type_aid {
+        let old_type_aid = u_item.get_base_type_aid();
+        if old_type_aid == type_aid {
             return;
         }
         SolarSystem::util_remove_implant(&mut self.u_data, &mut self.svc, implant_uid, &mut self.cache.eupdates);
         let u_implant = self.u_data.items.get_mut(implant_uid).dc_implant_mut().unwrap();
         u_implant.set_type_aid(type_aid, &self.u_data.r_data);
+        if self.undo.is_recording() {
+            self.undo.record(UndoStep::ImplantType(implant_uid, old_type_aid));
+        }
         SolarSystem::util_add_implant(&mut self.u_data, &mut self.svc, implant_uid, &mut self.cache.eupdates);
     }
 }

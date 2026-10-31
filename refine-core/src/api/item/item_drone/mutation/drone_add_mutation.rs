@@ -1,7 +1,7 @@
 use crate::{
     api::{DroneMut, ItemTypeId, MutationAddError, MutationMut},
     err::basic::ItemNotMutatedError,
-    sol::SolarSystem,
+    sol::{SolarSystem, UndoStep},
     ud::{UItemId, UItemMutationRequest},
 };
 
@@ -16,6 +16,9 @@ impl SolarSystem {
         if let Err(error) = u_drone.mutate(mutation, &self.u_data.r_data) {
             SolarSystem::util_add_drone(&mut self.u_data, &mut self.svc, drone_uid, &mut self.cache.eupdates);
             return Err(error);
+        }
+        if self.undo.is_recording() {
+            self.undo.record(UndoStep::DroneMutationAdded(drone_uid));
         }
         SolarSystem::util_update_item_radius_in_projs(&mut self.u_data, &self.rev_projs, &mut self.svc, drone_uid);
         SolarSystem::util_add_drone(&mut self.u_data, &mut self.svc, drone_uid, &mut self.cache.eupdates);

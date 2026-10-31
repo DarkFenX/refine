@@ -143,7 +143,10 @@ pub(in crate::svc::vast) fn get_fit_ship_type_group(
     match fit.ship {
         Some(ship_uid) => {
             let ship = u_data.items.get(ship_uid);
-            (Some(ship.get_type_aid()), ship.get_r_item_base().map(|v| v.grp_id))
+            (
+                Some(ship.get_rendered_type_aid()),
+                ship.get_r_item_base().map(|v| v.grp_id),
+            )
         }
         None => (None, None),
     }

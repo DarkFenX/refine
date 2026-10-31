@@ -1,20 +1,24 @@
 use crate::{
     ad::AItemId,
     api::{ItemTypeId, ShipMut},
-    sol::SolarSystem,
+    sol::{SolarSystem, UndoStep},
     ud::UItemId,
 };
 
 impl SolarSystem {
     pub(in crate::api) fn internal_set_ship_type_aid(&mut self, ship_uid: UItemId, type_aid: AItemId) {
         let u_item = self.u_data.items.get(ship_uid);
-        if u_item.get_type_aid() == type_aid {
+        let old_type_aid = u_item.get_base_type_aid();
+        if old_type_aid == type_aid {
             return;
         }
         SolarSystem::util_remove_ship(&mut self.u_data, &mut self.svc, ship_uid, &mut self.cache.eupdates);
         let u_ship = self.u_data.items.get_mut(ship_uid).dc_ship_mut().unwrap();
         let fit_uid = u_ship.get_fit_uid();
         u_ship.set_type_aid(type_aid, &self.u_data.r_data);
+        if self.undo.is_recording() {
+            self.undo.record(UndoStep::ShipType(ship_uid, old_type_aid));
+        }
         // Update on-fit ship kind
         let ship_kind = u_ship.get_ship_kind();
         let u_fit = self.u_data.fits.get_mut(fit_uid);

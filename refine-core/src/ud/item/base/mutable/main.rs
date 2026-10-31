@@ -125,10 +125,13 @@ impl UItemBaseMutable {
     pub(in crate::ud::item) fn get_item_id(&self) -> ItemId {
         self.base.get_item_id()
     }
-    pub(in crate::ud::item) fn get_type_aid(&self) -> AItemId {
-        self.base.get_type_aid()
+    pub(in crate::ud::item) fn get_base_type_aid(&self) -> AItemId {
+        match self.mutation.as_ref().and_then(|v| v.cache.as_ref()) {
+            Some(cache) => cache.base_type_aid,
+            None => self.base.get_type_aid(),
+        }
     }
-    pub(in crate::ud::item) fn set_type_aid(&mut self, type_aid: AItemId, r_data: &RData) {
+    pub(in crate::ud::item) fn set_base_type_aid(&mut self, type_aid: AItemId, r_data: &RData) {
         // Since this method is supposed to update base item ID for mutated items, location of ID
         // depends on item configuration
         match &mut self.mutation {
@@ -145,7 +148,9 @@ impl UItemBaseMutable {
         // cache
         self.update_r_data(r_data);
     }
-
+    pub(in crate::ud::item) fn get_rendered_type_aid(&self) -> AItemId {
+        self.base.get_type_aid()
+    }
     pub(in crate::ud::item) fn get_state(&self) -> RState {
         self.base.get_state()
     }
@@ -246,6 +251,9 @@ impl UItemBaseMutable {
     pub(in crate::ud::item) fn get_mutation_data(&self) -> Option<&ItemMutationData> {
         self.mutation.as_ref()
     }
+    pub(in crate::ud::item) fn get_mutator_type_aid(&self) -> Option<AItemId> {
+        self.mutation.as_ref().map(|v| v.mutator_type_aid)
+    }
     pub(in crate::ud::item) fn mutate(
         &mut self,
         mutation_request: UItemMutationRequest,
@@ -288,10 +296,13 @@ impl UItemBaseMutable {
         self.mutation = Some(item_mutation_data);
         Ok(())
     }
+    /// Applies attribute mutation requests, returning IDs of attributes whose values changed.
+    ///
+    /// Requests are replaced with the values item had, which later can be used to undo them.
     pub(in crate::ud::item) fn change_mutation_attrs(
         &mut self,
         r_data: &RData,
-        attr_mutation_requests: Vec<UAttrMutationRequest>,
+        attr_mutation_requests: &mut [UAttrMutationRequest],
     ) -> Result<Vec<RAttrId>, ItemMutatedError> {
         let Some(item_mutation) = &mut self.mutation else {
             return Err(ItemMutatedError);
@@ -299,17 +310,8 @@ impl UItemBaseMutable {
         let Some(mutation_cache) = &mut item_mutation.cache else {
             // If there is no cache - mutations are not effective. In this case we update user data
             // and return empty list, since effectively none of item attributes can change
-            for attr_mutation_request in attr_mutation_requests {
-                match attr_mutation_request.roll {
-                    Some(roll_val) => {
-                        item_mutation
-                            .attr_rolls
-                            .insert(attr_mutation_request.attr_aid, roll_val);
-                    }
-                    None => {
-                        item_mutation.attr_rolls.remove(&attr_mutation_request.attr_aid);
-                    }
-                }
+            for attr_mutation_request in attr_mutation_requests.iter_mut() {
+                apply_attr_roll(&mut item_mutation.attr_rolls, attr_mutation_request);
             }
             return Ok(Vec::new());
         };
@@ -327,14 +329,12 @@ impl UItemBaseMutable {
         });
         // Process mutation requests, recording attributes whose values were changed for the item
         let mut changed_attr_rids = Vec::new();
-        for attr_mutation_request in attr_mutation_requests {
-            let new_rid_value = match attr_mutation_request.roll {
+        for attr_mutation_request in attr_mutation_requests.iter_mut() {
+            let new_roll = attr_mutation_request.roll;
+            apply_attr_roll(&mut item_mutation.attr_rolls, attr_mutation_request);
+            let new_rid_value = match new_roll {
                 // Mutation change request
                 Some(attr_roll) => {
-                    // Update user-defined data
-                    item_mutation
-                        .attr_rolls
-                        .insert(attr_mutation_request.attr_aid, attr_roll);
                     // Process source-dependent data and return new value
                     let Some(unmutated_value) =
                         get_combined_attr_value(r_data, base_r_item, &mutated_r_item, &attr_mutation_request.attr_aid)
@@ -357,8 +357,6 @@ impl UItemBaseMutable {
                 }
                 // Mutation removal request
                 None => {
-                    // Update user-defined data
-                    item_mutation.attr_rolls.remove(&attr_mutation_request.attr_aid);
                     // Update source-dependent data
                     let Some(unmutated_value) =
                         get_combined_attr_value(r_data, base_r_item, &mutated_r_item, &attr_mutation_request.attr_aid)
@@ -402,25 +400,18 @@ impl UItemBaseMutable {
         self.update_r_data(r_data);
         Ok(())
     }
-    pub(in crate::ud::item) fn unmutate(&mut self, r_data: &RData) -> Result<(), ItemMutatedError> {
-        let Some(item_mutation) = &mut self.mutation else {
+    /// Removes mutation, returning it.
+    pub(in crate::ud::item) fn unmutate(&mut self, r_data: &RData) -> Result<ItemMutationData, ItemMutatedError> {
+        let Some(item_mutation_data) = self.mutation.take() else {
             return Err(ItemMutatedError);
         };
-        match &item_mutation.cache {
-            // If cache is there, mutation is effective - item base has mutated item, and base type
-            // ID is stored on cache
-            Some(cache) => {
-                let type_aid = cache.base_type_aid;
-                self.base.set_type_aid(type_aid, r_data);
-                self.mutation = None;
-            }
-            // No cache - mutation was not effective, and base item was used already, no changes
-            // needed, just unassign mutation in this case
-            None => {
-                self.mutation = None;
-            }
-        };
-        Ok(())
+        // If cache is there, mutation is effective - item base has mutated item, and base type ID
+        // is stored on cache. No cache - mutation was not effective, and base item was used
+        // already, no changes needed
+        if let Some(cache) = &item_mutation_data.cache {
+            self.base.set_type_aid(cache.base_type_aid, r_data);
+        }
+        Ok(item_mutation_data)
     }
 }
 
@@ -535,6 +526,14 @@ fn apply_attr_mutations(
             }
         }
     }
+}
+
+// Applies the request to user-defined rolls, and puts the roll it replaced into the request
+fn apply_attr_roll(attr_rolls: &mut RMap<AAttrId, UnitInterval>, request: &mut UAttrMutationRequest) {
+    request.roll = match request.roll {
+        Some(roll) => attr_rolls.insert(request.attr_aid, roll),
+        None => attr_rolls.remove(&request.attr_aid),
+    };
 }
 
 fn mutate_attr_value(unmutated_value: Value, roll_range: &RMutaAttrRange, roll: UnitInterval) -> Value {

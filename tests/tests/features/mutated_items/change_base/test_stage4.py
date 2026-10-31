@@ -293,7 +293,7 @@ def test_from_stage4_mutated_item_different_base_not_loaded(client, consts):
     assert api_item.attrs[eve_attr2_id].base == approx(92)
 
 
-def test_to_mutated_item_module(client, consts):
+def test_from_stage4_to_mutated_item_module(client, consts):
     # Type ID which effectively mutated item exposes is the mutated one, but type ID change sets
     # base type ID, so changing it to the exposed one has to switch base item
     eve_attr_id = client.mk_eve_attr()
@@ -338,7 +338,7 @@ def test_to_mutated_item_module(client, consts):
     assert api_item.attrs[eve_attr_id].base == approx(92)
 
 
-def test_to_mutated_item_drone(client, consts):
+def test_from_stage4_to_mutated_item_drone(client, consts):
     # Type ID which effectively mutated item exposes is the mutated one, but type ID change sets
     # base type ID, so changing it to the exposed one has to switch base item
     eve_attr_id = client.mk_eve_attr()
@@ -368,64 +368,6 @@ def test_to_mutated_item_drone(client, consts):
     assert len(api_item.mutation.rolls) == 1
     assert api_item.mutation.rolls[eve_attr_id] == approx(0.3)
     assert api_item.attrs[eve_attr_id].base == approx(150)
-    # Action
-    api_item.change_drone(type_id=eve_base_item_id)
-    # Verification
-    api_item.update()
-    assert api_item.type_id == eve_mutated_item_id
-    assert api_item.mutation.type == consts.ApiMutationType.effective
-    assert api_item.mutation.base_type_id == eve_base_item_id
-    assert len(api_item.mutation.attrs) == 1
-    assert api_item.mutation.attrs[eve_attr_id].roll == approx(0.3)
-    assert api_item.mutation.attrs[eve_attr_id].absolute == approx(92)
-    assert len(api_item.mutation.rolls) == 1
-    assert api_item.mutation.rolls[eve_attr_id] == approx(0.3)
-    assert api_item.attrs[eve_attr_id].base == approx(92)
-
-
-def test_to_same_base_module(client, consts):
-    # Base type ID is the one which is set, so setting the same one keeps the item as is
-    eve_attr_id = client.mk_eve_attr()
-    eve_base_item_id = client.mk_eve_item(attrs={eve_attr_id: 100})
-    eve_mutated_item_id = client.mk_eve_item(attrs={eve_attr_id: 150})
-    eve_mutator_id = client.mk_eve_mutator(
-        items=[([eve_base_item_id], eve_mutated_item_id)],
-        attrs={eve_attr_id: (0.8, 1.2)})
-    client.create_sources()
-    api_sol = client.create_sol()
-    api_fit = api_sol.create_fit()
-    api_item = api_fit.add_module(
-        type_id=eve_base_item_id,
-        mutation=(eve_mutator_id, {eve_attr_id: Muta.roll_to_api(val=0.3)}))
-    # Action
-    api_item.change_module(type_id=eve_base_item_id)
-    # Verification
-    api_item.update()
-    assert api_item.type_id == eve_mutated_item_id
-    assert api_item.mutation.type == consts.ApiMutationType.effective
-    assert api_item.mutation.base_type_id == eve_base_item_id
-    assert len(api_item.mutation.attrs) == 1
-    assert api_item.mutation.attrs[eve_attr_id].roll == approx(0.3)
-    assert api_item.mutation.attrs[eve_attr_id].absolute == approx(92)
-    assert len(api_item.mutation.rolls) == 1
-    assert api_item.mutation.rolls[eve_attr_id] == approx(0.3)
-    assert api_item.attrs[eve_attr_id].base == approx(92)
-
-
-def test_to_same_base_drone(client, consts):
-    # Base type ID is the one which is set, so setting the same one keeps the item as is
-    eve_attr_id = client.mk_eve_attr()
-    eve_base_item_id = client.mk_eve_item(attrs={eve_attr_id: 100})
-    eve_mutated_item_id = client.mk_eve_item(attrs={eve_attr_id: 150})
-    eve_mutator_id = client.mk_eve_mutator(
-        items=[([eve_base_item_id], eve_mutated_item_id)],
-        attrs={eve_attr_id: (0.8, 1.2)})
-    client.create_sources()
-    api_sol = client.create_sol()
-    api_fit = api_sol.create_fit()
-    api_item = api_fit.add_drone(
-        type_id=eve_base_item_id,
-        mutation=(eve_mutator_id, {eve_attr_id: Muta.roll_to_api(val=0.3)}))
     # Action
     api_item.change_drone(type_id=eve_base_item_id)
     # Verification

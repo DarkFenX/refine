@@ -215,7 +215,7 @@ fn get_chargeable_modules(u_data: &UData, fit_uid: UFitId) -> Vec<UItemId> {
             continue;
         }
         let module = ChargeableModule {
-            type_aid: u_item.get_type_aid(),
+            type_aid: u_item.get_rendered_type_aid(),
             module_uid,
             charged: u_item.get_charge_uid().is_some(),
         };

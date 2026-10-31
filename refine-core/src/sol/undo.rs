@@ -8,8 +8,8 @@
 use crate::{
     CountNz, EffectMode, ItemId, MinionState, ModuleState, MoveMode, NpcProp, OptionalReload, RearmMinion, RemoveMode,
     ServiceState, SkillLevel, Spool,
-    ad::AEffectId,
-    ud::{UItemId, UPhysics},
+    ad::{AEffectId, AItemId},
+    ud::{UAttrMutationRequest, UItemId, UPhysics},
 };
 
 /// Inverse steps of changes done to a solar system while recording.
@@ -19,6 +19,7 @@ pub(crate) struct UndoLog {
     steps: Vec<UndoStep>,
     // Data which does not fit into steps; it is recorded and taken together with its step
     physics: Vec<UPhysics>,
+    mutation_attrs: Vec<Vec<UAttrMutationRequest>>,
 }
 impl UndoLog {
     pub(in crate::sol) fn new() -> Self {
@@ -26,6 +27,7 @@ impl UndoLog {
             recording: false,
             steps: Vec::new(),
             physics: Vec::new(),
+            mutation_attrs: Vec::new(),
         }
     }
     pub(crate) fn is_recording(&self) -> bool {
@@ -40,6 +42,13 @@ impl UndoLog {
     }
     pub(crate) fn pop_physics(&mut self) -> UPhysics {
         self.physics.pop().unwrap()
+    }
+    pub(crate) fn record_mutation_attrs(&mut self, step: UndoStep, attr_mutations: Vec<UAttrMutationRequest>) {
+        self.steps.push(step);
+        self.mutation_attrs.push(attr_mutations);
+    }
+    pub(crate) fn pop_mutation_attrs(&mut self) -> Vec<UAttrMutationRequest> {
+        self.mutation_attrs.pop().unwrap()
     }
     /// Starts recording, returning the point changes can be rolled back to.
     pub(crate) fn savepoint(&mut self, item_id_counter: ItemId) -> UndoSavepoint {
@@ -81,25 +90,34 @@ pub(crate) struct UndoSavepoint {
 #[derive(Clone)]
 pub(crate) enum UndoStep {
     // Item - autocharge
+    AutochargeRemoved(UItemId),
     AutochargeState(UItemId, bool),
     // Item - booster
     BoosterAdded(UItemId),
     BoosterRemoved(UItemId),
     BoosterState(UItemId, bool),
+    BoosterType(UItemId, AItemId),
     // Item - character
     CharacterAdded(UItemId),
     CharacterRemoved(UItemId),
     CharacterState(UItemId, bool),
+    CharacterType(UItemId, AItemId),
     // Item - charge
     ChargeAdded(UItemId),
     ChargeRemoved(UItemId),
     ChargeState(UItemId, bool),
+    ChargeType(UItemId, AItemId),
     // Item - drone
     DroneAdded(UItemId),
+    DroneMutationAdded(UItemId),
+    DroneMutationAttrs(UItemId),
+    DroneMutationRemoved(UItemId, AItemId),
+    DroneMutator(UItemId, AItemId),
     DroneNpcPropOverride(UItemId, Option<NpcProp>),
     DronePhysics(UItemId),
     DroneRemoved(UItemId),
     DroneState(UItemId, MinionState),
+    DroneType(UItemId, AItemId),
     // Item - fighter
     FighterAdded(UItemId),
     FighterCountOverride(UItemId, Option<CountNz>),
@@ -107,55 +125,71 @@ pub(crate) enum UndoStep {
     FighterRearmMinionOverride(UItemId, Option<RearmMinion>),
     FighterRemoved(UItemId),
     FighterState(UItemId, MinionState),
+    FighterType(UItemId, AItemId),
     // Item - fit-wide effect
     FwEffectAdded(UItemId),
     FwEffectRemoved(UItemId),
     FwEffectState(UItemId, bool),
+    FwEffectType(UItemId, AItemId),
     // Item - implant
     ImplantAdded(UItemId),
     ImplantRemoved(UItemId),
     ImplantState(UItemId, bool),
+    ImplantType(UItemId, AItemId),
     // Item -module
     ModuleAdded(UItemId, RemoveMode),
     ModuleMoved(UItemId, MoveMode),
+    ModuleMutationAdded(UItemId),
+    ModuleMutationAttrs(UItemId),
+    ModuleMutationRemoved(UItemId, AItemId),
+    ModuleMutator(UItemId, AItemId),
     ModuleOptionalReloadOverride(UItemId, Option<OptionalReload>),
     ModuleRemoved(UItemId, RemoveMode),
     ModuleSpoolOverride(UItemId, Option<Spool>),
     ModuleState(UItemId, ModuleState),
+    ModuleType(UItemId, AItemId),
     // Item - projected effect
     ProjEffectAdded(UItemId),
     ProjEffectRemoved(UItemId),
     ProjEffectState(UItemId, bool),
+    ProjEffectType(UItemId, AItemId),
     // Item - rig
     RigAdded(UItemId),
     RigRemoved(UItemId),
     RigState(UItemId, bool),
+    RigType(UItemId, AItemId),
     // Item - service
     ServiceAdded(UItemId),
     ServiceRemoved(UItemId),
     ServiceState(UItemId, ServiceState),
+    ServiceType(UItemId, AItemId),
     // Item - ship
     ShipAdded(UItemId),
     ShipPhysics(UItemId),
     ShipRemoved(UItemId),
     ShipState(UItemId, bool),
+    ShipType(UItemId, AItemId),
     // Item - skill
     SkillAdded(UItemId),
     SkillLevel(UItemId, SkillLevel),
     SkillRemoved(UItemId),
     SkillState(UItemId, bool),
+    SkillType(UItemId, AItemId),
     // Item - stance
     StanceAdded(UItemId),
     StanceRemoved(UItemId),
     StanceState(UItemId, bool),
+    StanceType(UItemId, AItemId),
     // Item - subsystem
     SubsystemAdded(UItemId),
     SubsystemRemoved(UItemId),
     SubsystemState(UItemId, bool),
+    SubsystemType(UItemId, AItemId),
     // Item - system-wide effect
     SwEffectAdded(UItemId),
     SwEffectRemoved(UItemId),
     SwEffectState(UItemId, bool),
+    SwEffectType(UItemId, AItemId),
     // Item - general
     ItemEffectMode(UItemId, AEffectId, EffectMode),
     ProjAdded(UItemId, UItemId),   // Projector and projectee
@@ -173,7 +207,7 @@ mod debug {
     impl UndoLog {
         pub(in crate::sol) fn consistency_check(&self) -> DebugResult {
             // Changes are recorded only within calls which roll them back or commit them
-            if self.recording || !self.steps.is_empty() || !self.physics.is_empty() {
+            if self.recording || !self.steps.is_empty() || !self.physics.is_empty() || !self.mutation_attrs.is_empty() {
                 return Err(Default::default());
             }
             Ok(())

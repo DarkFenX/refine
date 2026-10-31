@@ -41,7 +41,7 @@ impl AffecteeFilter {
 
 fn get_srq_type_aid(mod_srq: &AModifierSrq, u_item: &UItem) -> AItemId {
     match mod_srq {
-        AModifierSrq::SelfRef => u_item.get_type_aid(),
+        AModifierSrq::SelfRef => u_item.get_rendered_type_aid(),
         AModifierSrq::ItemId(type_aid) => *type_aid,
     }
 }
