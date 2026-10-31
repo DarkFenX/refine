@@ -11,12 +11,16 @@ impl SolarSystem {
         drone_uid: UItemId,
         mutation: UItemMutationRequest,
     ) -> Result<(), ItemNotMutatedError> {
+        // Checked before services are touched, so that failed requests do nothing
+        let u_drone = self.u_data.items.get(drone_uid).dc_drone().unwrap();
+        if u_drone.get_mutator_type_aid().is_some() {
+            return Err(ItemNotMutatedError {
+                item_id: u_drone.get_item_id(),
+            });
+        }
         SolarSystem::util_remove_drone(&mut self.u_data, &mut self.svc, drone_uid, &mut self.cache.eupdates);
         let u_drone = self.u_data.items.get_mut(drone_uid).dc_drone_mut().unwrap();
-        if let Err(error) = u_drone.mutate(mutation, &self.u_data.r_data) {
-            SolarSystem::util_add_drone(&mut self.u_data, &mut self.svc, drone_uid, &mut self.cache.eupdates);
-            return Err(error);
-        }
+        u_drone.mutate(mutation, &self.u_data.r_data).unwrap();
         if self.undo.is_recording() {
             self.undo.record(UndoStep::DroneMutationAdded(drone_uid));
         }

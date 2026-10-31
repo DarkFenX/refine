@@ -11,6 +11,13 @@ impl SolarSystem {
         module_uid: UItemId,
         mutation: UItemMutationRequest,
     ) -> Result<(), ItemNotMutatedError> {
+        // Checked before services are touched, so that failed requests do nothing
+        let u_module = self.u_data.items.get(module_uid).dc_module().unwrap();
+        if u_module.get_mutator_type_aid().is_some() {
+            return Err(ItemNotMutatedError {
+                item_id: u_module.get_item_id(),
+            });
+        }
         SolarSystem::util_remove_module_with_charge_act(
             &mut self.u_data,
             &mut self.svc,
@@ -18,15 +25,7 @@ impl SolarSystem {
             &mut self.cache.eupdates,
         );
         let u_module = self.u_data.items.get_mut(module_uid).dc_module_mut().unwrap();
-        if let Err(error) = u_module.mutate(mutation, &self.u_data.r_data) {
-            SolarSystem::util_add_module_with_charge_act(
-                &mut self.u_data,
-                &mut self.svc,
-                module_uid,
-                &mut self.cache.eupdates,
-            );
-            return Err(error);
-        }
+        u_module.mutate(mutation, &self.u_data.r_data).unwrap();
         if self.undo.is_recording() {
             self.undo.record(UndoStep::ModuleMutationAdded(module_uid));
         }
