@@ -6,10 +6,9 @@ impl<'r> SolarSystem<'r> {
     ///
     /// - infallible methods run commands which cannot fail, thus solar system never has to be
     ///   restored;
-    /// - fallible methods receive [`SolBackup`], which tells if solar system has to be backed up
-    ///   before execution, in order to be restored in case of failure. Backup is not always needed,
-    ///   since failing commands often leave solar system in consistent and expected state.
-    pub(crate) async fn exec_standard<F, T, E>(&mut self, backup: SolBackup, func: F) -> Result<T, E>
+    /// - fallible methods run commands in a transaction, which is committed if they succeed, and
+    ///   rolled back if they fail.
+    pub(crate) async fn exec_standard<F, T, E>(&mut self, _backup: SolBackup, func: F) -> Result<T, E>
     where
         F: FnOnce(&mut rc::SolarSystem) -> Result<T, E> + Send + 'static,
         T: Send + 'static,
@@ -20,18 +19,13 @@ impl<'r> SolarSystem<'r> {
             .tpool
             .exec_standard(move || {
                 let mut core_sol = core_sol_guarded.lock();
-                let core_sol_backup = match backup {
-                    SolBackup::Needed => Some(core_sol.clone()),
-                    SolBackup::NotNeeded => None,
-                };
-                match (func(&mut core_sol), core_sol_backup) {
-                    (Ok(ret), _) => Ok(ret),
-                    (Err(error), Some(core_sol_backup)) => {
-                        *core_sol = core_sol_backup;
-                        Err(error)
-                    }
-                    (Err(error), None) => Err(error),
+                let mut tx = core_sol.begin();
+                let result = func(&mut tx);
+                match result {
+                    Ok(..) => tx.commit(),
+                    Err(..) => tx.rollback(),
                 }
+                result
             })
             .await
     }

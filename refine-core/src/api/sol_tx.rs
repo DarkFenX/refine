@@ -4,9 +4,9 @@ use crate::sol::{SolarSystem, UndoSavepoint};
 
 /// Transaction on a solar system.
 ///
-/// Derefs to the solar system. Commit to keep changes, drop to roll them back. Calling `begin` on a
-/// guard starts a nested transaction; changes it commits are rolled back if the outer transaction
-/// is.
+/// Derefs to the solar system. Commit to keep changes, roll back or drop to revert them. Calling
+/// `begin` on a guard starts a nested transaction; changes it commits are rolled back if the outer
+/// transaction is.
 ///
 /// Restrictions:
 /// - the solar system must not be replaced or cloned through the guard;
@@ -14,13 +14,17 @@ use crate::sol::{SolarSystem, UndoSavepoint};
 ///   changes could panic again; the solar system has to be discarded then.
 pub struct SolTx<'a> {
     sol: &'a mut SolarSystem,
-    // Taken on commit
+    // Taken on commit and rollback
     savepoint: Option<UndoSavepoint>,
 }
 impl SolTx<'_> {
     pub fn commit(mut self) {
         let savepoint = self.savepoint.take().unwrap();
         self.sol.internal_commit(savepoint);
+    }
+    pub fn rollback(mut self) {
+        let savepoint = self.savepoint.take().unwrap();
+        self.sol.internal_rollback(savepoint);
     }
 }
 impl Deref for SolTx<'_> {

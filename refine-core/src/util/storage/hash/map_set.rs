@@ -68,7 +68,7 @@ where
     fn insert(&mut self, value: V) {
         match self {
             Self::One(old_value) if *old_value == value => (),
-            Self::One(_) => {
+            Self::One(..) => {
                 let Self::One(old_value) = std::mem::replace(self, Self::Many(RSet::with_capacity(2))) else {
                     unreachable!()
                 };
@@ -84,7 +84,7 @@ where
     }
     fn extend(&mut self, values: impl ExactSizeIterator<Item = V>) {
         match self {
-            Self::One(_) => {
+            Self::One(..) => {
                 let set = RSet::with_capacity(values.len() + 1);
                 let Self::One(old_value) = std::mem::replace(self, Self::Many(set)) else {
                     unreachable!()

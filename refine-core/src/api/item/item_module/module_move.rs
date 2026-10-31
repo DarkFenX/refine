@@ -40,8 +40,8 @@ impl SolarSystem {
         }
         if self.undo.is_recording() {
             let undo_pos_mode = match pos_mode {
-                MoveMode::Shift(_) => MoveMode::Shift(init_pos),
-                MoveMode::Swap(_) => MoveMode::Swap(init_pos),
+                MoveMode::Shift(..) => MoveMode::Shift(init_pos),
+                MoveMode::Swap(..) => MoveMode::Swap(init_pos),
             };
             self.undo.record(UndoStep::ModuleMoved(module_uid, undo_pos_mode));
         }

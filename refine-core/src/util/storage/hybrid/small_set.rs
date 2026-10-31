@@ -98,7 +98,7 @@ where
         }
         let spill = self.spill.as_mut().unwrap();
         match spill.index.entry(val) {
-            Entry::Occupied(_) => false,
+            Entry::Occupied(..) => false,
             Entry::Vacant(entry) => {
                 entry.insert(spill.vals.len());
                 spill.vals.push(val);

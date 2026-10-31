@@ -229,8 +229,8 @@ impl Calc {
     fn get_cached_cval(&self, item_uid: UItemId, attr_rid: RAttrId) -> Option<CalcAttrVals> {
         let attr_entry = self.attrs.get_item_attr_data(item_uid)?.get(&attr_rid)?;
         match attr_entry.postproc {
+            Some(..) => None,
             None => attr_entry.value,
-            Some(_) => None,
         }
     }
     #[inline]

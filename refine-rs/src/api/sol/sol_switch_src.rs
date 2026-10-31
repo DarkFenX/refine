@@ -30,7 +30,7 @@ impl SolarSystem<'_> {
         let sol_info = self
             .exec_standard_infallible(move |core_sol| {
                 match core_sol.set_src(&core_src) {
-                    Ok(_) => (),
+                    Ok(..) => (),
                     Err(rc::err::SrcSetError::InTransaction) => unreachable!(),
                 }
                 info_cmd.execute(sol_id, src_alias, core_sol)

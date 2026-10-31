@@ -93,8 +93,8 @@ impl SolarSystem {
         if self.undo.is_recording() {
             // Inserted module shifted other modules, so it has to shift them back when removed
             let undo_pos_mode = match pos_mode {
-                AddMode::Insert(_) => RemoveMode::Remove,
-                AddMode::Append | AddMode::Equip | AddMode::Replace(_) => RemoveMode::Free,
+                AddMode::Insert(..) => RemoveMode::Remove,
+                AddMode::Append | AddMode::Equip | AddMode::Replace(..) => RemoveMode::Free,
             };
             self.undo.record(UndoStep::ModuleAdded(module_uid, undo_pos_mode));
         }
