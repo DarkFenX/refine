@@ -1,4 +1,4 @@
-use crate::{FitId, FitMut, SolarSystem, ud::UFitId};
+use crate::{FitId, FitMut, SolarSystem, sol::UndoStep, ud::UFitId};
 
 impl SolarSystem {
     pub(in crate::api) fn internal_remove_fit_rah_incoming_dps(
@@ -9,6 +9,10 @@ impl SolarSystem {
         let old_dps_profile = fit.rah_incoming_dps.take();
         match old_dps_profile {
             Some(old_dps_profile) => {
+                if self.undo.is_recording() {
+                    self.undo
+                        .record_dps_profile(UndoStep::FitRahIncomingDps(fit_uid), Some(old_dps_profile));
+                }
                 // Do not trigger anything in services if effectively RAH profile is not changed -
                 // RAH sim uses default incoming dps if RAH profile is not set
                 if self.u_data.default_incoming_dps != old_dps_profile {

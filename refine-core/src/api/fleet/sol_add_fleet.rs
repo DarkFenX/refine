@@ -1,6 +1,6 @@
 use crate::{
     api::FleetMut,
-    sol::SolarSystem,
+    sol::{SolarSystem, UndoStep},
     ud::{UFleet, UFleetId},
 };
 
@@ -12,6 +12,10 @@ impl SolarSystem {
     pub(in crate::api) fn add_fleet_internal(&mut self) -> UFleetId {
         let fleet_id = self.u_data.fleets.alloc_id();
         let u_fleet = UFleet::new(fleet_id);
-        self.u_data.fleets.add(u_fleet)
+        let fleet_uid = self.u_data.fleets.add(u_fleet);
+        if self.undo.is_recording() {
+            self.undo.record(UndoStep::FleetAdded(fleet_uid));
+        }
+        fleet_uid
     }
 }

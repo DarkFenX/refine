@@ -10,7 +10,8 @@ impl SolarSystem<'_> {
         self.inner.set_src_alias(inner_src.get_alias());
         // Variables for move
         let core_src = inner_src.get_core().clone();
-        self.exec_standard_infallible(move |core_sol| core_sol.set_src(&core_src))
+        // Source is switched outside of transactions
+        self.exec_standard_infallible(move |core_sol| core_sol.set_src(&core_src).unwrap())
             .await;
         Ok(())
     }
@@ -28,7 +29,10 @@ impl SolarSystem<'_> {
         let src_alias = inner_src.get_alias();
         let sol_info = self
             .exec_standard_infallible(move |core_sol| {
-                core_sol.set_src(&core_src);
+                match core_sol.set_src(&core_src) {
+                    Ok(_) => (),
+                    Err(rc::err::SrcSetError::InTransaction) => unreachable!(),
+                }
                 info_cmd.execute(sol_id, src_alias, core_sol)
             })
             .await;

@@ -1,4 +1,4 @@
-use crate::{FitId, FitMut, SolarSystem, ud::UFitId};
+use crate::{FitId, FitMut, SolarSystem, sol::UndoStep, ud::UFitId};
 
 impl SolarSystem {
     pub(in crate::api) fn internal_unset_fit_fleet(&mut self, fit_uid: UFitId) -> Result<(), FitFleetUnsetError> {
@@ -6,6 +6,9 @@ impl SolarSystem {
         let Some(fleet_uid) = u_fit.fleet else {
             return Err(FitFleetUnsetError::FitHasNoFleet(u_fit.id));
         };
+        if self.undo.is_recording() {
+            self.undo.record(UndoStep::FitFleet(fit_uid, Some(fleet_uid)));
+        }
         let u_fleet = self.u_data.fleets.get(fleet_uid);
         self.svc.notify_fit_removed_from_fleet(&self.u_data, u_fleet, fit_uid);
         let u_fleet = self.u_data.fleets.get_mut(fleet_uid);

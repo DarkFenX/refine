@@ -1,4 +1,9 @@
-use crate::{api::FitMut, num::FitSecStatus, sol::SolarSystem, ud::UFitId};
+use crate::{
+    api::FitMut,
+    num::FitSecStatus,
+    sol::{SolarSystem, UndoStep},
+    ud::UFitId,
+};
 
 impl SolarSystem {
     pub(in crate::api) fn internal_set_fit_sec_status(&mut self, fit_uid: UFitId, sec_status: FitSecStatus) {
@@ -6,6 +11,9 @@ impl SolarSystem {
         let old_sec_status = u_fit.sec_status;
         if old_sec_status == sec_status {
             return;
+        }
+        if self.undo.is_recording() {
+            self.undo.record(UndoStep::FitSecStatus(fit_uid, old_sec_status));
         }
         u_fit.sec_status = sec_status;
         if let Some(ship_uid) = u_fit.ship {

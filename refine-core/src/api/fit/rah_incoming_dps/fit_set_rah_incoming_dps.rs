@@ -1,4 +1,9 @@
-use crate::{api::FitMut, misc::DpsProfile, sol::SolarSystem, ud::UFitId};
+use crate::{
+    api::FitMut,
+    misc::DpsProfile,
+    sol::{SolarSystem, UndoStep},
+    ud::UFitId,
+};
 
 impl SolarSystem {
     pub(in crate::api) fn internal_set_fit_rah_incoming_dps(&mut self, fit_uid: UFitId, dps_profile: DpsProfile) {
@@ -7,6 +12,10 @@ impl SolarSystem {
             return;
         }
         let old_dps_profile = u_fit.rah_incoming_dps.replace(dps_profile);
+        if self.undo.is_recording() {
+            self.undo
+                .record_dps_profile(UndoStep::FitRahIncomingDps(fit_uid), old_dps_profile);
+        }
         // Do not trigger anything in services if effectively RAH profile is not changed - RAH sim
         // uses default incoming dps if RAH profile is not set
         if old_dps_profile.is_none() && self.u_data.default_incoming_dps == dps_profile {

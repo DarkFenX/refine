@@ -8,8 +8,8 @@ pub use crate::{
         FleetGetError, FwEffectGetError, ImplantGetError, ItemAttrGetError, ItemAttrsIterError, ItemEffectsIterError,
         ItemGetError, ItemModifiersIterError, ItemRemoveError, ModuleGetError, MutationAddError, ProjAddError,
         ProjEffectGetError, ProjGetError, RawMAttrGetError, RigGetError, ServiceGetError, ShipGetError,
-        SideEffectGetError, SkillAddError, SkillGetError, SkillTypeIdSetError, StanceGetError, SubsystemGetError,
-        SwEffectGetError,
+        SideEffectGetError, SkillAddError, SkillGetError, SkillTypeIdSetError, SrcSetError, StanceGetError,
+        SubsystemGetError, SwEffectGetError,
     },
     misc::SpoolParseError,
     num::{

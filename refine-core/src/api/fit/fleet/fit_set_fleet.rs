@@ -1,7 +1,7 @@
 use crate::{
     api::FitMut,
     err::basic::FleetFoundError,
-    sol::SolarSystem,
+    sol::{SolarSystem, UndoStep},
     ud::{FleetId, UFitId, UFleetId},
 };
 
@@ -9,11 +9,15 @@ impl SolarSystem {
     pub(in crate::api) fn internal_set_fit_fleet(&mut self, fit_uid: UFitId, fleet_uid: UFleetId) {
         let u_fit = self.u_data.fits.get(fit_uid);
         self.u_data.fleets.get(fleet_uid);
+        let old_fleet_uid = u_fit.fleet;
+        if old_fleet_uid == Some(fleet_uid) {
+            return;
+        }
+        if self.undo.is_recording() {
+            self.undo.record(UndoStep::FitFleet(fit_uid, old_fleet_uid));
+        }
         // Unassign from old fleet
-        if let Some(old_fleet_uid) = u_fit.fleet {
-            if old_fleet_uid == fleet_uid {
-                return;
-            }
+        if let Some(old_fleet_uid) = old_fleet_uid {
             let old_u_fleet = self.u_data.fleets.get(old_fleet_uid);
             self.svc
                 .notify_fit_removed_from_fleet(&self.u_data, old_u_fleet, fit_uid);

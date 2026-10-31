@@ -2,21 +2,28 @@ use itertools::Itertools;
 
 use crate::{
     api::{FitMut, RemoveMode},
-    sol::SolarSystem,
+    sol::{SolarSystem, UndoStep},
     ud::UFitId,
 };
 
 impl SolarSystem {
     pub(in crate::api) fn internal_remove_fit(&mut self, fit_uid: UFitId) {
+        if self.u_data.fits.get(fit_uid).fleet.is_some() {
+            self.internal_unset_fit_fleet(fit_uid).unwrap();
+        }
         let item_uids = self.u_data.fits.get(fit_uid).iter_direct_items().collect_vec();
         for item_uid in item_uids.into_iter() {
             self.internal_remove_item(item_uid, RemoveMode::Free).unwrap();
         }
         self.svc.notify_fit_removed(fit_uid);
-        let u_fit = self.u_data.fits.remove(fit_uid);
-        if let Some(fleet_uid) = u_fit.fleet {
-            let u_fleet = self.u_data.fleets.get_mut(fleet_uid);
-            u_fleet.remove_fit(&fit_uid);
+        match self.undo.is_recording() {
+            true => {
+                self.u_data.fits.detach(fit_uid);
+                self.undo.record(UndoStep::FitRemoved(fit_uid));
+            }
+            false => {
+                self.u_data.fits.remove(fit_uid);
+            }
         }
     }
 }

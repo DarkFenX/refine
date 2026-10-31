@@ -5,13 +5,54 @@ use crate::{
 
 impl SolarSystem {
     pub(in crate::api) fn internal_savepoint(&mut self) -> UndoSavepoint {
-        self.undo.savepoint(self.u_data.items.get_id_counter())
+        self.undo.savepoint(
+            self.u_data.fleets.get_id_counter(),
+            self.u_data.fits.get_id_counter(),
+            self.u_data.items.get_id_counter(),
+        )
     }
     pub(in crate::api) fn internal_rollback(&mut self, savepoint: UndoSavepoint) {
         // Steps are undone by the same methods which record them, and we do not want to record it
         self.undo.pause();
         while let Some(step) = self.undo.pop(&savepoint) {
             match step {
+                // Solar system
+                UndoStep::SecZone(sec_zone) => self.set_sec_zone(sec_zone),
+                UndoStep::DefaultNpcProp(npc_prop) => self.set_default_npc_prop(npc_prop),
+                UndoStep::DefaultOptionalReloads(optional_reloads) => {
+                    self.set_default_optional_reloads(optional_reloads);
+                }
+                UndoStep::DefaultRearmMinions(rearm_minions) => self.set_default_rearm_minions(rearm_minions),
+                UndoStep::DefaultSpool(spool) => self.set_default_spool(spool),
+                UndoStep::DefaultIncomingDps => {
+                    let dps_profile = self.undo.pop_dps_profile().unwrap();
+                    self.set_default_incoming_dps(dps_profile);
+                }
+                // Fleet
+                UndoStep::FleetAdded(fleet_uid) => self.internal_remove_fleet(fleet_uid),
+                UndoStep::FleetRemoved(fleet_uid) => self.u_data.fleets.reattach(fleet_uid),
+                // Fit
+                UndoStep::FitAdded(fit_uid) => self.internal_remove_fit(fit_uid),
+                UndoStep::FitRemoved(fit_uid) => self.internal_reattach_fit(fit_uid),
+                UndoStep::FitFleet(fit_uid, fleet_uid) => match fleet_uid {
+                    Some(fleet_uid) => self.internal_set_fit_fleet(fit_uid, fleet_uid),
+                    None => self.internal_unset_fit_fleet(fit_uid).unwrap(),
+                },
+                UndoStep::FitRahIncomingDps(fit_uid) => match self.undo.pop_dps_profile() {
+                    Some(dps_profile) => self.internal_set_fit_rah_incoming_dps(fit_uid, dps_profile),
+                    None => self.internal_remove_fit_rah_incoming_dps(fit_uid).unwrap(),
+                },
+                UndoStep::FitSecStatus(fit_uid, sec_status) => self.internal_set_fit_sec_status(fit_uid, sec_status),
+                // Item - general
+                UndoStep::ItemEffectMode(item_uid, effect_aid, effect_mode) => {
+                    self.internal_set_effect_id_mode(item_uid, effect_aid, effect_mode);
+                }
+                UndoStep::ProjAdded(projector_uid, projectee_uid) => {
+                    self.internal_remove_projection(projector_uid, projectee_uid).unwrap();
+                }
+                UndoStep::ProjRemoved(projector_uid, projectee_uid) => {
+                    self.internal_add_projection(projector_uid, projectee_uid).unwrap();
+                }
                 // Item - autocharge
                 UndoStep::AutochargeState(autocharge_uid, state) => {
                     self.internal_set_autocharge_state(autocharge_uid, state);
@@ -43,6 +84,7 @@ impl SolarSystem {
                 }
                 // Item - drone
                 UndoStep::DroneAdded(drone_uid) => self.internal_remove_drone(drone_uid),
+                UndoStep::DroneRemoved(drone_uid) => self.internal_reattach_drone(drone_uid),
                 UndoStep::DroneMutationAdded(drone_uid) => {
                     self.internal_remove_drone_mutation(drone_uid).unwrap();
                 }
@@ -70,7 +112,6 @@ impl SolarSystem {
                     let physics = self.undo.pop_physics();
                     self.internal_restore_drone_physics(drone_uid, physics);
                 }
-                UndoStep::DroneRemoved(drone_uid) => self.internal_reattach_drone(drone_uid),
                 UndoStep::DroneState(drone_uid, state) => {
                     self.internal_set_drone_state(drone_uid, state);
                 }
@@ -79,6 +120,7 @@ impl SolarSystem {
                 }
                 // Item - fighter
                 UndoStep::FighterAdded(fighter_uid) => self.internal_remove_fighter(fighter_uid),
+                UndoStep::FighterRemoved(fighter_uid) => self.internal_reattach_fighter(fighter_uid),
                 UndoStep::FighterCountOverride(fighter_uid, count_override) => {
                     self.internal_set_fighter_count_override(fighter_uid, count_override);
                 }
@@ -89,7 +131,6 @@ impl SolarSystem {
                 UndoStep::FighterRearmMinionOverride(fighter_uid, rearm_minion_override) => {
                     self.internal_set_fighter_rearm_minion_override(fighter_uid, rearm_minion_override);
                 }
-                UndoStep::FighterRemoved(fighter_uid) => self.internal_reattach_fighter(fighter_uid),
                 UndoStep::FighterState(fighter_uid, state) => {
                     self.internal_set_fighter_state(fighter_uid, state);
                 }
@@ -115,6 +156,7 @@ impl SolarSystem {
                 }
                 // Item - module
                 UndoStep::ModuleAdded(module_uid, pos_mode) => self.internal_remove_module(module_uid, pos_mode),
+                UndoStep::ModuleRemoved(module_uid, pos_mode) => self.internal_reattach_module(module_uid, pos_mode),
                 UndoStep::ModuleMutationAdded(module_uid) => {
                     self.internal_remove_module_mutation(module_uid).unwrap();
                 }
@@ -139,7 +181,6 @@ impl SolarSystem {
                 UndoStep::ModuleOptionalReloadOverride(module_uid, optional_reload_override) => {
                     self.internal_set_module_optional_reload_override(module_uid, optional_reload_override);
                 }
-                UndoStep::ModuleRemoved(module_uid, pos_mode) => self.internal_reattach_module(module_uid, pos_mode),
                 UndoStep::ModuleSpoolOverride(module_uid, spool_override) => {
                     self.internal_set_module_spool_override(module_uid, spool_override);
                 }
@@ -174,19 +215,19 @@ impl SolarSystem {
                 }
                 // Item - ship
                 UndoStep::ShipAdded(ship_uid) => self.internal_remove_ship(ship_uid),
+                UndoStep::ShipRemoved(ship_uid) => self.internal_reattach_ship(ship_uid),
                 UndoStep::ShipPhysics(ship_uid) => {
                     let physics = self.undo.pop_physics();
                     self.internal_restore_ship_physics(ship_uid, physics);
                 }
-                UndoStep::ShipRemoved(ship_uid) => self.internal_reattach_ship(ship_uid),
                 UndoStep::ShipState(ship_uid, state) => self.internal_set_ship_state(ship_uid, state),
                 UndoStep::ShipType(ship_uid, type_aid) => {
                     self.internal_set_ship_type_aid(ship_uid, type_aid);
                 }
                 // Item - skill
                 UndoStep::SkillAdded(skill_uid) => self.internal_remove_skill(skill_uid),
-                UndoStep::SkillLevel(skill_uid, level) => self.internal_set_skill_level(skill_uid, level),
                 UndoStep::SkillRemoved(skill_uid) => self.internal_reattach_skill(skill_uid),
+                UndoStep::SkillLevel(skill_uid, level) => self.internal_set_skill_level(skill_uid, level),
                 UndoStep::SkillState(skill_uid, state) => self.internal_set_skill_state(skill_uid, state),
                 UndoStep::SkillType(skill_uid, type_aid) => {
                     self.internal_set_skill_type_aid(skill_uid, type_aid).unwrap();
@@ -216,19 +257,11 @@ impl SolarSystem {
                 UndoStep::SwEffectType(sw_effect_uid, type_aid) => {
                     self.internal_set_sw_effect_type_aid(sw_effect_uid, type_aid);
                 }
-                // Item - general
-                UndoStep::ItemEffectMode(item_uid, effect_aid, effect_mode) => {
-                    self.internal_set_effect_id_mode(item_uid, effect_aid, effect_mode);
-                }
-                UndoStep::ProjAdded(projector_uid, projectee_uid) => {
-                    self.internal_remove_projection(projector_uid, projectee_uid).unwrap();
-                }
-                UndoStep::ProjRemoved(projector_uid, projectee_uid) => {
-                    self.internal_add_projection(projector_uid, projectee_uid).unwrap();
-                }
             }
         }
         self.u_data.items.set_id_counter(savepoint.item_id_counter);
+        self.u_data.fits.set_id_counter(savepoint.fit_id_counter);
+        self.u_data.fleets.set_id_counter(savepoint.fleet_id_counter);
         self.undo.close(savepoint);
     }
     /// Removes item from user data:

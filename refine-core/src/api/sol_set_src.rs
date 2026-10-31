@@ -5,6 +5,47 @@ use crate::{
     ud::{UData, UItem, UItemId, UShipKind},
 };
 
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Public
+////////////////////////////////////////////////////////////////////////////////////////////////////
+impl SolarSystem {
+    /// Switch to another source, reloading all the items using its data.
+    ///
+    /// Not possible within a transaction, since switching source can't be rolled back.
+    pub fn set_src(&mut self, src: &Src) -> Result<(), SrcSetError> {
+        if self.undo.is_recording() {
+            return Err(SrcSetError::InTransaction);
+        }
+        let item_uids = ItemUIds::from_u_data(&self.u_data);
+        self.unload_items(&item_uids);
+        // Set new runtime data
+        self.u_data.r_data = src.r_data.clone();
+        for item in self.u_data.items.values_mut() {
+            item.r_data_changed(&self.u_data.r_data);
+        }
+        // Update fit kind
+        for fit in self.u_data.fits.values_mut() {
+            fit.ship_kind = match fit.ship {
+                Some(ship_uid) => self.u_data.items.get(ship_uid).dc_ship().unwrap().get_ship_kind(),
+                None => UShipKind::Unknown,
+            }
+        }
+        // Update on-projection data due to changed item radii
+        self.update_projections();
+        self.load_items(&item_uids);
+        Ok(())
+    }
+}
+
+#[derive(Debug, thiserror::Error)]
+pub enum SrcSetError {
+    #[error("source cannot be switched within a transaction")]
+    InTransaction,
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Private
+////////////////////////////////////////////////////////////////////////////////////////////////////
 struct ItemUIds {
     boosters: Vec<UItemId>,
     characters: Vec<UItemId>,
@@ -69,25 +110,6 @@ impl ItemUIds {
 }
 
 impl SolarSystem {
-    pub fn set_src(&mut self, src: &Src) {
-        let item_uids = ItemUIds::from_u_data(&self.u_data);
-        self.unload_items(&item_uids);
-        // Set new runtime data
-        self.u_data.r_data = src.r_data.clone();
-        for item in self.u_data.items.values_mut() {
-            item.r_data_changed(&self.u_data.r_data);
-        }
-        // Update fit kind
-        for fit in self.u_data.fits.values_mut() {
-            fit.ship_kind = match fit.ship {
-                Some(ship_uid) => self.u_data.items.get(ship_uid).dc_ship().unwrap().get_ship_kind(),
-                None => UShipKind::Unknown,
-            }
-        }
-        // Update on-projection data due to changed item radii
-        self.update_projections();
-        self.load_items(&item_uids);
-    }
     fn unload_items(&mut self, item_uids: &ItemUIds) {
         let ItemUIds {
             boosters,
