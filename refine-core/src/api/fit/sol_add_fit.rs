@@ -1,6 +1,6 @@
 use crate::{
     api::FitMut,
-    sol::SolarSystem,
+    sol::{SolarSystem, UndoStep},
     ud::{UFit, UFitId},
 };
 
@@ -14,6 +14,14 @@ impl SolarSystem {
         let u_fit = UFit::new(fit_id);
         let fit_uid = self.u_data.fits.add(u_fit);
         self.svc.notify_fit_added(fit_uid);
+        if self.undo.is_recording() {
+            self.undo.record(UndoStep::FitAdded(fit_uid));
+        }
         fit_uid
+    }
+    /// Puts back a fit which was removed while recording.
+    pub(in crate::api) fn internal_reattach_fit(&mut self, fit_uid: UFitId) {
+        self.u_data.fits.reattach(fit_uid);
+        self.svc.notify_fit_added(fit_uid);
     }
 }
