@@ -159,19 +159,10 @@ impl SolarSystem {
             None => return,
         };
         for autocharge_uid in autocharge_uids.into_iter() {
-            SolarSystem::util_reattach_autocharge(u_data, svc, rev_projs, autocharge_uid, reuse_eupdates);
+            let autocharge_u_item = u_data.items.get_mut(autocharge_uid);
+            autocharge_u_item.update_reffs(reuse_eupdates, &u_data.r_data);
+            SolarSystem::util_add_item(u_data, svc, autocharge_uid, reuse_eupdates);
+            SolarSystem::util_reg_item_projs(u_data, svc, rev_projs, autocharge_uid);
         }
-    }
-    pub(super) fn util_reattach_autocharge(
-        u_data: &mut UData,
-        svc: &mut Svc,
-        rev_projs: &mut RevProjs,
-        autocharge_uid: UItemId,
-        reuse_eupdates: &mut UEffectUpdates,
-    ) {
-        let autocharge_u_item = u_data.items.get_mut(autocharge_uid);
-        autocharge_u_item.update_reffs(reuse_eupdates, &u_data.r_data);
-        SolarSystem::util_add_item(u_data, svc, autocharge_uid, reuse_eupdates);
-        SolarSystem::util_reg_item_projs(u_data, svc, rev_projs, autocharge_uid);
     }
 }

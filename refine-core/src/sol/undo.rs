@@ -9,7 +9,7 @@ use crate::{
     CountNz, EffectMode, ItemId, MinionState, ModuleState, MoveMode, NpcProp, OptionalReload, RearmMinion, RemoveMode,
     ServiceState, SkillLevel, Spool,
     ad::{AEffectId, AItemId},
-    ud::{UAttrMutationRequest, UItemId, UPhysics},
+    ud::{UAttrMutationRequest, UAutocharges, UItemId, UPhysics},
 };
 
 /// Inverse steps of changes done to a solar system while recording.
@@ -18,6 +18,7 @@ pub(crate) struct UndoLog {
     recording: bool,
     steps: Vec<UndoStep>,
     // Data which does not fit into steps; it is recorded and taken together with its step
+    autocharges: Vec<UAutocharges>,
     physics: Vec<UPhysics>,
     mutation_attrs: Vec<Vec<UAttrMutationRequest>>,
 }
@@ -26,6 +27,7 @@ impl UndoLog {
         Self {
             recording: false,
             steps: Vec::new(),
+            autocharges: Vec::new(),
             physics: Vec::new(),
             mutation_attrs: Vec::new(),
         }
@@ -35,6 +37,13 @@ impl UndoLog {
     }
     pub(crate) fn record(&mut self, step: UndoStep) {
         self.steps.push(step);
+    }
+    pub(crate) fn record_autocharges(&mut self, step: UndoStep, autocharges: UAutocharges) {
+        self.steps.push(step);
+        self.autocharges.push(autocharges);
+    }
+    pub(crate) fn pop_autocharges(&mut self) -> UAutocharges {
+        self.autocharges.pop().unwrap()
     }
     pub(crate) fn record_physics(&mut self, step: UndoStep, physics: UPhysics) {
         self.steps.push(step);
@@ -90,7 +99,6 @@ pub(crate) struct UndoSavepoint {
 #[derive(Clone)]
 pub(crate) enum UndoStep {
     // Item - autocharge
-    AutochargeRemoved(UItemId),
     AutochargeState(UItemId, bool),
     // Item - booster
     BoosterAdded(UItemId),
@@ -207,7 +215,12 @@ mod debug {
     impl UndoLog {
         pub(in crate::sol) fn consistency_check(&self) -> DebugResult {
             // Changes are recorded only within calls which roll them back or commit them
-            if self.recording || !self.steps.is_empty() || !self.physics.is_empty() || !self.mutation_attrs.is_empty() {
+            if self.recording
+                || !self.steps.is_empty()
+                || !self.physics.is_empty()
+                || !self.mutation_attrs.is_empty()
+                || !self.autocharges.is_empty()
+            {
                 return Err(Default::default());
             }
             Ok(())

@@ -1,10 +1,8 @@
-use itertools::Itertools;
-
 use crate::{
     ad::AItemId,
     api::{FighterMut, ItemTypeId},
     sol::{SolarSystem, UndoStep},
-    ud::UItemId,
+    ud::{UAutocharges, UItemId},
 };
 
 impl SolarSystem {
@@ -14,43 +12,27 @@ impl SolarSystem {
         if old_type_aid == type_aid {
             return;
         }
-        match self.undo.is_recording() {
-            // Autocharges of the old type are kept, so that rollback can put them back with their
-            // IDs and states
-            true => {
-                SolarSystem::util_detach_item_autocharges(
-                    &mut self.u_data,
-                    &mut self.svc,
-                    &mut self.rev_projs,
-                    fighter_uid,
-                    &mut self.cache.eupdates,
-                );
-                let u_fighter = self.u_data.items.get_mut(fighter_uid).dc_fighter_mut().unwrap();
-                let cont_acs = u_fighter.get_autocharges_mut();
-                let autocharge_uids = cont_acs.values().collect_vec();
-                cont_acs.clear();
-                for autocharge_uid in autocharge_uids {
-                    self.internal_discard_item(autocharge_uid, UndoStep::AutochargeRemoved);
-                }
-                SolarSystem::util_remove_fighter(
-                    &mut self.u_data,
-                    &mut self.svc,
-                    fighter_uid,
-                    &mut self.cache.eupdates,
-                );
-            }
-            false => SolarSystem::util_remove_fighter_with_acs(
-                &mut self.u_data,
-                &mut self.svc,
-                &mut self.rev_projs,
-                fighter_uid,
-                &mut self.cache.eupdates,
-            ),
+        // Autocharges are defined by fighter type, so they are replaced. Old ones are discarded as
+        // fighter's children, and while recording their container goes to the log, so that
+        // rollback can put them back with their IDs and states
+        SolarSystem::util_detach_item_autocharges(
+            &mut self.u_data,
+            &mut self.svc,
+            &mut self.rev_projs,
+            fighter_uid,
+            &mut self.cache.eupdates,
+        );
+        let u_fighter = self.u_data.items.get_mut(fighter_uid).dc_fighter_mut().unwrap();
+        let old_autocharges = u_fighter.take_autocharges();
+        for autocharge_uid in old_autocharges.values() {
+            self.internal_discard_child_item(autocharge_uid);
         }
+        SolarSystem::util_remove_fighter(&mut self.u_data, &mut self.svc, fighter_uid, &mut self.cache.eupdates);
         let u_fighter = self.u_data.items.get_mut(fighter_uid).dc_fighter_mut().unwrap();
         u_fighter.set_type_aid(type_aid, &self.u_data.r_data);
         if self.undo.is_recording() {
-            self.undo.record(UndoStep::FighterType(fighter_uid, old_type_aid));
+            self.undo
+                .record_autocharges(UndoStep::FighterType(fighter_uid, old_type_aid), old_autocharges);
         }
         // Update just fighter, autocharges will copy updated projection ranges
         SolarSystem::util_update_item_radius_in_projs(&mut self.u_data, &self.rev_projs, &mut self.svc, fighter_uid);
@@ -62,9 +44,13 @@ impl SolarSystem {
             &mut self.cache.eupdates,
         );
     }
-    /// Changes type without adding autocharges: autocharges of the restored type are put back by
-    /// their own steps, which are undone right after this one.
-    pub(in crate::api) fn internal_restore_fighter_type_aid(&mut self, fighter_uid: UItemId, type_aid: AItemId) {
+    /// Puts back fighter type replaced by a type change, along with autocharges of that type.
+    pub(in crate::api) fn internal_restore_fighter_type_aid(
+        &mut self,
+        fighter_uid: UItemId,
+        type_aid: AItemId,
+        autocharges: UAutocharges,
+    ) {
         SolarSystem::util_remove_fighter_with_acs(
             &mut self.u_data,
             &mut self.svc,
@@ -72,10 +58,21 @@ impl SolarSystem {
             fighter_uid,
             &mut self.cache.eupdates,
         );
+        for autocharge_uid in autocharges.values() {
+            self.u_data.items.reattach(autocharge_uid);
+        }
         let u_fighter = self.u_data.items.get_mut(fighter_uid).dc_fighter_mut().unwrap();
         u_fighter.set_type_aid(type_aid, &self.u_data.r_data);
+        u_fighter.set_autocharges(autocharges);
         SolarSystem::util_update_item_radius_in_projs(&mut self.u_data, &self.rev_projs, &mut self.svc, fighter_uid);
         SolarSystem::util_add_fighter(&mut self.u_data, &mut self.svc, fighter_uid, &mut self.cache.eupdates);
+        SolarSystem::util_reattach_item_autocharges(
+            &mut self.u_data,
+            &mut self.svc,
+            &mut self.rev_projs,
+            fighter_uid,
+            &mut self.cache.eupdates,
+        );
     }
 }
 

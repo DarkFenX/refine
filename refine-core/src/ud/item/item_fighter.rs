@@ -151,6 +151,12 @@ impl UFighter {
     pub(crate) fn get_autocharges_mut(&mut self) -> &mut UAutocharges {
         &mut self.autocharges
     }
+    pub(crate) fn take_autocharges(&mut self) -> UAutocharges {
+        std::mem::replace(&mut self.autocharges, UAutocharges::new())
+    }
+    pub(crate) fn set_autocharges(&mut self, autocharges: UAutocharges) {
+        self.autocharges = autocharges;
+    }
     pub(crate) fn get_physics(&self) -> &UPhysics {
         &self.physics
     }

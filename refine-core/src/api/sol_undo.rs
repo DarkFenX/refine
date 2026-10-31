@@ -13,7 +13,6 @@ impl SolarSystem {
         while let Some(step) = self.undo.pop(&savepoint) {
             match step {
                 // Item - autocharge
-                UndoStep::AutochargeRemoved(autocharge_uid) => self.internal_reattach_autocharge(autocharge_uid),
                 UndoStep::AutochargeState(autocharge_uid, state) => {
                     self.internal_set_autocharge_state(autocharge_uid, state);
                 }
@@ -95,7 +94,8 @@ impl SolarSystem {
                     self.internal_set_fighter_state(fighter_uid, state);
                 }
                 UndoStep::FighterType(fighter_uid, type_aid) => {
-                    self.internal_restore_fighter_type_aid(fighter_uid, type_aid);
+                    let autocharges = self.undo.pop_autocharges();
+                    self.internal_restore_fighter_type_aid(fighter_uid, type_aid, autocharges);
                 }
                 // Item - fit-wide effect
                 UndoStep::FwEffectAdded(fw_effect_uid) => self.internal_remove_fw_effect(fw_effect_uid),
