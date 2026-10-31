@@ -1,7 +1,7 @@
 use crate::{
     CmdResps, FitId, FitIdBr, FitInfo, FitInfoMode, ItemId, ItemIdBr, ItemInfoMode,
     err::BrResolveError,
-    shared::{CmdResidue, OvrdCompact, OvrdMapLight},
+    shared::{OvrdCompact, OvrdMapLight},
 };
 
 // Core commands
@@ -117,22 +117,6 @@ impl FitInfoCmdCtxFitBr {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Execution
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-impl FitInfoCmd {
-    pub(crate) fn exec_residue(&self) -> CmdResidue {
-        CmdResidue::ImmutInfallible
-    }
-}
-impl FitInfoCmdBr {
-    pub(crate) fn exec_residue(&self) -> CmdResidue {
-        CmdResidue::ImmutInfallible
-    }
-}
-impl FitInfoCmdCtxFitBr {
-    pub(in crate::info) fn exec_residue(&self) -> CmdResidue {
-        CmdResidue::ImmutFallible
-    }
-}
-
 impl FitInfoCmd {
     pub(crate) fn execute(self, core_fit: &mut rc::FitMut) -> FitInfo {
         FitInfo::from_core(

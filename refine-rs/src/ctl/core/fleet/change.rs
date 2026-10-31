@@ -1,4 +1,4 @@
-use crate::{CmdResps, FitId, FitIdBr, FleetId, FleetIdBr, err::BrResolveError, shared::CmdResidue};
+use crate::{CmdResps, FitId, FitIdBr, FleetId, FleetIdBr, err::BrResolveError};
 
 // Core commands
 pub type FleetChangeCmd = FleetChangeCmdGen<FitId>;
@@ -99,25 +99,6 @@ impl FleetChangeCmdCtxFleetBr {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Execution
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-impl<F> FleetChangeCmdGen<F> {
-    pub(crate) fn exec_residue(&self) -> CmdResidue {
-        // Assume the command always mutates (even if it does not with none of fields set)
-        match (self.rm_fit_ids.len(), self.add_fit_ids.len()) {
-            (0, 0) => CmdResidue::MutInfallible,
-            (1, 0) | (0, 1) => CmdResidue::MutFallibleClean,
-            _ => CmdResidue::MutFallibleDirty,
-        }
-    }
-}
-impl<L, F> FleetChangeCmdCtxFleetGen<L, F> {
-    pub(in crate::ctl) fn exec_residue(&self) -> CmdResidue {
-        match self.core.exec_residue() {
-            CmdResidue::MutInfallible => CmdResidue::MutFallibleClean,
-            n => n,
-        }
-    }
-}
-
 impl FleetChangeCmd {
     pub(crate) fn execute(self, core_fleet: &mut rc::FleetMut) -> Result<(), FleetChangeError> {
         let Self {

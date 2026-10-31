@@ -1,7 +1,6 @@
 use crate::{
     CmdResps, SolChangeEnumCmdBr, SolInfo, SolInfoCmdBr, SolarSystem,
     err::{BrResolveError, SolChangeEnumError},
-    shared::SolBackup,
     stats::{SolStatsCmdBr, SolStatsResp},
     val::{SolValCmdBr, SolValResult},
 };
@@ -43,9 +42,7 @@ impl SolarSystem<'_> {
     {
         // Variables for move
         let sol_ctx = self.get_ctx();
-        // Always backup sol, because val checker alone can completely screw it in a way not
-        // predictable before it's actually ran
-        self.exec_standard(SolBackup::Needed, move |core_sol| {
+        self.exec_standard(move |core_sol| {
             // Execute received control commands
             let mut ctl_cmd_resps = CmdResps::with_capacity(ctl_cmds.len());
             for (index, ctl_cmd) in ctl_cmds.into_iter().enumerate() {

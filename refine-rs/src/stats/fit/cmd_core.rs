@@ -3,7 +3,7 @@ use rc::ItemCommon;
 use crate::{
     CmdResps, FitId, FitIdBr, ItemId, ItemIdBr,
     err::BrResolveError,
-    shared::{BrResolveInfallible, CmdResidue, OvrdCompact, OvrdMapHeavy},
+    shared::{BrResolveInfallible, OvrdCompact, OvrdMapHeavy},
     stats::{
         FitStatsOptionsGen, FitStatsResp, ItemStatsOptionsGen,
         exec_shared::{extend_stats_for_passed_items, get_stats_for_items_in_overrides},
@@ -113,17 +113,6 @@ impl FitStatsCmdCtxFitBr {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Execution
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-impl<F, I> FitStatsCmdGen<F, I> {
-    pub(super) fn exec_residue(&self) -> CmdResidue {
-        CmdResidue::ImmutInfallible
-    }
-}
-impl<F, I> FitStatsCmdCtxFitGen<F, I> {
-    pub(in crate::stats) fn exec_residue(&self) -> CmdResidue {
-        CmdResidue::ImmutFallible
-    }
-}
-
 impl FitStatsCmd {
     pub(crate) fn execute(self, core_fit: &mut rc::FitMut) -> FitStatsResp {
         let item_options: OvrdMapHeavy<_, ItemStatsOptionsResolved> =

@@ -3,7 +3,6 @@ use crate::{
     MinionState, Movement, RearmMinion, TriStateField,
     ctl::core::shared::{Abilities, EffectModes},
     err::BrResolveError,
-    shared::CmdResidue,
 };
 
 // Core commands
@@ -165,21 +164,6 @@ impl FighterChangeCmdCtxItemBr {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Execution
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-impl<I> FighterChangeCmdGen<I> {
-    pub(in crate::ctl) fn exec_residue(&self) -> CmdResidue {
-        // Assume the command always mutates (even if it does not with none of fields set)
-        if !self.rm_proj_item_ids.is_empty() || !self.add_proj_item_ids.is_empty() {
-            return CmdResidue::MutFallibleDirty;
-        }
-        CmdResidue::MutFallibleClean
-    }
-}
-impl<I> FighterChangeCmdCtxItemGen<I> {
-    pub(in crate::ctl) fn exec_residue(&self) -> CmdResidue {
-        self.core.exec_residue()
-    }
-}
-
 impl FighterChangeCmd {
     pub(in crate::ctl) fn execute(self, core_item: &mut rc::ItemMut) -> Result<ChangedItemIdsResp, FighterChangeError> {
         let Self {

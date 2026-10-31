@@ -1,7 +1,6 @@
 use crate::{
     CmdResps, SolHybridCmdBr, SolarSystem,
     err::{BrResolveError, SolChangeEnumError, SolHybridError, SolInfoEnumError},
-    shared::ResidueResolver,
     stats::err::SolStatsEnumError,
     trial::err::SolTryItemsEnumError,
     val::err::SolValEnumError,
@@ -10,10 +9,9 @@ use crate::{
 impl SolarSystem<'_> {
     #[tracing::instrument(name = "sol-hyb", level = "error", skip_all)]
     pub async fn hybrid_batch(&mut self, cmds: Vec<SolHybridCmdBr>) -> Result<CmdResps, SolHybridBatchError> {
-        let sol_backup = ResidueResolver::new().add_cmds(cmds.iter().map(|cmd| cmd.exec_residue()));
         // Variables for move
         let ctx = self.get_ctx();
-        self.exec_standard(sol_backup, move |core_sol| {
+        self.exec_standard(move |core_sol| {
             let mut cmd_resps = CmdResps::with_capacity(cmds.len());
             for (index, cmd) in cmds.into_iter().enumerate() {
                 let cmd_resp = cmd

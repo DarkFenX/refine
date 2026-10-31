@@ -3,7 +3,6 @@ use crate::{
     ItemIdBr, ItemTypeId, MinionState, Movement, RearmMinion,
     ctl::core::shared::{Abilities, EffectModes},
     err::BrResolveError,
-    shared::CmdResidue,
 };
 
 // Core commands
@@ -132,23 +131,6 @@ impl FighterAddCmdCtxFitBr {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Execution
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-impl<I> FighterAddCmdGen<I> {
-    pub(in crate::ctl) fn exec_residue(&self) -> CmdResidue {
-        match self.proj_item_ids.is_empty() {
-            true => CmdResidue::MutInfallible,
-            false => CmdResidue::MutFallibleDirty,
-        }
-    }
-}
-impl<F, I> FighterAddCmdCtxFitGen<F, I> {
-    pub(in crate::ctl) fn exec_residue(&self) -> CmdResidue {
-        match self.core.proj_item_ids.is_empty() {
-            true => CmdResidue::MutFallibleClean,
-            false => CmdResidue::MutFallibleDirty,
-        }
-    }
-}
-
 impl FighterAddCmd {
     pub(in crate::ctl) fn execute(self, core_fit: &mut rc::FitMut) -> Result<AddedItemIdsResp, FighterAddError> {
         let Self {

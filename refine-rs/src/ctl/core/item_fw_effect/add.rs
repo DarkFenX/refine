@@ -1,6 +1,6 @@
 use crate::{
     AddedItemIdsResp, CmdResps, EffectId, EffectMode, FitId, FitIdBr, ItemTypeId, ctl::core::shared::EffectModes,
-    err::BrResolveError, shared::CmdResidue,
+    err::BrResolveError,
 };
 
 // Core commands
@@ -76,17 +76,6 @@ impl FwEffectAddCmdCtxFitBr {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Execution
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-impl FwEffectAddCmd {
-    pub(in crate::ctl) fn exec_residue(&self) -> CmdResidue {
-        CmdResidue::MutInfallible
-    }
-}
-impl<F> FwEffectAddCmdCtxFitGen<F> {
-    pub(in crate::ctl) fn exec_residue(&self) -> CmdResidue {
-        CmdResidue::MutFallibleClean
-    }
-}
-
 impl FwEffectAddCmd {
     pub(in crate::ctl) fn execute(self, core_fit: &mut rc::FitMut) -> AddedItemIdsResp {
         let Self {

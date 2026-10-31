@@ -1,6 +1,6 @@
 use crate::{
     ChangedItemIdsResp, CmdResps, EffectId, EffectMode, FitId, FitIdBr, ItemId, ItemIdBr, ItemTypeId,
-    ctl::core::shared::EffectModes, err::BrResolveError, shared::CmdResidue,
+    ctl::core::shared::EffectModes, err::BrResolveError,
 };
 
 // Core commands
@@ -139,35 +139,6 @@ impl CharacterChangeCmdCtxItemBr {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Execution
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-impl CharacterChangeCmd {
-    pub(in crate::ctl) fn exec_residue_via_fit(&self) -> CmdResidue {
-        // Fails when the fit has no character, before anything is changed
-        CmdResidue::MutFallibleClean
-    }
-    pub(in crate::ctl) fn exec_residue_via_item(&self) -> CmdResidue {
-        // Fails when the item is not a character, before anything is changed
-        CmdResidue::MutFallibleClean
-    }
-}
-impl<F> CharacterChangeCmdCtxFitGen<F> {
-    fn exec_residue(&self) -> CmdResidue {
-        self.core.exec_residue_via_fit()
-    }
-}
-impl<I> CharacterChangeCmdCtxItemGen<I> {
-    fn exec_residue(&self) -> CmdResidue {
-        self.core.exec_residue_via_item()
-    }
-}
-impl<F, I> CharacterChangeCmdCtxAnyGen<F, I> {
-    pub(in crate::ctl) fn exec_residue(&self) -> CmdResidue {
-        match self {
-            Self::Fit(cmd) => cmd.exec_residue(),
-            Self::Item(cmd) => cmd.exec_residue(),
-        }
-    }
-}
-
 impl CharacterChangeCmd {
     pub(in crate::ctl) fn execute_via_fit(
         self,

@@ -1,6 +1,5 @@
 use crate::{
     CmdResps, FitId, FitIdBr, ItemId, ItemIdBr,
-    shared::CmdResidue,
     val::{SolValResult, ValOptions, ValResultMode},
 };
 
@@ -71,12 +70,6 @@ impl SolValCmdBr {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Execution
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-impl<F, I> SolValCmdGen<F, I> {
-    pub(crate) fn exec_residue(&self) -> CmdResidue {
-        CmdResidue::ImmutInfallible
-    }
-}
-
 impl SolValCmd {
     pub(crate) fn execute_owned(mut self, core_sol: &mut rc::SolarSystem) -> SolValResult {
         self.execute_borrowed(core_sol)

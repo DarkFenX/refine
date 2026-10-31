@@ -1,6 +1,4 @@
-use crate::{
-    AddedFitIdResp, CmdResps, DpsProfile, FitSecStatus, FleetId, FleetIdBr, err::BrResolveError, shared::CmdResidue,
-};
+use crate::{AddedFitIdResp, CmdResps, DpsProfile, FitSecStatus, FleetId, FleetIdBr, err::BrResolveError};
 
 // Core commands
 pub type FitAddCmd = FitAddCmdGen<FleetId>;
@@ -67,15 +65,6 @@ impl FitAddCmdBr {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Execution
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-impl<L> FitAddCmdGen<L> {
-    pub(crate) fn exec_residue(&self) -> CmdResidue {
-        if self.fleet_id.is_some() {
-            return CmdResidue::MutFallibleDirty;
-        }
-        CmdResidue::MutInfallible
-    }
-}
-
 impl FitAddCmd {
     pub(crate) fn execute(self, core_sol: &mut rc::SolarSystem) -> Result<AddedFitIdResp, FitAddError> {
         let Self {

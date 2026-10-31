@@ -1,4 +1,4 @@
-use crate::{DpsProfile, NpcProp, OptionalReload, RearmMinion, SecZone, Spool, shared::CmdResidue};
+use crate::{DpsProfile, NpcProp, OptionalReload, RearmMinion, SecZone, Spool};
 
 #[cfg_attr(feature = "serde", derive(serde::Deserialize))]
 #[derive(Clone, Default)]
@@ -47,12 +47,6 @@ impl SolChangeCmd {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Execution
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-impl SolChangeCmd {
-    pub(in crate::ctl) fn exec_residue(&self) -> CmdResidue {
-        CmdResidue::MutInfallible
-    }
-}
-
 impl SolChangeCmd {
     pub(in crate::ctl) fn execute(self, core_sol: &mut rc::SolarSystem) {
         let Self {

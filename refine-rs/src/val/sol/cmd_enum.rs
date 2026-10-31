@@ -1,7 +1,6 @@
 use crate::{
     CmdResp, CmdResps, FitId, FitIdBr, ItemId, ItemIdBr,
     err::BrResolveError,
-    shared::CmdResidue,
     val::{FitValCmdBr, SolValCmdBr, SolValCmdGen, err::FitGetFitValError, fit::FitValCmdCtxFitGen},
 };
 
@@ -51,15 +50,6 @@ impl SolValEnumCmdBr {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Execution
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-impl<F, I> SolValEnumCmdGen<F, I> {
-    pub(crate) fn exec_residue(&self) -> CmdResidue {
-        match self {
-            Self::SolValidate(cmd) => cmd.exec_residue(),
-            Self::FitValidate(cmd) => cmd.exec_residue(),
-        }
-    }
-}
-
 impl SolValEnumCmd {
     pub(crate) fn execute(self, core_sol: &mut rc::SolarSystem) -> Result<CmdResp, SolValEnumError> {
         Ok(match self {

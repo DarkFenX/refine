@@ -1,6 +1,6 @@
 use crate::{
     AddedItemIdsResp, CmdResps, EffectId, EffectMode, ItemId, ItemIdBr, ItemTypeId, ctl::core::shared::EffectModes,
-    err::BrResolveError, shared::CmdResidue,
+    err::BrResolveError,
 };
 
 // Core commands
@@ -60,15 +60,6 @@ impl ProjEffectAddCmdBr {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Execution
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-impl<I> ProjEffectAddCmdGen<I> {
-    pub(in crate::ctl) fn exec_residue(&self) -> CmdResidue {
-        match self.proj_item_ids.is_empty() {
-            true => CmdResidue::MutInfallible,
-            false => CmdResidue::MutFallibleDirty,
-        }
-    }
-}
-
 impl ProjEffectAddCmd {
     pub(in crate::ctl) fn execute(
         self,

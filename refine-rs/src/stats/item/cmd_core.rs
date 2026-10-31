@@ -1,7 +1,7 @@
 use crate::{
     CmdResps, FitId, FitIdBr, ItemId, ItemIdBr,
     err::BrResolveError,
-    shared::{BrResolveInfallible, CmdResidue},
+    shared::BrResolveInfallible,
     stats::{ItemStatsOptionsGen, ItemStatsResp},
 };
 
@@ -91,12 +91,6 @@ impl ItemStatsCmdCtxItemBr {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Execution
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-impl<F, I> ItemStatsCmdCtxItemGen<F, I> {
-    pub(in crate::stats) fn exec_residue(&self) -> CmdResidue {
-        CmdResidue::ImmutFallible
-    }
-}
-
 impl ItemStatsCmd {
     pub(crate) fn execute(self, core_item: &mut rc::ItemMut) -> ItemStatsResp {
         ItemStatsResp {

@@ -1,6 +1,5 @@
 use crate::{
     CmdResps, DpsProfile, FitId, FitIdBr, FitSecStatus, FleetId, FleetIdBr, TriStateField, err::BrResolveError,
-    shared::CmdResidue,
 };
 
 // Core commands
@@ -113,23 +112,6 @@ impl FitChangeCmdCtxFitBr {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Execution
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-impl<L> FitChangeCmdGen<L> {
-    pub(in crate::ctl) fn exec_residue(&self) -> CmdResidue {
-        // Assume the command always mutates (even if it does not with none of fields set)
-        // Fleet change goes first, so its fail is clean
-        if self.fleet_id.is_value() {
-            return CmdResidue::MutFallibleClean;
-        }
-        CmdResidue::MutInfallible
-    }
-}
-impl<L, F> FitChangeCmdCtxFitGen<L, F> {
-    pub(in crate::ctl) fn exec_residue(&self) -> CmdResidue {
-        // This one can fail regardless of core command contents
-        CmdResidue::MutFallibleClean
-    }
-}
-
 impl FitChangeCmd {
     pub(in crate::ctl) fn execute(self, core_fit: &mut rc::FitMut) -> Result<(), FitChangeError> {
         let Self {

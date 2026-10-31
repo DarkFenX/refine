@@ -1,6 +1,6 @@
 use crate::{
     ChangedItemIdsResp, CmdResps, EffectId, EffectMode, ItemId, ItemIdBr, ItemTypeId, ctl::core::shared::EffectModes,
-    err::BrResolveError, shared::CmdResidue,
+    err::BrResolveError,
 };
 
 // Core commands
@@ -124,21 +124,6 @@ impl ProjEffectChangeCmdCtxItemBr {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Execution
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-impl<I> ProjEffectChangeCmdGen<I> {
-    pub(in crate::ctl) fn exec_residue(&self) -> CmdResidue {
-        // Assume the command always mutates (even if it does not with none of fields set)
-        if !self.rm_proj_item_ids.is_empty() || !self.add_proj_item_ids.is_empty() {
-            return CmdResidue::MutFallibleDirty;
-        }
-        CmdResidue::MutFallibleClean
-    }
-}
-impl<I> ProjEffectChangeCmdCtxItemGen<I> {
-    pub(in crate::ctl) fn exec_residue(&self) -> CmdResidue {
-        self.core.exec_residue()
-    }
-}
-
 impl ProjEffectChangeCmd {
     pub(in crate::ctl) fn execute(
         self,

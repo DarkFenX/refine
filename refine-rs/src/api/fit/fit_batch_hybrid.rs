@@ -1,18 +1,16 @@
 use crate::{
     CmdResps, Fit, FitHybridCmdBr,
     err::{BrResolveError, FitChangeEnumError, FitHybridError, FitInfoEnumError},
-    shared::ResidueResolver,
     stats::err::FitStatsEnumError,
 };
 
 impl Fit<'_, '_> {
     #[tracing::instrument(name = "fit-hyb", level = "error", skip_all)]
     pub async fn hybrid_batch(&mut self, cmds: Vec<FitHybridCmdBr>) -> Result<CmdResps, FitHybridBatchError> {
-        let sol_backup = ResidueResolver::new().add_cmds(cmds.iter().map(|cmd| cmd.exec_residue()));
         // Variables for move
         let fit_id = self.id;
         self.sol
-            .exec_standard(sol_backup, move |core_sol| {
+            .exec_standard(move |core_sol| {
                 // Holding mutex on sol - nothing can remove the core fit without consuming the
                 // high-level Fit
                 let mut core_fit = core_sol.get_fit_mut(&fit_id).unwrap();

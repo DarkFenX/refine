@@ -2,7 +2,7 @@ use crate::{
     CmdResps, FitId, FitIdBr, FitInfoMode, FleetId, FleetIdBr, FleetInfo, FleetInfoMode, ItemId, ItemIdBr,
     ItemInfoMode,
     err::BrResolveError,
-    shared::{CmdResidue, OvrdCompact, OvrdMapLight},
+    shared::{OvrdCompact, OvrdMapLight},
 };
 
 // Core commands
@@ -139,17 +139,6 @@ impl FleetInfoCmdCtxFleetBr {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Execution
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-impl FleetInfoCmd {
-    pub(crate) fn exec_residue(&self) -> CmdResidue {
-        CmdResidue::ImmutInfallible
-    }
-}
-impl FleetInfoCmdCtxFleetBr {
-    pub(in crate::info) fn exec_residue(&self) -> CmdResidue {
-        CmdResidue::ImmutFallible
-    }
-}
-
 impl FleetInfoCmd {
     pub(crate) fn execute(self, core_fleet: &mut rc::FleetMut) -> FleetInfo {
         FleetInfo::from_core(

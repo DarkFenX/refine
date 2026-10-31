@@ -1,7 +1,6 @@
 use crate::{
     CmdResp, CmdResps, FitId, FitIdBr, ItemId, ItemIdBr,
     err::BrResolveError,
-    shared::CmdResidue,
     stats::{FitStatsCmdBr, FitStatsCmdGen, ItemStatsCmdBr, err::ItemGetItemStatsError, item::ItemStatsCmdCtxItemGen},
 };
 
@@ -51,15 +50,6 @@ impl FitStatsEnumCmdBr {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Execution
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-impl<F, I> FitStatsEnumCmdGen<F, I> {
-    pub(crate) fn exec_residue(&self) -> CmdResidue {
-        match self {
-            Self::FitStats(cmd) => cmd.exec_residue(),
-            Self::ItemStats(cmd) => cmd.exec_residue(),
-        }
-    }
-}
-
 impl FitStatsEnumCmd {
     pub(crate) fn execute(self, core_fit: &mut rc::FitMut) -> Result<CmdResp, FitStatsEnumError> {
         Ok(match self {

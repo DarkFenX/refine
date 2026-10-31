@@ -1,7 +1,6 @@
 use crate::{
     CmdResp, CmdResps, FitId, FitIdBr, ItemId, ItemIdBr,
     err::BrResolveError,
-    shared::CmdResidue,
     trial::{FitTryItemsCmdBr, core::FitTryItemsCmdCtxFitGen, err::FitGetFitTryItemsError},
 };
 
@@ -42,14 +41,6 @@ impl SolTryItemsEnumCmdBr {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Execution
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-impl<F, I> SolTryItemsEnumCmdGen<F, I> {
-    pub(crate) fn exec_residue(&self) -> CmdResidue {
-        match self {
-            Self::FitTryItems(cmd) => cmd.exec_residue(),
-        }
-    }
-}
-
 impl SolTryItemsEnumCmd {
     pub(crate) fn execute(self, core_sol: &mut rc::SolarSystem) -> Result<CmdResp, SolTryItemsEnumError> {
         Ok(match self {

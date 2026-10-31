@@ -1,6 +1,4 @@
-use crate::{
-    CmdResps, FitId, FitIdBr, ItemId, ItemIdBr, ItemTypeId, err::BrResolveError, shared::CmdResidue, val::ValOptions,
-};
+use crate::{CmdResps, FitId, FitIdBr, ItemId, ItemIdBr, ItemTypeId, err::BrResolveError, val::ValOptions};
 
 // Core commands
 pub type FitTryItemsCmd = FitTryItemsCmdGen<ItemId>;
@@ -97,17 +95,6 @@ impl FitTryItemsCmdCtxFitBr {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Execution
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-impl<I> FitTryItemsCmdGen<I> {
-    pub(in crate::trial) fn exec_residue(&self) -> CmdResidue {
-        CmdResidue::ImmutInfallible
-    }
-}
-impl<F, I> FitTryItemsCmdCtxFitGen<F, I> {
-    pub(in crate::trial) fn exec_residue(&self) -> CmdResidue {
-        CmdResidue::ImmutFallible
-    }
-}
-
 impl FitTryItemsCmd {
     pub(crate) fn execute(self, core_fit: &mut rc::FitMut) -> Vec<ItemTypeId> {
         core_fit.try_items(&self.type_ids, &self.val_options)

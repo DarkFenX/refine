@@ -1,5 +1,5 @@
 use super::ctx::SolCtx;
-use crate::{SolarSystem, shared::SolBackup};
+use crate::SolarSystem;
 
 impl<'r> SolarSystem<'r> {
     /// Methods which execute solar system changes in a threadpool are split into two groups:
@@ -8,7 +8,7 @@ impl<'r> SolarSystem<'r> {
     ///   restored;
     /// - fallible methods run commands in a transaction, which is committed if they succeed, and
     ///   rolled back if they fail.
-    pub(crate) async fn exec_standard<F, T, E>(&mut self, _backup: SolBackup, func: F) -> Result<T, E>
+    pub(crate) async fn exec_standard<F, T, E>(&mut self, func: F) -> Result<T, E>
     where
         F: FnOnce(&mut rc::SolarSystem) -> Result<T, E> + Send + 'static,
         T: Send + 'static,

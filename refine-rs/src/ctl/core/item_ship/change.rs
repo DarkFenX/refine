@@ -1,6 +1,6 @@
 use crate::{
     ChangedItemIdsResp, CmdResps, Coordinates, EffectId, EffectMode, FitId, FitIdBr, ItemId, ItemIdBr, ItemTypeId,
-    Movement, ctl::core::shared::EffectModes, err::BrResolveError, shared::CmdResidue,
+    Movement, ctl::core::shared::EffectModes, err::BrResolveError,
 };
 
 // Core commands
@@ -149,35 +149,6 @@ impl ShipChangeCmdCtxItemBr {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Execution
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-impl ShipChangeCmd {
-    pub(in crate::ctl) fn exec_residue_via_fit(&self) -> CmdResidue {
-        // Fails when the fit has no ship, before anything is changed
-        CmdResidue::MutFallibleClean
-    }
-    pub(in crate::ctl) fn exec_residue_via_item(&self) -> CmdResidue {
-        // Fails when the item is not a ship, before anything is changed
-        CmdResidue::MutFallibleClean
-    }
-}
-impl<F> ShipChangeCmdCtxFitGen<F> {
-    fn exec_residue(&self) -> CmdResidue {
-        self.core.exec_residue_via_fit()
-    }
-}
-impl<I> ShipChangeCmdCtxItemGen<I> {
-    fn exec_residue(&self) -> CmdResidue {
-        self.core.exec_residue_via_item()
-    }
-}
-impl<F, I> ShipChangeCmdCtxAnyGen<F, I> {
-    pub(in crate::ctl) fn exec_residue(&self) -> CmdResidue {
-        match self {
-            Self::Fit(cmd) => cmd.exec_residue(),
-            Self::Item(cmd) => cmd.exec_residue(),
-        }
-    }
-}
-
 impl ShipChangeCmd {
     pub(in crate::ctl) fn execute_via_fit(
         self,

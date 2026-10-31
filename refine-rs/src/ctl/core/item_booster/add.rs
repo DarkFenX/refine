@@ -2,7 +2,6 @@ use crate::{
     AddedItemIdsResp, CmdResps, EffectId, EffectMode, FitId, FitIdBr, ItemTypeId,
     ctl::core::shared::{EffectModes, SideEffects},
     err::BrResolveError,
-    shared::CmdResidue,
 };
 
 // Core commands
@@ -84,18 +83,6 @@ impl BoosterAddCmdCtxFitBr {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Execution
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-impl BoosterAddCmd {
-    pub(in crate::ctl) fn exec_residue(&self) -> CmdResidue {
-        CmdResidue::MutInfallible
-    }
-}
-
-impl<F> BoosterAddCmdCtxFitGen<F> {
-    pub(in crate::ctl) fn exec_residue(&self) -> CmdResidue {
-        CmdResidue::MutFallibleClean
-    }
-}
-
 impl BoosterAddCmd {
     pub(in crate::ctl) fn execute(self, core_fit: &mut rc::FitMut) -> AddedItemIdsResp {
         let Self {

@@ -1,4 +1,4 @@
-use crate::{AddedItemIdsResp, CmdResps, FitId, FitIdBr, ItemTypeId, err::BrResolveError, shared::CmdResidue};
+use crate::{AddedItemIdsResp, CmdResps, FitId, FitIdBr, ItemTypeId, err::BrResolveError};
 
 // Core commands
 #[cfg_attr(feature = "serde", derive(serde::Deserialize))]
@@ -62,17 +62,6 @@ impl ItemAutodetectAddCmdCtxFitBr {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Execution
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-impl ItemAutodetectAddCmd {
-    pub(in crate::ctl) fn exec_residue(&self) -> CmdResidue {
-        CmdResidue::MutFallibleClean
-    }
-}
-impl<F> ItemAutodetectAddCmdCtxFitGen<F> {
-    pub(in crate::ctl) fn exec_residue(&self) -> CmdResidue {
-        CmdResidue::MutFallibleClean
-    }
-}
-
 impl ItemAutodetectAddCmd {
     pub(in crate::ctl) fn execute(self, core_fit: &mut rc::FitMut) -> Result<AddedItemIdsResp, ItemAutodetectAddError> {
         let core_item = core_fit.autodetect_add_item(self.type_id)?;
