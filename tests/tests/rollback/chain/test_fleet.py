@@ -32,8 +32,8 @@ def test_add_fit_not_found(client, consts):
         fit_ids=[api_boosted_fit.id, api_other_fit.id],
         status_code=400,
         json_predicate={'code': 'FLT-003', 'message': f'failed to add fit to fleet: fit {api_other_fit.id} not found'})
-    assert list(api_sol.update().fleets) == [api_fleet.id]
-    assert sorted(api_fleet.update().fits) == sorted([api_booster_fit.id, api_boosted_fit.id])
+    assert api_sol.update().fleets.keys() == {api_fleet.id}
+    assert api_fleet.update().fits.keys() == {api_booster_fit.id, api_boosted_fit.id}
     assert api_boosted_fit.update().fleet_id == api_fleet.id
     assert api_boosted_ship.update().attrs[eve_affectee_attr_id].modified == approx(37.5)
 
@@ -49,7 +49,7 @@ def test_add_only_fit_not_found(client):
         fit_ids=[api_other_fit.id],
         status_code=400,
         json_predicate={'code': 'FLT-003', 'message': f'failed to add fit to fleet: fit {api_other_fit.id} not found'})
-    assert list(api_sol.update().fleets) == [api_fleet.id]
+    assert api_sol.update().fleets.keys() == {api_fleet.id}
 
 
 def test_change_add_fit_not_found(client, consts):
@@ -88,8 +88,8 @@ def test_change_add_fit_not_found(client, consts):
         add_fit_ids=[api_joining_fit.id, api_other_fit.id],
         status_code=400,
         json_predicate={'code': 'FLT-004', 'message': f'failed to add fit: fit {api_other_fit.id} not found'})
-    assert sorted(api_fleet1.update().fits) == sorted([api_booster_fit.id, api_boosted_fit.id])
-    assert list(api_fleet2.update().fits) == [api_joining_fit.id]
+    assert api_fleet1.update().fits.keys() == {api_booster_fit.id, api_boosted_fit.id}
+    assert api_fleet2.update().fits.keys() == {api_joining_fit.id}
     assert api_boosted_fit.update().fleet_id == api_fleet1.id
     assert api_joining_fit.update().fleet_id == api_fleet2.id
     assert api_boosted_ship.update().attrs[eve_affectee_attr_id].modified == approx(37.5)
@@ -124,6 +124,6 @@ def test_change_rm_fit_not_found(client, consts):
         rm_fit_ids=[api_boosted_fit.id, api_other_fit.id],
         status_code=400,
         json_predicate={'code': 'FLT-005', 'message': f'failed to remove fit: fit {api_other_fit.id} not found'})
-    assert sorted(api_fleet.update().fits) == sorted([api_booster_fit.id, api_boosted_fit.id])
+    assert api_fleet.update().fits.keys() == {api_booster_fit.id, api_boosted_fit.id}
     assert api_boosted_fit.update().fleet_id == api_fleet.id
     assert api_boosted_ship.update().attrs[eve_affectee_attr_id].modified == approx(37.5)

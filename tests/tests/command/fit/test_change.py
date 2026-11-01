@@ -95,7 +95,7 @@ def test_fleet_same(client):
     api_fit.change(fleet_id=api_fleet.id)
     # Verification
     assert api_fit.update().fleet_id == api_fleet.id
-    assert list(api_fleet.update().fits) == [api_fit.id]
+    assert api_fleet.update().fits.keys() == {api_fit.id}
 
 
 def test_fleet_switch(client):
@@ -108,7 +108,7 @@ def test_fleet_switch(client):
     api_fit.change(fleet_id=api_fleet2.id)
     # Verification - fit leaves its old fleet
     assert api_fit.update().fleet_id == api_fleet2.id
-    assert list(api_fleet2.update().fits) == [api_fit.id]
+    assert api_fleet2.update().fits.keys() == {api_fit.id}
     api_fleet1.update()
     with check_no_field():
         api_fleet1.fits  # ruff:ignore[useless-expression]

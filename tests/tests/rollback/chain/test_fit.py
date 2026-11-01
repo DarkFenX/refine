@@ -11,4 +11,4 @@ def test_add_fleet_not_found(client):
         rah_incoming_dps=(1, 1, 1, 1),
         status_code=400,
         json_predicate={'code': 'FIT-003', 'message': f'failed to set fleet: fleet {api_other_fleet.id} not found'})
-    assert list(api_sol.update().fits) == [api_fit.id]
+    assert api_sol.update().fits.keys() == {api_fit.id}

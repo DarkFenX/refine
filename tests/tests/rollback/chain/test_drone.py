@@ -103,7 +103,7 @@ def test_change_proj_add_fail(client, consts):
     assert api_drone.movement.speed == approx(0)
     with check_no_field():
         api_drone.effect_mode_overrides  # ruff:ignore[useless-expression]
-    assert list(api_drone.projs) == [api_tgt_ship1.id]
+    assert api_drone.projs.keys() == {api_tgt_ship1.id}
     assert api_drone.projs[api_tgt_ship1.id] == (approx(10000), approx(10000))
     assert api_tgt_ship1.update().attrs[eve_tgt_attr_id].modified == approx(120)
     assert api_tgt_ship2.update().attrs[eve_tgt_attr_id].modified == approx(100)
@@ -222,5 +222,5 @@ def test_change_proj_rm_fail(client, consts):
         json_predicate={
             'code': 'DRN-004',
             'message': f'failed to change drone: failed to remove projection: item {api_other_tgt.id} not found'})
-    assert list(api_drone.update().projs) == [api_tgt_ship.id]
+    assert api_drone.update().projs.keys() == {api_tgt_ship.id}
     assert api_tgt_ship.update().attrs[eve_tgt_attr_id].modified == approx(120)

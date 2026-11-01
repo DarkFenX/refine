@@ -151,7 +151,7 @@ def test_skill_collision_on_add(client, consts):
             'code': 'SKL-002',
             'message': (f'failed to add skill: skill {eve_skill_id} already exists on fit {api_fit.id}, '
                         f'item {api_skill.id} has the same type ID')})
-    assert list(api_fit.update().skills) == [api_skill.id]
+    assert api_fit.update().skills.keys() == {api_skill.id}
     api_skill.update()
     assert api_skill.level == 3
     assert api_skill.state is True

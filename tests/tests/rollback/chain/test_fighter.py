@@ -128,7 +128,7 @@ def test_change_type_proj_add_fail(client, consts):
     with check_no_field():
         api_fighter.rearm_minion_override  # ruff:ignore[useless-expression]
     assert api_fighter.coordinates == (0, 0, 0)
-    assert list(api_fighter.projs) == [api_tgt_ship1.id]
+    assert api_fighter.projs.keys() == {api_tgt_ship1.id}
     assert len(api_fighter.autocharges) == 1
     api_autocharge = api_fighter.autocharges[eve_autocharge_effect_id]
     assert api_autocharge.id == api_autocharge_id
@@ -156,4 +156,4 @@ def test_change_proj_rm_fail(client):
         json_predicate={
             'code': 'FTR-004',
             'message': f'failed to change fighter: failed to remove projection: item {api_other_tgt.id} not found'})
-    assert list(api_fighter.update().projs) == [api_tgt_ship.id]
+    assert api_fighter.update().projs.keys() == {api_tgt_ship.id}

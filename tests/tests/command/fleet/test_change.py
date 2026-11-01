@@ -23,7 +23,7 @@ def test_add_fit_member(client):
     # Action
     api_fleet.change(add_fit_ids=[api_fit.id])
     # Verification
-    assert list(api_fleet.update().fits) == [api_fit.id]
+    assert api_fleet.update().fits.keys() == {api_fit.id}
     assert api_fit.update().fleet_id == api_fleet.id
 
 
@@ -35,7 +35,7 @@ def test_add_fit_duplicate(client):
     # Action
     api_fleet.change(add_fit_ids=[api_fit.id, api_fit.id])
     # Verification
-    assert list(api_fleet.update().fits) == [api_fit.id]
+    assert api_fleet.update().fits.keys() == {api_fit.id}
     assert api_fit.update().fleet_id == api_fleet.id
 
 
@@ -48,7 +48,7 @@ def test_add_fit_other_fleet(client):
     # Action
     api_fleet1.change(add_fit_ids=[api_fit.id])
     # Verification - fit leaves its fleet
-    assert list(api_fleet1.update().fits) == [api_fit.id]
+    assert api_fleet1.update().fits.keys() == {api_fit.id}
     api_fleet2.update()
     with check_no_field():
         api_fleet2.fits  # ruff:ignore[useless-expression]
@@ -64,7 +64,7 @@ def test_rm_fit_no_fleet(client):
     # Action
     api_fleet.change(rm_fit_ids=[api_fit2.id])
     # Verification
-    assert list(api_fleet.update().fits) == [api_fit1.id]
+    assert api_fleet.update().fits.keys() == {api_fit1.id}
     api_fit2.update()
     with check_no_field():
         api_fit2.fleet_id  # ruff:ignore[useless-expression]
@@ -80,6 +80,6 @@ def test_rm_fit_other_fleet(client):
     # Action
     api_fleet1.change(rm_fit_ids=[api_fit2.id])
     # Verification - fit stays in its fleet
-    assert list(api_fleet1.update().fits) == [api_fit1.id]
-    assert list(api_fleet2.update().fits) == [api_fit2.id]
+    assert api_fleet1.update().fits.keys() == {api_fit1.id}
+    assert api_fleet2.update().fits.keys() == {api_fit2.id}
     assert api_fit2.update().fleet_id == api_fleet2.id

@@ -79,7 +79,7 @@ def test_sol_additions(client, consts):
     assert api_sol.default_spool == Spool.cycles_to_api(count=0)
     with check_no_field():
         api_sol.fleets  # ruff:ignore[useless-expression]
-    assert sorted(api_sol.fits) == sorted([api_tgt_fit.id, api_fit.id])
+    assert api_sol.fits.keys() == {api_tgt_fit.id, api_fit.id}
     with check_no_field():
         api_sol.sw_effects  # ruff:ignore[useless-expression]
     with check_no_field():
@@ -179,15 +179,15 @@ def test_sol_removals(client, consts):
         api_sol_batch.remove_item(item_id=api_sw_effect.id)
         api_sol_batch.change_module(item_id=api_module.id, state=consts.ApiModuleState.online)
     api_sol.update()
-    assert list(api_sol.fleets) == [api_fleet.id]
-    assert sorted(api_sol.fits) == sorted([api_booster_fit.id, api_boosted_fit.id, api_tgt_fit.id, api_fit.id])
-    assert list(api_sol.sw_effects) == [api_sw_effect.id]
-    assert sorted(api_fleet.update().fits) == sorted([api_booster_fit.id, api_boosted_fit.id])
+    assert api_sol.fleets.keys() == {api_fleet.id}
+    assert api_sol.fits.keys() == {api_booster_fit.id, api_boosted_fit.id, api_tgt_fit.id, api_fit.id}
+    assert api_sol.sw_effects.keys() == {api_sw_effect.id}
+    assert api_fleet.update().fits.keys() == {api_booster_fit.id, api_boosted_fit.id}
     api_module.update()
     assert api_module.state == consts.ApiModuleState.active
     assert api_module.charge.id == api_charge_id
-    assert list(api_module.projs) == [api_tgt_ship.id]
-    assert list(api_drone.update().projs) == [api_tgt_ship.id]
+    assert api_module.projs.keys() == {api_tgt_ship.id}
+    assert api_drone.update().projs.keys() == {api_tgt_ship.id}
     assert api_proj_effect.update().proj_item_ids == [api_tgt_ship.id]
     assert api_tgt_fit.update().ship.id == api_tgt_ship.id
     assert api_boosted_ship.update().attrs[eve_attr_id].modified == approx(220)
@@ -365,6 +365,6 @@ def test_fit(client, consts):
     assert api_fit.sec_status == approx(0)
     with check_no_field():
         api_fit.implants  # ruff:ignore[useless-expression]
-    assert list(api_fit.rigs) == [api_rig.id]
+    assert api_fit.rigs.keys() == {api_rig.id}
     assert api_module.update().state == consts.ApiModuleState.offline
     assert api_ship.update().attrs[eve_attr_id].modified == approx(132)

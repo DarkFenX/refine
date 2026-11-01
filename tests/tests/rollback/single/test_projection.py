@@ -35,7 +35,7 @@ def test_module_add_not_found(client, consts):
             'code': 'MOD-003',
             'message': f'failed to change module: failed to add projection: item {api_other_tgt.id} not found'})
     api_module.update()
-    assert list(api_module.projs) == [api_tgt_ship.id]
+    assert api_module.projs.keys() == {api_tgt_ship.id}
     assert api_module.projs[api_tgt_ship.id] == (approx(1000), approx(1000))
     assert api_tgt_ship.update().attrs[eve_affectee_attr_id].modified == approx(120)
 
@@ -73,7 +73,7 @@ def test_module_rm_not_found(client, consts):
         json_predicate={
             'code': 'MOD-004',
             'message': f'failed to change module: failed to remove projection: item {api_other_tgt.id} not found'})
-    assert list(api_module.update().projs) == [api_tgt_ship.id]
+    assert api_module.update().projs.keys() == {api_tgt_ship.id}
     assert api_tgt_ship.update().attrs[eve_affectee_attr_id].modified == approx(120)
 
 
@@ -111,7 +111,7 @@ def test_drone_add_unreceptive(client, consts):
             'code': 'DRN-003',
             'message': (f"failed to change drone: failed to add projection: "
                         f"rig {api_tgt_rig.id} can't receive projections")})
-    assert list(api_drone.update().projs) == [api_tgt_ship.id]
+    assert api_drone.update().projs.keys() == {api_tgt_ship.id}
     assert api_tgt_ship.update().attrs[eve_affectee_attr_id].modified == approx(120)
 
 
@@ -134,7 +134,7 @@ def test_fighter_add_not_found(client):
             'code': 'FTR-003',
             'message': f'failed to change fighter: failed to add projection: item {api_other_tgt.id} not found'})
     api_fighter.update()
-    assert list(api_fighter.projs) == [api_tgt_ship.id]
+    assert api_fighter.projs.keys() == {api_tgt_ship.id}
     assert api_fighter.projs[api_tgt_ship.id] == (approx(1000), approx(1000))
 
 

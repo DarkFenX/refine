@@ -29,7 +29,7 @@ def test_module_add_existing(client, consts):
     api_module.change_module(add_proj_item_ids=[api_tgt_ship.id])
     # Verification
     api_module.update()
-    assert list(api_module.projs) == [api_tgt_ship.id]
+    assert api_module.projs.keys() == {api_tgt_ship.id}
     assert api_module.projs[api_tgt_ship.id] == (approx(1000), approx(1000))
     assert api_tgt_ship.update().attrs[eve_affectee_attr_id].modified == approx(120)
 
@@ -60,7 +60,7 @@ def test_module_add_duplicate(client, consts):
         state=consts.ApiModuleState.active,
         proj_item_ids=[api_tgt_ship.id, api_tgt_ship.id])
     # Verification
-    assert list(api_module.update().projs) == [api_tgt_ship.id]
+    assert api_module.update().projs.keys() == {api_tgt_ship.id}
     assert api_tgt_ship.update().attrs[eve_affectee_attr_id].modified == approx(120)
 
 
@@ -93,7 +93,7 @@ def test_module_rm_absent(client, consts):
     # Action
     api_module.change_module(rm_proj_item_ids=[api_tgt_ship2.id])
     # Verification
-    assert list(api_module.update().projs) == [api_tgt_ship1.id]
+    assert api_module.update().projs.keys() == {api_tgt_ship1.id}
     assert api_tgt_ship1.update().attrs[eve_affectee_attr_id].modified == approx(120)
     assert api_tgt_ship2.update().attrs[eve_affectee_attr_id].modified == approx(100)
 
@@ -126,7 +126,7 @@ def test_drone_add_existing(client, consts):
     api_drone.change_drone(add_proj_item_ids=[api_tgt_ship.id])
     # Verification
     api_drone.update()
-    assert list(api_drone.projs) == [api_tgt_ship.id]
+    assert api_drone.projs.keys() == {api_tgt_ship.id}
     assert api_drone.projs[api_tgt_ship.id] == (approx(1000), approx(1000))
     assert api_tgt_ship.update().attrs[eve_affectee_attr_id].modified == approx(120)
 
@@ -157,7 +157,7 @@ def test_drone_add_duplicate(client, consts):
         state=consts.ApiMinionState.engaging,
         proj_item_ids=[api_tgt_ship.id, api_tgt_ship.id])
     # Verification
-    assert list(api_drone.update().projs) == [api_tgt_ship.id]
+    assert api_drone.update().projs.keys() == {api_tgt_ship.id}
     assert api_tgt_ship.update().attrs[eve_affectee_attr_id].modified == approx(120)
 
 
@@ -190,7 +190,7 @@ def test_drone_rm_absent(client, consts):
     # Action
     api_drone.change_drone(rm_proj_item_ids=[api_tgt_ship2.id])
     # Verification
-    assert list(api_drone.update().projs) == [api_tgt_ship1.id]
+    assert api_drone.update().projs.keys() == {api_tgt_ship1.id}
     assert api_tgt_ship1.update().attrs[eve_affectee_attr_id].modified == approx(120)
     assert api_tgt_ship2.update().attrs[eve_affectee_attr_id].modified == approx(100)
 
@@ -208,7 +208,7 @@ def test_fighter_add_existing(client):
     api_fighter.change_fighter(add_proj_item_ids=[api_tgt_ship.id])
     # Verification
     api_fighter.update()
-    assert list(api_fighter.projs) == [api_tgt_ship.id]
+    assert api_fighter.projs.keys() == {api_tgt_ship.id}
     assert api_fighter.projs[api_tgt_ship.id] == (approx(1000), approx(1000))
 
 
@@ -223,7 +223,7 @@ def test_fighter_add_duplicate(client):
     # Action
     api_fighter = api_fit.add_fighter(type_id=eve_fighter_id, proj_item_ids=[api_tgt_ship.id, api_tgt_ship.id])
     # Verification
-    assert list(api_fighter.update().projs) == [api_tgt_ship.id]
+    assert api_fighter.update().projs.keys() == {api_tgt_ship.id}
 
 
 def test_fighter_rm_absent(client):
@@ -240,7 +240,7 @@ def test_fighter_rm_absent(client):
     # Action
     api_fighter.change_fighter(rm_proj_item_ids=[api_tgt_ship2.id])
     # Verification
-    assert list(api_fighter.update().projs) == [api_tgt_ship1.id]
+    assert api_fighter.update().projs.keys() == {api_tgt_ship1.id}
 
 
 def test_proj_effect_add_existing(client, consts):

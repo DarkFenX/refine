@@ -21,5 +21,5 @@ def test_fit_duplicate(client):
     # Action
     api_fleet = api_sol.create_fleet(fit_ids=[api_fit.id, api_fit.id])
     # Verification
-    assert list(api_fleet.update().fits) == [api_fit.id]
+    assert api_fleet.update().fits.keys() == {api_fit.id}
     assert api_fit.update().fleet_id == api_fleet.id
