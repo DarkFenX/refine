@@ -236,8 +236,12 @@ impl ApiError {
             Self::BatchBackrefResolve(err) => Some(err.index),
             Self::SolBatchCtl(err) => Some(err.index),
             Self::SolBatchInfo(err) => Some(err.index),
+            Self::SolBatchStats(err) => Some(err.index),
+            Self::SolBatchVal(err) => Some(err.index),
+            Self::SolBatchTryItems(err) => Some(err.index),
             Self::FitBatchCtl(err) => Some(err.index),
             Self::FitBatchInfo(err) => Some(err.index),
+            Self::FitBatchStats(err) => Some(err.index),
             _ => None,
         }
     }
