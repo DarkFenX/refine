@@ -202,7 +202,7 @@ def test_fleet_fleet_backref(client, consts):
 def test_fleet_fleet_backref_error_range(client):
     client.create_sources()
     api_sol = client.create_sol()
-    # Verification
+    # Action & verification
     with api_sol.batch(status_code=400, json_predicate={
             'code': 'BRF-001',
             'message': 'referenced command #2 does not have results recorded',
@@ -215,7 +215,7 @@ def test_fleet_fleet_backref_error_range(client):
 def test_fleet_fleet_backref_error_kind(client):
     client.create_sources()
     api_sol = client.create_sol()
-    # Verification
+    # Action & verification
     with api_sol.batch(status_code=400, json_predicate={
             'code': 'BRF-001',
             'message': 'referenced command #0 exists, but does not have fleet ID info',
@@ -374,7 +374,7 @@ def test_fit_fit_backref(client, consts):
 def test_fit_fit_backref_error_range(client):
     client.create_sources()
     api_sol = client.create_sol()
-    # Verification
+    # Action & verification
     with api_sol.batch(status_code=400, json_predicate={
             'code': 'BRF-001',
             'message': 'referenced command #2 does not have results recorded',
@@ -387,7 +387,7 @@ def test_fit_fit_backref_error_range(client):
 def test_fit_fit_backref_error_kind(client):
     client.create_sources()
     api_sol = client.create_sol()
-    # Verification
+    # Action & verification
     with api_sol.batch(status_code=400, json_predicate={
             'code': 'BRF-001',
             'message': 'referenced command #0 exists, but does not have fit ID info',
@@ -507,7 +507,7 @@ def test_item_item_backref_error_range(client):
     client.create_sources()
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
-    # Verification
+    # Action & verification
     with api_sol.batch(status_code=400, json_predicate={
             'code': 'BRF-001',
             'message': 'referenced command #2 does not have results recorded',
@@ -520,7 +520,7 @@ def test_item_item_backref_error_range(client):
 def test_item_item_backref_error_kind(client):
     client.create_sources()
     api_sol = client.create_sol()
-    # Verification
+    # Action & verification
     with api_sol.batch(status_code=400, json_predicate={
             'code': 'BRF-001',
             'message': 'referenced command #0 exists, but does not have item ID info',

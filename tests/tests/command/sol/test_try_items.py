@@ -47,7 +47,7 @@ def test_fit_backref_error_range(client):
     eve_drone_id = client.mk_eve_drone()
     client.create_sources()
     api_sol = client.create_sol()
-    # Verification
+    # Action & verification
     with api_sol.batch(status_code=400, json_predicate={
             'code': 'BRF-001',
             'message': 'referenced command #2 does not have results recorded',
@@ -61,7 +61,7 @@ def test_fit_backref_error_kind(client):
     eve_drone_id = client.mk_eve_drone()
     client.create_sources()
     api_sol = client.create_sol()
-    # Verification
+    # Action & verification
     with api_sol.batch(status_code=400, json_predicate={
             'code': 'BRF-001',
             'message': 'referenced command #0 exists, but does not have fit ID info',
