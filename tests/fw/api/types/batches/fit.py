@@ -17,6 +17,7 @@ from fw.api.commands import (
     FitCtlFwEffectChangeCmd,
     FitCtlImplantAddCmd,
     FitCtlImplantChangeCmd,
+    FitCtlItemAutodetectAddCmd,
     FitCtlItemRemoveCmd,
     FitCtlModuleAddCmd,
     FitCtlModuleChangeCmd,
@@ -126,6 +127,11 @@ class FitCmdBatchCtx(BaseCmdBatchCtx):
         self._commands.append(command)
 
     # Item
+    def autodetect_add_item(self, *, type_id: int) -> Item:
+        command = FitCtlItemAutodetectAddCmd(type_id=type_id)
+        self._commands.append(command)
+        return self._make_item()
+
     def remove_item(
             self, *,
             item_id: str,

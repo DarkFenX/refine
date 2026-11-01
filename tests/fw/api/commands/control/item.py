@@ -9,6 +9,53 @@ if typing.TYPE_CHECKING:
 
 
 ####################################################################################################
+# Addition
+####################################################################################################
+@dataclasses.dataclass(kw_only=True)
+class BaseCtlItemAutodetectAddCmd(BaseCommand):
+
+    type_id: int
+
+    def serialize(self) -> dict:
+        body = super().serialize()
+        body['type_id'] = self.type_id
+        return body
+
+
+@dataclasses.dataclass(kw_only=True)
+class ItemCtlItemAutodetectAddCmd(BaseCtlItemAutodetectAddCmd):
+
+    fit_id: str
+
+    def serialize(self) -> dict:
+        body = super().serialize()
+        body['type'] = 'autodetect'
+        body['fit_id'] = self.fit_id
+        return body
+
+
+@dataclasses.dataclass(kw_only=True)
+class FitCtlItemAutodetectAddCmd(BaseCtlItemAutodetectAddCmd):
+
+    def serialize(self) -> dict:
+        body = super().serialize()
+        body['type'] = 'item_autodetect_add'
+        return body
+
+
+@dataclasses.dataclass(kw_only=True)
+class SolCtlItemAutodetectAddCmd(BaseCtlItemAutodetectAddCmd):
+
+    fit_id: str
+
+    def serialize(self) -> dict:
+        body = super().serialize()
+        body['type'] = 'item_autodetect_add'
+        body['fit_id'] = self.fit_id
+        return body
+
+
+####################################################################################################
 # Removal
 ####################################################################################################
 @dataclasses.dataclass(kw_only=True)

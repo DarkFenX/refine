@@ -13,8 +13,11 @@ from .fleet import (
     SolCtlFleetRemoveCmd,
 )
 from .item import (
+    FitCtlItemAutodetectAddCmd,
     FitCtlItemRemoveCmd,
+    ItemCtlItemAutodetectAddCmd,
     ItemCtlItemRemoveCmd,
+    SolCtlItemAutodetectAddCmd,
     SolCtlItemRemoveCmd,
 )
 from .item_autocharge import (

@@ -15,11 +15,11 @@ impl SolarSystem {
     ///
     /// Not possible within a transaction, since switching source can't be rolled back.
     pub fn set_src(&mut self, src: &Src) -> Result<(), SrcSetError> {
-        if Arc::ptr_eq(&self.u_data.r_data, &src.r_data) {
-            return Ok(());
-        }
         if self.undo.is_recording() {
             return Err(SrcSetError::InTransaction);
+        }
+        if Arc::ptr_eq(&self.u_data.r_data, &src.r_data) {
+            return Ok(());
         }
         let item_uids = ItemUIds::from_u_data(&self.u_data);
         self.unload_items(&item_uids);

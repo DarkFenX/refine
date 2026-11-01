@@ -23,6 +23,7 @@ from fw.api.commands import (
     SolCtlFwEffectChangeCmd,
     SolCtlImplantAddCmd,
     SolCtlImplantChangeCmd,
+    SolCtlItemAutodetectAddCmd,
     SolCtlItemRemoveCmd,
     SolCtlModuleAddCmd,
     SolCtlModuleChangeCmd,
@@ -233,6 +234,13 @@ class SolCmdBatchCtx(BaseCmdBatchCtx):
         self._commands.append(command)
 
     # Item
+    def autodetect_add_item(self, *, fit_id: str, type_id: int) -> Item:
+        command = SolCtlItemAutodetectAddCmd(
+            fit_id=fit_id,
+            type_id=type_id)
+        self._commands.append(command)
+        return self._make_item()
+
     def remove_item(
             self, *,
             item_id: str,

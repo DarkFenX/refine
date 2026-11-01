@@ -11,6 +11,7 @@ from fw.api.commands import (
     ItemCtlFighterAddCmd,
     ItemCtlFwEffectAddCmd,
     ItemCtlImplantAddCmd,
+    ItemCtlItemAutodetectAddCmd,
     ItemCtlModuleAddCmd,
     ItemCtlRigAddCmd,
     ItemCtlServiceAddCmd,
@@ -289,6 +290,26 @@ class Fit(AttrDict):
         return None
 
     # Item methods
+    def autodetect_add_item(
+            self, *,
+            type_id: int,
+            item_info_mode: ApiItemInfoMode | type[Absent] = ApiItemInfoMode.id,
+            status_code: int = 201,
+            json_predicate: JsonPredicate = None,
+    ) -> Item | None:
+        command = ItemCtlItemAutodetectAddCmd(
+            fit_id=self.id,
+            type_id=type_id)
+        resp = self._client.item_command_add_request(
+            sol_id=self._sol_id,
+            command=command,
+            item_info_mode=item_info_mode).send()
+        self._client.check_sol(sol_id=self._sol_id)
+        resp.check(status_code=status_code, json_predicate=json_predicate)
+        if resp.status_code == 201:
+            return Item(client=self._client, data=resp.json(), sol_id=self._sol_id)
+        return None
+
     def remove_item(
             self, *,
             item_id: str,
