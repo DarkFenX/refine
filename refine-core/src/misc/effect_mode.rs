@@ -1,4 +1,7 @@
 /// Item effect operation modes.
+///
+/// Items store modes by effect ID without checking that they have the effect, so modes survive type
+/// and source changes and apply whenever the item has the effect.
 #[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
 #[derive(Copy, Clone, Eq, PartialEq, Default, derive_more::Display)]
 pub enum EffectMode {

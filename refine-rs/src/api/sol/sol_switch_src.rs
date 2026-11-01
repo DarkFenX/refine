@@ -42,6 +42,6 @@ impl SolarSystem<'_> {
 
 #[derive(thiserror::Error, Debug)]
 pub enum SolSwitchSrcError {
-    #[error("unable to get source")]
+    #[error("failed to get source")]
     SrcGet(#[from] SrcGetError),
 }

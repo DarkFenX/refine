@@ -167,9 +167,9 @@ impl ProjEffectChangeCmd {
 pub enum ProjEffectChangeError {
     #[error(transparent)]
     ItemIsNotProjEffect(#[from] rc::err::ItemKindMatchError),
-    #[error("unable to add projection")]
+    #[error("failed to add projection")]
     ProjAdd(#[from] rc::err::ProjAddError),
-    #[error("unable to remove projection")]
+    #[error("failed to remove projection")]
     ProjRemove(#[from] rc::err::ProjGetError),
 }
 
@@ -188,9 +188,9 @@ pub enum ItemGetProjEffectChangeError {
     ItemGet(#[from] rc::err::ItemGetError),
     #[error(transparent)]
     ItemIsNotProjEffect(rc::err::ItemKindMatchError),
-    #[error("unable to add projection")]
+    #[error("failed to add projection")]
     ProjAdd(#[source] rc::err::ProjAddError),
-    #[error("unable to remove projection")]
+    #[error("failed to remove projection")]
     ProjRemove(#[source] rc::err::ProjGetError),
 }
 impl From<ProjEffectChangeError> for ItemGetProjEffectChangeError {
