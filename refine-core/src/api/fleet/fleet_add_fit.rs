@@ -10,7 +10,7 @@ impl<'s> FleetMut<'s> {
                 *fit_id,
             ));
         }
-        self.sol.internal_set_fit_fleet(fit_uid, self.uid);
+        self.sol.internal_set_fit_fleet(fit_uid, Some(self.uid));
         Ok(())
     }
 }

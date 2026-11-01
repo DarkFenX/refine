@@ -59,14 +59,11 @@ impl SolarSystem {
                 // Fit
                 UndoStep::FitAdded(fit_uid) => self.internal_remove_fit(fit_uid),
                 UndoStep::FitRemoved(fit_uid) => self.internal_reattach_fit(fit_uid),
-                UndoStep::FitFleet(fit_uid, fleet_uid) => match fleet_uid {
-                    Some(fleet_uid) => self.internal_set_fit_fleet(fit_uid, fleet_uid),
-                    None => self.internal_unset_fit_fleet(fit_uid).unwrap(),
-                },
-                UndoStep::FitRahIncomingDps(fit_uid) => match self.undo.pop_dps_profile() {
-                    Some(dps_profile) => self.internal_set_fit_rah_incoming_dps(fit_uid, dps_profile),
-                    None => self.internal_remove_fit_rah_incoming_dps(fit_uid).unwrap(),
-                },
+                UndoStep::FitFleet(fit_uid, fleet_uid) => self.internal_set_fit_fleet(fit_uid, fleet_uid),
+                UndoStep::FitRahIncomingDps(fit_uid) => {
+                    let dps_profile = self.undo.pop_dps_profile();
+                    self.internal_set_fit_rah_incoming_dps(fit_uid, dps_profile);
+                }
                 UndoStep::FitSecStatus(fit_uid, sec_status) => self.internal_set_fit_sec_status(fit_uid, sec_status),
                 // Item - general
                 UndoStep::ItemEffectMode(item_uid, effect_aid, effect_mode) => {

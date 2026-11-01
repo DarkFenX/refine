@@ -74,13 +74,13 @@ impl FitAddCmd {
         } = self;
         let mut core_fit = core_sol.add_fit();
         if let Some(fleet_id) = fleet_id {
-            core_fit.set_fleet(&fleet_id)?;
+            core_fit.set_fleet(Some(&fleet_id))?;
         }
         if let Some(sec_status) = sec_status {
             core_fit.set_sec_status(sec_status);
         }
         if let Some(rah_incoming_dps) = rah_incoming_dps {
-            core_fit.set_rah_incoming_dps(rah_incoming_dps);
+            core_fit.set_rah_incoming_dps(Some(rah_incoming_dps));
         }
         Ok(AddedFitIdResp::from_core_fit(core_fit))
     }

@@ -8,9 +8,7 @@ use crate::{
 
 impl SolarSystem {
     pub(in crate::api) fn internal_remove_fit(&mut self, fit_uid: UFitId) {
-        if self.u_data.fits.get(fit_uid).fleet.is_some() {
-            self.internal_unset_fit_fleet(fit_uid).unwrap();
-        }
+        self.internal_set_fit_fleet(fit_uid, None);
         let item_uids = self.u_data.fits.get(fit_uid).iter_direct_items().collect_vec();
         for item_uid in item_uids.into_iter() {
             self.internal_remove_item(item_uid, RemoveMode::Free).unwrap();

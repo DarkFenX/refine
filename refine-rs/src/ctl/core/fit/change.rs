@@ -120,24 +120,16 @@ impl FitChangeCmd {
             rah_incoming_dps,
         } = self;
         match fleet_id {
-            TriStateField::Value(fleet_id) => core_fit.set_fleet(&fleet_id)?,
-            TriStateField::None => match core_fit.unset_fleet() {
-                Ok(..) => (),
-                // We are fine if fleet was not set
-                Err(rc::err::FitFleetUnsetError::FitHasNoFleet(..)) => (),
-            },
+            TriStateField::Value(fleet_id) => core_fit.set_fleet(Some(&fleet_id))?,
+            TriStateField::None => core_fit.set_fleet(None)?,
             TriStateField::Absent => (),
         }
         if let Some(sec_status) = sec_status {
             core_fit.set_sec_status(sec_status);
         }
         match rah_incoming_dps {
-            TriStateField::Value(rah_incoming_dps) => core_fit.set_rah_incoming_dps(rah_incoming_dps),
-            TriStateField::None => match core_fit.remove_rah_incoming_dps() {
-                Ok(..) => (),
-                // We are fine if profile was not set
-                Err(rc::err::FitRahIncomingDpsRemoveError::DpsProfileNotSet(..)) => (),
-            },
+            TriStateField::Value(rah_incoming_dps) => core_fit.set_rah_incoming_dps(Some(rah_incoming_dps)),
+            TriStateField::None => core_fit.set_rah_incoming_dps(None),
             TriStateField::Absent => (),
         }
         Ok(())

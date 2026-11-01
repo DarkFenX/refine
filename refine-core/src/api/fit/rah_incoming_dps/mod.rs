@@ -1,5 +1,2 @@
-pub use fit_remove_rah_incoming_dps::FitRahIncomingDpsRemoveError;
-
 mod fit_get_rah_incoming_dps;
-mod fit_remove_rah_incoming_dps;
 mod fit_set_rah_incoming_dps;

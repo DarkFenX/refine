@@ -11,7 +11,7 @@ impl SolarSystem {
         // Fits leave the fleet one by one, so that rollback can put them back via their own steps
         let fit_uids = self.u_data.fleets.get(fleet_uid).iter_fits().collect_vec();
         for fit_uid in fit_uids.into_iter() {
-            self.internal_unset_fit_fleet(fit_uid).unwrap();
+            self.internal_set_fit_fleet(fit_uid, None);
         }
         match self.undo.is_recording() {
             true => {
