@@ -92,7 +92,7 @@ pub use api::{
     ModuleState, MoveMode, Movement, MutIter, Mutation, MutationMut, Op, Proj, ProjEffect, ProjEffectMut, ProjIter,
     ProjMut, ProjRange, RangedProj, RangedProjIter, RangedProjMut, RawMAttr, RawMAttrIter, RawMAttrMut, RemoveMode,
     Rig, RigMut, Service, ServiceMut, ServiceState, Ship, ShipMut, SideEffect, SideEffectIter, SideEffectMut,
-    SideEffectPartialStr, SideEffectStr, Skill, SkillMut, SolTx, Stance, StanceMut, Subsystem, SubsystemMut, SwEffect,
+    SideEffectPartialStr, SideEffectStr, Skill, SkillMut, Stance, StanceMut, Subsystem, SubsystemMut, SwEffect,
     SwEffectMut,
 };
 pub use def::VERSION;
@@ -103,7 +103,7 @@ pub use misc::{
 };
 pub(crate) use misc::{DefOption, DefOptionExt};
 pub use num::{Count, CountNz, FitSecStatus, Index, PValue, SkillLevel, SlotIndex, UnitInterval, Value};
-pub use sol::SolarSystem;
+pub use sol::{SolTx, SolarSystem};
 pub use src::Src;
 pub use ud::{FitId, FleetId, ItemId};
 

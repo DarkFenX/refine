@@ -6,7 +6,7 @@ use crate::{
 impl<'s> FleetMut<'s> {
     pub fn get_stat_mass(&mut self, ctl_affectors: CtlAffectors) -> PValue {
         let mut fleet_mass = PValue::ZERO;
-        let savepoint = self.sol.internal_savepoint();
+        let savepoint = self.sol.internal_tx_savepoint();
         let ship_uids = self.sol.u_data.get_fleet_ship_uids(self.uid);
         // Work on item states according to request
         for &ship_uid in ship_uids.iter() {
@@ -24,7 +24,7 @@ impl<'s> FleetMut<'s> {
             }
         }
         // Revert item state changes
-        self.sol.internal_rollback(savepoint);
+        self.sol.internal_tx_rollback(savepoint);
         fleet_mass
     }
 }

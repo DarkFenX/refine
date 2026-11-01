@@ -50,89 +50,89 @@ impl SolarSystem {
             }
             match item_kind {
                 DetectedItemKind::Booster => {
-                    let savepoint = self.internal_savepoint();
+                    let savepoint = self.internal_tx_savepoint();
                     self.internal_add_booster(fit_uid, *type_aid);
                     if self.internal_validate_fit_fast(fit_uid, val_options) {
                         valid.push(*type_aid)
                     }
-                    self.internal_rollback(savepoint);
+                    self.internal_tx_rollback(savepoint);
                 }
                 // Charges are tried after all other items
                 DetectedItemKind::Charge => charge_type_aids.push(*type_aid),
                 DetectedItemKind::Drone => {
-                    let savepoint = self.internal_savepoint();
+                    let savepoint = self.internal_tx_savepoint();
                     self.internal_add_drone(fit_uid, *type_aid, MinionState::InBay, None, u_physics);
                     if self.internal_validate_fit_fast(fit_uid, val_options) {
                         valid.push(*type_aid)
                     }
-                    self.internal_rollback(savepoint);
+                    self.internal_tx_rollback(savepoint);
                 }
                 DetectedItemKind::Fighter => {
-                    let savepoint = self.internal_savepoint();
+                    let savepoint = self.internal_tx_savepoint();
                     self.internal_add_fighter(fit_uid, *type_aid, MinionState::InBay, u_physics);
                     if self.internal_validate_fit_fast(fit_uid, val_options) {
                         valid.push(*type_aid)
                     }
-                    self.internal_rollback(savepoint);
+                    self.internal_tx_rollback(savepoint);
                 }
                 DetectedItemKind::Implant => {
-                    let savepoint = self.internal_savepoint();
+                    let savepoint = self.internal_tx_savepoint();
                     self.internal_add_implant(fit_uid, *type_aid);
                     if self.internal_validate_fit_fast(fit_uid, val_options) {
                         valid.push(*type_aid)
                     }
-                    self.internal_rollback(savepoint);
+                    self.internal_tx_rollback(savepoint);
                 }
                 DetectedItemKind::ModuleHigh => {
                     let state = conv_state(r_item.base.max_state);
-                    let savepoint = self.internal_savepoint();
+                    let savepoint = self.internal_tx_savepoint();
                     self.internal_add_module(fit_uid, ModRack::High, AddMode::Equip, *type_aid, state, None, None);
                     if self.internal_validate_fit_fast(fit_uid, val_options) {
                         valid.push(*type_aid)
                     }
-                    self.internal_rollback(savepoint);
+                    self.internal_tx_rollback(savepoint);
                 }
                 DetectedItemKind::ModuleMid => {
                     let state = conv_state(r_item.base.max_state);
-                    let savepoint = self.internal_savepoint();
+                    let savepoint = self.internal_tx_savepoint();
                     self.internal_add_module(fit_uid, ModRack::Mid, AddMode::Equip, *type_aid, state, None, None);
                     if self.internal_validate_fit_fast(fit_uid, val_options) {
                         valid.push(*type_aid)
                     }
-                    self.internal_rollback(savepoint);
+                    self.internal_tx_rollback(savepoint);
                 }
                 DetectedItemKind::ModuleLow => {
                     let state = conv_state(r_item.base.max_state);
-                    let savepoint = self.internal_savepoint();
+                    let savepoint = self.internal_tx_savepoint();
                     self.internal_add_module(fit_uid, ModRack::Low, AddMode::Equip, *type_aid, state, None, None);
                     if self.internal_validate_fit_fast(fit_uid, val_options) {
                         valid.push(*type_aid)
                     }
-                    self.internal_rollback(savepoint);
+                    self.internal_tx_rollback(savepoint);
                 }
                 DetectedItemKind::Rig => {
-                    let savepoint = self.internal_savepoint();
+                    let savepoint = self.internal_tx_savepoint();
                     self.internal_add_rig(fit_uid, *type_aid);
                     if self.internal_validate_fit_fast(fit_uid, val_options) {
                         valid.push(*type_aid)
                     }
-                    self.internal_rollback(savepoint);
+                    self.internal_tx_rollback(savepoint);
                 }
                 DetectedItemKind::Service => {
-                    let savepoint = self.internal_savepoint();
+                    let savepoint = self.internal_tx_savepoint();
                     self.internal_add_service(fit_uid, *type_aid, ServiceState::Online);
                     if self.internal_validate_fit_fast(fit_uid, val_options) {
                         valid.push(*type_aid)
                     }
-                    self.internal_rollback(savepoint);
+                    self.internal_tx_rollback(savepoint);
                 }
                 DetectedItemKind::Subsystem => {
-                    let savepoint = self.internal_savepoint();
+                    let savepoint = self.internal_tx_savepoint();
                     self.internal_add_subsystem(fit_uid, *type_aid);
                     if self.internal_validate_fit_fast(fit_uid, val_options) {
                         valid.push(*type_aid)
                     }
-                    self.internal_rollback(savepoint);
+                    self.internal_tx_rollback(savepoint);
                 }
                 _ => continue,
             }
@@ -172,7 +172,7 @@ impl SolarSystem {
             }
             // Charge loaded into the module stays detached while charges are tried, so tried
             // charges never get its internal ID, and rollback puts it back as it was
-            let savepoint = self.internal_savepoint();
+            let savepoint = self.internal_tx_savepoint();
             if let Some(old_charge_uid) = self.u_data.items.get(module_uid).get_charge_uid() {
                 self.internal_remove_charge(old_charge_uid);
             }
@@ -184,16 +184,16 @@ impl SolarSystem {
                 {
                     return true;
                 }
-                let charge_savepoint = self.internal_savepoint();
+                let charge_savepoint = self.internal_tx_savepoint();
                 self.internal_set_module_charge(module_uid, charge_type_aid);
                 let charge_valid = self.internal_validate_fit_fast(fit_uid, val_options);
-                self.internal_rollback(charge_savepoint);
+                self.internal_tx_rollback(charge_savepoint);
                 if charge_valid {
                     valid.push(charge_type_aid);
                 }
                 !charge_valid
             });
-            self.internal_rollback(savepoint);
+            self.internal_tx_rollback(savepoint);
         }
     }
 }

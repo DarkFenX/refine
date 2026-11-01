@@ -1,6 +1,6 @@
 use crate::{
     api::{ItemMut, RemoveMode},
-    sol::SolarSystem,
+    sol::{SolarSystem, UndoStep},
     ud::{UItem, UItemId},
 };
 
@@ -33,6 +33,33 @@ impl SolarSystem {
             UItem::SwEffect(..) => self.internal_remove_sw_effect(item_uid),
         }
         Ok(())
+    }
+    /// Removes item from user data:
+    /// - if recording, item is just unmapped;
+    /// - if not recording, it is removed completely.
+    pub(in crate::api) fn internal_discard_item<S>(&mut self, item_uid: UItemId, step: S)
+    where
+        S: FnOnce(UItemId) -> UndoStep,
+    {
+        match self.undo.is_recording() {
+            true => {
+                self.u_data.items.detach(item_uid);
+                self.undo.record(step(item_uid));
+            }
+            false => {
+                self.u_data.items.remove(item_uid);
+            }
+        }
+    }
+    /// Child undo data is carried with parent undo data, so children are supposed to be removed
+    /// without separate record, via this method.
+    pub(in crate::api) fn internal_discard_child_item(&mut self, item_uid: UItemId) {
+        match self.undo.is_recording() {
+            true => self.u_data.items.detach(item_uid),
+            false => {
+                self.u_data.items.remove(item_uid);
+            }
+        }
     }
 }
 

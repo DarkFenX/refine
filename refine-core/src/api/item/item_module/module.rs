@@ -115,7 +115,7 @@ impl<'s> ModuleMut<'s> {
             Some(InfCount::Count(count)) => Some(count),
             _ => None,
         };
-        self.sol.internal_rollback(savepoint);
+        self.sol.internal_tx_rollback(savepoint);
         result
     }
     pub fn get_spool_cycle_count(&mut self) -> Option<ItemSpoolInfo> {

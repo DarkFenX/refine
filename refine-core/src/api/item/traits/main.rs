@@ -171,7 +171,7 @@ pub trait ItemMutCommon: ItemCommon {
                 charge_options,
             )
             .map_err(|e| StatItemError::from_svc_err(e, &sol.u_data.items));
-        sol.internal_rollback(savepoint);
+        sol.internal_tx_rollback(savepoint);
         result
     }
     fn get_stat_dmg_applied(
@@ -199,7 +199,7 @@ pub trait ItemMutCommon: ItemCommon {
                 projectee_uid,
             )
             .map_err(|e| StatItemAppliedError::from_svc_err(e, &sol.u_data.items));
-        sol.internal_rollback(savepoint);
+        sol.internal_tx_rollback(savepoint);
         result
     }
     fn get_stat_mps(
@@ -215,7 +215,7 @@ pub trait ItemMutCommon: ItemCommon {
             .svc
             .get_stat_item_mps(&mut CseqMap::new(), &sol.u_data, item_uid, time_options, resource_kind)
             .map_err(|e| StatItemError::from_svc_err(e, &sol.u_data.items));
-        sol.internal_rollback(savepoint);
+        sol.internal_tx_rollback(savepoint);
         result
     }
     fn get_stat_outgoing_nps(
@@ -238,7 +238,7 @@ pub trait ItemMutCommon: ItemCommon {
                 None,
             )
             .map_err(|e| StatItemError::from_svc_err(e, &sol.u_data.items));
-        sol.internal_rollback(savepoint);
+        sol.internal_tx_rollback(savepoint);
         result
     }
     fn get_stat_outgoing_nps_applied(
@@ -264,7 +264,7 @@ pub trait ItemMutCommon: ItemCommon {
                 Some(projectee_uid),
             )
             .map_err(|e| StatItemAppliedError::from_svc_err(e, &sol.u_data.items));
-        sol.internal_rollback(savepoint);
+        sol.internal_tx_rollback(savepoint);
         result
     }
     fn get_stat_outgoing_rps(
@@ -279,7 +279,7 @@ pub trait ItemMutCommon: ItemCommon {
             .svc
             .get_stat_item_outgoing_rps(&mut CseqMap::new(), &sol.u_data, item_uid, time_options, None)
             .map_err(|e| StatItemError::from_svc_err(e, &sol.u_data.items));
-        sol.internal_rollback(savepoint);
+        sol.internal_tx_rollback(savepoint);
         result
     }
     fn get_stat_outgoing_rps_applied(
@@ -303,7 +303,7 @@ pub trait ItemMutCommon: ItemCommon {
                 Some(projectee_uid),
             )
             .map_err(|e| StatItemAppliedError::from_svc_err(e, &sol.u_data.items));
-        sol.internal_rollback(savepoint);
+        sol.internal_tx_rollback(savepoint);
         result
     }
     fn get_stat_outgoing_cps(
@@ -318,7 +318,7 @@ pub trait ItemMutCommon: ItemCommon {
             .svc
             .get_stat_item_outgoing_cps(&mut CseqMap::new(), &sol.u_data, item_uid, time_options, None)
             .map_err(|e| StatItemError::from_svc_err(e, &sol.u_data.items));
-        sol.internal_rollback(savepoint);
+        sol.internal_tx_rollback(savepoint);
         result
     }
     fn get_stat_outgoing_cps_applied(
@@ -342,7 +342,7 @@ pub trait ItemMutCommon: ItemCommon {
                 Some(projectee_uid),
             )
             .map_err(|e| StatItemAppliedError::from_svc_err(e, &sol.u_data.items));
-        sol.internal_rollback(savepoint);
+        sol.internal_tx_rollback(savepoint);
         result
     }
     ////////////////////////////////////////////////////////////////////////////////////////////////
@@ -553,7 +553,7 @@ pub trait ItemMutCommon: ItemCommon {
     fn get_stat_mass(&mut self, affectors: CtlAffectors) -> Result<PValue, StatItemError<!>> {
         let item_uid = self.get_uid();
         let sol = self.get_sol_mut();
-        let savepoint = sol.internal_savepoint();
+        let savepoint = sol.internal_tx_savepoint();
         sol.internal_ctl_affectors_switch(
             item_uid,
             sol.u_data.r_data.get_attr_consts().mass,
@@ -564,7 +564,7 @@ pub trait ItemMutCommon: ItemCommon {
             .svc
             .get_stat_item_mass(&sol.u_data, item_uid)
             .map_err(|e| StatItemError::from_svc_err(e, &sol.u_data.items));
-        sol.internal_rollback(savepoint);
+        sol.internal_tx_rollback(savepoint);
         result
     }
     fn get_stat_warp_speed(&mut self) -> Result<PValue, StatItemError<StatWarpSpeedError>> {
@@ -589,7 +589,7 @@ pub trait ItemMutCommon: ItemCommon {
     ) -> Result<StatJump, StatItemError<StatJumpError>> {
         let item_uid = self.get_uid();
         let sol = self.get_sol_mut();
-        let savepoint = sol.internal_savepoint();
+        let savepoint = sol.internal_tx_savepoint();
         let passenger_fit_uids = passenger_fit_ids
             .iter()
             .filter_map(|fit_id| sol.u_data.fits.int_id_by_ext_id(fit_id))
@@ -610,7 +610,7 @@ pub trait ItemMutCommon: ItemCommon {
             .get_stat_item_jump(&sol.u_data, item_uid, range, &passenger_fit_uids)
             .map_err(|e| StatItemError::from_svc_err(e, &sol.u_data.items));
         // Revert item state changes
-        sol.internal_rollback(savepoint);
+        sol.internal_tx_rollback(savepoint);
         result
     }
     ////////////////////////////////////////////////////////////////////////////////////////////////

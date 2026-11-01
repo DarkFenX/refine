@@ -27,7 +27,7 @@ pub use misc::{
 use sol_ctl_affectors::AffectionDir;
 pub use sol_ctl_affectors::CtlAffectors;
 pub use sol_set_src::SrcSetError;
-pub use sol_tx::{SolTx, TxBeginError};
+pub use sol_tx::TxBeginError;
 pub use util::MutIter;
 
 mod default;
@@ -41,6 +41,5 @@ mod sec_zone;
 mod sol_ctl_affectors;
 mod sol_set_src;
 mod sol_tx;
-mod sol_undo;
 mod sol_validate;
 mod util;
