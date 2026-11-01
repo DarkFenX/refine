@@ -1,8 +1,8 @@
 pub(in crate::api) use active_stat::active_stat_prepare;
 pub use mutation::{
     AttrMutateRawError, DormantMutation, DormantMutationMut, EffectiveMutation, EffectiveMutationMut, FullMAttr,
-    FullMAttrIter, FullMAttrMut, FullMAttrValueSetError, Mutation, MutationAddError, MutationMut, RawMAttr,
-    RawMAttrGetError, RawMAttrIter, RawMAttrMut,
+    FullMAttrGetError, FullMAttrIter, FullMAttrMut, FullMAttrValueSetError, Mutation, MutationAddError, MutationMut,
+    RawMAttr, RawMAttrGetError, RawMAttrIter, RawMAttrMut,
 };
 pub use proj::{Proj, ProjAddError, ProjGetError, ProjIter, ProjMut, RangedProj, RangedProjIter, RangedProjMut};
 pub(in crate::api) use proj::{iter_projs, iter_ranged_projs};
