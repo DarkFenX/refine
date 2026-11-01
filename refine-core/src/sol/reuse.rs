@@ -1,7 +1,7 @@
 use crate::ud::UEffectUpdates;
 
 /// Containers reused across operations on a solar system, to avoid reallocating them.
-pub(crate) struct SolCache {
+pub(crate) struct SolReuse {
     /// Used when modifying an item change can change its running effects.
     ///
     /// Since it's filled by one call and read by another, have to be very careful to trace how it
@@ -13,7 +13,7 @@ pub(crate) struct SolCache {
     /// one still holds data which is going to be read.
     pub(crate) eupdates_secondary: UEffectUpdates,
 }
-impl SolCache {
+impl SolReuse {
     pub(crate) fn new() -> Self {
         Self {
             eupdates: UEffectUpdates::new(),
@@ -22,7 +22,7 @@ impl SolCache {
     }
 }
 // There is no need to actually clone contents of the cache
-impl Clone for SolCache {
+impl Clone for SolReuse {
     fn clone(&self) -> Self {
         Self::new()
     }

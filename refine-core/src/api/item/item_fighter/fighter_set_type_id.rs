@@ -20,14 +20,14 @@ impl SolarSystem {
             &mut self.svc,
             &mut self.rev_projs,
             fighter_uid,
-            &mut self.cache.eupdates,
+            &mut self.reuse.eupdates,
         );
         let u_fighter = self.u_data.items.get_mut(fighter_uid).dc_fighter_mut().unwrap();
         let old_autocharges = u_fighter.take_autocharges();
         for autocharge_uid in old_autocharges.values() {
             self.internal_discard_child_item(autocharge_uid);
         }
-        SolarSystem::util_remove_fighter(&mut self.u_data, &mut self.svc, fighter_uid, &mut self.cache.eupdates);
+        SolarSystem::util_remove_fighter(&mut self.u_data, &mut self.svc, fighter_uid, &mut self.reuse.eupdates);
         let u_fighter = self.u_data.items.get_mut(fighter_uid).dc_fighter_mut().unwrap();
         u_fighter.set_type_aid(type_aid, &self.u_data.r_data);
         if self.undo.is_recording() {
@@ -41,7 +41,7 @@ impl SolarSystem {
             &mut self.svc,
             &mut self.rev_projs,
             fighter_uid,
-            &mut self.cache.eupdates,
+            &mut self.reuse.eupdates,
         );
     }
     /// Puts back fighter type replaced by a type change, along with autocharges of that type.
@@ -56,7 +56,7 @@ impl SolarSystem {
             &mut self.svc,
             &mut self.rev_projs,
             fighter_uid,
-            &mut self.cache.eupdates,
+            &mut self.reuse.eupdates,
         );
         for autocharge_uid in autocharges.values() {
             self.u_data.items.reattach(autocharge_uid);
@@ -65,13 +65,13 @@ impl SolarSystem {
         u_fighter.set_type_aid(type_aid, &self.u_data.r_data);
         u_fighter.set_autocharges(autocharges);
         SolarSystem::util_update_item_radius_in_projs(&mut self.u_data, &self.rev_projs, &mut self.svc, fighter_uid);
-        SolarSystem::util_add_fighter(&mut self.u_data, &mut self.svc, fighter_uid, &mut self.cache.eupdates);
+        SolarSystem::util_add_fighter(&mut self.u_data, &mut self.svc, fighter_uid, &mut self.reuse.eupdates);
         SolarSystem::util_reattach_item_autocharges(
             &mut self.u_data,
             &mut self.svc,
             &mut self.rev_projs,
             fighter_uid,
-            &mut self.cache.eupdates,
+            &mut self.reuse.eupdates,
         );
     }
 }

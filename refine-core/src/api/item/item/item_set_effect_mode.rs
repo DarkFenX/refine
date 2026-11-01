@@ -18,7 +18,7 @@ impl SolarSystem {
             self.undo
                 .record(UndoStep::ItemEffectMode(item_uid, effect_aid, old_effect_mode));
         }
-        u_item.update_reffs(&mut self.cache.eupdates, &self.u_data.r_data);
+        u_item.update_reffs(&mut self.reuse.eupdates, &self.u_data.r_data);
         self.effect_mode_update_postprocess(item_uid);
     }
     pub(in crate::api::item) fn internal_set_effect_id_modes(
@@ -39,19 +39,19 @@ impl SolarSystem {
             }
             false => u_item.set_effect_modes(effect_modes, &self.u_data.r_data),
         }
-        u_item.update_reffs(&mut self.cache.eupdates, &self.u_data.r_data);
+        u_item.update_reffs(&mut self.reuse.eupdates, &self.u_data.r_data);
         self.effect_mode_update_postprocess(item_uid);
     }
     fn effect_mode_update_postprocess(&mut self, item_uid: UItemId) {
-        SolarSystem::util_process_effect_updates(&self.u_data, &mut self.svc, item_uid, &self.cache.eupdates);
+        SolarSystem::util_process_effect_updates(&self.u_data, &mut self.svc, item_uid, &self.reuse.eupdates);
         let u_item = self.u_data.items.get(item_uid);
         let charge_uid = u_item.get_charge_uid();
         // Autocharges - use secondary effect updates container for their effects
-        if !self.cache.eupdates.autocharges.is_empty()
+        if !self.reuse.eupdates.autocharges.is_empty()
             && let Some(autocharges) = u_item.get_autocharges()
         {
             let ac_activations = self
-                .cache
+                .reuse
                 .eupdates
                 .autocharges
                 .iter()
@@ -65,11 +65,11 @@ impl SolarSystem {
                 &mut self.u_data,
                 &mut self.svc,
                 ac_activations,
-                &mut self.cache.eupdates_secondary,
+                &mut self.reuse.eupdates_secondary,
             );
         }
         // Charge - use secondary effect updates container for their effects
-        if let Some(charge_activated) = self.cache.eupdates.charge
+        if let Some(charge_activated) = self.reuse.eupdates.charge
             && let Some(charge_uid) = charge_uid
         {
             SolarSystem::util_process_charge_activation(
@@ -77,7 +77,7 @@ impl SolarSystem {
                 &mut self.svc,
                 charge_uid,
                 charge_activated,
-                &mut self.cache.eupdates_secondary,
+                &mut self.reuse.eupdates_secondary,
             );
         }
     }

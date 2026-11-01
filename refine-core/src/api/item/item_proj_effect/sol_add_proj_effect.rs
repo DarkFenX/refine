@@ -31,7 +31,7 @@ impl SolarSystem {
             &mut self.u_data,
             &mut self.svc,
             proj_effect_uid,
-            &mut self.cache.eupdates,
+            &mut self.reuse.eupdates,
         );
         SolarSystem::util_reg_item_projs(&self.u_data, &mut self.svc, &mut self.rev_projs, proj_effect_uid);
     }

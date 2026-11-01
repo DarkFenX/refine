@@ -6,7 +6,7 @@ use crate::{
 
 impl SolarSystem {
     pub(in crate::api) fn internal_remove_subsystem(&mut self, subsystem_uid: UItemId) {
-        SolarSystem::util_remove_subsystem(&mut self.u_data, &mut self.svc, subsystem_uid, &mut self.cache.eupdates);
+        SolarSystem::util_remove_subsystem(&mut self.u_data, &mut self.svc, subsystem_uid, &mut self.reuse.eupdates);
         let u_subsystem = self.u_data.items.get(subsystem_uid).dc_subsystem().unwrap();
         let u_fit = self.u_data.fits.get_mut(u_subsystem.get_fit_uid());
         u_fit.subsystems.remove(&subsystem_uid);

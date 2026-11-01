@@ -12,7 +12,7 @@ impl SolarSystem {
         if old_type_aid == type_aid {
             return;
         }
-        SolarSystem::util_remove_ship(&mut self.u_data, &mut self.svc, ship_uid, &mut self.cache.eupdates);
+        SolarSystem::util_remove_ship(&mut self.u_data, &mut self.svc, ship_uid, &mut self.reuse.eupdates);
         let u_ship = self.u_data.items.get_mut(ship_uid).dc_ship_mut().unwrap();
         let fit_uid = u_ship.get_fit_uid();
         u_ship.set_type_aid(type_aid, &self.u_data.r_data);
@@ -42,7 +42,7 @@ impl SolarSystem {
                 );
             }
         }
-        SolarSystem::util_add_ship(&mut self.u_data, &mut self.svc, ship_uid, &mut self.cache.eupdates);
+        SolarSystem::util_add_ship(&mut self.u_data, &mut self.svc, ship_uid, &mut self.reuse.eupdates);
     }
 }
 

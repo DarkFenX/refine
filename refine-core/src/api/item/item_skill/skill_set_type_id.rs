@@ -29,7 +29,7 @@ impl SolarSystem {
             });
         }
         // Unload skill
-        SolarSystem::util_remove_skill(&mut self.u_data, &mut self.svc, skill_uid, &mut self.cache.eupdates);
+        SolarSystem::util_remove_skill(&mut self.u_data, &mut self.svc, skill_uid, &mut self.reuse.eupdates);
         // Update type ID and reload adapted data
         let u_skill = self.u_data.items.get_mut(skill_uid).dc_skill_mut().unwrap();
         u_skill.set_type_aid(type_aid, &self.u_data.r_data);
@@ -41,7 +41,7 @@ impl SolarSystem {
         let fit_skill = u_fit.skills.remove(&old_type_aid).unwrap();
         u_fit.skills.insert(type_aid, fit_skill);
         // Load skill
-        SolarSystem::util_add_skill(&mut self.u_data, &mut self.svc, skill_uid, &mut self.cache.eupdates);
+        SolarSystem::util_add_skill(&mut self.u_data, &mut self.svc, skill_uid, &mut self.reuse.eupdates);
         Ok(())
     }
 }

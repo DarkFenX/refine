@@ -16,14 +16,14 @@ impl SolarSystem {
         let old_r_state = u_autocharge.get_state();
         u_autocharge.set_force_disabled(!state);
         let new_r_state = u_autocharge.get_state();
-        u_autocharge.update_reffs(&mut self.cache.eupdates, &self.u_data.r_data);
+        u_autocharge.update_reffs(&mut self.reuse.eupdates, &self.u_data.r_data);
         SolarSystem::util_switch_item_state(
             &self.u_data,
             &mut self.svc,
             autocharge_uid,
             old_r_state,
             new_r_state,
-            &self.cache.eupdates,
+            &self.reuse.eupdates,
         );
     }
 }

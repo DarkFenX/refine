@@ -12,13 +12,13 @@ impl SolarSystem {
         if old_type_aid == type_aid {
             return;
         }
-        SolarSystem::util_remove_service(&mut self.u_data, &mut self.svc, service_uid, &mut self.cache.eupdates);
+        SolarSystem::util_remove_service(&mut self.u_data, &mut self.svc, service_uid, &mut self.reuse.eupdates);
         let u_service = self.u_data.items.get_mut(service_uid).dc_service_mut().unwrap();
         u_service.set_type_aid(type_aid, &self.u_data.r_data);
         if self.undo.is_recording() {
             self.undo.record(UndoStep::ServiceType(service_uid, old_type_aid));
         }
-        SolarSystem::util_add_service(&mut self.u_data, &mut self.svc, service_uid, &mut self.cache.eupdates);
+        SolarSystem::util_add_service(&mut self.u_data, &mut self.svc, service_uid, &mut self.reuse.eupdates);
     }
 }
 

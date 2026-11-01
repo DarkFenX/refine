@@ -12,7 +12,7 @@ impl SolarSystem {
         let fit_uid = self.u_data.items.get(drone_uid).dc_drone().unwrap().get_fit_uid();
         SolarSystem::util_unreg_item_projs(&self.u_data, &mut self.svc, &mut self.rev_projs, drone_uid);
         // Update services
-        SolarSystem::util_remove_drone(&mut self.u_data, &mut self.svc, drone_uid, &mut self.cache.eupdates);
+        SolarSystem::util_remove_drone(&mut self.u_data, &mut self.svc, drone_uid, &mut self.reuse.eupdates);
         // Update user data
         let u_fit = self.u_data.fits.get_mut(fit_uid);
         u_fit.drones.remove(&drone_uid);

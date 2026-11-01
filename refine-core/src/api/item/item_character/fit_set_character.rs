@@ -32,7 +32,7 @@ impl SolarSystem {
     fn attach_character(&mut self, fit_uid: UFitId, character_uid: UItemId) {
         let u_fit = self.u_data.fits.get_mut(fit_uid);
         u_fit.character = Some(character_uid);
-        SolarSystem::util_add_character(&mut self.u_data, &mut self.svc, character_uid, &mut self.cache.eupdates);
+        SolarSystem::util_add_character(&mut self.u_data, &mut self.svc, character_uid, &mut self.reuse.eupdates);
     }
 }
 

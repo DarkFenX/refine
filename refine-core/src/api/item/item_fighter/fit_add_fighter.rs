@@ -27,7 +27,7 @@ impl SolarSystem {
             &mut self.svc,
             &mut self.rev_projs,
             fighter_uid,
-            &mut self.cache.eupdates,
+            &mut self.reuse.eupdates,
         );
         if self.undo.is_recording() {
             self.undo.record(UndoStep::FighterAdded(fighter_uid));
@@ -45,14 +45,14 @@ impl SolarSystem {
         let u_fit = self.u_data.fits.get_mut(fit_uid);
         u_fit.fighters.insert(fighter_uid);
         // Add fighter and its existing autocharges to services
-        SolarSystem::util_add_fighter(&mut self.u_data, &mut self.svc, fighter_uid, &mut self.cache.eupdates);
+        SolarSystem::util_add_fighter(&mut self.u_data, &mut self.svc, fighter_uid, &mut self.reuse.eupdates);
         SolarSystem::util_reg_item_projs(&self.u_data, &mut self.svc, &mut self.rev_projs, fighter_uid);
         SolarSystem::util_reattach_item_autocharges(
             &mut self.u_data,
             &mut self.svc,
             &mut self.rev_projs,
             fighter_uid,
-            &mut self.cache.eupdates,
+            &mut self.reuse.eupdates,
         );
     }
 }

@@ -22,7 +22,7 @@ impl SolarSystem {
             &mut self.u_data,
             &mut self.svc,
             module_uid,
-            &mut self.cache.eupdates,
+            &mut self.reuse.eupdates,
         );
         let u_module = self.u_data.items.get_mut(module_uid).dc_module_mut().unwrap();
         u_module.mutate(mutation, &self.u_data.r_data).unwrap();
@@ -33,7 +33,7 @@ impl SolarSystem {
             &mut self.u_data,
             &mut self.svc,
             module_uid,
-            &mut self.cache.eupdates,
+            &mut self.reuse.eupdates,
         );
         Ok(())
     }

@@ -12,13 +12,13 @@ impl SolarSystem {
         if old_type_aid == type_aid {
             return;
         }
-        SolarSystem::util_remove_character(&mut self.u_data, &mut self.svc, character_uid, &mut self.cache.eupdates);
+        SolarSystem::util_remove_character(&mut self.u_data, &mut self.svc, character_uid, &mut self.reuse.eupdates);
         let u_character = self.u_data.items.get_mut(character_uid).dc_character_mut().unwrap();
         u_character.set_type_aid(type_aid, &self.u_data.r_data);
         if self.undo.is_recording() {
             self.undo.record(UndoStep::CharacterType(character_uid, old_type_aid));
         }
-        SolarSystem::util_add_character(&mut self.u_data, &mut self.svc, character_uid, &mut self.cache.eupdates);
+        SolarSystem::util_add_character(&mut self.u_data, &mut self.svc, character_uid, &mut self.reuse.eupdates);
     }
 }
 

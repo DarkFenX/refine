@@ -1,5 +1,5 @@
 use crate::{
-    sol::{UndoLog, cache::SolCache, rev_projs::RevProjs},
+    sol::{UndoLog, reuse::SolReuse, rev_projs::RevProjs},
     src::Src,
     svc::Svc,
     ud::UData,
@@ -15,7 +15,7 @@ pub struct SolarSystem {
     pub(crate) u_data: UData,
     pub(crate) svc: Svc,
     pub(crate) rev_projs: RevProjs,
-    pub(crate) cache: SolCache,
+    pub(crate) reuse: SolReuse,
     pub(crate) undo: UndoLog,
 }
 impl SolarSystem {
@@ -24,7 +24,7 @@ impl SolarSystem {
             u_data: UData::new(src.r_data.clone()),
             svc: Svc::new(),
             rev_projs: RevProjs::new(),
-            cache: SolCache::new(),
+            reuse: SolReuse::new(),
             undo: UndoLog::new(),
         }
     }

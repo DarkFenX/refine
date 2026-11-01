@@ -26,7 +26,7 @@ impl SolarSystem {
     fn attach_implant(&mut self, fit_uid: UFitId, implant_uid: UItemId) {
         let u_fit = self.u_data.fits.get_mut(fit_uid);
         u_fit.implants.insert(implant_uid);
-        SolarSystem::util_add_implant(&mut self.u_data, &mut self.svc, implant_uid, &mut self.cache.eupdates);
+        SolarSystem::util_add_implant(&mut self.u_data, &mut self.svc, implant_uid, &mut self.reuse.eupdates);
     }
 }
 

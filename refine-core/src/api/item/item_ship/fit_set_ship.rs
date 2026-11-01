@@ -41,7 +41,7 @@ impl SolarSystem {
         let u_fit = self.u_data.fits.get_mut(fit_uid);
         u_fit.ship = Some(ship_uid);
         u_fit.ship_kind = ship_kind;
-        SolarSystem::util_add_ship(&mut self.u_data, &mut self.svc, ship_uid, &mut self.cache.eupdates);
+        SolarSystem::util_add_ship(&mut self.u_data, &mut self.svc, ship_uid, &mut self.reuse.eupdates);
         // Update projections outgoing from on-ship items
         SolarSystem::util_update_ship_radius_for_outgoing_projs(&mut self.u_data, &mut self.svc, fit_uid, ship_radius);
     }

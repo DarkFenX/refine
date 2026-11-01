@@ -16,7 +16,7 @@ impl SolarSystem {
             &mut self.u_data,
             &mut self.svc,
             proj_effect_uid,
-            &mut self.cache.eupdates,
+            &mut self.reuse.eupdates,
         );
         let u_proj_effect = self.u_data.items.get_mut(proj_effect_uid).dc_proj_effect_mut().unwrap();
         u_proj_effect.set_type_aid(type_aid, &self.u_data.r_data);
@@ -28,7 +28,7 @@ impl SolarSystem {
             &mut self.u_data,
             &mut self.svc,
             proj_effect_uid,
-            &mut self.cache.eupdates,
+            &mut self.reuse.eupdates,
         );
     }
 }

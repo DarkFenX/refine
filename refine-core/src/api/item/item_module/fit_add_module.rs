@@ -126,14 +126,14 @@ impl SolarSystem {
     fn attach_module(&mut self, module_uid: UItemId, charge_uid: Option<UItemId>) {
         // Add module to services. While adding module, effect updates structure records if charge
         // needs to be activated
-        SolarSystem::util_add_module(&mut self.u_data, &mut self.svc, module_uid, &mut self.cache.eupdates);
+        SolarSystem::util_add_module(&mut self.u_data, &mut self.svc, module_uid, &mut self.reuse.eupdates);
         SolarSystem::util_reg_item_projs(&self.u_data, &mut self.svc, &mut self.rev_projs, module_uid);
         if let Some(charge_uid) = charge_uid {
-            if self.cache.eupdates.charge.unwrap_or(false) {
+            if self.reuse.eupdates.charge.unwrap_or(false) {
                 let u_charge = self.u_data.items.get_mut(charge_uid).dc_charge_mut().unwrap();
                 u_charge.set_activated(true);
             }
-            SolarSystem::util_add_charge(&mut self.u_data, &mut self.svc, charge_uid, &mut self.cache.eupdates);
+            SolarSystem::util_add_charge(&mut self.u_data, &mut self.svc, charge_uid, &mut self.reuse.eupdates);
             SolarSystem::util_reg_item_projs(&self.u_data, &mut self.svc, &mut self.rev_projs, charge_uid);
         }
     }

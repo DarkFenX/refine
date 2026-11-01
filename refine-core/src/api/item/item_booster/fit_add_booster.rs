@@ -26,7 +26,7 @@ impl SolarSystem {
     fn attach_booster(&mut self, fit_uid: UFitId, booster_uid: UItemId) {
         let u_fit = self.u_data.fits.get_mut(fit_uid);
         u_fit.boosters.insert(booster_uid);
-        SolarSystem::util_add_booster(&mut self.u_data, &mut self.svc, booster_uid, &mut self.cache.eupdates);
+        SolarSystem::util_add_booster(&mut self.u_data, &mut self.svc, booster_uid, &mut self.reuse.eupdates);
     }
 }
 

@@ -26,7 +26,7 @@ impl SolarSystem {
     fn attach_rig(&mut self, fit_uid: UFitId, rig_uid: UItemId) {
         let u_fit = self.u_data.fits.get_mut(fit_uid);
         u_fit.rigs.insert(rig_uid);
-        SolarSystem::util_add_rig(&mut self.u_data, &mut self.svc, rig_uid, &mut self.cache.eupdates);
+        SolarSystem::util_add_rig(&mut self.u_data, &mut self.svc, rig_uid, &mut self.reuse.eupdates);
     }
 }
 

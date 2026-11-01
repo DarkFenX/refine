@@ -6,7 +6,7 @@ use crate::{
 
 impl SolarSystem {
     pub(in crate::api) fn internal_remove_character(&mut self, character_uid: UItemId) {
-        SolarSystem::util_remove_character(&mut self.u_data, &mut self.svc, character_uid, &mut self.cache.eupdates);
+        SolarSystem::util_remove_character(&mut self.u_data, &mut self.svc, character_uid, &mut self.reuse.eupdates);
         let u_character = self.u_data.items.get(character_uid).dc_character().unwrap();
         let u_fit = self.u_data.fits.get_mut(u_character.get_fit_uid());
         u_fit.character = None;

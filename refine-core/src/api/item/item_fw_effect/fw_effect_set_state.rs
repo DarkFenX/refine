@@ -16,14 +16,14 @@ impl SolarSystem {
         let old_a_state = u_fw_effect.get_state();
         u_fw_effect.set_fw_effect_state(state);
         let new_a_state = u_fw_effect.get_state();
-        u_fw_effect.update_reffs(&mut self.cache.eupdates, &self.u_data.r_data);
+        u_fw_effect.update_reffs(&mut self.reuse.eupdates, &self.u_data.r_data);
         SolarSystem::util_switch_item_state(
             &self.u_data,
             &mut self.svc,
             fw_effect_uid,
             old_a_state,
             new_a_state,
-            &self.cache.eupdates,
+            &self.reuse.eupdates,
         );
     }
 }

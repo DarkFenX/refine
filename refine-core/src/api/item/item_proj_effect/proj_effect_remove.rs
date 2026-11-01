@@ -13,7 +13,7 @@ impl SolarSystem {
             &mut self.u_data,
             &mut self.svc,
             proj_effect_uid,
-            &mut self.cache.eupdates,
+            &mut self.reuse.eupdates,
         );
         // Remove effect from user data
         self.u_data.proj_effects.remove(&proj_effect_uid);

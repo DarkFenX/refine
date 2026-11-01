@@ -14,14 +14,14 @@ impl SolarSystem {
         let old_a_state = u_implant.get_state();
         u_implant.set_implant_state(state);
         let new_a_state = u_implant.get_state();
-        u_implant.update_reffs(&mut self.cache.eupdates, &self.u_data.r_data);
+        u_implant.update_reffs(&mut self.reuse.eupdates, &self.u_data.r_data);
         SolarSystem::util_switch_item_state(
             &self.u_data,
             &mut self.svc,
             implant_uid,
             old_a_state,
             new_a_state,
-            &self.cache.eupdates,
+            &self.reuse.eupdates,
         );
     }
 }

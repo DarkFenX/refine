@@ -26,7 +26,7 @@ impl SolarSystem {
     fn attach_subsystem(&mut self, fit_uid: UFitId, subsystem_uid: UItemId) {
         let u_fit = self.u_data.fits.get_mut(fit_uid);
         u_fit.subsystems.insert(subsystem_uid);
-        SolarSystem::util_add_subsystem(&mut self.u_data, &mut self.svc, subsystem_uid, &mut self.cache.eupdates);
+        SolarSystem::util_add_subsystem(&mut self.u_data, &mut self.svc, subsystem_uid, &mut self.reuse.eupdates);
     }
 }
 

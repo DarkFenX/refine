@@ -12,13 +12,13 @@ impl SolarSystem {
         if old_type_aid == type_aid {
             return;
         }
-        SolarSystem::util_remove_charge(&mut self.u_data, &mut self.svc, charge_uid, &mut self.cache.eupdates);
+        SolarSystem::util_remove_charge(&mut self.u_data, &mut self.svc, charge_uid, &mut self.reuse.eupdates);
         let u_charge = self.u_data.items.get_mut(charge_uid).dc_charge_mut().unwrap();
         u_charge.set_type_aid(type_aid, &self.u_data.r_data);
         if self.undo.is_recording() {
             self.undo.record(UndoStep::ChargeType(charge_uid, old_type_aid));
         }
-        SolarSystem::util_add_charge(&mut self.u_data, &mut self.svc, charge_uid, &mut self.cache.eupdates);
+        SolarSystem::util_add_charge(&mut self.u_data, &mut self.svc, charge_uid, &mut self.reuse.eupdates);
     }
 }
 

@@ -27,6 +27,6 @@ impl SolarSystem {
     }
     fn attach_sw_effect(&mut self, sw_effect_uid: UItemId) {
         self.u_data.sw_effects.insert(sw_effect_uid);
-        SolarSystem::util_add_sw_effect(&mut self.u_data, &mut self.svc, sw_effect_uid, &mut self.cache.eupdates);
+        SolarSystem::util_add_sw_effect(&mut self.u_data, &mut self.svc, sw_effect_uid, &mut self.reuse.eupdates);
     }
 }

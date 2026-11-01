@@ -18,14 +18,14 @@ impl SolarSystem {
                 item_id: u_drone.get_item_id(),
             });
         }
-        SolarSystem::util_remove_drone(&mut self.u_data, &mut self.svc, drone_uid, &mut self.cache.eupdates);
+        SolarSystem::util_remove_drone(&mut self.u_data, &mut self.svc, drone_uid, &mut self.reuse.eupdates);
         let u_drone = self.u_data.items.get_mut(drone_uid).dc_drone_mut().unwrap();
         u_drone.mutate(mutation, &self.u_data.r_data).unwrap();
         if self.undo.is_recording() {
             self.undo.record(UndoStep::DroneMutationAdded(drone_uid));
         }
         SolarSystem::util_update_item_radius_in_projs(&mut self.u_data, &self.rev_projs, &mut self.svc, drone_uid);
-        SolarSystem::util_add_drone(&mut self.u_data, &mut self.svc, drone_uid, &mut self.cache.eupdates);
+        SolarSystem::util_add_drone(&mut self.u_data, &mut self.svc, drone_uid, &mut self.reuse.eupdates);
         Ok(())
     }
 }

@@ -12,7 +12,7 @@ impl SolarSystem {
         // Remove incoming projections
         self.internal_remove_incoming_projections(ship_uid);
         // Remove ship from services
-        SolarSystem::util_remove_ship(&mut self.u_data, &mut self.svc, ship_uid, &mut self.cache.eupdates);
+        SolarSystem::util_remove_ship(&mut self.u_data, &mut self.svc, ship_uid, &mut self.reuse.eupdates);
         // Remove ship from user data
         let u_fit = self.u_data.fits.get_mut(fit_uid);
         u_fit.ship = None;

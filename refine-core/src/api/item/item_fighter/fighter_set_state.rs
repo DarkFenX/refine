@@ -13,11 +13,11 @@ impl SolarSystem {
         let old_state = u_fighter.get_state();
         u_fighter.set_fighter_state(state);
         let new_state = u_fighter.get_state();
-        u_fighter.update_reffs(&mut self.cache.eupdates, &self.u_data.r_data);
+        u_fighter.update_reffs(&mut self.reuse.eupdates, &self.u_data.r_data);
         // Filter out autocharges which couldn't be added due to any reason (no attribute which
         // defines them in the data, or couldn't be loaded), and fill autocharge key data
         let ac_activations = self
-            .cache
+            .reuse
             .eupdates
             .autocharges
             .iter()
@@ -35,13 +35,13 @@ impl SolarSystem {
             fighter_uid,
             old_state,
             new_state,
-            &self.cache.eupdates,
+            &self.reuse.eupdates,
         );
         SolarSystem::util_process_autocharge_activations(
             &mut self.u_data,
             &mut self.svc,
             ac_activations,
-            &mut self.cache.eupdates,
+            &mut self.reuse.eupdates,
         );
     }
 }

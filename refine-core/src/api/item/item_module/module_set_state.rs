@@ -16,7 +16,7 @@ impl SolarSystem {
         let old_a_state = u_module.get_state();
         u_module.set_module_state(state);
         let new_a_state = u_module.get_state();
-        u_module.update_reffs(&mut self.cache.eupdates, &self.u_data.r_data);
+        u_module.update_reffs(&mut self.reuse.eupdates, &self.u_data.r_data);
         // Update services for module
         SolarSystem::util_switch_item_state(
             &self.u_data,
@@ -24,9 +24,9 @@ impl SolarSystem {
             module_uid,
             old_a_state,
             new_a_state,
-            &self.cache.eupdates,
+            &self.reuse.eupdates,
         );
-        if let Some(charge_activated) = self.cache.eupdates.charge
+        if let Some(charge_activated) = self.reuse.eupdates.charge
             && let Some(charge_uid) = charge_uid
         {
             SolarSystem::util_process_charge_activation(
@@ -34,7 +34,7 @@ impl SolarSystem {
                 &mut self.svc,
                 charge_uid,
                 charge_activated,
-                &mut self.cache.eupdates,
+                &mut self.reuse.eupdates,
             );
         }
     }

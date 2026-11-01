@@ -21,10 +21,10 @@ impl SolarSystem {
         }
         // Remove charge from services
         if let Some(charge_uid) = charge_uid {
-            SolarSystem::util_remove_charge(&mut self.u_data, &mut self.svc, charge_uid, &mut self.cache.eupdates);
+            SolarSystem::util_remove_charge(&mut self.u_data, &mut self.svc, charge_uid, &mut self.reuse.eupdates);
         }
         // Remove module from services
-        SolarSystem::util_remove_module(&mut self.u_data, &mut self.svc, module_uid, &mut self.cache.eupdates);
+        SolarSystem::util_remove_module(&mut self.u_data, &mut self.svc, module_uid, &mut self.reuse.eupdates);
         // Update user data - not updating module<->charge references because both are discarded
         // together
         let u_fit_rack = get_fit_rack_mut(&mut self.u_data.fits, fit_uid, rack);

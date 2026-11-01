@@ -41,7 +41,7 @@ impl SolarSystem {
     fn attach_drone(&mut self, fit_uid: UFitId, drone_uid: UItemId) {
         let u_fit = self.u_data.fits.get_mut(fit_uid);
         u_fit.drones.insert(drone_uid);
-        SolarSystem::util_add_drone(&mut self.u_data, &mut self.svc, drone_uid, &mut self.cache.eupdates);
+        SolarSystem::util_add_drone(&mut self.u_data, &mut self.svc, drone_uid, &mut self.reuse.eupdates);
         SolarSystem::util_reg_item_projs(&self.u_data, &mut self.svc, &mut self.rev_projs, drone_uid);
     }
 }

@@ -31,7 +31,7 @@ impl SolarSystem {
     fn attach_service(&mut self, fit_uid: UFitId, service_uid: UItemId) {
         let u_fit = self.u_data.fits.get_mut(fit_uid);
         u_fit.services.insert(service_uid);
-        SolarSystem::util_add_service(&mut self.u_data, &mut self.svc, service_uid, &mut self.cache.eupdates);
+        SolarSystem::util_add_service(&mut self.u_data, &mut self.svc, service_uid, &mut self.reuse.eupdates);
     }
 }
 
