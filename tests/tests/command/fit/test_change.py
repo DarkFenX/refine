@@ -1,5 +1,7 @@
 import typing
 
+from fw import check_no_field
+
 if typing.TYPE_CHECKING:
     from fw.request import Request
 
@@ -82,3 +84,55 @@ def test_rollback_error_parsing(client):
     # Verification - failing 2nd command should've reverted all the prior commands, including drone
     # removal
     assert api_src_drone.update().projs[api_tgt_ship.id] == [0, 0]
+
+
+def test_fleet_same(client):
+    client.create_sources()
+    api_sol = client.create_sol()
+    api_fleet = api_sol.create_fleet()
+    api_fit = api_sol.create_fit(fleet_id=api_fleet.id)
+    # Action
+    api_fit.change(fleet_id=api_fleet.id)
+    # Verification
+    assert api_fit.update().fleet_id == api_fleet.id
+    assert list(api_fleet.update().fits) == [api_fit.id]
+
+
+def test_fleet_switch(client):
+    client.create_sources()
+    api_sol = client.create_sol()
+    api_fleet1 = api_sol.create_fleet()
+    api_fleet2 = api_sol.create_fleet()
+    api_fit = api_sol.create_fit(fleet_id=api_fleet1.id)
+    # Action
+    api_fit.change(fleet_id=api_fleet2.id)
+    # Verification - fit leaves its old fleet
+    assert api_fit.update().fleet_id == api_fleet2.id
+    assert list(api_fleet2.update().fits) == [api_fit.id]
+    api_fleet1.update()
+    with check_no_field():
+        api_fleet1.fits  # ruff:ignore[useless-expression]
+
+
+def test_fleet_unset_absent(client):
+    client.create_sources()
+    api_sol = client.create_sol()
+    api_fit = api_sol.create_fit()
+    # Action
+    api_fit.change(fleet_id=None)
+    # Verification
+    api_fit.update()
+    with check_no_field():
+        api_fit.fleet_id  # ruff:ignore[useless-expression]
+
+
+def test_rah_incoming_dps_unset_absent(client):
+    client.create_sources()
+    api_sol = client.create_sol()
+    api_fit = api_sol.create_fit()
+    # Action
+    api_fit.change(rah_incoming_dps=None)
+    # Verification
+    api_fit.update()
+    with check_no_field():
+        api_fit.rah_incoming_dps  # ruff:ignore[useless-expression]

@@ -180,6 +180,21 @@ def test_fit_backref_error_kind(client):
         api_sol_batch.validate_fit(fit_id='#0', options=ValOptions(not_loaded_item=True))
 
 
+def test_fit_error_not_found(client):
+    client.create_sources()
+    api_sol = client.create_sol()
+    api_other_fit = api_sol.create_fit()
+    api_other_fit.remove()
+    # Action & verification
+    with api_sol.batch(status_code=400, json_predicate={
+            'code': 'FIT-001',
+            'message': f'fit {api_other_fit.id} not found',
+            'cmd_index': 1,
+    }) as api_sol_batch:
+        api_sol_batch.create_fit()
+        api_sol_batch.validate_fit(fit_id=api_other_fit.id, options=ValOptions(not_loaded_item=True))
+
+
 def test_fit_kfs(client, consts):
     eve_not_loaded_id = client.alloc_item_id()
     client.create_sources()

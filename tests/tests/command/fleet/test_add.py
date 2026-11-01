@@ -12,3 +12,14 @@ def test_error_params_malformed(client):
     api_sol.update()
     with check_no_field():
         api_sol.fleets  # ruff:ignore[useless-expression]
+
+
+def test_fit_duplicate(client):
+    client.create_sources()
+    api_sol = client.create_sol()
+    api_fit = api_sol.create_fit()
+    # Action
+    api_fleet = api_sol.create_fleet(fit_ids=[api_fit.id, api_fit.id])
+    # Verification
+    assert list(api_fleet.update().fits) == [api_fit.id]
+    assert api_fit.update().fleet_id == api_fleet.id

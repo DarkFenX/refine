@@ -59,11 +59,13 @@ def test_fleet_change_add_fit_not_found(client, consts):
     api_booster_fit.add_module(type_id=eve_module_id, state=consts.ApiModuleState.active)
     api_boosted_fit = api_sol.create_fit(fleet_id=api_fleet.id)
     api_boosted_ship = api_boosted_fit.set_ship(type_id=eve_ship_id)
+    api_other_fit = api_sol.create_fit()
+    api_other_fit.remove()
     # Action & verification
     api_fleet.change(
-        add_fit_ids=['1000000'],
+        add_fit_ids=[api_other_fit.id],
         status_code=400,
-        json_predicate={'code': 'FLT-004', 'message': 'failed to add fit: fit 1000000 not found'})
+        json_predicate={'code': 'FLT-004', 'message': f'failed to add fit: fit {api_other_fit.id} not found'})
     assert sorted(api_fleet.update().fits) == sorted([api_booster_fit.id, api_boosted_fit.id])
     assert api_boosted_fit.update().fleet_id == api_fleet.id
     assert api_boosted_ship.update().attrs[eve_affectee_attr_id].modified == approx(37.5)
@@ -90,11 +92,12 @@ def test_fleet_change_rm_fit_not_found(client, consts):
     api_booster_fit.add_module(type_id=eve_module_id, state=consts.ApiModuleState.active)
     api_boosted_fit = api_sol.create_fit(fleet_id=api_fleet.id)
     api_boosted_ship = api_boosted_fit.set_ship(type_id=eve_ship_id)
-    # Action
+    api_other_fit = api_sol.create_fit()
+    api_other_fit.remove()
+    # Action & verification
     api_fleet.change(
-        rm_fit_ids=['1000000'],
+        rm_fit_ids=[api_other_fit.id],
         status_code=400,
-        json_predicate={'code': 'FLT-005', 'message': 'failed to remove fit: fit 1000000 not found'})
-    # Verification
+        json_predicate={'code': 'FLT-005', 'message': f'failed to remove fit: fit {api_other_fit.id} not found'})
     assert sorted(api_fleet.update().fits) == sorted([api_booster_fit.id, api_boosted_fit.id])
     assert api_boosted_ship.update().attrs[eve_affectee_attr_id].modified == approx(37.5)

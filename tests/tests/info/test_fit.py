@@ -30,7 +30,7 @@ def test_fleet(client):
     # Verification
     api_fit.update()
     with check_no_field():
-        api_fit.fleet  # ruff:ignore[useless-expression]
+        api_fit.fleet_id  # ruff:ignore[useless-expression]
 
 
 def test_char(client):

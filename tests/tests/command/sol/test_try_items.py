@@ -71,6 +71,22 @@ def test_fit_backref_error_kind(client):
         api_sol_batch.try_fit_items(fit_id='#0', type_ids=[eve_drone_id])
 
 
+def test_fit_error_not_found(client):
+    eve_drone_id = client.mk_eve_drone()
+    client.create_sources()
+    api_sol = client.create_sol()
+    api_other_fit = api_sol.create_fit()
+    api_other_fit.remove()
+    # Action & verification
+    with api_sol.batch(status_code=400, json_predicate={
+            'code': 'FIT-001',
+            'message': f'fit {api_other_fit.id} not found',
+            'cmd_index': 1,
+    }) as api_sol_batch:
+        api_sol_batch.create_fit()
+        api_sol_batch.try_fit_items(fit_id=api_other_fit.id, type_ids=[eve_drone_id])
+
+
 def test_fit_kfs(client):
     eve_drone_id = client.mk_eve_drone()
     eve_not_loaded_id = client.alloc_item_id()

@@ -397,6 +397,21 @@ def test_fit_fit_backref_error_kind(client):
         api_sol_batch.get_fit_stats(fit_id='#0', fit_options=FitStatsOptions(mass=True))
 
 
+def test_fit_fit_error_not_found(client):
+    client.create_sources()
+    api_sol = client.create_sol()
+    api_other_fit = api_sol.create_fit()
+    api_other_fit.remove()
+    # Action & verification
+    with api_sol.batch(status_code=400, json_predicate={
+            'code': 'FIT-001',
+            'message': f'fit {api_other_fit.id} not found',
+            'cmd_index': 1,
+    }) as api_sol_batch:
+        api_sol_batch.create_fit()
+        api_sol_batch.get_fit_stats(fit_id=api_other_fit.id, fit_options=FitStatsOptions(mass=True))
+
+
 def test_fit_item_override(client, consts):
     eve_mass_attr_id = client.mk_eve_attr(id_=consts.EveAttr.mass)
     eve_speed_attr_id = client.mk_eve_attr(id_=consts.EveAttr.max_velocity)
