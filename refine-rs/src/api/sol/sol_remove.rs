@@ -11,7 +11,8 @@ impl Refine {
 }
 
 impl SolarSystem<'_> {
-    pub async fn remove(self) -> Result<(), SolRemoveError> {
+    pub async fn remove(mut self) -> Result<(), SolRemoveError> {
+        self.inner.close();
         self.refine.remove_sol(self.get_id())
     }
 }

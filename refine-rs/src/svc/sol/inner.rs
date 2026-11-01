@@ -51,6 +51,9 @@ pub(crate) struct SolInner {
     id: SolarSystemId,
     src_alias: SrcAlias,
     last_accessed: Instant,
+    // Set by whoever removes the solar system from the map while holding its lock, so that requests
+    // which were waiting for the lock do not work on it
+    closed: bool,
     pub(super) core_sol: SolCoreGuarded,
 }
 impl SolInner {
@@ -59,6 +62,7 @@ impl SolInner {
             id,
             src_alias,
             last_accessed: Instant::now(),
+            closed: false,
             core_sol: SolCoreGuarded::new(core_sol),
         }
     }
@@ -71,14 +75,22 @@ impl SolInner {
     pub(crate) fn set_src_alias(&mut self, src_alias: SrcAlias) {
         self.src_alias = src_alias
     }
+    fn touch(&mut self) {
+        self.last_accessed = Instant::now();
+    }
     pub(in crate::svc) fn get_last_accessed(&self) -> Instant {
         self.last_accessed
     }
+    // Should be called by whoever removes the solar system from the map while holding its lock, so
+    // that requests which were waiting for the lock do not work on it
+    pub(crate) fn close(&mut self) {
+        self.closed = true;
+    }
+    pub(crate) fn is_closed(&self) -> bool {
+        self.closed
+    }
     pub(crate) fn is_poisoned(&self) -> bool {
         self.core_sol.0.is_poisoned()
-    }
-    fn touch(&mut self) {
-        self.last_accessed = Instant::now();
     }
 }
 

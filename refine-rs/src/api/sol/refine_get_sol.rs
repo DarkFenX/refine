@@ -7,9 +7,14 @@ impl Refine {
             Some(sol) => sol.clone(),
             None => return Err(SolGetError::SolNotFound(id)),
         };
-        let sol = SolarSystem::new(self, guarded_inner_sol).await;
+        let mut sol = SolarSystem::new(self, guarded_inner_sol).await;
+        // Solar system could be removed while the request was waiting for its lock
+        if sol.inner.is_closed() {
+            return Err(SolGetError::SolNotFound(id));
+        }
         if sol.inner.is_poisoned() {
             tracing::error!("discarding solar system poisoned by a panic");
+            sol.inner.close();
             self.id_sol_map.write().remove(&id);
             return Err(SolGetError::SolNotFound(id));
         }
