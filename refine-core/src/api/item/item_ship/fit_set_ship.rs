@@ -48,6 +48,7 @@ impl SolarSystem {
 }
 
 impl<'s> FitMut<'s> {
+    /// Set ship, replacing current one with a new item.
     pub fn set_ship(
         &mut self,
         type_id: ItemTypeId,

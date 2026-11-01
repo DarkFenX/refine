@@ -37,6 +37,7 @@ impl SolarSystem {
 }
 
 impl<'s> FitMut<'s> {
+    /// Set stance, replacing current one with a new item.
     pub fn set_stance(&mut self, type_id: ItemTypeId) -> StanceMut<'_> {
         let stance_uid = self.sol.internal_set_fit_stance(self.uid, type_id.into_aid());
         StanceMut::new(self.sol, stance_uid)

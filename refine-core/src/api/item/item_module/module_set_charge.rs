@@ -70,6 +70,7 @@ impl SolarSystem {
 }
 
 impl<'s> ModuleMut<'s> {
+    /// Set charge, replacing current one with a new item.
     pub fn set_charge_type_id(&mut self, charge_type_id: ItemTypeId) -> ChargeMut<'_> {
         let charge_uid = self.sol.internal_set_module_charge(self.uid, charge_type_id.into_aid());
         ChargeMut::new(self.sol, charge_uid)
