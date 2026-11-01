@@ -4,7 +4,7 @@ from fw.api import ValOptions
 def test_sol_param_malformed(client):
     client.create_sources()
     api_sol = client.create_sol()
-    # Verification
+    # Action & verification
     api_sol.validate_single(
         options=ValOptions(cpu=True),
         val_info_mode='random',
@@ -16,7 +16,7 @@ def test_fit_param_malformed(client):
     client.create_sources()
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
-    # Verification
+    # Action & verification
     api_fit.validate_single(
         options=ValOptions(cpu=True),
         val_info_mode='random',

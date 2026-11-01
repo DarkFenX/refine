@@ -4,7 +4,7 @@ from fw import check_no_field
 def test_error_params_malformed(client):
     client.create_sources()
     api_sol = client.create_sol()
-    # Verification
+    # Action & verification
     api_sol.create_fit(
         fit_info_mode='random',
         status_code=400,

@@ -10,7 +10,7 @@ def test_error_params_malformed(client):
     client.create_sources()
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit(sec_status=1.5)
-    # Verification
+    # Action & verification
     api_fit.change(
         sec_status=-5,
         fit_info_mode='random',

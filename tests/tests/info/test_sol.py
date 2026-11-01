@@ -8,7 +8,7 @@ from fw.util import Absent
 def test_error_params_malformed(client):
     client.create_sources()
     api_sol = client.create_sol()
-    # Verification
+    # Action & verification
     api_sol.update(
         sol_info_mode='random',
         status_code=400,

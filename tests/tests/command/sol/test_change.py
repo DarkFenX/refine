@@ -14,7 +14,7 @@ def test_default_incoming_dps(client):
 def test_error_params_malformed(client, consts):
     client.create_sources()
     api_sol = client.create_sol(sec_zone=consts.ApiSecZone.hisec)
-    # Verification
+    # Action & verification
     api_sol.change(
         sec_zone=consts.ApiSecZone.nullsec,
         sol_info_mode='random',

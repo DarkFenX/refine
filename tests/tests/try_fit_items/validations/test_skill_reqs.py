@@ -379,15 +379,13 @@ def test_failed_replacement(client):
     api_skill = api_fit.add_skill(type_id=eve_skill_id, level=3)
     # Verification
     api_fit.check_try_fit_items(val_options=ValOptions(skill_reqs=True), passing=[eve_module_id], failing=[])
-    # Action
+    # Action & verification
     api_fit.add_skill(type_id=eve_skill_id, level=2, status_code=400)
-    # Verification
     api_fit.check_try_fit_items(val_options=ValOptions(skill_reqs=True), passing=[eve_module_id], failing=[])
     # Action
     api_skill.change_skill(level=2)
     # Verification
     api_fit.check_try_fit_items(val_options=ValOptions(skill_reqs=True), passing=[], failing=[eve_module_id])
-    # Action
+    # Action & verification
     api_fit.add_skill(type_id=eve_skill_id, level=4, status_code=400)
-    # Verification
     api_fit.check_try_fit_items(val_options=ValOptions(skill_reqs=True), passing=[], failing=[eve_module_id])

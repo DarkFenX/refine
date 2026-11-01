@@ -199,7 +199,7 @@ def test_add_absent(client, consts):
     client.create_sources()
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
-    # Verification
+    # Action & verification
     api_fit.add_module(
         type_id=eve_module_id,
         rack=consts.Rack.high,

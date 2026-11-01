@@ -11,7 +11,7 @@ def test_error_params_malformed(client):
     client.create_sources()
     api_sol = client.create_sol(data=eve_d1)
     api_sw_effect = api_sol.add_sw_effect(type_id=eve_sw_effect_id)
-    # Verification
+    # Action & verification
     api_sol.change_src(
         data=eve_d2,
         sol_info_mode='random',

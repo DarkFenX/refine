@@ -10,7 +10,7 @@ def test_error_params_malformed(client):
     client.create_sources()
     api_sol = client.create_sol()
     api_fleet = api_sol.create_fleet()
-    # Verification
+    # Action & verification
     api_fleet.update(
         fleet_info_mode='random',
         status_code=400,

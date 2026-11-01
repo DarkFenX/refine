@@ -5,7 +5,7 @@ def test_error_params_malformed(client):
     eve_sw_effect_id = client.mk_eve_item()
     client.create_sources()
     api_sol = client.create_sol()
-    # Verification
+    # Action & verification
     api_sol.add_sw_effect(
         type_id=eve_sw_effect_id,
         item_info_mode='random',

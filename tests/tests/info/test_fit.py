@@ -10,7 +10,7 @@ def test_error_params_malformed(client):
     client.create_sources()
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
-    # Verification
+    # Action & verification
     api_fit.update(
         fit_info_mode='random',
         status_code=400,
