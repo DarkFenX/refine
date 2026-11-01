@@ -162,7 +162,12 @@ impl ModuleAddCmd {
         }
         effect_modes.apply(&mut core_module);
         for projectee_item_id in proj_item_ids.iter() {
-            core_module.add_proj(projectee_item_id)?;
+            match core_module.add_proj(projectee_item_id) {
+                Ok(..) => (),
+                // We are fine if projection was already there
+                Err(rc::err::ProjAddError::ProjectionAlreadyExists(..)) => (),
+                Err(err) => return Err(err.into()),
+            }
         }
         Ok(AddedItemIdsResp::from_core_module(core_module))
     }

@@ -53,7 +53,12 @@ impl FleetAddCmd {
     pub(crate) fn execute(self, core_sol: &mut rc::SolarSystem) -> Result<AddedFleetIdResp, FleetAddError> {
         let mut core_fleet = core_sol.add_fleet();
         for fit_id in &self.fit_ids {
-            core_fleet.add_fit(fit_id)?;
+            match core_fleet.add_fit(fit_id) {
+                Ok(()) => (),
+                // We are fine if fit was already in this fleet
+                Err(rc::err::FleetFitAddError::FitAlreadyInThisFleet(..)) => (),
+                Err(err) => return Err(err.into()),
+            }
         }
         Ok(AddedFleetIdResp::from_core_fleet(core_fleet))
     }

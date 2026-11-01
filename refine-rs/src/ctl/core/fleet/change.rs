@@ -106,10 +106,20 @@ impl FleetChangeCmd {
             rm_fit_ids,
         } = self;
         for fit_id in rm_fit_ids.iter() {
-            core_fleet.remove_fit(fit_id)?;
+            match core_fleet.remove_fit(fit_id) {
+                Ok(()) => (),
+                // We are fine if fit was not in this fleet
+                Err(rc::err::FleetFitRemoveError::FitIsNotInThisFleet(..)) => (),
+                Err(err) => return Err(err.into()),
+            }
         }
         for fit_id in add_fit_ids.iter() {
-            core_fleet.add_fit(fit_id)?;
+            match core_fleet.add_fit(fit_id) {
+                Ok(()) => (),
+                // We are fine if fit was already in this fleet
+                Err(rc::err::FleetFitAddError::FitAlreadyInThisFleet(..)) => (),
+                Err(err) => return Err(err.into()),
+            }
         }
         Ok(())
     }

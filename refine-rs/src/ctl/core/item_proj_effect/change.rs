@@ -138,7 +138,12 @@ impl ProjEffectChangeCmd {
         } = self;
         let core_proj_effect = core_item.dc_proj_effect()?;
         for projectee_item_id in rm_proj_item_ids.iter() {
-            core_proj_effect.get_proj_mut(projectee_item_id)?.remove();
+            match core_proj_effect.get_proj_mut(projectee_item_id) {
+                Ok(core_proj) => core_proj.remove(),
+                // We are fine if projection was not there
+                Err(rc::err::ProjGetError::ProjectionNotFound(..)) => (),
+                Err(err) => return Err(err.into()),
+            }
         }
         if let Some(type_id) = type_id {
             core_proj_effect.set_type_id(type_id);
@@ -148,7 +153,12 @@ impl ProjEffectChangeCmd {
         }
         effect_modes.apply(core_proj_effect);
         for projectee_item_id in add_proj_item_ids.iter() {
-            core_proj_effect.add_proj(projectee_item_id)?;
+            match core_proj_effect.add_proj(projectee_item_id) {
+                Ok(..) => (),
+                // We are fine if projection was already there
+                Err(rc::err::ProjAddError::ProjectionAlreadyExists(..)) => (),
+                Err(err) => return Err(err.into()),
+            }
         }
         Ok(ChangedItemIdsResp::default())
     }

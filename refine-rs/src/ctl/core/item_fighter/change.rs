@@ -181,7 +181,12 @@ impl FighterChangeCmd {
         let mut resp = ChangedItemIdsResp::default();
         let core_fighter = core_item.dc_fighter()?;
         for projectee_item_id in rm_proj_item_ids.iter() {
-            core_fighter.get_proj_mut(projectee_item_id)?.remove();
+            match core_fighter.get_proj_mut(projectee_item_id) {
+                Ok(core_proj) => core_proj.remove(),
+                // We are fine if projection was not there
+                Err(rc::err::ProjGetError::ProjectionNotFound(..)) => (),
+                Err(err) => return Err(err.into()),
+            }
         }
         if let Some(type_id) = type_id {
             core_fighter.set_type_id(type_id);
@@ -212,7 +217,12 @@ impl FighterChangeCmd {
         }
         effect_modes.apply(core_fighter);
         for projectee_item_id in add_proj_item_ids.iter() {
-            core_fighter.add_proj(projectee_item_id)?;
+            match core_fighter.add_proj(projectee_item_id) {
+                Ok(..) => (),
+                // We are fine if projection was already there
+                Err(rc::err::ProjAddError::ProjectionAlreadyExists(..)) => (),
+                Err(err) => return Err(err.into()),
+            }
         }
         Ok(resp)
     }
