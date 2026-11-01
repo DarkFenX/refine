@@ -195,15 +195,9 @@ impl UndoLog {
     pub(crate) fn close(&mut self, savepoint: UndoSavepoint) {
         self.recording = savepoint.was_recording;
     }
-    /// Keeps changes done since the savepoint.
-    ///
-    /// Steps after a nested savepoint stay, so that outer savepoints can still roll them back.
-    /// Committing the outermost savepoint stops recording, clears the log, and evicts entities
-    /// which were unmapped while recording.
-    pub(crate) fn commit(&mut self, savepoint: UndoSavepoint, u_data: &mut UData) {
-        if savepoint.was_recording {
-            return;
-        }
+    /// Keeps all the recorded changes: stops recording, clears the log, and evicts entities which
+    /// were unmapped while recording.
+    pub(crate) fn commit(&mut self, u_data: &mut UData) {
         for step in self.steps.drain(..) {
             match step {
                 UndoStep::FleetRemoved(fleet_uid) => {

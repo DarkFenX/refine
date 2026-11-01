@@ -8,6 +8,9 @@ impl<'r> SolarSystem<'r> {
     ///   restored;
     /// - fallible methods run commands in a transaction, which is committed if they succeed, and
     ///   rolled back if they fail.
+    ///
+    /// A panic in any of them poisons the core sol lock; the solar system is discarded when it is
+    /// requested next.
     pub(crate) async fn exec_standard<F, T, E>(&mut self, func: F) -> Result<T, E>
     where
         F: FnOnce(&mut rc::SolarSystem) -> Result<T, E> + Send + 'static,
@@ -19,7 +22,10 @@ impl<'r> SolarSystem<'r> {
             .tpool
             .exec_standard(move || {
                 let mut core_sol = core_sol_guarded.lock();
-                let mut tx = core_sol.begin();
+                let mut tx = match core_sol.begin_tx() {
+                    Ok(tx) => tx,
+                    Err(rc::err::TxBeginError::InTransaction) => unreachable!(),
+                };
                 let result = func(&mut tx);
                 match result {
                     Ok(..) => tx.commit(),

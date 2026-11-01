@@ -11,8 +11,8 @@ impl SolarSystem {
             self.u_data.items.get_id_counter(),
         )
     }
-    pub(in crate::api) fn internal_commit(&mut self, savepoint: UndoSavepoint) {
-        self.undo.commit(savepoint, &mut self.u_data);
+    pub(in crate::api) fn internal_commit(&mut self) {
+        self.undo.commit(&mut self.u_data);
     }
     pub(in crate::api) fn internal_rollback(&mut self, savepoint: UndoSavepoint) {
         // Steps are undone by the same methods which record them, and we do not want to record it

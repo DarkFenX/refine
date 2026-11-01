@@ -12,7 +12,7 @@ impl Refine {
         // removed
         let cleaned_count = id_sol_map
             .extract_if(|_, inner_sol| match inner_sol.try_lock() {
-                Ok(sol) => sol.get_last_accessed() + sol_inact_limit < now,
+                Ok(sol) => sol.is_poisoned() || sol.get_last_accessed() + sol_inact_limit < now,
                 // If it's locked - it means it's being worked on, we don't touch that
                 Err(..) => false,
             })

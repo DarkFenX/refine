@@ -4,9 +4,8 @@ use crate::sol::{SolarSystem, UndoSavepoint};
 
 /// Transaction on a solar system.
 ///
-/// Derefs to the solar system. Commit to keep changes, roll back or drop to revert them. Calling
-/// `begin` on a guard starts a nested transaction; changes it commits are rolled back if the outer
-/// transaction is.
+/// Derefs to the solar system. Commit to keep changes, roll back or drop to revert them. Only one
+/// transaction can be open on a solar system at a time.
 ///
 /// Restrictions:
 /// - the solar system must not be replaced or cloned through the guard;
@@ -19,8 +18,8 @@ pub struct SolTx<'a> {
 }
 impl SolTx<'_> {
     pub fn commit(mut self) {
-        let savepoint = self.savepoint.take().unwrap();
-        self.sol.internal_commit(savepoint);
+        self.savepoint = None;
+        self.sol.internal_commit();
     }
     pub fn rollback(mut self) {
         let savepoint = self.savepoint.take().unwrap();
@@ -50,11 +49,20 @@ impl Drop for SolTx<'_> {
 }
 
 impl SolarSystem {
-    pub fn begin(&mut self) -> SolTx<'_> {
+    pub fn begin_tx(&mut self) -> Result<SolTx<'_>, TxBeginError> {
+        if self.undo.is_recording() {
+            return Err(TxBeginError::InTransaction);
+        }
         let savepoint = self.internal_savepoint();
-        SolTx {
+        Ok(SolTx {
             sol: self,
             savepoint: Some(savepoint),
-        }
+        })
     }
+}
+
+#[derive(Debug, thiserror::Error)]
+pub enum TxBeginError {
+    #[error("transaction cannot be started within a transaction")]
+    InTransaction,
 }

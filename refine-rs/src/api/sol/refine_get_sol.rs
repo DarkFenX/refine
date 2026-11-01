@@ -8,6 +8,11 @@ impl Refine {
             None => return Err(SolGetError::SolNotFound(id)),
         };
         let sol = SolarSystem::new(self, guarded_inner_sol).await;
+        if sol.inner.is_poisoned() {
+            tracing::error!("discarding solar system poisoned by a panic");
+            self.id_sol_map.write().remove(&id);
+            return Err(SolGetError::SolNotFound(id));
+        }
         Ok(sol)
     }
 }

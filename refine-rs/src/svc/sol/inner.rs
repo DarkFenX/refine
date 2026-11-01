@@ -74,6 +74,9 @@ impl SolInner {
     pub(in crate::svc) fn get_last_accessed(&self) -> Instant {
         self.last_accessed
     }
+    pub(crate) fn is_poisoned(&self) -> bool {
+        self.core_sol.0.is_poisoned()
+    }
     fn touch(&mut self) {
         self.last_accessed = Instant::now();
     }
@@ -83,12 +86,12 @@ impl SolInner {
 // Core guarded
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 #[derive(Clone)]
-pub(super) struct SolCoreGuarded(Arc<parking_lot::Mutex<rc::SolarSystem>>);
+pub(super) struct SolCoreGuarded(Arc<std::sync::Mutex<rc::SolarSystem>>);
 impl SolCoreGuarded {
     fn new(core_sol: rc::SolarSystem) -> Self {
-        Self(Arc::new(parking_lot::Mutex::new(core_sol)))
+        Self(Arc::new(std::sync::Mutex::new(core_sol)))
     }
-    pub(super) fn lock(&self) -> parking_lot::MutexGuard<'_, rc::SolarSystem> {
-        self.0.lock()
+    pub(super) fn lock(&self) -> std::sync::MutexGuard<'_, rc::SolarSystem> {
+        self.0.lock().unwrap()
     }
 }
