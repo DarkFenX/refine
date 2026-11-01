@@ -519,7 +519,7 @@ impl FitChangeEnumCmd {
 #[derive(thiserror::Error, Debug)]
 pub enum FitChangeEnumError {
     // Fit
-    #[error("failed to change fleet")]
+    #[error("failed to change fit")]
     FitChange(#[from] FitChangeError),
     // Item
     #[error("failed to add autodetected item")]
