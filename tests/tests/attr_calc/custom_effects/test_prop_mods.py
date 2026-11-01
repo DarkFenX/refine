@@ -31,7 +31,8 @@ def test_ab(client, consts):
     # Verification
     api_ship.update()
     assert api_ship.attrs[eve_mass_attr_id].modified == approx(1550000)
-    assert api_ship.attrs[eve_sig_affectee_attr_id].modified == approx(32)  # Not affected by sig blow
+    # Not affected by sig blow
+    assert api_ship.attrs[eve_sig_affectee_attr_id].modified == approx(32)
     assert api_ship.attrs[eve_speed_attr_id].modified == approx(1049.435484)
     assert len(api_ship.mods) == 2
     # Mass modification

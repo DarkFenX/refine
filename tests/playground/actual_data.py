@@ -28,7 +28,8 @@ PHOBOS_BASE_PATH = Path('~', 'Desktop', 'phobos_tq_en-us').expanduser()
 
 # ruff:ignore[missing-type-function-argument, missing-return-type-undocumented-public-function]
 def test_benchmark_attr_calc(client, consts):
-    setup_eve_data(client=client, data=client._get_default_eve_data())  # ruff:ignore[private-member-access]
+    # ruff:ignore[private-member-access]
+    setup_eve_data(client=client, data=client._get_default_eve_data())
     api_sol = client.create_sol(sec_zone=consts.ApiSecZone.hisec)
     api_fit = api_sol.create_fit()
     with api_fit.batch() as api_fit_batch:
@@ -37,7 +38,10 @@ def test_benchmark_attr_calc(client, consts):
             api_fit_batch.add_skill(type_id=eve_skill_id, level=5)
         api_fit_batch.set_ship(type_id=11184)  # Crusader
         # ruff:ignore[commented-out-code]
-        # api_fit_batch.add_module(type_id=4403, rack=consts.Rack.low, state=consts.ApiModuleState.active)
+        # api_fit_batch.add_module(
+        #     type_id=4403,
+        #     rack=consts.Rack.low,
+        #     state=consts.ApiModuleState.active)
     iterations = 3000000
     print()  # ruff:ignore[print]
     print('starting attr-calc benchmark')  # ruff:ignore[print]
@@ -47,12 +51,14 @@ def test_benchmark_attr_calc(client, consts):
     print('done with attr-calc benchmark')  # ruff:ignore[print]
     delta = after - before
     ips = iterations / delta
-    print(f'{iterations} iterations done in {delta:.3f} seconds, {ips:.2f} iterations per second')  # ruff:ignore[print]
+    # ruff:ignore[print]
+    print(f'{iterations} iterations done in {delta:.3f} seconds, {ips:.2f} iterations per second')
 
 
 # ruff:ignore[missing-type-function-argument, missing-return-type-undocumented-public-function]
 def test_benchmark_stats(client, consts):
-    setup_eve_data(client=client, data=client._get_default_eve_data())  # ruff:ignore[private-member-access]
+    # ruff:ignore[private-member-access]
+    setup_eve_data(client=client, data=client._get_default_eve_data())
 
     api_sol = client.create_sol(sec_zone=consts.ApiSecZone.hisec)
     api_src_fit = api_sol.create_fit()
@@ -144,12 +150,14 @@ def test_benchmark_stats(client, consts):
     print('done with stats benchmark')  # ruff:ignore[print]
     delta = after - before
     ips = iterations / delta
-    print(f'{iterations} iterations done in {delta:.3f} seconds, {ips:.2f} iterations per second')  # ruff:ignore[print]
+    # ruff:ignore[print]
+    print(f'{iterations} iterations done in {delta:.3f} seconds, {ips:.2f} iterations per second')
 
 
 # ruff:ignore[missing-type-function-argument, missing-return-type-undocumented-public-function]
 def test_benchmark_cap_sim(client, consts):
-    setup_eve_data(client=client, data=client._get_default_eve_data())  # ruff:ignore[private-member-access]
+    # ruff:ignore[private-member-access]
+    setup_eve_data(client=client, data=client._get_default_eve_data())
     api_sol = client.create_sol()
 
     api_fit = api_sol.create_fit()
@@ -265,12 +273,14 @@ def test_benchmark_cap_sim(client, consts):
     print('done with cap sim benchmark')  # ruff:ignore[print]
     delta = after - before
     ips = iterations / delta
-    print(f'{iterations} iterations done in {delta:.3f} seconds, {ips:.2f} iterations per second')  # ruff:ignore[print]
+    # ruff:ignore[print]
+    print(f'{iterations} iterations done in {delta:.3f} seconds, {ips:.2f} iterations per second')
 
 
 # ruff:ignore[missing-type-function-argument, missing-return-type-undocumented-public-function]
 def test_benchmark_try_fit_items(client, consts):
-    setup_eve_data(client=client, data=client._get_default_eve_data())  # ruff:ignore[private-member-access]
+    # ruff:ignore[private-member-access]
+    setup_eve_data(client=client, data=client._get_default_eve_data())
     api_sol = client.create_sol(sec_zone=consts.ApiSecZone.hisec)
     api_fit = api_sol.create_fit()
     with api_fit.batch() as api_fit_batch:
@@ -339,7 +349,8 @@ def test_benchmark_try_fit_items(client, consts):
     try_fit_type_ids = get_try_fit_type_ids()
     options = ValOptions(default=True).to_dict()
     print()  # ruff:ignore[print]
-    print(f'starting try-fit-items benchmark, trying {len(try_fit_type_ids)} items per iteration')  # ruff:ignore[print]
+    # ruff:ignore[print]
+    print(f'starting try-fit-items benchmark, trying {len(try_fit_type_ids)} items per iteration')
     before = time()
     api_sol.benchmark(command={
         'type': 'try_fit_items',
@@ -359,7 +370,8 @@ def test_benchmark_try_fit_items(client, consts):
 
 # ruff:ignore[missing-type-function-argument, missing-return-type-undocumented-public-function]
 def test_try_fit_items_nphoon(client, consts):
-    setup_eve_data(client=client, data=client._get_default_eve_data())  # ruff:ignore[private-member-access]
+    # ruff:ignore[private-member-access]
+    setup_eve_data(client=client, data=client._get_default_eve_data())
     api_sol = client.create_sol(sec_zone=consts.ApiSecZone.hisec)
     with api_sol.batch() as api_sol_batch:
         api_fit = api_sol_batch.create_fit()
@@ -458,13 +470,15 @@ def test_try_fit_items_nphoon(client, consts):
     try_fit_type_ids = get_try_fit_type_ids()
     type_ids = api_fit.try_fit_items(type_ids=try_fit_type_ids, val_options=ValOptions(default=True))
     print('---')  # ruff:ignore[print]
-    print(f'Sent {len(try_fit_type_ids)} items, received {len(type_ids)} eligible items')  # ruff:ignore[print]
+    # ruff:ignore[print]
+    print(f'Sent {len(try_fit_type_ids)} items, received {len(type_ids)} eligible items')
     print_items(type_ids=type_ids, print_types=False)
 
 
 # ruff:ignore[missing-type-function-argument, missing-return-type-undocumented-public-function]
 def test_stacking(client, consts):
-    setup_eve_data(client=client, data=client._get_default_eve_data())  # ruff:ignore[private-member-access]
+    # ruff:ignore[private-member-access]
+    setup_eve_data(client=client, data=client._get_default_eve_data())
     api_sol = client.create_sol(sec_zone=consts.ApiSecZone.hisec)
     api_fit_m = api_sol.create_fit()
     with api_fit_m.batch() as api_fit_m_batch:
@@ -492,7 +506,8 @@ def test_stacking(client, consts):
 
 # ruff:ignore[missing-type-function-argument, missing-return-type-undocumented-public-function]
 def test_item_attrs(client):
-    setup_eve_data(client=client, data=client._get_default_eve_data())  # ruff:ignore[private-member-access]
+    # ruff:ignore[private-member-access]
+    setup_eve_data(client=client, data=client._get_default_eve_data())
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
     with api_fit.batch() as api_fit_batch:
@@ -508,7 +523,8 @@ def test_item_attrs(client):
 
 # ruff:ignore[missing-type-function-argument, missing-return-type-undocumented-public-function]
 def test_stats(client, consts):
-    setup_eve_data(client=client, data=client._get_default_eve_data())  # ruff:ignore[private-member-access]
+    # ruff:ignore[private-member-access]
+    setup_eve_data(client=client, data=client._get_default_eve_data())
     api_sol = client.create_sol(sec_zone=consts.ApiSecZone.hisec)
     api_src_fit = api_sol.create_fit()
     with api_src_fit.batch() as api_src_fit_batch:
@@ -523,7 +539,8 @@ def test_stats(client, consts):
         api_src_fit_batch.add_booster(type_id=28674)  # Synth drop
         api_src_fit_batch.add_booster(type_id=28672)  # Synth crash
         api_src_fit_batch.add_booster(type_id=45999)  # Pyro 2
-        api_src_fit_batch.set_ship(type_id=32311, coordinates=(0, 0, 0), movement=(0, 0, 1))  # NTyphoon
+        # NTyphoon
+        api_src_fit_batch.set_ship(type_id=32311, coordinates=(0, 0, 0), movement=(0, 0, 1))
         # T2 800mms with hail
         for _ in range(4):
             api_src_fit_batch.add_module(
@@ -599,7 +616,8 @@ def test_stats(client, consts):
 
 # ruff:ignore[missing-type-function-argument, missing-return-type-undocumented-public-function]
 def test_playground(client, consts):
-    setup_eve_data(client=client, data=client._get_default_eve_data())  # ruff:ignore[private-member-access]
+    # ruff:ignore[private-member-access]
+    setup_eve_data(client=client, data=client._get_default_eve_data())
     api_sol = client.create_sol(sec_zone=consts.ApiSecZone.hisec)
     with api_sol.batch() as api_sol_batch:
         api_fit = api_sol_batch.create_fit()

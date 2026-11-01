@@ -1368,7 +1368,8 @@ def test_siege_bastion(client, consts):
     + dock citadel (external factors)
     + tether
     + cloak (special)
-    + regular movement  +- incoming assistance (stops reps/cap transfers due to resistances, lets RSBs/RTCs run)
+    + regular movement
+    +- incoming assistance (stops reps/cap transfers due to resistances, lets RSBs/RTCs run)
     - incoming offensive mods
     + MJD (not tested here, likely blocked by 0 max speed)
     """

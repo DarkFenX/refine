@@ -5,7 +5,8 @@ import pytest
 
 
 # Wrapper around pytest approx function, to override default parameters
-def approx(expected: float, accuracy: int = 7):  # ruff:ignore[missing-return-type-undocumented-public-function]
+# ruff:ignore[missing-return-type-undocumented-public-function]
+def approx(expected: float, accuracy: int = 7):
     # 6 digits after dot for numbers more than 1 and less than -1
     if abs(expected) >= 1:
         tolerance = 10 ** -(accuracy - 1)

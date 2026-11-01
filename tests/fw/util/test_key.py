@@ -58,7 +58,8 @@ def get_test_key() -> TestKey:
     if test_frame is not None:
         test_frame_index = stack.index(test_frame)
         stack = stack[test_frame_index:]
-    # For a test function, ignore all its local context, to refer to the same data on different calls
+    # For a test function, ignore all its local context, to refer to the same data on different
+    # calls
     key = [frame_to_primitive(frame=stack[0], ignore_local_context=True)]
     key += [frame_to_primitive(frame=f) for f in stack[1:]]
     return TestKey(key)

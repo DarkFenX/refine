@@ -1,4 +1,4 @@
-// https://stackoverflow.com/questions/74841526/why-does-stditerpeekablepeek-mutably-borrow-the-self-argument
+// https://stackoverflow.com/questions/74841526
 
 pub(crate) struct PrefetchPeekable<I: Iterator> {
     iter: I,
