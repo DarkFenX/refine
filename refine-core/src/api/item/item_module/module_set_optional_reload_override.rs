@@ -12,8 +12,11 @@ impl SolarSystem {
         optional_reload_override: Option<OptionalReload>,
     ) {
         let u_module = self.u_data.items.get_mut(module_uid).dc_module_mut().unwrap();
+        let old_optional_reload_override = u_module.get_optional_reload_override();
+        if old_optional_reload_override == optional_reload_override {
+            return;
+        }
         if self.undo.is_recording() {
-            let old_optional_reload_override = u_module.get_optional_reload_override();
             self.undo.record(UndoStep::ModuleOptionalReloadOverride(
                 module_uid,
                 old_optional_reload_override,

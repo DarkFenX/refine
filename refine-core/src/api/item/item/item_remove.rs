@@ -64,6 +64,9 @@ impl SolarSystem {
 }
 
 impl<'s> ItemMut<'s> {
+    /// Remove item.
+    ///
+    /// Removal mode is used only for modules.
     pub fn remove(self, pos_mode: RemoveMode) -> Result<(), ItemRemoveError> {
         match self {
             // Autocharge can not be removed no matter what

@@ -1,6 +1,7 @@
 use crate::{FleetId, FleetMut, err::basic::FitFoundError, ud::FitId};
 
 impl<'s> FleetMut<'s> {
+    /// Add fit, moving it out of its current fleet.
     pub fn add_fit(&mut self, fit_id: &FitId) -> Result<(), FleetFitAddError> {
         let fit_uid = self.sol.u_data.fits.int_id_by_ext_id_err(fit_id)?;
         let u_fit = self.sol.u_data.fits.get(fit_uid);

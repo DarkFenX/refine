@@ -12,8 +12,11 @@ impl SolarSystem {
         rearm_minion_override: Option<RearmMinion>,
     ) {
         let u_fighter = self.u_data.items.get_mut(fighter_uid).dc_fighter_mut().unwrap();
+        let old_rearm_minion_override = u_fighter.get_rearm_minion_override();
+        if old_rearm_minion_override == rearm_minion_override {
+            return;
+        }
         if self.undo.is_recording() {
-            let old_rearm_minion_override = u_fighter.get_rearm_minion_override();
             self.undo.record(UndoStep::FighterRearmMinionOverride(
                 fighter_uid,
                 old_rearm_minion_override,

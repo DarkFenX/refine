@@ -2,7 +2,7 @@
 ///
 /// Included categories were picked according to them influencing ability to use items, or
 /// influencing items' strength.
-#[derive(Copy, Clone)]
+#[derive(Copy, Clone, Eq, PartialEq)]
 pub enum SecZone {
     HiSec(SecZoneCorruption),
     LowSec(SecZoneCorruption),
@@ -13,7 +13,7 @@ pub enum SecZone {
 
 /// Highsecs and lowsecs can have temporary corruption status. Once it reaches 5th level, it affects
 /// ability to use certain items in those systems.
-#[derive(Copy, Clone)]
+#[derive(Copy, Clone, Eq, PartialEq)]
 pub enum SecZoneCorruption {
     None,
     C5,

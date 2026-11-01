@@ -12,9 +12,13 @@ impl SolarSystem {
         spool_override: Option<Spool>,
     ) {
         let u_module = self.u_data.items.get_mut(module_uid).dc_module_mut().unwrap();
+        let old_spool_override = u_module.get_spool_override();
+        if old_spool_override == spool_override {
+            return;
+        }
         if self.undo.is_recording() {
             self.undo
-                .record(UndoStep::ModuleSpoolOverride(module_uid, u_module.get_spool_override()));
+                .record(UndoStep::ModuleSpoolOverride(module_uid, old_spool_override));
         }
         u_module.set_spool_override(spool_override);
     }

@@ -12,11 +12,13 @@ impl SolarSystem {
         npc_prop_override: Option<NpcProp>,
     ) {
         let u_drone = self.u_data.items.get_mut(drone_uid).dc_drone_mut().unwrap();
+        let old_npc_prop_override = u_drone.get_npc_prop_override();
+        if old_npc_prop_override == npc_prop_override {
+            return;
+        }
         if self.undo.is_recording() {
-            self.undo.record(UndoStep::DroneNpcPropOverride(
-                drone_uid,
-                u_drone.get_npc_prop_override(),
-            ));
+            self.undo
+                .record(UndoStep::DroneNpcPropOverride(drone_uid, old_npc_prop_override));
         }
         u_drone.set_npc_prop_override(npc_prop_override);
     }

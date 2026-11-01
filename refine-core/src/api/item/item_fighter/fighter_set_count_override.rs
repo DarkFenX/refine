@@ -13,11 +13,13 @@ impl SolarSystem {
     ) {
         // Update user data
         let u_fighter = self.u_data.items.get_mut(fighter_uid).dc_fighter_mut().unwrap();
+        let old_count_override = u_fighter.get_count_override();
+        if old_count_override == count_override {
+            return;
+        }
         if self.undo.is_recording() {
-            self.undo.record(UndoStep::FighterCountOverride(
-                fighter_uid,
-                u_fighter.get_count_override(),
-            ));
+            self.undo
+                .record(UndoStep::FighterCountOverride(fighter_uid, old_count_override));
         }
         let old_count = u_fighter.get_current_count();
         u_fighter.set_count_override(count_override);
