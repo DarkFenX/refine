@@ -79,7 +79,7 @@ impl ProjEffectAddCmd {
         for projectee_item_id in proj_item_ids.iter() {
             match core_proj_effect.add_proj(projectee_item_id) {
                 Ok(..) => (),
-                // We are fine if projection was already there
+                // Silently accept failure due to existing projection
                 Err(rc::err::ProjAddError::ProjectionAlreadyExists(..)) => (),
                 Err(err) => return Err(err.into()),
             }

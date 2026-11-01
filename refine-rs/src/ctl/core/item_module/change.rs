@@ -185,7 +185,7 @@ impl ModuleChangeCmd {
         for projectee_item_id in rm_proj_item_ids.iter() {
             match core_module.get_proj_mut(projectee_item_id) {
                 Ok(core_proj) => core_proj.remove(),
-                // We are fine if projection was not there
+                // Silently accept failure due to missing projection
                 Err(rc::err::ProjGetError::ProjectionNotFound(..)) => (),
                 Err(err) => return Err(err.into()),
             }
@@ -253,7 +253,7 @@ impl ModuleChangeCmd {
         for projectee_item_id in add_proj_item_ids.iter() {
             match core_module.add_proj(projectee_item_id) {
                 Ok(..) => (),
-                // We are fine if projection was already there
+                // Silently accept failure due to existing projection
                 Err(rc::err::ProjAddError::ProjectionAlreadyExists(..)) => (),
                 Err(err) => return Err(err.into()),
             }

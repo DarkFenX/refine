@@ -180,8 +180,7 @@ impl CapSim {
             };
             let event_time = event.get_time();
             match event.data {
-                // Cycle checks are processed in heap
-                CapSimEventData::CycleCheck(..) => unreachable!(),
+                CapSimEventData::CycleCheck(..) => unreachable!("cycle checks are processed in heap"),
                 CapSimEventData::InjectorReady(event_data) => {
                     // Update basic sim state according to time progression
                     if event_time > TIME_LIMIT {

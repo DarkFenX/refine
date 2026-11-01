@@ -21,8 +21,9 @@ pub use item_subsystem::{Subsystem, SubsystemGetError, SubsystemMut};
 pub use item_sw_effect::{SwEffect, SwEffectGetError, SwEffectMut};
 pub use shared::{
     AttrMutateRawError, DormantMutation, DormantMutationMut, EffectiveMutation, EffectiveMutationMut, FullMAttr,
-    FullMAttrIter, FullMAttrMut, Mutation, MutationAddError, MutationMut, Proj, ProjAddError, ProjGetError, ProjIter,
-    ProjMut, RangedProj, RangedProjIter, RangedProjMut, RawMAttr, RawMAttrGetError, RawMAttrIter, RawMAttrMut,
+    FullMAttrIter, FullMAttrMut, FullMAttrValueSetError, Mutation, MutationAddError, MutationMut, Proj, ProjAddError,
+    ProjGetError, ProjIter, ProjMut, RangedProj, RangedProjIter, RangedProjMut, RawMAttr, RawMAttrGetError,
+    RawMAttrIter, RawMAttrMut,
 };
 pub(in crate::api) use shared::{active_stat_prepare, get_ship_rib, iter_projs, iter_ranged_projs};
 pub(in crate::api) use traits::ItemSealed;

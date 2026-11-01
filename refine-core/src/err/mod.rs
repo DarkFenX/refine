@@ -4,8 +4,8 @@ pub use crate::{
     api::{
         AbilityGetError, AttrIdParseError, AttrMutateRawError, AutochargeGetError, BoosterGetError, CharacterGetError,
         ChargeGetError, DroneGetError, EffectIdParseError, FighterGetError, FitFleetSetError, FitGetError,
-        FitItemAutodetectAddError, FleetFitAddError, FleetFitRemoveError, FleetGetError, FwEffectGetError,
-        ImplantGetError, ItemAttrGetError, ItemAttrsIterError, ItemEffectsIterError, ItemGetError,
+        FitItemAutodetectAddError, FleetFitAddError, FleetFitRemoveError, FleetGetError, FullMAttrValueSetError,
+        FwEffectGetError, ImplantGetError, ItemAttrGetError, ItemAttrsIterError, ItemEffectsIterError, ItemGetError,
         ItemModifiersIterError, ItemRemoveError, ModuleGetError, MutationAddError, ProjAddError, ProjEffectGetError,
         ProjGetError, RawMAttrGetError, RigGetError, ServiceGetError, ShipGetError, SideEffectGetError, SkillAddError,
         SkillGetError, SkillTypeIdSetError, SrcSetError, StanceGetError, SubsystemGetError, SwEffectGetError,

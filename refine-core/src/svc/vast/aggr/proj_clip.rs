@@ -177,6 +177,6 @@ where
             }
         },
         // Other sequence types do not have hard downtime, so this should be unreachable
-        _ => unreachable!(),
+        _ => unreachable!("sequence type should not have a hard downtime"),
     }
 }

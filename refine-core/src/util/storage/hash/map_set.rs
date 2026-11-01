@@ -70,7 +70,7 @@ where
             Self::One(old_value) if *old_value == value => (),
             Self::One(..) => {
                 let Self::One(old_value) = std::mem::replace(self, Self::Many(RSet::with_capacity(2))) else {
-                    unreachable!()
+                    unreachable!("replaced values were matched as a single value")
                 };
                 if let Self::Many(set) = self {
                     set.insert(old_value);
@@ -87,7 +87,7 @@ where
             Self::One(..) => {
                 let set = RSet::with_capacity(values.len() + 1);
                 let Self::One(old_value) = std::mem::replace(self, Self::Many(set)) else {
-                    unreachable!()
+                    unreachable!("replaced values were matched as a single value")
                 };
                 if let Self::Many(set) = self {
                     set.insert(old_value);

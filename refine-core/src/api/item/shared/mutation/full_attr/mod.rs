@@ -1,5 +1,6 @@
 pub use full_attr::{FullMAttr, FullMAttrMut};
 pub use mutation_iter::FullMAttrIter;
+pub use set_value::FullMAttrValueSetError;
 
 mod full_attr;
 mod get_roll;

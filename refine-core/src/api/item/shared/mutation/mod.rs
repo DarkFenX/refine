@@ -1,6 +1,6 @@
-pub(in crate::api::item::shared::mutation) use abs_resolve::resolve_absolutes_into_rolls_with_ids;
+pub(in crate::api::item::shared::mutation) use abs_resolve::resolve_absolute_into_roll;
 pub use add::MutationAddError;
-pub use full_attr::{FullMAttr, FullMAttrIter, FullMAttrMut};
+pub use full_attr::{FullMAttr, FullMAttrIter, FullMAttrMut, FullMAttrValueSetError};
 pub use mutation::{
     DormantMutation, DormantMutationMut, EffectiveMutation, EffectiveMutationMut, Mutation, MutationMut,
 };

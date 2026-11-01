@@ -75,7 +75,11 @@ fn apply_absolute(core_mutation: &mut rc::MutationMut, attr_id: AttrId, value: V
     if let rc::MutationMut::Effective(core_effective_mutation) = core_mutation
         && let Ok(mut core_full_mattr) = core_effective_mutation.get_full_mattr_mut(attr_id)
     {
-        core_full_mattr.set_value(Some(value))
+        match core_full_mattr.set_value(Some(value)) {
+            Ok(()) => (),
+            // Silently accept failure due to zero-width mutation range
+            Err(rc::err::FullMAttrValueSetError::ZeroWidthRange(..)) => (),
+        }
     }
 }
 

@@ -31,7 +31,7 @@ impl SolarSystem<'_> {
             .exec_standard_infallible(move |core_sol| {
                 match core_sol.set_src(&core_src) {
                     Ok(..) => (),
-                    Err(rc::err::SrcSetError::InTransaction) => unreachable!(),
+                    Err(rc::err::SrcSetError::InTransaction) => unreachable!("sol shouldn't be mid-transaction"),
                 }
                 info_cmd.execute(sol_id, src_alias, core_sol)
             })

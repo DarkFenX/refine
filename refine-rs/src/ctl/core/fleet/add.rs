@@ -55,7 +55,7 @@ impl FleetAddCmd {
         for fit_id in &self.fit_ids {
             match core_fleet.add_fit(fit_id) {
                 Ok(()) => (),
-                // We are fine if fit was already in this fleet
+                // Silently accept failure due to fit already being in this fleet
                 Err(rc::err::FleetFitAddError::FitAlreadyInThisFleet(..)) => (),
                 Err(err) => return Err(err.into()),
             }

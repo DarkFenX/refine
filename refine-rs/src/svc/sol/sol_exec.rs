@@ -24,7 +24,7 @@ impl<'r> SolarSystem<'r> {
                 let mut core_sol = core_sol_guarded.lock();
                 let mut tx = match core_sol.begin_tx() {
                     Ok(tx) => tx,
-                    Err(rc::err::TxBeginError::InTransaction) => unreachable!(),
+                    Err(rc::err::TxBeginError::InTransaction) => unreachable!("sol shouldn't be mid-transaction"),
                 };
                 let result = func(&mut tx);
                 match result {
