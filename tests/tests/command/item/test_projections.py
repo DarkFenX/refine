@@ -1,7 +1,3 @@
-"""
-Adding a projection which exists or removing one which does not is a no-op, not an error.
-"""
-
 from fw import approx
 
 

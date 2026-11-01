@@ -70,7 +70,7 @@ pub trait ItemCommon: ItemSealed {
     }
 }
 
-/// Methods shared by every mutated item kind.
+/// Mutable methods shared by every item kind.
 pub trait ItemMutCommon: ItemCommon {
     fn get_sol_mut(&mut self) -> &mut SolarSystem;
     fn get_fit_mut(&mut self) -> Option<FitMut<'_>> {

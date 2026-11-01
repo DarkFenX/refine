@@ -58,6 +58,6 @@ pub enum FullMAttrGetError {
     AttrNotFound(#[from] AttrFoundError),
     #[error("attribute {2} is not mutable according to mutator {1} on item {0}")]
     NotMutable(ItemId, ItemTypeId, AttrId),
-    #[error("attribute {1} has no base value on item {0}")]
+    #[error("attribute {1} on item {0} has no base value")]
     NoValue(ItemId, AttrId),
 }
