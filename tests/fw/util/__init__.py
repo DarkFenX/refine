@@ -4,6 +4,7 @@ from .dc_conv import dc_to_dict
 from .http_server import StaticHttpServer
 from .insert import conditional_insert
 from .ntt_list import NttList
+from .ntt_rack import NttRack
 from .paths import PROJECT_ROOT
 from .pytest import approx, check_no_field
 from .singletons import Absent, Default

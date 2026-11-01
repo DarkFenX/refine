@@ -2,10 +2,6 @@ from fw import check_no_field
 from fw.util import Absent
 
 
-def flatten(*, rack):
-    return [None if i is None else i.id for i in rack]
-
-
 def test_add_append(client, consts):
     eve_module_id = client.mk_eve_item()
     client.create_sources()
@@ -13,7 +9,7 @@ def test_add_append(client, consts):
     api_fit = api_sol.create_fit()
     api_module1 = api_fit.add_module(type_id=eve_module_id, rack=consts.Rack.high, add_mode=consts.ApiModAddMode.append)
     # Verification
-    assert flatten(rack=api_fit.update().modules.high) == [api_module1.id]
+    assert api_fit.update().modules.high.map(lambda m: m.id) == [api_module1.id]
     assert api_module1.update().pos == 0
     # Action
     api_module2 = api_fit.add_module(
@@ -21,7 +17,7 @@ def test_add_append(client, consts):
         rack=consts.Rack.high,
         add_mode=consts.ApiModAddMode.append)
     # Verification
-    assert flatten(rack=api_fit.update().modules.high) == [api_module1.id, api_module2.id]
+    assert api_fit.update().modules.high.map(lambda m: m.id) == [api_module1.id, api_module2.id]
     assert api_module1.update().pos == 0
     assert api_module2.update().pos == 1
     # Action
@@ -30,7 +26,7 @@ def test_add_append(client, consts):
         rack=consts.Rack.high,
         add_mode={consts.ApiModAddMode.insert: 3})
     # Verification
-    assert flatten(rack=api_fit.update().modules.high) == [api_module1.id, api_module2.id, None, api_module3.id]
+    assert api_fit.update().modules.high.map(lambda m: m.id) == [api_module1.id, api_module2.id, None, api_module3.id]
     assert api_module1.update().pos == 0
     assert api_module2.update().pos == 1
     assert api_module3.update().pos == 3
@@ -40,7 +36,7 @@ def test_add_append(client, consts):
         rack=consts.Rack.high,
         add_mode=consts.ApiModAddMode.append)
     # Verification
-    assert flatten(rack=api_fit.update().modules.high) == [
+    assert api_fit.update().modules.high.map(lambda m: m.id) == [
         api_module1.id, api_module2.id, None, api_module3.id, api_module4.id]
     assert api_module1.update().pos == 0
     assert api_module2.update().pos == 1
@@ -55,7 +51,7 @@ def test_add_equip(client, consts):
     api_fit = api_sol.create_fit()
     api_module1 = api_fit.add_module(type_id=eve_module_id, rack=consts.Rack.high, add_mode=consts.ApiModAddMode.equip)
     # Verification
-    assert flatten(rack=api_fit.update().modules.high) == [api_module1.id]
+    assert api_fit.update().modules.high.map(lambda m: m.id) == [api_module1.id]
     assert api_module1.update().pos == 0
     # Action
     api_module2 = api_fit.add_module(
@@ -63,7 +59,7 @@ def test_add_equip(client, consts):
         rack=consts.Rack.high,
         add_mode=consts.ApiModAddMode.equip)
     # Verification
-    assert flatten(rack=api_fit.update().modules.high) == [api_module1.id, api_module2.id]
+    assert api_fit.update().modules.high.map(lambda m: m.id) == [api_module1.id, api_module2.id]
     assert api_module1.update().pos == 0
     assert api_module2.update().pos == 1
     # Action
@@ -72,7 +68,8 @@ def test_add_equip(client, consts):
         rack=consts.Rack.high,
         add_mode={consts.ApiModAddMode.insert: 4})
     # Verification
-    assert flatten(rack=api_fit.update().modules.high) == [api_module1.id, api_module2.id, None, None, api_module3.id]
+    assert api_fit.update().modules.high.map(lambda m: m.id) == [
+        api_module1.id, api_module2.id, None, None, api_module3.id]
     assert api_module1.update().pos == 0
     assert api_module2.update().pos == 1
     assert api_module3.update().pos == 4
@@ -82,7 +79,7 @@ def test_add_equip(client, consts):
         rack=consts.Rack.high,
         add_mode=consts.ApiModAddMode.equip)
     # Verification
-    assert flatten(rack=api_fit.update().modules.high) == [
+    assert api_fit.update().modules.high.map(lambda m: m.id) == [
         api_module1.id, api_module2.id, api_module4.id, None, api_module3.id]
     assert api_module1.update().pos == 0
     assert api_module2.update().pos == 1
@@ -100,7 +97,7 @@ def test_add_insert(client, consts):
         rack=consts.Rack.high,
         add_mode={consts.ApiModAddMode.insert: 0})
     # Verification
-    assert flatten(rack=api_fit.update().modules.high) == [api_module1.id]
+    assert api_fit.update().modules.high.map(lambda m: m.id) == [api_module1.id]
     assert api_module1.update().pos == 0
     # Action
     api_module2 = api_fit.add_module(
@@ -108,7 +105,7 @@ def test_add_insert(client, consts):
         rack=consts.Rack.high,
         add_mode={consts.ApiModAddMode.insert: 2})
     # Verification
-    assert flatten(rack=api_fit.update().modules.high) == [api_module1.id, None, api_module2.id]
+    assert api_fit.update().modules.high.map(lambda m: m.id) == [api_module1.id, None, api_module2.id]
     assert api_module1.update().pos == 0
     assert api_module2.update().pos == 2
     # Action
@@ -117,7 +114,7 @@ def test_add_insert(client, consts):
         rack=consts.Rack.high,
         add_mode={consts.ApiModAddMode.insert: 5})
     # Verification
-    assert flatten(rack=api_fit.update().modules.high) == [
+    assert api_fit.update().modules.high.map(lambda m: m.id) == [
         api_module1.id, None, api_module2.id, None, None, api_module3.id]
     assert api_module1.update().pos == 0
     assert api_module2.update().pos == 2
@@ -128,7 +125,7 @@ def test_add_insert(client, consts):
         rack=consts.Rack.high,
         add_mode={consts.ApiModAddMode.insert: 2})
     # Verification
-    assert flatten(rack=api_fit.update().modules.high) == [
+    assert api_fit.update().modules.high.map(lambda m: m.id) == [
         api_module1.id, None, api_module4.id, api_module2.id, None, None, api_module3.id]
     assert api_module1.update().pos == 0
     assert api_module2.update().pos == 3
@@ -146,7 +143,7 @@ def test_add_replace(client, consts):
         rack=consts.Rack.high,
         add_mode={consts.ApiModAddMode.replace: 0})
     # Verification
-    assert flatten(rack=api_fit.update().modules.high) == [api_module1.id]
+    assert api_fit.update().modules.high.map(lambda m: m.id) == [api_module1.id]
     assert api_module1.update().pos == 0
     # Action
     api_module2 = api_fit.add_module(
@@ -154,7 +151,7 @@ def test_add_replace(client, consts):
         rack=consts.Rack.high,
         add_mode={consts.ApiModAddMode.replace: 2})
     # Verification
-    assert flatten(rack=api_fit.update().modules.high) == [api_module1.id, None, api_module2.id]
+    assert api_fit.update().modules.high.map(lambda m: m.id) == [api_module1.id, None, api_module2.id]
     assert api_module1.update().pos == 0
     assert api_module2.update().pos == 2
     # Action
@@ -163,7 +160,7 @@ def test_add_replace(client, consts):
         rack=consts.Rack.high,
         add_mode={consts.ApiModAddMode.replace: 5})
     # Verification
-    assert flatten(rack=api_fit.update().modules.high) == [
+    assert api_fit.update().modules.high.map(lambda m: m.id) == [
         api_module1.id, None, api_module2.id, None, None, api_module3.id]
     assert api_module1.update().pos == 0
     assert api_module2.update().pos == 2
@@ -174,7 +171,7 @@ def test_add_replace(client, consts):
         rack=consts.Rack.high,
         add_mode={consts.ApiModAddMode.replace: 3})
     # Verification
-    assert flatten(rack=api_fit.update().modules.high) == [
+    assert api_fit.update().modules.high.map(lambda m: m.id) == [
         api_module1.id, None, api_module2.id, api_module4.id, None, api_module3.id]
     assert api_module1.update().pos == 0
     assert api_module2.update().pos == 2
@@ -186,7 +183,7 @@ def test_add_replace(client, consts):
         rack=consts.Rack.high,
         add_mode={consts.ApiModAddMode.replace: 2})
     # Verification
-    assert flatten(rack=api_fit.update().modules.high) == [
+    assert api_fit.update().modules.high.map(lambda m: m.id) == [
         api_module1.id, None, api_module5.id, api_module4.id, None, api_module3.id]
     assert api_module1.update().pos == 0
     assert api_module3.update().pos == 5
@@ -228,7 +225,7 @@ def test_move_swap(client, consts):
         rack=consts.Rack.high,
         add_mode={consts.ApiModAddMode.replace: 5})
     # Verification
-    assert flatten(rack=api_fit.update().modules.high) == [
+    assert api_fit.update().modules.high.map(lambda m: m.id) == [
         None, api_module1.id, None, api_module2.id, None, api_module3.id]
     assert api_module1.update().pos == 1
     assert api_module2.update().pos == 3
@@ -236,7 +233,7 @@ def test_move_swap(client, consts):
     # Action
     api_module1.change_module(move={consts.ApiModMvMode.swap: 5})
     # Verification
-    assert flatten(rack=api_fit.update().modules.high) == [
+    assert api_fit.update().modules.high.map(lambda m: m.id) == [
         None, api_module3.id, None, api_module2.id, None, api_module1.id]
     assert api_module1.update().pos == 5
     assert api_module2.update().pos == 3
@@ -244,7 +241,7 @@ def test_move_swap(client, consts):
     # Action
     api_module1.change_module(move={consts.ApiModMvMode.swap: 0})
     # Verification
-    assert flatten(rack=api_fit.update().modules.high) == [
+    assert api_fit.update().modules.high.map(lambda m: m.id) == [
         api_module1.id, api_module3.id, None, api_module2.id]
     assert api_module1.update().pos == 0
     assert api_module2.update().pos == 3
@@ -252,7 +249,7 @@ def test_move_swap(client, consts):
     # Action
     api_module1.change_module(move={consts.ApiModMvMode.swap: 2})
     # Verification
-    assert flatten(rack=api_fit.update().modules.high) == [
+    assert api_fit.update().modules.high.map(lambda m: m.id) == [
         None, api_module3.id, api_module1.id, api_module2.id]
     assert api_module1.update().pos == 2
     assert api_module2.update().pos == 3
@@ -260,7 +257,7 @@ def test_move_swap(client, consts):
     # Action
     api_module1.change_module(move={consts.ApiModMvMode.swap: 6})
     # Verification
-    assert flatten(rack=api_fit.update().modules.high) == [
+    assert api_fit.update().modules.high.map(lambda m: m.id) == [
         None, api_module3.id, None, api_module2.id, None, None, api_module1.id]
     assert api_module1.update().pos == 6
     assert api_module2.update().pos == 3
@@ -268,7 +265,7 @@ def test_move_swap(client, consts):
     # Action
     api_module1.change_module(move={consts.ApiModMvMode.swap: 6})
     # Verification
-    assert flatten(rack=api_fit.update().modules.high) == [
+    assert api_fit.update().modules.high.map(lambda m: m.id) == [
         None, api_module3.id, None, api_module2.id, None, None, api_module1.id]
     assert api_module1.update().pos == 6
     assert api_module2.update().pos == 3
@@ -301,7 +298,7 @@ def test_move_shift(client, consts):
         rack=consts.Rack.high,
         add_mode={consts.ApiModAddMode.replace: 4})
     # Verification
-    assert flatten(rack=api_fit.update().modules.high) == [
+    assert api_fit.update().modules.high.map(lambda m: m.id) == [
         api_module1.id, api_module2.id, api_module3.id, api_module4.id, api_module5.id]
     assert api_module1.update().pos == 0
     assert api_module2.update().pos == 1
@@ -311,7 +308,7 @@ def test_move_shift(client, consts):
     # Action
     api_module4.change_module(move={consts.ApiModMvMode.shift: 1})
     # Verification
-    assert flatten(rack=api_fit.update().modules.high) == [
+    assert api_fit.update().modules.high.map(lambda m: m.id) == [
         api_module1.id, api_module4.id, api_module2.id, api_module3.id, api_module5.id]
     assert api_module1.update().pos == 0
     assert api_module2.update().pos == 2
@@ -321,7 +318,7 @@ def test_move_shift(client, consts):
     # Action
     api_module4.change_module(move={consts.ApiModMvMode.shift: 3})
     # Verification
-    assert flatten(rack=api_fit.update().modules.high) == [
+    assert api_fit.update().modules.high.map(lambda m: m.id) == [
         api_module1.id, api_module2.id, api_module3.id, api_module4.id, api_module5.id]
     assert api_module1.update().pos == 0
     assert api_module2.update().pos == 1
@@ -331,7 +328,7 @@ def test_move_shift(client, consts):
     # Action
     api_module4.change_module(move={consts.ApiModMvMode.shift: 0})
     # Verification
-    assert flatten(rack=api_fit.update().modules.high) == [
+    assert api_fit.update().modules.high.map(lambda m: m.id) == [
         api_module4.id, api_module1.id, api_module2.id, api_module3.id, api_module5.id]
     assert api_module1.update().pos == 1
     assert api_module2.update().pos == 2
@@ -341,7 +338,7 @@ def test_move_shift(client, consts):
     # Action
     api_module4.change_module(move={consts.ApiModMvMode.shift: 6})
     # Verification
-    assert flatten(rack=api_fit.update().modules.high) == [
+    assert api_fit.update().modules.high.map(lambda m: m.id) == [
         api_module1.id, api_module2.id, api_module3.id, api_module5.id, None, None, api_module4.id]
     assert api_module1.update().pos == 0
     assert api_module2.update().pos == 1
@@ -351,7 +348,7 @@ def test_move_shift(client, consts):
     # Action
     api_module4.change_module(move={consts.ApiModMvMode.shift: 5})
     # Verification
-    assert flatten(rack=api_fit.update().modules.high) == [
+    assert api_fit.update().modules.high.map(lambda m: m.id) == [
         api_module1.id, api_module2.id, api_module3.id, api_module5.id, None, api_module4.id]
     assert api_module1.update().pos == 0
     assert api_module2.update().pos == 1
@@ -361,7 +358,7 @@ def test_move_shift(client, consts):
     # Action
     api_module4.change_module(move={consts.ApiModMvMode.shift: 3})
     # Verification
-    assert flatten(rack=api_fit.update().modules.high) == [
+    assert api_fit.update().modules.high.map(lambda m: m.id) == [
         api_module1.id, api_module2.id, api_module3.id, api_module4.id, api_module5.id]
     assert api_module1.update().pos == 0
     assert api_module2.update().pos == 1
@@ -371,7 +368,7 @@ def test_move_shift(client, consts):
     # Action
     api_module4.change_module(move={consts.ApiModMvMode.shift: 3})
     # Verification
-    assert flatten(rack=api_fit.update().modules.high) == [
+    assert api_fit.update().modules.high.map(lambda m: m.id) == [
         api_module1.id, api_module2.id, api_module3.id, api_module4.id, api_module5.id]
     assert api_module1.update().pos == 0
     assert api_module2.update().pos == 1
@@ -406,7 +403,7 @@ def test_remove_remove(client, consts):
         rack=consts.Rack.high,
         add_mode={consts.ApiModAddMode.replace: 7})
     # Verification
-    assert flatten(rack=api_fit.update().modules.high) == [
+    assert api_fit.update().modules.high.map(lambda m: m.id) == [
         None, api_module1.id, None, api_module2.id, None, api_module3.id, api_module4.id, api_module5.id]
     assert api_module1.update().pos == 1
     assert api_module2.update().pos == 3
@@ -416,7 +413,7 @@ def test_remove_remove(client, consts):
     # Action
     api_module4.remove(rm_mode=consts.ApiModRmMode.remove)
     # Verification
-    assert flatten(rack=api_fit.update().modules.high) == [
+    assert api_fit.update().modules.high.map(lambda m: m.id) == [
         None, api_module1.id, None, api_module2.id, None, api_module3.id, api_module5.id]
     assert api_module1.update().pos == 1
     assert api_module2.update().pos == 3
@@ -425,7 +422,7 @@ def test_remove_remove(client, consts):
     # Action
     api_module5.remove(rm_mode=consts.ApiModRmMode.remove)
     # Verification
-    assert flatten(rack=api_fit.update().modules.high) == [
+    assert api_fit.update().modules.high.map(lambda m: m.id) == [
         None, api_module1.id, None, api_module2.id, None, api_module3.id]
     assert api_module1.update().pos == 1
     assert api_module2.update().pos == 3
@@ -433,13 +430,13 @@ def test_remove_remove(client, consts):
     # Action
     api_module2.remove(rm_mode=consts.ApiModRmMode.remove)
     # Verification
-    assert flatten(rack=api_fit.update().modules.high) == [None, api_module1.id, None, None, api_module3.id]
+    assert api_fit.update().modules.high.map(lambda m: m.id) == [None, api_module1.id, None, None, api_module3.id]
     assert api_module1.update().pos == 1
     assert api_module3.update().pos == 4
     # Action
     api_module3.remove(rm_mode=consts.ApiModRmMode.remove)
     # Verification
-    assert flatten(rack=api_fit.update().modules.high) == [None, api_module1.id]
+    assert api_fit.update().modules.high.map(lambda m: m.id) == [None, api_module1.id]
     assert api_module1.update().pos == 1
     # Action
     api_module1.remove(rm_mode=consts.ApiModRmMode.remove)
@@ -467,7 +464,7 @@ def test_remove_free(client, consts):
         rack=consts.Rack.high,
         add_mode={consts.ApiModAddMode.replace: 5})
     # Verification
-    assert flatten(rack=api_fit.update().modules.high) == [
+    assert api_fit.update().modules.high.map(lambda m: m.id) == [
         None, api_module1.id, None, api_module2.id, None, api_module3.id]
     assert api_module1.update().pos == 1
     assert api_module2.update().pos == 3
@@ -475,13 +472,13 @@ def test_remove_free(client, consts):
     # Action
     api_module2.remove(rm_mode=consts.ApiModRmMode.free)
     # Verification
-    assert flatten(rack=api_fit.update().modules.high) == [None, api_module1.id, None, None, None, api_module3.id]
+    assert api_fit.update().modules.high.map(lambda m: m.id) == [None, api_module1.id, None, None, None, api_module3.id]
     assert api_module1.update().pos == 1
     assert api_module3.update().pos == 5
     # Action
     api_module3.remove(rm_mode=consts.ApiModRmMode.free)
     # Verification
-    assert flatten(rack=api_fit.update().modules.high) == [None, api_module1.id]
+    assert api_fit.update().modules.high.map(lambda m: m.id) == [None, api_module1.id]
     assert api_module1.update().pos == 1
     # Action
     api_module1.remove(rm_mode=consts.ApiModRmMode.free)
@@ -510,7 +507,7 @@ def test_remove_absent(client, consts):
         rack=consts.Rack.high,
         add_mode={consts.ApiModAddMode.replace: 5})
     # Verification
-    assert flatten(rack=api_fit.update().modules.high) == [
+    assert api_fit.update().modules.high.map(lambda m: m.id) == [
         None, api_module1.id, None, api_module2.id, None, api_module3.id]
     assert api_module1.update().pos == 1
     assert api_module2.update().pos == 3
@@ -518,13 +515,13 @@ def test_remove_absent(client, consts):
     # Action
     api_module2.remove()
     # Verification
-    assert flatten(rack=api_fit.update().modules.high) == [None, api_module1.id, None, None, None, api_module3.id]
+    assert api_fit.update().modules.high.map(lambda m: m.id) == [None, api_module1.id, None, None, None, api_module3.id]
     assert api_module1.update().pos == 1
     assert api_module3.update().pos == 5
     # Action
     api_module3.remove()
     # Verification
-    assert flatten(rack=api_fit.update().modules.high) == [None, api_module1.id]
+    assert api_fit.update().modules.high.map(lambda m: m.id) == [None, api_module1.id]
     assert api_module1.update().pos == 1
     # Action
     api_module1.remove()

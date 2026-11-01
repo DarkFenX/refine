@@ -35,7 +35,7 @@ from fw.consts import (
     ApiValInfoMode,
     Rack,
 )
-from fw.util import Absent, AttrDict, AttrHookDef, is_subset
+from fw.util import Absent, AttrDict, AttrHookDef, NttRack, is_subset
 
 if typing.TYPE_CHECKING:
     from fw.aliases import JsonPredicate, ReqHook
@@ -64,6 +64,9 @@ class Fit(AttrDict):
             'boosters': AttrHookDef(func=lambda d: mk_items(data=d)),
             'ship': AttrHookDef(func=lambda d: mk_item(data=d)),
             'stance': AttrHookDef(func=lambda d: mk_item(data=d)),
+            'modules': AttrHookDef(func=lambda d: AttrDict(data=d, hooks={
+                rack.value: AttrHookDef(func=lambda ms: NttRack(None if m is None else AttrDict(data=m) for m in ms))
+                for rack in Rack})),
             'subsystems': AttrHookDef(func=lambda d: mk_items(data=d)),
             'rigs': AttrHookDef(func=lambda d: mk_items(data=d)),
             'services': AttrHookDef(func=lambda d: mk_items(data=d)),

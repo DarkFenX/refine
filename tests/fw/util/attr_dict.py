@@ -1,4 +1,5 @@
 import typing
+from collections import UserList
 
 # Rename it just to avoid confusion, as it's used to mean no value in this module
 from .singletons import Default as NoValue
@@ -22,7 +23,7 @@ def compare(*, left: typing.Any, right: typing.Any) -> bool:
         return False
     if isinstance(left, AttrDict) and isinstance(right, AttrDict):
         return compare_attr_dict(left=left, right=right)
-    if isinstance(left, list | tuple) and isinstance(right, list | tuple):
+    if isinstance(left, list | tuple | UserList) and isinstance(right, list | tuple | UserList):
         return compare_sequence(left=left, right=right)
     return left == right
 
@@ -40,7 +41,7 @@ def compare_attr_dict(*, left: AttrDict, right: AttrDict) -> bool:
     return True
 
 
-def compare_sequence(*, left: list | tuple, right: list | tuple) -> bool:
+def compare_sequence(*, left: list | tuple | UserList, right: list | tuple | UserList) -> bool:
     if len(left) != len(right):
         return False
     for i, sub_left in enumerate(left):

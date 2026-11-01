@@ -251,7 +251,7 @@ def test_sol_changes(client, consts):
     with check_no_field():
         api_fit.fleet_id  # ruff:ignore[useless-expression]
     assert api_fit.ship.id == api_ship.id
-    assert [m.id for m in api_fit.modules.high] == [api_module1.id, api_module2.id]
+    assert api_fit.modules.high.map(lambda m: m.id) == [api_module1.id, api_module2.id]
     api_module1.update()
     assert api_module1.type_id == eve_module1_id
     assert api_module1.state == consts.ApiModuleState.online
