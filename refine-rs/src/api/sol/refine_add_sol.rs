@@ -1,9 +1,6 @@
-use std::collections::hash_map::Entry;
-
 use crate::{
-    Refine, SolAddCmd, SolInfo, SolInfoCmd, SolarSystem, SolarSystemId,
+    Refine, SolAddCmd, SolInfo, SolInfoCmd, SolarSystem,
     src::{SrcAlias, err::SrcGetError},
-    svc::SolInnerGuarded,
 };
 
 impl Refine {
@@ -18,7 +15,7 @@ impl Refine {
         let core_src = inner_src.get_core().clone();
         let core_sol = self.tpool.exec_standard(move || ctl_cmd.execute(&core_src)).await;
         let src_alias = inner_src.get_alias();
-        let inner_sol = self.create_and_store_inner_sol(src_alias, core_sol).await;
+        let inner_sol = self.id_sol_map.add(src_alias, core_sol);
         let sol = SolarSystem::new(self, inner_sol).await;
         Ok(sol)
     }
@@ -41,27 +38,10 @@ impl Refine {
             })
             .await;
         let src_alias = inner_src.get_alias();
-        let inner_sol = self.create_and_store_inner_sol(src_alias, core_sol).await;
+        let inner_sol = self.id_sol_map.add(src_alias, core_sol);
         let sol = SolarSystem::new(self, inner_sol).await;
         let info = SolInfo::from_ids_and_ext(sol.get_id(), sol.get_src_alias(), info_ext);
         Ok((sol, info))
-    }
-    async fn create_and_store_inner_sol(&self, src_alias: SrcAlias, core_sol: rc::SolarSystem) -> SolInnerGuarded {
-        let mut id = SolarSystemId::new();
-        let mut id_sol_map = self.id_sol_map.write();
-        loop {
-            match id_sol_map.entry(id) {
-                Entry::Vacant(entry) => {
-                    let inner_sol = SolInnerGuarded::new(id, src_alias, core_sol);
-                    entry.insert(inner_sol.clone());
-                    return inner_sol;
-                }
-                Entry::Occupied(..) => {
-                    id = SolarSystemId::new();
-                    continue;
-                }
-            }
-        }
     }
 }
 

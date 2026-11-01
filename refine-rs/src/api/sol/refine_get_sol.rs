@@ -3,8 +3,8 @@ use crate::{Refine, SolarSystem, SolarSystemId};
 impl Refine {
     #[tracing::instrument(name = "sol-get", level = "error", skip_all)]
     pub async fn get_sol(&self, id: SolarSystemId) -> Result<SolarSystem<'_>, SolGetError> {
-        let guarded_inner_sol = match self.id_sol_map.read().get(&id) {
-            Some(sol) => sol.clone(),
+        let guarded_inner_sol = match self.id_sol_map.get(&id) {
+            Some(sol) => sol,
             None => return Err(SolGetError::SolNotFound(id)),
         };
         let mut sol = SolarSystem::new(self, guarded_inner_sol).await;
@@ -14,8 +14,7 @@ impl Refine {
         }
         if sol.inner.is_poisoned() {
             tracing::error!("discarding solar system poisoned by a panic");
-            sol.inner.close();
-            self.id_sol_map.write().remove(&id);
+            self.id_sol_map.remove(&mut sol.inner);
             return Err(SolGetError::SolNotFound(id));
         }
         Ok(sol)

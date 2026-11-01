@@ -7,7 +7,7 @@ pub struct SolarSystemId(uuid::Uuid);
 // Private
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl SolarSystemId {
-    pub(super) fn new() -> Self {
+    pub(crate) fn new() -> Self {
         SolarSystemId(uuid::Uuid::new_v4())
     }
 }
