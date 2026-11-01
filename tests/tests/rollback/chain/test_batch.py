@@ -1,7 +1,7 @@
 from fw import Spool, approx, check_no_field
 
 
-def test_sol_additions(client, consts):
+def test_sol_additions_manual(client, consts):
     eve_skill_level_attr_id = client.mk_eve_attr(id_=consts.EveAttr.skill_level)
     eve_affector_attr_id = client.mk_eve_attr()
     eve_attr_id = client.mk_eve_attr()
@@ -94,6 +94,63 @@ def test_sol_additions(client, consts):
         api_fit.skills  # ruff:ignore[useless-expression]
     assert api_ship.update().attrs[eve_attr_id].modified == approx(100)
     assert api_tgt_ship.update().attrs[eve_attr_id].modified == approx(100)
+
+
+def test_sol_additions_autodetect(client, consts):
+    eve_affector_attr_id = client.mk_eve_attr()
+    eve_attr_id = client.mk_eve_attr()
+    eve_ship_mod = client.mk_eve_effect_mod(
+        func=consts.EveModFunc.item,
+        loc=consts.EveModLoc.ship,
+        op=consts.EveModOp.post_percent,
+        affector_attr_id=eve_affector_attr_id,
+        affectee_attr_id=eve_attr_id)
+    eve_ship_effect_id = client.mk_eve_effect(mod_info=[eve_ship_mod])
+    eve_drone_id = client.mk_eve_drone()
+    eve_implant_id = client.mk_eve_implant(attrs={eve_affector_attr_id: 30}, eff_ids=[eve_ship_effect_id])
+    eve_module_id = client.mk_eve_module(
+        attrs={eve_affector_attr_id: 20},
+        eff_ids=[eve_ship_effect_id],
+        rack=consts.Rack.high)
+    eve_filler_module_id = client.mk_eve_module(rack=consts.Rack.high)
+    eve_rig_id = client.mk_eve_rig(attrs={eve_affector_attr_id: 10}, eff_ids=[eve_ship_effect_id])
+    eve_ship_id = client.mk_eve_ship(attrs={eve_attr_id: 100})
+    client.create_sources()
+    api_sol = client.create_sol()
+    api_fit = api_sol.create_fit()
+    api_ship = api_fit.set_ship(type_id=eve_ship_id)
+    api_module1 = api_fit.add_module(type_id=eve_filler_module_id, add_mode={consts.ApiModAddMode.replace: 0})
+    api_module3 = api_fit.add_module(type_id=eve_filler_module_id, add_mode={consts.ApiModAddMode.replace: 2})
+    api_other_item = api_sol.add_sw_effect(type_id=eve_ship_id)
+    api_other_item.remove()
+    # Verification
+    assert api_ship.update().attrs[eve_attr_id].modified == approx(100)
+    # Action & verification - autodetected items are added, the module into the free slot, and
+    # everything is calculated before the batch fails
+    with api_sol.batch(status_code=400, json_predicate={
+            'code': 'ITM-001',
+            'message': f'failed to remove item: item {api_other_item.id} not found',
+            'cmd_index': 5,
+    }) as api_sol_batch:
+        api_sol_batch.autodetect_add_item(fit_id=api_fit.id, type_id=eve_drone_id)
+        api_sol_batch.autodetect_add_item(fit_id=api_fit.id, type_id=eve_implant_id)
+        api_sol_batch.autodetect_add_item(fit_id=api_fit.id, type_id=eve_module_id)
+        api_sol_batch.autodetect_add_item(fit_id=api_fit.id, type_id=eve_rig_id)
+        api_sol_batch.get_sol_info(
+            sol_mode=consts.ApiSolInfoMode.full,
+            fleet_mode=consts.ApiFleetInfoMode.full,
+            fit_mode=consts.ApiFitInfoMode.full,
+            item_mode=consts.ApiItemInfoMode.full)
+        api_sol_batch.remove_item(item_id=api_other_item.id)
+    api_fit.update()
+    assert api_fit.modules.high.map(lambda m: m.id) == [api_module1.id, None, api_module3.id]
+    with check_no_field():
+        api_fit.drones  # ruff:ignore[useless-expression]
+    with check_no_field():
+        api_fit.implants  # ruff:ignore[useless-expression]
+    with check_no_field():
+        api_fit.rigs  # ruff:ignore[useless-expression]
+    assert api_ship.update().attrs[eve_attr_id].modified == approx(100)
 
 
 def test_sol_removals(client, consts):
