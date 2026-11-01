@@ -3,7 +3,7 @@ use smallvec::SmallVec;
 use crate::{
     ItemMutCommon, MinionState, ModuleState, SolarSystem,
     rd::RState,
-    sol::UndoSavepoint,
+    sol::Savepoint,
     stats::{StatItemChargeOptions, StatItemStateOptions},
     ud::{UItem, UItemId},
 };
@@ -14,7 +14,7 @@ pub(in crate::api) fn active_stat_prepare<T>(
     item: &mut T,
     charge_options: StatItemChargeOptions,
     state_options: StatItemStateOptions,
-) -> UndoSavepoint
+) -> Savepoint
 where
     T: ItemMutCommon,
 {

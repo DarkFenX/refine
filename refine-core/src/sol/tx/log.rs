@@ -1,4 +1,4 @@
-use super::{savepoint::UndoSavepoint, step::UndoStep};
+use super::{savepoint::Savepoint, step::UndoStep};
 use crate::{
     DpsProfile, FitId, FleetId, ItemId,
     ud::{UAttrMutationRequest, UAutocharges, UData, UPhysics},
@@ -32,8 +32,8 @@ impl UndoLog {
         fleet_id_counter: FleetId,
         fit_id_counter: FitId,
         item_id_counter: ItemId,
-    ) -> UndoSavepoint {
-        let savepoint = UndoSavepoint {
+    ) -> Savepoint {
+        let savepoint = Savepoint {
             len: self.steps.len(),
             was_recording: self.recording,
             fleet_id_counter,
@@ -48,7 +48,7 @@ impl UndoLog {
         self.recording = false;
     }
     /// Restores recording state which was there before the savepoint.
-    pub(crate) fn close(&mut self, savepoint: UndoSavepoint) {
+    pub(crate) fn close(&mut self, savepoint: Savepoint) {
         self.recording = savepoint.was_recording;
     }
     /// Keeps all the recorded changes: stops recording, clears the log, and evicts entities which
@@ -112,7 +112,7 @@ impl UndoLog {
     pub(crate) fn record(&mut self, step: UndoStep) {
         self.steps.push(step);
     }
-    pub(crate) fn pop(&mut self, savepoint: &UndoSavepoint) -> Option<UndoStep> {
+    pub(crate) fn pop(&mut self, savepoint: &Savepoint) -> Option<UndoStep> {
         match self.steps.len() > savepoint.len {
             true => self.steps.pop(),
             false => None,

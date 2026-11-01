@@ -1,7 +1,7 @@
 pub(crate) use rev_projs::RevProjs;
 pub use sol::SolarSystem;
 pub use tx::SolTx;
-pub(crate) use tx::{UndoLog, UndoSavepoint, UndoStep};
+pub(crate) use tx::{Savepoint, UndoLog, UndoStep};
 
 mod reuse;
 mod rev_projs;

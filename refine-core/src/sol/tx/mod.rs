@@ -6,7 +6,7 @@
 //! user settings, external IDs, and internal IDs of user entities (like fleets, fits, or items).
 
 pub(crate) use log::UndoLog;
-pub(crate) use savepoint::UndoSavepoint;
+pub(crate) use savepoint::Savepoint;
 pub(crate) use step::UndoStep;
 pub use tx::SolTx;
 

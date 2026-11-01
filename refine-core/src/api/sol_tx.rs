@@ -1,5 +1,5 @@
 use crate::{
-    sol::{SolTx, SolarSystem, UndoSavepoint, UndoStep},
+    sol::{Savepoint, SolTx, SolarSystem, UndoStep},
     ud::UItemMutationRequest,
 };
 
@@ -26,7 +26,7 @@ pub enum TxBeginError {
 // Private
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl SolarSystem {
-    pub(in crate::api) fn internal_tx_savepoint(&mut self) -> UndoSavepoint {
+    pub(in crate::api) fn internal_tx_savepoint(&mut self) -> Savepoint {
         self.undo.savepoint(
             self.u_data.fleets.get_id_counter(),
             self.u_data.fits.get_id_counter(),
@@ -36,7 +36,7 @@ impl SolarSystem {
     pub(crate) fn internal_tx_commit(&mut self) {
         self.undo.commit(&mut self.u_data);
     }
-    pub(crate) fn internal_tx_rollback(&mut self, savepoint: UndoSavepoint) {
+    pub(crate) fn internal_tx_rollback(&mut self, savepoint: Savepoint) {
         // Steps are undone by the same methods which record them, and we do not want to record it
         self.undo.pause();
         while let Some(step) = self.undo.pop(&savepoint) {

@@ -1,6 +1,6 @@
 use std::ops::{Deref, DerefMut};
 
-use crate::sol::{SolarSystem, UndoSavepoint};
+use crate::sol::{Savepoint, SolarSystem};
 
 /// Transaction on a solar system.
 ///
@@ -14,10 +14,10 @@ use crate::sol::{SolarSystem, UndoSavepoint};
 pub struct SolTx<'a> {
     sol: &'a mut SolarSystem,
     // Taken on commit and rollback
-    savepoint: Option<UndoSavepoint>,
+    savepoint: Option<Savepoint>,
 }
 impl<'a> SolTx<'a> {
-    pub(crate) fn new(sol: &'a mut SolarSystem, savepoint: UndoSavepoint) -> Self {
+    pub(crate) fn new(sol: &'a mut SolarSystem, savepoint: Savepoint) -> Self {
         Self {
             sol,
             savepoint: Some(savepoint),
