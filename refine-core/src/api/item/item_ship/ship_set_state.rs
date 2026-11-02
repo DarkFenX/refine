@@ -7,12 +7,8 @@ use crate::{
 impl SolarSystem {
     pub(in crate::api) fn internal_set_ship_state(&mut self, ship_uid: UItemId, state: bool) {
         let u_ship = self.u_data.items.get_mut(ship_uid).dc_ship_mut().unwrap();
-        let old_state = u_ship.get_ship_state();
-        if state == old_state {
-            return;
-        }
         if self.undo.is_recording() {
-            self.undo.record(UndoStep::ShipState(ship_uid, old_state));
+            self.undo.record(UndoStep::ShipState(ship_uid, u_ship.get_ship_state()));
         }
         let old_a_state = u_ship.get_state();
         u_ship.set_ship_state(state);
@@ -31,6 +27,10 @@ impl SolarSystem {
 
 impl<'s> ShipMut<'s> {
     pub fn set_state(&mut self, state: bool) {
+        let u_ship = self.sol.u_data.items.get(self.uid).dc_ship().unwrap();
+        if state == u_ship.get_ship_state() {
+            return;
+        }
         self.sol.internal_set_ship_state(self.uid, state)
     }
 }

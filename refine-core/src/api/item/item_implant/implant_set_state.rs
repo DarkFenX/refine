@@ -7,12 +7,9 @@ use crate::{
 impl SolarSystem {
     pub(in crate::api) fn internal_set_implant_state(&mut self, implant_uid: UItemId, state: bool) {
         let u_implant = self.u_data.items.get_mut(implant_uid).dc_implant_mut().unwrap();
-        let old_state = u_implant.get_implant_state();
-        if state == old_state {
-            return;
-        }
         if self.undo.is_recording() {
-            self.undo.record(UndoStep::ImplantState(implant_uid, old_state));
+            self.undo
+                .record(UndoStep::ImplantState(implant_uid, u_implant.get_implant_state()));
         }
         let old_a_state = u_implant.get_state();
         u_implant.set_implant_state(state);
@@ -31,6 +28,10 @@ impl SolarSystem {
 
 impl<'s> ImplantMut<'s> {
     pub fn set_state(&mut self, state: bool) {
+        let u_implant = self.sol.u_data.items.get(self.uid).dc_implant().unwrap();
+        if state == u_implant.get_implant_state() {
+            return;
+        }
         self.sol.internal_set_implant_state(self.uid, state)
     }
 }

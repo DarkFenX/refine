@@ -7,12 +7,11 @@ use crate::{
 impl SolarSystem {
     pub(in crate::api) fn internal_set_fw_effect_state(&mut self, fw_effect_uid: UItemId, state: bool) {
         let u_fw_effect = self.u_data.items.get_mut(fw_effect_uid).dc_fw_effect_mut().unwrap();
-        let old_state = u_fw_effect.get_fw_effect_state();
-        if state == old_state {
-            return;
-        }
         if self.undo.is_recording() {
-            self.undo.record(UndoStep::FwEffectState(fw_effect_uid, old_state));
+            self.undo.record(UndoStep::FwEffectState(
+                fw_effect_uid,
+                u_fw_effect.get_fw_effect_state(),
+            ));
         }
         let old_a_state = u_fw_effect.get_state();
         u_fw_effect.set_fw_effect_state(state);
@@ -31,6 +30,10 @@ impl SolarSystem {
 
 impl<'s> FwEffectMut<'s> {
     pub fn set_state(&mut self, state: bool) {
+        let u_fw_effect = self.sol.u_data.items.get(self.uid).dc_fw_effect().unwrap();
+        if state == u_fw_effect.get_fw_effect_state() {
+            return;
+        }
         self.sol.internal_set_fw_effect_state(self.uid, state)
     }
 }

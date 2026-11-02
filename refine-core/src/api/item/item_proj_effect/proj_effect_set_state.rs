@@ -7,12 +7,11 @@ use crate::{
 impl SolarSystem {
     pub(in crate::api) fn internal_set_proj_effect_state(&mut self, proj_effect_uid: UItemId, state: bool) {
         let u_proj_effect = self.u_data.items.get_mut(proj_effect_uid).dc_proj_effect_mut().unwrap();
-        let old_state = u_proj_effect.get_proj_effect_state();
-        if state == old_state {
-            return;
-        }
         if self.undo.is_recording() {
-            self.undo.record(UndoStep::ProjEffectState(proj_effect_uid, old_state));
+            self.undo.record(UndoStep::ProjEffectState(
+                proj_effect_uid,
+                u_proj_effect.get_proj_effect_state(),
+            ));
         }
         let old_a_state = u_proj_effect.get_state();
         u_proj_effect.set_proj_effect_state(state);
@@ -31,6 +30,10 @@ impl SolarSystem {
 
 impl<'s> ProjEffectMut<'s> {
     pub fn set_state(&mut self, state: bool) {
+        let u_proj_effect = self.sol.u_data.items.get(self.uid).dc_proj_effect().unwrap();
+        if state == u_proj_effect.get_proj_effect_state() {
+            return;
+        }
         self.sol.internal_set_proj_effect_state(self.uid, state)
     }
 }
