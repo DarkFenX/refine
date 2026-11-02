@@ -1,8 +1,8 @@
 //! Solar system item definitions.
 
 pub(crate) use base::{
-    ItemMutatedError, ItemMutationData, UAttrMutationRequest, UEffectUpdates, UItemMutationRequest,
-    get_combined_attr_values,
+    ItemMutatedError, ItemMutationData, MutatorInplaceError, UAttrMutationRequest, UEffectUpdates,
+    UItemMutationRequest, get_combined_attr_values,
 };
 use base::{UItemBase, UItemBaseMutable};
 pub(crate) use container::UItems;

@@ -9,7 +9,10 @@ use crate::{
         UAttrMutationRequest, UItemMutationRequest,
         item::{
             REffs, UEffectModeOverrideIter,
-            base::{UEffectUpdates, UItemBase, mutable::err::ItemMutatedError},
+            base::{
+                UEffectUpdates, UItemBase,
+                mutable::err::{ItemMutatedError, MutatorInplaceError},
+            },
         },
     },
     util::RMap,
@@ -495,21 +498,37 @@ impl UItemBaseMutable {
         self.update_r_data(r_data);
         Ok(())
     }
-    /// Attempt to set mutator, with the condition that mutated item does not change. Returns:
-    /// - `None` if condition was not met;
-    /// - vector with changed attribute values if mutator was updated.
+    /// Attempt to set mutator, with the condition that rendered item type does not change. Returns
+    /// vector with changed attribute values if mutator was updated.
     pub(in crate::ud::item) fn try_set_mutator_type_aid_inplace(
         &mut self,
         mutator_type_aid: AItemId,
         r_data: &RData,
-    ) -> Option<Vec<RAttrId>> {
-        let item_mutation = self.mutation.as_mut()?;
-        let mutation_cache = item_mutation.cache.as_mut()?;
-        let mutator = r_data.get_mutator_by_aid(&mutator_type_aid)?;
+    ) -> Result<Vec<RAttrId>, MutatorInplaceError> {
+        let item_mutation = self.mutation.as_mut().ok_or(ItemMutatedError)?;
+        let Some(mutation_cache) = &mut item_mutation.cache else {
+            // Mutation is not effective, and stays so if new mutator cannot mutate base item, in
+            // which case only mutator ID changes
+            let base_type_aid = self.base.get_type_aid();
+            return match r_data
+                .get_mutator_by_aid(&mutator_type_aid)
+                .and_then(|v| v.item_map.get(&base_type_aid))
+                .and_then(|v| r_data.get_item_by_aid(v))
+            {
+                Some(..) => Err(MutatorInplaceError::MutatedTypeChange),
+                None => {
+                    item_mutation.mutator_type_aid = mutator_type_aid;
+                    Ok(Vec::new())
+                }
+            };
+        };
+        let mutator = r_data
+            .get_mutator_by_aid(&mutator_type_aid)
+            .ok_or(MutatorInplaceError::MutatedTypeChange)?;
         // With mutation cache set, item base stores mutated item
         let mutated_r_item = self.base.base_get_r_item().unwrap();
         if mutator.item_map.get(&mutation_cache.base_type_aid) != Some(&mutated_r_item.base.aid) {
-            return None;
+            return Err(MutatorInplaceError::MutatedTypeChange);
         }
         let base_r_item = r_data.get_item_by_aid(&mutation_cache.base_type_aid);
         // Mutators which share mutated item normally mutate the same attributes
@@ -551,7 +570,7 @@ impl UItemBaseMutable {
         }
         item_mutation.mutator_type_aid = mutator_type_aid;
         mutation_cache.mutator = mutator.clone();
-        Some(changed_attr_rids)
+        Ok(changed_attr_rids)
     }
     /// Removes mutation, returning it.
     pub(in crate::ud::item) fn unmutate(&mut self, r_data: &RData) -> Result<ItemMutationData, ItemMutatedError> {

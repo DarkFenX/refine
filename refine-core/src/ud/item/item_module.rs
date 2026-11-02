@@ -5,7 +5,7 @@ use crate::{
     rd::{RAttrId, RData, REffectId, RItemBase, RItemFlexData, RState},
     ud::{
         UAttrMutationRequest, UData, UFitId, UItemId, UItemMutationRequest,
-        err::ItemMutatedError,
+        err::{ItemMutatedError, MutatorInplaceError},
         item::{ItemMutationData, REffs, UEffectModeOverrideIter, UEffectUpdates, UItemBaseMutable, UProjs},
     },
 };
@@ -153,7 +153,7 @@ impl UModule {
         &mut self,
         mutator_type_aid: AItemId,
         r_data: &RData,
-    ) -> Option<Vec<RAttrId>> {
+    ) -> Result<Vec<RAttrId>, MutatorInplaceError> {
         self.base.try_set_mutator_type_aid_inplace(mutator_type_aid, r_data)
     }
     pub(crate) fn unmutate(&mut self, r_data: &RData) -> Result<ItemMutationData, ItemMutatedError> {
