@@ -5,7 +5,7 @@ use crate::{
 
 #[derive(Clone)]
 pub(crate) struct UFleet {
-    pub(crate) id: FleetId,
+    id: FleetId,
     fits: RSet<UFitId>,
 }
 impl UFleet {

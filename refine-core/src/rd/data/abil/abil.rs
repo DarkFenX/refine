@@ -6,7 +6,7 @@ use crate::{
 
 /// Represents a fighter ability.
 pub(crate) struct RAbil {
-    pub(crate) aid: AAbilId,
+    aid: AAbilId,
     pub(crate) effect_aid: AEffectId,
     pub(crate) effect_rid: REffectId,
 }
