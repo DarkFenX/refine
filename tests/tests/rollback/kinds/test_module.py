@@ -358,6 +358,36 @@ def test_mutation_change_type(client, consts):
     assert api_ship.update().attrs[eve_basic_info.affectee_attr_id].modified == approx(126)
 
 
+def test_mutation_change_type_mutated_item_same(client, consts):
+    eve_basic_info = setup_mod_basics(client=client, consts=consts)
+    eve_effect_id = client.mk_eve_effect(mod_info=[eve_basic_info.ship_mod])
+    eve_base_module1_id = client.mk_eve_item(attrs={eve_basic_info.affector_attr_id: 20}, eff_ids=[eve_effect_id])
+    eve_base_module2_id = client.mk_eve_item(attrs={eve_basic_info.affector_attr_id: 30}, eff_ids=[eve_effect_id])
+    eve_mutated_module_id = client.mk_eve_item(eff_ids=[eve_effect_id])
+    eve_mutator_id = client.mk_eve_mutator(
+        items=[([eve_base_module1_id, eve_base_module2_id], eve_mutated_module_id)],
+        attrs={eve_basic_info.affector_attr_id: (0.5, 1.5)})
+    eve_ship_id = client.mk_eve_ship(attrs={eve_basic_info.affectee_attr_id: 100})
+    client.create_sources()
+    api_sol = client.create_sol()
+    api_fit = api_sol.create_fit()
+    api_ship = api_fit.set_ship(type_id=eve_ship_id)
+    api_module = api_fit.add_module(
+        type_id=eve_base_module1_id,
+        mutation=(eve_mutator_id, {eve_basic_info.affector_attr_id: Muta.roll_to_api(val=0.8)}))
+    # Verification
+    assert api_ship.update().attrs[eve_basic_info.affectee_attr_id].modified == approx(126)
+    # Action - base type is changed, mutated item stays the same
+    with rollback_batch(api_sol=api_sol) as api_sol_batch:
+        api_sol_batch.change_module(item_id=api_module.id, type_id=eve_base_module2_id)
+    # Verification
+    api_module.update()
+    assert api_module.type_id == eve_mutated_module_id
+    assert api_module.mutation.base_type_id == eve_base_module1_id
+    assert api_module.attrs[eve_basic_info.affector_attr_id].base == approx(26)
+    assert api_ship.update().attrs[eve_basic_info.affectee_attr_id].modified == approx(126)
+
+
 def test_mutation_remove_active(client, consts):
     eve_basic_info = setup_mod_basics(client=client, consts=consts)
     _, eve_base_module_id, _, eve_mutated_module_id, eve_mutator_id, _ = setup_mutation(

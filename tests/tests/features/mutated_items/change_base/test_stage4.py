@@ -179,6 +179,50 @@ def test_from_stage4_mutated_item_same_base_not_loaded(client, consts):
     assert api_item.attrs[eve_attr_id].base == approx(92)
 
 
+def test_from_stage4_mutated_item_same_drone(client, consts):
+    eve_mutated_attr_id = client.mk_eve_attr()
+    eve_old_attr_id = client.mk_eve_attr()
+    eve_new_attr_id = client.mk_eve_attr()
+    eve_base_item1_id = client.mk_eve_drone(attrs={eve_mutated_attr_id: 100, eve_old_attr_id: 50})
+    eve_base_item2_id = client.mk_eve_drone(attrs={eve_mutated_attr_id: 200, eve_new_attr_id: 70})
+    eve_mutated_item_id = client.mk_eve_drone(attrs={eve_new_attr_id: 10})
+    eve_mutator_id = client.mk_eve_mutator(
+        items=[([eve_base_item1_id, eve_base_item2_id], eve_mutated_item_id)],
+        attrs={eve_mutated_attr_id: (0.8, 1.2)})
+    client.create_sources()
+    api_sol = client.create_sol()
+    api_fit = api_sol.create_fit()
+    api_drone = api_fit.add_drone(
+        type_id=eve_base_item1_id,
+        mutation=(eve_mutator_id, {eve_mutated_attr_id: Muta.roll_to_api(val=0.3)}))
+    # Verification
+    api_drone.update()
+    assert api_drone.type_id == eve_mutated_item_id
+    assert api_drone.mutation.type == consts.ApiMutationType.effective
+    assert api_drone.mutation.base_type_id == eve_base_item1_id
+    assert len(api_drone.mutation.attrs) == 1
+    assert api_drone.mutation.attrs[eve_mutated_attr_id].roll == approx(0.3)
+    assert api_drone.mutation.attrs[eve_mutated_attr_id].absolute == approx(92)
+    assert api_drone.attrs[eve_mutated_attr_id].base == approx(92)
+    assert api_drone.attrs[eve_old_attr_id].base == approx(50)
+    assert api_drone.attrs[eve_new_attr_id].base == approx(10)
+    # Action
+    api_drone.change_drone(type_id=eve_base_item2_id)
+    # Verification
+    api_drone.update()
+    assert api_drone.type_id == eve_mutated_item_id
+    assert api_drone.mutation.type == consts.ApiMutationType.effective
+    assert api_drone.mutation.base_type_id == eve_base_item2_id
+    assert len(api_drone.mutation.attrs) == 1
+    assert api_drone.mutation.attrs[eve_mutated_attr_id].roll == approx(0.3)
+    assert api_drone.mutation.attrs[eve_mutated_attr_id].absolute == approx(184)
+    assert len(api_drone.mutation.rolls) == 1
+    assert api_drone.mutation.rolls[eve_mutated_attr_id] == approx(0.3)
+    assert api_drone.attrs[eve_mutated_attr_id].base == approx(184)
+    assert eve_old_attr_id not in api_drone.attrs
+    assert api_drone.attrs[eve_new_attr_id].base == approx(70)
+
+
 def test_from_stage4_mutated_item_different(client, consts):
     eve_attr1_id = client.mk_eve_attr()
     eve_attr2_id = client.mk_eve_attr()
@@ -381,6 +425,149 @@ def test_from_stage4_to_mutated_item_drone(client, consts):
     assert len(api_item.mutation.rolls) == 1
     assert api_item.mutation.rolls[eve_attr_id] == approx(0.3)
     assert api_item.attrs[eve_attr_id].base == approx(92)
+
+
+def test_modification_incoming(client, consts):
+    # Check that base type change correctly triggers recalculation of mutated attributes
+    eve_affector_attr_id = client.mk_eve_attr()
+    eve_affectee_attr_id = client.mk_eve_attr()
+    eve_mod = client.mk_eve_effect_mod(
+        func=consts.EveModFunc.item,
+        loc=consts.EveModLoc.item,
+        op=consts.EveModOp.post_percent,
+        affector_attr_id=eve_affector_attr_id,
+        affectee_attr_id=eve_affectee_attr_id)
+    eve_effect_id = client.mk_eve_effect(mod_info=[eve_mod])
+    eve_base_item1_id = client.mk_eve_item(attrs={eve_affector_attr_id: 20, eve_affectee_attr_id: 200})
+    eve_base_item2_id = client.mk_eve_item(attrs={eve_affector_attr_id: 20, eve_affectee_attr_id: 300})
+    eve_mutated_item_id = client.mk_eve_item(eff_ids=[eve_effect_id])
+    eve_mutator_id = client.mk_eve_mutator(
+        items=[([eve_base_item1_id, eve_base_item2_id], eve_mutated_item_id)],
+        attrs={eve_affectee_attr_id: (0.8, 1.2)})
+    client.create_sources()
+    api_sol = client.create_sol()
+    api_fit = api_sol.create_fit()
+    api_item = api_fit.add_module(
+        type_id=eve_base_item1_id,
+        mutation=(eve_mutator_id, {eve_affectee_attr_id: Muta.roll_to_api(val=0.3)}))
+    # Verification
+    api_item.update()
+    assert api_item.attrs[eve_affectee_attr_id].base == approx(184)
+    assert api_item.attrs[eve_affectee_attr_id].modified == approx(220.8)
+    # Action
+    api_item.change_module(type_id=eve_base_item2_id)
+    # Verification
+    api_item.update()
+    assert api_item.type_id == eve_mutated_item_id
+    assert api_item.attrs[eve_affectee_attr_id].base == approx(276)
+    assert api_item.attrs[eve_affectee_attr_id].modified == approx(331.2)
+
+
+def test_modification_outgoing(client, consts):
+    # Check that base type change correctly triggers recalculation of attributes modified by
+    # attributes it changes, on the item itself and on other items
+    eve_affector_attr_id = client.mk_eve_attr()
+    eve_affectee_attr_id = client.mk_eve_attr()
+    eve_item_mod = client.mk_eve_effect_mod(
+        func=consts.EveModFunc.item,
+        loc=consts.EveModLoc.item,
+        op=consts.EveModOp.post_percent,
+        affector_attr_id=eve_affector_attr_id,
+        affectee_attr_id=eve_affectee_attr_id)
+    eve_ship_mod = client.mk_eve_effect_mod(
+        func=consts.EveModFunc.item,
+        loc=consts.EveModLoc.ship,
+        op=consts.EveModOp.post_percent,
+        affector_attr_id=eve_affector_attr_id,
+        affectee_attr_id=eve_affectee_attr_id)
+    eve_charge_mod = client.mk_eve_effect_mod(
+        func=consts.EveModFunc.item,
+        loc=consts.EveModLoc.other,
+        op=consts.EveModOp.post_percent,
+        affector_attr_id=eve_affector_attr_id,
+        affectee_attr_id=eve_affectee_attr_id)
+    eve_effect_id = client.mk_eve_effect(mod_info=[eve_item_mod, eve_ship_mod, eve_charge_mod])
+    eve_base_item1_id = client.mk_eve_item(attrs={eve_affector_attr_id: 20, eve_affectee_attr_id: 200})
+    eve_base_item2_id = client.mk_eve_item(attrs={eve_affector_attr_id: 30, eve_affectee_attr_id: 200})
+    eve_mutated_item_id = client.mk_eve_item(eff_ids=[eve_effect_id])
+    eve_mutator_id = client.mk_eve_mutator(
+        items=[([eve_base_item1_id, eve_base_item2_id], eve_mutated_item_id)],
+        attrs={eve_affector_attr_id: (0.8, 1.2)})
+    eve_ship_id = client.mk_eve_ship(attrs={eve_affectee_attr_id: 200})
+    eve_charge_id = client.mk_eve_charge(attrs={eve_affectee_attr_id: 200})
+    client.create_sources()
+    api_sol = client.create_sol()
+    api_fit = api_sol.create_fit()
+    api_ship = api_fit.set_ship(type_id=eve_ship_id)
+    api_item = api_fit.add_module(
+        type_id=eve_base_item1_id,
+        mutation=(eve_mutator_id, {eve_affector_attr_id: Muta.roll_to_api(val=0.3)}),
+        charge_type_id=eve_charge_id)
+    # Verification
+    api_item.update()
+    assert api_item.attrs[eve_affector_attr_id].base == approx(18.4)
+    assert api_item.attrs[eve_affectee_attr_id].modified == approx(236.8)
+    assert api_ship.update().attrs[eve_affectee_attr_id].modified == approx(236.8)
+    assert api_item.charge.update().attrs[eve_affectee_attr_id].modified == approx(236.8)
+    # Action
+    api_item.change_module(type_id=eve_base_item2_id)
+    # Verification
+    api_item.update()
+    assert api_item.type_id == eve_mutated_item_id
+    assert api_item.attrs[eve_affector_attr_id].base == approx(27.6)
+    assert api_item.attrs[eve_affectee_attr_id].modified == approx(255.2)
+    assert api_ship.update().attrs[eve_affectee_attr_id].modified == approx(255.2)
+    assert api_item.charge.update().attrs[eve_affectee_attr_id].modified == approx(255.2)
+
+
+def test_modification_attr_added_removed(client, consts):
+    # Affector attribute is defined only on one of base items. Before it appears, calculation uses
+    # its default value, so base type change has to trigger recalculation of everything it modifies
+    # both when it appears and when it disappears
+    eve_affector_attr_id = client.mk_eve_attr(def_val=10)
+    eve_affectee_attr_id = client.mk_eve_attr()
+    eve_item_mod = client.mk_eve_effect_mod(
+        func=consts.EveModFunc.item,
+        loc=consts.EveModLoc.item,
+        op=consts.EveModOp.post_percent,
+        affector_attr_id=eve_affector_attr_id,
+        affectee_attr_id=eve_affectee_attr_id)
+    eve_ship_mod = client.mk_eve_effect_mod(
+        func=consts.EveModFunc.item,
+        loc=consts.EveModLoc.ship,
+        op=consts.EveModOp.post_percent,
+        affector_attr_id=eve_affector_attr_id,
+        affectee_attr_id=eve_affectee_attr_id)
+    eve_effect_id = client.mk_eve_effect(mod_info=[eve_item_mod, eve_ship_mod])
+    eve_base_item1_id = client.mk_eve_item(attrs={eve_affectee_attr_id: 200})
+    eve_base_item2_id = client.mk_eve_item(attrs={eve_affector_attr_id: 30, eve_affectee_attr_id: 200})
+    eve_mutated_item_id = client.mk_eve_item(eff_ids=[eve_effect_id])
+    eve_mutator_id = client.mk_eve_mutator(items=[([eve_base_item1_id, eve_base_item2_id], eve_mutated_item_id)])
+    eve_ship_id = client.mk_eve_ship(attrs={eve_affectee_attr_id: 200})
+    client.create_sources()
+    api_sol = client.create_sol()
+    api_fit = api_sol.create_fit()
+    api_ship = api_fit.set_ship(type_id=eve_ship_id)
+    api_item = api_fit.add_module(type_id=eve_base_item1_id, mutation=eve_mutator_id)
+    # Verification
+    api_item.update()
+    assert api_item.attrs[eve_affectee_attr_id].modified == approx(220)
+    assert api_ship.update().attrs[eve_affectee_attr_id].modified == approx(220)
+    # Action
+    api_item.change_module(type_id=eve_base_item2_id)
+    # Verification
+    api_item.update()
+    assert api_item.type_id == eve_mutated_item_id
+    assert api_item.attrs[eve_affector_attr_id].base == approx(30)
+    assert api_item.attrs[eve_affectee_attr_id].modified == approx(260)
+    assert api_ship.update().attrs[eve_affectee_attr_id].modified == approx(260)
+    # Action
+    api_item.change_module(type_id=eve_base_item1_id)
+    # Verification
+    api_item.update()
+    assert api_item.type_id == eve_mutated_item_id
+    assert api_item.attrs[eve_affectee_attr_id].modified == approx(220)
+    assert api_ship.update().attrs[eve_affectee_attr_id].modified == approx(220)
 
 
 def test_projection(client, consts):

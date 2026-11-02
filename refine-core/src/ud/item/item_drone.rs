@@ -56,6 +56,9 @@ impl UDrone {
     pub(crate) fn set_base_type_aid(&mut self, type_aid: AItemId, r_data: &RData) {
         self.base.set_base_type_aid(type_aid, r_data);
     }
+    pub(crate) fn try_set_base_type_aid_inplace(&mut self, type_aid: AItemId, r_data: &RData) -> Option<Vec<RAttrId>> {
+        self.base.try_set_base_type_aid_inplace(type_aid, r_data)
+    }
     pub(crate) fn get_rendered_type_aid(&self) -> AItemId {
         self.base.get_rendered_type_aid()
     }

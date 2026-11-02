@@ -155,6 +155,71 @@ impl UItemBaseMutable {
         // cache
         self.update_r_data(r_data);
     }
+    /// Attempt to set base type, with the condition that rendered item type and data derived from
+    /// attributes do not change. Returns vector with IDs of attributes whose values changed if base
+    /// type was updated.
+    pub(in crate::ud::item) fn try_set_base_type_aid_inplace(
+        &mut self,
+        type_aid: AItemId,
+        r_data: &RData,
+    ) -> Option<Vec<RAttrId>> {
+        // Only effective mutation can keep rendered item type when base type changes
+        let item_mutation = self.mutation.as_mut()?;
+        let mutation_cache = item_mutation.cache.as_mut()?;
+        // With mutation cache set, item base stores mutated item
+        let mutated_r_item = self.base.base_get_r_item().unwrap();
+        if mutation_cache.mutator.item_map.get(&type_aid) != Some(&mutated_r_item.base.aid) {
+            return None;
+        }
+        let muta_pregen = r_data.get_muta_pregen();
+        let new_pregen_attrs_rid = muta_pregen
+            .get_merged_attrs_rid(type_aid, item_mutation.mutator_type_aid)
+            .unwrap();
+        // Same unmutated attributes mean the same data derived from them, and the same attribute
+        // values
+        if new_pregen_attrs_rid == mutation_cache.pregen_attrs_rid {
+            mutation_cache.base_type_aid = type_aid;
+            return Some(Vec::new());
+        }
+        // Services keep data derived from attributes, so with it changed, item has to be re-added
+        if !muta_pregen.is_same_flex_data(mutation_cache.base_type_aid, type_aid, item_mutation.mutator_type_aid) {
+            return None;
+        }
+        let new_attrs = muta_pregen.get_merged_attrs(new_pregen_attrs_rid).clone();
+        let old_attrs = std::mem::replace(&mut mutation_cache.flex_data.attrs, new_attrs);
+        apply_attr_mutations(
+            &mut mutation_cache.flex_data,
+            &mutation_cache.mutator,
+            &item_mutation.attr_rolls,
+            r_data,
+        );
+        let new_attrs = &mutation_cache.flex_data.attrs;
+        // Presized, since growing it costs more than unused capacity
+        let mut changed_attr_rids = Vec::with_capacity(new_attrs.len());
+        let mut old_found = 0;
+        for (attr_rid, new_value) in new_attrs.iter() {
+            match old_attrs.get(attr_rid) {
+                Some(old_value) => {
+                    old_found += 1;
+                    if old_value != new_value {
+                        changed_attr_rids.push(*attr_rid);
+                    }
+                }
+                None => changed_attr_rids.push(*attr_rid),
+            }
+        }
+        // Attributes which are gone have to be looked for only if some old ones were not found
+        if old_found != old_attrs.len() {
+            for attr_rid in old_attrs.keys() {
+                if !new_attrs.contains_key(attr_rid) {
+                    changed_attr_rids.push(*attr_rid);
+                }
+            }
+        }
+        mutation_cache.base_type_aid = type_aid;
+        mutation_cache.pregen_attrs_rid = new_pregen_attrs_rid;
+        Some(changed_attr_rids)
+    }
     pub(in crate::ud::item) fn get_rendered_type_aid(&self) -> AItemId {
         self.base.get_type_aid()
     }
@@ -592,6 +657,9 @@ impl ItemMutationData {
     }
     pub(crate) fn get_cache(&self) -> Option<&ItemMutationDataCache> {
         self.cache.as_ref()
+    }
+    pub(crate) fn is_effective(&self) -> bool {
+        self.cache.is_some()
     }
 }
 

@@ -38,6 +38,22 @@ impl RMutaPregen {
     pub(crate) fn get_merged_attrs(&self, attrs_rid: RMutaPregenMergedAttrsId) -> &RMap<RAttrId, Value> {
         self.merged_attrs.get_by_id(attrs_rid)
     }
+    pub(crate) fn get_merged_attrs_rid(
+        &self,
+        base_type_aid: AItemId,
+        mutator_type_aid: AItemId,
+    ) -> Option<RMutaPregenMergedAttrsId> {
+        self.merged_attrs.get_id(&(base_type_aid, mutator_type_aid))
+    }
+    pub(crate) fn is_same_flex_data(
+        &self,
+        base_type1_aid: AItemId,
+        base_type2_aid: AItemId,
+        mutator_type_aid: AItemId,
+    ) -> bool {
+        self.flex_data
+            .is_same_entry(&(base_type1_aid, mutator_type_aid), &(base_type2_aid, mutator_type_aid))
+    }
     pub(crate) fn get_merged_attrs_rid_and_flex_data(
         &self,
         base_type_aid: AItemId,
@@ -92,19 +108,5 @@ impl RMutaPregen {
             merged_attrs: attrs,
             flex_data: derived,
         }
-    }
-}
-
-////////////////////////////////////////////////////////////////////////////////////////////////////
-// Debugging
-////////////////////////////////////////////////////////////////////////////////////////////////////
-#[cfg(feature = "dev")]
-impl RMutaPregen {
-    pub(crate) fn get_merged_attrs_rid(
-        &self,
-        base_type_aid: AItemId,
-        mutator_type_aid: AItemId,
-    ) -> Option<RMutaPregenMergedAttrsId> {
-        self.merged_attrs.get_id(&(base_type_aid, mutator_type_aid))
     }
 }

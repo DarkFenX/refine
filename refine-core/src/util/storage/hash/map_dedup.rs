@@ -46,7 +46,6 @@ where
     pub(crate) fn get_by_id(&self, id: I) -> &V {
         &self.values[id.index()]
     }
-    #[expect(dead_code)]
     pub(crate) fn is_same_entry(&self, key1: &K, key2: &K) -> bool {
         match (self.ids.get(key1), self.ids.get(key2)) {
             (Some(id1), Some(id2)) => id1 == id2,

@@ -429,6 +429,58 @@ def test_src_mutation(client, consts):
     assert api_val.details.resist_immunity == {api_src_item1.id: [api_tgt_item.id]}
 
 
+def test_src_mutation_base_change(client, consts):
+    # Remote resist definition is taken from base item, so changing base type can change it even
+    # when mutated item stays the same
+    eve_resist_def_attr_id = client.mk_eve_attr(id_=consts.EveAttr.remote_resistance_id)
+    eve_resist_attr1_id = client.mk_eve_attr()
+    eve_resist_attr2_id = client.mk_eve_attr()
+    eve_src_effect_id = client.mk_eve_effect(cat_id=consts.EveEffCat.target)
+    eve_src_base_item1_id = client.mk_eve_item(
+        attrs={eve_resist_def_attr_id: eve_resist_attr1_id},
+        eff_ids=[eve_src_effect_id],
+        defeff_id=eve_src_effect_id)
+    eve_src_base_item2_id = client.mk_eve_item(
+        attrs={eve_resist_def_attr_id: eve_resist_attr2_id},
+        eff_ids=[eve_src_effect_id],
+        defeff_id=eve_src_effect_id)
+    eve_src_mutated_item_id = client.mk_eve_item(eff_ids=[eve_src_effect_id], defeff_id=eve_src_effect_id)
+    eve_src_mutator_id = client.mk_eve_mutator(
+        items=[([eve_src_base_item1_id, eve_src_base_item2_id], eve_src_mutated_item_id)])
+    eve_tgt_item_id = client.mk_eve_ship(attrs={eve_resist_attr1_id: 0, eve_resist_attr2_id: 1})
+    eve_ship_id = client.mk_eve_ship()
+    client.create_sources()
+    api_sol = client.create_sol()
+    api_src_fit = api_sol.create_fit()
+    api_src_fit.set_ship(type_id=eve_ship_id)
+    api_src_item = api_src_fit.add_module(
+        type_id=eve_src_base_item1_id,
+        state=consts.ApiModuleState.active,
+        mutation=eve_src_mutator_id)
+    api_tgt_fit = api_sol.create_fit()
+    api_tgt_item = api_tgt_fit.set_ship(type_id=eve_tgt_item_id)
+    api_src_item.change_module(add_proj_item_ids=[api_tgt_item.id])
+    # Verification
+    api_val = api_src_fit.validate(options=ValOptions(resist_immunity=True))
+    assert api_val.passed is False
+    assert api_val.details.resist_immunity == {api_src_item.id: [api_tgt_item.id]}
+    # Action
+    api_src_item.change_module(type_id=eve_src_base_item2_id)
+    # Verification
+    assert api_src_item.update().type_id == eve_src_mutated_item_id
+    api_val = api_src_fit.validate(options=ValOptions(resist_immunity=True))
+    assert api_val.passed is True
+    with check_no_field():
+        api_val.details  # ruff:ignore[useless-expression]
+    # Action
+    api_src_item.change_module(type_id=eve_src_base_item1_id)
+    # Verification
+    assert api_src_item.update().type_id == eve_src_mutated_item_id
+    api_val = api_src_fit.validate(options=ValOptions(resist_immunity=True))
+    assert api_val.passed is False
+    assert api_val.details.resist_immunity == {api_src_item.id: [api_tgt_item.id]}
+
+
 def test_criterion_effect_cat(client, consts):
     # Only targeted effects are subject for the validation
     eve_resist_attr_id = client.mk_eve_attr()

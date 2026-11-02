@@ -243,6 +243,46 @@ def test_mutation_limit_inheritance(client, consts):
         api_val.details  # ruff:ignore[useless-expression]
 
 
+def test_mutation_limit_base_change(client, consts):
+    # Limit presence is taken from base item, so changing base type can change whether the module is
+    # limited even when mutated item stays the same
+    eve_grp1_id = client.mk_eve_item_group()
+    eve_grp2_id = client.mk_eve_item_group()
+    eve_limit_attr_id = client.mk_eve_attr(id_=consts.EveAttr.max_group_fitted)
+    eve_base_module1_id = client.mk_eve_item(grp_id=eve_grp1_id, attrs={eve_limit_attr_id: 1})
+    eve_base_module2_id = client.mk_eve_item(grp_id=eve_grp1_id)
+    eve_mutated_module_id = client.mk_eve_item(grp_id=eve_grp2_id)
+    eve_other_module_id = client.mk_eve_item(grp_id=eve_grp2_id)
+    eve_mutator_id = client.mk_eve_mutator(items=[([eve_base_module1_id, eve_base_module2_id], eve_mutated_module_id)])
+    client.create_sources()
+    api_sol = client.create_sol()
+    api_fit = api_sol.create_fit()
+    api_fit.add_module(type_id=eve_other_module_id, state=consts.ApiModuleState.offline)
+    api_module2 = api_fit.add_module(
+        type_id=eve_base_module1_id,
+        state=consts.ApiModuleState.offline,
+        mutation=eve_mutator_id)
+    # Verification
+    api_val = api_fit.validate(options=ValOptions(max_group_fitted=True))
+    assert api_val.passed is False
+    assert api_val.details.max_group_fitted == {eve_grp2_id: [2, {api_module2.id: 1}]}
+    # Action
+    api_module2.change_module(type_id=eve_base_module2_id)
+    # Verification
+    assert api_module2.update().type_id == eve_mutated_module_id
+    api_val = api_fit.validate(options=ValOptions(max_group_fitted=True))
+    assert api_val.passed is True
+    with check_no_field():
+        api_val.details  # ruff:ignore[useless-expression]
+    # Action
+    api_module2.change_module(type_id=eve_base_module1_id)
+    # Verification
+    assert api_module2.update().type_id == eve_mutated_module_id
+    api_val = api_fit.validate(options=ValOptions(max_group_fitted=True))
+    assert api_val.passed is False
+    assert api_val.details.max_group_fitted == {eve_grp2_id: [2, {api_module2.id: 1}]}
+
+
 def test_no_attr(client, consts):
     eve_grp_id = client.mk_eve_item_group()
     eve_limit_attr_id = consts.EveAttr.max_group_fitted
