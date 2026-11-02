@@ -6,6 +6,8 @@ pub(crate) struct UEntityContainer<T, ExtId, IntId, Err> {
     counter: ExtId,
     data: PSlab<IntId, T>,
     ext_id_to_int_id: RMap<ExtId, IntId>,
+    // Entities which are kept in storage while unmapped
+    detached: Vec<IntId>,
     phantom: std::marker::PhantomData<Err>,
 }
 impl<T, ExtId, IntId, Err> UEntityContainer<T, ExtId, IntId, Err>
@@ -20,6 +22,7 @@ where
             counter: ExtId::lib_default(),
             data: PSlab::with_capacity(capacity),
             ext_id_to_int_id: RMap::with_capacity(capacity),
+            detached: Vec::new(),
             phantom: std::marker::PhantomData,
         }
     }
@@ -87,13 +90,21 @@ where
     pub(crate) fn detach(&mut self, int_id: IntId) {
         let ext_id = self.get(int_id).lib_get_id();
         self.ext_id_to_int_id.remove(&ext_id);
+        self.detached.push(int_id);
     }
     pub(crate) fn reattach(&mut self, int_id: IntId) {
         let ext_id = self.get(int_id).lib_get_id();
         self.ext_id_to_int_id.insert(ext_id, int_id);
+        // Rollback reattaches in reverse order of detaching, so the entity is normally the last
+        // one; only children of one parent can come in a different order
+        let pos = self.detached.iter().rposition(|&v| v == int_id).unwrap();
+        self.detached.swap_remove(pos);
     }
-    pub(crate) fn evict(&mut self, int_id: IntId) -> T {
-        self.data.remove(int_id)
+    /// Removes all detached entities from storage.
+    pub(crate) fn evict_detached(&mut self) {
+        while let Some(int_id) = self.detached.pop() {
+            self.data.remove(int_id);
+        }
     }
     pub(crate) fn get_id_counter(&self) -> ExtId {
         self.counter
@@ -113,6 +124,7 @@ where
             counter: self.counter,
             data: self.data.clone(),
             ext_id_to_int_id: self.ext_id_to_int_id.clone(),
+            detached: self.detached.clone(),
             phantom: std::marker::PhantomData,
         }
     }
@@ -143,10 +155,15 @@ mod debug {
             let Self {
                 data,
                 ext_id_to_int_id,
+                detached,
                 // Not checked
                 counter: _,
                 phantom: _,
             } = self;
+            // Checked only outside of transactions, where nothing is detached
+            if !detached.is_empty() {
+                return Err(Default::default());
+            }
             let seen_data: RSet<_> = data.iter().map(|(int_id, _)| int_id).collect();
             let seen_map: RSet<_> = ext_id_to_int_id.values().copied().collect();
             if seen_data.difference(&seen_map).next().is_some() || seen_map.difference(&seen_data).next().is_some() {
