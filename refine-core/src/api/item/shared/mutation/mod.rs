@@ -8,7 +8,7 @@ pub use raw_attr::{AttrMutateRawError, RawMAttr, RawMAttrGetError, RawMAttrIter,
 
 mod abs_resolve;
 mod add;
-mod change_attrs;
+mod change_attr;
 mod full_attr;
 mod get;
 mod get_base_type_id;

@@ -3,12 +3,12 @@ use crate::{api::RawMAttrMut, num::UnitInterval, ud::UAttrMutationRequest};
 impl<'s> RawMAttrMut<'s> {
     /// Set roll for the attribute.
     pub fn set_roll(&mut self, roll: UnitInterval) {
-        let attr_mutations = vec![UAttrMutationRequest {
+        let attr_mutation = UAttrMutationRequest {
             attr_aid: self.attr_aid,
             roll: Some(roll),
-        }];
+        };
         self.sol
-            .internal_change_item_mutation_attrs(self.item_uid, attr_mutations)
+            .internal_change_item_mutation_attr(self.item_uid, attr_mutation)
             .unwrap();
     }
 }

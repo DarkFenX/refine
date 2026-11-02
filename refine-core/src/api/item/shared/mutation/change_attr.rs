@@ -4,7 +4,19 @@ use crate::{
 };
 
 impl SolarSystem {
-    pub(super) fn internal_change_item_mutation_attrs(
+    pub(in crate::api) fn internal_change_item_mutation_attr(
+        &mut self,
+        item_uid: UItemId,
+        attr_mutation: UAttrMutationRequest,
+    ) -> Result<(), ItemMutatedError> {
+        let u_item = self.u_data.items.get_mut(item_uid);
+        match u_item {
+            UItem::Drone(..) => self.internal_change_drone_mutation_attr(item_uid, attr_mutation),
+            UItem::Module(..) => self.internal_change_module_mutation_attr(item_uid, attr_mutation),
+            _ => unreachable!("unmutable item kind is used in mutation"),
+        }
+    }
+    pub(in crate::api) fn internal_change_item_mutation_attrs(
         &mut self,
         item_uid: UItemId,
         attr_mutations: Vec<UAttrMutationRequest>,

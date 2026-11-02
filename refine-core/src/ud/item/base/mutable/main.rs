@@ -296,7 +296,96 @@ impl UItemBaseMutable {
         self.mutation = Some(item_mutation_data);
         Ok(())
     }
-    /// Applies attribute mutation requests, returning IDs of attributes whose values changed.
+    /// Applies attribute mutation request, returning attribute ID if its value changed.
+    ///
+    /// Roll in the request is replaced with the roll item had, which later can be used to undo it.
+    pub(in crate::ud::item) fn change_mutation_attr(
+        &mut self,
+        r_data: &RData,
+        attr_mutation_request: &mut UAttrMutationRequest,
+    ) -> Result<Option<RAttrId>, ItemMutatedError> {
+        let Some(item_mutation) = &mut self.mutation else {
+            return Err(ItemMutatedError);
+        };
+        let new_roll = attr_mutation_request.roll;
+        // Update user-defined data
+        attr_mutation_request.roll = match new_roll {
+            Some(roll) => item_mutation.attr_rolls.insert(attr_mutation_request.attr_aid, roll),
+            None => item_mutation.attr_rolls.remove(&attr_mutation_request.attr_aid),
+        };
+        let Some(mutation_cache) = &mut item_mutation.cache else {
+            // If there is no cache - mutations are not effective, and none of item attributes can
+            // change
+            return Ok(None);
+        };
+        let base_r_item = r_data.get_item_by_aid(&mutation_cache.base_type_aid);
+        // All the methods which set cache guarantee that all the following entities are available
+        // for the source the cache was generated with, and this method is supposed to be called
+        // with the same source
+        let mutated_r_item = LazyCell::new(|| {
+            let mutated_type_aid = mutation_cache
+                .mutator
+                .item_map
+                .get(&mutation_cache.base_type_aid)
+                .unwrap();
+            r_data.get_item_by_aid(mutated_type_aid).unwrap()
+        });
+        let new_rid_value = match new_roll {
+            // Mutation change request
+            Some(attr_roll) => {
+                // Process source-dependent data and return new value
+                let Some(unmutated_value) =
+                    get_combined_attr_value(r_data, base_r_item, &mutated_r_item, &attr_mutation_request.attr_aid)
+                else {
+                    // No unmutated value now means there couldn't be any mutated value with any
+                    // mutation earlier as well, thus attribute value cannot change
+                    return Ok(None);
+                };
+                let Some(mutation_range) = mutation_cache.mutator.attr_mods.get(&unmutated_value.rid) else {
+                    // No mutation range now means there couldn't be any mutated value earlier as
+                    // well, regardless of user-defined roll data, thus attribute value cannot
+                    // change
+                    return Ok(None);
+                };
+                AttrRidVal {
+                    rid: unmutated_value.rid,
+                    value: mutate_attr_value(unmutated_value.value, mutation_range, attr_roll),
+                }
+            }
+            // Mutation removal request
+            None => {
+                // Update source-dependent data
+                let Some(unmutated_value) =
+                    get_combined_attr_value(r_data, base_r_item, &mutated_r_item, &attr_mutation_request.attr_aid)
+                else {
+                    // No unmutated value - can't do any comparisons
+                    return Ok(None);
+                };
+                AttrRidVal {
+                    rid: unmutated_value.rid,
+                    // Limit possible values by roll range, if it is available
+                    value: match mutation_cache.mutator.attr_mods.get(&unmutated_value.rid) {
+                        Some(mutation_range) => limit_attr_value(unmutated_value.value, mutation_range),
+                        None => unmutated_value.value,
+                    },
+                }
+            }
+        };
+        // Since unmutated value of the attribute is available by now, we can safely assume that
+        // merged attributes have some value too (those are supposed to be built using the same
+        // logic as unmutated value)
+        let old_value = mutation_cache
+            .merged_attr_data
+            .attrs
+            .insert(new_rid_value.rid, new_rid_value.value)
+            .unwrap();
+        match old_value != new_rid_value.value {
+            true => Ok(Some(new_rid_value.rid)),
+            false => Ok(None),
+        }
+    }
+    /// Applies attribute mutation requests, returning IDs of attributes whose values changed. A
+    /// batch version of single-request method.
     ///
     /// Requests are replaced with the values item had, which later can be used to undo them.
     pub(in crate::ud::item) fn change_mutation_attrs(
@@ -311,7 +400,7 @@ impl UItemBaseMutable {
             // If there is no cache - mutations are not effective. In this case we update user data
             // and return empty list, since effectively none of item attributes can change
             for attr_mutation_request in attr_mutation_requests.iter_mut() {
-                apply_attr_roll(&mut item_mutation.attr_rolls, attr_mutation_request);
+                self.change_mutation_attr(r_data, attr_mutation_request)?;
             }
             return Ok(Vec::new());
         };
@@ -327,14 +416,17 @@ impl UItemBaseMutable {
                 .unwrap();
             r_data.get_item_by_aid(mutated_type_aid).unwrap()
         });
-        // Process mutation requests, recording attributes whose values were changed for the item
-        let mut changed_attr_rids = Vec::new();
+        // Process mutation requests, recording attributes whose values were changed for the item;
+        // presized, since growing it costs more than unused capacity
+        let mut changed_attr_rids = Vec::with_capacity(attr_mutation_requests.len());
         for attr_mutation_request in attr_mutation_requests.iter_mut() {
-            let new_roll = attr_mutation_request.roll;
-            apply_attr_roll(&mut item_mutation.attr_rolls, attr_mutation_request);
-            let new_rid_value = match new_roll {
+            let new_rid_value = match attr_mutation_request.roll {
                 // Mutation change request
                 Some(attr_roll) => {
+                    // Update user-defined data, putting replaced roll into the request
+                    attr_mutation_request.roll = item_mutation
+                        .attr_rolls
+                        .insert(attr_mutation_request.attr_aid, attr_roll);
                     // Process source-dependent data and return new value
                     let Some(unmutated_value) =
                         get_combined_attr_value(r_data, base_r_item, &mutated_r_item, &attr_mutation_request.attr_aid)
@@ -357,6 +449,8 @@ impl UItemBaseMutable {
                 }
                 // Mutation removal request
                 None => {
+                    // Update user-defined data, putting replaced roll into the request
+                    attr_mutation_request.roll = item_mutation.attr_rolls.remove(&attr_mutation_request.attr_aid);
                     // Update source-dependent data
                     let Some(unmutated_value) =
                         get_combined_attr_value(r_data, base_r_item, &mutated_r_item, &attr_mutation_request.attr_aid)
@@ -526,14 +620,6 @@ fn apply_attr_mutations(
             }
         }
     }
-}
-
-// Applies the request to user-defined rolls, and puts the roll it replaced into the request
-fn apply_attr_roll(attr_rolls: &mut RMap<AAttrId, UnitInterval>, request: &mut UAttrMutationRequest) {
-    request.roll = match request.roll {
-        Some(roll) => attr_rolls.insert(request.attr_aid, roll),
-        None => attr_rolls.remove(&request.attr_aid),
-    };
 }
 
 fn mutate_attr_value(unmutated_value: Value, roll_range: &RMutaAttrRange, roll: UnitInterval) -> Value {

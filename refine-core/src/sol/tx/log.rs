@@ -13,6 +13,7 @@ pub(crate) struct UndoLog {
     dps_profiles: Vec<Option<DpsProfile>>,
     autocharges: Vec<UAutocharges>,
     physics: Vec<UPhysics>,
+    mutation_attr: Vec<UAttrMutationRequest>,
     mutation_attrs: Vec<Vec<UAttrMutationRequest>>,
 }
 impl UndoLog {
@@ -23,6 +24,7 @@ impl UndoLog {
             dps_profiles: Vec::new(),
             autocharges: Vec::new(),
             physics: Vec::new(),
+            mutation_attr: Vec::new(),
             mutation_attrs: Vec::new(),
         }
     }
@@ -102,6 +104,7 @@ impl UndoLog {
         }
         self.dps_profiles.clear();
         self.physics.clear();
+        self.mutation_attr.clear();
         self.mutation_attrs.clear();
         self.recording = false;
     }
@@ -139,6 +142,13 @@ impl UndoLog {
     pub(crate) fn pop_physics(&mut self) -> UPhysics {
         self.physics.pop().unwrap()
     }
+    pub(crate) fn record_mutation_attr(&mut self, step: UndoStep, attr_mutation: UAttrMutationRequest) {
+        self.steps.push(step);
+        self.mutation_attr.push(attr_mutation);
+    }
+    pub(crate) fn pop_mutation_attr(&mut self) -> UAttrMutationRequest {
+        self.mutation_attr.pop().unwrap()
+    }
     pub(crate) fn record_mutation_attrs(&mut self, step: UndoStep, attr_mutations: Vec<UAttrMutationRequest>) {
         self.steps.push(step);
         self.mutation_attrs.push(attr_mutations);
@@ -164,6 +174,7 @@ mod debug {
                 || !self.dps_profiles.is_empty()
                 || !self.autocharges.is_empty()
                 || !self.physics.is_empty()
+                || !self.mutation_attr.is_empty()
                 || !self.mutation_attrs.is_empty()
             {
                 return Err(Default::default());

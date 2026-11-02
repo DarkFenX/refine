@@ -128,6 +128,13 @@ impl UModule {
     pub(crate) fn mutate(&mut self, mutation: UItemMutationRequest, r_data: &RData) -> Result<(), ItemNotMutatedError> {
         self.base.mutate(mutation, r_data)
     }
+    pub(crate) fn change_mutation_attr(
+        &mut self,
+        r_data: &RData,
+        attr_mutation: &mut UAttrMutationRequest,
+    ) -> Result<Option<RAttrId>, ItemMutatedError> {
+        self.base.change_mutation_attr(r_data, attr_mutation)
+    }
     pub(crate) fn change_mutation_attrs(
         &mut self,
         r_data: &RData,

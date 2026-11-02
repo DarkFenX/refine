@@ -110,9 +110,14 @@ impl SolarSystem {
                 UndoStep::DroneMutationAdded(drone_uid) => {
                     self.internal_remove_drone_mutation(drone_uid).unwrap();
                 }
+                UndoStep::DroneMutationAttr(drone_uid) => {
+                    let attr_mutation = self.undo.pop_mutation_attr();
+                    self.internal_change_item_mutation_attr(drone_uid, attr_mutation)
+                        .unwrap();
+                }
                 UndoStep::DroneMutationAttrs(drone_uid) => {
                     let attr_mutations = self.undo.pop_mutation_attrs();
-                    self.internal_change_drone_mutation_attrs(drone_uid, attr_mutations)
+                    self.internal_change_item_mutation_attrs(drone_uid, attr_mutations)
                         .unwrap();
                 }
                 UndoStep::DroneMutationRemoved(drone_uid, mutator_type_aid) => {
@@ -182,9 +187,14 @@ impl SolarSystem {
                 UndoStep::ModuleMutationAdded(module_uid) => {
                     self.internal_remove_module_mutation(module_uid).unwrap();
                 }
+                UndoStep::ModuleMutationAttr(module_uid) => {
+                    let attr_mutation = self.undo.pop_mutation_attr();
+                    self.internal_change_item_mutation_attr(module_uid, attr_mutation)
+                        .unwrap();
+                }
                 UndoStep::ModuleMutationAttrs(module_uid) => {
                     let attr_mutations = self.undo.pop_mutation_attrs();
-                    self.internal_change_module_mutation_attrs(module_uid, attr_mutations)
+                    self.internal_change_item_mutation_attrs(module_uid, attr_mutations)
                         .unwrap();
                 }
                 UndoStep::ModuleMutationRemoved(module_uid, mutator_type_aid) => {
