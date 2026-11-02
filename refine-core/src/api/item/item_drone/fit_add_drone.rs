@@ -36,13 +36,17 @@ impl SolarSystem {
         self.u_data.items.reattach(drone_uid);
         let u_drone = self.u_data.items.get(drone_uid).dc_drone().unwrap();
         let fit_uid = u_drone.get_fit_uid();
+        let has_projs = !u_drone.get_projs().is_empty();
         self.attach_drone(fit_uid, drone_uid);
+        // Only reattached drones can have projections
+        if has_projs {
+            SolarSystem::util_reg_item_projs(&self.u_data, &mut self.svc, &mut self.rev_projs, drone_uid);
+        }
     }
     fn attach_drone(&mut self, fit_uid: UFitId, drone_uid: UItemId) {
         let u_fit = self.u_data.fits.get_mut(fit_uid);
         u_fit.drones.insert(drone_uid);
         SolarSystem::util_add_drone(&mut self.u_data, &mut self.svc, drone_uid, &mut self.reuse.eupdates);
-        SolarSystem::util_reg_item_projs(&self.u_data, &mut self.svc, &mut self.rev_projs, drone_uid);
     }
 }
 

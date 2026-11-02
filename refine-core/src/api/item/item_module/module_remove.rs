@@ -14,10 +14,12 @@ impl SolarSystem {
         let pos = u_module.get_pos();
         let charge_uid = u_module.get_charge_uid();
         // Remove outgoing projections for both module and charge; they keep them, in case they get
-        // reattached
-        SolarSystem::util_unreg_item_projs(&self.u_data, &mut self.svc, &mut self.rev_projs, module_uid);
-        if let Some(charge_uid) = charge_uid {
-            SolarSystem::util_unreg_item_projs(&self.u_data, &mut self.svc, &mut self.rev_projs, charge_uid);
+        // reattached. Charge projects whatever its module projects
+        if !u_module.get_projs().is_empty() {
+            SolarSystem::util_unreg_item_projs(&self.u_data, &mut self.svc, &mut self.rev_projs, module_uid);
+            if let Some(charge_uid) = charge_uid {
+                SolarSystem::util_unreg_item_projs(&self.u_data, &mut self.svc, &mut self.rev_projs, charge_uid);
+            }
         }
         // Remove charge from services
         if let Some(charge_uid) = charge_uid {

@@ -9,7 +9,9 @@ impl SolarSystem {
         let u_charge = self.u_data.items.get(charge_uid).dc_charge().unwrap();
         let module_uid = u_charge.get_cont_item_uid();
         // Remove outgoing projections; charge keeps them, in case it gets reattached
-        SolarSystem::util_unreg_item_projs(&self.u_data, &mut self.svc, &mut self.rev_projs, charge_uid);
+        if !u_charge.get_projs().is_empty() {
+            SolarSystem::util_unreg_item_projs(&self.u_data, &mut self.svc, &mut self.rev_projs, charge_uid);
+        }
         // Update services
         SolarSystem::util_remove_charge(&mut self.u_data, &mut self.svc, charge_uid, &mut self.reuse.eupdates);
         // Update user data

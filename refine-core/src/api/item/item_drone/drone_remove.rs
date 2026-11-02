@@ -9,8 +9,11 @@ impl SolarSystem {
         // Remove incoming projections
         self.internal_remove_incoming_projections(drone_uid);
         // Remove outgoing projections; drone keeps them, in case it gets reattached
-        let fit_uid = self.u_data.items.get(drone_uid).dc_drone().unwrap().get_fit_uid();
-        SolarSystem::util_unreg_item_projs(&self.u_data, &mut self.svc, &mut self.rev_projs, drone_uid);
+        let u_drone = self.u_data.items.get(drone_uid).dc_drone().unwrap();
+        let fit_uid = u_drone.get_fit_uid();
+        if !u_drone.get_projs().is_empty() {
+            SolarSystem::util_unreg_item_projs(&self.u_data, &mut self.svc, &mut self.rev_projs, drone_uid);
+        }
         // Update services
         SolarSystem::util_remove_drone(&mut self.u_data, &mut self.svc, drone_uid, &mut self.reuse.eupdates);
         // Update user data

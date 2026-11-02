@@ -140,7 +140,16 @@ impl SolarSystem {
             None => return,
         };
         for autocharge_uid in autocharge_uids.into_iter() {
-            SolarSystem::util_unreg_item_projs(u_data, svc, rev_projs, autocharge_uid);
+            if !u_data
+                .items
+                .get(autocharge_uid)
+                .dc_autocharge()
+                .unwrap()
+                .get_projs()
+                .is_empty()
+            {
+                SolarSystem::util_unreg_item_projs(u_data, svc, rev_projs, autocharge_uid);
+            }
             let autocharge_u_item = u_data.items.get_mut(autocharge_uid);
             autocharge_u_item.stop_all_reffs(reuse_eupdates, &u_data.r_data);
             SolarSystem::util_remove_item(u_data, svc, autocharge_uid, reuse_eupdates);
@@ -162,7 +171,16 @@ impl SolarSystem {
             let autocharge_u_item = u_data.items.get_mut(autocharge_uid);
             autocharge_u_item.update_reffs(reuse_eupdates, &u_data.r_data);
             SolarSystem::util_add_item(u_data, svc, autocharge_uid, reuse_eupdates);
-            SolarSystem::util_reg_item_projs(u_data, svc, rev_projs, autocharge_uid);
+            if !u_data
+                .items
+                .get(autocharge_uid)
+                .dc_autocharge()
+                .unwrap()
+                .get_projs()
+                .is_empty()
+            {
+                SolarSystem::util_reg_item_projs(u_data, svc, rev_projs, autocharge_uid);
+            }
         }
     }
 }

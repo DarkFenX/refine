@@ -24,6 +24,11 @@ impl SolarSystem {
     pub(in crate::api) fn internal_reattach_proj_effect(&mut self, proj_effect_uid: UItemId) {
         self.u_data.items.reattach(proj_effect_uid);
         self.attach_proj_effect(proj_effect_uid);
+        // Only reattached effects can have projections
+        let u_proj_effect = self.u_data.items.get(proj_effect_uid).dc_proj_effect().unwrap();
+        if !u_proj_effect.get_projs().is_empty() {
+            SolarSystem::util_reg_item_projs(&self.u_data, &mut self.svc, &mut self.rev_projs, proj_effect_uid);
+        }
     }
     fn attach_proj_effect(&mut self, proj_effect_uid: UItemId) {
         self.u_data.proj_effects.insert(proj_effect_uid);
@@ -33,6 +38,5 @@ impl SolarSystem {
             proj_effect_uid,
             &mut self.reuse.eupdates,
         );
-        SolarSystem::util_reg_item_projs(&self.u_data, &mut self.svc, &mut self.rev_projs, proj_effect_uid);
     }
 }

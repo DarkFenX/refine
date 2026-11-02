@@ -46,9 +46,13 @@ impl SolarSystem {
         for (projectee_uid, range) in u_module.get_projs().iter() {
             u_charge.get_projs_mut().add(projectee_uid, range);
         }
+        let has_projs = !u_charge.get_projs().is_empty();
         let charge_u_item = UItem::Charge(u_charge);
         let charge_uid = self.u_data.items.add(charge_u_item);
         self.attach_charge(module_uid, charge_uid);
+        if has_projs {
+            SolarSystem::util_reg_item_projs(&self.u_data, &mut self.svc, &mut self.rev_projs, charge_uid);
+        }
         if self.undo.is_recording() {
             self.undo.record(UndoStep::ChargeAdded(charge_uid));
         }
@@ -58,14 +62,17 @@ impl SolarSystem {
         self.u_data.items.reattach(charge_uid);
         let u_charge = self.u_data.items.get(charge_uid).dc_charge().unwrap();
         let module_uid = u_charge.get_cont_item_uid();
+        let has_projs = !u_charge.get_projs().is_empty();
         self.attach_charge(module_uid, charge_uid);
+        if has_projs {
+            SolarSystem::util_reg_item_projs(&self.u_data, &mut self.svc, &mut self.rev_projs, charge_uid);
+        }
     }
     fn attach_charge(&mut self, module_uid: UItemId, charge_uid: UItemId) {
         let u_module = self.u_data.items.get_mut(module_uid).dc_module_mut().unwrap();
         u_module.set_charge_uid(Some(charge_uid));
         // Update services
         SolarSystem::util_add_charge(&mut self.u_data, &mut self.svc, charge_uid, &mut self.reuse.eupdates);
-        SolarSystem::util_reg_item_projs(&self.u_data, &mut self.svc, &mut self.rev_projs, charge_uid);
     }
 }
 

@@ -107,6 +107,7 @@ impl SolarSystem {
         let rack = u_module.get_rack();
         let pos = u_module.get_pos();
         let charge_uid = u_module.get_charge_uid();
+        let has_projs = !u_module.get_projs().is_empty();
         if let Some(charge_uid) = charge_uid {
             self.u_data.items.reattach(charge_uid);
         }
@@ -122,19 +123,25 @@ impl SolarSystem {
             }
         }
         self.attach_module(module_uid, charge_uid);
+        // Only reattached modules and charges can have projections. Charge projects whatever its
+        // module projects
+        if has_projs {
+            SolarSystem::util_reg_item_projs(&self.u_data, &mut self.svc, &mut self.rev_projs, module_uid);
+            if let Some(charge_uid) = charge_uid {
+                SolarSystem::util_reg_item_projs(&self.u_data, &mut self.svc, &mut self.rev_projs, charge_uid);
+            }
+        }
     }
     fn attach_module(&mut self, module_uid: UItemId, charge_uid: Option<UItemId>) {
         // Add module to services. While adding module, effect updates structure records if charge
         // needs to be activated
         SolarSystem::util_add_module(&mut self.u_data, &mut self.svc, module_uid, &mut self.reuse.eupdates);
-        SolarSystem::util_reg_item_projs(&self.u_data, &mut self.svc, &mut self.rev_projs, module_uid);
         if let Some(charge_uid) = charge_uid {
             if self.reuse.eupdates.charge.unwrap_or(false) {
                 let u_charge = self.u_data.items.get_mut(charge_uid).dc_charge_mut().unwrap();
                 u_charge.set_activated(true);
             }
             SolarSystem::util_add_charge(&mut self.u_data, &mut self.svc, charge_uid, &mut self.reuse.eupdates);
-            SolarSystem::util_reg_item_projs(&self.u_data, &mut self.svc, &mut self.rev_projs, charge_uid);
         }
     }
 }

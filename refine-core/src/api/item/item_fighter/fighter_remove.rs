@@ -19,7 +19,10 @@ impl SolarSystem {
             &mut self.reuse.eupdates,
         );
         // Remove outgoing projections; fighter keeps them, in case it gets reattached
-        SolarSystem::util_unreg_item_projs(&self.u_data, &mut self.svc, &mut self.rev_projs, fighter_uid);
+        let u_fighter = self.u_data.items.get(fighter_uid).dc_fighter().unwrap();
+        if !u_fighter.get_projs().is_empty() {
+            SolarSystem::util_unreg_item_projs(&self.u_data, &mut self.svc, &mut self.rev_projs, fighter_uid);
+        }
         // Update services
         SolarSystem::util_remove_fighter(&mut self.u_data, &mut self.svc, fighter_uid, &mut self.reuse.eupdates);
         // Update user data
