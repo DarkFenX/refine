@@ -5,8 +5,8 @@ use crate::{
 };
 
 pub struct Ship<'s> {
-    pub(in crate::api) sol: &'s SolarSystem,
-    pub(in crate::api) uid: UItemId,
+    sol: &'s SolarSystem,
+    uid: UItemId,
 }
 impl<'s> Ship<'s> {
     pub(in crate::api) fn new(sol: &'s SolarSystem, uid: UItemId) -> Self {
@@ -37,8 +37,8 @@ impl<'s> ItemCommon for Ship<'s> {
 }
 
 pub struct ShipMut<'s> {
-    pub(in crate::api) sol: &'s mut SolarSystem,
-    pub(in crate::api) uid: UItemId,
+    pub(super) sol: &'s mut SolarSystem,
+    pub(super) uid: UItemId,
 }
 impl<'s> ShipMut<'s> {
     pub(in crate::api) fn new(sol: &'s mut SolarSystem, uid: UItemId) -> Self {

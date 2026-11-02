@@ -42,7 +42,7 @@ pub(in crate::svc) struct CycleActive {
 /// Info about soft downtime between cycles (during which effects can apply their instances)
 #[derive(Copy, Clone)]
 pub(in crate::svc) struct CycleSoftDtFull {
-    pub(in crate::svc) duration: PValue,
+    pub(super) duration: PValue,
     pub(in crate::svc) reasons: CycleSoftDtReasons,
 }
 #[derive(Copy, Clone)]
@@ -63,7 +63,7 @@ pub(in crate::svc) struct CycleSoftDtReasons {
 #[derive(Copy, Clone, Eq, PartialEq, Hash)]
 pub(in crate::svc) struct CSeqHardDtFull {
     pub(in crate::svc) duration: PValue,
-    pub(in crate::svc) reasons: CSeqHardDtReasons,
+    reasons: CSeqHardDtReasons,
 }
 impl CSeqHardDtFull {
     pub(super) fn try_new(duration: PValue, rearm: bool) -> Option<Self> {
@@ -73,7 +73,7 @@ impl CSeqHardDtFull {
 }
 #[derive(Copy, Clone, Eq, PartialEq, Hash)]
 pub(in crate::svc) struct CSeqHardDtReasons {
-    pub(in crate::svc) refuel: bool,
+    refuel: bool,
 }
 impl CSeqHardDtReasons {
     fn try_new(refuel: bool) -> Option<Self> {

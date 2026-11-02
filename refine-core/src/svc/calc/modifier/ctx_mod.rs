@@ -7,7 +7,7 @@ use crate::{
 #[derive(Copy, Clone, Eq, PartialEq, Hash)]
 pub(in crate::svc::calc) struct CtxModKey {
     pub(in crate::svc::calc) rmod_id: RawModId,
-    pub(in crate::svc::calc) ctx: ModContext,
+    ctx: ModContext,
 }
 
 #[derive(Copy, Clone)]

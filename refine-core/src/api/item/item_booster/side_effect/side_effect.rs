@@ -7,10 +7,10 @@ use crate::{
 
 /// Side effect of a booster.
 pub struct SideEffect<'s> {
-    pub(in crate::api) sol: &'s SolarSystem,
-    pub(in crate::api) item_uid: UItemId,
-    pub(in crate::api) effect_aid: AEffectId,
-    pub(in crate::api) chance_attr_aid: AAttrId,
+    pub(super) sol: &'s SolarSystem,
+    pub(super) item_uid: UItemId,
+    pub(super) effect_aid: AEffectId,
+    pub(super) chance_attr_aid: AAttrId,
 }
 impl<'s> SideEffect<'s> {
     pub(in crate::api) fn new(
@@ -33,10 +33,10 @@ impl<'s> SideEffect<'s> {
 
 /// Side effect of a booster.
 pub struct SideEffectMut<'s> {
-    pub(in crate::api) sol: &'s mut SolarSystem,
-    pub(in crate::api) item_uid: UItemId,
-    pub(in crate::api) effect_aid: AEffectId,
-    pub(in crate::api) chance_attr_aid: AAttrId,
+    pub(super) sol: &'s mut SolarSystem,
+    pub(super) item_uid: UItemId,
+    pub(super) effect_aid: AEffectId,
+    pub(super) chance_attr_aid: AAttrId,
 }
 impl<'s> SideEffectMut<'s> {
     pub(in crate::api) fn new(

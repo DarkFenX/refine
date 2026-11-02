@@ -6,8 +6,8 @@ use crate::{
 
 /// Autocharges expose no projection info, since it fully matches projections of the parent item
 pub struct Autocharge<'s> {
-    pub(in crate::api) sol: &'s SolarSystem,
-    pub(in crate::api) uid: UItemId,
+    sol: &'s SolarSystem,
+    uid: UItemId,
 }
 impl<'s> Autocharge<'s> {
     pub(in crate::api) fn new(sol: &'s SolarSystem, uid: UItemId) -> Self {
@@ -38,8 +38,8 @@ impl<'s> ItemCommon for Autocharge<'s> {
 }
 
 pub struct AutochargeMut<'s> {
-    pub(in crate::api) sol: &'s mut SolarSystem,
-    pub(in crate::api) uid: UItemId,
+    pub(super) sol: &'s mut SolarSystem,
+    pub(super) uid: UItemId,
 }
 impl<'s> AutochargeMut<'s> {
     pub(in crate::api) fn new(sol: &'s mut SolarSystem, uid: UItemId) -> Self {

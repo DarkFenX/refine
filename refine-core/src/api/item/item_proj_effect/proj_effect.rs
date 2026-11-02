@@ -5,8 +5,8 @@ use crate::{
 };
 
 pub struct ProjEffect<'s> {
-    pub(in crate::api) sol: &'s SolarSystem,
-    pub(in crate::api) uid: UItemId,
+    pub(super) sol: &'s SolarSystem,
+    pub(super) uid: UItemId,
 }
 impl<'s> ProjEffect<'s> {
     pub(in crate::api) fn new(sol: &'s SolarSystem, uid: UItemId) -> Self {
@@ -28,8 +28,8 @@ impl<'s> ItemCommon for ProjEffect<'s> {
 }
 
 pub struct ProjEffectMut<'s> {
-    pub(in crate::api) sol: &'s mut SolarSystem,
-    pub(in crate::api) uid: UItemId,
+    pub(super) sol: &'s mut SolarSystem,
+    pub(super) uid: UItemId,
 }
 impl<'s> ProjEffectMut<'s> {
     pub(in crate::api) fn new(sol: &'s mut SolarSystem, uid: UItemId) -> Self {

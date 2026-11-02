@@ -9,9 +9,9 @@ use crate::{ad::AAttrId, api::AttrId, sol::SolarSystem, ud::UItemId};
 /// are the only way to access item attribute mutations which are not available on current data
 /// source.
 pub struct RawMAttr<'s> {
-    pub(in crate::api) sol: &'s SolarSystem,
-    pub(in crate::api) item_uid: UItemId,
-    pub(in crate::api) attr_aid: AAttrId,
+    pub(super) sol: &'s SolarSystem,
+    pub(super) item_uid: UItemId,
+    pub(super) attr_aid: AAttrId,
 }
 impl<'s> RawMAttr<'s> {
     pub(in crate::api) fn new(sol: &'s SolarSystem, item_uid: UItemId, attr_aid: AAttrId) -> Self {
@@ -36,9 +36,9 @@ impl<'s> RawMAttr<'s> {
 /// are the only way to access item attribute mutations which are not available on current data
 /// source.
 pub struct RawMAttrMut<'s> {
-    pub(in crate::api) sol: &'s mut SolarSystem,
-    pub(in crate::api) item_uid: UItemId,
-    pub(in crate::api) attr_aid: AAttrId,
+    pub(super) sol: &'s mut SolarSystem,
+    pub(super) item_uid: UItemId,
+    pub(super) attr_aid: AAttrId,
 }
 impl<'s> RawMAttrMut<'s> {
     pub(in crate::api) fn new(sol: &'s mut SolarSystem, item_uid: UItemId, attr_aid: AAttrId) -> Self {

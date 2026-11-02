@@ -6,8 +6,8 @@ use crate::{
 };
 
 pub struct Fighter<'s> {
-    pub(in crate::api) sol: &'s SolarSystem,
-    pub(in crate::api) uid: UItemId,
+    pub(super) sol: &'s SolarSystem,
+    pub(super) uid: UItemId,
 }
 impl<'s> Fighter<'s> {
     pub(in crate::api) fn new(sol: &'s SolarSystem, uid: UItemId) -> Self {
@@ -50,8 +50,8 @@ impl<'s> ItemCommon for Fighter<'s> {
 }
 
 pub struct FighterMut<'s> {
-    pub(in crate::api) sol: &'s mut SolarSystem,
-    pub(in crate::api) uid: UItemId,
+    pub(super) sol: &'s mut SolarSystem,
+    pub(super) uid: UItemId,
 }
 impl<'s> FighterMut<'s> {
     pub(in crate::api) fn new(sol: &'s mut SolarSystem, uid: UItemId) -> Self {

@@ -5,8 +5,8 @@ use crate::{
 };
 
 pub struct Character<'s> {
-    pub(in crate::api) sol: &'s SolarSystem,
-    pub(in crate::api) uid: UItemId,
+    sol: &'s SolarSystem,
+    uid: UItemId,
 }
 impl<'s> Character<'s> {
     pub(in crate::api) fn new(sol: &'s SolarSystem, uid: UItemId) -> Self {
@@ -31,8 +31,8 @@ impl<'s> ItemCommon for Character<'s> {
 }
 
 pub struct CharacterMut<'s> {
-    pub(in crate::api) sol: &'s mut SolarSystem,
-    pub(in crate::api) uid: UItemId,
+    pub(super) sol: &'s mut SolarSystem,
+    pub(super) uid: UItemId,
 }
 impl<'s> CharacterMut<'s> {
     pub(in crate::api) fn new(sol: &'s mut SolarSystem, uid: UItemId) -> Self {

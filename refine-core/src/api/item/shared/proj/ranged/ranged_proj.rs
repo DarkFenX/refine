@@ -2,9 +2,9 @@ use crate::{ItemId, ProjRange, SolarSystem, ud::UItemId};
 
 /// Projection which allows to set range.
 pub struct RangedProj<'s> {
-    pub(in crate::api) sol: &'s SolarSystem,
-    pub(in crate::api) projector_uid: UItemId,
-    pub(in crate::api) projectee_uid: UItemId,
+    sol: &'s SolarSystem,
+    projector_uid: UItemId,
+    projectee_uid: UItemId,
 }
 impl<'s> RangedProj<'s> {
     pub(in crate::api) fn new(sol: &'s SolarSystem, projector_uid: UItemId, projectee_uid: UItemId) -> Self {
@@ -24,9 +24,9 @@ impl<'s> RangedProj<'s> {
 
 /// Projection which allows to set range.
 pub struct RangedProjMut<'s> {
-    pub(in crate::api) sol: &'s mut SolarSystem,
-    pub(in crate::api) projector_uid: UItemId,
-    pub(in crate::api) projectee_uid: UItemId,
+    pub(super) sol: &'s mut SolarSystem,
+    pub(super) projector_uid: UItemId,
+    pub(super) projectee_uid: UItemId,
 }
 impl<'s> RangedProjMut<'s> {
     pub(in crate::api) fn new(sol: &'s mut SolarSystem, projector_uid: UItemId, projectee_uid: UItemId) -> Self {

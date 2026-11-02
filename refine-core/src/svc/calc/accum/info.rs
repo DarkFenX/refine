@@ -21,7 +21,7 @@ use crate::{
 pub(in crate::svc::calc) struct AttrValInfo {
     pub(in crate::svc::calc) value: Value,
     pub(in crate::svc::calc) effective_infos: Vec<CalcModInfo>,
-    pub(in crate::svc::calc) filtered_infos: Vec<CalcModInfo>,
+    filtered_infos: Vec<CalcModInfo>,
 }
 impl AttrValInfo {
     pub(in crate::svc::calc) fn new(value: Value) -> Self {

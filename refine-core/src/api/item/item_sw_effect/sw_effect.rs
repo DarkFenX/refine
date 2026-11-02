@@ -5,8 +5,8 @@ use crate::{
 };
 
 pub struct SwEffect<'s> {
-    pub(in crate::api) sol: &'s SolarSystem,
-    pub(in crate::api) uid: UItemId,
+    sol: &'s SolarSystem,
+    uid: UItemId,
 }
 impl<'s> SwEffect<'s> {
     pub(in crate::api) fn new(sol: &'s SolarSystem, uid: UItemId) -> Self {
@@ -28,8 +28,8 @@ impl<'s> ItemCommon for SwEffect<'s> {
 }
 
 pub struct SwEffectMut<'s> {
-    pub(in crate::api) sol: &'s mut SolarSystem,
-    pub(in crate::api) uid: UItemId,
+    pub(super) sol: &'s mut SolarSystem,
+    pub(super) uid: UItemId,
 }
 impl<'s> SwEffectMut<'s> {
     pub(in crate::api) fn new(sol: &'s mut SolarSystem, uid: UItemId) -> Self {

@@ -3,7 +3,7 @@ use crate::{AttrId, ItemTypeId, UnitInterval, Value};
 #[derive(Clone)]
 pub struct AddMutation {
     pub(in crate::ctl::core) mutator_id: ItemTypeId,
-    pub(in crate::ctl::core) attrs: Vec<(AttrId, AttrMutation)> = Vec::new(),
+    attrs: Vec<(AttrId, AttrMutation)> = Vec::new(),
 }
 impl AddMutation {
     pub fn new(mutator_id: ItemTypeId) -> Self {

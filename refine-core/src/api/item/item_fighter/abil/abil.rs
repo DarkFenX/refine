@@ -2,9 +2,9 @@ use crate::{ad::AAbilId, api::AbilityId, num::Count, sol::SolarSystem, ud::UItem
 
 /// Fighter ability.
 pub struct Ability<'s> {
-    pub(in crate::api) sol: &'s SolarSystem,
-    pub(in crate::api) fighter_uid: UItemId,
-    pub(in crate::api) abil_aid: AAbilId,
+    pub(super) sol: &'s SolarSystem,
+    pub(super) fighter_uid: UItemId,
+    pub(super) abil_aid: AAbilId,
 }
 impl<'s> Ability<'s> {
     pub(in crate::api) fn new(sol: &'s SolarSystem, fighter_uid: UItemId, abil_aid: AAbilId) -> Self {
@@ -24,9 +24,9 @@ impl<'s> Ability<'s> {
 
 /// Fighter ability which allows changing its state.
 pub struct AbilityMut<'s> {
-    pub(in crate::api) sol: &'s mut SolarSystem,
-    pub(in crate::api) fighter_uid: UItemId,
-    pub(in crate::api) abil_aid: AAbilId,
+    pub(super) sol: &'s mut SolarSystem,
+    pub(super) fighter_uid: UItemId,
+    pub(super) abil_aid: AAbilId,
 }
 impl<'s> AbilityMut<'s> {
     pub(in crate::api) fn new(sol: &'s mut SolarSystem, fighter_uid: UItemId, abil_aid: AAbilId) -> Self {

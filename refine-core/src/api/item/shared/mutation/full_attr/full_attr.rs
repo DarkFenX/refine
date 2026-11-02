@@ -4,9 +4,9 @@ use crate::{ad::AAttrId, api::AttrId, sol::SolarSystem, ud::UItemId};
 ///
 /// Attributes represented by this struct have their value impacted by mutation.
 pub struct FullMAttr<'s> {
-    pub(in crate::api) sol: &'s SolarSystem,
-    pub(in crate::api) item_uid: UItemId,
-    pub(in crate::api) attr_aid: AAttrId,
+    pub(super) sol: &'s SolarSystem,
+    pub(super) item_uid: UItemId,
+    pub(super) attr_aid: AAttrId,
 }
 impl<'s> FullMAttr<'s> {
     pub(in crate::api) fn new(sol: &'s SolarSystem, item_uid: UItemId, attr_aid: AAttrId) -> Self {
@@ -26,9 +26,9 @@ impl<'s> FullMAttr<'s> {
 ///
 /// Attributes represented by this struct have their value impacted by mutation.
 pub struct FullMAttrMut<'s> {
-    pub(in crate::api) sol: &'s mut SolarSystem,
-    pub(in crate::api) item_uid: UItemId,
-    pub(in crate::api) attr_aid: AAttrId,
+    pub(super) sol: &'s mut SolarSystem,
+    pub(super) item_uid: UItemId,
+    pub(super) attr_aid: AAttrId,
 }
 impl<'s> FullMAttrMut<'s> {
     pub(in crate::api) fn new(sol: &'s mut SolarSystem, item_uid: UItemId, attr_aid: AAttrId) -> Self {

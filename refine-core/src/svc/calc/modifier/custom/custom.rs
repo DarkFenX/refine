@@ -32,7 +32,7 @@ impl CalcCustomModifier {
 #[cfg_attr(feature = "dev", derive(PartialEq))]
 #[derive(Copy, Clone)]
 pub(in crate::svc::calc::modifier) struct CalcCustomModStrength {
-    pub(in crate::svc::calc::modifier) kind: CalcCustomModifier,
+    pub(super) kind: CalcCustomModifier,
     /// Modifiers have two ways to define affector attribute:
     /// - cheap way is via this field, with limitation that value of the attribute has to be on the
     ///   same item as the effect modifier is created from. All the regular modifiers use this

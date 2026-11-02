@@ -8,7 +8,7 @@ use crate::{
 // Sequence accumulator implementation
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 pub(in crate::svc::vast) struct SeqInstanceAccumMax<I> {
-    pub(in crate::svc::vast) max: I,
+    pub(in crate::svc::vast::aggr) max: I,
 }
 impl<I> SeqInstanceAccumMax<I>
 where

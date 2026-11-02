@@ -10,9 +10,9 @@ use crate::{
 /// test_similar_modifiers.py
 #[derive(Eq, PartialEq, Hash)]
 pub(in crate::svc::calc) struct CalcModificationKey {
-    pub(in crate::svc::calc) affector_uid: UItemId,
-    pub(in crate::svc::calc) affector_attr_rid: Option<RAttrId>,
-    pub(in crate::svc::calc) op: CalcOp,
+    affector_uid: UItemId,
+    affector_attr_rid: Option<RAttrId>,
+    op: CalcOp,
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////

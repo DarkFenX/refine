@@ -76,8 +76,8 @@ impl VastFitData {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 #[derive(Copy, Clone)]
 pub(in crate::svc::vast) struct ValItemKindItemStored {
-    pub(in crate::svc::vast) kind: Option<DetectedItemKind>,
-    pub(in crate::svc::vast) expected_kind: DetectedItemKind,
+    kind: Option<DetectedItemKind>,
+    expected_kind: DetectedItemKind,
 }
 
 impl VastFitData {

@@ -29,7 +29,7 @@ impl<I> SeqAccum<SeqInstanceAccumStackMax<I>> {
 // Sequence accumulator implementation
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 pub(in crate::svc::vast) struct SeqInstanceAccumStackMax<I> {
-    pub(in crate::svc::vast) stacked: I,
+    stacked: I,
     pub(in crate::svc::vast) max: I,
 }
 impl<I> SeqInstanceAccumStackMax<I>

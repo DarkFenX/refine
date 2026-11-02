@@ -4,8 +4,8 @@ use crate::{
 };
 
 pub struct Fleet<'s> {
-    pub(in crate::api) sol: &'s SolarSystem,
-    pub(in crate::api) uid: UFleetId,
+    pub(super) sol: &'s SolarSystem,
+    pub(super) uid: UFleetId,
 }
 impl<'s> Fleet<'s> {
     pub(in crate::api) fn new(sol: &'s SolarSystem, uid: UFleetId) -> Self {
@@ -20,8 +20,8 @@ impl<'s> Fleet<'s> {
 }
 
 pub struct FleetMut<'s> {
-    pub(in crate::api) sol: &'s mut SolarSystem,
-    pub(in crate::api) uid: UFleetId,
+    pub(super) sol: &'s mut SolarSystem,
+    pub(super) uid: UFleetId,
 }
 impl<'s> FleetMut<'s> {
     pub(in crate::api) fn new(sol: &'s mut SolarSystem, uid: UFleetId) -> Self {
