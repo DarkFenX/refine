@@ -197,7 +197,7 @@ def test_modified_req(client, consts):
     assert api_val.details.overload_skill.module_reqs == {api_module.id: 2}
 
 
-def test_mutation_req(client, consts):
+def test_mutation_req_priority(client, consts):
     eve_attr_id = client.mk_eve_attr(id_=consts.EveAttr.required_thermodynamics_skill)
     eve_base_module_id = client.mk_eve_item(attrs={eve_attr_id: 3})
     eve_mutated_module_id = client.mk_eve_item(attrs={eve_attr_id: 2})
@@ -240,6 +240,98 @@ def test_mutation_req(client, consts):
     api_module.change_module(mutation=None)
     # Verification
     assert api_module.update().attrs[eve_attr_id].modified == approx(3)
+    api_val = api_fit.validate(options=ValOptions(overload_skill=True))
+    assert api_val.passed is False
+    assert api_val.details.overload_skill.td_lvl == 1
+    assert api_val.details.overload_skill.module_reqs == {api_module.id: 3}
+
+
+def test_mutation_req_inheritance(client, consts):
+    eve_attr_id = client.mk_eve_attr(id_=consts.EveAttr.required_thermodynamics_skill)
+    eve_base_module_id = client.mk_eve_item(attrs={eve_attr_id: 3})
+    eve_mutated_module_id = client.mk_eve_item()
+    eve_mutator_id = client.mk_eve_mutator(
+        items=[([eve_base_module_id], eve_mutated_module_id)],
+        attrs={eve_attr_id: (0.5, 1.5)})
+    eve_skill_id = client.mk_eve_item(id_=consts.EveItem.thermodynamics)
+    client.create_sources()
+    api_sol = client.create_sol()
+    api_fit = api_sol.create_fit()
+    api_fit.add_skill(type_id=eve_skill_id, level=1)
+    api_module = api_fit.add_module(type_id=eve_base_module_id, state=consts.ApiModuleState.overload)
+    # Verification
+    assert api_module.update().attrs[eve_attr_id].modified == approx(3)
+    api_val = api_fit.validate(options=ValOptions(overload_skill=True))
+    assert api_val.passed is False
+    assert api_val.details.overload_skill.td_lvl == 1
+    assert api_val.details.overload_skill.module_reqs == {api_module.id: 3}
+    # Action
+    api_module.change_module(mutation=eve_mutator_id)
+    # Verification
+    assert api_module.update().attrs[eve_attr_id].modified == approx(3)
+    api_val = api_fit.validate(options=ValOptions(overload_skill=True))
+    assert api_val.passed is False
+    assert api_val.details.overload_skill.td_lvl == 1
+    assert api_val.details.overload_skill.module_reqs == {api_module.id: 3}
+    # Action
+    api_module.change_module(mutation=None)
+    # Verification
+    assert api_module.update().attrs[eve_attr_id].modified == approx(3)
+    api_val = api_fit.validate(options=ValOptions(overload_skill=True))
+    assert api_val.passed is False
+    assert api_val.details.overload_skill.td_lvl == 1
+    assert api_val.details.overload_skill.module_reqs == {api_module.id: 3}
+    # Action
+    api_module.change_module(mutation=(eve_mutator_id, {eve_attr_id: Muta.abs_to_api(val=1.5)}))
+    # Verification - requirement is taken from unmutated value
+    assert api_module.update().attrs[eve_attr_id].modified == approx(1.5)
+    api_val = api_fit.validate(options=ValOptions(overload_skill=True))
+    assert api_val.passed is False
+    assert api_val.details.overload_skill.td_lvl == 1
+    assert api_val.details.overload_skill.module_reqs == {api_module.id: 3}
+
+
+def test_mutation_req_base_change(client, consts):
+    # Requirement is taken from base item, so changing base type can change it even when mutated
+    # item stays the same
+    eve_attr_id = client.mk_eve_attr(id_=consts.EveAttr.required_thermodynamics_skill)
+    eve_base_module1_id = client.mk_eve_item(attrs={eve_attr_id: 3})
+    eve_base_module2_id = client.mk_eve_item(attrs={eve_attr_id: 1})
+    eve_mutated_module_id = client.mk_eve_item(attrs={eve_attr_id: 2})
+    eve_mutator_id = client.mk_eve_mutator(
+        items=[([eve_base_module1_id, eve_base_module2_id], eve_mutated_module_id)],
+        attrs={eve_attr_id: (0.5, 1.5)})
+    eve_skill_id = client.mk_eve_item(id_=consts.EveItem.thermodynamics)
+    client.create_sources()
+    api_sol = client.create_sol()
+    api_fit = api_sol.create_fit()
+    api_fit.add_skill(type_id=eve_skill_id, level=1)
+    api_module = api_fit.add_module(
+        type_id=eve_base_module1_id,
+        state=consts.ApiModuleState.overload,
+        mutation=(eve_mutator_id, {eve_attr_id: Muta.roll_to_api(val=0.9)}))
+    # Verification
+    assert api_module.update().attrs[eve_attr_id].modified == approx(4.2)
+    api_val = api_fit.validate(options=ValOptions(overload_skill=True))
+    assert api_val.passed is False
+    assert api_val.details.overload_skill.td_lvl == 1
+    assert api_val.details.overload_skill.module_reqs == {api_module.id: 3}
+    # Action
+    api_module.change_module(type_id=eve_base_module2_id)
+    # Verification
+    api_module.update()
+    assert api_module.type_id == eve_mutated_module_id
+    assert api_module.attrs[eve_attr_id].modified == approx(1.4)
+    api_val = api_fit.validate(options=ValOptions(overload_skill=True))
+    assert api_val.passed is True
+    with check_no_field():
+        api_val.details  # ruff:ignore[useless-expression]
+    # Action
+    api_module.change_module(type_id=eve_base_module1_id)
+    # Verification
+    api_module.update()
+    assert api_module.type_id == eve_mutated_module_id
+    assert api_module.attrs[eve_attr_id].modified == approx(4.2)
     api_val = api_fit.validate(options=ValOptions(overload_skill=True))
     assert api_val.passed is False
     assert api_val.details.overload_skill.td_lvl == 1
