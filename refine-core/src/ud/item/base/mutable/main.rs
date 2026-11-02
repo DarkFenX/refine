@@ -247,7 +247,7 @@ impl UItemBaseMutable {
         &mut self,
         modes: impl Iterator<Item = (AEffectId, EffectMode)>,
         r_data: &RData,
-    ) {
+    ) -> bool {
         self.base.set_effect_modes(modes, r_data)
     }
     pub(in crate::ud::item) fn is_loaded(&self) -> bool {
@@ -391,6 +391,9 @@ impl UItemBaseMutable {
             Some(roll) => item_mutation.attr_rolls.insert(attr_mutation_request.attr_aid, roll),
             None => item_mutation.attr_rolls.remove(&attr_mutation_request.attr_aid),
         };
+        if attr_mutation_request.roll == new_roll {
+            return Ok(None);
+        }
         let Some(mutation_cache) = &mut item_mutation.cache else {
             // If there is no cache - mutations are not effective, and none of item attributes can
             // change
@@ -461,6 +464,9 @@ impl UItemBaseMutable {
                     .insert(attr_mutation_request.attr_aid, attr_roll),
                 None => item_mutation.attr_rolls.remove(&attr_mutation_request.attr_aid),
             };
+            if attr_mutation_request.roll == new_roll {
+                continue;
+            }
             // No unmutated value now means there couldn't be any mutated value with any mutation
             // earlier as well, thus attribute value cannot change. We already updated user data,
             // so just go to next attribute

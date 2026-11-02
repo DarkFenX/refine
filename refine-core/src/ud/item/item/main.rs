@@ -266,7 +266,7 @@ impl UItem {
         &mut self,
         effect_modes: impl Iterator<Item = (AEffectId, EffectMode)>,
         r_data: &RData,
-    ) {
+    ) -> bool {
         match self {
             Self::Autocharge(autocharge) => autocharge.set_effect_modes(effect_modes, r_data),
             Self::Booster(booster) => booster.set_effect_modes(effect_modes, r_data),

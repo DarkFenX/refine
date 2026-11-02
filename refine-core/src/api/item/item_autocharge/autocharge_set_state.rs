@@ -7,11 +7,12 @@ use crate::{
 impl SolarSystem {
     pub(in crate::api) fn internal_set_autocharge_state(&mut self, autocharge_uid: UItemId, state: bool) {
         let u_autocharge = self.u_data.items.get_mut(autocharge_uid).dc_autocharge_mut().unwrap();
+        let old_state = !u_autocharge.get_force_disabled();
+        if state == old_state {
+            return;
+        }
         if self.undo.is_recording() {
-            self.undo.record(UndoStep::AutochargeState(
-                autocharge_uid,
-                !u_autocharge.get_force_disabled(),
-            ));
+            self.undo.record(UndoStep::AutochargeState(autocharge_uid, old_state));
         }
         let old_r_state = u_autocharge.get_state();
         u_autocharge.set_force_disabled(!state);

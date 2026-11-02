@@ -127,10 +127,12 @@ impl UItemBase {
         &mut self,
         effect_modes: impl Iterator<Item = (AEffectId, EffectMode)>,
         r_data: &RData,
-    ) {
+    ) -> bool {
+        let mut changed = false;
         for (effect_aid, effect_mode) in effect_modes {
-            self.effect_modes.set_by_aid(effect_aid, effect_mode, r_data);
+            changed |= self.effect_modes.set_by_aid(effect_aid, effect_mode, r_data) != effect_mode;
         }
+        changed
     }
     pub(in crate::ud::item::base) fn base_update_effect_modes(&mut self, r_data: &RData) {
         self.effect_modes.update_rids(r_data);

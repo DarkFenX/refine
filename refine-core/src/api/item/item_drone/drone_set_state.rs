@@ -7,9 +7,12 @@ use crate::{
 impl SolarSystem {
     pub(in crate::api) fn internal_set_drone_state(&mut self, drone_uid: UItemId, state: MinionState) {
         let u_drone = self.u_data.items.get_mut(drone_uid).dc_drone_mut().unwrap();
+        let old_state = u_drone.get_drone_state();
+        if state == old_state {
+            return;
+        }
         if self.undo.is_recording() {
-            self.undo
-                .record(UndoStep::DroneState(drone_uid, u_drone.get_drone_state()));
+            self.undo.record(UndoStep::DroneState(drone_uid, old_state));
         }
         let old_a_state = u_drone.get_state();
         u_drone.set_drone_state(state);

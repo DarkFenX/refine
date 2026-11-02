@@ -68,7 +68,7 @@ impl UProjEffect {
         &mut self,
         effect_modes: impl Iterator<Item = (AEffectId, EffectMode)>,
         r_data: &RData,
-    ) {
+    ) -> bool {
         self.base.set_effect_modes(effect_modes, r_data)
     }
     // Runtime data

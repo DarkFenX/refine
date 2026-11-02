@@ -27,17 +27,23 @@ impl SolarSystem {
         effect_modes: impl Iterator<Item = (AEffectId, EffectMode)>,
     ) {
         let u_item = self.u_data.items.get_mut(item_uid);
-        match self.undo.is_recording() {
+        let changed = match self.undo.is_recording() {
             true => {
+                let mut changed = false;
                 for (effect_aid, effect_mode) in effect_modes {
                     let old_effect_mode = u_item.set_effect_mode(effect_aid, effect_mode, &self.u_data.r_data);
                     if old_effect_mode != effect_mode {
+                        changed = true;
                         self.undo
                             .record(UndoStep::ItemEffectMode(item_uid, effect_aid, old_effect_mode));
                     }
                 }
+                changed
             }
             false => u_item.set_effect_modes(effect_modes, &self.u_data.r_data),
+        };
+        if !changed {
+            return;
         }
         u_item.update_reffs(&mut self.reuse.eupdates, &self.u_data.r_data);
         self.effect_mode_update_postprocess(item_uid);

@@ -7,9 +7,12 @@ use crate::{
 impl SolarSystem {
     pub(in crate::api) fn internal_set_service_state(&mut self, service_uid: UItemId, state: ServiceState) {
         let u_service = self.u_data.items.get_mut(service_uid).dc_service_mut().unwrap();
+        let old_state = u_service.get_service_state();
+        if state == old_state {
+            return;
+        }
         if self.undo.is_recording() {
-            self.undo
-                .record(UndoStep::ServiceState(service_uid, u_service.get_service_state()));
+            self.undo.record(UndoStep::ServiceState(service_uid, old_state));
         }
         let old_a_state = u_service.get_state();
         u_service.set_service_state(state);

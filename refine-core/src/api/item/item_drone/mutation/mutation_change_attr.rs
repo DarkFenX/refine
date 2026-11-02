@@ -10,8 +10,10 @@ impl SolarSystem {
         mut attr_mutation: UAttrMutationRequest,
     ) -> Result<(), ItemMutatedError> {
         let u_drone = self.u_data.items.get_mut(drone_uid).dc_drone_mut().unwrap();
+        let new_roll = attr_mutation.roll;
         let changed_attr_rid = u_drone.change_mutation_attr(&self.u_data.r_data, &mut attr_mutation)?;
-        if self.undo.is_recording() {
+        // Request now carries replaced roll, which is the same if nothing changed
+        if self.undo.is_recording() && attr_mutation.roll != new_roll {
             self.undo
                 .record_mutation_attr_single(UndoStep::DroneMutationAttrSingle(drone_uid), attr_mutation);
         }

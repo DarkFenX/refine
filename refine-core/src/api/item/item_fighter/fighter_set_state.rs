@@ -6,13 +6,16 @@ impl SolarSystem {
     pub(in crate::api) fn internal_set_fighter_state(&mut self, fighter_uid: UItemId, state: MinionState) {
         // Update user data for fighter
         let u_fighter = self.u_data.items.get_mut(fighter_uid).dc_fighter_mut().unwrap();
-        if self.undo.is_recording() {
-            self.undo
-                .record(UndoStep::FighterState(fighter_uid, u_fighter.get_fighter_state()));
+        let old_state = u_fighter.get_fighter_state();
+        if state == old_state {
+            return;
         }
-        let old_state = u_fighter.get_state();
+        if self.undo.is_recording() {
+            self.undo.record(UndoStep::FighterState(fighter_uid, old_state));
+        }
+        let old_r_state = u_fighter.get_state();
         u_fighter.set_fighter_state(state);
-        let new_state = u_fighter.get_state();
+        let new_r_state = u_fighter.get_state();
         u_fighter.update_reffs(&mut self.reuse.eupdates, &self.u_data.r_data);
         // Filter out autocharges which couldn't be added due to any reason (no attribute which
         // defines them in the data, or couldn't be loaded), and fill autocharge key data
@@ -33,8 +36,8 @@ impl SolarSystem {
             &self.u_data,
             &mut self.svc,
             fighter_uid,
-            old_state,
-            new_state,
+            old_r_state,
+            new_r_state,
             &self.reuse.eupdates,
         );
         SolarSystem::util_process_autocharge_activations(
