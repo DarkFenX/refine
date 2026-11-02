@@ -1,5 +1,3 @@
-use itertools::Itertools;
-
 use crate::{
     api::FighterMut,
     sol::{SolarSystem, UndoStep},
@@ -11,7 +9,7 @@ impl SolarSystem {
         // Remove incoming projections
         self.internal_remove_incoming_projections(fighter_uid);
         // Remove autocharges from services; they are discarded along with the fighter
-        SolarSystem::util_detach_item_autocharges(
+        let autocharge_uids = SolarSystem::util_detach_item_autocharges(
             &mut self.u_data,
             &mut self.svc,
             &mut self.rev_projs,
@@ -29,7 +27,7 @@ impl SolarSystem {
         let u_fighter = self.u_data.items.get(fighter_uid).dc_fighter().unwrap();
         let u_fit = self.u_data.fits.get_mut(u_fighter.get_fit_uid());
         u_fit.fighters.remove(&fighter_uid);
-        for autocharge_uid in u_fighter.get_autocharges().values().collect_vec() {
+        for autocharge_uid in autocharge_uids.into_iter() {
             self.internal_discard_child_item(autocharge_uid);
         }
         self.internal_discard_item(fighter_uid, UndoStep::FighterRemoved);

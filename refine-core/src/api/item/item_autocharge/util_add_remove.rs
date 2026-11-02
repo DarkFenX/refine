@@ -116,30 +116,31 @@ impl SolarSystem {
         item_uid: UItemId,
         reuse_eupdates: &mut UEffectUpdates,
     ) {
-        SolarSystem::util_detach_item_autocharges(u_data, svc, rev_projs, item_uid, reuse_eupdates);
+        let autocharge_uids =
+            SolarSystem::util_detach_item_autocharges(u_data, svc, rev_projs, item_uid, reuse_eupdates);
         // Update items
         let cont_u_item = u_data.items.get_mut(item_uid);
         let Some(cont_acs) = cont_u_item.get_autocharges_mut() else {
             return;
         };
-        let autocharge_uids = cont_acs.values().collect_vec();
         cont_acs.clear();
         for ac_uid in autocharge_uids.into_iter() {
             u_data.items.remove(ac_uid);
         }
     }
+    /// Removes item's autocharges from services, returning their IDs. They stay in user data.
     pub(in crate::api::item) fn util_detach_item_autocharges(
         u_data: &mut UData,
         svc: &mut Svc,
         rev_projs: &mut RevProjs,
         item_uid: UItemId,
         reuse_eupdates: &mut UEffectUpdates,
-    ) {
+    ) -> Vec<UItemId> {
         let autocharge_uids = match u_data.items.get(item_uid).get_autocharges() {
             Some(cont_acs) => cont_acs.values().collect_vec(),
-            None => return,
+            None => return Vec::new(),
         };
-        for autocharge_uid in autocharge_uids.into_iter() {
+        for &autocharge_uid in autocharge_uids.iter() {
             if !u_data
                 .items
                 .get(autocharge_uid)
@@ -154,6 +155,7 @@ impl SolarSystem {
             autocharge_u_item.stop_all_reffs(reuse_eupdates, &u_data.r_data);
             SolarSystem::util_remove_item(u_data, svc, autocharge_uid, reuse_eupdates);
         }
+        autocharge_uids
     }
     /// Adds autocharges an item has in user data to services and to reverse projection tracker.
     pub(in crate::api::item) fn util_reattach_item_autocharges(
