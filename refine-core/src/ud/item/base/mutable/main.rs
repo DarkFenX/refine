@@ -344,23 +344,12 @@ impl UItemBaseMutable {
         let Some(&unmutated_value) = unmutated_attrs.get(&attr_rid) else {
             return Ok(None);
         };
-        let new_value = match new_roll {
-            // Mutation change request
-            Some(attr_roll) => {
-                let Some(mutation_range) = mutation_cache.mutator.attr_mods.get(&attr_rid) else {
-                    // No mutation range now means there couldn't be any mutated value earlier as
-                    // well, regardless of user-defined roll data, thus attribute value cannot
-                    // change
-                    return Ok(None);
-                };
-                mutate_attr_value(unmutated_value, mutation_range, attr_roll)
-            }
-            // Mutation removal request - limit possible values by roll range, if it is available
-            None => match mutation_cache.mutator.attr_mods.get(&attr_rid) {
-                Some(mutation_range) => limit_attr_value(unmutated_value, mutation_range),
-                None => unmutated_value,
-            },
+        let Some(mutation_range) = mutation_cache.mutator.attr_mods.get(&attr_rid) else {
+            // No mutation range now means there couldn't be any mutated value earlier as well,
+            // regardless of user-defined roll data, thus attribute value cannot change
+            return Ok(None);
         };
+        let new_value = mutate_attr_value(unmutated_value, mutation_range, new_roll);
         // Since unmutated value of the attribute is available by now, we can safely assume that
         // merged attributes have some value too (those are supposed to be built using the same
         // logic as unmutated value)
@@ -416,24 +405,13 @@ impl UItemBaseMutable {
             let Some(&unmutated_value) = unmutated_attrs.get(&attr_rid) else {
                 continue;
             };
-            let new_value = match new_roll {
-                // Mutation change request
-                Some(attr_roll) => {
-                    let Some(mutation_range) = mutation_cache.mutator.attr_mods.get(&attr_rid) else {
-                        // No mutation range now means there couldn't be any mutated value earlier
-                        // as well, regardless of user-defined roll data, thus attribute value
-                        // cannot change. We already updated user data, so just go to next attribute
-                        continue;
-                    };
-                    mutate_attr_value(unmutated_value, mutation_range, attr_roll)
-                }
-                // Mutation removal request - limit possible values by roll range, if it is
-                // available
-                None => match mutation_cache.mutator.attr_mods.get(&attr_rid) {
-                    Some(mutation_range) => limit_attr_value(unmutated_value, mutation_range),
-                    None => unmutated_value,
-                },
+            let Some(mutation_range) = mutation_cache.mutator.attr_mods.get(&attr_rid) else {
+                // No mutation range now means there couldn't be any mutated value earlier as well,
+                // regardless of user-defined roll data, thus attribute value cannot change. We
+                // already updated user data, so just go to next attribute
+                continue;
             };
+            let new_value = mutate_attr_value(unmutated_value, mutation_range, new_roll);
             // Since unmutated value of the attribute is available by now, we can safely assume that
             // merged attributes have some value too (those are supposed to be built using the same
             // logic as unmutated value)
@@ -518,10 +496,11 @@ impl UItemBaseMutable {
                 continue;
             };
             let attr_aid = r_data.get_attr_by_rid(attr_rid).aid;
-            let mutated_value = match item_mutation.attr_rolls.get(&attr_aid) {
-                Some(attr_roll) => mutate_attr_value(unmutated_value, attr_mutation_range, *attr_roll),
-                None => limit_attr_value(unmutated_value, attr_mutation_range),
-            };
+            let mutated_value = mutate_attr_value(
+                unmutated_value,
+                attr_mutation_range,
+                item_mutation.attr_rolls.get(&attr_aid).copied(),
+            );
             let old_value = mutation_cache.flex_data.attrs.insert(attr_rid, mutated_value).unwrap();
             if old_value != mutated_value {
                 changed_attr_rids.push(attr_rid);
@@ -661,26 +640,17 @@ fn apply_attr_mutations(
             continue;
         };
         let attr_id = r_data.get_attr_by_rid(attr_rid).aid;
-        match attr_rolls.get(&attr_id) {
-            Some(attr_roll) => {
-                let mutated_val = mutate_attr_value(unmutated_value, attr_mutation_range, *attr_roll);
-                item_flex_data.attrs.insert(attr_rid, mutated_val);
-            }
-            // When no roll is defined by user, still limit possible values by what roll range is
-            None => {
-                let mutated_val = limit_attr_value(unmutated_value, attr_mutation_range);
-                item_flex_data.attrs.insert(attr_rid, mutated_val);
-            }
-        }
+        let mutated_val = mutate_attr_value(unmutated_value, attr_mutation_range, attr_rolls.get(&attr_id).copied());
+        item_flex_data.attrs.insert(attr_rid, mutated_val);
     }
 }
 
-fn mutate_attr_value(unmutated_value: Value, roll_range: &RMutaAttrRange, roll: UnitInterval) -> Value {
-    unmutated_value
-        * (roll_range.mult_min_raw + roll.into_value() * (roll_range.mult_max_raw - roll_range.mult_min_raw))
-}
-
-fn limit_attr_value(unmutated_value: Value, roll_range: &RMutaAttrRange) -> Value {
+fn mutate_attr_value(unmutated_value: Value, roll_range: &RMutaAttrRange, roll: Option<UnitInterval>) -> Value {
+    if let Some(roll) = roll {
+        return unmutated_value
+            * (roll_range.mult_min_raw + roll.into_value() * (roll_range.mult_max_raw - roll_range.mult_min_raw));
+    }
+    // When no roll is defined by user, still limit possible values by what roll range is
     if roll_range.mult_min_math >= Value::ONE {
         return unmutated_value * roll_range.mult_min_math;
     }
