@@ -6,7 +6,7 @@ use crate::{Index, ud::UItemId};
 
 #[derive(Clone)]
 pub(crate) struct UItemVec {
-    pub(super) data: BTreeMap<Index, UItemId>,
+    data: BTreeMap<Index, UItemId>,
 }
 impl UItemVec {
     pub(in crate::ud::fit) fn new() -> Self {

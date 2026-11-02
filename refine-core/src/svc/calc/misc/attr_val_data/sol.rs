@@ -8,7 +8,7 @@ use crate::{
 
 #[derive(Clone)]
 pub(in crate::svc::calc) struct AttrValData {
-    pub(super) data: SSlab<UItemId, ItemAttrData>,
+    data: SSlab<UItemId, ItemAttrData>,
     // Stores unused containers from unloaded items, to be used later for loaded items
     spare_dense: Reuse<Vec<(RAttrId, AttrEntry)>>,
     spare_sparse: Reuse<RMap<RAttrId, AttrEntry>>,

@@ -204,11 +204,11 @@ pub(super) struct AggrPartDataSpoolTail {
     // Active + soft downtime duration combined
     pub(super) cycle_main_duration: PValue,
     /// Active + soft downtime duration, or output completion duration, whichever is longer
-    pub(super) cycle_completion_duration: Value,
+    cycle_completion_duration: Value,
     pub(super) cycle_tail_duration: Option<PValue>,
-    pub(super) soft_dt: bool,
+    soft_dt: bool,
     // Includes both invariant str mult and part-specific str mult
-    pub(super) str_mult: PValue,
+    str_mult: PValue,
 }
 impl GetMainDuration for AggrPartDataSpoolTail {
     fn get_main_duration(&self) -> PValue {
@@ -223,11 +223,11 @@ pub(super) struct ProjConverter<'sc, 'calc, 'ospec, 'ip, BG, I>
 where
     BG: NEffectOutputGetter,
 {
-    pub(super) ctx: &'sc SvcCtx<'sc, 'sc>,
-    pub(super) calc: &'calc mut Calc,
-    pub(super) projector_uid: UItemId,
-    pub(super) ospec: &'ospec REffectProjOpcSpec<BG>,
-    pub(super) inv_proj: &'ip AggrProjInvData<I>,
+    ctx: &'sc SvcCtx<'sc, 'sc>,
+    calc: &'calc mut Calc,
+    projector_uid: UItemId,
+    ospec: &'ospec REffectProjOpcSpec<BG>,
+    inv_proj: &'ip AggrProjInvData<I>,
 }
 impl<'sc, 'calc, 'ospec, 'ip, BG, I> ProjConverter<'sc, 'calc, 'ospec, 'ip, BG, I>
 where
