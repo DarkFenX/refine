@@ -134,12 +134,19 @@ impl UDrone {
     ) -> Result<Vec<RAttrId>, ItemMutatedError> {
         self.base.change_mutation_attrs(r_data, attr_mutations)
     }
-    pub(crate) fn set_mutator_type_aid(
+    pub(crate) fn set_mutator_type_aid_replace(
         &mut self,
         mutator_type_aid: AItemId,
         r_data: &RData,
     ) -> Result<(), ItemMutatedError> {
-        self.base.set_mutator_type_aid(mutator_type_aid, r_data)
+        self.base.set_mutator_type_aid_replace(mutator_type_aid, r_data)
+    }
+    pub(crate) fn try_set_mutator_type_aid_inplace(
+        &mut self,
+        mutator_type_aid: AItemId,
+        r_data: &RData,
+    ) -> Option<Vec<RAttrId>> {
+        self.base.try_set_mutator_type_aid_inplace(mutator_type_aid, r_data)
     }
     pub(crate) fn unmutate(&mut self, r_data: &RData) -> Result<ItemMutationData, ItemMutatedError> {
         self.base.unmutate(r_data)

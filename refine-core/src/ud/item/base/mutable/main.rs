@@ -482,7 +482,8 @@ impl UItemBaseMutable {
         }
         Ok(changed_attr_rids)
     }
-    pub(in crate::ud::item) fn set_mutator_type_aid(
+    /// Sets mutator, regenerating mutated item data from scratch.
+    pub(in crate::ud::item) fn set_mutator_type_aid_replace(
         &mut self,
         mutator_type_aid: AItemId,
         r_data: &RData,
@@ -493,6 +494,64 @@ impl UItemBaseMutable {
         item_mutation.mutator_type_aid = mutator_type_aid;
         self.update_r_data(r_data);
         Ok(())
+    }
+    /// Attempt to set mutator, with the condition that mutated item does not change. Returns:
+    /// - `None` if condition was not met;
+    /// - vector with changed attribute values if mutator was updated.
+    pub(in crate::ud::item) fn try_set_mutator_type_aid_inplace(
+        &mut self,
+        mutator_type_aid: AItemId,
+        r_data: &RData,
+    ) -> Option<Vec<RAttrId>> {
+        let item_mutation = self.mutation.as_mut()?;
+        let mutation_cache = item_mutation.cache.as_mut()?;
+        let mutator = r_data.get_mutator_by_aid(&mutator_type_aid)?;
+        // With mutation cache set, item base stores mutated item
+        let mutated_r_item = self.base.base_get_r_item().unwrap();
+        if mutator.item_map.get(&mutation_cache.base_type_aid) != Some(&mutated_r_item.base.aid) {
+            return None;
+        }
+        let base_r_item = r_data.get_item_by_aid(&mutation_cache.base_type_aid);
+        // Mutators which share mutated item normally mutate the same attributes
+        let mut changed_attr_rids = Vec::with_capacity(mutator.attr_mods.len());
+        // Attributes not mutated by new mutator get their unmutated values back
+        for &attr_rid in mutation_cache.mutator.attr_mods.keys() {
+            if mutator.attr_mods.contains_key(&attr_rid) {
+                continue;
+            }
+            let Some(unmutated_value) = get_combined_attr_value_by_rid(base_r_item, mutated_r_item, attr_rid) else {
+                continue;
+            };
+            let old_value = mutation_cache
+                .merged_attr_data
+                .attrs
+                .insert(attr_rid, unmutated_value)
+                .unwrap();
+            if old_value != unmutated_value {
+                changed_attr_rids.push(attr_rid);
+            }
+        }
+        for (&attr_rid, attr_mutation_range) in mutator.attr_mods.iter() {
+            let Some(unmutated_value) = get_combined_attr_value_by_rid(base_r_item, mutated_r_item, attr_rid) else {
+                continue;
+            };
+            let attr_aid = r_data.get_attr_by_rid(attr_rid).aid;
+            let mutated_value = match item_mutation.attr_rolls.get(&attr_aid) {
+                Some(attr_roll) => mutate_attr_value(unmutated_value, attr_mutation_range, *attr_roll),
+                None => limit_attr_value(unmutated_value, attr_mutation_range),
+            };
+            let old_value = mutation_cache
+                .merged_attr_data
+                .attrs
+                .insert(attr_rid, mutated_value)
+                .unwrap();
+            if old_value != mutated_value {
+                changed_attr_rids.push(attr_rid);
+            }
+        }
+        item_mutation.mutator_type_aid = mutator_type_aid;
+        mutation_cache.mutator = mutator.clone();
+        Some(changed_attr_rids)
     }
     /// Removes mutation, returning it.
     pub(in crate::ud::item) fn unmutate(&mut self, r_data: &RData) -> Result<ItemMutationData, ItemMutatedError> {
@@ -669,6 +728,20 @@ where
         rid: attr_rid,
         value: attr_value,
     })
+}
+
+fn get_combined_attr_value_by_rid(
+    base_r_item: Option<&RcItem>,
+    mutated_r_item: &RItem,
+    attr_rid: RAttrId,
+) -> Option<Value> {
+    // Base item attributes have priority in case of collisions
+    if let Some(base_r_item) = base_r_item
+        && let Some(&attr_value) = base_r_item.attr_data.attrs.get(&attr_rid)
+    {
+        return Some(attr_value);
+    }
+    mutated_r_item.attr_data.attrs.get(&attr_rid).copied()
 }
 
 pub(crate) fn get_combined_attr_values(base_r_item: Option<&RcItem>, mutated_r_item: &RItem) -> RMap<RAttrId, Value> {
