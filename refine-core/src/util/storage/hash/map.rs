@@ -161,6 +161,9 @@ where
     pub(crate) fn reserve(&mut self, additional: usize) {
         self.data.reserve(additional)
     }
+    pub(crate) fn shrink_to_fit(&mut self) {
+        self.data.shrink_to_fit()
+    }
     // Consumption methods
     pub(crate) fn into_values(self) -> impl ExactSizeIterator<Item = V> {
         self.data.into_values()
@@ -189,5 +192,15 @@ impl<K, V, H> IntoIterator for Map<K, V, H> {
 
     fn into_iter(self) -> Self::IntoIter {
         self.data.into_iter()
+    }
+}
+impl<K, V, H> PartialEq for Map<K, V, H>
+where
+    K: Eq + Hash,
+    V: PartialEq,
+    H: BuildHasher,
+{
+    fn eq(&self, other: &Self) -> bool {
+        self.data == other.data
     }
 }

@@ -1,7 +1,6 @@
 use crate::{
-    AttrId, FullMAttrMut, ItemId, Value,
-    api::item::shared::mutation::resolve_absolute_into_roll,
-    ud::{UAttrMutationRequest, UItem},
+    AttrId, FullMAttrMut, ItemId, Value, api::item::shared::mutation::resolve_absolute_into_roll,
+    ud::UAttrMutationRequest,
 };
 
 impl<'s> FullMAttrMut<'s> {
@@ -13,14 +12,12 @@ impl<'s> FullMAttrMut<'s> {
         let roll = match absolute_value {
             Some(absolute_value) => {
                 let u_item = self.sol.u_data.items.get(self.item_uid);
-                let (base_type_aid, mutator_type_aid) = match u_item {
-                    UItem::Drone(drone) => (drone.get_base_type_aid(), drone.get_mutator_type_aid().unwrap()),
-                    UItem::Module(module) => (module.get_base_type_aid(), module.get_mutator_type_aid().unwrap()),
-                    _ => unreachable!("unmutable item kind is used in mutation"),
-                };
+                let item_mutation = u_item.get_mutation_data().unwrap();
+                let mutator_type_aid = item_mutation.get_mutator_type_aid();
+                let pregen_attrs_rid = item_mutation.get_cache().unwrap().get_pregen_attrs_rid();
                 match resolve_absolute_into_roll(
                     &self.sol.u_data.r_data,
-                    &base_type_aid,
+                    pregen_attrs_rid,
                     &mutator_type_aid,
                     &self.attr_aid,
                     absolute_value,

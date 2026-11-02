@@ -1,9 +1,9 @@
-use crate::util::SlabId;
+use crate::util::DenseId;
 
 #[derive(Copy, Clone, Eq, PartialEq, Hash)]
 pub(crate) struct RItemListId(usize);
 
-impl SlabId for RItemListId {
+impl DenseId for RItemListId {
     fn new(index: usize) -> Self {
         Self(index)
     }

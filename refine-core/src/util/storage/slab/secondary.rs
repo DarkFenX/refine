@@ -1,6 +1,6 @@
 use cranelift_entity::SecondaryMap;
 
-use super::shared::SlabId;
+use crate::util::storage::DenseId;
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Regular version
@@ -8,14 +8,14 @@ use super::shared::SlabId;
 #[derive(Clone)]
 pub(crate) struct SSlab<I, V>
 where
-    I: SlabId,
+    I: DenseId,
     V: Clone,
 {
     data: SecondaryMap<I, Option<V>>,
 }
 impl<I, V> SSlab<I, V>
 where
-    I: SlabId,
+    I: DenseId,
     V: Clone,
 {
     pub(crate) fn new() -> Self {
@@ -53,14 +53,14 @@ where
 #[derive(Clone)]
 pub(crate) struct SSlabUnchecked<I, V>
 where
-    I: SlabId,
+    I: DenseId,
     V: Clone,
 {
     inner: SSlab<I, V>,
 }
 impl<I, V> SSlabUnchecked<I, V>
 where
-    I: SlabId,
+    I: DenseId,
     V: Clone,
 {
     pub(crate) fn new() -> Self {

@@ -16,12 +16,12 @@ use crate::{
         },
     },
     ud::{UData, UItem, UItemId},
-    util::SlabId,
+    util::DenseId,
 };
 
 #[derive(Copy, Clone, Eq, PartialEq, Hash)]
 pub(in crate::svc::calc) struct RawModId(usize);
-impl SlabId for RawModId {
+impl DenseId for RawModId {
     fn new(index: usize) -> Self {
         Self(index)
     }

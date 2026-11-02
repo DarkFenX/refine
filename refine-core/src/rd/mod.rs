@@ -14,7 +14,7 @@ pub(crate) use data::{
     REffectMining, REffectModStrength, REffectModifier, REffectNeut, REffectProjModSpec, REffectProjOpcSpec,
     REffectProjecteeFilter, REffectResist, REffectSpoolAttrs, RItem, RItemBase, RItemBaseEffectData, RItemCapConsumer,
     RItemChargeLimit, RItemContLimit, RItemFlexData, RItemList, RItemListId, RItemShipLimit, RMuta, RMutaAttrRange,
-    RShipDroneLimit, RShipKind, RState, RcData, RcEffect, RcItem, RcMuta,
+    RMutaPregen, RMutaPregenMergedAttrsId, RShipDroneLimit, RShipKind, RState, RcData, RcEffect, RcItem, RcMuta,
 };
 
 mod data;

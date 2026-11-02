@@ -7,19 +7,19 @@ use super::getters::{
 use crate::{
     SkillLevel, Value,
     ad::{AAttrId, AItem, AItemId},
-    rd::{RAttrConsts, RAttrId, RData, RItemBase},
+    rd::{RAttrConsts, RAttrId, RItemBase},
     util::RMap,
 };
 
 /// Flexible item data. It stores attributes and data derived from them for cases when those
-/// attributes might need to be supplied outside from item itself.
+/// attributes might need to be supplied outside of item itself.
 ///
 /// For unmutated items, this container just stores item attributes, as well as data derived from
 /// them. The distinction with item base becomes important for mutated items: this data container
 /// stores merged attributes (base item + mutated item), as well as all the derived data which needs
 /// merged attributes specifically. If it does not need merged attributes - it better be put onto
 /// base item.
-#[derive(Clone, Default)]
+#[derive(Clone, Default, PartialEq)]
 pub(crate) struct RItemFlexData {
     // Raw data
     pub(crate) attrs: RMap<RAttrId, Value>,
@@ -69,13 +69,20 @@ impl RItemFlexData {
 // Conversions
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl RItemFlexData {
-    pub(crate) fn from_attrs(attrs: RMap<RAttrId, Value>, r_data: &RData) -> Self {
+    pub(in crate::rd::data) fn from_attrs(
+        attrs: RMap<RAttrId, Value>,
+        attr_aid_rid_map: &RMap<AAttrId, RAttrId>,
+        attr_consts: &RAttrConsts,
+    ) -> Self {
         let mut data = Self {
             attrs,
             ..Self::default()
         };
-        data.fill_derived(&r_data.attr_aid_rid_map, &r_data.attr_consts);
+        data.fill_derived(attr_aid_rid_map, attr_consts);
         data
+    }
+    pub(in crate::rd::data) fn with_attrs(&self, attrs: RMap<RAttrId, Value>) -> Self {
+        Self { attrs, ..*self }
     }
     pub(in crate::rd::data::item) fn fill_runtime(
         &mut self,

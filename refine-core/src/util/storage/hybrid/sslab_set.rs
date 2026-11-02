@@ -1,6 +1,6 @@
 use std::hash::{BuildHasher, Hash};
 
-use crate::util::storage::{RSet, SSlab, Set, SlabId};
+use crate::util::storage::{DenseId, RSet, SSlab, Set};
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Non-const-specific
@@ -8,7 +8,7 @@ use crate::util::storage::{RSet, SSlab, Set, SlabId};
 pub(crate) type SSLabRSet<K, V> = SSLabSet<K, V, rustc_hash::FxBuildHasher>;
 impl<I, V> Default for SSLabRSet<I, V>
 where
-    I: SlabId,
+    I: DenseId,
     V: Clone,
 {
     fn default() -> Self {
@@ -20,7 +20,7 @@ where
 }
 impl<I, V> SSLabRSet<I, V>
 where
-    I: SlabId,
+    I: DenseId,
     V: Clone,
 {
     pub(crate) fn new() -> Self {
@@ -29,7 +29,7 @@ where
 }
 impl<I, V> SSLabRSet<I, V>
 where
-    I: SlabId,
+    I: DenseId,
     V: Eq + Hash + Clone,
 {
     pub(crate) fn add_entry(&mut self, id: I, value: V) {
@@ -52,7 +52,7 @@ where
 #[derive(Clone)]
 pub(crate) struct SSLabSet<I, V, H>
 where
-    I: SlabId,
+    I: DenseId,
     V: Clone,
     H: Clone,
 {
@@ -61,7 +61,7 @@ where
 }
 impl<I, V, H> SSLabSet<I, V, H>
 where
-    I: SlabId,
+    I: DenseId,
     V: Eq + Hash + Clone,
     H: BuildHasher + Clone,
 {

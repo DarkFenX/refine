@@ -4,7 +4,6 @@ use base_effect_resolver::process_effects;
 pub(in crate::ud::item) use mutable::UItemBaseMutable;
 pub(crate) use mutable::{
     ItemMutatedError, ItemMutationData, MutatorInplaceError, UAttrMutationRequest, UItemMutationRequest,
-    get_combined_attr_values,
 };
 
 mod base;

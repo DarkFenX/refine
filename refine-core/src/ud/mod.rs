@@ -14,7 +14,6 @@ pub(crate) use item::{
     ItemMutationData, UAttrMutationRequest, UAutocharge, UAutocharges, UBooster, UCharacter, UCharge, UDrone,
     UEffectUpdates, UFighter, UFwEffect, UImplant, UItem, UItemId, UItemMutationRequest, UItems, UModule, UPhysics,
     UProjData, UProjEffect, UProjs, URig, UService, UShip, UShipKind, USkill, UStance, USubsystem, USwEffect,
-    get_combined_attr_values,
 };
 
 mod container;

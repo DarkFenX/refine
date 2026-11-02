@@ -1,10 +1,11 @@
-use std::cell::LazyCell;
-
 use crate::{
     EffectMode, ItemId, UnitInterval, Value,
     ad::{AAttrId, AEffectId, AItemId},
     err::basic::ItemNotMutatedError,
-    rd::{RAttrId, RData, REffectId, RItem, RItemBase, RItemFlexData, RMuta, RMutaAttrRange, RState, RcItem, RcMuta},
+    rd::{
+        RAttrId, RData, REffectId, RItemBase, RItemFlexData, RMuta, RMutaAttrRange, RMutaPregenMergedAttrsId, RState,
+        RcMuta,
+    },
     ud::{
         UAttrMutationRequest, UItemMutationRequest,
         item::{
@@ -87,14 +88,17 @@ impl UItemBaseMutable {
             };
         };
         // Make proper mutated item once we have all the data
-        let merged_attrs = get_combined_attr_values(r_data.get_item_by_aid(&type_aid), mutated_r_item);
-        let mut merged_attr_data = RItemFlexData::from_attrs(merged_attrs, r_data);
-        apply_attr_mutations(&mut merged_attr_data, mutator, &item_mutation_data.attr_rolls, r_data);
+        let (pregen_attrs_rid, mut item_flex_data) = r_data
+            .get_muta_pregen()
+            .get_merged_attrs_rid_and_flex_data(type_aid, mutator_type_aid)
+            .unwrap();
+        apply_attr_mutations(&mut item_flex_data, mutator, &item_mutation_data.attr_rolls, r_data);
         let regular_base = UItemBase::base_with_r_item(item_id, mutated_r_item.clone(), state);
         item_mutation_data.cache = Some(ItemMutationDataCache {
             base_type_aid: type_aid,
+            pregen_attrs_rid,
             mutator: mutator.clone(),
-            merged_attr_data,
+            flex_data: item_flex_data,
         });
         Self {
             base: regular_base,
@@ -115,7 +119,7 @@ impl UItemBaseMutable {
             return self.base.get_r_item_flex_data();
         };
         match &item_mutation.cache {
-            Some(cache) => Some(&cache.merged_attr_data),
+            Some(cache) => Some(&cache.flex_data),
             None => self.base.get_r_item_flex_data(),
         }
     }
@@ -234,15 +238,18 @@ impl UItemBaseMutable {
             }
         };
         // Compose attribute cache
-        let merged_attrs = get_combined_attr_values(r_data.get_item_by_aid(&base_type_aid), mutated_r_item);
-        let mut merged_attr_data = RItemFlexData::from_attrs(merged_attrs, r_data);
-        apply_attr_mutations(&mut merged_attr_data, mutator, &item_mutation.attr_rolls, r_data);
+        let (pregen_attrs_rid, mut item_flex_data) = r_data
+            .get_muta_pregen()
+            .get_merged_attrs_rid_and_flex_data(base_type_aid, item_mutation.mutator_type_aid)
+            .unwrap();
+        apply_attr_mutations(&mut item_flex_data, mutator, &item_mutation.attr_rolls, r_data);
         // Everything needed is at hand, update item
         self.base.base_set_r_item(mutated_r_item.clone());
         item_mutation.cache = Some(ItemMutationDataCache {
             base_type_aid,
+            pregen_attrs_rid,
             mutator: mutator.clone(),
-            merged_attr_data,
+            flex_data: item_flex_data,
         });
     }
 }
@@ -287,14 +294,17 @@ impl UItemBaseMutable {
             return Ok(());
         };
         // Since we have all the data now, apply mutation properly
-        let merged_attrs = get_combined_attr_values(self.base.base_get_r_item(), mutated_r_item);
-        let mut merged_attr_data = RItemFlexData::from_attrs(merged_attrs, r_data);
-        apply_attr_mutations(&mut merged_attr_data, mutator, &item_mutation_data.attr_rolls, r_data);
+        let (pregen_attrs_rid, mut item_flex_data) = r_data
+            .get_muta_pregen()
+            .get_merged_attrs_rid_and_flex_data(base_type_aid, mutator_type_aid)
+            .unwrap();
+        apply_attr_mutations(&mut item_flex_data, mutator, &item_mutation_data.attr_rolls, r_data);
         self.base.base_set_r_item(mutated_r_item.clone());
         item_mutation_data.cache = Some(ItemMutationDataCache {
             base_type_aid,
+            pregen_attrs_rid,
             mutator: mutator.clone(),
-            merged_attr_data,
+            flex_data: item_flex_data,
         });
         self.mutation = Some(item_mutation_data);
         Ok(())
@@ -321,69 +331,42 @@ impl UItemBaseMutable {
             // change
             return Ok(None);
         };
-        let base_r_item = r_data.get_item_by_aid(&mutation_cache.base_type_aid);
-        // All the methods which set cache guarantee that all the following entities are available
-        // for the source the cache was generated with, and this method is supposed to be called
-        // with the same source
-        let mutated_r_item = LazyCell::new(|| {
-            let mutated_type_aid = mutation_cache
-                .mutator
-                .item_map
-                .get(&mutation_cache.base_type_aid)
-                .unwrap();
-            r_data.get_item_by_aid(mutated_type_aid).unwrap()
-        });
-        let new_rid_value = match new_roll {
+        // Pregenerated attributes ID is valid for the source the cache was generated with, and this
+        // method is supposed to be called with the same source
+        let unmutated_attrs = r_data
+            .get_muta_pregen()
+            .get_merged_attrs(mutation_cache.pregen_attrs_rid);
+        // No unmutated value now means there couldn't be any mutated value with any mutation
+        // earlier as well, thus attribute value cannot change
+        let Some(attr_rid) = r_data.get_attr_rid_by_aid(&attr_mutation_request.attr_aid) else {
+            return Ok(None);
+        };
+        let Some(&unmutated_value) = unmutated_attrs.get(&attr_rid) else {
+            return Ok(None);
+        };
+        let new_value = match new_roll {
             // Mutation change request
             Some(attr_roll) => {
-                // Process source-dependent data and return new value
-                let Some(unmutated_value) =
-                    get_combined_attr_value(r_data, base_r_item, &mutated_r_item, &attr_mutation_request.attr_aid)
-                else {
-                    // No unmutated value now means there couldn't be any mutated value with any
-                    // mutation earlier as well, thus attribute value cannot change
-                    return Ok(None);
-                };
-                let Some(mutation_range) = mutation_cache.mutator.attr_mods.get(&unmutated_value.rid) else {
+                let Some(mutation_range) = mutation_cache.mutator.attr_mods.get(&attr_rid) else {
                     // No mutation range now means there couldn't be any mutated value earlier as
                     // well, regardless of user-defined roll data, thus attribute value cannot
                     // change
                     return Ok(None);
                 };
-                AttrRidVal {
-                    rid: unmutated_value.rid,
-                    value: mutate_attr_value(unmutated_value.value, mutation_range, attr_roll),
-                }
+                mutate_attr_value(unmutated_value, mutation_range, attr_roll)
             }
-            // Mutation removal request
-            None => {
-                // Update source-dependent data
-                let Some(unmutated_value) =
-                    get_combined_attr_value(r_data, base_r_item, &mutated_r_item, &attr_mutation_request.attr_aid)
-                else {
-                    // No unmutated value - can't do any comparisons
-                    return Ok(None);
-                };
-                AttrRidVal {
-                    rid: unmutated_value.rid,
-                    // Limit possible values by roll range, if it is available
-                    value: match mutation_cache.mutator.attr_mods.get(&unmutated_value.rid) {
-                        Some(mutation_range) => limit_attr_value(unmutated_value.value, mutation_range),
-                        None => unmutated_value.value,
-                    },
-                }
-            }
+            // Mutation removal request - limit possible values by roll range, if it is available
+            None => match mutation_cache.mutator.attr_mods.get(&attr_rid) {
+                Some(mutation_range) => limit_attr_value(unmutated_value, mutation_range),
+                None => unmutated_value,
+            },
         };
         // Since unmutated value of the attribute is available by now, we can safely assume that
         // merged attributes have some value too (those are supposed to be built using the same
         // logic as unmutated value)
-        let old_value = mutation_cache
-            .merged_attr_data
-            .attrs
-            .insert(new_rid_value.rid, new_rid_value.value)
-            .unwrap();
-        match old_value != new_rid_value.value {
-            true => Ok(Some(new_rid_value.rid)),
+        let old_value = mutation_cache.flex_data.attrs.insert(attr_rid, new_value).unwrap();
+        match old_value != new_value {
+            true => Ok(Some(attr_rid)),
             false => Ok(None),
         }
     }
@@ -407,80 +390,56 @@ impl UItemBaseMutable {
             }
             return Ok(Vec::new());
         };
-        let base_r_item = r_data.get_item_by_aid(&mutation_cache.base_type_aid);
-        // All the methods which set cache guarantee that all the following entities are available
-        // for the source the cache was generated with, and this method is supposed to be called
-        // with the same source
-        let mutated_r_item = LazyCell::new(|| {
-            let mutated_type_aid = mutation_cache
-                .mutator
-                .item_map
-                .get(&mutation_cache.base_type_aid)
-                .unwrap();
-            r_data.get_item_by_aid(mutated_type_aid).unwrap()
-        });
+        // Pregenerated attributes ID is valid for the source the cache was generated with, and this
+        // method is supposed to be called with the same source
+        let unmutated_attrs = r_data
+            .get_muta_pregen()
+            .get_merged_attrs(mutation_cache.pregen_attrs_rid);
         // Process mutation requests, recording attributes whose values were changed for the item;
         // presized, since growing it costs more than unused capacity
         let mut changed_attr_rids = Vec::with_capacity(attr_mutation_requests.len());
         for attr_mutation_request in attr_mutation_requests.iter_mut() {
-            let new_rid_value = match attr_mutation_request.roll {
+            let new_roll = attr_mutation_request.roll;
+            // Update user-defined data, putting replaced roll into the request
+            attr_mutation_request.roll = match new_roll {
+                Some(attr_roll) => item_mutation
+                    .attr_rolls
+                    .insert(attr_mutation_request.attr_aid, attr_roll),
+                None => item_mutation.attr_rolls.remove(&attr_mutation_request.attr_aid),
+            };
+            // No unmutated value now means there couldn't be any mutated value with any mutation
+            // earlier as well, thus attribute value cannot change. We already updated user data,
+            // so just go to next attribute
+            let Some(attr_rid) = r_data.get_attr_rid_by_aid(&attr_mutation_request.attr_aid) else {
+                continue;
+            };
+            let Some(&unmutated_value) = unmutated_attrs.get(&attr_rid) else {
+                continue;
+            };
+            let new_value = match new_roll {
                 // Mutation change request
                 Some(attr_roll) => {
-                    // Update user-defined data, putting replaced roll into the request
-                    attr_mutation_request.roll = item_mutation
-                        .attr_rolls
-                        .insert(attr_mutation_request.attr_aid, attr_roll);
-                    // Process source-dependent data and return new value
-                    let Some(unmutated_value) =
-                        get_combined_attr_value(r_data, base_r_item, &mutated_r_item, &attr_mutation_request.attr_aid)
-                    else {
-                        // No unmutated value now means there couldn't be any mutated value with any
-                        // mutation earlier as well, thus attribute value cannot change. We already
-                        // updated user data, so just go to next attribute
-                        continue;
-                    };
-                    let Some(mutation_range) = mutation_cache.mutator.attr_mods.get(&unmutated_value.rid) else {
+                    let Some(mutation_range) = mutation_cache.mutator.attr_mods.get(&attr_rid) else {
                         // No mutation range now means there couldn't be any mutated value earlier
                         // as well, regardless of user-defined roll data, thus attribute value
                         // cannot change. We already updated user data, so just go to next attribute
                         continue;
                     };
-                    AttrRidVal {
-                        rid: unmutated_value.rid,
-                        value: mutate_attr_value(unmutated_value.value, mutation_range, attr_roll),
-                    }
+                    mutate_attr_value(unmutated_value, mutation_range, attr_roll)
                 }
-                // Mutation removal request
-                None => {
-                    // Update user-defined data, putting replaced roll into the request
-                    attr_mutation_request.roll = item_mutation.attr_rolls.remove(&attr_mutation_request.attr_aid);
-                    // Update source-dependent data
-                    let Some(unmutated_value) =
-                        get_combined_attr_value(r_data, base_r_item, &mutated_r_item, &attr_mutation_request.attr_aid)
-                    else {
-                        // No unmutated value - can't do any comparisons
-                        continue;
-                    };
-                    AttrRidVal {
-                        rid: unmutated_value.rid,
-                        // Limit possible values by roll range, if it is available
-                        value: match mutation_cache.mutator.attr_mods.get(&unmutated_value.rid) {
-                            Some(mutation_range) => limit_attr_value(unmutated_value.value, mutation_range),
-                            None => unmutated_value.value,
-                        },
-                    }
-                }
+                // Mutation removal request - limit possible values by roll range, if it is
+                // available
+                None => match mutation_cache.mutator.attr_mods.get(&attr_rid) {
+                    Some(mutation_range) => limit_attr_value(unmutated_value, mutation_range),
+                    None => unmutated_value,
+                },
             };
             // Since unmutated value of the attribute is available by now, we can safely assume that
             // merged attributes have some value too (those are supposed to be built using the same
             // logic as unmutated value)
-            let old_value = mutation_cache
-                .merged_attr_data
-                .attrs
-                .insert(new_rid_value.rid, new_rid_value.value)
-                .unwrap();
-            if old_value != new_rid_value.value {
-                changed_attr_rids.push(new_rid_value.rid);
+            let old_value = mutation_cache.flex_data.attrs.insert(attr_rid, new_value).unwrap();
+            if old_value != new_value {
+                changed_attr_rids.push(attr_rid);
             }
         }
         Ok(changed_attr_rids)
@@ -530,7 +489,11 @@ impl UItemBaseMutable {
         if mutator.item_map.get(&mutation_cache.base_type_aid) != Some(&mutated_r_item.base.aid) {
             return Err(MutatorInplaceError::MutatedTypeChange);
         }
-        let base_r_item = r_data.get_item_by_aid(&mutation_cache.base_type_aid);
+        // Unmutated attributes depend only on base and mutated items, which do not change, so
+        // pregenerated attributes ID stays the same as well
+        let unmutated_attrs = r_data
+            .get_muta_pregen()
+            .get_merged_attrs(mutation_cache.pregen_attrs_rid);
         // Mutators which share mutated item normally mutate the same attributes
         let mut changed_attr_rids = Vec::with_capacity(mutator.attr_mods.len());
         // Attributes not mutated by new mutator get their unmutated values back
@@ -538,11 +501,11 @@ impl UItemBaseMutable {
             if mutator.attr_mods.contains_key(&attr_rid) {
                 continue;
             }
-            let Some(unmutated_value) = get_combined_attr_value_by_rid(base_r_item, mutated_r_item, attr_rid) else {
+            let Some(&unmutated_value) = unmutated_attrs.get(&attr_rid) else {
                 continue;
             };
             let old_value = mutation_cache
-                .merged_attr_data
+                .flex_data
                 .attrs
                 .insert(attr_rid, unmutated_value)
                 .unwrap();
@@ -551,7 +514,7 @@ impl UItemBaseMutable {
             }
         }
         for (&attr_rid, attr_mutation_range) in mutator.attr_mods.iter() {
-            let Some(unmutated_value) = get_combined_attr_value_by_rid(base_r_item, mutated_r_item, attr_rid) else {
+            let Some(&unmutated_value) = unmutated_attrs.get(&attr_rid) else {
                 continue;
             };
             let attr_aid = r_data.get_attr_by_rid(attr_rid).aid;
@@ -559,11 +522,7 @@ impl UItemBaseMutable {
                 Some(attr_roll) => mutate_attr_value(unmutated_value, attr_mutation_range, *attr_roll),
                 None => limit_attr_value(unmutated_value, attr_mutation_range),
             };
-            let old_value = mutation_cache
-                .merged_attr_data
-                .attrs
-                .insert(attr_rid, mutated_value)
-                .unwrap();
+            let old_value = mutation_cache.flex_data.attrs.insert(attr_rid, mutated_value).unwrap();
             if old_value != mutated_value {
                 changed_attr_rids.push(attr_rid);
             }
@@ -672,7 +631,9 @@ fn convert_request_to_data(mutation_request: UItemMutationRequest) -> ItemMutati
 pub(crate) struct ItemMutationDataCache {
     base_type_aid: AItemId,
     mutator: RcMuta,
-    merged_attr_data: RItemFlexData,
+    flex_data: RItemFlexData,
+    /// ID which is used to locate pregenerated merged attributes (which are not mutated)
+    pregen_attrs_rid: RMutaPregenMergedAttrsId,
 }
 impl ItemMutationDataCache {
     pub(crate) fn get_base_type_aid(&self) -> AItemId {
@@ -680,6 +641,9 @@ impl ItemMutationDataCache {
     }
     pub(crate) fn get_r_mutator(&self) -> &RMuta {
         &self.mutator
+    }
+    pub(crate) fn get_pregen_attrs_rid(&self) -> RMutaPregenMergedAttrsId {
+        self.pregen_attrs_rid
     }
 }
 
@@ -727,68 +691,6 @@ fn limit_attr_value(unmutated_value: Value, roll_range: &RMutaAttrRange) -> Valu
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-// Misc
-////////////////////////////////////////////////////////////////////////////////////////////////////
-struct AttrRidVal {
-    rid: RAttrId,
-    value: Value,
-}
-
-fn get_combined_attr_value<'a, MG>(
-    r_data: &'a RData,
-    base_r_item: Option<&'a RcItem>,
-    mutated_r_item: &LazyCell<&'a RcItem, MG>,
-    attr_id: &AAttrId,
-) -> Option<AttrRidVal>
-where
-    MG: FnOnce() -> &'a RcItem,
-{
-    let attr_rid = r_data.get_attr_rid_by_aid(attr_id)?;
-    // Base item attributes have priority in case of collisions
-    if let Some(base_r_item) = base_r_item
-        && let Some(attr_value) = base_r_item.attr_data.attrs.get(&attr_rid)
-    {
-        return Some(AttrRidVal {
-            rid: attr_rid,
-            value: *attr_value,
-        });
-    }
-    let attr_value = *mutated_r_item.attr_data.attrs.get(&attr_rid)?;
-    Some(AttrRidVal {
-        rid: attr_rid,
-        value: attr_value,
-    })
-}
-
-fn get_combined_attr_value_by_rid(
-    base_r_item: Option<&RcItem>,
-    mutated_r_item: &RItem,
-    attr_rid: RAttrId,
-) -> Option<Value> {
-    // Base item attributes have priority in case of collisions
-    if let Some(base_r_item) = base_r_item
-        && let Some(&attr_value) = base_r_item.attr_data.attrs.get(&attr_rid)
-    {
-        return Some(attr_value);
-    }
-    mutated_r_item.attr_data.attrs.get(&attr_rid).copied()
-}
-
-pub(crate) fn get_combined_attr_values(base_r_item: Option<&RcItem>, mutated_r_item: &RItem) -> RMap<RAttrId, Value> {
-    match base_r_item {
-        Some(base_r_item) => {
-            let mut attrs = base_r_item.attr_data.attrs.clone();
-            // Base item attributes have priority in case of collisions
-            for (&attr_rid, &attr_val) in mutated_r_item.attr_data.attrs.iter() {
-                attrs.entry(attr_rid).or_insert(attr_val);
-            }
-            attrs
-        }
-        None => mutated_r_item.attr_data.attrs.clone(),
-    }
-}
-
-////////////////////////////////////////////////////////////////////////////////////////////////////
 // Debugging
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 #[cfg(feature = "dev")]
@@ -825,12 +727,20 @@ mod debug {
     impl ItemMutationDataCache {
         fn consistency_check(&self, u_data: &UData) -> DebugResult {
             let Self {
-                merged_attr_data,
-                // Not checked
-                base_type_aid: _,
-                mutator: _,
+                base_type_aid,
+                pregen_attrs_rid,
+                mutator,
+                flex_data,
             } = self;
-            merged_attr_data.consistency_check(u_data)?;
+            if u_data
+                .r_data
+                .get_muta_pregen()
+                .get_merged_attrs_rid(*base_type_aid, mutator.id)
+                != Some(*pregen_attrs_rid)
+            {
+                return Err(Default::default());
+            }
+            flex_data.consistency_check(u_data)?;
             Ok(())
         }
     }

@@ -1,6 +1,6 @@
 use std::hash::Hash;
 
-use crate::util::{LibDefault, LibGetId, LibIncrement, LibNamed, PSlab, RMap, SlabId};
+use crate::util::{DenseId, LibDefault, LibGetId, LibIncrement, LibNamed, PSlab, RMap};
 
 pub(crate) struct UEntityContainer<T, ExtId, IntId, Err> {
     counter: ExtId,
@@ -13,7 +13,7 @@ pub(crate) struct UEntityContainer<T, ExtId, IntId, Err> {
 impl<T, ExtId, IntId, Err> UEntityContainer<T, ExtId, IntId, Err>
 where
     T: LibGetId<ExtId> + LibNamed,
-    IntId: SlabId,
+    IntId: DenseId,
     ExtId: Copy + Eq + Hash + LibDefault + LibIncrement,
     Err: From<ExtId>,
 {
@@ -140,7 +140,7 @@ mod debug {
 
     impl<T, ExtId, IntId, Err> UEntityContainer<T, ExtId, IntId, Err>
     where
-        IntId: Hash + SlabId,
+        IntId: Hash + DenseId,
         ExtId: Eq + Hash,
     {
         pub(crate) fn try_get(&self, int_id: IntId) -> Option<&T> {

@@ -12,7 +12,7 @@ pub(crate) use item::{
     RItemShipLimit, RShipDroneLimit, RShipKind,
 };
 pub(crate) use item_list::{RItemList, RItemListId};
-pub(crate) use muta::{RMuta, RMutaAttrRange};
+pub(crate) use muta::{RMuta, RMutaAttrRange, RMutaPregen, RMutaPregenMergedAttrsId};
 pub(crate) use shared::RState;
 
 mod abil;

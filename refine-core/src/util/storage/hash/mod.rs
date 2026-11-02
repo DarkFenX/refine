@@ -1,4 +1,5 @@
 pub(crate) use map::{CMap, Map, RMap};
+pub(crate) use map_dedup::RDedupMap;
 pub(crate) use map_map::RMapRMap;
 pub(crate) use map_map_map::RMapRMapRMap;
 pub(crate) use map_set::RMapRSet;
@@ -7,6 +8,7 @@ pub(crate) use set::{RSet, Set};
 pub(crate) use set_ordered::ROrdSet;
 
 mod map;
+mod map_dedup;
 mod map_map;
 mod map_map_map;
 mod map_map_set;

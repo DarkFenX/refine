@@ -7,7 +7,7 @@ use crate::{
     },
     rd::{
         RAbil, RAttr, RAttrConsts, RAttrId, RBuff, RBuffId, REffect, REffectConsts, REffectId, RItem, RItemList,
-        RItemListId, RMuta,
+        RItemListId, RMuta, RMutaPregen,
     },
     util::{PSlab, RMap},
 };
@@ -18,18 +18,19 @@ pub(crate) type RcEffect = Arc<REffect>;
 pub(crate) type RcMuta = Arc<RMuta>;
 
 pub(crate) struct RData {
-    pub(super) items: RMap<AItemId, RcItem>,
-    pub(super) item_lists: PSlab<RItemListId, RItemList>,
-    pub(super) attrs: PSlab<RAttrId, RAttr>,
-    pub(super) attr_aid_rid_map: RMap<AAttrId, RAttrId>,
-    pub(super) attr_consts: RAttrConsts,
-    pub(super) effects: PSlab<REffectId, RcEffect>,
-    pub(super) effect_aid_rid_map: RMap<AEffectId, REffectId>,
-    pub(super) effect_consts: REffectConsts,
-    pub(super) buffs: PSlab<RBuffId, RBuff>,
-    pub(super) buff_aid_rid_map: RMap<ABuffId, RBuffId>,
-    pub(super) mutas: RMap<AItemId, RcMuta>,
-    pub(super) abils: RMap<AAbilId, RAbil>,
+    items: RMap<AItemId, RcItem>,
+    item_lists: PSlab<RItemListId, RItemList>,
+    attrs: PSlab<RAttrId, RAttr>,
+    attr_aid_rid_map: RMap<AAttrId, RAttrId>,
+    attr_consts: RAttrConsts,
+    effects: PSlab<REffectId, RcEffect>,
+    effect_aid_rid_map: RMap<AEffectId, REffectId>,
+    effect_consts: REffectConsts,
+    buffs: PSlab<RBuffId, RBuff>,
+    buff_aid_rid_map: RMap<ABuffId, RBuffId>,
+    mutas: RMap<AItemId, RcMuta>,
+    muta_pregen: RMutaPregen,
+    abils: RMap<AAbilId, RAbil>,
     // Extra data stored directly on RData for ease of access / optimization purposes
     online_effect: Option<RcEffect>,
     rah_duration_attr_rid: Option<RAttrId>,
@@ -86,6 +87,9 @@ impl RData {
     pub(crate) fn get_rah_duration_attr_rid(&self) -> Option<RAttrId> {
         self.rah_duration_attr_rid
     }
+    pub(crate) fn get_muta_pregen(&self) -> &RMutaPregen {
+        &self.muta_pregen
+    }
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -134,6 +138,7 @@ impl RData {
         let online_effect = effect_consts
             .online
             .map(|effect_rid| effects.get(effect_rid).unwrap().clone());
+        let muta_pregen = RMutaPregen::new(&items, &mutas, &attr_aid_rid_map, &attr_consts);
         Self {
             items,
             item_lists,
@@ -146,6 +151,7 @@ impl RData {
             buffs,
             buff_aid_rid_map,
             mutas,
+            muta_pregen,
             abils,
             rah_duration_attr_rid,
             online_effect,

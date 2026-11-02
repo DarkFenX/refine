@@ -3,7 +3,7 @@ use crate::{
     ad::AAttrId,
     rd::RAttrId,
     svc::calc::{CalcAttrVals, ItemAttrPostproc},
-    util::{RMap, SlabId},
+    util::{DenseId, RMap},
 };
 
 const NO_ENTRY: u8 = u8::MAX;

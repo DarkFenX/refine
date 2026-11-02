@@ -1,6 +1,6 @@
 use slab::Slab;
 
-use super::shared::SlabId;
+use crate::util::storage::DenseId;
 
 #[derive(Clone)]
 pub(crate) struct PSlab<I, V> {
@@ -9,7 +9,7 @@ pub(crate) struct PSlab<I, V> {
 }
 impl<I, V> PSlab<I, V>
 where
-    I: SlabId,
+    I: DenseId,
 {
     pub(crate) fn with_capacity(capacity: usize) -> Self {
         Self {
@@ -48,14 +48,14 @@ where
 
 pub(crate) struct VacantEntry<'a, I, V>
 where
-    I: SlabId,
+    I: DenseId,
 {
     inner: slab::VacantEntry<'a, V>,
     phantom: std::marker::PhantomData<I>,
 }
 impl<'a, I, V> VacantEntry<'a, I, V>
 where
-    I: SlabId,
+    I: DenseId,
 {
     fn new(inner: slab::VacantEntry<'a, V>) -> Self {
         Self {
