@@ -3,12 +3,12 @@ use crate::{ad::AEffectId, rd::REffectId, util::RMap};
 #[derive(Clone)]
 pub(crate) struct REffectConsts {
     pub(crate) adaptive_armor_hardener: Option<REffectId>,
-    pub(crate) hi_power: Option<REffectId>,
-    pub(crate) lo_power: Option<REffectId>,
-    pub(crate) med_power: Option<REffectId>,
+    pub(in crate::rd::data) hi_power: Option<REffectId>,
+    pub(in crate::rd::data) lo_power: Option<REffectId>,
+    pub(in crate::rd::data) med_power: Option<REffectId>,
     pub(crate) online: Option<REffectId>,
-    pub(crate) rig_slot: Option<REffectId>,
-    pub(crate) service_slot: Option<REffectId>,
+    pub(in crate::rd::data) rig_slot: Option<REffectId>,
+    pub(in crate::rd::data) service_slot: Option<REffectId>,
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////

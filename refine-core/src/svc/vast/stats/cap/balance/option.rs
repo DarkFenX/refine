@@ -153,7 +153,7 @@ impl StatCapBlcSrcKindsInt {
 
 #[derive(Copy, Clone, Default)]
 pub(crate) struct StatCapBlcNosfsOptionsInt {
-    pub(crate) projectee_item_uid: Option<UItemId> = None,
+    pub(super) projectee_item_uid: Option<UItemId> = None,
 }
 impl StatCapBlcNosfsOptionsInt {
     fn from_pub(pub_opt: StatCapBlcNosfs, u_data: &UData) -> Result<Self, ProjecteeUidError> {

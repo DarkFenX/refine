@@ -2,7 +2,7 @@ use crate::nd::{NEffectCharge, NEffectChargeDepl, NEffectChargeLoc};
 
 pub(crate) struct REffectCharge {
     pub(crate) location: REffectChargeLoc,
-    pub(crate) activates_charge: bool,
+    pub(super) activates_charge: bool,
 }
 
 pub(crate) enum REffectChargeLoc {

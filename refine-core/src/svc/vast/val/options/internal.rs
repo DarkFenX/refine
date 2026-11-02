@@ -10,8 +10,8 @@ use crate::{
 
 /// Internal variant, with fit/item UIDs instead of external IDs
 pub(crate) struct ValOptionsSolInt {
-    pub(crate) options: ValOptionsInt,
-    pub(crate) fit_uids: Vec<UFitId>,
+    pub(in crate::svc::vast::val) options: ValOptionsInt,
+    pub(in crate::svc::vast::val) fit_uids: Vec<UFitId>,
 }
 impl ValOptionsSolInt {
     pub(crate) fn from_pub(pub_sol_opts: &ValOptionsSol, sol: &SolarSystem) -> Self {

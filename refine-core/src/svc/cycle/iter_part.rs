@@ -23,7 +23,7 @@ impl<D, HDT> CycleSeq<D, HDT> {
 
 pub(crate) struct CSeqParts<'a, D, HDT> {
     cseq: &'a CycleSeq<D, HDT>,
-    pub(crate) loops: bool,
+    pub(in crate::svc) loops: bool,
 }
 impl<'a, D, HDT> CSeqParts<'a, D, HDT> {
     pub(crate) fn iter(&self) -> CSeqPartIter<'a, D, HDT> {
@@ -62,8 +62,8 @@ where
 }
 
 pub(crate) struct CSeqPartInf<D> {
-    pub(crate) data: D,
-    pub(crate) repeat_count: InfCount,
+    pub(in crate::svc) data: D,
+    pub(in crate::svc) repeat_count: InfCount,
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////

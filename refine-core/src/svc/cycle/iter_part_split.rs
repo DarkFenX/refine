@@ -5,8 +5,8 @@ use super::{
 use crate::{num::Count, util::State3};
 
 pub(crate) struct CSeqPart<D> {
-    pub(crate) data: D,
-    pub(crate) repeat_count: Count,
+    pub(in crate::svc) data: D,
+    pub(in crate::svc) repeat_count: Count,
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
