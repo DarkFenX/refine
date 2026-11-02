@@ -210,7 +210,7 @@ def test_mutation_change(client, consts):
     assert api_tgt_ship.update().attrs[eve_basic_info.affectee_attr_id].modified == approx(126)
 
 
-def test_mutation_remove(client, consts):
+def test_mutation_remove_active(client, consts):
     eve_basic_info = setup_mod_basics(client=client, consts=consts)
     _, eve_base_drone_id, eve_mutated_drone_id, eve_mutator_id, _ = setup_mutation(
         client=client, consts=consts, basic_info=eve_basic_info)
@@ -235,3 +235,33 @@ def test_mutation_remove(client, consts):
     assert api_drone.mutation.mutator_id == eve_mutator_id
     assert api_drone.mutation.rolls == {eve_basic_info.affector_attr_id: approx(0.8)}
     assert api_tgt_ship.update().attrs[eve_basic_info.affectee_attr_id].modified == approx(126)
+
+
+def test_mutation_remove_dormant(client, consts):
+    eve_basic_info = setup_mod_basics(client=client, consts=consts)
+    _, eve_base_drone_id, _, _, _ = setup_mutation(client=client, consts=consts, basic_info=eve_basic_info)
+    eve_mutator_id = client.alloc_item_id()
+    eve_ship_id = client.mk_eve_ship(attrs={eve_basic_info.affectee_attr_id: 100})
+    client.create_sources()
+    api_sol = client.create_sol()
+    api_tgt_fit = api_sol.create_fit()
+    api_tgt_ship = api_tgt_fit.set_ship(type_id=eve_ship_id)
+    api_fit = api_sol.create_fit()
+    api_drone = api_fit.add_drone(
+        type_id=eve_base_drone_id,
+        state=consts.ApiMinionState.engaging,
+        mutation=(eve_mutator_id, {eve_basic_info.affector_attr_id: Muta.roll_to_api(val=0.8)}),
+        proj_item_ids=[api_tgt_ship.id])
+    # Verification
+    assert api_drone.update().mutation.type == consts.ApiMutationType.dormant
+    assert api_tgt_ship.update().attrs[eve_basic_info.affectee_attr_id].modified == approx(120)
+    # Action
+    with rollback_batch(api_sol=api_sol) as api_sol_batch:
+        api_sol_batch.change_drone(item_id=api_drone.id, mutation=None)
+    # Verification
+    api_drone.update()
+    assert api_drone.type_id == eve_base_drone_id
+    assert api_drone.mutation.type == consts.ApiMutationType.dormant
+    assert api_drone.mutation.mutator_id == eve_mutator_id
+    assert api_drone.mutation.rolls == {eve_basic_info.affector_attr_id: approx(0.8)}
+    assert api_tgt_ship.update().attrs[eve_basic_info.affectee_attr_id].modified == approx(120)

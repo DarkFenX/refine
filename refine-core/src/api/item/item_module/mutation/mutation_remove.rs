@@ -1,6 +1,6 @@
 use crate::{
     sol::{SolarSystem, UndoStep},
-    ud::{UAttrMutationRequest, UItemId, err::ItemMutatedError},
+    ud::{ItemMutationData, UItemId, err::ItemMutatedError},
 };
 
 impl SolarSystem {
@@ -22,18 +22,8 @@ impl SolarSystem {
         let u_module = self.u_data.items.get_mut(module_uid).dc_module_mut().unwrap();
         let item_mutation_data = u_module.unmutate(&self.u_data.r_data).unwrap();
         if self.undo.is_recording() {
-            let attr_mutations = item_mutation_data
-                .get_attr_rolls()
-                .iter()
-                .map(|(&attr_aid, &roll)| UAttrMutationRequest {
-                    attr_aid,
-                    roll: Some(roll),
-                })
-                .collect();
-            self.undo.record_mutation_attrs(
-                UndoStep::ModuleMutationRemoved(module_uid, item_mutation_data.get_mutator_type_aid()),
-                attr_mutations,
-            );
+            self.undo
+                .record_mutation(UndoStep::ModuleMutationRemoved(module_uid), item_mutation_data);
         }
         SolarSystem::util_add_module_with_charge_act(
             &mut self.u_data,
@@ -42,5 +32,25 @@ impl SolarSystem {
             &mut self.reuse.eupdates,
         );
         Ok(())
+    }
+    pub(in crate::api) fn internal_restore_module_mutation(
+        &mut self,
+        module_uid: UItemId,
+        item_mutation_data: ItemMutationData,
+    ) {
+        SolarSystem::util_remove_module_with_charge_act(
+            &mut self.u_data,
+            &mut self.svc,
+            module_uid,
+            &mut self.reuse.eupdates,
+        );
+        let u_module = self.u_data.items.get_mut(module_uid).dc_module_mut().unwrap();
+        u_module.restore_mutation(item_mutation_data, &self.u_data.r_data);
+        SolarSystem::util_add_module_with_charge_act(
+            &mut self.u_data,
+            &mut self.svc,
+            module_uid,
+            &mut self.reuse.eupdates,
+        );
     }
 }

@@ -13,7 +13,7 @@ impl SolarSystem {
         let changed_attr_rid = u_drone.change_mutation_attr(&self.u_data.r_data, &mut attr_mutation)?;
         if self.undo.is_recording() {
             self.undo
-                .record_mutation_attr(UndoStep::DroneMutationAttr(drone_uid), attr_mutation);
+                .record_mutation_attr_single(UndoStep::DroneMutationAttrSingle(drone_uid), attr_mutation);
         }
         if let Some(attr_rid) = changed_attr_rid {
             self.svc
@@ -32,7 +32,7 @@ impl SolarSystem {
             // Reversed just to handle multiple requests for the same attribute correctly
             attr_mutations.reverse();
             self.undo
-                .record_mutation_attrs(UndoStep::DroneMutationAttrs(drone_uid), attr_mutations);
+                .record_mutation_attr_batch(UndoStep::DroneMutationAttrBatch(drone_uid), attr_mutations);
         }
         for attr_rid in changed_attr_rids.into_iter() {
             self.svc

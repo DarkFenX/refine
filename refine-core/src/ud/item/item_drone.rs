@@ -151,6 +151,9 @@ impl UDrone {
     pub(crate) fn unmutate(&mut self, r_data: &RData) -> Result<ItemMutationData, ItemMutatedError> {
         self.base.unmutate(r_data)
     }
+    pub(crate) fn restore_mutation(&mut self, item_mutation_data: ItemMutationData, r_data: &RData) {
+        self.base.restore_mutation(item_mutation_data, r_data)
+    }
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////

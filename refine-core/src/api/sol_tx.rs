@@ -1,7 +1,4 @@
-use crate::{
-    sol::{Savepoint, SolTx, SolarSystem, UndoStep},
-    ud::UItemMutationRequest,
-};
+use crate::sol::{Savepoint, SolTx, SolarSystem, UndoStep};
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Public
@@ -110,23 +107,19 @@ impl SolarSystem {
                 UndoStep::DroneMutationAdded(drone_uid) => {
                     self.internal_remove_drone_mutation(drone_uid).unwrap();
                 }
-                UndoStep::DroneMutationAttr(drone_uid) => {
-                    let attr_mutation = self.undo.pop_mutation_attr();
+                UndoStep::DroneMutationRemoved(drone_uid) => {
+                    let item_mutation_data = self.undo.pop_mutation();
+                    self.internal_restore_drone_mutation(drone_uid, item_mutation_data);
+                }
+                UndoStep::DroneMutationAttrSingle(drone_uid) => {
+                    let attr_mutation = self.undo.pop_mutation_attr_single();
                     self.internal_change_item_mutation_attr(drone_uid, attr_mutation)
                         .unwrap();
                 }
-                UndoStep::DroneMutationAttrs(drone_uid) => {
-                    let attr_mutations = self.undo.pop_mutation_attrs();
+                UndoStep::DroneMutationAttrBatch(drone_uid) => {
+                    let attr_mutations = self.undo.pop_mutation_attr_batch();
                     self.internal_change_item_mutation_attrs(drone_uid, attr_mutations)
                         .unwrap();
-                }
-                UndoStep::DroneMutationRemoved(drone_uid, mutator_type_aid) => {
-                    let attrs = self.undo.pop_mutation_attrs();
-                    let mutation = UItemMutationRequest {
-                        mutator_type_aid,
-                        attrs,
-                    };
-                    self.internal_add_drone_mutation(drone_uid, mutation).unwrap();
                 }
                 UndoStep::DroneMutator(drone_uid, mutator_type_aid) => {
                     self.internal_set_drone_mutator_type_aid(drone_uid, mutator_type_aid)
@@ -187,23 +180,19 @@ impl SolarSystem {
                 UndoStep::ModuleMutationAdded(module_uid) => {
                     self.internal_remove_module_mutation(module_uid).unwrap();
                 }
-                UndoStep::ModuleMutationAttr(module_uid) => {
-                    let attr_mutation = self.undo.pop_mutation_attr();
+                UndoStep::ModuleMutationRemoved(module_uid) => {
+                    let item_mutation_data = self.undo.pop_mutation();
+                    self.internal_restore_module_mutation(module_uid, item_mutation_data);
+                }
+                UndoStep::ModuleMutationAttrSingle(module_uid) => {
+                    let attr_mutation = self.undo.pop_mutation_attr_single();
                     self.internal_change_item_mutation_attr(module_uid, attr_mutation)
                         .unwrap();
                 }
-                UndoStep::ModuleMutationAttrs(module_uid) => {
-                    let attr_mutations = self.undo.pop_mutation_attrs();
+                UndoStep::ModuleMutationAttrBatch(module_uid) => {
+                    let attr_mutations = self.undo.pop_mutation_attr_batch();
                     self.internal_change_item_mutation_attrs(module_uid, attr_mutations)
                         .unwrap();
-                }
-                UndoStep::ModuleMutationRemoved(module_uid, mutator_type_aid) => {
-                    let attrs = self.undo.pop_mutation_attrs();
-                    let mutation = UItemMutationRequest {
-                        mutator_type_aid,
-                        attrs,
-                    };
-                    self.internal_add_module_mutation(module_uid, mutation).unwrap();
                 }
                 UndoStep::ModuleMutator(module_uid, mutator_type_aid) => {
                     self.internal_set_module_mutator_aid(module_uid, mutator_type_aid)

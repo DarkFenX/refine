@@ -1,7 +1,9 @@
+use bitflags::bitflags;
+
 use super::{savepoint::Savepoint, step::UndoStep};
 use crate::{
     DpsProfile, FitId, FleetId, ItemId,
-    ud::{UAttrMutationRequest, UAutocharges, UData, UPhysics},
+    ud::{ItemMutationData, UAttrMutationRequest, UAutocharges, UData, UPhysics},
 };
 
 /// Inverse steps of changes done to a solar system while recording.
@@ -13,8 +15,11 @@ pub(crate) struct UndoLog {
     dps_profiles: Vec<Option<DpsProfile>>,
     autocharges: Vec<UAutocharges>,
     physics: Vec<UPhysics>,
-    mutation_attr: Vec<UAttrMutationRequest>,
-    mutation_attrs: Vec<Vec<UAttrMutationRequest>>,
+    mutations: Vec<ItemMutationData>,
+    mutation_attr_singles: Vec<UAttrMutationRequest>,
+    mutation_attr_batches: Vec<Vec<UAttrMutationRequest>>,
+    // Side stacks recorded to since last commit; stacks which are not marked are empty
+    touched: SideStacks,
 }
 impl UndoLog {
     pub(in crate::sol) fn new() -> Self {
@@ -24,8 +29,10 @@ impl UndoLog {
             dps_profiles: Vec::new(),
             autocharges: Vec::new(),
             physics: Vec::new(),
-            mutation_attr: Vec::new(),
-            mutation_attrs: Vec::new(),
+            mutations: Vec::new(),
+            mutation_attr_singles: Vec::new(),
+            mutation_attr_batches: Vec::new(),
+            touched: SideStacks::empty(),
         }
     }
     /// Starts recording, returning the point changes can be rolled back to.
@@ -62,11 +69,27 @@ impl UndoLog {
         // Includes children unmapped with their parents, and autocharges replaced by fighter type
         // changes
         u_data.items.evict_detached();
-        self.dps_profiles.clear();
-        self.autocharges.clear();
-        self.physics.clear();
-        self.mutation_attr.clear();
-        self.mutation_attrs.clear();
+        if !self.touched.is_empty() {
+            if self.touched.contains(SideStacks::DPS_PROFILES) {
+                self.dps_profiles.clear();
+            }
+            if self.touched.contains(SideStacks::AUTOCHARGES) {
+                self.autocharges.clear();
+            }
+            if self.touched.contains(SideStacks::PHYSICS) {
+                self.physics.clear();
+            }
+            if self.touched.contains(SideStacks::MUTATIONS) {
+                self.mutations.clear();
+            }
+            if self.touched.contains(SideStacks::MUTATION_ATTR_SINGLES) {
+                self.mutation_attr_singles.clear();
+            }
+            if self.touched.contains(SideStacks::MUTATION_ATTR_BATCHES) {
+                self.mutation_attr_batches.clear();
+            }
+            self.touched = SideStacks::empty();
+        }
         self.recording = false;
     }
     pub(crate) fn is_recording(&self) -> bool {
@@ -85,6 +108,7 @@ impl UndoLog {
     pub(crate) fn record_dps_profile(&mut self, step: UndoStep, dps_profile: Option<DpsProfile>) {
         self.steps.push(step);
         self.dps_profiles.push(dps_profile);
+        self.touched.insert(SideStacks::DPS_PROFILES);
     }
     pub(crate) fn pop_dps_profile(&mut self) -> Option<DpsProfile> {
         self.dps_profiles.pop().unwrap()
@@ -92,6 +116,7 @@ impl UndoLog {
     pub(crate) fn record_autocharges(&mut self, step: UndoStep, autocharges: UAutocharges) {
         self.steps.push(step);
         self.autocharges.push(autocharges);
+        self.touched.insert(SideStacks::AUTOCHARGES);
     }
     pub(crate) fn pop_autocharges(&mut self) -> UAutocharges {
         self.autocharges.pop().unwrap()
@@ -99,23 +124,46 @@ impl UndoLog {
     pub(crate) fn record_physics(&mut self, step: UndoStep, physics: UPhysics) {
         self.steps.push(step);
         self.physics.push(physics);
+        self.touched.insert(SideStacks::PHYSICS);
     }
     pub(crate) fn pop_physics(&mut self) -> UPhysics {
         self.physics.pop().unwrap()
     }
-    pub(crate) fn record_mutation_attr(&mut self, step: UndoStep, attr_mutation: UAttrMutationRequest) {
+    pub(crate) fn record_mutation(&mut self, step: UndoStep, item_mutation_data: ItemMutationData) {
         self.steps.push(step);
-        self.mutation_attr.push(attr_mutation);
+        self.mutations.push(item_mutation_data);
+        self.touched.insert(SideStacks::MUTATIONS);
     }
-    pub(crate) fn pop_mutation_attr(&mut self) -> UAttrMutationRequest {
-        self.mutation_attr.pop().unwrap()
+    pub(crate) fn pop_mutation(&mut self) -> ItemMutationData {
+        self.mutations.pop().unwrap()
     }
-    pub(crate) fn record_mutation_attrs(&mut self, step: UndoStep, attr_mutations: Vec<UAttrMutationRequest>) {
+    pub(crate) fn record_mutation_attr_single(&mut self, step: UndoStep, attr_mutation: UAttrMutationRequest) {
         self.steps.push(step);
-        self.mutation_attrs.push(attr_mutations);
+        self.mutation_attr_singles.push(attr_mutation);
+        self.touched.insert(SideStacks::MUTATION_ATTR_SINGLES);
     }
-    pub(crate) fn pop_mutation_attrs(&mut self) -> Vec<UAttrMutationRequest> {
-        self.mutation_attrs.pop().unwrap()
+    pub(crate) fn pop_mutation_attr_single(&mut self) -> UAttrMutationRequest {
+        self.mutation_attr_singles.pop().unwrap()
+    }
+    pub(crate) fn record_mutation_attr_batch(&mut self, step: UndoStep, attr_mutations: Vec<UAttrMutationRequest>) {
+        self.steps.push(step);
+        self.mutation_attr_batches.push(attr_mutations);
+        self.touched.insert(SideStacks::MUTATION_ATTR_BATCHES);
+    }
+    pub(crate) fn pop_mutation_attr_batch(&mut self) -> Vec<UAttrMutationRequest> {
+        self.mutation_attr_batches.pop().unwrap()
+    }
+}
+
+bitflags! {
+    #[derive(Clone, Copy)]
+    struct SideStacks: u8 {
+        const DPS_PROFILES = 1 << 0;
+        const AUTOCHARGES = 1 << 1;
+        const PHYSICS = 1 << 2;
+        const MUTATIONS = 1 << 3;
+        const MUTATION_ATTR_SINGLES = 1 << 4;
+        const MUTATION_ATTR_BATCHES = 1 << 5;
     }
 }
 
@@ -135,8 +183,9 @@ mod debug {
                 || !self.dps_profiles.is_empty()
                 || !self.autocharges.is_empty()
                 || !self.physics.is_empty()
-                || !self.mutation_attr.is_empty()
-                || !self.mutation_attrs.is_empty()
+                || !self.mutations.is_empty()
+                || !self.mutation_attr_singles.is_empty()
+                || !self.mutation_attr_batches.is_empty()
             {
                 return Err(Default::default());
             }

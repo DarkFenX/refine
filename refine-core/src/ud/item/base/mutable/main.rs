@@ -585,6 +585,17 @@ impl UItemBaseMutable {
         }
         Ok(item_mutation_data)
     }
+    /// Puts back mutation taken by unmutating, without deriving anything again.
+    pub(in crate::ud::item) fn restore_mutation(&mut self, item_mutation_data: ItemMutationData, r_data: &RData) {
+        // Mutation cache is valid as long as data source stays the same, only the mutated item is
+        // not stored on it
+        if let Some(cache) = &item_mutation_data.cache {
+            let mutated_type_aid = cache.mutator.item_map.get(&cache.base_type_aid).unwrap();
+            let mutated_r_item = r_data.get_item_by_aid(mutated_type_aid).unwrap();
+            self.base.base_set_r_item(mutated_r_item.clone());
+        }
+        self.mutation = Some(item_mutation_data);
+    }
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
