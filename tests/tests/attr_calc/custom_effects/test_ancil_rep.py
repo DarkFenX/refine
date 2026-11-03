@@ -223,6 +223,6 @@ def test_state(client, consts):
     api_aar_item.change_module(effect_modes={api_custom_effect_id: consts.ApiEffMode.force_stop})
     # Verification
     assert api_aar_item.update().attrs[eve_affectee_attr_id].modified == approx(100)
-    # Action & verification
+    # Action
     api_aar_item.change_module(charge_type_id=None)
     api_aar_item.remove()

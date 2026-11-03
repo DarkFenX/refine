@@ -47,7 +47,7 @@ def test_loaded_onlist_to_loaded_offlist_remove_pe_remove_child(client, consts):
     api_proj_effect.remove()
     # Verification
     assert api_child.update().attrs[eve_affectee_attr_id].modified == approx(5)
-    # Action & verification
+    # Action
     api_child.remove()
 
 
@@ -67,7 +67,7 @@ def test_loaded_onlist_to_loaded_offlist_remove_child_remove_pe(client, consts):
     api_child.change_drone(type_id=eve_loaded_offlist_id)
     # Verification
     assert api_child.update().attrs[eve_affectee_attr_id].modified == approx(5)
-    # Action & verification
+    # Action
     api_child.remove()
     api_proj_effect.remove()
 
@@ -96,7 +96,7 @@ def test_loaded_onlist_to_unloaded_onlist_remove_pe_remove_child(client, consts)
     api_child.update()
     with check_no_field():
         api_child.attrs  # ruff:ignore[useless-expression]
-    # Action & verification
+    # Action
     api_child.remove()
 
 
@@ -118,7 +118,7 @@ def test_loaded_onlist_to_unloaded_offlist_remove_child_remove_pe(client, consts
     api_child.update()
     with check_no_field():
         api_child.attrs  # ruff:ignore[useless-expression]
-    # Action & verification
+    # Action
     api_child.remove()
     api_proj_effect.remove()
 
@@ -143,7 +143,7 @@ def test_loaded_offlist_to_loaded_onlist_remove_pe_remove_child(client, consts):
     api_proj_effect.remove()
     # Verification
     assert api_child.update().attrs[eve_affectee_attr_id].modified == approx(7.5)
-    # Action & verification
+    # Action
     api_child.remove()
 
 
@@ -163,7 +163,7 @@ def test_loaded_offlist_to_loaded_onlist_remove_child_remove_pe(client, consts):
     api_child.change_drone(type_id=eve_loaded_onlist_id)
     # Verification
     assert api_child.update().attrs[eve_affectee_attr_id].modified == approx(37.5)
-    # Action & verification
+    # Action
     api_child.remove()
     api_proj_effect.remove()
 
@@ -190,7 +190,7 @@ def test_unloaded_offlist_to_loaded_onlist_remove_pe_remove_child(client, consts
     api_proj_effect.remove()
     # Verification
     assert api_child.update().attrs[eve_affectee_attr_id].modified == approx(7.5)
-    # Action & verification
+    # Action
     api_child.remove()
 
 
@@ -212,6 +212,6 @@ def test_unloaded_onlist_to_loaded_onlist_remove_child_remove_pe(client, consts)
     api_child.change_drone(type_id=eve_loaded_onlist_id)
     # Verification
     assert api_child.update().attrs[eve_affectee_attr_id].modified == approx(37.5)
-    # Action & verification
+    # Action
     api_child.remove()
     api_proj_effect.remove()

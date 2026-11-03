@@ -210,7 +210,7 @@ def test_mutation_change(client, consts):
     assert api_tgt_ship.update().attrs[eve_basic_info.affectee_attr_id].modified == approx(126)
 
 
-def test_mutation_remove_active(client, consts):
+def test_mutation_remove_effective(client, consts):
     eve_basic_info = setup_mod_basics(client=client, consts=consts)
     _, eve_base_drone_id, eve_mutated_drone_id, eve_mutator_id, _ = setup_mutation(
         client=client, consts=consts, basic_info=eve_basic_info)
@@ -255,10 +255,9 @@ def test_mutation_remove_dormant(client, consts):
     # Verification
     assert api_drone.update().mutation.type == consts.ApiMutationType.dormant
     assert api_tgt_ship.update().attrs[eve_basic_info.affectee_attr_id].modified == approx(120)
-    # Action
+    # Action & verification
     with rollback_batch(api_sol=api_sol) as api_sol_batch:
         api_sol_batch.change_drone(item_id=api_drone.id, mutation=None)
-    # Verification
     api_drone.update()
     assert api_drone.type_id == eve_base_drone_id
     assert api_drone.mutation.type == consts.ApiMutationType.dormant
