@@ -1,4 +1,4 @@
-use crate::{Fleet, FleetAddCmd, FleetInfo, SolarSystem, err::FleetAddError, info::FleetInfoCmd};
+use crate::{Fleet, FleetAddCmd, FleetInfo, FleetInfoCmd, SolarSystem, err::FleetAddError};
 
 impl<'r, 's> SolarSystem<'r> {
     #[tracing::instrument(name = "flt-add", level = "error", skip_all)]

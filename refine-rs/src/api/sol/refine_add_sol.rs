@@ -1,7 +1,4 @@
-use crate::{
-    Refine, SolAddCmd, SolInfo, SolInfoCmd, SolarSystem,
-    src::{SrcAlias, err::SrcGetError},
-};
+use crate::{Refine, SolAddCmd, SolInfo, SolInfoCmd, SolarSystem, SrcAlias, src::err::SrcGetError};
 
 impl Refine {
     #[tracing::instrument(name = "sol-add", level = "error", skip_all)]

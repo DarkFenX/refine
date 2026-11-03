@@ -1,6 +1,6 @@
 use crate::{
     ItemId, SolarSystem, SwEffect,
-    err::basic::{ItemFoundError, ItemKindMatchError},
+    err::{ItemKindMatchError, basic::ItemFoundError},
 };
 
 impl SolarSystem {

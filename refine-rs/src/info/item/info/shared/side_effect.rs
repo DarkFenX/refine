@@ -1,4 +1,4 @@
-use crate::{UnitInterval, Value};
+use crate::{Op, UnitInterval, Value};
 
 #[cfg_attr(feature = "serde", derive(serde_tuple::Serialize_tuple))]
 #[derive(Copy, Clone)]
@@ -39,30 +39,30 @@ impl SideEffectMod {
     fn try_from_core(core_sid_str: rc::SideEffectStr) -> Option<Self> {
         let raw_strength = core_sid_str.get_strength();
         match core_sid_str.get_op() {
-            rc::Op::Add | rc::Op::ExtraAdd => Some(Self {
+            Op::Add | Op::ExtraAdd => Some(Self {
                 op: SideEffectOp::Add,
                 str: raw_strength,
             }),
-            rc::Op::Sub => Some(Self {
+            Op::Sub => Some(Self {
                 op: SideEffectOp::Add,
                 str: Value::from_f64(-raw_strength.into_f64()),
             }),
-            rc::Op::PreMul | rc::Op::PostMul | rc::Op::ExtraMul => Some(Self {
+            Op::PreMul | Op::PostMul | Op::ExtraMul => Some(Self {
                 op: SideEffectOp::Perc,
                 str: Value::from_f64(raw_strength.into_f64().mul_add(100.0, -100.0)),
             }),
-            rc::Op::PreDiv | rc::Op::PostDiv => match raw_strength.into_f64() {
+            Op::PreDiv | Op::PostDiv => match raw_strength.into_f64() {
                 0.0 => None,
                 v => Some(Self {
                     op: SideEffectOp::Perc,
                     str: Value::from_f64(100.0 / v - 100.0),
                 }),
             },
-            rc::Op::PostPerc => Some(Self {
+            Op::PostPerc => Some(Self {
                 op: SideEffectOp::Perc,
                 str: raw_strength,
             }),
-            rc::Op::BaseAssign | rc::Op::PreAssign | rc::Op::PostAssign | rc::Op::MinLimit | rc::Op::MaxLimit => None,
+            Op::BaseAssign | Op::PreAssign | Op::PostAssign | Op::MinLimit | Op::MaxLimit => None,
         }
     }
 }

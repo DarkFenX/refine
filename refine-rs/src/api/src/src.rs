@@ -1,4 +1,4 @@
-use crate::{Refine, src::SrcAlias, svc::SrcInnerGuarded};
+use crate::{Refine, SrcAlias, svc::SrcInnerGuarded};
 
 /// Data source.
 ///

@@ -1,6 +1,6 @@
 use crate::{
     Charge, ItemId, SolarSystem,
-    err::basic::{ItemFoundError, ItemKindMatchError},
+    err::{ItemKindMatchError, basic::ItemFoundError},
 };
 
 impl SolarSystem {

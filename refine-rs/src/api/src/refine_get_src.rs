@@ -1,8 +1,4 @@
-use crate::{
-    Refine,
-    src::{Src, SrcAlias},
-    svc::SrcInnerGuarded,
-};
+use crate::{Refine, Src, SrcAlias, svc::SrcInnerGuarded};
 
 impl Refine {
     #[tracing::instrument(name = "src-get", level = "error", skip_all)]

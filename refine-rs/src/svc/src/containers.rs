@@ -1,6 +1,6 @@
 use super::inner::SrcInnerGuarded;
 use crate::{
-    src::SrcAlias,
+    SrcAlias,
     util::{RMap, RSet},
 };
 

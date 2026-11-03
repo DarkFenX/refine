@@ -1,6 +1,6 @@
 use std::{sync::Arc, time::Instant};
 
-use crate::{SolarSystemId, src::SrcAlias};
+use crate::{SolarSystemId, SrcAlias};
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Inner guarded

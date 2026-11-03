@@ -1,4 +1,7 @@
-use crate::src::{Src, SrcInfo, SrcInfoMode};
+use crate::{
+    Src,
+    src::{SrcInfo, SrcInfoMode},
+};
 
 impl Src<'_> {
     #[tracing::instrument(name = "src-inf", level = "error", skip_all)]

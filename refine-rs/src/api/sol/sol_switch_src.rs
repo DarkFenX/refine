@@ -1,7 +1,4 @@
-use crate::{
-    SolInfo, SolInfoCmd, SolarSystem,
-    src::{SrcAlias, err::SrcGetError},
-};
+use crate::{SolInfo, SolInfoCmd, SolarSystem, SrcAlias, src::err::SrcGetError};
 
 impl SolarSystem<'_> {
     #[tracing::instrument(name = "sol-swt-src", level = "error", skip_all)]

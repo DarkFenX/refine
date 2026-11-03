@@ -1,7 +1,4 @@
-use crate::{
-    Refine,
-    src::{Src, SrcAlias},
-};
+use crate::{Refine, Src, SrcAlias};
 
 impl Refine {
     #[tracing::instrument(name = "src-rmv", level = "error", skip_all)]

@@ -1,8 +1,8 @@
 use std::sync::Arc;
 
 use crate::{
-    Refine,
-    src::{Src, SrcAlias, SrcInfo, SrcInfoMode},
+    Refine, Src, SrcAlias,
+    src::{SrcInfo, SrcInfoMode},
     svc::SrcInnerGuarded,
 };
 

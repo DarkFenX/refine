@@ -1,4 +1,7 @@
-use crate::src::{SrcAlias, SrcOrigin, SrcWarnings};
+use crate::{
+    SrcAlias,
+    src::{SrcOrigin, SrcWarnings},
+};
 
 #[cfg_attr(feature = "serde", derive(serde::Deserialize), serde(rename_all = "snake_case"))]
 #[derive(Copy, Clone, Default)]

@@ -1,4 +1,4 @@
-use crate::{Fleet, FleetInfo, info::FleetInfoCmd};
+use crate::{Fleet, FleetInfo, FleetInfoCmd};
 
 impl Fleet<'_, '_> {
     #[tracing::instrument(name = "flt-inf", level = "error", skip_all)]

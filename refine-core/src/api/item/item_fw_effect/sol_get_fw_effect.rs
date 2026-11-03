@@ -1,6 +1,6 @@
 use crate::{
     FwEffect, ItemId, SolarSystem,
-    err::basic::{ItemFoundError, ItemKindMatchError},
+    err::{ItemKindMatchError, basic::ItemFoundError},
 };
 
 impl SolarSystem {

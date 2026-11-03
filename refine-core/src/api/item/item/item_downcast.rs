@@ -1,6 +1,6 @@
 use crate::{
     Autocharge, Booster, Character, Charge, Drone, Fighter, FwEffect, Implant, Item, ItemCommon, ItemKind, Module,
-    ProjEffect, Rig, Service, Ship, Skill, Stance, Subsystem, SwEffect, err::basic::ItemKindMatchError,
+    ProjEffect, Rig, Service, Ship, Skill, Stance, Subsystem, SwEffect, err::ItemKindMatchError,
 };
 
 impl<'s> Item<'s> {

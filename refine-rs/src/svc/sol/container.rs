@@ -3,7 +3,7 @@ use std::collections::hash_map::Entry;
 use parking_lot::RwLock;
 
 use super::inner::{SolInner, SolInnerGuarded};
-use crate::{SolarSystemId, src::SrcAlias, util::RMap};
+use crate::{SolarSystemId, SrcAlias, util::RMap};
 
 /// Map of solar systems by their IDs.
 ///

@@ -1,3 +1,5 @@
+use crate::AbilityId;
+
 #[cfg_attr(
     feature = "serde",
     cfg_eval,
@@ -8,13 +10,13 @@
 #[derive(Clone, Default)]
 pub(in crate::ctl::core) struct Abilities {
     #[cfg_attr(feature = "serde", serde_as(as = "serde_with::Map<serde_with::DisplayFromStr, _>"))]
-    data: Vec<(rc::AbilityId, bool)>,
+    data: Vec<(AbilityId, bool)>,
 }
 impl Abilities {
     pub(in crate::ctl) const fn new() -> Self {
         Self { data: Vec::new() }
     }
-    pub(in crate::ctl) fn extend(&mut self, effect_modes: impl IntoIterator<Item = (rc::AbilityId, bool)>) {
+    pub(in crate::ctl) fn extend(&mut self, effect_modes: impl IntoIterator<Item = (AbilityId, bool)>) {
         self.data.extend(effect_modes);
     }
     pub(in crate::ctl::core) fn apply(&self, core_fighter: &mut rc::Fighter) {

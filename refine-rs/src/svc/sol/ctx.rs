@@ -1,4 +1,4 @@
-use crate::{SolarSystemId, src::SrcAlias};
+use crate::{SolarSystemId, SrcAlias};
 
 /// Carries data not available on core sol, but sometimes is needed for command execution.
 #[derive(Copy, Clone)]

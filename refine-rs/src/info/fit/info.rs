@@ -2,8 +2,8 @@ use rc::Lender;
 
 use crate::{
     BoosterInfo, CharacterInfo, DpsProfile, DroneInfo, FighterInfo, FitId, FitInfoMode, FitSecStatus, FleetId,
-    FwEffectInfo, ImplantInfo, ItemId, ItemInfoMode, ModuleInfo, RigInfo, ServiceInfo, ShipInfo, SkillInfo, StanceInfo,
-    SubsystemInfo, shared::OvrdMapLight,
+    FwEffectInfo, ImplantInfo, ItemId, ItemInfoMode, ModRack, ModuleInfo, RigInfo, ServiceInfo, ShipInfo, SkillInfo,
+    StanceInfo, SubsystemInfo, shared::OvrdMapLight,
 };
 
 #[cfg_attr(feature = "serde", derive(serde::Serialize))]
@@ -113,21 +113,21 @@ impl FitInfo {
                         .collect(),
                     modules: ModuleRacks {
                         high: core_fit
-                            .iter_modules(rc::ModRack::High)
+                            .iter_modules(ModRack::High)
                             .map_into_iter(|core_module| {
                                 core_module
                                     .map(|mut core_module| ModuleInfo::from_core(&mut core_module, item_info_modes))
                             })
                             .collect(),
                         mid: core_fit
-                            .iter_modules(rc::ModRack::Mid)
+                            .iter_modules(ModRack::Mid)
                             .map_into_iter(|core_module| {
                                 core_module
                                     .map(|mut core_module| ModuleInfo::from_core(&mut core_module, item_info_modes))
                             })
                             .collect(),
                         low: core_fit
-                            .iter_modules(rc::ModRack::Low)
+                            .iter_modules(ModRack::Low)
                             .map_into_iter(|core_module| {
                                 core_module
                                     .map(|mut core_module| ModuleInfo::from_core(&mut core_module, item_info_modes))

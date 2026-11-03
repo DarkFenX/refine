@@ -1,6 +1,5 @@
 use crate::{
-    Refine, SolarSystemId,
-    src::SrcAlias,
+    Refine, SolarSystemId, SrcAlias,
     svc::{SolInnerGuarded, SolOwnedMutexGuard},
 };
 
