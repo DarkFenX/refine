@@ -8,7 +8,7 @@ use crate::sol::{Savepoint, SolarSystem};
 /// transaction can be open on a solar system at a time.
 ///
 /// Restrictions:
-/// - the solar system must not be replaced or cloned through the guard;
+/// - the solar system must not be replaced through the guard, and cloning it panics;
 /// - a guard dropped while panicking neither rolls back nor commits, since rolling back half-done
 ///   changes could panic again; the solar system has to be discarded then.
 pub struct SolTx<'a> {

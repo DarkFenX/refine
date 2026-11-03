@@ -10,7 +10,6 @@ use crate::{
 /// Everything is accessed through a solar system: fits, fleets and items are reached by their IDs,
 /// which returns a short-lived handle borrowing the solar system. Since handles borrow, only one
 /// mutable handle can be held at a time.
-#[derive(Clone)]
 pub struct SolarSystem {
     pub(crate) u_data: UData,
     pub(crate) svc: Svc,
@@ -26,6 +25,22 @@ impl SolarSystem {
             rev_projs: RevProjs::new(),
             reuse: SolReuse::new(),
             undo: UndoLog::new(),
+        }
+    }
+}
+impl Clone for SolarSystem {
+    fn clone(&self) -> Self {
+        // A clone made within a transaction would carry its log, with no transaction to close it
+        assert!(
+            !self.undo.is_recording(),
+            "solar system cannot be cloned within a transaction"
+        );
+        Self {
+            u_data: self.u_data.clone(),
+            svc: self.svc.clone(),
+            rev_projs: self.rev_projs.clone(),
+            reuse: self.reuse.clone(),
+            undo: self.undo.clone(),
         }
     }
 }
