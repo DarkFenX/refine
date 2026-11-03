@@ -2,10 +2,7 @@ use std::hint::black_box;
 
 use itertools::Itertools;
 
-use crate::{
-    Fit, ItemTypeId,
-    svc::vast::{ValOptions, ValOptionsInt},
-};
+use crate::{Fit, ItemTypeId, svc::vast::ValOptionsInt, val::ValOptions};
 
 impl<'s> Fit<'s> {
     pub fn benchmark_try_items(&mut self, type_ids: &[ItemTypeId], val_options: &ValOptions, iterations: usize) {

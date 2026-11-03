@@ -2,8 +2,10 @@ use itertools::Itertools;
 
 use crate::{
     Fighter, ItemId, Proj, SolarSystem,
-    api::ProjAddError,
-    err::basic::{ItemReceiveProjError, ProjNotFoundError},
+    err::{
+        ProjAddError,
+        basic::{ItemReceiveProjError, ProjNotFoundError},
+    },
     sol::UndoStep,
     ud::{UItemId, UProjData},
 };

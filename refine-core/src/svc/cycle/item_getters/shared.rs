@@ -1,7 +1,7 @@
 use crate::{
     OptionalReload, PValue, RearmMinion,
     rd::REffectId,
-    svc::vast::{StatTimeOptions, StatTimeOptionsSim},
+    stats::{StatTimeOptions, StatTimeOptionsSim},
 };
 
 #[derive(Copy, Clone)]

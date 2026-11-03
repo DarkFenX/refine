@@ -1,4 +1,4 @@
-use crate::{Fit, svc::vast::StatResource};
+use crate::{Fit, stats::StatResource};
 
 impl<'s> Fit<'s> {
     pub fn get_stat_cpu(&mut self) -> StatResource {

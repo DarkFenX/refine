@@ -1,10 +1,7 @@
 use crate::{
     Fleet, ItemId, PValue,
-    api::StatFleetAppliedError,
-    svc::{
-        cycle::CseqMap,
-        vast::{StatNeutItemKinds, StatTimeOptions},
-    },
+    stats::{StatNeutItemKinds, StatTimeOptions, err::StatFleetAppliedError},
+    svc::cycle::CseqMap,
 };
 
 impl<'s> Fleet<'s> {

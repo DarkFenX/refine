@@ -1,9 +1,9 @@
 use crate::{
     Value,
     ad::{AItemCatId, AItemGrpId},
-    misc::DetectedItemKind,
     rd::{RAttrConsts, RAttrId, REffectConsts, REffectId, RItemBaseEffectData},
     util::RMap,
+    val::DetectedItemKind,
 };
 
 pub(in crate::rd::data::item::base) fn detect_item_kind(

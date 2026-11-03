@@ -1,10 +1,11 @@
 use crate::{
     OptionalReload, PValue, UnitInterval, Value,
+    stats::{StatCapSim, StatTimeOptions},
     svc::{
         Svc, SvcCtx,
         cycle::CseqMap,
         err::IntStatItemError,
-        vast::{StatCapBlcSrcKindsInt, StatCapSim, StatCapSimStaggerInt, StatTimeOptions, Vast},
+        vast::{StatCapBlcSrcKindsInt, StatCapSimStaggerInt, Vast},
     },
     ud::{UData, UItemId},
 };

@@ -2,7 +2,7 @@ use std::str::FromStr;
 
 use crate::{
     Count, PValue, UnitInterval,
-    num::{CountParseError, PValueParseError, UnitIntervalParseError},
+    err::{CountParseError, PValueParseError, UnitIntervalParseError},
 };
 
 /// Controls on which spool cycle spoolable modules will be set.

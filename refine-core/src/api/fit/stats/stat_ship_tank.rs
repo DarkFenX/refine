@@ -1,7 +1,6 @@
 use crate::{
     DpsProfile, Fit, ItemCommon, UnitInterval,
-    stats::err::StatFitShipError,
-    svc::vast::{StatEhp, StatErps, StatHp, StatResists, StatRps, StatTimeOptions},
+    stats::{StatEhp, StatErps, StatHp, StatResists, StatRps, StatTimeOptions, err::StatFitShipError},
 };
 
 impl<'s> Fit<'s> {

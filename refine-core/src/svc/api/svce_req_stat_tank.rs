@@ -1,11 +1,7 @@
 use crate::{
     DpsProfile, UnitInterval,
-    svc::{
-        Svc, SvcCtx,
-        cycle::CseqMap,
-        err::IntStatItemError,
-        vast::{StatEhp, StatErps, StatHp, StatResists, StatRps, StatTimeOptions, Vast},
-    },
+    stats::{StatEhp, StatErps, StatHp, StatResists, StatRps, StatTimeOptions},
+    svc::{Svc, SvcCtx, cycle::CseqMap, err::IntStatItemError, vast::Vast},
     ud::{UData, UItemId},
 };
 

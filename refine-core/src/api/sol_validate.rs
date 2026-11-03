@@ -1,6 +1,7 @@
 use crate::{
     SolarSystem,
-    svc::vast::{ValOptionsSol, ValOptionsSolInt, ValResultSol},
+    svc::vast::ValOptionsSolInt,
+    val::{ValOptionsSol, ValResultSol},
 };
 
 impl SolarSystem {

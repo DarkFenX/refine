@@ -1,11 +1,7 @@
 use crate::{
     PValue,
-    svc::{
-        Svc, SvcCtx,
-        cycle::CseqMap,
-        err::IntStatItemError,
-        vast::{StatOutRepItemKinds, StatOutReps, StatTimeOptions, Vast},
-    },
+    stats::{StatOutRepItemKinds, StatOutReps, StatTimeOptions},
+    svc::{Svc, SvcCtx, cycle::CseqMap, err::IntStatItemError, vast::Vast},
     ud::{UData, UFitId, UItemId},
 };
 

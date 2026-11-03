@@ -2,10 +2,8 @@ use itertools::Itertools;
 
 use crate::{
     Fit, UnitInterval,
-    svc::{
-        cycle::CseqMap,
-        vast::{StatCapSimStagger, StatCapSimStaggerInt},
-    },
+    stats::StatCapSimStagger,
+    svc::{cycle::CseqMap, vast::StatCapSimStaggerInt},
 };
 
 impl<'s> Fit<'s> {

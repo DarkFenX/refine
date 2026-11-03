@@ -24,12 +24,12 @@ use super::getters::{
 use crate::{
     Count, CountNz, PValue, SkillLevel, SlotIndex, Value,
     ad::{AAbilId, AAttrId, AEffectId, AItem, AItemCatId, AItemGrpId, AItemId, AItemListId},
-    misc::DetectedItemKind,
     rd::{
         RAttrConsts, RAttrId, REffectConsts, REffectId, RItemBaseEffectData, RItemCapConsumer, RItemChargeLimit,
         RItemContLimit, RItemListId, RItemShipLimit, RShipDroneLimit, RShipKind, RState, RcEffect,
     },
     util::{PSlab, RMap},
+    val::DetectedItemKind,
 };
 
 /// Item base data - the data which does not depend on anything outside the item itself.

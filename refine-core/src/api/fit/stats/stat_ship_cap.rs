@@ -1,7 +1,9 @@
 use crate::{
     Fit, ItemCommon, ItemId, OptionalReload, PValue, UnitInterval, Value,
-    api::{StatFitShipAppliedError, StatFitShipError},
-    svc::vast::{StatCapBlcSrcKinds, StatCapSim, StatCapSimStagger, StatTimeOptions},
+    stats::{
+        StatCapBlcSrcKinds, StatCapSim, StatCapSimStagger, StatTimeOptions,
+        err::{StatFitShipAppliedError, StatFitShipError},
+    },
 };
 
 impl<'s> Fit<'s> {

@@ -1,9 +1,7 @@
 use crate::{
     Fleet,
-    svc::{
-        cycle::CseqMap,
-        vast::{StatMining, StatMiningItemKinds, StatMiningResourceKind, StatTimeOptions},
-    },
+    stats::{StatMining, StatMiningItemKinds, StatMiningResourceKind, StatTimeOptions},
+    svc::cycle::CseqMap,
 };
 
 impl<'s> Fleet<'s> {

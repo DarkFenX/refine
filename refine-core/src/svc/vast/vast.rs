@@ -7,15 +7,13 @@ use crate::{
         NEffectMiningOutputGetter,
     },
     rd::{REffectId, REffectLocalOpcSpec, REffectProjOpcSpec, RItemListId},
-    svc::vast::{
-        ValShipKind,
-        val::{
-            EffectSecZoneInfo, ValFighterSquadSizeFighterStored, ValItemKindItemStored, ValModuleStateModuleStored,
-            ValSrqSkillStored,
-        },
+    svc::vast::val::{
+        EffectSecZoneInfo, ValFighterSquadSizeFighterStored, ValItemKindItemStored, ValModuleStateModuleStored,
+        ValSrqSkillStored,
     },
     ud::{UFitId, UItemId},
     util::{RMap, RMapRMap, RMapRMapRMap, RMapRSet, RSet, SSlabUnchecked},
+    val::ValShipKind,
 };
 
 /// Vast stands for VAlidation and STats.

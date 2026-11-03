@@ -1,12 +1,12 @@
 use crate::{
     ad::AItemId,
-    misc::DetectedItemKind,
     rd::RItemBase,
     svc::{
         Svc, SvcCtx,
-        vast::{ValOptionsInt, ValOptionsSolInt, ValResultFit, ValResultSol},
+        vast::{ValOptionsInt, ValOptionsSolInt},
     },
     ud::{UData, UFitId, UItemId},
+    val::{DetectedItemKind, ValResultFit, ValResultSol},
 };
 
 impl Svc {

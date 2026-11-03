@@ -3,19 +3,16 @@ use itertools::chain;
 use crate::{
     Count,
     ad::AItemCatId,
-    misc::DetectedItemKind,
     svc::{
         Vast,
-        vast::{
-            ValShipKind,
-            val::{
-                ValFighterSquadSizeFighterStored, ValSrqSkillStored, get_fit_ship_rig_size, is_capital_module,
-                is_drone_group_mismatch, is_rig_size_mismatch, is_skill_level_missing,
-            },
+        vast::val::{
+            ValFighterSquadSizeFighterStored, ValSrqSkillStored, get_fit_ship_rig_size, is_capital_module,
+            is_drone_group_mismatch, is_rig_size_mismatch, is_skill_level_missing,
         },
     },
     ud::{UData, UItem, UItemId, UShipKind},
     util::RMap,
+    val::{DetectedItemKind, ValShipKind},
 };
 
 impl Vast {

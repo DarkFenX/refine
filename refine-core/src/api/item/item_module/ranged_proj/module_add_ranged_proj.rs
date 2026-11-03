@@ -1,7 +1,10 @@
 use crate::{
     ItemId, Module, RangedProj, SolarSystem,
-    api::{ProjAddError, get_ship_rib},
-    err::basic::{ItemReceiveProjError, ProjNotFoundError},
+    api::get_ship_rib,
+    err::{
+        ProjAddError,
+        basic::{ItemReceiveProjError, ProjNotFoundError},
+    },
     sol::UndoStep,
     ud::{UItemId, UProjData},
 };

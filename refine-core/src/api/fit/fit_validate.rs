@@ -1,7 +1,8 @@
 use crate::{
     Fit, SolarSystem,
-    svc::vast::{ValOptions, ValOptionsInt, ValResultFit},
+    svc::vast::ValOptionsInt,
     ud::UFitId,
+    val::{ValOptions, ValResultFit},
 };
 
 impl SolarSystem {

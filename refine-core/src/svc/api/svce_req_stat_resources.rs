@@ -1,5 +1,6 @@
 use crate::{
-    svc::{Svc, SvcCtx, vast::StatResource},
+    stats::StatResource,
+    svc::{Svc, SvcCtx},
     ud::{UData, UFit, UFitId},
 };
 
