@@ -111,29 +111,7 @@ impl FitInfo {
                             SubsystemInfo::from_core(&mut core_subsystem, item_info_modes)
                         })
                         .collect(),
-                    modules: ModuleRacks {
-                        high: core_fit
-                            .iter_modules(ModRack::High)
-                            .map_into_iter(|core_module| {
-                                core_module
-                                    .map(|mut core_module| ModuleInfo::from_core(&mut core_module, item_info_modes))
-                            })
-                            .collect(),
-                        mid: core_fit
-                            .iter_modules(ModRack::Mid)
-                            .map_into_iter(|core_module| {
-                                core_module
-                                    .map(|mut core_module| ModuleInfo::from_core(&mut core_module, item_info_modes))
-                            })
-                            .collect(),
-                        low: core_fit
-                            .iter_modules(ModRack::Low)
-                            .map_into_iter(|core_module| {
-                                core_module
-                                    .map(|mut core_module| ModuleInfo::from_core(&mut core_module, item_info_modes))
-                            })
-                            .collect(),
-                    },
+                    modules: ModuleRacks::from_core(core_fit, item_info_modes),
                     rigs: core_fit
                         .iter_rigs()
                         .map_into_iter(|mut core_rig| RigInfo::from_core(&mut core_rig, item_info_modes))
@@ -162,4 +140,29 @@ impl FitInfo {
             },
         }
     }
+}
+
+impl ModuleRacks {
+    fn from_core(core_fit: &mut rc::Fit, item_info_modes: &OvrdMapLight<ItemId, ItemInfoMode>) -> Self {
+        Self {
+            high: rack_from_core(core_fit, ModRack::High, item_info_modes),
+            mid: rack_from_core(core_fit, ModRack::Mid, item_info_modes),
+            low: rack_from_core(core_fit, ModRack::Low, item_info_modes),
+        }
+    }
+}
+
+fn rack_from_core(
+    core_fit: &mut rc::Fit,
+    rack: ModRack,
+    item_info_modes: &OvrdMapLight<ItemId, ItemInfoMode>,
+) -> Vec<Option<ModuleInfo>> {
+    let mut module_infos = Vec::new();
+    // Modules come ordered by position, so free positions are filled up before each of them
+    core_fit.iter_modules(rack).for_each(|mut core_module| {
+        let pos = core_module.get_pos().into_usize();
+        module_infos.resize_with(pos, || None);
+        module_infos.push(Some(ModuleInfo::from_core(&mut core_module, item_info_modes)));
+    });
+    module_infos
 }

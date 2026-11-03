@@ -7,7 +7,7 @@ pub use item_drone::{Drone, DroneGetError};
 pub use item_fighter::{Ability, AbilityGetError, AbilityIter, Fighter, FighterGetError};
 pub use item_fw_effect::{FwEffect, FwEffectGetError};
 pub use item_implant::{Implant, ImplantGetError};
-pub use item_module::{Module, ModuleGetError, ModuleIter};
+pub use item_module::{Module, ModuleGetError};
 pub use item_proj_effect::{ProjEffect, ProjEffectGetError};
 pub use item_rig::{Rig, RigGetError};
 pub use item_service::{Service, ServiceGetError};

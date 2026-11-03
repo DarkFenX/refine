@@ -86,10 +86,10 @@ pub use api::{
     Ability, AbilityId, AbilityIter, AddMode, Affector, AttrId, Autocharge, Booster, Character, Charge, Coordinates,
     CtlAffectors, CustomAttrId, CustomEffectId, Direction, DogmaEffectId, DormantMutation, Drone, EffectId,
     EffectiveMutation, EntityIter, EveAttrId, Fighter, Fit, Fleet, FullMAttr, FullMAttrIter, FwEffect, Implant, Item,
-    ItemAttrValues, ItemCommon, ItemEffectInfo, ItemGrpId, ItemTypeId, MinionState, Modification, Module, ModuleIter,
-    ModuleState, MoveMode, Movement, Mutation, Op, Proj, ProjEffect, ProjIter, ProjRange, RangedProj, RangedProjIter,
-    RawMAttr, RawMAttrIter, RemoveMode, Rig, Service, ServiceState, Ship, SideEffect, SideEffectIter, SideEffectStr,
-    Skill, Stance, Subsystem, SwEffect,
+    ItemAttrValues, ItemCommon, ItemEffectInfo, ItemGrpId, ItemTypeId, MinionState, Modification, Module, ModuleState,
+    MoveMode, Movement, Mutation, Op, Proj, ProjEffect, ProjIter, ProjRange, RangedProj, RangedProjIter, RawMAttr,
+    RawMAttrIter, RemoveMode, Rig, Service, ServiceState, Ship, SideEffect, SideEffectIter, SideEffectStr, Skill,
+    Stance, Subsystem, SwEffect,
 };
 pub use def::VERSION;
 pub use lender::{ExactSizeLender, Lender};

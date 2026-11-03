@@ -10,7 +10,7 @@
 use lender::{ExactSizeLender, Lender, Lending, unsafe_assume_covariance};
 
 use crate::{
-    Autocharge, Booster, Drone, Fighter, Fit, Fleet, FwEffect, Implant, Item, ProjEffect, Rig, Service, Skill,
+    Autocharge, Booster, Drone, Fighter, Fit, Fleet, FwEffect, Implant, Item, Module, ProjEffect, Rig, Service, Skill,
     SolarSystem, Subsystem, SwEffect,
     ud::{UFitId, UFleetId, UItemId},
 };
@@ -227,6 +227,22 @@ impl FromUid for Implant<'_> {
     fn from_uid(sol: &mut SolarSystem, uid: Self::UId) -> Self::Handle<'_> {
         Implant::__check_covariance(CovariantProof::new());
         Implant::new(sol, uid)
+    }
+}
+impl EntityFamily for Module<'_> {
+    type Handle<'s> = Module<'s>;
+    #[inline(always)]
+    fn __check_covariance<'long: 'short, 'short>(
+        proof: CovariantProof<Self::Handle<'long>>,
+    ) -> CovariantProof<Self::Handle<'short>> {
+        proof
+    }
+}
+impl FromUid for Module<'_> {
+    type UId = UItemId;
+    fn from_uid(sol: &mut SolarSystem, uid: Self::UId) -> Self::Handle<'_> {
+        Module::__check_covariance(CovariantProof::new());
+        Module::new(sol, uid)
     }
 }
 impl EntityFamily for ProjEffect<'_> {

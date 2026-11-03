@@ -1,4 +1,3 @@
-pub use fit_iter_modules::ModuleIter;
 pub use module::Module;
 pub use sol_get_module::ModuleGetError;
 

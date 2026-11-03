@@ -12,12 +12,6 @@ impl UItemVec {
     pub(in crate::ud::fit) fn new() -> Self {
         Self { data: BTreeMap::new() }
     }
-    pub(crate) fn iter_all(&self) -> impl ExactSizeIterator<Item = Option<UItemId>> {
-        SlotIter::new(
-            self.data.iter().map(|(pos, item_uid)| (*pos, *item_uid)),
-            self.slot_count(),
-        )
-    }
     pub(crate) fn iter_uids(&self) -> impl ExactSizeIterator<Item = UItemId> {
         self.data.values().copied()
     }
@@ -162,57 +156,3 @@ impl UItemVec {
         shifts.into_iter().map(|(_, item_uid)| item_uid)
     }
 }
-
-////////////////////////////////////////////////////////////////////////////////////////////////////
-// Slot iterator
-////////////////////////////////////////////////////////////////////////////////////////////////////
-struct SlotIter<I>
-where
-    I: ExactSizeIterator<Item = (Index, UItemId)>,
-{
-    taken_slot_iter: I,
-    next_taken: Option<(Index, UItemId)>,
-    current: Index,
-    slot_count: usize,
-}
-impl<I> SlotIter<I>
-where
-    I: ExactSizeIterator<Item = (Index, UItemId)>,
-{
-    fn new(mut taken_slot_iter: I, slot_count: usize) -> Self {
-        let next_taken = taken_slot_iter.next();
-        Self {
-            taken_slot_iter,
-            next_taken,
-            current: Index::ZERO,
-            slot_count,
-        }
-    }
-}
-impl<I> Iterator for SlotIter<I>
-where
-    I: ExactSizeIterator<Item = (Index, UItemId)>,
-{
-    type Item = Option<UItemId>;
-
-    fn next(&mut self) -> Option<Self::Item> {
-        match self.next_taken {
-            Some((taken_pos, item_uid)) => {
-                let mut value = None;
-                if self.current == taken_pos {
-                    value = Some(item_uid);
-                    self.next_taken = self.taken_slot_iter.next();
-                }
-                self.current += Index::ONE;
-                Some(value)
-            }
-            None => None,
-        }
-    }
-
-    fn size_hint(&self) -> (usize, Option<usize>) {
-        let remaining = self.slot_count - self.current.into_usize();
-        (remaining, Some(remaining))
-    }
-}
-impl<I> ExactSizeIterator for SlotIter<I> where I: ExactSizeIterator<Item = (Index, UItemId)> {}
