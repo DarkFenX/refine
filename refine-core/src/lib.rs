@@ -92,7 +92,7 @@ pub use api::{
     Skill, Stance, Subsystem, SwEffect,
 };
 pub use def::VERSION;
-pub use lender::Lender;
+pub use lender::{ExactSizeLender, Lender};
 pub use misc::{
     BreacherProfile, DpsProfile, EffectMode, FighterCountInfo, ItemKind, ItemSpoolInfo, ModRack, NpcProp, OptionExt,
     OptionalReload, RearmMinion, SecZone, SecZoneCorruption, Spool,

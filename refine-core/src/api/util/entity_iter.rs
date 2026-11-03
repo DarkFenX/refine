@@ -16,21 +16,21 @@ use crate::{
 };
 
 #[expect(private_bounds)]
-pub struct EntityIter<'this, T>
+pub struct EntityIter<'iter, T>
 where
     T: FromUid,
 {
-    sol: &'this mut SolarSystem,
+    sol: &'iter mut SolarSystem,
     uids: Vec<T::UId>,
     index: usize,
     phantom: std::marker::PhantomData<T>,
 }
 #[expect(private_bounds)]
-impl<'this, T> EntityIter<'this, T>
+impl<'iter, T> EntityIter<'iter, T>
 where
     T: FromUid,
 {
-    pub(in crate::api) fn new(sol: &'this mut SolarSystem, uids: Vec<T::UId>) -> Self {
+    pub(in crate::api) fn new(sol: &'iter mut SolarSystem, uids: Vec<T::UId>) -> Self {
         Self {
             sol,
             uids,
