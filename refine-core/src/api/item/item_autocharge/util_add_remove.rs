@@ -94,12 +94,8 @@ impl CoreInner {
                     .unwrap();
                 for (projectee_uid, range) in projections.iter() {
                     u_autocharge.get_projs_mut().add(*projectee_uid, *range);
-                    rev_projs.reg_projectee(ac_data.autocharge_uid, *projectee_uid);
                 }
-                let u_autocharge = u_data.items.get(ac_data.autocharge_uid).dc_autocharge().unwrap();
-                for (projectee_uid, range) in u_autocharge.get_projs().iter() {
-                    CoreInner::util_add_item_projection(u_data, svc, ac_data.autocharge_uid, projectee_uid, range);
-                }
+                CoreInner::util_reg_item_projs(u_data, svc, rev_projs, ac_data.autocharge_uid);
             }
         }
         // Update autocharge info on parent item

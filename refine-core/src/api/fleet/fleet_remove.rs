@@ -25,14 +25,7 @@ impl CoreInner {
         for fit_uid in fit_uids.into_iter() {
             self.internal_set_fit_fleet(fit_uid, None);
         }
-        match self.undo.is_recording() {
-            true => {
-                self.u_data.fleets.detach(fleet_uid);
-                self.undo.record(UndoStep::FleetRemoved(fleet_uid));
-            }
-            false => {
-                self.u_data.fleets.remove(fleet_uid);
-            }
-        }
+        self.undo
+            .discard(&mut self.u_data.fleets, fleet_uid, UndoStep::FleetRemoved);
     }
 }

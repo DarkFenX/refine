@@ -85,15 +85,7 @@ impl CoreInner {
     where
         S: FnOnce(UItemId) -> UndoStep,
     {
-        match self.undo.is_recording() {
-            true => {
-                self.u_data.items.detach(item_uid);
-                self.undo.record(step(item_uid));
-            }
-            false => {
-                self.u_data.items.remove(item_uid);
-            }
-        }
+        self.undo.discard(&mut self.u_data.items, item_uid, step);
     }
     /// Sub-item undo data is carried with parent undo data, so sub-items are supposed to be removed
     /// without separate record, via this method.

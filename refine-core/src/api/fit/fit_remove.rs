@@ -26,14 +26,6 @@ impl CoreInner {
             self.internal_remove_item(item_uid, RemoveMode::Free).unwrap();
         }
         self.svc.notify_fit_removed(fit_uid);
-        match self.undo.is_recording() {
-            true => {
-                self.u_data.fits.detach(fit_uid);
-                self.undo.record(UndoStep::FitRemoved(fit_uid));
-            }
-            false => {
-                self.u_data.fits.remove(fit_uid);
-            }
-        }
+        self.undo.discard(&mut self.u_data.fits, fit_uid, UndoStep::FitRemoved);
     }
 }

@@ -3,6 +3,7 @@
 //! Actually contains lots of non-user data for fast access to it, but primary role is still to
 //! store user data, so it is called like that.
 
+pub(crate) use container::UEntityContainer;
 pub(crate) use data::UData;
 pub(crate) use datae_access::ProjecteeUidError;
 pub use fit::FitId;

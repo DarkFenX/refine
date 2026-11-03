@@ -1,9 +1,12 @@
+use std::hash::Hash;
+
 use bitflags::bitflags;
 
 use super::{savepoint::Savepoint, step::UndoStep};
 use crate::{
     DpsProfile, FitId, FleetId, ItemId,
-    ud::{ItemMutationData, UAttrMutationRequest, UAutocharges, UData, UPhysics},
+    ud::{ItemMutationData, UAttrMutationRequest, UAutocharges, UData, UEntityContainer, UPhysics},
+    util::{DenseId, LibDefault, LibGetId, LibIncrement, LibNamed},
 };
 
 /// Inverse steps of changes done to a solar system while recording.
@@ -94,6 +97,30 @@ impl UndoLog {
     }
     pub(crate) fn is_recording(&self) -> bool {
         self.recording
+    }
+    /// Removes an entity; while recording, unmaps it instead and records the step which puts it
+    /// back.
+    pub(crate) fn discard<T, ExtId, IntId, Err, S>(
+        &mut self,
+        container: &mut UEntityContainer<T, ExtId, IntId, Err>,
+        int_id: IntId,
+        step: S,
+    ) where
+        T: LibGetId<ExtId> + LibNamed,
+        IntId: DenseId,
+        ExtId: Copy + Eq + Hash + LibDefault + LibIncrement,
+        Err: From<ExtId>,
+        S: FnOnce(IntId) -> UndoStep,
+    {
+        match self.recording {
+            true => {
+                container.detach(int_id);
+                self.steps.push(step(int_id));
+            }
+            false => {
+                container.remove(int_id);
+            }
+        }
     }
     // Record-pop pairs
     pub(crate) fn record(&mut self, step: UndoStep) {
