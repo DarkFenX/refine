@@ -6,6 +6,8 @@ use crate::{
 };
 
 impl SolarSystem {
+    // Compiler keeps it out of line with 6 callers; inlined, fleet changes are cheaper
+    #[inline(always)]
     pub(in crate::api) fn internal_set_fit_fleet(&mut self, fit_uid: UFitId, fleet_uid: Option<UFleetId>) {
         let u_fit = self.u_data.fits.get(fit_uid);
         let old_fleet_uid = u_fit.fleet;

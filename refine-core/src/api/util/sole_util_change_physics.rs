@@ -7,6 +7,8 @@ use crate::{
 };
 
 impl SolarSystem {
+    // Compiler keeps it out of line with 3 callers; inlined, physics changes are cheaper
+    #[inline(always)]
     pub(in crate::api) fn util_update_physics_for_incoming(
         u_data: &mut UData,
         rev_projs: &RevProjs,
