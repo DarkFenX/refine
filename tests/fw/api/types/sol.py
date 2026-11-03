@@ -20,7 +20,7 @@ if typing.TYPE_CHECKING:
     from fw.response import Response
 
 
-class SolarSystem(AttrDict):
+class Sol(AttrDict):
 
     def __init__(self, *, client: ApiClient, data: dict) -> None:
         super().__init__(data=data, hooks={
@@ -56,7 +56,7 @@ class SolarSystem(AttrDict):
             item_info_mode: ApiItemInfoMode | type[Absent] = ApiItemInfoMode.id,
             status_code: int = 200,
             json_predicate: JsonPredicate = None,
-    ) -> SolarSystem | None:
+    ) -> Sol | None:
         resp = self._client.get_sol_request(
             sol_id=self.id,
             sol_info_mode=sol_info_mode,
@@ -79,7 +79,7 @@ class SolarSystem(AttrDict):
             item_info_mode: ApiItemInfoMode | type[Absent] = ApiItemInfoMode.id,
             status_code: int = 200,
             json_predicate: JsonPredicate = None,
-    ) -> SolarSystem:
+    ) -> Sol:
         resp = self._client.change_sol_src_request(
             sol_id=self.id,
             data=data,
@@ -117,7 +117,7 @@ class SolarSystem(AttrDict):
             item_info_mode: ApiItemInfoMode | type[Absent] = ApiItemInfoMode.id,
             status_code: int = 200,
             json_predicate: JsonPredicate = None,
-    ) -> SolarSystem:
+    ) -> Sol:
         command = SolCtlSolChangeCmd(
             sec_zone=sec_zone,
             default_incoming_dps=default_incoming_dps,

@@ -8,7 +8,7 @@ if typing.TYPE_CHECKING:
     from collections.abc import Generator
 
     from fw.api.types.batches.sol import SolCmdBatchCtx
-    from fw.api.types.sol import SolarSystem
+    from fw.api.types.sol import Sol
     from fw.client import TestClient
     from fw.eve.types import EffectModifier
 
@@ -47,7 +47,7 @@ def setup_mod_basics(
 
 
 @contextmanager
-def rollback_batch(*, api_sol: SolarSystem) -> Generator[SolCmdBatchCtx]:
+def rollback_batch(*, api_sol: Sol) -> Generator[SolCmdBatchCtx]:
     """
     Solar system batch which fails after commands added to it. Before failing, it requests full info
     on everything, so that rollback has to drop values calculated for the changed solar system.

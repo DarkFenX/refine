@@ -2,7 +2,7 @@ import typing
 
 from fw import eve
 from fw.api.commands import RootCtlSolCreateCmd
-from fw.api.types import SolarSystem, ValOptions
+from fw.api.types import Sol, ValOptions
 from fw.consts import ApiSolInfoMode
 from fw.request import Request
 from fw.util import Absent, Default, conditional_insert
@@ -32,7 +32,7 @@ class ApiClientSol(ApiClientBase, eve.EveDataManager):
 
     def __init__(self, **kwargs) -> None:
         super().__init__(**kwargs)
-        self.__created_sols: set[SolarSystem] = set()
+        self.__created_sols: set[Sol] = set()
 
     def create_sol_request(
             self, *,
@@ -94,7 +94,7 @@ class ApiClientSol(ApiClientBase, eve.EveDataManager):
             item_info_mode: ApiItemInfoMode | type[Absent] = Absent,
             status_code: int = 201,
             json_predicate: JsonPredicate = None,
-    ) -> SolarSystem | None:
+    ) -> Sol | None:
         if data is Default:
             data = self._get_default_eve_data()
         resp = self.create_sol_request(
@@ -111,13 +111,13 @@ class ApiClientSol(ApiClientBase, eve.EveDataManager):
             item_info_mode=item_info_mode).send()
         resp.check(status_code=status_code, json_predicate=json_predicate)
         if resp.status_code == 201:
-            sol_sys = SolarSystem(client=self, data=resp.json())
-            self.__created_sols.add(sol_sys)
-            return sol_sys
+            sol = Sol(client=self, data=resp.json())
+            self.__created_sols.add(sol)
+            return sol
         return None
 
     @property
-    def created_sols(self) -> set[SolarSystem]:
+    def created_sols(self) -> set[Sol]:
         return self.__created_sols
 
     def get_sol(
@@ -129,7 +129,7 @@ class ApiClientSol(ApiClientBase, eve.EveDataManager):
             item_info_mode: ApiItemInfoMode | type[Absent],
             status_code: int = 200,
             json_predicate: JsonPredicate = None,
-    ) -> SolarSystem | None:
+    ) -> Sol | None:
         resp = self.get_sol_request(
             sol_id=sol_id,
             sol_info_mode=sol_info_mode,
@@ -138,7 +138,7 @@ class ApiClientSol(ApiClientBase, eve.EveDataManager):
             item_info_mode=item_info_mode).send()
         resp.check(status_code=status_code, json_predicate=json_predicate)
         if resp.status_code == 200:
-            return SolarSystem(client=self, data=resp.json())
+            return Sol(client=self, data=resp.json())
         return None
 
     def get_sol_request(

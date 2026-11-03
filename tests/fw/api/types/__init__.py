@@ -1,4 +1,4 @@
-from .sol import SolarSystem
+from .sol import Sol
 from .stats import (
     FitStatsOptions,
     FleetStatsOptions,

@@ -75,7 +75,7 @@ if typing.TYPE_CHECKING:
     from fw.api import ApiClient
     from fw.api.aliases import DpsProfileAlias, InfoMode, MutaAdd, MutaChange, StatsOptions
     from fw.api.types.item import Item
-    from fw.api.types.sol import SolarSystem
+    from fw.api.types.sol import Sol
     from fw.api.types.stats import FitStatsOptions, FleetStatsOptions, ItemStatsOptions
     from fw.api.types.validation import ValOptions
     from fw.consts import (
@@ -141,12 +141,12 @@ class SolCmdBatchCtx(BaseCmdBatchCtx):
         self._ret_datas[index] = EntityData(kind=DataFillKind.id_regular, data=data)
         return Fit(client=self._client, data=data, sol_id=self._sol_id)
 
-    def _make_sol_info(self) -> SolarSystem:
-        from fw.api.types.sol import SolarSystem  # ruff:ignore[import-outside-top-level]
+    def _make_sol_info(self) -> Sol:
+        from fw.api.types.sol import Sol  # ruff:ignore[import-outside-top-level]
         index = len(self._commands) - 1
         data = {}
         self._ret_datas[index] = EntityData(kind=DataFillKind.copy_map, data=data)
-        return SolarSystem(client=self._client, data=data)
+        return Sol(client=self._client, data=data)
 
     def _make_fleet_info(self) -> Fleet:
         index = len(self._commands) - 1
@@ -891,7 +891,7 @@ class SolCmdBatchCtx(BaseCmdBatchCtx):
             fleet_mode: InfoMode[ApiFleetInfoMode] | type[Absent] = Absent,
             fit_mode: InfoMode[ApiFitInfoMode] | type[Absent] = Absent,
             item_mode: InfoMode[ApiItemInfoMode] | type[Absent] = Absent,
-    ) -> SolarSystem:
+    ) -> Sol:
         command = SolInfoSolCmd(
             sol_mode=sol_mode,
             fleet_mode=fleet_mode,
