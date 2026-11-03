@@ -76,7 +76,7 @@ impl BoosterInfo {
                     #[cfg(feature = "serde")]
                     kind: ItemKind::Booster,
                     type_id: core_booster.get_type_id(),
-                    fit_id: core_booster.get_fit().get_fit_id(),
+                    fit_id: core_booster.get_fit_id(),
                     slot: core_booster.get_slot(),
                     state: core_booster.get_state(),
                     side_effects: core_booster

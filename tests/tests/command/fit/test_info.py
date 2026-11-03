@@ -114,3 +114,19 @@ def test_item_item_backref_error_kind(client, consts):
         api_fit_batch.change_fit(sec_status=3.5)
         api_fit_batch.add_implant(type_id=eve_item_id)
         api_fit_batch.get_item_info(item_id='#0', item_mode=consts.ApiItemInfoMode.partial)
+
+
+def test_item_item_error_other_fit(client):
+    eve_item_id = client.mk_eve_item()
+    client.create_sources()
+    api_sol = client.create_sol()
+    api_fit1 = api_sol.create_fit()
+    api_fit2 = api_sol.create_fit()
+    api_item = api_fit2.add_implant(type_id=eve_item_id)
+    # Action & verification
+    with api_fit1.batch(status_code=400, json_predicate={
+            'code': 'ITM-003',
+            'message': f'item {api_item.id} is not on fit {api_fit1.id}',
+            'cmd_index': 0,
+    }) as api_fit_batch:
+        api_fit_batch.get_item_info(item_id=api_item.id)

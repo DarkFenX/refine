@@ -86,6 +86,40 @@ def test_rollback_error_parsing(client):
     assert api_src_drone.update().projs[api_tgt_ship.id] == [0, 0]
 
 
+def test_error_item_change_other_fit(client):
+    eve_booster_id = client.mk_eve_item()
+    client.create_sources()
+    api_sol = client.create_sol()
+    api_fit1 = api_sol.create_fit()
+    api_fit2 = api_sol.create_fit()
+    api_booster = api_fit2.add_booster(type_id=eve_booster_id, state=True)
+    # Action & verification
+    with api_fit1.batch(status_code=400, json_predicate={
+            'code': 'ITM-003',
+            'message': f'failed to change booster: item {api_booster.id} is not on fit {api_fit1.id}',
+            'cmd_index': 0,
+    }) as api_fit_batch:
+        api_fit_batch.change_booster(item_id=api_booster.id, state=False)
+    assert api_booster.update().state is True
+
+
+def test_error_item_remove_other_fit(client):
+    eve_booster_id = client.mk_eve_item()
+    client.create_sources()
+    api_sol = client.create_sol()
+    api_fit1 = api_sol.create_fit()
+    api_fit2 = api_sol.create_fit()
+    api_booster = api_fit2.add_booster(type_id=eve_booster_id)
+    # Action & verification
+    with api_fit1.batch(status_code=400, json_predicate={
+            'code': 'ITM-003',
+            'message': f'failed to remove item: item {api_booster.id} is not on fit {api_fit1.id}',
+            'cmd_index': 0,
+    }) as api_fit_batch:
+        api_fit_batch.remove_item(item_id=api_booster.id)
+    assert api_fit2.update().boosters.keys() == {api_booster.id}
+
+
 def test_fleet_same(client):
     client.create_sources()
     api_sol = client.create_sol()

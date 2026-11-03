@@ -1,5 +1,5 @@
 use crate::{
-    Coordinates, Fit, ItemCommon, Movement, SolarSystem,
+    Coordinates, FitId, ItemCommon, Movement, SolarSystem,
     api::ItemSealed,
     ud::{UItemId, UShip},
 };
@@ -12,9 +12,9 @@ impl<'s> Ship<'s> {
     pub(in crate::api) fn new(sol: &'s mut SolarSystem, uid: UItemId) -> Self {
         Self { sol, uid }
     }
-    pub fn get_fit(&mut self) -> Fit<'_> {
+    pub fn get_fit_id(&self) -> FitId {
         let fit_uid = get_u_ship(self.sol, self.uid).get_fit_uid();
-        Fit::new(self.sol, fit_uid)
+        self.sol.u_data.fits.ext_id_by_int_id(fit_uid)
     }
     pub fn get_state(&self) -> bool {
         get_u_ship(self.sol, self.uid).get_ship_state()
@@ -30,15 +30,14 @@ impl<'s> ItemSealed for Ship<'s> {
     fn get_uid(&self) -> UItemId {
         self.uid
     }
-    fn get_sol_ref(&self) -> &SolarSystem {
+    fn get_sol(&self) -> &SolarSystem {
+        self.sol
+    }
+    fn get_sol_mut(&mut self) -> &mut SolarSystem {
         self.sol
     }
 }
-impl<'s> ItemCommon for Ship<'s> {
-    fn get_sol(&mut self) -> &mut SolarSystem {
-        self.sol
-    }
-}
+impl<'s> ItemCommon for Ship<'s> {}
 
 fn get_u_ship(sol: &SolarSystem, ship_uid: UItemId) -> &UShip {
     sol.u_data.items.get(ship_uid).dc_ship().unwrap()

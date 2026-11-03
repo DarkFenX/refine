@@ -108,7 +108,7 @@ impl ModuleInfo {
                         #[cfg(feature = "serde")]
                         kind: ItemKind::Module,
                         type_id: core_module.get_type_id(),
-                        fit_id: core_module.get_fit().get_fit_id(),
+                        fit_id: core_module.get_fit_id(),
                         state: core_module.get_state(),
                         rack: core_module.get_rack(),
                         pos: core_module.get_pos(),

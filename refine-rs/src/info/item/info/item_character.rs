@@ -68,7 +68,7 @@ impl CharacterInfo {
                     #[cfg(feature = "serde")]
                     kind: ItemKind::Character,
                     type_id: core_character.get_type_id(),
-                    fit_id: core_character.get_fit().get_fit_id(),
+                    fit_id: core_character.get_fit_id(),
                     state: core_character.get_state(),
                     effect_mode_overrides: get_effect_mode_overrides(core_character, character_info_mode),
                     attrs: get_attrs(core_character, character_info_mode),

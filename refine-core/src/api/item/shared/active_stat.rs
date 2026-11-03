@@ -19,7 +19,7 @@ where
     T: ItemCommon,
 {
     let item_uid = item.get_uid();
-    let sol = item.get_sol();
+    let sol = item.get_sol_mut();
     let savepoint = sol.internal_tx_savepoint();
     if matches!(state_options, StatItemStateOptions::Retain) {
         return savepoint;

@@ -157,3 +157,19 @@ def test_item_item_error_not_found(client):
     }) as api_fit_batch:
         api_fit_batch.set_ship(type_id=eve_ship_id)
         api_fit_batch.get_item_stats(item_id=api_other_item.id, item_options=ItemStatsOptions(mass=True))
+
+
+def test_item_item_error_other_fit(client):
+    eve_ship_id = client.mk_eve_ship()
+    client.create_sources()
+    api_sol = client.create_sol()
+    api_fit1 = api_sol.create_fit()
+    api_fit2 = api_sol.create_fit()
+    api_ship = api_fit2.set_ship(type_id=eve_ship_id)
+    # Action & verification
+    with api_fit1.batch(status_code=400, json_predicate={
+            'code': 'ITM-003',
+            'message': f'item {api_ship.id} is not on fit {api_fit1.id}',
+            'cmd_index': 0,
+    }) as api_fit_batch:
+        api_fit_batch.get_item_stats(item_id=api_ship.id, item_options=ItemStatsOptions(mass=True))

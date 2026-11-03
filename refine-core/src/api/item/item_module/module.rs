@@ -1,5 +1,5 @@
 use crate::{
-    Charge, Count, Fit, Index, ItemCommon, ItemSpoolInfo, ModRack, ModuleState, OptionalReload, SolarSystem, Spool,
+    Charge, Count, FitId, Index, ItemCommon, ItemSpoolInfo, ModRack, ModuleState, OptionalReload, SolarSystem, Spool,
     api::{ItemSealed, active_stat_prepare},
     misc::InfCount,
     stats::{StatItemChargeOptions, StatItemStateOptions},
@@ -15,9 +15,9 @@ impl<'s> Module<'s> {
     pub(in crate::api) fn new(sol: &'s mut SolarSystem, uid: UItemId) -> Self {
         Self { sol, uid }
     }
-    pub fn get_fit(&mut self) -> Fit<'_> {
+    pub fn get_fit_id(&self) -> FitId {
         let fit_uid = get_u_module(self.sol, self.uid).get_fit_uid();
-        Fit::new(self.sol, fit_uid)
+        self.sol.u_data.fits.ext_id_by_int_id(fit_uid)
     }
     pub fn get_state(&self) -> ModuleState {
         get_u_module(self.sol, self.uid).get_module_state()
@@ -69,15 +69,14 @@ impl<'s> ItemSealed for Module<'s> {
     fn get_uid(&self) -> UItemId {
         self.uid
     }
-    fn get_sol_ref(&self) -> &SolarSystem {
+    fn get_sol(&self) -> &SolarSystem {
+        self.sol
+    }
+    fn get_sol_mut(&mut self) -> &mut SolarSystem {
         self.sol
     }
 }
-impl<'s> ItemCommon for Module<'s> {
-    fn get_sol(&mut self) -> &mut SolarSystem {
-        self.sol
-    }
-}
+impl<'s> ItemCommon for Module<'s> {}
 
 fn get_u_module(sol: &SolarSystem, module_uid: UItemId) -> &UModule {
     sol.u_data.items.get(module_uid).dc_module().unwrap()

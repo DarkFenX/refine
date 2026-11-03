@@ -22,12 +22,11 @@ impl<'s> ItemSealed for ProjEffect<'s> {
     fn get_uid(&self) -> UItemId {
         self.uid
     }
-    fn get_sol_ref(&self) -> &SolarSystem {
+    fn get_sol(&self) -> &SolarSystem {
+        self.sol
+    }
+    fn get_sol_mut(&mut self) -> &mut SolarSystem {
         self.sol
     }
 }
-impl<'s> ItemCommon for ProjEffect<'s> {
-    fn get_sol(&mut self) -> &mut SolarSystem {
-        self.sol
-    }
-}
+impl<'s> ItemCommon for ProjEffect<'s> {}

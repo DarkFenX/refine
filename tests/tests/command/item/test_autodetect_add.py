@@ -25,7 +25,7 @@ def test_item_charge_error(client):
         type_id=eve_charge_id,
         status_code=400,
         json_predicate={
-            'code': 'ITM-005',
+            'code': 'ITM-006',
             'message': 'failed to add autodetected item: item of kind "charge" cannot be auto-added to the fit'})
     assert api_fit.update().get_raw().keys() == {'id', 'sec_status'}
 
@@ -40,7 +40,7 @@ def test_item_character_error(client, consts):
         type_id=eve_character_id,
         status_code=400,
         json_predicate={
-            'code': 'ITM-005',
+            'code': 'ITM-006',
             'message': 'failed to add autodetected item: item of kind "character" cannot be auto-added to the fit'})
     assert api_fit.update().get_raw().keys() == {'id', 'sec_status'}
 
@@ -255,7 +255,7 @@ def test_item_ship_error(client):
         type_id=eve_ship_id,
         status_code=400,
         json_predicate={
-            'code': 'ITM-005',
+            'code': 'ITM-006',
             'message': 'failed to add autodetected item: item of kind "ship" cannot be auto-added to the fit'})
     assert api_fit.update().get_raw().keys() == {'id', 'sec_status'}
 
@@ -270,7 +270,7 @@ def test_item_skill_error(client, consts):
         type_id=eve_skill_id,
         status_code=400,
         json_predicate={
-            'code': 'ITM-005',
+            'code': 'ITM-006',
             'message': 'failed to add autodetected item: item of kind "skill" cannot be auto-added to the fit'})
     assert api_fit.update().get_raw().keys() == {'id', 'sec_status'}
 
@@ -285,7 +285,7 @@ def test_item_stance_error(client, consts):
         type_id=eve_stance_id,
         status_code=400,
         json_predicate={
-            'code': 'ITM-005',
+            'code': 'ITM-006',
             'message': 'failed to add autodetected item: item of kind "stance" cannot be auto-added to the fit'})
     assert api_fit.update().get_raw().keys() == {'id', 'sec_status'}
 
@@ -342,7 +342,7 @@ def test_error_type_not_found(client):
         type_id=eve_type_id,
         status_code=400,
         json_predicate={
-            'code': 'ITM-003',
+            'code': 'ITM-004',
             'message': f'failed to add autodetected item: type ID {eve_type_id} not found'})
     assert api_fit.update().get_raw().keys() == {'id', 'sec_status'}
 
@@ -357,7 +357,7 @@ def test_error_kind_undetectable(client):
         type_id=eve_item_id,
         status_code=400,
         json_predicate={
-            'code': 'ITM-004',
+            'code': 'ITM-005',
             'message': 'failed to add autodetected item: item kind could not be detected'})
     assert api_fit.update().get_raw().keys() == {'id', 'sec_status'}
 
@@ -374,6 +374,6 @@ def test_error_kind_ambiguous(client, consts):
         type_id=eve_module_id,
         status_code=400,
         json_predicate={
-            'code': 'ITM-004',
+            'code': 'ITM-005',
             'message': 'failed to add autodetected item: item kind could not be detected'})
     assert api_fit.update().get_raw().keys() == {'id', 'sec_status'}

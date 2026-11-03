@@ -83,7 +83,7 @@ impl FitInfo {
             extended: match fit_info_mode {
                 FitInfoMode::Id => None,
                 FitInfoMode::Full => Some(FitInfoExt {
-                    fleet_id: core_fit.get_fleet().map(|v| v.get_fleet_id()),
+                    fleet_id: core_fit.get_fleet_id(),
                     character: core_fit
                         .get_character()
                         .map(|mut core_character| CharacterInfo::from_core(&mut core_character, item_info_modes)),

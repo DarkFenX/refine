@@ -118,7 +118,7 @@ impl SolStatsCmd {
         };
         let fits = match fit_options.get_default().is_any_stat_requested() {
             true => get_stats_for_passed_fits(core_sol.iter_fits(), &fit_options),
-            false => get_stats_for_fits_in_overrides(core_sol, &fit_options, |_| true),
+            false => get_stats_for_fits_in_overrides(core_sol, &fit_options),
         };
         let items = match item_options.get_default().is_any_stat_requested() {
             true => {
@@ -126,7 +126,7 @@ impl SolStatsCmd {
                 extend_stats_for_passed_items(core_sol.iter_items(), &item_options, &mut stats);
                 stats
             }
-            false => get_stats_for_items_in_overrides(core_sol, &item_options, |_| true),
+            false => get_stats_for_items_in_overrides(core_sol, &item_options),
         };
         SolStatsResp { fleets, fits, items }
     }

@@ -118,18 +118,33 @@ impl BoosterChangeCmdCtxItem {
         self,
         core_sol: &mut rc::SolarSystem,
     ) -> Result<ChangedItemIdsResp, ItemGetBoosterChangeError> {
-        let mut core_item = core_sol.get_item(&self.item_id)?;
+        let mut core_item = core_sol
+            .get_item(&self.item_id)
+            .map_err(ItemGetBoosterChangeError::ItemGet)?;
+        Ok(self.core.execute(&mut core_item)?)
+    }
+    pub(in crate::ctl) fn execute_via_fit(
+        self,
+        core_fit: &mut rc::Fit,
+    ) -> Result<ChangedItemIdsResp, FitItemGetBoosterChangeError> {
+        let mut core_item = core_fit
+            .get_item(&self.item_id)
+            .map_err(FitItemGetBoosterChangeError::ItemGet)?;
         Ok(self.core.execute(&mut core_item)?)
     }
 }
+
+pub type ItemGetBoosterChangeError = GenItemGetBoosterChangeError<rc::err::ItemGetError>;
+pub type FitItemGetBoosterChangeError = GenItemGetBoosterChangeError<rc::err::FitItemGetError>;
+
 #[derive(thiserror::Error, Debug)]
-pub enum ItemGetBoosterChangeError {
+pub enum GenItemGetBoosterChangeError<E> {
     #[error(transparent)]
-    ItemGet(#[from] rc::err::ItemGetError),
+    ItemGet(E),
     #[error(transparent)]
     ItemIsNotBooster(rc::err::ItemKindMatchError),
 }
-impl From<BoosterChangeError> for ItemGetBoosterChangeError {
+impl<E> From<BoosterChangeError> for GenItemGetBoosterChangeError<E> {
     fn from(err: BoosterChangeError) -> Self {
         match err {
             BoosterChangeError::ItemIsNotBooster(inner) => Self::ItemIsNotBooster(inner),

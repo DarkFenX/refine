@@ -80,18 +80,30 @@ pub enum ItemRemoveError {
 
 impl ItemRemoveCmdCtxItem {
     pub(in crate::ctl) fn execute(self, core_sol: &mut rc::SolarSystem) -> Result<(), ItemGetItemRemoveError> {
-        let core_item = core_sol.get_item(&self.item_id)?;
+        let core_item = core_sol
+            .get_item(&self.item_id)
+            .map_err(ItemGetItemRemoveError::ItemGet)?;
+        Ok(self.core.execute(core_item)?)
+    }
+    pub(in crate::ctl) fn execute_via_fit(self, core_fit: &mut rc::Fit) -> Result<(), FitItemGetItemRemoveError> {
+        let core_item = core_fit
+            .get_item(&self.item_id)
+            .map_err(FitItemGetItemRemoveError::ItemGet)?;
         Ok(self.core.execute(core_item)?)
     }
 }
+
+pub type ItemGetItemRemoveError = GenItemGetItemRemoveError<rc::err::ItemGetError>;
+pub type FitItemGetItemRemoveError = GenItemGetItemRemoveError<rc::err::FitItemGetError>;
+
 #[derive(thiserror::Error, Debug)]
-pub enum ItemGetItemRemoveError {
+pub enum GenItemGetItemRemoveError<E> {
     #[error(transparent)]
-    ItemGet(#[from] rc::err::ItemGetError),
+    ItemGet(E),
     #[error(transparent)]
     ItemRemove(rc::err::ItemRemoveError),
 }
-impl From<ItemRemoveError> for ItemGetItemRemoveError {
+impl<E> From<ItemRemoveError> for GenItemGetItemRemoveError<E> {
     fn from(err: ItemRemoveError) -> Self {
         match err {
             ItemRemoveError::ItemRemove(inner) => Self::ItemRemove(inner),

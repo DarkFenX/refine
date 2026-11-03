@@ -97,18 +97,33 @@ impl AutochargeChangeCmdCtxItem {
         self,
         core_sol: &mut rc::SolarSystem,
     ) -> Result<ChangedItemIdsResp, ItemGetAutochargeChangeError> {
-        let mut core_item = core_sol.get_item(&self.item_id)?;
+        let mut core_item = core_sol
+            .get_item(&self.item_id)
+            .map_err(ItemGetAutochargeChangeError::ItemGet)?;
+        Ok(self.core.execute(&mut core_item)?)
+    }
+    pub(in crate::ctl) fn execute_via_fit(
+        self,
+        core_fit: &mut rc::Fit,
+    ) -> Result<ChangedItemIdsResp, FitItemGetAutochargeChangeError> {
+        let mut core_item = core_fit
+            .get_item(&self.item_id)
+            .map_err(FitItemGetAutochargeChangeError::ItemGet)?;
         Ok(self.core.execute(&mut core_item)?)
     }
 }
+
+pub type ItemGetAutochargeChangeError = GenItemGetAutochargeChangeError<rc::err::ItemGetError>;
+pub type FitItemGetAutochargeChangeError = GenItemGetAutochargeChangeError<rc::err::FitItemGetError>;
+
 #[derive(thiserror::Error, Debug)]
-pub enum ItemGetAutochargeChangeError {
+pub enum GenItemGetAutochargeChangeError<E> {
     #[error(transparent)]
-    ItemGet(#[from] rc::err::ItemGetError),
+    ItemGet(E),
     #[error(transparent)]
     ItemIsNotAutocharge(rc::err::ItemKindMatchError),
 }
-impl From<AutochargeChangeError> for ItemGetAutochargeChangeError {
+impl<E> From<AutochargeChangeError> for GenItemGetAutochargeChangeError<E> {
     fn from(err: AutochargeChangeError) -> Self {
         match err {
             AutochargeChangeError::ItemIsNotAutocharge(inner) => Self::ItemIsNotAutocharge(inner),

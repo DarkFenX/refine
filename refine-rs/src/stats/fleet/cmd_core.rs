@@ -1,4 +1,4 @@
-use rc::{ItemCommon, Lender};
+use rc::Lender;
 
 use crate::{
     CmdResps, FitId, FitIdBr, FleetId, FleetIdBr, ItemId, ItemIdBr,
@@ -141,12 +141,7 @@ impl FleetStatsCmd {
             OvrdMapHeavy::from_compact_with_conversion(self.item_options);
         let fits = match fit_options.get_default().is_any_stat_requested() {
             true => get_stats_for_passed_fits(core_fleet.iter_fits(), &fit_options),
-            false => {
-                let fleet_id = core_fleet.get_fleet_id();
-                get_stats_for_fits_in_overrides(core_fleet.get_sol(), &fit_options, |core_fit| {
-                    core_fit.get_fleet().map(|core_fit_fleet| core_fit_fleet.get_fleet_id()) == Some(fleet_id)
-                })
-            }
+            false => get_stats_for_fits_in_overrides(core_fleet, &fit_options),
         };
         let items = match item_options.get_default().is_any_stat_requested() {
             true => {
@@ -157,15 +152,7 @@ impl FleetStatsCmd {
                 }
                 stats
             }
-            false => {
-                let fleet_id = core_fleet.get_fleet_id();
-                get_stats_for_items_in_overrides(core_fleet.get_sol(), &item_options, |core_item| {
-                    core_item
-                        .get_fit()
-                        .and_then(|mut core_item_fit| core_item_fit.get_fleet().map(|fleet| fleet.get_fleet_id()))
-                        == Some(fleet_id)
-                })
-            }
+            false => get_stats_for_items_in_overrides(core_fleet, &item_options),
         };
         FleetStatsResp {
             fleet: self.fleet_options.stat_resolve().execute(core_fleet),

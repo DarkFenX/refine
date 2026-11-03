@@ -1,4 +1,4 @@
-pub use item::{FitItemAutodetectAddError, Item, ItemGetError, ItemRemoveError};
+pub use item::{FitItemAutodetectAddError, FitItemGetError, FleetItemGetError, Item, ItemGetError, ItemRemoveError};
 pub use item_autocharge::{Autocharge, AutochargeGetError};
 pub use item_booster::{Booster, BoosterGetError, SideEffect, SideEffectGetError, SideEffectIter, SideEffectStr};
 pub use item_character::{Character, CharacterGetError};

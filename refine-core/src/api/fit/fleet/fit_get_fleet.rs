@@ -1,8 +1,13 @@
-use crate::{Fit, Fleet};
+use crate::{Fit, FleetId};
 
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Public
+////////////////////////////////////////////////////////////////////////////////////////////////////
 impl<'s> Fit<'s> {
-    pub fn get_fleet(&mut self) -> Option<Fleet<'_>> {
-        let u_fleet = self.sol.u_data.fits.get(self.uid);
-        u_fleet.fleet.map(|fleet_uid| Fleet::new(self.sol, fleet_uid))
+    pub fn get_fleet_id(&self) -> Option<FleetId> {
+        let u_fit = self.sol.u_data.fits.get(self.uid);
+        u_fit
+            .fleet
+            .map(|fleet_uid| self.sol.u_data.fleets.ext_id_by_int_id(fleet_uid))
     }
 }

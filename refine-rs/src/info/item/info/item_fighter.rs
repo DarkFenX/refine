@@ -101,7 +101,7 @@ impl FighterInfo {
                     #[cfg(feature = "serde")]
                     kind: ItemKind::Fighter,
                     type_id: core_fighter.get_type_id(),
-                    fit_id: core_fighter.get_fit().get_fit_id(),
+                    fit_id: core_fighter.get_fit_id(),
                     state: core_fighter.get_state(),
                     count: core_fighter.get_count(),
                     count_override: core_fighter.get_count_override(),

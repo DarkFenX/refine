@@ -70,7 +70,7 @@ impl ShipInfo {
                     #[cfg(feature = "serde")]
                     kind: ItemKind::Ship,
                     type_id: core_ship.get_type_id(),
-                    fit_id: core_ship.get_fit().get_fit_id(),
+                    fit_id: core_ship.get_fit_id(),
                     state: core_ship.get_state(),
                     coordinates: core_ship.get_coordinates(),
                     movement: core_ship.get_movement(),

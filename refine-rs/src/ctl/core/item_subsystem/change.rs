@@ -109,18 +109,33 @@ impl SubsystemChangeCmdCtxItem {
         self,
         core_sol: &mut rc::SolarSystem,
     ) -> Result<ChangedItemIdsResp, ItemGetSubsystemChangeError> {
-        let mut core_item = core_sol.get_item(&self.item_id)?;
+        let mut core_item = core_sol
+            .get_item(&self.item_id)
+            .map_err(ItemGetSubsystemChangeError::ItemGet)?;
+        Ok(self.core.execute(&mut core_item)?)
+    }
+    pub(in crate::ctl) fn execute_via_fit(
+        self,
+        core_fit: &mut rc::Fit,
+    ) -> Result<ChangedItemIdsResp, FitItemGetSubsystemChangeError> {
+        let mut core_item = core_fit
+            .get_item(&self.item_id)
+            .map_err(FitItemGetSubsystemChangeError::ItemGet)?;
         Ok(self.core.execute(&mut core_item)?)
     }
 }
+
+pub type ItemGetSubsystemChangeError = GenItemGetSubsystemChangeError<rc::err::ItemGetError>;
+pub type FitItemGetSubsystemChangeError = GenItemGetSubsystemChangeError<rc::err::FitItemGetError>;
+
 #[derive(thiserror::Error, Debug)]
-pub enum ItemGetSubsystemChangeError {
+pub enum GenItemGetSubsystemChangeError<E> {
     #[error(transparent)]
-    ItemGet(#[from] rc::err::ItemGetError),
+    ItemGet(E),
     #[error(transparent)]
     ItemIsNotSubsystem(rc::err::ItemKindMatchError),
 }
-impl From<SubsystemChangeError> for ItemGetSubsystemChangeError {
+impl<E> From<SubsystemChangeError> for GenItemGetSubsystemChangeError<E> {
     fn from(err: SubsystemChangeError) -> Self {
         match err {
             SubsystemChangeError::ItemIsNotSubsystem(inner) => Self::ItemIsNotSubsystem(inner),

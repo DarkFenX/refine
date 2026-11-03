@@ -109,18 +109,33 @@ impl FwEffectChangeCmdCtxItem {
         self,
         core_sol: &mut rc::SolarSystem,
     ) -> Result<ChangedItemIdsResp, ItemGetFwEffectChangeError> {
-        let mut core_item = core_sol.get_item(&self.item_id)?;
+        let mut core_item = core_sol
+            .get_item(&self.item_id)
+            .map_err(ItemGetFwEffectChangeError::ItemGet)?;
+        Ok(self.core.execute(&mut core_item)?)
+    }
+    pub(in crate::ctl) fn execute_via_fit(
+        self,
+        core_fit: &mut rc::Fit,
+    ) -> Result<ChangedItemIdsResp, FitItemGetFwEffectChangeError> {
+        let mut core_item = core_fit
+            .get_item(&self.item_id)
+            .map_err(FitItemGetFwEffectChangeError::ItemGet)?;
         Ok(self.core.execute(&mut core_item)?)
     }
 }
+
+pub type ItemGetFwEffectChangeError = GenItemGetFwEffectChangeError<rc::err::ItemGetError>;
+pub type FitItemGetFwEffectChangeError = GenItemGetFwEffectChangeError<rc::err::FitItemGetError>;
+
 #[derive(thiserror::Error, Debug)]
-pub enum ItemGetFwEffectChangeError {
+pub enum GenItemGetFwEffectChangeError<E> {
     #[error(transparent)]
-    ItemGet(#[from] rc::err::ItemGetError),
+    ItemGet(E),
     #[error(transparent)]
     ItemIsNotFwEffect(rc::err::ItemKindMatchError),
 }
-impl From<FwEffectChangeError> for ItemGetFwEffectChangeError {
+impl<E> From<FwEffectChangeError> for GenItemGetFwEffectChangeError<E> {
     fn from(err: FwEffectChangeError) -> Self {
         match err {
             FwEffectChangeError::ItemIsNotFwEffect(inner) => Self::ItemIsNotFwEffect(inner),

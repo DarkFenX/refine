@@ -120,20 +120,35 @@ impl SkillChangeCmdCtxItem {
         self,
         core_sol: &mut rc::SolarSystem,
     ) -> Result<ChangedItemIdsResp, ItemGetSkillChangeError> {
-        let mut core_item = core_sol.get_item(&self.item_id)?;
+        let mut core_item = core_sol
+            .get_item(&self.item_id)
+            .map_err(ItemGetSkillChangeError::ItemGet)?;
+        Ok(self.core.execute(&mut core_item)?)
+    }
+    pub(in crate::ctl) fn execute_via_fit(
+        self,
+        core_fit: &mut rc::Fit,
+    ) -> Result<ChangedItemIdsResp, FitItemGetSkillChangeError> {
+        let mut core_item = core_fit
+            .get_item(&self.item_id)
+            .map_err(FitItemGetSkillChangeError::ItemGet)?;
         Ok(self.core.execute(&mut core_item)?)
     }
 }
+
+pub type ItemGetSkillChangeError = GenItemGetSkillChangeError<rc::err::ItemGetError>;
+pub type FitItemGetSkillChangeError = GenItemGetSkillChangeError<rc::err::FitItemGetError>;
+
 #[derive(thiserror::Error, Debug)]
-pub enum ItemGetSkillChangeError {
+pub enum GenItemGetSkillChangeError<E> {
     #[error(transparent)]
-    ItemGet(#[from] rc::err::ItemGetError),
+    ItemGet(E),
     #[error(transparent)]
     ItemIsNotSkill(rc::err::ItemKindMatchError),
     #[error(transparent)]
     TypeIdSet(rc::err::SkillTypeIdSetError),
 }
-impl From<SkillChangeError> for ItemGetSkillChangeError {
+impl<E> From<SkillChangeError> for GenItemGetSkillChangeError<E> {
     fn from(err: SkillChangeError) -> Self {
         match err {
             SkillChangeError::ItemIsNotSkill(inner) => Self::ItemIsNotSkill(inner),

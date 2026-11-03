@@ -2,6 +2,18 @@ use itertools::Itertools;
 
 use crate::{Fleet, SolarSystem, sol::UndoStep, ud::UFleetId};
 
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Public
+////////////////////////////////////////////////////////////////////////////////////////////////////
+impl<'s> Fleet<'s> {
+    pub fn remove(self) {
+        self.sol.internal_remove_fleet(self.uid);
+    }
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Private
+////////////////////////////////////////////////////////////////////////////////////////////////////
 impl SolarSystem {
     pub(in crate::api) fn internal_remove_fleet(&mut self, fleet_uid: UFleetId) {
         // Fits leave the fleet one by one, so that rollback can put them back via their own steps
@@ -18,11 +30,5 @@ impl SolarSystem {
                 self.u_data.fleets.remove(fleet_uid);
             }
         }
-    }
-}
-
-impl<'s> Fleet<'s> {
-    pub fn remove(self) {
-        self.sol.internal_remove_fleet(self.uid);
     }
 }

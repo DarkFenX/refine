@@ -278,14 +278,29 @@ impl ModuleChangeCmdCtxItem {
         self,
         core_sol: &mut rc::SolarSystem,
     ) -> Result<ChangedItemIdsResp, ItemGetModuleChangeError> {
-        let mut core_item = core_sol.get_item(&self.item_id)?;
+        let mut core_item = core_sol
+            .get_item(&self.item_id)
+            .map_err(ItemGetModuleChangeError::ItemGet)?;
+        Ok(self.core.execute(&mut core_item)?)
+    }
+    pub(in crate::ctl) fn execute_via_fit(
+        self,
+        core_fit: &mut rc::Fit,
+    ) -> Result<ChangedItemIdsResp, FitItemGetModuleChangeError> {
+        let mut core_item = core_fit
+            .get_item(&self.item_id)
+            .map_err(FitItemGetModuleChangeError::ItemGet)?;
         Ok(self.core.execute(&mut core_item)?)
     }
 }
+
+pub type ItemGetModuleChangeError = GenItemGetModuleChangeError<rc::err::ItemGetError>;
+pub type FitItemGetModuleChangeError = GenItemGetModuleChangeError<rc::err::FitItemGetError>;
+
 #[derive(thiserror::Error, Debug)]
-pub enum ItemGetModuleChangeError {
+pub enum GenItemGetModuleChangeError<E> {
     #[error(transparent)]
-    ItemGet(#[from] rc::err::ItemGetError),
+    ItemGet(E),
     #[error(transparent)]
     ItemIsNotModule(rc::err::ItemKindMatchError),
     #[error("failed to mutate attributes: item {0} is not mutated")]
@@ -295,7 +310,7 @@ pub enum ItemGetModuleChangeError {
     #[error("failed to remove projection")]
     ProjRemove(#[source] rc::err::ProjGetError),
 }
-impl From<ModuleChangeError> for ItemGetModuleChangeError {
+impl<E> From<ModuleChangeError> for GenItemGetModuleChangeError<E> {
     fn from(err: ModuleChangeError) -> Self {
         match err {
             ModuleChangeError::ItemIsNotModule(inner) => Self::ItemIsNotModule(inner),

@@ -68,7 +68,7 @@ impl StanceInfo {
                     #[cfg(feature = "serde")]
                     kind: ItemKind::Stance,
                     type_id: core_stance.get_type_id(),
-                    fit_id: core_stance.get_fit().get_fit_id(),
+                    fit_id: core_stance.get_fit_id(),
                     state: core_stance.get_state(),
                     effect_mode_overrides: get_effect_mode_overrides(core_stance, stance_info_mode),
                     attrs: get_attrs(core_stance, stance_info_mode),

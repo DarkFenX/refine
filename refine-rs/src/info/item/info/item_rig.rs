@@ -68,7 +68,7 @@ impl RigInfo {
                     #[cfg(feature = "serde")]
                     kind: ItemKind::Rig,
                     type_id: core_rig.get_type_id(),
-                    fit_id: core_rig.get_fit().get_fit_id(),
+                    fit_id: core_rig.get_fit_id(),
                     state: core_rig.get_state(),
                     effect_mode_overrides: get_effect_mode_overrides(core_rig, rig_info_mode),
                     attrs: get_attrs(core_rig, rig_info_mode),

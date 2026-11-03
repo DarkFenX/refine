@@ -109,18 +109,33 @@ impl ServiceChangeCmdCtxItem {
         self,
         core_sol: &mut rc::SolarSystem,
     ) -> Result<ChangedItemIdsResp, ItemGetServiceChangeError> {
-        let mut core_item = core_sol.get_item(&self.item_id)?;
+        let mut core_item = core_sol
+            .get_item(&self.item_id)
+            .map_err(ItemGetServiceChangeError::ItemGet)?;
+        Ok(self.core.execute(&mut core_item)?)
+    }
+    pub(in crate::ctl) fn execute_via_fit(
+        self,
+        core_fit: &mut rc::Fit,
+    ) -> Result<ChangedItemIdsResp, FitItemGetServiceChangeError> {
+        let mut core_item = core_fit
+            .get_item(&self.item_id)
+            .map_err(FitItemGetServiceChangeError::ItemGet)?;
         Ok(self.core.execute(&mut core_item)?)
     }
 }
+
+pub type ItemGetServiceChangeError = GenItemGetServiceChangeError<rc::err::ItemGetError>;
+pub type FitItemGetServiceChangeError = GenItemGetServiceChangeError<rc::err::FitItemGetError>;
+
 #[derive(thiserror::Error, Debug)]
-pub enum ItemGetServiceChangeError {
+pub enum GenItemGetServiceChangeError<E> {
     #[error(transparent)]
-    ItemGet(#[from] rc::err::ItemGetError),
+    ItemGet(E),
     #[error(transparent)]
     ItemIsNotService(rc::err::ItemKindMatchError),
 }
-impl From<ServiceChangeError> for ItemGetServiceChangeError {
+impl<E> From<ServiceChangeError> for GenItemGetServiceChangeError<E> {
     fn from(err: ServiceChangeError) -> Self {
         match err {
             ServiceChangeError::ItemIsNotService(inner) => Self::ItemIsNotService(inner),

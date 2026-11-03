@@ -68,7 +68,7 @@ impl ServiceInfo {
                     #[cfg(feature = "serde")]
                     kind: ItemKind::Service,
                     type_id: core_service.get_type_id(),
-                    fit_id: core_service.get_fit().get_fit_id(),
+                    fit_id: core_service.get_fit_id(),
                     state: core_service.get_state(),
                     effect_mode_overrides: get_effect_mode_overrides(core_service, service_info_mode),
                     attrs: get_attrs(core_service, service_info_mode),

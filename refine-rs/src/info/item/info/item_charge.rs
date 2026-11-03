@@ -69,8 +69,8 @@ impl ChargeInfo {
                     #[cfg(feature = "serde")]
                     kind: ItemKind::Charge,
                     type_id: core_charge.get_type_id(),
-                    fit_id: core_charge.get_fit().get_fit_id(),
-                    cont_item_id: core_charge.get_cont_item().get_item_id(),
+                    fit_id: core_charge.get_fit_id(),
+                    cont_item_id: core_charge.get_cont_item_id(),
                     state: core_charge.get_state(),
                     effect_mode_overrides: get_effect_mode_overrides(core_charge, charge_info_mode),
                     attrs: get_attrs(core_charge, charge_info_mode),

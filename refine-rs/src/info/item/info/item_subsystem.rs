@@ -70,7 +70,7 @@ impl SubsystemInfo {
                     #[cfg(feature = "serde")]
                     kind: ItemKind::Subsystem,
                     type_id: core_subsystem.get_type_id(),
-                    fit_id: core_subsystem.get_fit().get_fit_id(),
+                    fit_id: core_subsystem.get_fit_id(),
                     slot: core_subsystem.get_slot(),
                     state: core_subsystem.get_state(),
                     effect_mode_overrides: get_effect_mode_overrides(core_subsystem, subsystem_info_mode),

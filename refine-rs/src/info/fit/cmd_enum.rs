@@ -1,6 +1,6 @@
 use crate::{
     CmdResp, CmdResps, FitInfoCmd, FitInfoCmdBr, ItemIdBr, ItemInfoCmdBr,
-    err::{BrResolveError, ItemGetItemInfoError},
+    err::{BrResolveError, FitItemGetItemInfoError},
     info::item::{ItemInfoCmdCtxItem, ItemInfoCmdCtxItemBr},
 };
 
@@ -56,7 +56,7 @@ impl FitInfoEnumCmd {
     pub(crate) fn execute(self, core_fit: &mut rc::Fit) -> Result<CmdResp, FitInfoEnumError> {
         Ok(match self {
             Self::FitInfo(cmd) => cmd.execute(core_fit).into(),
-            Self::ItemInfo(cmd) => cmd.execute(core_fit.get_sol())?.into(),
+            Self::ItemInfo(cmd) => cmd.execute_via_fit(core_fit)?.into(),
         })
     }
 }
@@ -64,5 +64,5 @@ impl FitInfoEnumCmd {
 #[derive(thiserror::Error, Debug)]
 pub enum FitInfoEnumError {
     #[error(transparent)]
-    Item(#[from] ItemGetItemInfoError),
+    Item(#[from] FitItemGetItemInfoError),
 }

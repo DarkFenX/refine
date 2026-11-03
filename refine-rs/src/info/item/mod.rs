@@ -1,4 +1,6 @@
-pub use cmd_core::{ItemGetItemInfoError, ItemInfoCmd, ItemInfoCmdBr, ItemInfoCmdCtxItem, ItemInfoCmdCtxItemBr};
+pub use cmd_core::{
+    FitItemGetItemInfoError, ItemGetItemInfoError, ItemInfoCmd, ItemInfoCmdBr, ItemInfoCmdCtxItem, ItemInfoCmdCtxItemBr,
+};
 pub use info::{
     AbilityInfo, AttrMutationInfo, AutochargeInfo, AutochargeInfoExt, BoosterInfo, BoosterInfoExt, CharacterInfo,
     CharacterInfoExt, ChargeInfo, ChargeInfoExt, DroneInfo, DroneInfoExt, FighterInfo, FighterInfoExt, FwEffectInfo,

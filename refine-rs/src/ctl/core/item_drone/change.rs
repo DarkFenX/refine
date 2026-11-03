@@ -248,14 +248,29 @@ impl DroneChangeCmdCtxItem {
         self,
         core_sol: &mut rc::SolarSystem,
     ) -> Result<ChangedItemIdsResp, ItemGetDroneChangeError> {
-        let mut core_item = core_sol.get_item(&self.item_id)?;
+        let mut core_item = core_sol
+            .get_item(&self.item_id)
+            .map_err(ItemGetDroneChangeError::ItemGet)?;
+        Ok(self.core.execute(&mut core_item)?)
+    }
+    pub(in crate::ctl) fn execute_via_fit(
+        self,
+        core_fit: &mut rc::Fit,
+    ) -> Result<ChangedItemIdsResp, FitItemGetDroneChangeError> {
+        let mut core_item = core_fit
+            .get_item(&self.item_id)
+            .map_err(FitItemGetDroneChangeError::ItemGet)?;
         Ok(self.core.execute(&mut core_item)?)
     }
 }
+
+pub type ItemGetDroneChangeError = GenItemGetDroneChangeError<rc::err::ItemGetError>;
+pub type FitItemGetDroneChangeError = GenItemGetDroneChangeError<rc::err::FitItemGetError>;
+
 #[derive(thiserror::Error, Debug)]
-pub enum ItemGetDroneChangeError {
+pub enum GenItemGetDroneChangeError<E> {
     #[error(transparent)]
-    ItemGet(#[from] rc::err::ItemGetError),
+    ItemGet(E),
     #[error(transparent)]
     ItemIsNotDrone(rc::err::ItemKindMatchError),
     #[error("failed to mutate attributes: item {0} is not mutated")]
@@ -265,7 +280,7 @@ pub enum ItemGetDroneChangeError {
     #[error("failed to remove projection")]
     ProjRemove(#[source] rc::err::ProjGetError),
 }
-impl From<DroneChangeError> for ItemGetDroneChangeError {
+impl<E> From<DroneChangeError> for GenItemGetDroneChangeError<E> {
     fn from(err: DroneChangeError) -> Self {
         match err {
             DroneChangeError::ItemIsNotDrone(inner) => Self::ItemIsNotDrone(inner),

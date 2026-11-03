@@ -69,7 +69,7 @@ impl SkillInfo {
                     #[cfg(feature = "serde")]
                     kind: ItemKind::Skill,
                     type_id: core_skill.get_type_id(),
-                    fit_id: core_skill.get_fit().get_fit_id(),
+                    fit_id: core_skill.get_fit_id(),
                     level: core_skill.get_level(),
                     state: core_skill.get_state(),
                     effect_mode_overrides: get_effect_mode_overrides(core_skill, skill_info_mode),

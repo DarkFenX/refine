@@ -1,6 +1,6 @@
 use crate::{
-    Autocharge, Booster, Character, Charge, Drone, Fighter, FwEffect, Implant, ItemCommon, Module, ProjEffect, Rig,
-    Service, Ship, Skill, SolarSystem, Stance, Subsystem, SwEffect, api::ItemSealed, ud::UItemId,
+    Autocharge, Booster, Character, Charge, Drone, Fighter, FitId, FwEffect, Implant, ItemCommon, Module, ProjEffect,
+    Rig, Service, Ship, Skill, SolarSystem, Stance, Subsystem, SwEffect, api::ItemSealed, ud::UItemId,
 };
 
 pub enum Item<'s> {
@@ -26,6 +26,27 @@ impl<'s> Item<'s> {
     pub(in crate::api) fn new(sol: &'s mut SolarSystem, uid: UItemId) -> Self {
         sol.internal_get_item(uid)
     }
+    pub fn get_fit_id(&self) -> Option<FitId> {
+        match self {
+            Item::Autocharge(autocharge) => Some(autocharge.get_fit_id()),
+            Item::Booster(booster) => Some(booster.get_fit_id()),
+            Item::Character(character) => Some(character.get_fit_id()),
+            Item::Charge(charge) => Some(charge.get_fit_id()),
+            Item::Drone(drone) => Some(drone.get_fit_id()),
+            Item::Fighter(fighter) => Some(fighter.get_fit_id()),
+            Item::FwEffect(fw_effect) => Some(fw_effect.get_fit_id()),
+            Item::Implant(implant) => Some(implant.get_fit_id()),
+            Item::Module(module) => Some(module.get_fit_id()),
+            Item::ProjEffect(..) => None,
+            Item::Rig(rig) => Some(rig.get_fit_id()),
+            Item::Service(service) => Some(service.get_fit_id()),
+            Item::Ship(ship) => Some(ship.get_fit_id()),
+            Item::Skill(skill) => Some(skill.get_fit_id()),
+            Item::Stance(stance) => Some(stance.get_fit_id()),
+            Item::Subsystem(subsystem) => Some(subsystem.get_fit_id()),
+            Item::SwEffect(..) => None,
+        }
+    }
 }
 impl<'s> ItemSealed for Item<'s> {
     fn get_uid(&self) -> UItemId {
@@ -49,30 +70,7 @@ impl<'s> ItemSealed for Item<'s> {
             Item::SwEffect(sw_effect) => sw_effect.get_uid(),
         }
     }
-    fn get_sol_ref(&self) -> &SolarSystem {
-        match self {
-            Item::Autocharge(autocharge) => autocharge.get_sol_ref(),
-            Item::Booster(booster) => booster.get_sol_ref(),
-            Item::Character(character) => character.get_sol_ref(),
-            Item::Charge(charge) => charge.get_sol_ref(),
-            Item::Drone(drone) => drone.get_sol_ref(),
-            Item::Fighter(fighter) => fighter.get_sol_ref(),
-            Item::FwEffect(fw_effect) => fw_effect.get_sol_ref(),
-            Item::Implant(implant) => implant.get_sol_ref(),
-            Item::Module(module) => module.get_sol_ref(),
-            Item::ProjEffect(proj_effect) => proj_effect.get_sol_ref(),
-            Item::Rig(rig) => rig.get_sol_ref(),
-            Item::Service(service) => service.get_sol_ref(),
-            Item::Ship(ship) => ship.get_sol_ref(),
-            Item::Skill(skill) => skill.get_sol_ref(),
-            Item::Stance(stance) => stance.get_sol_ref(),
-            Item::Subsystem(subsystem) => subsystem.get_sol_ref(),
-            Item::SwEffect(sw_effect) => sw_effect.get_sol_ref(),
-        }
-    }
-}
-impl<'s> ItemCommon for Item<'s> {
-    fn get_sol(&mut self) -> &mut SolarSystem {
+    fn get_sol(&self) -> &SolarSystem {
         match self {
             Item::Autocharge(autocharge) => autocharge.get_sol(),
             Item::Booster(booster) => booster.get_sol(),
@@ -93,4 +91,26 @@ impl<'s> ItemCommon for Item<'s> {
             Item::SwEffect(sw_effect) => sw_effect.get_sol(),
         }
     }
+    fn get_sol_mut(&mut self) -> &mut SolarSystem {
+        match self {
+            Item::Autocharge(autocharge) => autocharge.get_sol_mut(),
+            Item::Booster(booster) => booster.get_sol_mut(),
+            Item::Character(character) => character.get_sol_mut(),
+            Item::Charge(charge) => charge.get_sol_mut(),
+            Item::Drone(drone) => drone.get_sol_mut(),
+            Item::Fighter(fighter) => fighter.get_sol_mut(),
+            Item::FwEffect(fw_effect) => fw_effect.get_sol_mut(),
+            Item::Implant(implant) => implant.get_sol_mut(),
+            Item::Module(module) => module.get_sol_mut(),
+            Item::ProjEffect(proj_effect) => proj_effect.get_sol_mut(),
+            Item::Rig(rig) => rig.get_sol_mut(),
+            Item::Service(service) => service.get_sol_mut(),
+            Item::Ship(ship) => ship.get_sol_mut(),
+            Item::Skill(skill) => skill.get_sol_mut(),
+            Item::Stance(stance) => stance.get_sol_mut(),
+            Item::Subsystem(subsystem) => subsystem.get_sol_mut(),
+            Item::SwEffect(sw_effect) => sw_effect.get_sol_mut(),
+        }
+    }
 }
+impl<'s> ItemCommon for Item<'s> {}

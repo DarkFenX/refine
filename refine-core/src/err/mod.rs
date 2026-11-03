@@ -4,12 +4,12 @@ pub use crate::{
     api::{
         AbilityGetError, AttrIdParseError, AttrMutateRawError, AutochargeGetError, BoosterGetError, CharacterGetError,
         ChargeGetError, DroneGetError, EffectIdParseError, FighterGetError, FitFleetSetError, FitGetError,
-        FitItemAutodetectAddError, FleetFitAddError, FleetFitRemoveError, FleetGetError, FullMAttrGetError,
-        FullMAttrValueSetError, FwEffectGetError, ImplantGetError, ItemAttrGetError, ItemAttrsIterError,
-        ItemEffectsIterError, ItemGetError, ItemModifiersIterError, ItemRemoveError, ModuleGetError, MutationAddError,
-        ProjAddError, ProjEffectGetError, ProjGetError, RawMAttrGetError, RigGetError, ServiceGetError, ShipGetError,
-        SideEffectGetError, SkillAddError, SkillGetError, SkillTypeIdSetError, SrcSetError, StanceGetError,
-        SubsystemGetError, SwEffectGetError, TxBeginError,
+        FitItemAutodetectAddError, FitItemGetError, FleetFitAddError, FleetFitGetError, FleetFitRemoveError,
+        FleetGetError, FleetItemGetError, FullMAttrGetError, FullMAttrValueSetError, FwEffectGetError, ImplantGetError,
+        ItemAttrGetError, ItemAttrsIterError, ItemEffectsIterError, ItemGetError, ItemModifiersIterError,
+        ItemRemoveError, ModuleGetError, MutationAddError, ProjAddError, ProjEffectGetError, ProjGetError,
+        RawMAttrGetError, RigGetError, ServiceGetError, ShipGetError, SideEffectGetError, SkillAddError, SkillGetError,
+        SkillTypeIdSetError, SrcSetError, StanceGetError, SubsystemGetError, SwEffectGetError, TxBeginError,
     },
     misc::SpoolParseError,
     num::{

@@ -13,11 +13,12 @@ use crate::{
         SubsystemChangeCmdCtxItemGen,
     },
     err::{
-        BrResolveError, DroneAddError, FighterAddError, FitChangeError, FitCharacterChangeError, FitShipChangeError,
-        FitStanceChangeError, ItemAutodetectAddError, ItemGetAutochargeChangeError, ItemGetBoosterChangeError,
-        ItemGetChargeChangeError, ItemGetDroneChangeError, ItemGetFighterChangeError, ItemGetFwEffectChangeError,
-        ItemGetImplantChangeError, ItemGetItemRemoveError, ItemGetModuleChangeError, ItemGetRigChangeError,
-        ItemGetServiceChangeError, ItemGetSkillChangeError, ItemGetSubsystemChangeError, ModuleAddError, SkillAddError,
+        BrResolveError, DroneAddError, FighterAddError, FitChangeError, FitCharacterChangeError,
+        FitItemGetAutochargeChangeError, FitItemGetBoosterChangeError, FitItemGetChargeChangeError,
+        FitItemGetDroneChangeError, FitItemGetFighterChangeError, FitItemGetFwEffectChangeError,
+        FitItemGetImplantChangeError, FitItemGetItemRemoveError, FitItemGetModuleChangeError, FitItemGetRigChangeError,
+        FitItemGetServiceChangeError, FitItemGetSkillChangeError, FitItemGetSubsystemChangeError, FitShipChangeError,
+        FitStanceChangeError, ItemAutodetectAddError, ModuleAddError, SkillAddError,
     },
 };
 
@@ -462,40 +463,40 @@ impl FitChangeEnumCmd {
             Self::FitChange(cmd) => cmd.execute(core_fit)?.into(),
             // Item
             Self::ItemAutodetectAdd(cmd) => cmd.execute(core_fit)?.into(),
-            Self::ItemRemove(cmd) => cmd.execute(core_fit.get_sol())?.into(),
+            Self::ItemRemove(cmd) => cmd.execute_via_fit(core_fit)?.into(),
             // Item - autocharge
-            Self::AutochargeChange(cmd) => cmd.execute(core_fit.get_sol())?.into(),
+            Self::AutochargeChange(cmd) => cmd.execute_via_fit(core_fit)?.into(),
             // Item - booster
             Self::BoosterAdd(cmd) => cmd.execute(core_fit).into(),
-            Self::BoosterChange(cmd) => cmd.execute(core_fit.get_sol())?.into(),
+            Self::BoosterChange(cmd) => cmd.execute_via_fit(core_fit)?.into(),
             // Item - character
             Self::CharacterSet(cmd) => cmd.execute(core_fit).into(),
             Self::CharacterChange(cmd) => cmd.execute_via_fit(core_fit)?.into(),
             #[expect(clippy::unit_arg)]
             Self::CharacterUnset(cmd) => cmd.execute(core_fit).into(),
             // Item - charge
-            Self::ChargeChange(cmd) => cmd.execute(core_fit.get_sol())?.into(),
+            Self::ChargeChange(cmd) => cmd.execute_via_fit(core_fit)?.into(),
             // Item - drone
             Self::DroneAdd(cmd) => cmd.execute(core_fit)?.into(),
-            Self::DroneChange(cmd) => cmd.execute(core_fit.get_sol())?.into(),
+            Self::DroneChange(cmd) => cmd.execute_via_fit(core_fit)?.into(),
             // Item - fighter
             Self::FighterAdd(cmd) => cmd.execute(core_fit)?.into(),
-            Self::FighterChange(cmd) => cmd.execute(core_fit.get_sol())?.into(),
+            Self::FighterChange(cmd) => cmd.execute_via_fit(core_fit)?.into(),
             // Item - fit-wide effect
             Self::FwEffectAdd(cmd) => cmd.execute(core_fit).into(),
-            Self::FwEffectChange(cmd) => cmd.execute(core_fit.get_sol())?.into(),
+            Self::FwEffectChange(cmd) => cmd.execute_via_fit(core_fit)?.into(),
             // Item - implant
             Self::ImplantAdd(cmd) => cmd.execute(core_fit).into(),
-            Self::ImplantChange(cmd) => cmd.execute(core_fit.get_sol())?.into(),
+            Self::ImplantChange(cmd) => cmd.execute_via_fit(core_fit)?.into(),
             // Item - module
             Self::ModuleAdd(cmd) => cmd.execute(core_fit)?.into(),
-            Self::ModuleChange(cmd) => cmd.execute(core_fit.get_sol())?.into(),
+            Self::ModuleChange(cmd) => cmd.execute_via_fit(core_fit)?.into(),
             // Item - rig
             Self::RigAdd(cmd) => cmd.execute(core_fit).into(),
-            Self::RigChange(cmd) => cmd.execute(core_fit.get_sol())?.into(),
+            Self::RigChange(cmd) => cmd.execute_via_fit(core_fit)?.into(),
             // Item - service
             Self::ServiceAdd(cmd) => cmd.execute(core_fit).into(),
-            Self::ServiceChange(cmd) => cmd.execute(core_fit.get_sol())?.into(),
+            Self::ServiceChange(cmd) => cmd.execute_via_fit(core_fit)?.into(),
             // Item - ship
             Self::ShipSet(cmd) => cmd.execute(core_fit).into(),
             Self::ShipChange(cmd) => cmd.execute_via_fit(core_fit)?.into(),
@@ -503,7 +504,7 @@ impl FitChangeEnumCmd {
             Self::ShipUnset(cmd) => cmd.execute(core_fit).into(),
             // Item - skill
             Self::SkillAdd(cmd) => cmd.execute(core_fit)?.into(),
-            Self::SkillChange(cmd) => cmd.execute(core_fit.get_sol())?.into(),
+            Self::SkillChange(cmd) => cmd.execute_via_fit(core_fit)?.into(),
             // Item - stance
             Self::StanceSet(cmd) => cmd.execute(core_fit).into(),
             Self::StanceChange(cmd) => cmd.execute_via_fit(core_fit)?.into(),
@@ -511,7 +512,7 @@ impl FitChangeEnumCmd {
             Self::StanceUnset(cmd) => cmd.execute(core_fit).into(),
             // Item - subsystem
             Self::SubsystemAdd(cmd) => cmd.execute(core_fit).into(),
-            Self::SubsystemChange(cmd) => cmd.execute(core_fit.get_sol())?.into(),
+            Self::SubsystemChange(cmd) => cmd.execute_via_fit(core_fit)?.into(),
         })
     }
 }
@@ -525,46 +526,46 @@ pub enum FitChangeEnumError {
     #[error("failed to add autodetected item")]
     ItemAutodetectAdd(#[from] ItemAutodetectAddError),
     #[error("failed to remove item")]
-    ItemRemove(#[from] ItemGetItemRemoveError),
+    ItemRemove(#[from] FitItemGetItemRemoveError),
     // Item - autocharge
     #[error("failed to change autocharge")]
-    AutochargeChange(#[from] ItemGetAutochargeChangeError),
+    AutochargeChange(#[from] FitItemGetAutochargeChangeError),
     // Item - booster
     #[error("failed to change booster")]
-    BoosterChange(#[from] ItemGetBoosterChangeError),
+    BoosterChange(#[from] FitItemGetBoosterChangeError),
     // Item - character
     #[error("failed to change character")]
     CharacterChange(#[from] FitCharacterChangeError),
     // Item - charge
     #[error("failed to change charge")]
-    ChargeChange(#[from] ItemGetChargeChangeError),
+    ChargeChange(#[from] FitItemGetChargeChangeError),
     // Item - drone
     #[error("failed to add drone")]
     DroneAdd(#[from] DroneAddError),
     #[error("failed to change drone")]
-    DroneChange(#[from] ItemGetDroneChangeError),
+    DroneChange(#[from] FitItemGetDroneChangeError),
     // Item - fighter
     #[error("failed to add fighter")]
     FighterAdd(#[from] FighterAddError),
     #[error("failed to change fighter")]
-    FighterChange(#[from] ItemGetFighterChangeError),
+    FighterChange(#[from] FitItemGetFighterChangeError),
     // Item - fit-wide effect
     #[error("failed to change fit-wide effect")]
-    FwEffectChange(#[from] ItemGetFwEffectChangeError),
+    FwEffectChange(#[from] FitItemGetFwEffectChangeError),
     // Item - implant
     #[error("failed to change implant")]
-    ImplantChange(#[from] ItemGetImplantChangeError),
+    ImplantChange(#[from] FitItemGetImplantChangeError),
     // Item - module
     #[error("failed to add module")]
     ModuleAdd(#[from] ModuleAddError),
     #[error("failed to change module")]
-    ModuleChange(#[from] ItemGetModuleChangeError),
+    ModuleChange(#[from] FitItemGetModuleChangeError),
     // Item - rig
     #[error("failed to change rig")]
-    RigChange(#[from] ItemGetRigChangeError),
+    RigChange(#[from] FitItemGetRigChangeError),
     // Item - service
     #[error("failed to change service")]
-    ServiceChange(#[from] ItemGetServiceChangeError),
+    ServiceChange(#[from] FitItemGetServiceChangeError),
     // Item - ship
     #[error("failed to change ship")]
     ShipChange(#[from] FitShipChangeError),
@@ -572,11 +573,11 @@ pub enum FitChangeEnumError {
     #[error("failed to add skill")]
     SkillAdd(#[from] SkillAddError),
     #[error("failed to change skill")]
-    SkillChange(#[from] ItemGetSkillChangeError),
+    SkillChange(#[from] FitItemGetSkillChangeError),
     // Item - stance
     #[error("failed to change stance")]
     StanceChange(#[from] FitStanceChangeError),
     // Item - subsystem
     #[error("failed to change subsystem")]
-    SubsystemChange(#[from] ItemGetSubsystemChangeError),
+    SubsystemChange(#[from] FitItemGetSubsystemChangeError),
 }

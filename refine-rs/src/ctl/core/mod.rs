@@ -9,15 +9,18 @@ pub use fleet::{
 };
 pub(crate) use fleet::{FleetAddCmdGen, FleetChangeCmdCtxFleetGen, FleetRemoveCmdCtxFleetGen};
 pub use item::{
-    FitGetItemAutodetectAddError, ItemAutodetectAddCmd, ItemAutodetectAddCmdCtxFit, ItemAutodetectAddError,
-    ItemGetItemRemoveError, ItemRemoveCmd, ItemRemoveError,
+    FitGetItemAutodetectAddError, FitItemGetItemRemoveError, GenItemGetItemRemoveError, ItemAutodetectAddCmd,
+    ItemAutodetectAddCmdCtxFit, ItemAutodetectAddError, ItemGetItemRemoveError, ItemRemoveCmd, ItemRemoveError,
 };
 pub(crate) use item::{ItemAutodetectAddCmdCtxFitGen, ItemRemoveCmdCtxItemGen};
 pub(crate) use item_autocharge::AutochargeChangeCmdCtxItemGen;
-pub use item_autocharge::{AutochargeChangeCmd, AutochargeChangeError, ItemGetAutochargeChangeError};
+pub use item_autocharge::{
+    AutochargeChangeCmd, AutochargeChangeError, FitItemGetAutochargeChangeError, GenItemGetAutochargeChangeError,
+    ItemGetAutochargeChangeError,
+};
 pub use item_booster::{
     BoosterAddCmd, BoosterAddCmdCtxFit, BoosterChangeCmd, BoosterChangeError, FitGetBoosterAddError,
-    ItemGetBoosterChangeError,
+    FitItemGetBoosterChangeError, GenItemGetBoosterChangeError, ItemGetBoosterChangeError,
 };
 pub(crate) use item_booster::{BoosterAddCmdCtxFitGen, BoosterChangeCmdCtxItemGen};
 pub use item_character::{
@@ -27,30 +30,35 @@ pub use item_character::{
 };
 pub(crate) use item_character::{CharacterChangeCmdCtxAnyGen, CharacterSetCmdCtxFitGen, CharacterUnsetCmdCtxFitGen};
 pub(crate) use item_charge::ChargeChangeCmdCtxItemGen;
-pub use item_charge::{ChargeChangeCmd, ChargeChangeError, ItemGetChargeChangeError};
+pub use item_charge::{
+    ChargeChangeCmd, ChargeChangeError, FitItemGetChargeChangeError, GenItemGetChargeChangeError,
+    ItemGetChargeChangeError,
+};
 pub use item_drone::{
     DroneAddCmd, DroneAddCmdBr, DroneAddCmdCtxFit, DroneAddError, DroneChangeCmd, DroneChangeCmdBr, DroneChangeError,
-    FitGetDroneAddError, ItemGetDroneChangeError,
+    FitGetDroneAddError, FitItemGetDroneChangeError, GenItemGetDroneChangeError, ItemGetDroneChangeError,
 };
 pub(crate) use item_drone::{DroneAddCmdCtxFitGen, DroneAddCmdGen, DroneChangeCmdCtxItemGen};
 pub use item_fighter::{
     FighterAddCmd, FighterAddCmdBr, FighterAddCmdCtxFit, FighterAddError, FighterChangeCmd, FighterChangeCmdBr,
-    FighterChangeError, FitGetFighterAddError, ItemGetFighterChangeError,
+    FighterChangeError, FitGetFighterAddError, FitItemGetFighterChangeError, GenItemGetFighterChangeError,
+    ItemGetFighterChangeError,
 };
 pub(crate) use item_fighter::{FighterAddCmdCtxFitGen, FighterAddCmdGen, FighterChangeCmdCtxItemGen};
 pub use item_fw_effect::{
-    FitGetFwEffectAddError, FwEffectAddCmd, FwEffectAddCmdCtxFit, FwEffectChangeCmd, FwEffectChangeError,
-    ItemGetFwEffectChangeError,
+    FitGetFwEffectAddError, FitItemGetFwEffectChangeError, FwEffectAddCmd, FwEffectAddCmdCtxFit, FwEffectChangeCmd,
+    FwEffectChangeError, GenItemGetFwEffectChangeError, ItemGetFwEffectChangeError,
 };
 pub(crate) use item_fw_effect::{FwEffectAddCmdCtxFitGen, FwEffectChangeCmdCtxItemGen};
 pub use item_implant::{
-    FitGetImplantAddError, ImplantAddCmd, ImplantAddCmdCtxFit, ImplantChangeCmd, ImplantChangeError,
-    ItemGetImplantChangeError,
+    FitGetImplantAddError, FitItemGetImplantChangeError, GenItemGetImplantChangeError, ImplantAddCmd,
+    ImplantAddCmdCtxFit, ImplantChangeCmd, ImplantChangeError, ItemGetImplantChangeError,
 };
 pub(crate) use item_implant::{ImplantAddCmdCtxFitGen, ImplantChangeCmdCtxItemGen};
 pub use item_module::{
-    FitGetModuleAddError, ItemGetModuleChangeError, ModuleAddCmd, ModuleAddCmdBr, ModuleAddCmdCtxFit, ModuleAddError,
-    ModuleChangeCmd, ModuleChangeCmdBr, ModuleChangeError,
+    FitGetModuleAddError, FitItemGetModuleChangeError, GenItemGetModuleChangeError, ItemGetModuleChangeError,
+    ModuleAddCmd, ModuleAddCmdBr, ModuleAddCmdCtxFit, ModuleAddError, ModuleChangeCmd, ModuleChangeCmdBr,
+    ModuleChangeError,
 };
 pub(crate) use item_module::{ModuleAddCmdCtxFitGen, ModuleAddCmdGen, ModuleChangeCmdCtxItemGen};
 pub use item_proj_effect::{
@@ -59,12 +67,13 @@ pub use item_proj_effect::{
 };
 pub(crate) use item_proj_effect::{ProjEffectAddCmdGen, ProjEffectChangeCmdCtxItemGen};
 pub use item_rig::{
-    FitGetRigAddError, ItemGetRigChangeError, RigAddCmd, RigAddCmdCtxFit, RigChangeCmd, RigChangeError,
+    FitGetRigAddError, FitItemGetRigChangeError, GenItemGetRigChangeError, ItemGetRigChangeError, RigAddCmd,
+    RigAddCmdCtxFit, RigChangeCmd, RigChangeError,
 };
 pub(crate) use item_rig::{RigAddCmdCtxFitGen, RigChangeCmdCtxItemGen};
 pub use item_service::{
-    FitGetServiceAddError, ItemGetServiceChangeError, ServiceAddCmd, ServiceAddCmdCtxFit, ServiceChangeCmd,
-    ServiceChangeError,
+    FitGetServiceAddError, FitItemGetServiceChangeError, GenItemGetServiceChangeError, ItemGetServiceChangeError,
+    ServiceAddCmd, ServiceAddCmdCtxFit, ServiceChangeCmd, ServiceChangeError,
 };
 pub(crate) use item_service::{ServiceAddCmdCtxFitGen, ServiceChangeCmdCtxItemGen};
 pub use item_ship::{
@@ -73,8 +82,8 @@ pub use item_ship::{
 };
 pub(crate) use item_ship::{ShipChangeCmdCtxAnyGen, ShipSetCmdCtxFitGen, ShipUnsetCmdCtxFitGen};
 pub use item_skill::{
-    FitGetSkillAddError, ItemGetSkillChangeError, SkillAddCmd, SkillAddCmdCtxFit, SkillAddError, SkillChangeCmd,
-    SkillChangeError,
+    FitGetSkillAddError, FitItemGetSkillChangeError, GenItemGetSkillChangeError, ItemGetSkillChangeError, SkillAddCmd,
+    SkillAddCmdCtxFit, SkillAddError, SkillChangeCmd, SkillChangeError,
 };
 pub(crate) use item_skill::{SkillAddCmdCtxFitGen, SkillChangeCmdCtxItemGen};
 pub use item_stance::{
@@ -84,8 +93,8 @@ pub use item_stance::{
 };
 pub(crate) use item_stance::{StanceChangeCmdCtxAnyGen, StanceSetCmdCtxFitGen, StanceUnsetCmdCtxFitGen};
 pub use item_subsystem::{
-    FitGetSubsystemAddError, ItemGetSubsystemChangeError, SubsystemAddCmd, SubsystemAddCmdCtxFit, SubsystemChangeCmd,
-    SubsystemChangeError,
+    FitGetSubsystemAddError, FitItemGetSubsystemChangeError, GenItemGetSubsystemChangeError,
+    ItemGetSubsystemChangeError, SubsystemAddCmd, SubsystemAddCmdCtxFit, SubsystemChangeCmd, SubsystemChangeError,
 };
 pub(crate) use item_subsystem::{SubsystemAddCmdCtxFitGen, SubsystemChangeCmdCtxItemGen};
 pub(crate) use item_sw_effect::SwEffectChangeCmdCtxItemGen;

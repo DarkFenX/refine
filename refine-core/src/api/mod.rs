@@ -2,19 +2,19 @@ pub use fit::{
     Fit, FitFleetSetError, FitGetError, StatFitAppliedError, StatFitCharacterError, StatFitShipAppliedError,
     StatFitShipError,
 };
-pub use fleet::{Fleet, FleetFitAddError, FleetFitRemoveError, FleetGetError, StatFleetAppliedError};
+pub use fleet::{Fleet, FleetFitAddError, FleetFitGetError, FleetFitRemoveError, FleetGetError, StatFleetAppliedError};
 pub use item::{
     Ability, AbilityGetError, AbilityIter, AttrMutateRawError, Autocharge, AutochargeGetError, Booster,
     BoosterGetError, Character, CharacterGetError, Charge, ChargeGetError, DormantMutation, Drone, DroneGetError,
-    EffectiveMutation, Fighter, FighterGetError, FitItemAutodetectAddError, FullMAttr, FullMAttrGetError,
-    FullMAttrIter, FullMAttrValueSetError, FwEffect, FwEffectGetError, Implant, ImplantGetError, Item,
-    ItemAttrGetError, ItemAttrsIterError, ItemCommon, ItemEffectsIterError, ItemGetError, ItemModifiersIterError,
-    ItemRemoveError, Module, ModuleGetError, ModuleIter, Mutation, MutationAddError, Proj, ProjAddError, ProjEffect,
-    ProjEffectGetError, ProjGetError, ProjIter, RangedProj, RangedProjIter, RawMAttr, RawMAttrGetError, RawMAttrIter,
-    Rig, RigGetError, Service, ServiceGetError, Ship, ShipGetError, SideEffect, SideEffectGetError, SideEffectIter,
-    SideEffectStr, Skill, SkillAddError, SkillGetError, SkillTypeIdSetError, Stance, StanceGetError,
-    StatItemAppliedError, StatItemError, StatItemStateOptions, Subsystem, SubsystemGetError, SwEffect,
-    SwEffectGetError,
+    EffectiveMutation, Fighter, FighterGetError, FitItemAutodetectAddError, FitItemGetError, FleetItemGetError,
+    FullMAttr, FullMAttrGetError, FullMAttrIter, FullMAttrValueSetError, FwEffect, FwEffectGetError, Implant,
+    ImplantGetError, Item, ItemAttrGetError, ItemAttrsIterError, ItemCommon, ItemEffectsIterError, ItemGetError,
+    ItemModifiersIterError, ItemRemoveError, Module, ModuleGetError, ModuleIter, Mutation, MutationAddError, Proj,
+    ProjAddError, ProjEffect, ProjEffectGetError, ProjGetError, ProjIter, RangedProj, RangedProjIter, RawMAttr,
+    RawMAttrGetError, RawMAttrIter, Rig, RigGetError, Service, ServiceGetError, Ship, ShipGetError, SideEffect,
+    SideEffectGetError, SideEffectIter, SideEffectStr, Skill, SkillAddError, SkillGetError, SkillTypeIdSetError,
+    Stance, StanceGetError, StatItemAppliedError, StatItemError, StatItemStateOptions, Subsystem, SubsystemGetError,
+    SwEffect, SwEffectGetError,
 };
 use item::{ItemSealed, active_stat_prepare, get_ship_rib};
 pub use misc::{

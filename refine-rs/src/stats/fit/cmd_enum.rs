@@ -1,7 +1,9 @@
 use crate::{
     CmdResp, CmdResps, FitId, FitIdBr, ItemId, ItemIdBr,
     err::BrResolveError,
-    stats::{FitStatsCmdBr, FitStatsCmdGen, ItemStatsCmdBr, err::ItemGetItemStatsError, item::ItemStatsCmdCtxItemGen},
+    stats::{
+        FitStatsCmdBr, FitStatsCmdGen, ItemStatsCmdBr, err::FitItemGetItemStatsError, item::ItemStatsCmdCtxItemGen,
+    },
 };
 
 pub(crate) type FitStatsEnumCmd = FitStatsEnumCmdGen<FitId, ItemId>;
@@ -54,7 +56,7 @@ impl FitStatsEnumCmd {
     pub(crate) fn execute(self, core_fit: &mut rc::Fit) -> Result<CmdResp, FitStatsEnumError> {
         Ok(match self {
             Self::FitStats(cmd) => cmd.execute(core_fit).into(),
-            Self::ItemStats(cmd) => cmd.execute(core_fit.get_sol())?.into(),
+            Self::ItemStats(cmd) => cmd.execute_via_fit(core_fit)?.into(),
         })
     }
 }
@@ -62,5 +64,5 @@ impl FitStatsEnumCmd {
 #[derive(thiserror::Error, Debug)]
 pub enum FitStatsEnumError {
     #[error(transparent)]
-    Item(#[from] ItemGetItemStatsError),
+    Item(#[from] FitItemGetItemStatsError),
 }

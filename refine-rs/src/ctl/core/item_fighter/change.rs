@@ -242,14 +242,29 @@ impl FighterChangeCmdCtxItem {
         self,
         core_sol: &mut rc::SolarSystem,
     ) -> Result<ChangedItemIdsResp, ItemGetFighterChangeError> {
-        let mut core_item = core_sol.get_item(&self.item_id)?;
+        let mut core_item = core_sol
+            .get_item(&self.item_id)
+            .map_err(ItemGetFighterChangeError::ItemGet)?;
+        Ok(self.core.execute(&mut core_item)?)
+    }
+    pub(in crate::ctl) fn execute_via_fit(
+        self,
+        core_fit: &mut rc::Fit,
+    ) -> Result<ChangedItemIdsResp, FitItemGetFighterChangeError> {
+        let mut core_item = core_fit
+            .get_item(&self.item_id)
+            .map_err(FitItemGetFighterChangeError::ItemGet)?;
         Ok(self.core.execute(&mut core_item)?)
     }
 }
+
+pub type ItemGetFighterChangeError = GenItemGetFighterChangeError<rc::err::ItemGetError>;
+pub type FitItemGetFighterChangeError = GenItemGetFighterChangeError<rc::err::FitItemGetError>;
+
 #[derive(thiserror::Error, Debug)]
-pub enum ItemGetFighterChangeError {
+pub enum GenItemGetFighterChangeError<E> {
     #[error(transparent)]
-    ItemGet(#[from] rc::err::ItemGetError),
+    ItemGet(E),
     #[error(transparent)]
     ItemIsNotFighter(rc::err::ItemKindMatchError),
     #[error("failed to add projection")]
@@ -257,7 +272,7 @@ pub enum ItemGetFighterChangeError {
     #[error("failed to remove projection")]
     ProjRemove(#[source] rc::err::ProjGetError),
 }
-impl From<FighterChangeError> for ItemGetFighterChangeError {
+impl<E> From<FighterChangeError> for GenItemGetFighterChangeError<E> {
     fn from(err: FighterChangeError) -> Self {
         match err {
             FighterChangeError::ItemIsNotFighter(inner) => Self::ItemIsNotFighter(inner),

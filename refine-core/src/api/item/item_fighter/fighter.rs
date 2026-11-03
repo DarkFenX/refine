@@ -1,5 +1,5 @@
 use crate::{
-    Coordinates, CountNz, FighterCountInfo, Fit, ItemCommon, MinionState, Movement, RearmMinion, SolarSystem,
+    Coordinates, CountNz, FighterCountInfo, FitId, ItemCommon, MinionState, Movement, RearmMinion, SolarSystem,
     api::ItemSealed,
     ud::{UFighter, UItemId},
 };
@@ -12,9 +12,9 @@ impl<'s> Fighter<'s> {
     pub(in crate::api) fn new(sol: &'s mut SolarSystem, uid: UItemId) -> Self {
         Self { sol, uid }
     }
-    pub fn get_fit(&mut self) -> Fit<'_> {
+    pub fn get_fit_id(&self) -> FitId {
         let fit_uid = get_u_fighter(self.sol, self.uid).get_fit_uid();
-        Fit::new(self.sol, fit_uid)
+        self.sol.u_data.fits.ext_id_by_int_id(fit_uid)
     }
     pub fn get_state(&self) -> MinionState {
         get_u_fighter(self.sol, self.uid).get_fighter_state()
@@ -42,15 +42,14 @@ impl<'s> ItemSealed for Fighter<'s> {
     fn get_uid(&self) -> UItemId {
         self.uid
     }
-    fn get_sol_ref(&self) -> &SolarSystem {
+    fn get_sol(&self) -> &SolarSystem {
+        self.sol
+    }
+    fn get_sol_mut(&mut self) -> &mut SolarSystem {
         self.sol
     }
 }
-impl<'s> ItemCommon for Fighter<'s> {
-    fn get_sol(&mut self) -> &mut SolarSystem {
-        self.sol
-    }
-}
+impl<'s> ItemCommon for Fighter<'s> {}
 
 fn get_u_fighter(sol: &SolarSystem, fighter_uid: UItemId) -> &UFighter {
     sol.u_data.items.get(fighter_uid).dc_fighter().unwrap()

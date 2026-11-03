@@ -109,18 +109,33 @@ impl RigChangeCmdCtxItem {
         self,
         core_sol: &mut rc::SolarSystem,
     ) -> Result<ChangedItemIdsResp, ItemGetRigChangeError> {
-        let mut core_item = core_sol.get_item(&self.item_id)?;
+        let mut core_item = core_sol
+            .get_item(&self.item_id)
+            .map_err(ItemGetRigChangeError::ItemGet)?;
+        Ok(self.core.execute(&mut core_item)?)
+    }
+    pub(in crate::ctl) fn execute_via_fit(
+        self,
+        core_fit: &mut rc::Fit,
+    ) -> Result<ChangedItemIdsResp, FitItemGetRigChangeError> {
+        let mut core_item = core_fit
+            .get_item(&self.item_id)
+            .map_err(FitItemGetRigChangeError::ItemGet)?;
         Ok(self.core.execute(&mut core_item)?)
     }
 }
+
+pub type ItemGetRigChangeError = GenItemGetRigChangeError<rc::err::ItemGetError>;
+pub type FitItemGetRigChangeError = GenItemGetRigChangeError<rc::err::FitItemGetError>;
+
 #[derive(thiserror::Error, Debug)]
-pub enum ItemGetRigChangeError {
+pub enum GenItemGetRigChangeError<E> {
     #[error(transparent)]
-    ItemGet(#[from] rc::err::ItemGetError),
+    ItemGet(E),
     #[error(transparent)]
     ItemIsNotRig(rc::err::ItemKindMatchError),
 }
-impl From<RigChangeError> for ItemGetRigChangeError {
+impl<E> From<RigChangeError> for GenItemGetRigChangeError<E> {
     fn from(err: RigChangeError) -> Self {
         match err {
             RigChangeError::ItemIsNotRig(inner) => Self::ItemIsNotRig(inner),

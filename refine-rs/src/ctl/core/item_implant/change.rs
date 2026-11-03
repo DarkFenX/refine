@@ -109,18 +109,33 @@ impl ImplantChangeCmdCtxItem {
         self,
         core_sol: &mut rc::SolarSystem,
     ) -> Result<ChangedItemIdsResp, ItemGetImplantChangeError> {
-        let mut core_item = core_sol.get_item(&self.item_id)?;
+        let mut core_item = core_sol
+            .get_item(&self.item_id)
+            .map_err(ItemGetImplantChangeError::ItemGet)?;
+        Ok(self.core.execute(&mut core_item)?)
+    }
+    pub(in crate::ctl) fn execute_via_fit(
+        self,
+        core_fit: &mut rc::Fit,
+    ) -> Result<ChangedItemIdsResp, FitItemGetImplantChangeError> {
+        let mut core_item = core_fit
+            .get_item(&self.item_id)
+            .map_err(FitItemGetImplantChangeError::ItemGet)?;
         Ok(self.core.execute(&mut core_item)?)
     }
 }
+
+pub type ItemGetImplantChangeError = GenItemGetImplantChangeError<rc::err::ItemGetError>;
+pub type FitItemGetImplantChangeError = GenItemGetImplantChangeError<rc::err::FitItemGetError>;
+
 #[derive(thiserror::Error, Debug)]
-pub enum ItemGetImplantChangeError {
+pub enum GenItemGetImplantChangeError<E> {
     #[error(transparent)]
-    ItemGet(#[from] rc::err::ItemGetError),
+    ItemGet(E),
     #[error(transparent)]
     ItemIsNotImplant(rc::err::ItemKindMatchError),
 }
-impl From<ImplantChangeError> for ItemGetImplantChangeError {
+impl<E> From<ImplantChangeError> for GenItemGetImplantChangeError<E> {
     fn from(err: ImplantChangeError) -> Self {
         match err {
             ImplantChangeError::ItemIsNotImplant(inner) => Self::ItemIsNotImplant(inner),

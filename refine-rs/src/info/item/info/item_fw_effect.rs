@@ -68,7 +68,7 @@ impl FwEffectInfo {
                     #[cfg(feature = "serde")]
                     kind: ItemKind::FwEffect,
                     type_id: core_fw_effect.get_type_id(),
-                    fit_id: core_fw_effect.get_fit().get_fit_id(),
+                    fit_id: core_fw_effect.get_fit_id(),
                     state: core_fw_effect.get_state(),
                     effect_mode_overrides: get_effect_mode_overrides(core_fw_effect, fw_effect_info_mode),
                     attrs: get_attrs(core_fw_effect, fw_effect_info_mode),

@@ -109,9 +109,18 @@ impl ItemInfoCmdCtxItem {
         let mut core_item = core_sol.get_item(&self.item_id)?;
         Ok(self.core.execute(&mut core_item))
     }
+    pub(crate) fn execute_via_fit(self, core_fit: &mut rc::Fit) -> Result<ItemInfo, FitItemGetItemInfoError> {
+        let mut core_item = core_fit.get_item(&self.item_id)?;
+        Ok(self.core.execute(&mut core_item))
+    }
 }
 #[derive(thiserror::Error, Debug)]
 pub enum ItemGetItemInfoError {
     #[error(transparent)]
     ItemGet(#[from] rc::err::ItemGetError),
+}
+#[derive(thiserror::Error, Debug)]
+pub enum FitItemGetItemInfoError {
+    #[error(transparent)]
+    ItemGet(#[from] rc::err::FitItemGetError),
 }

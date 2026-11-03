@@ -58,25 +58,21 @@ pub(in crate::stats) fn get_stats_for_passed_fits(
         .collect()
 }
 
-pub(in crate::stats) fn get_stats_for_fits_in_overrides<M>(
-    core_sol: &mut rc::SolarSystem,
+pub(in crate::stats) fn get_stats_for_fits_in_overrides<S>(
+    core_fit_src: &mut S,
     fit_options: &OvrdMapHeavy<FitId, FitStatsOptionsResolved>,
-    is_member: M,
 ) -> Vec<(FitId, FitStats)>
 where
-    M: Fn(&mut rc::Fit) -> bool,
+    S: FitSource,
 {
     let mut stats = Vec::with_capacity(fit_options.override_len());
     for (fit_id, options) in fit_options.iter_overrides() {
         if !options.is_any_stat_requested() {
             continue;
         }
-        let Ok(mut core_fit) = core_sol.get_fit(&fit_id) else {
+        let Some(mut core_fit) = core_fit_src.get_core_fit(&fit_id) else {
             continue;
         };
-        if !is_member(&mut core_fit) {
-            continue;
-        }
         stats.push((fit_id, options.execute(&mut core_fit)));
     }
     stats
@@ -97,25 +93,21 @@ pub(in crate::stats) fn extend_stats_for_passed_items(
     }));
 }
 
-pub(in crate::stats) fn get_stats_for_items_in_overrides<M>(
-    core_sol: &mut rc::SolarSystem,
+pub(in crate::stats) fn get_stats_for_items_in_overrides<S>(
+    core_item_src: &mut S,
     item_options: &OvrdMapHeavy<ItemId, ItemStatsOptionsResolved>,
-    is_member: M,
 ) -> Vec<(ItemId, ItemStats)>
 where
-    M: Fn(&mut rc::Item) -> bool,
+    S: ItemSource,
 {
     let mut stats = Vec::with_capacity(item_options.override_len());
     for (item_id, options) in item_options.iter_overrides() {
         if !options.is_any_stat_requested() {
             continue;
         }
-        let Ok(mut core_item) = core_sol.get_item(&item_id) else {
+        let Some(mut core_item) = core_item_src.get_core_item(&item_id) else {
             continue;
         };
-        if !is_member(&mut core_item) {
-            continue;
-        }
         stats.push((item_id, options.execute(&mut core_item)));
     }
     stats
@@ -124,10 +116,10 @@ where
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Per-option stat getters
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-pub(in crate::stats) fn collect_stats_err_inner<O, T, E>(
-    options: &[O],
-    mut getter: impl FnMut(&O) -> Result<T, E>,
-) -> StatResult<T, E, !> {
+pub(in crate::stats) fn collect_stats_err_inner<O, T, E, F>(options: &[O], mut getter: F) -> StatResult<T, E, !>
+where
+    F: FnMut(&O) -> Result<T, E>,
+{
     let mut stats = Vec::with_capacity(options.len());
     for option in options.iter() {
         match getter(option) {
@@ -138,10 +130,13 @@ pub(in crate::stats) fn collect_stats_err_inner<O, T, E>(
     StatResult::Result(stats)
 }
 
-pub(in crate::stats) fn collect_stats_err_outer_br<O, T, E>(
+pub(in crate::stats) fn collect_stats_err_outer_br<O, T, E, F>(
     options: &[Result<O, BrResolveError>],
-    mut getter: impl FnMut(&O) -> Result<T, E>,
-) -> StatResult<T, !, StatBrFallibleError<E>> {
+    mut getter: F,
+) -> StatResult<T, !, StatBrFallibleError<E>>
+where
+    F: FnMut(&O) -> Result<T, E>,
+{
     let mut stats = Vec::with_capacity(options.len());
     for option in options.iter() {
         match option {
@@ -152,12 +147,13 @@ pub(in crate::stats) fn collect_stats_err_outer_br<O, T, E>(
     StatResult::Result(stats)
 }
 
-pub(in crate::stats) fn collect_stats_err_both_br<O, T, E>(
+pub(in crate::stats) fn collect_stats_err_both_br<O, T, E, F>(
     options: &[Result<O, BrResolveError>],
-    mut getter: impl FnMut(&O) -> Result<T, E>,
+    mut getter: F,
 ) -> StatResult<T, E, StatBrFallibleError<E>>
 where
     E: StatErrorFatality,
+    F: FnMut(&O) -> Result<T, E>,
 {
     let mut stats = Vec::with_capacity(options.len());
     for option in options.iter() {
@@ -173,4 +169,40 @@ where
         }
     }
     StatResult::Result(stats)
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Getter traits
+////////////////////////////////////////////////////////////////////////////////////////////////////
+pub(in crate::stats) trait FitSource {
+    fn get_core_fit(&mut self, fit_id: &FitId) -> Option<rc::Fit<'_>>;
+}
+impl FitSource for rc::SolarSystem {
+    fn get_core_fit(&mut self, fit_id: &FitId) -> Option<rc::Fit<'_>> {
+        self.get_fit(fit_id).ok()
+    }
+}
+impl FitSource for rc::Fleet<'_> {
+    fn get_core_fit(&mut self, fit_id: &FitId) -> Option<rc::Fit<'_>> {
+        self.get_fit(fit_id).ok()
+    }
+}
+
+pub(in crate::stats) trait ItemSource {
+    fn get_core_item(&mut self, item_id: &ItemId) -> Option<rc::Item<'_>>;
+}
+impl ItemSource for rc::SolarSystem {
+    fn get_core_item(&mut self, item_id: &ItemId) -> Option<rc::Item<'_>> {
+        self.get_item(item_id).ok()
+    }
+}
+impl ItemSource for rc::Fit<'_> {
+    fn get_core_item(&mut self, item_id: &ItemId) -> Option<rc::Item<'_>> {
+        self.get_item(item_id).ok()
+    }
+}
+impl ItemSource for rc::Fleet<'_> {
+    fn get_core_item(&mut self, item_id: &ItemId) -> Option<rc::Item<'_>> {
+        self.get_item(item_id).ok()
+    }
 }

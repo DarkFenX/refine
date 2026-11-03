@@ -70,7 +70,7 @@ impl ImplantInfo {
                     #[cfg(feature = "serde")]
                     kind: ItemKind::Implant,
                     type_id: core_implant.get_type_id(),
-                    fit_id: core_implant.get_fit().get_fit_id(),
+                    fit_id: core_implant.get_fit_id(),
                     slot: core_implant.get_slot(),
                     state: core_implant.get_state(),
                     effect_mode_overrides: get_effect_mode_overrides(core_implant, implant_info_mode),

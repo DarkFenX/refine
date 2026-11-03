@@ -1,5 +1,3 @@
-use rc::ItemCommon;
-
 use crate::{
     CmdResps, FitId, FitIdBr, ItemId, ItemIdBr,
     err::BrResolveError,
@@ -123,12 +121,7 @@ impl FitStatsCmd {
                 extend_stats_for_passed_items(core_fit.iter_items(), &item_options, &mut stats);
                 stats
             }
-            false => {
-                let fit_id = core_fit.get_fit_id();
-                get_stats_for_items_in_overrides(core_fit.get_sol(), &item_options, |core_item| {
-                    core_item.get_fit().map(|core_item_fit| core_item_fit.get_fit_id()) == Some(fit_id)
-                })
-            }
+            false => get_stats_for_items_in_overrides(core_fit, &item_options),
         };
         FitStatsResp {
             fit: self.fit_options.stat_resolve().execute(core_fit),

@@ -1,5 +1,5 @@
 use crate::{
-    EffectId, Fit, Item, ItemCommon, SolarSystem,
+    EffectId, FitId, ItemCommon, ItemId, SolarSystem,
     api::ItemSealed,
     ud::{UAutocharge, UItemId},
 };
@@ -12,13 +12,13 @@ impl<'s> Autocharge<'s> {
     pub(in crate::api) fn new(sol: &'s mut SolarSystem, uid: UItemId) -> Self {
         Self { sol, uid }
     }
-    pub fn get_fit(&mut self) -> Fit<'_> {
+    pub fn get_fit_id(&self) -> FitId {
         let fit_uid = get_u_autocharge(self.sol, self.uid).get_fit_uid();
-        Fit::new(self.sol, fit_uid)
+        self.sol.u_data.fits.ext_id_by_int_id(fit_uid)
     }
-    pub fn get_cont_item(&mut self) -> Item<'_> {
+    pub fn get_cont_item_id(&self) -> ItemId {
         let cont_uid = get_u_autocharge(self.sol, self.uid).get_cont_item_uid();
-        Item::new(self.sol, cont_uid)
+        self.sol.u_data.items.ext_id_by_int_id(cont_uid)
     }
     pub fn get_cont_effect_id(&self) -> EffectId {
         let cont_effect_rid = get_u_autocharge(self.sol, self.uid).get_cont_effect_rid();
@@ -33,15 +33,14 @@ impl<'s> ItemSealed for Autocharge<'s> {
     fn get_uid(&self) -> UItemId {
         self.uid
     }
-    fn get_sol_ref(&self) -> &SolarSystem {
+    fn get_sol(&self) -> &SolarSystem {
+        self.sol
+    }
+    fn get_sol_mut(&mut self) -> &mut SolarSystem {
         self.sol
     }
 }
-impl<'s> ItemCommon for Autocharge<'s> {
-    fn get_sol(&mut self) -> &mut SolarSystem {
-        self.sol
-    }
-}
+impl<'s> ItemCommon for Autocharge<'s> {}
 
 fn get_u_autocharge(sol: &SolarSystem, autocharge_uid: UItemId) -> &UAutocharge {
     sol.u_data.items.get(autocharge_uid).dc_autocharge().unwrap()

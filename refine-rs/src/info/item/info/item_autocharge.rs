@@ -70,8 +70,8 @@ impl AutochargeInfo {
                     #[cfg(feature = "serde")]
                     kind: ItemKind::Autocharge,
                     type_id: core_autocharge.get_type_id(),
-                    fit_id: core_autocharge.get_fit().get_fit_id(),
-                    cont_item_id: core_autocharge.get_cont_item().get_item_id(),
+                    fit_id: core_autocharge.get_fit_id(),
+                    cont_item_id: core_autocharge.get_cont_item_id(),
                     cont_effect_id: core_autocharge.get_cont_effect_id(),
                     state: core_autocharge.get_state(),
                     effect_mode_overrides: get_effect_mode_overrides(core_autocharge, autocharge_info_mode),
