@@ -1,6 +1,6 @@
 use crate::{
-    api::{Fit, ItemCommon, ItemSealed, ServiceState},
-    sol::SolarSystem,
+    Fit, ItemCommon, ServiceState, SolarSystem,
+    api::ItemSealed,
     ud::{UItemId, UService},
 };
 

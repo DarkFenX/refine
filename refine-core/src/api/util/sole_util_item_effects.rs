@@ -1,6 +1,6 @@
 use super::is_effect_projectable;
 use crate::{
-    sol::SolarSystem,
+    SolarSystem,
     svc::Svc,
     ud::{UData, UEffectUpdates, UItem, UItemId},
 };

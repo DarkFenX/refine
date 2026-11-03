@@ -1,7 +1,8 @@
 use crate::{
-    api::{ItemTypeId, Module, Mutation, MutationAddError},
+    ItemTypeId, Module, Mutation, SolarSystem,
+    api::MutationAddError,
     err::basic::ItemNotMutatedError,
-    sol::{SolarSystem, UndoStep},
+    sol::UndoStep,
     ud::{UItemId, UItemMutationRequest},
 };
 

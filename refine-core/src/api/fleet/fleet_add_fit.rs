@@ -1,4 +1,4 @@
-use crate::{Fleet, FleetId, err::basic::FitFoundError, ud::FitId};
+use crate::{FitId, Fleet, FleetId, err::basic::FitFoundError};
 
 impl<'s> Fleet<'s> {
     /// Add fit, moving it out of its current fleet.

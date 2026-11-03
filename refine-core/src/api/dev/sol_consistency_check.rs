@@ -1,4 +1,4 @@
-use crate::sol::SolarSystem;
+use crate::SolarSystem;
 
 impl SolarSystem {
     /// This function is intended to be used in tests, to make sure inner state is consistent, i.e.

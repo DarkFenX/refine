@@ -1,4 +1,4 @@
-use crate::api::{EntityIter, Fit, Fleet};
+use crate::{EntityIter, Fit, Fleet};
 
 impl<'s> Fleet<'s> {
     pub fn iter_fits(&mut self) -> EntityIter<'_, Fit<'_>> {

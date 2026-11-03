@@ -4,7 +4,7 @@ use super::{
     traits::{InstanceDuration, InstanceLimit},
 };
 use crate::{
-    num::{Count, PValue},
+    Count, PValue,
     svc::{
         cycle::{CycleIter, CycleSeq, GetMainDuration},
         output::Output,

@@ -10,7 +10,7 @@ use super::{
     },
 };
 use crate::{
-    num::PValue,
+    PValue,
     rd::REffect,
     stats::StatCritOptions,
     svc::{SvcCtx, calc::Calc},

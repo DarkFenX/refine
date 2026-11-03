@@ -1,4 +1,4 @@
-use crate::api::{Fit, Fleet};
+use crate::{Fit, Fleet};
 
 impl<'s> Fit<'s> {
     pub fn get_fleet(&mut self) -> Option<Fleet<'_>> {

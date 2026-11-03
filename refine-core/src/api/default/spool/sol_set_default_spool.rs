@@ -1,7 +1,4 @@
-use crate::{
-    misc::Spool,
-    sol::{SolarSystem, UndoStep},
-};
+use crate::{SolarSystem, Spool, sol::UndoStep};
 
 impl SolarSystem {
     pub fn set_default_spool(&mut self, spool: Spool) {

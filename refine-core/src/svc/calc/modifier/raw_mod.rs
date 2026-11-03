@@ -1,9 +1,9 @@
 use smallvec::SmallVec;
 
 use crate::{
+    Value,
     ad::AEffectCatId,
     misc::EffectSpec,
-    num::Value,
     rd::{
         RAttrId, RBuff, RBuffModifier, REffect, REffectBuffScope, REffectModStrength, REffectModifier,
         REffectProjModSpec,

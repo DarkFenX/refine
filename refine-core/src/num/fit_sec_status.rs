@@ -1,6 +1,6 @@
 use ordered_float::OrderedFloat;
 
-use crate::num::Value;
+use crate::Value;
 
 /// Security status of a fit's pilot, within `[-10, 5]` range.
 ///

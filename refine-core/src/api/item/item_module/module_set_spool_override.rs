@@ -1,9 +1,4 @@
-use crate::{
-    api::Module,
-    misc::Spool,
-    sol::{SolarSystem, UndoStep},
-    ud::UItemId,
-};
+use crate::{Module, SolarSystem, Spool, sol::UndoStep, ud::UItemId};
 
 impl SolarSystem {
     pub(in crate::api) fn internal_set_module_spool_override(

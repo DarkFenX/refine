@@ -1,4 +1,4 @@
-use crate::{api::FullMAttr, num::UnitInterval};
+use crate::{FullMAttr, UnitInterval};
 
 impl<'s> FullMAttr<'s> {
     /// Return roll quality for the mutated attribute.

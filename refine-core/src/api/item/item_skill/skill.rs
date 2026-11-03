@@ -1,7 +1,6 @@
 use crate::{
-    api::{Fit, ItemCommon, ItemSealed},
-    num::SkillLevel,
-    sol::SolarSystem,
+    Fit, ItemCommon, SkillLevel, SolarSystem,
+    api::ItemSealed,
     ud::{UItemId, USkill},
 };
 

@@ -1,4 +1,4 @@
-use crate::api::{EntityIter, Fit, Service};
+use crate::{EntityIter, Fit, Service};
 
 impl<'s> Fit<'s> {
     pub fn iter_services(&mut self) -> EntityIter<'_, Service<'_>> {

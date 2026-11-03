@@ -1,8 +1,7 @@
 use itertools::Itertools;
 
 use crate::{
-    ItemId, SkillLevel,
-    api::ItemTypeId,
+    ItemId, ItemTypeId, SkillLevel,
     svc::{SvcCtx, vast::VastFitData},
     ud::UItemId,
     util::RSet,

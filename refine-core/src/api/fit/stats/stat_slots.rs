@@ -1,4 +1,4 @@
-use crate::{api::Fit, svc::vast::StatSlot};
+use crate::{Fit, svc::vast::StatSlot};
 
 impl<'s> Fit<'s> {
     pub fn get_stat_high_slots(&mut self) -> StatSlot {

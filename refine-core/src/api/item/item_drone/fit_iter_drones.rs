@@ -1,4 +1,4 @@
-use crate::api::{Drone, EntityIter, Fit};
+use crate::{Drone, EntityIter, Fit};
 
 impl<'s> Fit<'s> {
     pub fn iter_drones(&mut self) -> EntityIter<'_, Drone<'_>> {

@@ -1,4 +1,4 @@
-use crate::api::{Fit, Stance};
+use crate::{Fit, Stance};
 
 impl<'s> Fit<'s> {
     pub fn get_stance(&mut self) -> Option<Stance<'_>> {

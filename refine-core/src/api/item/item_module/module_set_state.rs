@@ -1,8 +1,4 @@
-use crate::{
-    api::{Module, ModuleState},
-    sol::{SolarSystem, UndoStep},
-    ud::UItemId,
-};
+use crate::{Module, ModuleState, SolarSystem, sol::UndoStep, ud::UItemId};
 
 impl SolarSystem {
     pub(in crate::api) fn internal_set_module_state(&mut self, module_uid: UItemId, state: ModuleState) {

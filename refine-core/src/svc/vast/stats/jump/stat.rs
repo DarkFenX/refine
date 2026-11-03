@@ -1,7 +1,4 @@
-use crate::{
-    Count, ItemTypeId, PValue,
-    ud::{FitId, ItemId},
-};
+use crate::{Count, FitId, ItemId, ItemTypeId, PValue};
 
 #[cfg_attr(feature = "serde", cfg_eval, serde_with::serde_as, derive(serde::Serialize))]
 #[derive(Clone)]

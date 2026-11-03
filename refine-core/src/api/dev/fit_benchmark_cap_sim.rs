@@ -1,8 +1,7 @@
 use itertools::Itertools;
 
 use crate::{
-    api::Fit,
-    num::UnitInterval,
+    Fit, UnitInterval,
     svc::{
         cycle::CseqMap,
         vast::{StatCapSimStagger, StatCapSimStaggerInt},

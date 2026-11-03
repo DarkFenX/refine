@@ -1,4 +1,4 @@
-use crate::api::{EntityIter, Fit, Skill};
+use crate::{EntityIter, Fit, Skill};
 
 impl<'s> Fit<'s> {
     pub fn iter_skills(&mut self) -> EntityIter<'_, Skill<'_>> {

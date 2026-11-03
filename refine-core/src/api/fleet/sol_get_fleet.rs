@@ -1,4 +1,4 @@
-use crate::{api::Fleet, err::basic::FleetFoundError, sol::SolarSystem, ud::FleetId};
+use crate::{Fleet, FleetId, SolarSystem, err::basic::FleetFoundError};
 
 impl SolarSystem {
     pub fn get_fleet(&mut self, fleet_id: &FleetId) -> Result<Fleet<'_>, FleetGetError> {

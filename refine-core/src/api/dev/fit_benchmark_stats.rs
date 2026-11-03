@@ -1,7 +1,5 @@
 use crate::{
-    api::Fit,
-    misc::DpsProfile,
-    num::{PValue, UnitInterval},
+    DpsProfile, Fit, ItemId, PValue, UnitInterval,
     stats::{
         StatCapBlcRegen, StatCritOptions, StatDmgItemKinds, StatJumpRange, StatMiningItemKinds, StatMiningResourceKind,
         StatNeutItemKinds, StatOutRepItemKinds, StatTimeOptions, StatTimeOptionsBurst, StatTimeOptionsSim,
@@ -11,7 +9,6 @@ use crate::{
         err::IntStatItemError,
         vast::{StatCapBlcNosfsOptionsInt, StatCapBlcSrcKindsInt},
     },
-    ud::ItemId,
 };
 
 impl<'s> Fit<'s> {

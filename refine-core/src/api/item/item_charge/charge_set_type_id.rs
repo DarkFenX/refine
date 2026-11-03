@@ -1,9 +1,4 @@
-use crate::{
-    ad::AItemId,
-    api::{Charge, ItemTypeId},
-    sol::{SolarSystem, UndoStep},
-    ud::UItemId,
-};
+use crate::{Charge, ItemTypeId, SolarSystem, ad::AItemId, sol::UndoStep, ud::UItemId};
 
 impl SolarSystem {
     pub(in crate::api) fn internal_set_charge_type_aid(&mut self, charge_uid: UItemId, type_aid: AItemId) {

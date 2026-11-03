@@ -1,8 +1,4 @@
-use crate::{
-    api::{Drone, MinionState},
-    sol::{SolarSystem, UndoStep},
-    ud::UItemId,
-};
+use crate::{Drone, MinionState, SolarSystem, sol::UndoStep, ud::UItemId};
 
 impl SolarSystem {
     pub(in crate::api) fn internal_set_drone_state(&mut self, drone_uid: UItemId, state: MinionState) {

@@ -1,4 +1,4 @@
-use crate::num::{PValue, UnitInterval};
+use crate::{PValue, UnitInterval};
 
 /// Damage profile received by an item.
 ///

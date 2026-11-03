@@ -1,11 +1,6 @@
 use lender::{ExactSizeLender, Lender, Lending, check_covariance};
 
-use crate::{
-    ad::AAttrId,
-    api::{EffectiveMutation, FullMAttr},
-    sol::SolarSystem,
-    ud::UItemId,
-};
+use crate::{EffectiveMutation, FullMAttr, SolarSystem, ad::AAttrId, ud::UItemId};
 
 impl<'s> EffectiveMutation<'s> {
     /// Iterates over mutation's full mutated attributes.

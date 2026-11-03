@@ -7,7 +7,7 @@ use super::{
     seq_var_loop_lim_sin::CSeqLoopLimSin,
     seq_var_loop_sin::CSeqLoopSin,
 };
-use crate::num::{Count, PValue};
+use crate::{Count, PValue};
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // High-level interface

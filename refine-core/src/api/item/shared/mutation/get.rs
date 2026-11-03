@@ -1,8 +1,4 @@
-use crate::{
-    api::{DormantMutation, EffectiveMutation, Mutation},
-    sol::SolarSystem,
-    ud::UItemId,
-};
+use crate::{DormantMutation, EffectiveMutation, Mutation, SolarSystem, ud::UItemId};
 
 impl SolarSystem {
     pub(in crate::api::item) fn api_get_item_mutation(&mut self, item_uid: UItemId) -> Option<Mutation<'_>> {

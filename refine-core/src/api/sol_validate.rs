@@ -1,5 +1,5 @@
 use crate::{
-    sol::SolarSystem,
+    SolarSystem,
     svc::vast::{ValOptionsSol, ValOptionsSolInt, ValResultSol},
 };
 

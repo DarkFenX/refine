@@ -1,9 +1,9 @@
 use ordered_float::OrderedFloat;
 
 use crate::{
+    PValue,
     ad::AValue,
     def::AU,
-    num::PValue,
     util::{FLOAT_TOLERANCE, round, sig_round, sum_pai_owned, sum_pai_ref},
 };
 

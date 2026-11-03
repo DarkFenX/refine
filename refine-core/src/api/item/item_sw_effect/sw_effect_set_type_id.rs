@@ -1,9 +1,4 @@
-use crate::{
-    ad::AItemId,
-    api::{ItemTypeId, SwEffect},
-    sol::{SolarSystem, UndoStep},
-    ud::UItemId,
-};
+use crate::{ItemTypeId, SolarSystem, SwEffect, ad::AItemId, sol::UndoStep, ud::UItemId};
 
 impl SolarSystem {
     pub(in crate::api) fn internal_set_sw_effect_type_aid(&mut self, sw_effect_uid: UItemId, type_aid: AItemId) {

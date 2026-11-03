@@ -1,5 +1,5 @@
 use super::{data::GetMainDuration, seq::CycleSeq, seq_looped::CycleSeqLooped, seq_split::CycleSeqSplit};
-use crate::{num::PValue, util::LibConverter};
+use crate::{PValue, util::LibConverter};
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Following parts are lopped:

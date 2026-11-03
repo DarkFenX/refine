@@ -1,9 +1,4 @@
-use crate::{
-    api::{Coordinates, Fighter},
-    misc::Xyz,
-    sol::{SolarSystem, UndoStep},
-    ud::UItemId,
-};
+use crate::{Coordinates, Fighter, SolarSystem, misc::Xyz, sol::UndoStep, ud::UItemId};
 
 impl SolarSystem {
     pub(in crate::api) fn internal_set_fighter_coordinates(&mut self, fighter_uid: UItemId, coordinates: Xyz) {

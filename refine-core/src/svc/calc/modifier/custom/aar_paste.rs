@@ -2,9 +2,9 @@ use smallvec::SmallVec;
 
 use super::CalcCustomModStrength;
 use crate::{
+    Value,
     ad::AItemId,
     misc::EffectSpec,
-    num::Value,
     rd::RAttrConsts,
     svc::{
         SvcCtx,

@@ -1,6 +1,5 @@
 use crate::{
-    misc::{DpsProfile, NpcProp, OptionalReload, RearmMinion, SecZone, Spool},
-    num::{PValue, UnitInterval},
+    DpsProfile, NpcProp, OptionalReload, PValue, RearmMinion, SecZone, Spool, UnitInterval,
     rd::RcData,
     ud::{UFits, UFleets, UItemId, UItems},
     util::RSet,

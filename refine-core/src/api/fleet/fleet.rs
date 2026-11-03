@@ -1,7 +1,4 @@
-use crate::{
-    sol::SolarSystem,
-    ud::{FleetId, UFleetId},
-};
+use crate::{FleetId, SolarSystem, ud::UFleetId};
 
 pub struct Fleet<'s> {
     pub(super) sol: &'s mut SolarSystem,

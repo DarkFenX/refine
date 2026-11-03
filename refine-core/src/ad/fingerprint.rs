@@ -1,4 +1,4 @@
-use crate::def::VERSION;
+use crate::VERSION;
 
 #[derive(Clone, Eq, PartialEq, Hash, derive_more::Display)]
 pub struct AFingerprint(String);

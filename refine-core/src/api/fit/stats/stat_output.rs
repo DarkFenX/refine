@@ -1,12 +1,11 @@
 use crate::{
-    Fit, PValue,
+    Fit, ItemId, PValue,
     stats::{
         StatCritOptions, StatDmg, StatDmgApplied, StatDmgItemKinds, StatMining, StatMiningItemKinds,
         StatMiningResourceKind, StatNeutItemKinds, StatOutRepItemKinds, StatOutReps, StatTimeOptions,
         err::StatFitAppliedError,
     },
     svc::cycle::CseqMap,
-    ud::ItemId,
 };
 
 impl<'s> Fit<'s> {

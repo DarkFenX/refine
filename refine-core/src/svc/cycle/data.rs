@@ -1,4 +1,4 @@
-use crate::num::{PValue, UnitInterval};
+use crate::{PValue, UnitInterval};
 
 pub(in crate::svc) trait GetDuration {
     fn get_duration(&self) -> PValue;

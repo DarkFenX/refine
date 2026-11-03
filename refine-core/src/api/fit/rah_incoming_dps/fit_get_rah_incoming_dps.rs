@@ -1,4 +1,4 @@
-use crate::{api::Fit, misc::DpsProfile, sol::SolarSystem, ud::UFitId};
+use crate::{DpsProfile, Fit, SolarSystem, ud::UFitId};
 
 impl SolarSystem {
     pub(in crate::api) fn internal_get_fit_rah_incoming_dps(&self, fit_uid: UFitId) -> Option<DpsProfile> {

@@ -1,6 +1,6 @@
 use crate::{
-    api::{EffectId, Fit, Item, ItemCommon, ItemSealed},
-    sol::SolarSystem,
+    EffectId, Fit, Item, ItemCommon, SolarSystem,
+    api::ItemSealed,
     ud::{UAutocharge, UItemId},
 };
 

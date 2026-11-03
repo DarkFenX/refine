@@ -1,9 +1,4 @@
-use crate::{
-    api::Skill,
-    num::SkillLevel,
-    sol::{SolarSystem, UndoStep},
-    ud::UItemId,
-};
+use crate::{Skill, SkillLevel, SolarSystem, sol::UndoStep, ud::UItemId};
 
 impl SolarSystem {
     pub(in crate::api) fn internal_set_skill_level(&mut self, skill_uid: UItemId, level: SkillLevel) {

@@ -1,4 +1,4 @@
-use crate::num::{PValue, Value};
+use crate::{PValue, Value};
 
 #[derive(Copy, Clone, Eq, PartialEq, Ord, PartialOrd, Default)]
 pub(crate) struct Xyz {

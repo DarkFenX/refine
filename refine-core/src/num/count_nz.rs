@@ -1,9 +1,6 @@
 use std::{num::NonZeroU32, str::FromStr};
 
-use crate::{
-    num::{PValue, Value},
-    util::round_f64_to_u32,
-};
+use crate::{PValue, Value, util::round_f64_to_u32};
 
 const DEFAULT: NonZeroU32 = NonZeroU32::MIN;
 

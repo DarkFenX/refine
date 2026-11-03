@@ -1,4 +1,4 @@
-use crate::{api::Ability, misc::EffectMode};
+use crate::{Ability, EffectMode};
 
 impl<'s> Ability<'s> {
     pub fn get_state(&self) -> bool {

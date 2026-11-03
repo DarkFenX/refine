@@ -1,4 +1,4 @@
-use crate::num::PValue;
+use crate::PValue;
 
 pub(crate) trait InstanceDuration {
     fn get_duration(&self) -> PValue;

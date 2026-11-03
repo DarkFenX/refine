@@ -2,7 +2,7 @@ use super::{
     seq::CycleSeq, seq_looped::CycleSeqLooped, seq_split::CycleSeqSplit, seq_var_lim::CSeqLim,
     seq_var_loop_sin::CSeqLoopSin,
 };
-use crate::{num::Count, svc::cycle::seq_limited::CycleSeqLimited, util::LibConverter};
+use crate::{Count, svc::cycle::seq_limited::CycleSeqLimited, util::LibConverter};
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Part 1: runs specified number of times

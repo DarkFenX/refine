@@ -2,7 +2,7 @@ use std::str::FromStr;
 
 use ordered_float::OrderedFloat;
 
-use crate::num::{PValue, Value};
+use crate::{PValue, Value};
 
 /// Float value within the unit interval `[0, 1]`.
 ///

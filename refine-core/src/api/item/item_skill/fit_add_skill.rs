@@ -1,11 +1,10 @@
 use std::collections::hash_map::Entry;
 
 use crate::{
+    Fit, ItemTypeId, Skill, SkillLevel, SolarSystem,
     ad::AItemId,
-    api::{Fit, ItemTypeId, Skill},
     err::basic::SkillEveTypeError,
-    num::SkillLevel,
-    sol::{SolarSystem, UndoStep},
+    sol::UndoStep,
     ud::{UFitId, UFitSkill, UItem, UItemId, USkill},
 };
 

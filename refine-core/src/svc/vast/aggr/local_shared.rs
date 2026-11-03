@@ -3,8 +3,8 @@ use super::{
     traits::{HasImpact, InstanceDuration, InstanceLimit},
 };
 use crate::{
+    Count, PValue, UnitInterval,
     nd::NEffectOutputGetter,
-    num::{Count, PValue, UnitInterval},
     rd::{REffect, REffectLocalOpcSpec},
     svc::{
         SvcCtx,

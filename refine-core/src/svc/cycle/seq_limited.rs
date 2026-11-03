@@ -1,5 +1,5 @@
 use super::{data::GetMainDuration, seq_var_lim::CSeqLim, seq_var_lim_sin::CSeqLimSin};
-use crate::{num::PValue, util::LibConverter};
+use crate::{PValue, util::LibConverter};
 
 #[derive(Copy, Clone, Eq, PartialEq, Hash)]
 pub(in crate::svc) enum CycleSeqLimited<D> {

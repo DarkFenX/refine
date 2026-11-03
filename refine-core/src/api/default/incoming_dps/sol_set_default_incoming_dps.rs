@@ -1,7 +1,4 @@
-use crate::{
-    misc::DpsProfile,
-    sol::{SolarSystem, UndoStep},
-};
+use crate::{DpsProfile, SolarSystem, sol::UndoStep};
 
 impl SolarSystem {
     pub fn set_default_incoming_dps(&mut self, dps_profile: DpsProfile) {

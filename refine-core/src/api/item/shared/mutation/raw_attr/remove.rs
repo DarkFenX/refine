@@ -1,4 +1,4 @@
-use crate::{api::RawMAttr, ud::UAttrMutationRequest};
+use crate::{RawMAttr, ud::UAttrMutationRequest};
 
 impl<'s> RawMAttr<'s> {
     /// Remove user-defined mutation for the attribute.

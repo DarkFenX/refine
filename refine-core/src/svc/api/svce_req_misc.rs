@@ -1,6 +1,6 @@
 use crate::{
-    misc::{InfCount, ItemSpoolInfo, OptionalReload},
-    num::Count,
+    Count, ItemSpoolInfo, OptionalReload,
+    misc::InfCount,
     svc::{
         Svc, SvcCtx,
         cycle::{CseqMap, CycleOptionsSim, CyclingOptions, get_item_cseq_map},

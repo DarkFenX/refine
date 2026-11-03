@@ -1,6 +1,6 @@
 use crate::{
+    Value,
     nd::{NEffectGeneralOutputGetter, NEffectProjOpcSpec},
-    num::Value,
     rd::RAttrConsts,
     ud::UItem,
 };

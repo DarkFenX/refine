@@ -1,9 +1,4 @@
-use crate::{
-    api::Fit,
-    misc::DpsProfile,
-    sol::{SolarSystem, UndoStep},
-    ud::UFitId,
-};
+use crate::{DpsProfile, Fit, SolarSystem, sol::UndoStep, ud::UFitId};
 
 impl SolarSystem {
     pub(in crate::api) fn internal_set_fit_rah_incoming_dps(

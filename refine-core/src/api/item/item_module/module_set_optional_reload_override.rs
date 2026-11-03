@@ -1,9 +1,4 @@
-use crate::{
-    api::Module,
-    misc::OptionalReload,
-    sol::{SolarSystem, UndoStep},
-    ud::UItemId,
-};
+use crate::{Module, OptionalReload, SolarSystem, sol::UndoStep, ud::UItemId};
 
 impl SolarSystem {
     pub(in crate::api) fn internal_set_module_optional_reload_override(

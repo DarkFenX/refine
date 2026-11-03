@@ -2,9 +2,8 @@ use lender::{ExactSizeLender, Lender, Lending, check_covariance};
 
 use super::shared::get_se_chance_attr_aid_by_effect_rid;
 use crate::{
+    Booster, SideEffect, SolarSystem,
     ad::{AAttrId, AEffectId},
-    api::{Booster, SideEffect},
-    sol::SolarSystem,
     ud::UItemId,
 };
 

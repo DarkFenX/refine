@@ -1,4 +1,4 @@
-use crate::{misc::OptionalReload, sol::SolarSystem};
+use crate::{OptionalReload, SolarSystem};
 
 impl SolarSystem {
     pub fn get_default_optional_reloads(&self) -> OptionalReload {

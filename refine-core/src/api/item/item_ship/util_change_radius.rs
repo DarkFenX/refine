@@ -1,6 +1,5 @@
 use crate::{
-    num::PValue,
-    sol::SolarSystem,
+    PValue, SolarSystem,
     svc::Svc,
     ud::{UData, UFitId},
 };

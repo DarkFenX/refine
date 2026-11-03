@@ -1,5 +1,6 @@
 use crate::{
-    ud::{FleetId, UFitId},
+    FleetId,
+    ud::UFitId,
     util::{LibGetId, LibNamed, RSet},
 };
 

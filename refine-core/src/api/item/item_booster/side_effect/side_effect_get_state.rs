@@ -1,4 +1,4 @@
-use crate::{api::SideEffect, misc::EffectMode};
+use crate::{EffectMode, SideEffect};
 
 impl<'s> SideEffect<'s> {
     /// Get side effect state.

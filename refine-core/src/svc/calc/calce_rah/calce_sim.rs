@@ -12,8 +12,8 @@ use super::{
     tick_iter::RahSimTickIter,
 };
 use crate::{
+    Count, PValue, Value,
     misc::{DmgKinds, EffectSpec},
-    num::{Count, PValue, Value},
     svc::{
         SvcCtx,
         calc::{Calc, CalcAttrVals, calce_rah::shared::SIG_ROUND_DIGITS},

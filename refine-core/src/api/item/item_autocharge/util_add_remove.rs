@@ -1,8 +1,9 @@
 use itertools::Itertools;
 
 use crate::{
+    SolarSystem,
     rd::REffectId,
-    sol::{RevProjs, SolarSystem},
+    sol::RevProjs,
     svc::Svc,
     ud::{UAutocharge, UData, UEffectUpdates, UItem, UItemId},
 };

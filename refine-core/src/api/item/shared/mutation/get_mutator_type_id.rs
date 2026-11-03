@@ -1,8 +1,4 @@
-use crate::{
-    api::{DormantMutation, EffectiveMutation, ItemTypeId, Mutation},
-    sol::SolarSystem,
-    ud::UItemId,
-};
+use crate::{DormantMutation, EffectiveMutation, ItemTypeId, Mutation, SolarSystem, ud::UItemId};
 
 impl SolarSystem {
     fn api_get_mutator_type_id(&self, item_uid: UItemId) -> ItemTypeId {

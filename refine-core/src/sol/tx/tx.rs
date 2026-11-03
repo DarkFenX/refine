@@ -1,6 +1,6 @@
 use std::ops::{Deref, DerefMut};
 
-use crate::sol::{Savepoint, SolarSystem};
+use crate::{SolarSystem, sol::Savepoint};
 
 /// Transaction on a solar system.
 ///

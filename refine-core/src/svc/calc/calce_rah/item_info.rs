@@ -1,4 +1,4 @@
-use crate::{misc::DmgKinds, num::PValue, svc::calc::CalcAttrVals, ud::UItemId};
+use crate::{PValue, misc::DmgKinds, svc::calc::CalcAttrVals, ud::UItemId};
 
 /// Initial values of a RAH, non-rounded
 #[derive(Copy, Clone)]

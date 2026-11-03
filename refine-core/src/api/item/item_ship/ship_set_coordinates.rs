@@ -1,9 +1,4 @@
-use crate::{
-    api::{Coordinates, Ship},
-    misc::Xyz,
-    sol::{SolarSystem, UndoStep},
-    ud::UItemId,
-};
+use crate::{Coordinates, Ship, SolarSystem, misc::Xyz, sol::UndoStep, ud::UItemId};
 
 impl SolarSystem {
     pub(in crate::api) fn internal_set_ship_coordinates(&mut self, ship_uid: UItemId, coordinates: Xyz) {

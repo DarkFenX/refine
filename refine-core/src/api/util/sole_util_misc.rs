@@ -1,8 +1,8 @@
 use itertools::Itertools;
 
 use crate::{
+    SolarSystem,
     rd::RAttrId,
-    sol::SolarSystem,
     svc::{calc::CalcAttrVals, err::UItemLoadedError},
     ud::{UItem, UItemId},
 };

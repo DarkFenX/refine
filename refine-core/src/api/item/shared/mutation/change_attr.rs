@@ -1,5 +1,5 @@
 use crate::{
-    sol::SolarSystem,
+    SolarSystem,
     ud::{UAttrMutationRequest, UItem, UItemId, err::ItemMutatedError},
 };
 

@@ -1,7 +1,6 @@
 use crate::{
-    EffectMode, ItemId, ItemKind, NpcProp, PValue,
+    EffectMode, ItemId, ItemKind, MinionState, NpcProp, PValue,
     ad::{AEffectId, AItemId},
-    api::MinionState,
     err::basic::ItemNotMutatedError,
     rd::{RAttrId, RData, REffectId, RItemBase, RItemFlexData, RState},
     ud::{

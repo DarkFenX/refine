@@ -10,11 +10,8 @@
 use lender::{ExactSizeLender, Lender, Lending, unsafe_assume_covariance};
 
 use crate::{
-    api::{
-        Autocharge, Booster, Drone, Fighter, Fit, Fleet, FwEffect, Implant, Item, ProjEffect, Rig, Service, Skill,
-        Subsystem, SwEffect,
-    },
-    sol::SolarSystem,
+    Autocharge, Booster, Drone, Fighter, Fit, Fleet, FwEffect, Implant, Item, ProjEffect, Rig, Service, Skill,
+    SolarSystem, Subsystem, SwEffect,
     ud::{UFitId, UFleetId, UItemId},
 };
 

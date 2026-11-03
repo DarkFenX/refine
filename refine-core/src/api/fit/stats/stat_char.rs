@@ -1,7 +1,4 @@
-use crate::{
-    api::{Fit, ItemCommon, StatFitCharacterError},
-    num::PValue,
-};
+use crate::{Fit, ItemCommon, PValue, api::StatFitCharacterError};
 
 impl<'s> Fit<'s> {
     pub fn get_stat_drone_control_range(&mut self) -> Result<PValue, StatFitCharacterError<!>> {

@@ -1,8 +1,4 @@
-use crate::{
-    api::FwEffect,
-    sol::{SolarSystem, UndoStep},
-    ud::UItemId,
-};
+use crate::{FwEffect, SolarSystem, sol::UndoStep, ud::UItemId};
 
 impl SolarSystem {
     pub(in crate::api) fn internal_remove_fw_effect(&mut self, fw_effect_uid: UItemId) {

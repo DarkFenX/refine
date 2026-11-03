@@ -1,6 +1,6 @@
 use crate::{
+    Count, PValue, UnitInterval, Value,
     nd::NEffectOutputGetter,
-    num::{Count, PValue, UnitInterval, Value},
     rd::REffect,
     svc::{
         SvcCtx,

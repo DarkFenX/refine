@@ -1,8 +1,4 @@
-use crate::{
-    api::{ItemCommon, ItemSealed},
-    sol::SolarSystem,
-    ud::UItemId,
-};
+use crate::{ItemCommon, SolarSystem, api::ItemSealed, ud::UItemId};
 
 pub struct ProjEffect<'s> {
     pub(super) sol: &'s mut SolarSystem,

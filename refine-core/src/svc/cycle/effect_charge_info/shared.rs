@@ -1,7 +1,4 @@
-use crate::{
-    misc::InfCount,
-    num::{Count, UnitInterval},
-};
+use crate::{Count, UnitInterval, misc::InfCount};
 
 pub(in crate::svc::cycle) struct EffectChargeInfo {
     pub(in crate::svc::cycle) fully_charged: InfCount,

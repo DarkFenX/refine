@@ -1,8 +1,6 @@
 use crate::{
-    api::Stance,
+    ItemId, SolarSystem, Stance,
     err::basic::{ItemFoundError, ItemKindMatchError},
-    sol::SolarSystem,
-    ud::ItemId,
 };
 
 impl SolarSystem {

@@ -1,10 +1,4 @@
-use crate::{
-    api::{Fighter, Movement},
-    misc::Xyz,
-    num::PValue,
-    sol::{SolarSystem, UndoStep},
-    ud::UItemId,
-};
+use crate::{Fighter, Movement, PValue, SolarSystem, misc::Xyz, sol::UndoStep, ud::UItemId};
 
 impl SolarSystem {
     pub(in crate::api) fn internal_set_fighter_movement(

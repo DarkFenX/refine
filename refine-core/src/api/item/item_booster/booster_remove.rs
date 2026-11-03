@@ -1,8 +1,4 @@
-use crate::{
-    api::Booster,
-    sol::{SolarSystem, UndoStep},
-    ud::UItemId,
-};
+use crate::{Booster, SolarSystem, sol::UndoStep, ud::UItemId};
 
 impl SolarSystem {
     pub(in crate::api) fn internal_remove_booster(&mut self, booster_uid: UItemId) {

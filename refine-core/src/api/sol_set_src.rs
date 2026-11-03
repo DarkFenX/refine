@@ -1,9 +1,7 @@
 use std::sync::Arc;
 
 use crate::{
-    num::PValue,
-    sol::SolarSystem,
-    src::Src,
+    PValue, SolarSystem, Src,
     ud::{UData, UItem, UItemId, UShipKind},
 };
 

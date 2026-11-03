@@ -1,5 +1,6 @@
 use crate::{
-    sol::{RevProjs, SolarSystem},
+    SolarSystem,
+    sol::RevProjs,
     svc::Svc,
     ud::{UData, UEffectUpdates, UItemId},
 };

@@ -5,8 +5,8 @@ use super::{
     traits::{HasImpact, InstanceLimit},
 };
 use crate::{
+    Count, PValue,
     nd::NEffectOutputGetter,
-    num::{Count, PValue},
     rd::{REffect, REffectLocalOpcSpec},
     svc::{
         SvcCtx,

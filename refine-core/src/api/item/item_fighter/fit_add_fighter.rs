@@ -1,9 +1,9 @@
 use itertools::Itertools;
 
 use crate::{
+    Coordinates, Fighter, Fit, ItemTypeId, MinionState, Movement, SolarSystem,
     ad::AItemId,
-    api::{Coordinates, Fighter, Fit, ItemTypeId, MinionState, Movement},
-    sol::{SolarSystem, UndoStep},
+    sol::UndoStep,
     ud::{UFighter, UFitId, UItem, UItemId, UPhysics},
 };
 

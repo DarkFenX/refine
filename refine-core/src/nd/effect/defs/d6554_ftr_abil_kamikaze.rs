@@ -1,7 +1,7 @@
 use crate::{
+    PValue,
     ad::{AAttrId, AEffectId},
     nd::{NEffect, NEffectDmgOutputGetter, NEffectProjMultGetter, NEffectProjOpcSpec, NEffectResist, NEffectTime},
-    num::PValue,
 };
 
 const EFFECT_AID: AEffectId = AEffectId::FTR_ABIL_KAMIKAZE;

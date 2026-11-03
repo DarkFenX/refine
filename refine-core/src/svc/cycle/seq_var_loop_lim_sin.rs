@@ -2,10 +2,7 @@ use super::{
     data::GetMainDuration, seq::CycleSeq, seq_looped::CycleSeqLooped, seq_split::CycleSeqSplit,
     seq_var_loop_sin::CSeqLoopSin,
 };
-use crate::{
-    num::{Count, PValue},
-    util::LibConverter,
-};
+use crate::{Count, PValue, util::LibConverter};
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Following parts are lopped:

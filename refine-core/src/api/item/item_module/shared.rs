@@ -1,5 +1,5 @@
 use crate::{
-    misc::ModRack,
+    ModRack,
     ud::{UFitId, UFits, UItemVec},
 };
 

@@ -1,8 +1,4 @@
-use crate::{
-    api::Ship,
-    sol::{SolarSystem, UndoStep},
-    ud::UItemId,
-};
+use crate::{Ship, SolarSystem, sol::UndoStep, ud::UItemId};
 
 impl SolarSystem {
     pub(in crate::api) fn internal_set_ship_state(&mut self, ship_uid: UItemId, state: bool) {

@@ -1,9 +1,4 @@
-use crate::{
-    api::Fighter,
-    num::CountNz,
-    sol::{SolarSystem, UndoStep},
-    ud::UItemId,
-};
+use crate::{CountNz, Fighter, SolarSystem, sol::UndoStep, ud::UItemId};
 
 impl SolarSystem {
     pub(in crate::api) fn internal_set_fighter_count_override(

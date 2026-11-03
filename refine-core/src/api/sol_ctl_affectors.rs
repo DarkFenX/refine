@@ -1,10 +1,8 @@
 use std::{cmp::Ordering, collections::hash_map::Entry};
 
 use crate::{
-    api::{ModuleState, Op},
-    num::Value,
+    ModuleState, Op, SolarSystem, Value,
     rd::{RAttrId, RState},
-    sol::SolarSystem,
     svc::calc::CalcModInfo,
     ud::{UData, UItem, UItemId},
     util::RMap,

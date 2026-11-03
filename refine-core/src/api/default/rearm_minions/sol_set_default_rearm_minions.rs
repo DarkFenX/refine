@@ -1,7 +1,4 @@
-use crate::{
-    misc::RearmMinion,
-    sol::{SolarSystem, UndoStep},
-};
+use crate::{RearmMinion, SolarSystem, sol::UndoStep};
 
 impl SolarSystem {
     pub fn set_default_rearm_minions(&mut self, rearm_minions: RearmMinion) {

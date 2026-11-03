@@ -1,4 +1,4 @@
-use crate::api::{Fit, Ship};
+use crate::{Fit, Ship};
 
 impl<'s> Fit<'s> {
     pub fn get_ship(&mut self) -> Option<Ship<'_>> {

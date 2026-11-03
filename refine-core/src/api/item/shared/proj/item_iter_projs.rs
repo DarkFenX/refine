@@ -1,4 +1,4 @@
-use crate::{sol::SolarSystem, ud::UItemId};
+use crate::{SolarSystem, ud::UItemId};
 
 pub(super) fn iter_projectee_uids(
     sol: &SolarSystem,

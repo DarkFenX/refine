@@ -1,4 +1,7 @@
-use crate::sol::{Savepoint, SolTx, SolarSystem, UndoStep};
+use crate::{
+    SolTx, SolarSystem,
+    sol::{Savepoint, UndoStep},
+};
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Public

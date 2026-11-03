@@ -1,7 +1,6 @@
 use crate::{
+    EffectId, SolarSystem,
     ad::{AAttrId, AEffectId},
-    api::EffectId,
-    sol::SolarSystem,
     ud::UItemId,
 };
 

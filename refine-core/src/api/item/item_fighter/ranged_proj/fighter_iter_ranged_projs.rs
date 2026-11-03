@@ -1,4 +1,4 @@
-use crate::api::{Fighter, RangedProjIter};
+use crate::{Fighter, RangedProjIter};
 
 impl<'s> Fighter<'s> {
     /// Iterates over fighter's projections.

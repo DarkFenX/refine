@@ -1,4 +1,4 @@
-use crate::api::{Module, RangedProjIter};
+use crate::{Module, RangedProjIter};
 
 impl<'s> Module<'s> {
     /// Iterates over module's projections.

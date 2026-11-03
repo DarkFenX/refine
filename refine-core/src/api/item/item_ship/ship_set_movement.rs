@@ -1,10 +1,4 @@
-use crate::{
-    api::{Movement, Ship},
-    misc::Xyz,
-    num::PValue,
-    sol::{SolarSystem, UndoStep},
-    ud::UItemId,
-};
+use crate::{Movement, PValue, Ship, SolarSystem, misc::Xyz, sol::UndoStep, ud::UItemId};
 
 impl SolarSystem {
     pub(in crate::api) fn internal_set_ship_movement(&mut self, ship_uid: UItemId, direction: Xyz, speed: PValue) {

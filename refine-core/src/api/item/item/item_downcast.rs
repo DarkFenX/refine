@@ -1,10 +1,6 @@
 use crate::{
-    api::{
-        Autocharge, Booster, Character, Charge, Drone, Fighter, FwEffect, Implant, Item, ItemCommon, Module,
-        ProjEffect, Rig, Service, Ship, Skill, Stance, Subsystem, SwEffect,
-    },
-    err::basic::ItemKindMatchError,
-    misc::ItemKind,
+    Autocharge, Booster, Character, Charge, Drone, Fighter, FwEffect, Implant, Item, ItemCommon, ItemKind, Module,
+    ProjEffect, Rig, Service, Ship, Skill, Stance, Subsystem, SwEffect, err::basic::ItemKindMatchError,
 };
 
 impl<'s> Item<'s> {

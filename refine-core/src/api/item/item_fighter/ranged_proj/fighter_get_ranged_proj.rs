@@ -1,4 +1,4 @@
-use crate::{Fighter, RangedProj, err::ProjGetError, ud::ItemId};
+use crate::{Fighter, ItemId, RangedProj, err::ProjGetError};
 
 impl<'s> Fighter<'s> {
     pub fn get_proj(&mut self, projectee_item_id: &ItemId) -> Result<RangedProj<'_>, ProjGetError> {

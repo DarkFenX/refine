@@ -1,8 +1,6 @@
 use crate::{
-    api::Implant,
+    Implant, ItemId, SolarSystem,
     err::basic::{ItemFoundError, ItemKindMatchError},
-    sol::SolarSystem,
-    ud::ItemId,
 };
 
 impl SolarSystem {

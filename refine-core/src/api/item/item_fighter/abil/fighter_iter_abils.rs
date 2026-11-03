@@ -1,11 +1,6 @@
 use lender::{ExactSizeLender, Lender, Lending, check_covariance};
 
-use crate::{
-    ad::AAbilId,
-    api::{Ability, Fighter},
-    sol::SolarSystem,
-    ud::UItemId,
-};
+use crate::{Ability, Fighter, SolarSystem, ad::AAbilId, ud::UItemId};
 
 /// Lending iterator for fighter abilities
 pub struct AbilityIter<'iter> {

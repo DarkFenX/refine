@@ -1,8 +1,4 @@
-use crate::{
-    api::Charge,
-    sol::{SolarSystem, UndoStep},
-    ud::UItemId,
-};
+use crate::{Charge, SolarSystem, sol::UndoStep, ud::UItemId};
 
 impl SolarSystem {
     pub(in crate::api) fn internal_set_charge_state(&mut self, charge_uid: UItemId, state: bool) {

@@ -1,9 +1,4 @@
-use crate::{
-    api::Fit,
-    num::FitSecStatus,
-    sol::{SolarSystem, UndoStep},
-    ud::UFitId,
-};
+use crate::{Fit, FitSecStatus, SolarSystem, sol::UndoStep, ud::UFitId};
 
 impl SolarSystem {
     pub(in crate::api) fn internal_set_fit_sec_status(&mut self, fit_uid: UFitId, sec_status: FitSecStatus) {

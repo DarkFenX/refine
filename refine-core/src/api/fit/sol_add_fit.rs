@@ -1,6 +1,6 @@
 use crate::{
-    api::Fit,
-    sol::{SolarSystem, UndoStep},
+    Fit, SolarSystem,
+    sol::UndoStep,
     ud::{UFit, UFitId},
 };
 

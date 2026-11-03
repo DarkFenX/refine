@@ -1,5 +1,5 @@
 use super::{output::Output, output_complex::OutputComplex, output_simple::OutputSimple};
-use crate::num::{Count, PValue};
+use crate::{Count, PValue};
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // High-level interface

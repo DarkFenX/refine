@@ -1,11 +1,6 @@
 use lender::{ExactSizeLender, Lender, Lending, check_covariance};
 
-use crate::{
-    api::{Fit, Module},
-    misc::ModRack,
-    sol::SolarSystem,
-    ud::UItemId,
-};
+use crate::{Fit, ModRack, Module, SolarSystem, ud::UItemId};
 
 pub struct ModuleIter<'iter> {
     sol: &'iter mut SolarSystem,

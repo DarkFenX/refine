@@ -1,7 +1,4 @@
-use crate::{
-    misc::NpcProp,
-    sol::{SolarSystem, UndoStep},
-};
+use crate::{NpcProp, SolarSystem, sol::UndoStep};
 
 impl SolarSystem {
     pub fn set_default_npc_prop(&mut self, npc_prop: NpcProp) {

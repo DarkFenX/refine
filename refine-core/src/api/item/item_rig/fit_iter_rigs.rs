@@ -1,4 +1,4 @@
-use crate::api::{EntityIter, Fit, Rig};
+use crate::{EntityIter, Fit, Rig};
 
 impl<'s> Fit<'s> {
     pub fn iter_rigs(&mut self) -> EntityIter<'_, Rig<'_>> {

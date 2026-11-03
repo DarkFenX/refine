@@ -4,8 +4,8 @@ use super::{
     traits::{InstanceDuration, InstanceLimit},
 };
 use crate::{
+    Count, PValue,
     misc::InfCount,
-    num::{Count, PValue},
     svc::cycle::{CSeqHardDtFull, CycleDataFull, CycleSeq, GetMainDuration},
     util::LibConverter,
 };

@@ -1,4 +1,4 @@
-use crate::api::{Autocharge, EntityIter, Fighter};
+use crate::{Autocharge, EntityIter, Fighter};
 
 impl<'s> Fighter<'s> {
     pub fn iter_autocharges(&mut self) -> EntityIter<'_, Autocharge<'_>> {

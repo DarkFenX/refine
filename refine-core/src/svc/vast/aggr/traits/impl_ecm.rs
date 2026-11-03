@@ -1,5 +1,5 @@
 use super::{has_impact::HasImpact, instance_duration::InstanceDuration, limit_amount::InstanceLimit};
-use crate::{nd::NEffectEcmAmount, num::PValue};
+use crate::{PValue, nd::NEffectEcmAmount};
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Aggregation-specific implementations

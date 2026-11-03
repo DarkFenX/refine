@@ -1,4 +1,4 @@
-use crate::{Fleet, FleetId, err::basic::FitFoundError, ud::FitId};
+use crate::{FitId, Fleet, FleetId, err::basic::FitFoundError};
 
 impl<'s> Fleet<'s> {
     pub fn remove_fit(&mut self, fit_id: &FitId) -> Result<(), FleetFitRemoveError> {

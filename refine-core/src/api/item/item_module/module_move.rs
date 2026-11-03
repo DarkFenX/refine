@@ -1,8 +1,7 @@
 use super::shared::get_fit_rack_mut;
 use crate::{
-    api::{Module, MoveMode},
-    num::Index,
-    sol::{SolarSystem, UndoStep},
+    Index, Module, MoveMode, SolarSystem,
+    sol::UndoStep,
     ud::{UItemId, UItemVecShiftDir},
 };
 

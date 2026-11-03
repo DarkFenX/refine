@@ -7,7 +7,7 @@ use super::{
     traits::InstanceDuration,
 };
 use crate::{
-    num::{Count, PValue, Value},
+    Count, PValue, Value,
     svc::cycle::{CSeqLoopLimSin, CSeqLoopSin, CycleSeq},
 };
 

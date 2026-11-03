@@ -1,6 +1,7 @@
 use crate::{
+    SolarSystem,
     ad::AItemId,
-    sol::{SolarSystem, UndoStep},
+    sol::UndoStep,
     ud::{
         UItemId,
         err::{ItemMutatedError, MutatorInplaceError},

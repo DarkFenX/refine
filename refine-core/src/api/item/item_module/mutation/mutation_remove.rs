@@ -1,5 +1,6 @@
 use crate::{
-    sol::{SolarSystem, UndoStep},
+    SolarSystem,
+    sol::UndoStep,
     ud::{ItemMutationData, UItemId, err::ItemMutatedError},
 };
 

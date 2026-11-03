@@ -2,8 +2,8 @@ use smallvec::SmallVec;
 
 use super::{aar_paste, missile_flight_time, prop_speed, reviser::ItemAddRemoveReviser};
 use crate::{
+    Value,
     misc::EffectSpec,
-    num::Value,
     rd::{RAttrConsts, RAttrId},
     svc::{
         SvcCtx,

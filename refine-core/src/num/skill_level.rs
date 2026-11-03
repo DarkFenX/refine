@@ -1,6 +1,6 @@
 use std::str::FromStr;
 
-use crate::{ad::ASkillLevel, num::Value};
+use crate::{Value, ad::ASkillLevel};
 
 /// Level a skill is trained to, within `[0, 5]` range.
 ///

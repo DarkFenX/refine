@@ -1,4 +1,4 @@
-use crate::ud::FitId;
+use crate::FitId;
 
 #[derive(Clone, Debug, thiserror::Error)]
 #[error("fit {fit_id} has no ship")]

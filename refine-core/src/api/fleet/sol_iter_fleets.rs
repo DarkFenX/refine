@@ -1,7 +1,4 @@
-use crate::{
-    api::{EntityIter, Fleet},
-    sol::SolarSystem,
-};
+use crate::{EntityIter, Fleet, SolarSystem};
 
 impl SolarSystem {
     pub fn iter_fleets(&mut self) -> EntityIter<'_, Fleet<'_>> {

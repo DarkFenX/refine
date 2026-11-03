@@ -1,4 +1,4 @@
-use crate::num::{Count, PValue};
+use crate::{Count, PValue};
 
 #[derive(Copy, Clone, Eq, PartialEq)]
 pub(crate) struct OutputSimple<I> {

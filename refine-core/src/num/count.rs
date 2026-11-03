@@ -1,8 +1,8 @@
 use std::str::FromStr;
 
 use crate::{
+    Index, PValue, Value,
     ad::ACount,
-    num::{Index, PValue, Value},
     util::{ceil_f64_to_u32, round_f64_to_u32, trunc_f64_to_u32},
 };
 

@@ -1,7 +1,4 @@
-use crate::{
-    api::{AddMode, Fit, ItemTypeId, ModuleState, RemoveMode},
-    misc::ModRack,
-};
+use crate::{AddMode, Fit, ItemTypeId, ModRack, ModuleState, RemoveMode};
 
 impl<'s> Fit<'s> {
     pub fn benchmark_attr_calc(&mut self, type_id: ItemTypeId, iterations: usize) {

@@ -1,4 +1,4 @@
-use crate::num::PValue;
+use crate::PValue;
 
 /// Time relatively effect cycle start when some event happens.
 ///

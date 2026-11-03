@@ -1,6 +1,6 @@
 use crate::{
+    Value,
     ad::{AAttrId, AEffectModStrength},
-    num::Value,
     rd::RAttrId,
     util::RMap,
 };

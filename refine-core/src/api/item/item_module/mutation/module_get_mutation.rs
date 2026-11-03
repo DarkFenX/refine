@@ -1,4 +1,4 @@
-use crate::api::{Module, Mutation};
+use crate::{Module, Mutation};
 
 impl<'s> Module<'s> {
     pub fn get_mutation(&mut self) -> Option<Mutation<'_>> {

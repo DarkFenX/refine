@@ -1,7 +1,4 @@
-use crate::{
-    api::{EntityIter, Fit},
-    sol::SolarSystem,
-};
+use crate::{EntityIter, Fit, SolarSystem};
 
 impl SolarSystem {
     pub fn iter_fits(&mut self) -> EntityIter<'_, Fit<'_>> {

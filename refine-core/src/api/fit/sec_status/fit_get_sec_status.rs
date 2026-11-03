@@ -1,4 +1,4 @@
-use crate::{api::Fit, num::FitSecStatus, sol::SolarSystem, ud::UFitId};
+use crate::{Fit, FitSecStatus, SolarSystem, ud::UFitId};
 
 impl SolarSystem {
     pub(in crate::api) fn internal_get_fit_sec_status(&self, fit_uid: UFitId) -> FitSecStatus {

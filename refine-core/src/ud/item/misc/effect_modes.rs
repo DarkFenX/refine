@@ -1,6 +1,6 @@
 use crate::{
+    EffectMode,
     ad::AEffectId,
-    misc::EffectMode,
     rd::{RData, REffectId},
     util::RMap,
 };

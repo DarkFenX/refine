@@ -3,7 +3,7 @@ use std::hint::black_box;
 use itertools::Itertools;
 
 use crate::{
-    api::{Fit, ItemTypeId},
+    Fit, ItemTypeId,
     svc::vast::{ValOptions, ValOptionsInt},
 };
 

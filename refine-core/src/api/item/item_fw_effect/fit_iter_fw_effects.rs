@@ -1,4 +1,4 @@
-use crate::api::{EntityIter, Fit, FwEffect};
+use crate::{EntityIter, Fit, FwEffect};
 
 impl<'s> Fit<'s> {
     pub fn iter_fw_effects(&mut self) -> EntityIter<'_, FwEffect<'_>> {

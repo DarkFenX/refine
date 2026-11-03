@@ -1,14 +1,11 @@
 use crate::{
-    EffectMode,
+    EffectMode, ItemId,
     ad::{AEffectId, AItemId},
     rd::{RData, REffectId, RItemBase, RItemFlexData, RState, RcItem},
-    ud::{
-        ItemId,
-        item::{
-            REffs, UEffectModeOverrideIter,
-            base::{UEffectUpdates, process_effects},
-            misc::UEffectModes,
-        },
+    ud::item::{
+        REffs, UEffectModeOverrideIter,
+        base::{UEffectUpdates, process_effects},
+        misc::UEffectModes,
     },
 };
 

@@ -1,8 +1,4 @@
-use crate::{
-    api::Character,
-    sol::{SolarSystem, UndoStep},
-    ud::UItemId,
-};
+use crate::{Character, SolarSystem, sol::UndoStep, ud::UItemId};
 
 impl SolarSystem {
     pub(in crate::api) fn internal_set_character_state(&mut self, character_uid: UItemId, state: bool) {

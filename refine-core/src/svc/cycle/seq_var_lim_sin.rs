@@ -1,8 +1,5 @@
 use super::{data::GetMainDuration, seq_limited::CycleSeqLimited, seq_var_lim::CSeqLim};
-use crate::{
-    num::{Count, PValue},
-    util::LibConverter,
-};
+use crate::{Count, PValue, util::LibConverter};
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Part 1: runs specified number of times

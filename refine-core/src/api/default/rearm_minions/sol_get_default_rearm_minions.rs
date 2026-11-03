@@ -1,4 +1,4 @@
-use crate::{misc::RearmMinion, sol::SolarSystem};
+use crate::{RearmMinion, SolarSystem};
 
 impl SolarSystem {
     pub fn get_default_rearm_minions(&self) -> RearmMinion {

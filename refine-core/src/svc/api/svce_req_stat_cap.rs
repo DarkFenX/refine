@@ -1,6 +1,5 @@
 use crate::{
-    misc::OptionalReload,
-    num::{PValue, UnitInterval, Value},
+    OptionalReload, PValue, UnitInterval, Value,
     svc::{
         Svc, SvcCtx,
         cycle::CseqMap,

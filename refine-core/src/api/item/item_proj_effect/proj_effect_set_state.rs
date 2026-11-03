@@ -1,8 +1,4 @@
-use crate::{
-    api::ProjEffect,
-    sol::{SolarSystem, UndoStep},
-    ud::UItemId,
-};
+use crate::{ProjEffect, SolarSystem, sol::UndoStep, ud::UItemId};
 
 impl SolarSystem {
     pub(in crate::api) fn internal_set_proj_effect_state(&mut self, proj_effect_uid: UItemId, state: bool) {

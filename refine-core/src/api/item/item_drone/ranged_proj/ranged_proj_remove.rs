@@ -1,8 +1,4 @@
-use crate::{
-    err::basic::ProjFoundError,
-    sol::{SolarSystem, UndoStep},
-    ud::UItemId,
-};
+use crate::{SolarSystem, err::basic::ProjFoundError, sol::UndoStep, ud::UItemId};
 
 impl SolarSystem {
     pub(in crate::api::item) fn internal_remove_drone_proj(

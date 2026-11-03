@@ -1,4 +1,4 @@
-use crate::api::{EntityIter, Fit, Subsystem};
+use crate::{EntityIter, Fit, Subsystem};
 
 impl<'s> Fit<'s> {
     pub fn iter_subsystems(&mut self) -> EntityIter<'_, Subsystem<'_>> {

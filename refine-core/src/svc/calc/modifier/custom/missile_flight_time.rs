@@ -2,8 +2,8 @@ use smallvec::SmallVec;
 
 use super::CalcCustomModStrength;
 use crate::{
+    Value,
     misc::EffectSpec,
-    num::Value,
     rd::RAttrConsts,
     svc::{
         SvcCtx,

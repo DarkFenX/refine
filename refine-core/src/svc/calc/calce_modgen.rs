@@ -1,7 +1,7 @@
 use crate::{
+    Value,
     ad::ABuffId,
     misc::EffectSpec,
-    num::Value,
     rd::{RAttrId, RBuff, REffect, REffectBuffScope, REffectId, REffectModStrength},
     svc::{
         SvcCtx,

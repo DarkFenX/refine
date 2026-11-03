@@ -1,4 +1,4 @@
-use crate::{api::Fit, err::basic::FitFoundError, sol::SolarSystem, ud::FitId};
+use crate::{Fit, FitId, SolarSystem, err::basic::FitFoundError};
 
 impl SolarSystem {
     pub fn get_fit(&mut self, fit_id: &FitId) -> Result<Fit<'_>, FitGetError> {

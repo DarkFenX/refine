@@ -1,6 +1,5 @@
 use crate::{
-    api::Fit,
-    sol::SolarSystem,
+    Fit, SolarSystem,
     svc::vast::{ValOptions, ValOptionsInt, ValResultFit},
     ud::UFitId,
 };

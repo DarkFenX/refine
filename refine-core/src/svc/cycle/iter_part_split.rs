@@ -2,7 +2,7 @@ use super::{
     seq_limited::CycleSeqLimited, seq_looped::CycleSeqLooped, seq_var_lim::CSeqLim, seq_var_lim_sin::CSeqLimSin,
     seq_var_loop_lim_sin::CSeqLoopLimSin, seq_var_loop_sin::CSeqLoopSin,
 };
-use crate::{num::Count, util::State3};
+use crate::{Count, util::State3};
 
 pub(crate) struct CSeqPart<D> {
     pub(in crate::svc) data: D,

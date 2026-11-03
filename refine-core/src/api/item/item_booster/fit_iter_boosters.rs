@@ -1,4 +1,4 @@
-use crate::api::{Booster, EntityIter, Fit};
+use crate::{Booster, EntityIter, Fit};
 
 impl<'s> Fit<'s> {
     pub fn iter_boosters(&mut self) -> EntityIter<'_, Booster<'_>> {

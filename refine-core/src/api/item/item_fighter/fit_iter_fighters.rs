@@ -1,4 +1,4 @@
-use crate::api::{EntityIter, Fighter, Fit};
+use crate::{EntityIter, Fighter, Fit};
 
 impl<'s> Fit<'s> {
     pub fn iter_fighters(&mut self) -> EntityIter<'_, Fighter<'_>> {

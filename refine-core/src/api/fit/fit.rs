@@ -1,7 +1,4 @@
-use crate::{
-    sol::SolarSystem,
-    ud::{FitId, UFitId},
-};
+use crate::{FitId, SolarSystem, ud::UFitId};
 
 pub struct Fit<'s> {
     pub(in crate::api) sol: &'s mut SolarSystem,

@@ -1,8 +1,4 @@
-use crate::{
-    api::Stance,
-    sol::{SolarSystem, UndoStep},
-    ud::UItemId,
-};
+use crate::{SolarSystem, Stance, sol::UndoStep, ud::UItemId};
 
 impl SolarSystem {
     pub(in crate::api) fn internal_remove_stance(&mut self, stance_uid: UItemId) {

@@ -1,7 +1,6 @@
 use crate::{
-    api::{Fit, ItemCommon, ItemSealed},
-    num::SlotIndex,
-    sol::SolarSystem,
+    Fit, ItemCommon, SlotIndex, SolarSystem,
+    api::ItemSealed,
     ud::{UItemId, USubsystem},
 };
 

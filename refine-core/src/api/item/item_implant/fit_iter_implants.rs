@@ -1,4 +1,4 @@
-use crate::api::{EntityIter, Fit, Implant};
+use crate::{EntityIter, Fit, Implant};
 
 impl<'s> Fit<'s> {
     pub fn iter_implants(&mut self) -> EntityIter<'_, Implant<'_>> {

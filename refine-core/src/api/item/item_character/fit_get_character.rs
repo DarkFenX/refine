@@ -1,4 +1,4 @@
-use crate::api::{Character, Fit};
+use crate::{Character, Fit};
 
 impl<'s> Fit<'s> {
     pub fn get_character(&mut self) -> Option<Character<'_>> {

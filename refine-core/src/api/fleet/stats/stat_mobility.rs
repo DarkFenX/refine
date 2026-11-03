@@ -1,7 +1,4 @@
-use crate::{
-    api::{AffectionDir, CtlAffectors, Fleet},
-    num::PValue,
-};
+use crate::{CtlAffectors, Fleet, PValue, api::AffectionDir};
 
 impl<'s> Fleet<'s> {
     pub fn get_stat_mass(&mut self, ctl_affectors: CtlAffectors) -> PValue {

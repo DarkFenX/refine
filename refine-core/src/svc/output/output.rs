@@ -1,5 +1,5 @@
 use super::{output_complex::OutputComplex, output_simple::OutputSimple};
-use crate::num::{Count, PValue};
+use crate::{Count, PValue};
 
 #[derive(Copy, Clone, Eq, PartialEq)]
 pub(crate) enum Output<I> {

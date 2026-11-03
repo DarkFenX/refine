@@ -1,5 +1,5 @@
 use crate::{
-    api::Fleet,
+    Fleet,
     svc::{
         cycle::CseqMap,
         vast::{StatMining, StatMiningItemKinds, StatMiningResourceKind, StatTimeOptions},

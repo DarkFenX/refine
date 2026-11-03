@@ -1,4 +1,4 @@
-use crate::{misc::InfCount, num::Count, svc::cycle::effect_charge_info::EffectChargeInfo};
+use crate::{Count, misc::InfCount, svc::cycle::effect_charge_info::EffectChargeInfo};
 
 pub(in crate::svc::cycle) fn get_eci_uncharged() -> EffectChargeInfo {
     EffectChargeInfo {

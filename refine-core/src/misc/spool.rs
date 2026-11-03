@@ -1,6 +1,9 @@
 use std::str::FromStr;
 
-use crate::num::{Count, CountParseError, PValue, PValueParseError, UnitInterval, UnitIntervalParseError};
+use crate::{
+    Count, PValue, UnitInterval,
+    num::{CountParseError, PValueParseError, UnitIntervalParseError},
+};
 
 /// Controls on which spool cycle spoolable modules will be set.
 #[derive(Copy, Clone, Eq, PartialEq, Debug)]

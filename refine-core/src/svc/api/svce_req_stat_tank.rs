@@ -1,6 +1,5 @@
 use crate::{
-    misc::DpsProfile,
-    num::UnitInterval,
+    DpsProfile, UnitInterval,
     svc::{
         Svc, SvcCtx,
         cycle::CseqMap,

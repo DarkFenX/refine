@@ -1,7 +1,4 @@
-use crate::{
-    api::{EntityIter, ProjEffect},
-    sol::SolarSystem,
-};
+use crate::{EntityIter, ProjEffect, SolarSystem};
 
 impl SolarSystem {
     pub fn iter_proj_effects(&mut self) -> EntityIter<'_, ProjEffect<'_>> {

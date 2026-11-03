@@ -1,7 +1,4 @@
-use crate::{
-    api::{AttrId, SideEffect},
-    num::UnitInterval,
-};
+use crate::{AttrId, SideEffect, UnitInterval};
 
 impl<'s> SideEffect<'s> {
     /// Get side effect chance attribute ID.

@@ -1,6 +1,6 @@
 use super::shared::{SeqAccum, SeqInstanceAccum};
 use crate::{
-    num::{Count, PValue},
+    Count, PValue,
     util::{LibDefault, LibMax},
 };
 

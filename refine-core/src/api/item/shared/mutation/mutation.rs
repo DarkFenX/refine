@@ -1,4 +1,4 @@
-use crate::{sol::SolarSystem, ud::UItemId};
+use crate::{SolarSystem, ud::UItemId};
 
 /// Mutation applied to an item.
 pub enum Mutation<'s> {

@@ -1,8 +1,4 @@
-use crate::{
-    api::Rig,
-    sol::{SolarSystem, UndoStep},
-    ud::UItemId,
-};
+use crate::{Rig, SolarSystem, sol::UndoStep, ud::UItemId};
 
 impl SolarSystem {
     pub(in crate::api) fn internal_set_rig_state(&mut self, rig_uid: UItemId, state: bool) {

@@ -1,10 +1,6 @@
 use itertools::Itertools;
 
-use crate::{
-    api::Fleet,
-    sol::{SolarSystem, UndoStep},
-    ud::UFleetId,
-};
+use crate::{Fleet, SolarSystem, sol::UndoStep, ud::UFleetId};
 
 impl SolarSystem {
     pub(in crate::api) fn internal_remove_fleet(&mut self, fleet_uid: UFleetId) {

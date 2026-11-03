@@ -1,8 +1,5 @@
 use super::shared::{SeqAccum, SeqInstanceAccum};
-use crate::{
-    num::{Count, PValue},
-    util::LibDefault,
-};
+use crate::{Count, PValue, util::LibDefault};
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Top-level accumulator interface

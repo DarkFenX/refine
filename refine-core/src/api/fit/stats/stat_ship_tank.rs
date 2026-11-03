@@ -1,7 +1,5 @@
 use crate::{
-    api::{Fit, ItemCommon},
-    misc::DpsProfile,
-    num::UnitInterval,
+    DpsProfile, Fit, ItemCommon, UnitInterval,
     stats::err::StatFitShipError,
     svc::vast::{StatEhp, StatErps, StatHp, StatResists, StatRps, StatTimeOptions},
 };

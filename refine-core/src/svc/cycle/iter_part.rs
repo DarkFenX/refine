@@ -3,8 +3,8 @@ use super::{
     seq_var_loop_lim_sin::CSeqLoopLimSin, seq_var_loop_sin::CSeqLoopSin,
 };
 use crate::{
+    Count,
     misc::InfCount,
-    num::Count,
     util::{State3, State4},
 };
 

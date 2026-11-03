@@ -1,4 +1,4 @@
-use crate::{misc::NpcProp, sol::SolarSystem};
+use crate::{NpcProp, SolarSystem};
 
 impl SolarSystem {
     pub fn get_default_npc_prop(&self) -> NpcProp {

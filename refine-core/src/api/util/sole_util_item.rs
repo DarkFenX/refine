@@ -1,6 +1,6 @@
 use crate::{
+    SolarSystem,
     rd::RState,
-    sol::SolarSystem,
     svc::Svc,
     ud::{UData, UEffectUpdates, UItemId},
 };

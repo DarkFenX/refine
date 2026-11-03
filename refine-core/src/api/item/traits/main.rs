@@ -1,8 +1,8 @@
 use itertools::Itertools;
 
 use crate::{
-    AttrId, Count, CtlAffectors, DpsProfile, EffectId, EffectMode, Fit, ItemAttrValues, ItemEffectInfo, ItemTypeId,
-    Modification, OptionalReload, PValue, SolarSystem, UnitInterval, Value,
+    AttrId, Count, CtlAffectors, DpsProfile, EffectId, EffectMode, Fit, FitId, ItemAttrValues, ItemEffectInfo, ItemId,
+    ItemTypeId, Modification, OptionalReload, PValue, SolarSystem, UnitInterval, Value,
     api::{AffectionDir, ItemSealed, active_stat_prepare},
     err::{
         ItemAttrGetError, ItemAttrsIterError, ItemEffectsIterError, ItemModifiersIterError,
@@ -21,7 +21,6 @@ use crate::{
         cycle::CseqMap,
         vast::{StatCapBlcSrcKindsInt, StatCapSimStaggerInt},
     },
-    ud::{FitId, ItemId},
 };
 
 /// Methods shared by every item kind.

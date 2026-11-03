@@ -1,6 +1,6 @@
 use crate::{
+    SolarSystem,
     err::basic::{ItemFoundError, ItemReceiveProjError, ProjNotFoundError},
-    sol::SolarSystem,
     ud::{UItem, UItemId},
 };
 

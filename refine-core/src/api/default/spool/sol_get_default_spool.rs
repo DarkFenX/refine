@@ -1,4 +1,4 @@
-use crate::{misc::Spool, sol::SolarSystem};
+use crate::{SolarSystem, Spool};
 
 impl SolarSystem {
     pub fn get_default_spool(&self) -> Spool {

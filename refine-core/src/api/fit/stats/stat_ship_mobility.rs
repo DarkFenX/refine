@@ -1,10 +1,9 @@
 use crate::{
-    CtlAffectors, Fit, ItemCommon, PValue,
+    CtlAffectors, Fit, FitId, ItemCommon, PValue,
     stats::{
         StatJump, StatJumpRange,
         err::{StatAgilityError, StatFitShipError, StatJumpError, StatMaxWarpRangeError, StatWarpSpeedError},
     },
-    ud::FitId,
 };
 
 impl<'s> Fit<'s> {

@@ -1,7 +1,4 @@
-use crate::{
-    misc::{OptionalReload, RearmMinion, Spool},
-    num::PValue,
-};
+use crate::{OptionalReload, PValue, RearmMinion, Spool};
 
 #[cfg_attr(
     feature = "serde",

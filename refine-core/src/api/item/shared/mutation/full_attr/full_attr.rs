@@ -1,4 +1,4 @@
-use crate::{ad::AAttrId, api::AttrId, sol::SolarSystem, ud::UItemId};
+use crate::{AttrId, SolarSystem, ad::AAttrId, ud::UItemId};
 
 /// Full mutated attribute.
 ///

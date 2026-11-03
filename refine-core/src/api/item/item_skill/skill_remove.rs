@@ -1,8 +1,4 @@
-use crate::{
-    api::Skill,
-    sol::{SolarSystem, UndoStep},
-    ud::UItemId,
-};
+use crate::{Skill, SolarSystem, sol::UndoStep, ud::UItemId};
 
 impl SolarSystem {
     pub(in crate::api) fn internal_remove_skill(&mut self, skill_uid: UItemId) {

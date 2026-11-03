@@ -1,4 +1,4 @@
-use crate::{api::RawMAttr, num::UnitInterval};
+use crate::{RawMAttr, UnitInterval};
 
 impl<'s> RawMAttr<'s> {
     /// Return roll quality for the mutated attribute.

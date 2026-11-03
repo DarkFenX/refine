@@ -1,7 +1,7 @@
 use crate::{
+    Count, UnitInterval,
     misc::InfCount,
     nd::NEffectChargeDeplChargeRate,
-    num::{Count, UnitInterval},
     svc::{SvcCtx, cycle::effect_charge_info::EffectChargeInfo},
     ud::UModule,
 };
