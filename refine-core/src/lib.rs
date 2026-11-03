@@ -80,8 +80,6 @@
 //! parent item) and system-wide/projected effects (which reside directly on solar system). Modules
 //! are the only ones which are using ordered container.
 
-extern crate core;
-
 pub use api::{
     Ability, AbilityId, AbilityIter, AddMode, Affector, AttrId, Autocharge, Booster, Character, Charge, Coordinates,
     CtlAffectors, CustomAttrId, CustomEffectId, Direction, DogmaEffectId, DormantMutation, Drone, EffectId,
