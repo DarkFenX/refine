@@ -1,17 +1,13 @@
-use crate::{AttrId, Op, SideEffect, Value, rd::REffectModStrength};
+use crate::{Op, SideEffect, Value, rd::REffectModStrength};
 
 /// Strength of a side effect, as an operator and the resolved strength value.
 pub struct SideEffectStr {
     op: Op,
-    attr_id: Option<AttrId>,
     strength: Value,
 }
 impl SideEffectStr {
     pub fn get_op(&self) -> Op {
         self.op
-    }
-    pub fn get_attr_id(&self) -> Option<AttrId> {
-        self.attr_id
     }
     pub fn get_strength(&self) -> Value {
         self.strength
@@ -35,9 +31,6 @@ impl<'s> SideEffect<'s> {
         if !se_strs.all(|se_str| se_str == (op, strength)) {
             return None;
         }
-        let attr_id = strength
-            .get_attr_rid()
-            .map(|attr_rid| AttrId::from_aid(r_data.get_attr_by_rid(attr_rid).aid));
         let strength = match strength {
             REffectModStrength::Attr(attr_rid) => match self.sol.internal_get_item_attr(self.item_uid, attr_rid) {
                 Ok(calc_val) => calc_val.extra,
@@ -47,7 +40,6 @@ impl<'s> SideEffect<'s> {
         };
         Some(SideEffectStr {
             op: Op::from_a_op(op),
-            attr_id,
             strength,
         })
     }
