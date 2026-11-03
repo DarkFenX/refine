@@ -95,9 +95,9 @@ impl SolarSystem {
             }
         }
     }
-    /// Child undo data is carried with parent undo data, so children are supposed to be removed
+    /// Sub-item undo data is carried with parent undo data, so sub-items are supposed to be removed
     /// without separate record, via this method.
-    pub(in crate::api) fn internal_discard_child_item(&mut self, item_uid: UItemId) {
+    pub(in crate::api) fn internal_discard_subitem(&mut self, item_uid: UItemId) {
         match self.undo.is_recording() {
             true => self.u_data.items.detach(item_uid),
             false => {

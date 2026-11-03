@@ -66,7 +66,7 @@ impl UndoLog {
         self.steps.clear();
         u_data.fleets.evict_detached();
         u_data.fits.evict_detached();
-        // Includes children unmapped with their parents, and autocharges replaced by fighter type
+        // Includes sub-items unmapped with their parents, and autocharges replaced by fighter type
         // changes
         u_data.items.evict_detached();
         if !self.touched.is_empty() {

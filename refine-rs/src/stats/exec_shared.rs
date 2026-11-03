@@ -1,4 +1,4 @@
-use rc::{ItemCommon, Lender};
+use rc::{ExactSizeLender, ItemCommon, Lender};
 
 use crate::{
     FitId, FleetId, ItemId,
@@ -86,11 +86,24 @@ pub(in crate::stats) fn extend_stats_for_passed_items(
     item_options: &OvrdMapHeavy<ItemId, ItemStatsOptionsResolved>,
     stats: &mut Vec<(ItemId, ItemStats)>,
 ) {
-    stats.extend(core_items.map_into_iter(|mut core_item| {
-        let item_id = core_item.get_item_id();
-        let item_stats = item_options.get(&item_id).execute(&mut core_item);
-        (item_id, item_stats)
-    }));
+    // Passed items do not include sub-items, so get stats for sub-items of every passed item
+    stats.reserve(core_items.len());
+    core_items.for_each(|mut core_item| {
+        push_item_stats(&mut core_item, item_options, stats);
+        core_item
+            .iter_subitems()
+            .for_each(|mut core_sub_item| push_item_stats(&mut core_sub_item, item_options, stats));
+    });
+}
+
+fn push_item_stats(
+    core_item: &mut rc::Item,
+    item_options: &OvrdMapHeavy<ItemId, ItemStatsOptionsResolved>,
+    stats: &mut Vec<(ItemId, ItemStats)>,
+) {
+    let item_id = core_item.get_item_id();
+    let item_stats = item_options.get(&item_id).execute(core_item);
+    stats.push((item_id, item_stats));
 }
 
 pub(in crate::stats) fn get_stats_for_items_in_overrides<S>(

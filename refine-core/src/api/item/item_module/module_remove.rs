@@ -47,7 +47,7 @@ impl SolarSystem {
             }
         }
         if let Some(charge_uid) = charge_uid {
-            self.internal_discard_child_item(charge_uid);
+            self.internal_discard_subitem(charge_uid);
         }
         self.internal_discard_item(module_uid, |module_uid| UndoStep::ModuleRemoved(module_uid, pos_mode));
     }

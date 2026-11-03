@@ -36,7 +36,7 @@ impl SolarSystem {
         let u_fit = self.u_data.fits.get_mut(u_fighter.get_fit_uid());
         u_fit.fighters.remove(&fighter_uid);
         for autocharge_uid in autocharge_uids.into_iter() {
-            self.internal_discard_child_item(autocharge_uid);
+            self.internal_discard_subitem(autocharge_uid);
         }
         self.internal_discard_item(fighter_uid, UndoStep::FighterRemoved);
     }

@@ -11,6 +11,7 @@ mod fit_iter_items;
 mod fleet_get_item;
 mod item;
 mod item_downcast;
+mod item_iter_subitems;
 mod item_remove;
 mod item_set_effect_mode;
 mod sol_get_item;

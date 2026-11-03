@@ -96,7 +96,7 @@ where
         let ext_id = self.get(int_id).lib_get_id();
         self.ext_id_to_int_id.insert(ext_id, int_id);
         // Rollback reattaches in reverse order of detaching, so the entity is normally the last
-        // one; only children of one parent can come in a different order
+        // one; only sub-items of one parent can come in a different order
         let pos = self.detached.iter().rposition(|&v| v == int_id).unwrap();
         self.detached.swap_remove(pos);
     }

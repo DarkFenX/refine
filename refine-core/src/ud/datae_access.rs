@@ -8,14 +8,6 @@ use crate::{
 // Some basic/uncategorized access methods
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl UData {
-    pub(crate) fn get_fit_item_uids(&self, fit_uid: UFitId) -> Vec<UItemId> {
-        let mut item_uids: Vec<_> = self.fits.get(fit_uid).iter_direct_items().collect();
-        for i in 0..item_uids.len() {
-            let u_item = self.items.get(item_uids[i]);
-            item_uids.extend(u_item.iter_charges());
-        }
-        item_uids
-    }
     pub(crate) fn get_fits_ship_uids(&self, fit_uids: impl ExactSizeIterator<Item = UFitId>) -> Vec<UItemId> {
         let mut ship_uids = Vec::with_capacity(fit_uids.len());
         for fit_uid in fit_uids {

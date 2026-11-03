@@ -26,7 +26,7 @@ impl SolarSystem {
             return;
         }
         // Autocharges are defined by fighter type, so they are replaced. Old ones are discarded as
-        // fighter's children, and while recording their container goes to the log, so that
+        // fighter's sub-items, and while recording their container goes to the log, so that
         // rollback can put them back with their IDs and states
         SolarSystem::util_detach_item_autocharges(
             &mut self.u_data,
@@ -38,7 +38,7 @@ impl SolarSystem {
         let u_fighter = self.u_data.items.get_mut(fighter_uid).dc_fighter_mut().unwrap();
         let old_autocharges = u_fighter.take_autocharges();
         for autocharge_uid in old_autocharges.values() {
-            self.internal_discard_child_item(autocharge_uid);
+            self.internal_discard_subitem(autocharge_uid);
         }
         SolarSystem::util_remove_fighter(&mut self.u_data, &mut self.svc, fighter_uid, &mut self.reuse.eupdates);
         let u_fighter = self.u_data.items.get_mut(fighter_uid).dc_fighter_mut().unwrap();
