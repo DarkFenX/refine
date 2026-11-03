@@ -3,6 +3,9 @@ use crate::{
     stats::{StatEhp, StatErps, StatHp, StatResists, StatRps, StatTimeOptions, err::StatFitShipError},
 };
 
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Public
+////////////////////////////////////////////////////////////////////////////////////////////////////
 impl<'s> Fit<'s> {
     pub fn get_stat_resists(&mut self) -> Result<StatResists, StatFitShipError<!>> {
         Ok(self.get_ship_for_stats()?.get_stat_resists()?)

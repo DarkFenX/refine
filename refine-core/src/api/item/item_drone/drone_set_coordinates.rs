@@ -1,5 +1,19 @@
 use crate::{Coordinates, Drone, SolarSystem, misc::Xyz, sol::UndoStep, ud::UItemId};
 
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Public
+////////////////////////////////////////////////////////////////////////////////////////////////////
+impl<'s> Drone<'s> {
+    /// Set drone position in its solar system.
+    pub fn set_coordinates(&mut self, coordinates: Coordinates) {
+        self.sol
+            .internal_set_drone_coordinates(self.uid, coordinates.into_xyz())
+    }
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Private
+////////////////////////////////////////////////////////////////////////////////////////////////////
 impl SolarSystem {
     pub(in crate::api) fn internal_set_drone_coordinates(&mut self, drone_uid: UItemId, coordinates: Xyz) {
         let u_drone = self.u_data.items.get_mut(drone_uid).dc_drone_mut().unwrap();
@@ -12,13 +26,5 @@ impl SolarSystem {
         }
         u_drone.get_physics_mut().coordinates = coordinates;
         SolarSystem::util_update_drone_physics(&mut self.u_data, &self.rev_projs, &mut self.svc, drone_uid);
-    }
-}
-
-impl<'s> Drone<'s> {
-    /// Set drone position in its solar system.
-    pub fn set_coordinates(&mut self, coordinates: Coordinates) {
-        self.sol
-            .internal_set_drone_coordinates(self.uid, coordinates.into_xyz())
     }
 }

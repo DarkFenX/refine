@@ -1,5 +1,21 @@
 use crate::{Module, OptionalReload, SolarSystem, sol::UndoStep, ud::UItemId};
 
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Public
+////////////////////////////////////////////////////////////////////////////////////////////////////
+impl<'s> Module<'s> {
+    /// Force module to use specific optional reload behavior.
+    ///
+    /// Solar system's default is used when override is not set.
+    pub fn set_optional_reload_override(&mut self, optional_reload_override: Option<OptionalReload>) {
+        self.sol
+            .internal_set_module_optional_reload_override(self.uid, optional_reload_override);
+    }
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Private
+////////////////////////////////////////////////////////////////////////////////////////////////////
 impl SolarSystem {
     pub(in crate::api) fn internal_set_module_optional_reload_override(
         &mut self,
@@ -18,15 +34,5 @@ impl SolarSystem {
             ));
         }
         u_module.set_optional_reload_override(optional_reload_override);
-    }
-}
-
-impl<'s> Module<'s> {
-    /// Force module to use specific optional reload behavior.
-    ///
-    /// Solar system's default is used when override is not set.
-    pub fn set_optional_reload_override(&mut self, optional_reload_override: Option<OptionalReload>) {
-        self.sol
-            .internal_set_module_optional_reload_override(self.uid, optional_reload_override);
     }
 }

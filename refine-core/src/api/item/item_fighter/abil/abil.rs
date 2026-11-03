@@ -1,5 +1,8 @@
 use crate::{AbilityId, Count, SolarSystem, ad::AAbilId, ud::UItemId};
 
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Public
+////////////////////////////////////////////////////////////////////////////////////////////////////
 /// Fighter ability which allows changing its state.
 pub struct Ability<'s> {
     pub(super) sol: &'s mut SolarSystem,
@@ -7,13 +10,6 @@ pub struct Ability<'s> {
     pub(super) abil_aid: AAbilId,
 }
 impl<'s> Ability<'s> {
-    pub(in crate::api) fn new(sol: &'s mut SolarSystem, fighter_uid: UItemId, abil_aid: AAbilId) -> Self {
-        Self {
-            sol,
-            fighter_uid,
-            abil_aid,
-        }
-    }
     pub fn get_id(&self) -> AbilityId {
         AbilityId::from_aid(self.abil_aid)
     }
@@ -27,5 +23,18 @@ impl<'s> Ability<'s> {
             .effects
             .get(&r_abil.effect_rid)?
             .ability_charge_count
+    }
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Private
+////////////////////////////////////////////////////////////////////////////////////////////////////
+impl<'s> Ability<'s> {
+    pub(in crate::api) fn new(sol: &'s mut SolarSystem, fighter_uid: UItemId, abil_aid: AAbilId) -> Self {
+        Self {
+            sol,
+            fighter_uid,
+            abil_aid,
+        }
     }
 }

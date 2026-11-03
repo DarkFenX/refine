@@ -1,5 +1,21 @@
 use crate::{Charge, SolarSystem, sol::UndoStep, ud::UItemId};
 
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Public
+////////////////////////////////////////////////////////////////////////////////////////////////////
+impl<'s> Charge<'s> {
+    pub fn set_state(&mut self, state: bool) {
+        let u_charge = self.sol.u_data.items.get(self.uid).dc_charge().unwrap();
+        if state == !u_charge.get_force_disabled() {
+            return;
+        }
+        self.sol.internal_set_charge_state(self.uid, state);
+    }
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Private
+////////////////////////////////////////////////////////////////////////////////////////////////////
 impl SolarSystem {
     pub(in crate::api) fn internal_set_charge_state(&mut self, charge_uid: UItemId, state: bool) {
         let u_charge = self.u_data.items.get_mut(charge_uid).dc_charge_mut().unwrap();
@@ -19,15 +35,5 @@ impl SolarSystem {
             new_a_state,
             &self.reuse.eupdates,
         );
-    }
-}
-
-impl<'s> Charge<'s> {
-    pub fn set_state(&mut self, state: bool) {
-        let u_charge = self.sol.u_data.items.get(self.uid).dc_charge().unwrap();
-        if state == !u_charge.get_force_disabled() {
-            return;
-        }
-        self.sol.internal_set_charge_state(self.uid, state);
     }
 }

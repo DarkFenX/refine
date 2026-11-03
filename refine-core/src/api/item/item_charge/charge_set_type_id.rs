@@ -1,5 +1,18 @@
 use crate::{Charge, ItemTypeId, SolarSystem, ad::AItemId, sol::UndoStep, ud::UItemId};
 
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Public
+////////////////////////////////////////////////////////////////////////////////////////////////////
+impl<'s> Charge<'s> {
+    /// Set type ID, replacing currently used EVE item by another, preserving all the user data.
+    pub fn set_type_id(&mut self, type_id: ItemTypeId) {
+        self.sol.internal_set_charge_type_aid(self.uid, type_id.into_aid())
+    }
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Private
+////////////////////////////////////////////////////////////////////////////////////////////////////
 impl SolarSystem {
     pub(in crate::api) fn internal_set_charge_type_aid(&mut self, charge_uid: UItemId, type_aid: AItemId) {
         let u_item = self.u_data.items.get(charge_uid);
@@ -14,12 +27,5 @@ impl SolarSystem {
             self.undo.record(UndoStep::ChargeType(charge_uid, old_type_aid));
         }
         SolarSystem::util_add_charge(&mut self.u_data, &mut self.svc, charge_uid, &mut self.reuse.eupdates);
-    }
-}
-
-impl<'s> Charge<'s> {
-    /// Set type ID, replacing currently used EVE item by another, preserving all the user data.
-    pub fn set_type_id(&mut self, type_id: ItemTypeId) {
-        self.sol.internal_set_charge_type_aid(self.uid, type_id.into_aid())
     }
 }

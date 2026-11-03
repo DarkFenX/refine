@@ -3,6 +3,26 @@ use crate::{
     util::LibGetId,
 };
 
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Public
+////////////////////////////////////////////////////////////////////////////////////////////////////
+impl<'s> Skill<'s> {
+    /// Set type ID, replacing currently used EVE item by another, preserving all the user data.
+    pub fn set_type_id(&mut self, type_id: ItemTypeId) -> Result<(), SkillTypeIdSetError> {
+        self.sol.internal_set_skill_type_aid(self.uid, type_id.into_aid())?;
+        Ok(())
+    }
+}
+
+#[derive(Debug, thiserror::Error)]
+pub enum SkillTypeIdSetError {
+    #[error(transparent)]
+    SkillIdCollision(#[from] SkillEveTypeError),
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Private
+////////////////////////////////////////////////////////////////////////////////////////////////////
 impl SolarSystem {
     pub(in crate::api) fn internal_set_skill_type_aid(
         &mut self,
@@ -40,18 +60,4 @@ impl SolarSystem {
         SolarSystem::util_add_skill(&mut self.u_data, &mut self.svc, skill_uid, &mut self.reuse.eupdates);
         Ok(())
     }
-}
-
-impl<'s> Skill<'s> {
-    /// Set type ID, replacing currently used EVE item by another, preserving all the user data.
-    pub fn set_type_id(&mut self, type_id: ItemTypeId) -> Result<(), SkillTypeIdSetError> {
-        self.sol.internal_set_skill_type_aid(self.uid, type_id.into_aid())?;
-        Ok(())
-    }
-}
-
-#[derive(Debug, thiserror::Error)]
-pub enum SkillTypeIdSetError {
-    #[error(transparent)]
-    SkillIdCollision(#[from] SkillEveTypeError),
 }

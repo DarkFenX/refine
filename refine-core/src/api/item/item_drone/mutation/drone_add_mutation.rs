@@ -5,6 +5,23 @@ use crate::{
     ud::{UItemId, UItemMutationRequest},
 };
 
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Public
+////////////////////////////////////////////////////////////////////////////////////////////////////
+impl<'s> Drone<'s> {
+    pub fn mutate(&mut self, mutator_type_id: ItemTypeId) -> Result<Mutation<'_>, MutationAddError> {
+        let mutation = UItemMutationRequest {
+            mutator_type_aid: mutator_type_id.into_aid(),
+            attrs: Vec::new(),
+        };
+        self.sol.internal_add_drone_mutation(self.uid, mutation)?;
+        Ok(self.get_mutation().unwrap())
+    }
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Private
+////////////////////////////////////////////////////////////////////////////////////////////////////
 impl SolarSystem {
     pub(in crate::api) fn internal_add_drone_mutation(
         &mut self,
@@ -27,16 +44,5 @@ impl SolarSystem {
         SolarSystem::util_update_item_radius_in_projs(&mut self.u_data, &self.rev_projs, &mut self.svc, drone_uid);
         SolarSystem::util_add_drone(&mut self.u_data, &mut self.svc, drone_uid, &mut self.reuse.eupdates);
         Ok(())
-    }
-}
-
-impl<'s> Drone<'s> {
-    pub fn mutate(&mut self, mutator_type_id: ItemTypeId) -> Result<Mutation<'_>, MutationAddError> {
-        let mutation = UItemMutationRequest {
-            mutator_type_aid: mutator_type_id.into_aid(),
-            attrs: Vec::new(),
-        };
-        self.sol.internal_add_drone_mutation(self.uid, mutation)?;
-        Ok(self.get_mutation().unwrap())
     }
 }

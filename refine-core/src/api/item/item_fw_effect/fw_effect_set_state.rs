@@ -1,5 +1,21 @@
 use crate::{FwEffect, SolarSystem, sol::UndoStep, ud::UItemId};
 
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Public
+////////////////////////////////////////////////////////////////////////////////////////////////////
+impl<'s> FwEffect<'s> {
+    pub fn set_state(&mut self, state: bool) {
+        let u_fw_effect = self.sol.u_data.items.get(self.uid).dc_fw_effect().unwrap();
+        if state == u_fw_effect.get_fw_effect_state() {
+            return;
+        }
+        self.sol.internal_set_fw_effect_state(self.uid, state)
+    }
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Private
+////////////////////////////////////////////////////////////////////////////////////////////////////
 impl SolarSystem {
     pub(in crate::api) fn internal_set_fw_effect_state(&mut self, fw_effect_uid: UItemId, state: bool) {
         let u_fw_effect = self.u_data.items.get_mut(fw_effect_uid).dc_fw_effect_mut().unwrap();
@@ -21,15 +37,5 @@ impl SolarSystem {
             new_a_state,
             &self.reuse.eupdates,
         );
-    }
-}
-
-impl<'s> FwEffect<'s> {
-    pub fn set_state(&mut self, state: bool) {
-        let u_fw_effect = self.sol.u_data.items.get(self.uid).dc_fw_effect().unwrap();
-        if state == u_fw_effect.get_fw_effect_state() {
-            return;
-        }
-        self.sol.internal_set_fw_effect_state(self.uid, state)
     }
 }

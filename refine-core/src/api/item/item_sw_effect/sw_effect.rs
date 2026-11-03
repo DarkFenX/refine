@@ -1,13 +1,13 @@
 use crate::{ItemCommon, SolarSystem, api::ItemSealed, ud::UItemId};
 
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Public
+////////////////////////////////////////////////////////////////////////////////////////////////////
 pub struct SwEffect<'s> {
     pub(super) sol: &'s mut SolarSystem,
     pub(super) uid: UItemId,
 }
 impl<'s> SwEffect<'s> {
-    pub(in crate::api) fn new(sol: &'s mut SolarSystem, uid: UItemId) -> Self {
-        Self { sol, uid }
-    }
     pub fn get_state(&self) -> bool {
         self.sol
             .u_data
@@ -16,6 +16,16 @@ impl<'s> SwEffect<'s> {
             .dc_sw_effect()
             .unwrap()
             .get_sw_effect_state()
+    }
+}
+impl<'s> ItemCommon for SwEffect<'s> {}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Private
+////////////////////////////////////////////////////////////////////////////////////////////////////
+impl<'s> SwEffect<'s> {
+    pub(in crate::api) fn new(sol: &'s mut SolarSystem, uid: UItemId) -> Self {
+        Self { sol, uid }
     }
 }
 impl<'s> ItemSealed for SwEffect<'s> {
@@ -29,4 +39,3 @@ impl<'s> ItemSealed for SwEffect<'s> {
         self.sol
     }
 }
-impl<'s> ItemCommon for SwEffect<'s> {}

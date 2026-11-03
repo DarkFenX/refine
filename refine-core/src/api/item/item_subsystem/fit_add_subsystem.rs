@@ -5,6 +5,19 @@ use crate::{
     ud::{UFitId, UItem, UItemId, USubsystem},
 };
 
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Public
+////////////////////////////////////////////////////////////////////////////////////////////////////
+impl<'s> Fit<'s> {
+    pub fn add_subsystem(&mut self, type_id: ItemTypeId) -> Subsystem<'_> {
+        let subsystem_uid = self.sol.internal_add_subsystem(self.uid, type_id.into_aid());
+        Subsystem::new(self.sol, subsystem_uid)
+    }
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Private
+////////////////////////////////////////////////////////////////////////////////////////////////////
 impl SolarSystem {
     pub(in crate::api) fn internal_add_subsystem(&mut self, fit_uid: UFitId, type_aid: AItemId) -> UItemId {
         let item_id = self.u_data.items.alloc_id();
@@ -27,12 +40,5 @@ impl SolarSystem {
         let u_fit = self.u_data.fits.get_mut(fit_uid);
         u_fit.subsystems.insert(subsystem_uid);
         SolarSystem::util_add_subsystem(&mut self.u_data, &mut self.svc, subsystem_uid, &mut self.reuse.eupdates);
-    }
-}
-
-impl<'s> Fit<'s> {
-    pub fn add_subsystem(&mut self, type_id: ItemTypeId) -> Subsystem<'_> {
-        let subsystem_uid = self.sol.internal_add_subsystem(self.uid, type_id.into_aid());
-        Subsystem::new(self.sol, subsystem_uid)
     }
 }

@@ -1,5 +1,18 @@
 use crate::{FwEffect, ItemTypeId, SolarSystem, ad::AItemId, sol::UndoStep, ud::UItemId};
 
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Public
+////////////////////////////////////////////////////////////////////////////////////////////////////
+impl<'s> FwEffect<'s> {
+    /// Set type ID, replacing currently used EVE item by another, preserving all the user data.
+    pub fn set_type_id(&mut self, type_id: ItemTypeId) {
+        self.sol.internal_set_fw_effect_type_aid(self.uid, type_id.into_aid())
+    }
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Private
+////////////////////////////////////////////////////////////////////////////////////////////////////
 impl SolarSystem {
     pub(in crate::api) fn internal_set_fw_effect_type_aid(&mut self, fw_effect_uid: UItemId, type_aid: AItemId) {
         let u_item = self.u_data.items.get(fw_effect_uid);
@@ -14,12 +27,5 @@ impl SolarSystem {
             self.undo.record(UndoStep::FwEffectType(fw_effect_uid, old_type_aid));
         }
         SolarSystem::util_add_fw_effect(&mut self.u_data, &mut self.svc, fw_effect_uid, &mut self.reuse.eupdates);
-    }
-}
-
-impl<'s> FwEffect<'s> {
-    /// Set type ID, replacing currently used EVE item by another, preserving all the user data.
-    pub fn set_type_id(&mut self, type_id: ItemTypeId) {
-        self.sol.internal_set_fw_effect_type_aid(self.uid, type_id.into_aid())
     }
 }

@@ -1,5 +1,21 @@
 use crate::{Booster, SolarSystem, sol::UndoStep, ud::UItemId};
 
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Public
+////////////////////////////////////////////////////////////////////////////////////////////////////
+impl<'s> Booster<'s> {
+    pub fn set_state(&mut self, state: bool) {
+        let u_booster = self.sol.u_data.items.get(self.uid).dc_booster().unwrap();
+        if state == u_booster.get_booster_state() {
+            return;
+        }
+        self.sol.internal_set_booster_state(self.uid, state)
+    }
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Private
+////////////////////////////////////////////////////////////////////////////////////////////////////
 impl SolarSystem {
     pub(in crate::api) fn internal_set_booster_state(&mut self, booster_uid: UItemId, state: bool) {
         let u_booster = self.u_data.items.get_mut(booster_uid).dc_booster_mut().unwrap();
@@ -19,15 +35,5 @@ impl SolarSystem {
             new_a_state,
             &self.reuse.eupdates,
         );
-    }
-}
-
-impl<'s> Booster<'s> {
-    pub fn set_state(&mut self, state: bool) {
-        let u_booster = self.sol.u_data.items.get(self.uid).dc_booster().unwrap();
-        if state == u_booster.get_booster_state() {
-            return;
-        }
-        self.sol.internal_set_booster_state(self.uid, state)
     }
 }

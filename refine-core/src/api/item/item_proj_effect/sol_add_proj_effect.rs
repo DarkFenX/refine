@@ -5,11 +5,20 @@ use crate::{
     ud::{UItem, UItemId, UProjEffect},
 };
 
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Public
+////////////////////////////////////////////////////////////////////////////////////////////////////
 impl SolarSystem {
     pub fn add_proj_effect(&mut self, type_id: ItemTypeId) -> ProjEffect<'_> {
         let proj_effect_uid = self.internal_add_proj_effect(type_id.into_aid());
         ProjEffect::new(self, proj_effect_uid)
     }
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Private
+////////////////////////////////////////////////////////////////////////////////////////////////////
+impl SolarSystem {
     pub(in crate::api) fn internal_add_proj_effect(&mut self, type_aid: AItemId) -> UItemId {
         let item_id = self.u_data.items.alloc_id();
         let u_proj_effect = UProjEffect::new(item_id, type_aid, true, &self.u_data.r_data);

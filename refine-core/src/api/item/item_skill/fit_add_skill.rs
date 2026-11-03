@@ -8,6 +8,25 @@ use crate::{
     ud::{UFitId, UFitSkill, UItem, UItemId, USkill},
 };
 
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Public
+////////////////////////////////////////////////////////////////////////////////////////////////////
+impl<'s> Fit<'s> {
+    pub fn add_skill(&mut self, type_id: ItemTypeId, level: SkillLevel) -> Result<Skill<'_>, SkillAddError> {
+        let skill_uid = self.sol.internal_add_skill(self.uid, type_id.into_aid(), level)?;
+        Ok(Skill::new(self.sol, skill_uid))
+    }
+}
+
+#[derive(Debug, thiserror::Error)]
+pub enum SkillAddError {
+    #[error(transparent)]
+    SkillIdCollision(#[from] SkillEveTypeError),
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Private
+////////////////////////////////////////////////////////////////////////////////////////////////////
 impl SolarSystem {
     pub(in crate::api) fn internal_add_skill(
         &mut self,
@@ -49,17 +68,4 @@ impl SolarSystem {
         );
         SolarSystem::util_add_skill(&mut self.u_data, &mut self.svc, skill_uid, &mut self.reuse.eupdates);
     }
-}
-
-impl<'s> Fit<'s> {
-    pub fn add_skill(&mut self, type_id: ItemTypeId, level: SkillLevel) -> Result<Skill<'_>, SkillAddError> {
-        let skill_uid = self.sol.internal_add_skill(self.uid, type_id.into_aid(), level)?;
-        Ok(Skill::new(self.sol, skill_uid))
-    }
-}
-
-#[derive(Debug, thiserror::Error)]
-pub enum SkillAddError {
-    #[error(transparent)]
-    SkillIdCollision(#[from] SkillEveTypeError),
 }

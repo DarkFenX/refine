@@ -1,5 +1,17 @@
 use crate::{SolarSystem, Subsystem, sol::UndoStep, ud::UItemId};
 
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Public
+////////////////////////////////////////////////////////////////////////////////////////////////////
+impl<'s> Subsystem<'s> {
+    pub fn remove(self) {
+        self.sol.internal_remove_subsystem(self.uid)
+    }
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Private
+////////////////////////////////////////////////////////////////////////////////////////////////////
 impl SolarSystem {
     pub(in crate::api) fn internal_remove_subsystem(&mut self, subsystem_uid: UItemId) {
         SolarSystem::util_remove_subsystem(&mut self.u_data, &mut self.svc, subsystem_uid, &mut self.reuse.eupdates);
@@ -7,11 +19,5 @@ impl SolarSystem {
         let u_fit = self.u_data.fits.get_mut(u_subsystem.get_fit_uid());
         u_fit.subsystems.remove(&subsystem_uid);
         self.internal_discard_item(subsystem_uid, UndoStep::SubsystemRemoved);
-    }
-}
-
-impl<'s> Subsystem<'s> {
-    pub fn remove(self) {
-        self.sol.internal_remove_subsystem(self.uid)
     }
 }

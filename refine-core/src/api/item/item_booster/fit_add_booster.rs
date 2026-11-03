@@ -5,6 +5,19 @@ use crate::{
     ud::{UBooster, UFitId, UItem, UItemId},
 };
 
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Public
+////////////////////////////////////////////////////////////////////////////////////////////////////
+impl<'s> Fit<'s> {
+    pub fn add_booster(&mut self, type_id: ItemTypeId) -> Booster<'_> {
+        let booster_uid = self.sol.internal_add_booster(self.uid, type_id.into_aid());
+        Booster::new(self.sol, booster_uid)
+    }
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Private
+////////////////////////////////////////////////////////////////////////////////////////////////////
 impl SolarSystem {
     pub(in crate::api) fn internal_add_booster(&mut self, fit_uid: UFitId, type_aid: AItemId) -> UItemId {
         let item_id = self.u_data.items.alloc_id();
@@ -27,12 +40,5 @@ impl SolarSystem {
         let u_fit = self.u_data.fits.get_mut(fit_uid);
         u_fit.boosters.insert(booster_uid);
         SolarSystem::util_add_booster(&mut self.u_data, &mut self.svc, booster_uid, &mut self.reuse.eupdates);
-    }
-}
-
-impl<'s> Fit<'s> {
-    pub fn add_booster(&mut self, type_id: ItemTypeId) -> Booster<'_> {
-        let booster_uid = self.sol.internal_add_booster(self.uid, type_id.into_aid());
-        Booster::new(self.sol, booster_uid)
     }
 }

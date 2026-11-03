@@ -1,18 +1,8 @@
 use crate::{DormantMutation, EffectiveMutation, ItemTypeId, Mutation, SolarSystem, ud::UItemId};
 
-impl SolarSystem {
-    fn api_get_mutator_type_id(&self, item_uid: UItemId) -> ItemTypeId {
-        ItemTypeId::from_aid(
-            self.u_data
-                .items
-                .get(item_uid)
-                .get_mutation_data()
-                .unwrap()
-                .get_mutator_type_aid(),
-        )
-    }
-}
-
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Public
+////////////////////////////////////////////////////////////////////////////////////////////////////
 impl<'s> Mutation<'s> {
     pub fn get_mutator_type_id(&self) -> ItemTypeId {
         match self {
@@ -31,5 +21,21 @@ impl<'s> EffectiveMutation<'s> {
 impl<'s> DormantMutation<'s> {
     pub fn get_mutator_type_id(&self) -> ItemTypeId {
         self.sol.api_get_mutator_type_id(self.item_uid)
+    }
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Private
+////////////////////////////////////////////////////////////////////////////////////////////////////
+impl SolarSystem {
+    fn api_get_mutator_type_id(&self, item_uid: UItemId) -> ItemTypeId {
+        ItemTypeId::from_aid(
+            self.u_data
+                .items
+                .get(item_uid)
+                .get_mutation_data()
+                .unwrap()
+                .get_mutator_type_aid(),
+        )
     }
 }

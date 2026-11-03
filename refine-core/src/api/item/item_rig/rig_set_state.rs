@@ -1,5 +1,21 @@
 use crate::{Rig, SolarSystem, sol::UndoStep, ud::UItemId};
 
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Public
+////////////////////////////////////////////////////////////////////////////////////////////////////
+impl<'s> Rig<'s> {
+    pub fn set_state(&mut self, state: bool) {
+        let u_rig = self.sol.u_data.items.get(self.uid).dc_rig().unwrap();
+        if state == u_rig.get_rig_state() {
+            return;
+        }
+        self.sol.internal_set_rig_state(self.uid, state)
+    }
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Private
+////////////////////////////////////////////////////////////////////////////////////////////////////
 impl SolarSystem {
     pub(in crate::api) fn internal_set_rig_state(&mut self, rig_uid: UItemId, state: bool) {
         let u_rig = self.u_data.items.get_mut(rig_uid).dc_rig_mut().unwrap();
@@ -18,15 +34,5 @@ impl SolarSystem {
             new_a_state,
             &self.reuse.eupdates,
         );
-    }
-}
-
-impl<'s> Rig<'s> {
-    pub fn set_state(&mut self, state: bool) {
-        let u_rig = self.sol.u_data.items.get(self.uid).dc_rig().unwrap();
-        if state == u_rig.get_rig_state() {
-            return;
-        }
-        self.sol.internal_set_rig_state(self.uid, state)
     }
 }

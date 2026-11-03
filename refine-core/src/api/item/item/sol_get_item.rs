@@ -5,11 +5,26 @@ use crate::{
     ud::{UItem, UItemId},
 };
 
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Public
+////////////////////////////////////////////////////////////////////////////////////////////////////
 impl SolarSystem {
     pub fn get_item(&mut self, item_id: &ItemId) -> Result<Item<'_>, ItemGetError> {
         let item_uid = self.u_data.items.int_id_by_ext_id_err(item_id)?;
         Ok(self.internal_get_item(item_uid))
     }
+}
+
+#[derive(Debug, thiserror::Error)]
+pub enum ItemGetError {
+    #[error(transparent)]
+    ItemNotFound(#[from] ItemFoundError),
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Private
+////////////////////////////////////////////////////////////////////////////////////////////////////
+impl SolarSystem {
     pub(in crate::api::item::item) fn internal_get_item(&mut self, item_uid: UItemId) -> Item<'_> {
         let u_item = self.u_data.items.get(item_uid);
         match u_item {
@@ -32,10 +47,4 @@ impl SolarSystem {
             UItem::SwEffect(..) => Item::SwEffect(SwEffect::new(self, item_uid)),
         }
     }
-}
-
-#[derive(Debug, thiserror::Error)]
-pub enum ItemGetError {
-    #[error(transparent)]
-    ItemNotFound(#[from] ItemFoundError),
 }

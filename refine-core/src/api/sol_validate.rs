@@ -4,13 +4,10 @@ use crate::{
     val::{ValOptionsSol, ValResultSol},
 };
 
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Public
+////////////////////////////////////////////////////////////////////////////////////////////////////
 impl SolarSystem {
-    pub(in crate::api) fn internal_validate_fast(&mut self, options: &ValOptionsSolInt) -> bool {
-        self.svc.validate_sol_fast(&self.u_data, options)
-    }
-    pub(in crate::api) fn internal_validate_verbose(&mut self, options: &ValOptionsSolInt) -> ValResultSol {
-        self.svc.validate_sol_verbose(&self.u_data, options)
-    }
     pub fn validate_fast(&mut self, options: &ValOptionsSol) -> bool {
         let int_options = ValOptionsSolInt::from_pub(options, self);
         self.internal_validate_fast(&int_options)
@@ -18,5 +15,17 @@ impl SolarSystem {
     pub fn validate_verbose(&mut self, options: &ValOptionsSol) -> ValResultSol {
         let int_options = ValOptionsSolInt::from_pub(options, self);
         self.internal_validate_verbose(&int_options)
+    }
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Private
+////////////////////////////////////////////////////////////////////////////////////////////////////
+impl SolarSystem {
+    pub(in crate::api) fn internal_validate_fast(&mut self, options: &ValOptionsSolInt) -> bool {
+        self.svc.validate_sol_fast(&self.u_data, options)
+    }
+    pub(in crate::api) fn internal_validate_verbose(&mut self, options: &ValOptionsSolInt) -> ValResultSol {
+        self.svc.validate_sol_verbose(&self.u_data, options)
     }
 }

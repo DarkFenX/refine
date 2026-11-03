@@ -2,6 +2,9 @@ use std::str::FromStr;
 
 use crate::ad::{AAttrId, ACustomAttrId, AEveAttrId};
 
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Public - general
+////////////////////////////////////////////////////////////////////////////////////////////////////
 /// ID of an attribute.
 #[derive(Copy, Clone, Eq, PartialEq, Hash, Debug)]
 pub enum AttrId {
@@ -34,29 +37,8 @@ impl CustomAttrId {
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-// Conversions
+// Public - custom de/serialization
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-impl AttrId {
-    pub(crate) fn from_aid(attr_aid: AAttrId) -> Self {
-        match attr_aid {
-            AAttrId::Eve(id) => Self::Eve(EveAttrId(id.into_i32())),
-            AAttrId::Custom(id) => Self::Custom(CustomAttrId(id.into_i32())),
-        }
-    }
-    pub(in crate::api) fn into_aid(self) -> AAttrId {
-        match self {
-            AttrId::Eve(id) => AAttrId::Eve(AEveAttrId::from_i32(id.0)),
-            AttrId::Custom(id) => AAttrId::Custom(ACustomAttrId::from_i32(id.0)),
-        }
-    }
-}
-
-////////////////////////////////////////////////////////////////////////////////////////////////////
-// Custom de/serialization
-////////////////////////////////////////////////////////////////////////////////////////////////////
-const EVE_PREFIX: &str = "e";
-const CUSTOM_PREFIX: &str = "c";
-
 impl std::fmt::Display for AttrId {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         match self {
@@ -132,3 +114,27 @@ mod custom_serde {
         }
     }
 }
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Private - conversions
+////////////////////////////////////////////////////////////////////////////////////////////////////
+impl AttrId {
+    pub(crate) fn from_aid(attr_aid: AAttrId) -> Self {
+        match attr_aid {
+            AAttrId::Eve(id) => Self::Eve(EveAttrId(id.into_i32())),
+            AAttrId::Custom(id) => Self::Custom(CustomAttrId(id.into_i32())),
+        }
+    }
+    pub(in crate::api) fn into_aid(self) -> AAttrId {
+        match self {
+            AttrId::Eve(id) => AAttrId::Eve(AEveAttrId::from_i32(id.0)),
+            AttrId::Custom(id) => AAttrId::Custom(ACustomAttrId::from_i32(id.0)),
+        }
+    }
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Private - custom de/serialization
+////////////////////////////////////////////////////////////////////////////////////////////////////
+const EVE_PREFIX: &str = "e";
+const CUSTOM_PREFIX: &str = "c";

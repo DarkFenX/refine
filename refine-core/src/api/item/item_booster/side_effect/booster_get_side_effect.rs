@@ -1,6 +1,9 @@
 use super::shared::get_se_chance_attr_aid_by_effect_rid;
 use crate::{Booster, EffectId, ItemId, SideEffect};
 
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Public
+////////////////////////////////////////////////////////////////////////////////////////////////////
 impl<'s> Booster<'s> {
     pub fn get_side_effect(&mut self, effect_id: &EffectId) -> Result<SideEffect<'_>, SideEffectGetError> {
         let effect_aid = effect_id.into_aid();

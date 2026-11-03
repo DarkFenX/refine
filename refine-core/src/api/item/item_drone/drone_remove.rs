@@ -1,5 +1,17 @@
 use crate::{Drone, SolarSystem, sol::UndoStep, ud::UItemId};
 
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Public
+////////////////////////////////////////////////////////////////////////////////////////////////////
+impl<'s> Drone<'s> {
+    pub fn remove(self) {
+        self.sol.internal_remove_drone(self.uid);
+    }
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Private
+////////////////////////////////////////////////////////////////////////////////////////////////////
 impl SolarSystem {
     pub(in crate::api) fn internal_remove_drone(&mut self, drone_uid: UItemId) {
         // Remove incoming projections
@@ -16,11 +28,5 @@ impl SolarSystem {
         let u_fit = self.u_data.fits.get_mut(fit_uid);
         u_fit.drones.remove(&drone_uid);
         self.internal_discard_item(drone_uid, UndoStep::DroneRemoved);
-    }
-}
-
-impl<'s> Drone<'s> {
-    pub fn remove(self) {
-        self.sol.internal_remove_drone(self.uid);
     }
 }

@@ -1,5 +1,17 @@
 use crate::{FwEffect, SolarSystem, sol::UndoStep, ud::UItemId};
 
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Public
+////////////////////////////////////////////////////////////////////////////////////////////////////
+impl<'s> FwEffect<'s> {
+    pub fn remove(self) {
+        self.sol.internal_remove_fw_effect(self.uid);
+    }
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Private
+////////////////////////////////////////////////////////////////////////////////////////////////////
 impl SolarSystem {
     pub(in crate::api) fn internal_remove_fw_effect(&mut self, fw_effect_uid: UItemId) {
         SolarSystem::util_remove_fw_effect(&mut self.u_data, &mut self.svc, fw_effect_uid, &mut self.reuse.eupdates);
@@ -7,11 +19,5 @@ impl SolarSystem {
         let u_fit = self.u_data.fits.get_mut(u_fw_effect.get_fit_uid());
         u_fit.fw_effects.remove(&fw_effect_uid);
         self.internal_discard_item(fw_effect_uid, UndoStep::FwEffectRemoved);
-    }
-}
-
-impl<'s> FwEffect<'s> {
-    pub fn remove(self) {
-        self.sol.internal_remove_fw_effect(self.uid);
     }
 }

@@ -5,6 +5,19 @@ use crate::{
     ud::{UFitId, UItem, UItemId, UService},
 };
 
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Public
+////////////////////////////////////////////////////////////////////////////////////////////////////
+impl<'s> Fit<'s> {
+    pub fn add_service(&mut self, type_id: ItemTypeId, state: ServiceState) -> Service<'_> {
+        let service_uid = self.sol.internal_add_service(self.uid, type_id.into_aid(), state);
+        Service::new(self.sol, service_uid)
+    }
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Private
+////////////////////////////////////////////////////////////////////////////////////////////////////
 impl SolarSystem {
     pub(in crate::api) fn internal_add_service(
         &mut self,
@@ -32,12 +45,5 @@ impl SolarSystem {
         let u_fit = self.u_data.fits.get_mut(fit_uid);
         u_fit.services.insert(service_uid);
         SolarSystem::util_add_service(&mut self.u_data, &mut self.svc, service_uid, &mut self.reuse.eupdates);
-    }
-}
-
-impl<'s> Fit<'s> {
-    pub fn add_service(&mut self, type_id: ItemTypeId, state: ServiceState) -> Service<'_> {
-        let service_uid = self.sol.internal_add_service(self.uid, type_id.into_aid(), state);
-        Service::new(self.sol, service_uid)
     }
 }

@@ -5,6 +5,33 @@ use crate::{
     ud::{UFitId, UItem, UItemId, UPhysics, UShip},
 };
 
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Public
+////////////////////////////////////////////////////////////////////////////////////////////////////
+impl<'s> Fit<'s> {
+    /// Set ship, replacing current one with a new item.
+    pub fn set_ship(
+        &mut self,
+        type_id: ItemTypeId,
+        coordinates: Option<Coordinates>,
+        movement: Option<Movement>,
+    ) -> Ship<'_> {
+        let mut u_physics = UPhysics::default();
+        if let Some(coordinates) = coordinates {
+            u_physics.coordinates = coordinates.into_xyz();
+        }
+        if let Some(movement) = movement {
+            u_physics.direction = movement.direction.into_xyz();
+            u_physics.speed = movement.speed;
+        }
+        let ship_uid = self.sol.internal_set_fit_ship(self.uid, type_id.into_aid(), u_physics);
+        Ship::new(self.sol, ship_uid)
+    }
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Private
+////////////////////////////////////////////////////////////////////////////////////////////////////
 impl SolarSystem {
     pub(in crate::api) fn internal_set_fit_ship(
         &mut self,
@@ -44,26 +71,5 @@ impl SolarSystem {
         SolarSystem::util_add_ship(&mut self.u_data, &mut self.svc, ship_uid, &mut self.reuse.eupdates);
         // Update projections outgoing from on-ship items
         SolarSystem::util_update_ship_radius_for_outgoing_projs(&mut self.u_data, &mut self.svc, fit_uid, ship_radius);
-    }
-}
-
-impl<'s> Fit<'s> {
-    /// Set ship, replacing current one with a new item.
-    pub fn set_ship(
-        &mut self,
-        type_id: ItemTypeId,
-        coordinates: Option<Coordinates>,
-        movement: Option<Movement>,
-    ) -> Ship<'_> {
-        let mut u_physics = UPhysics::default();
-        if let Some(coordinates) = coordinates {
-            u_physics.coordinates = coordinates.into_xyz();
-        }
-        if let Some(movement) = movement {
-            u_physics.direction = movement.direction.into_xyz();
-            u_physics.speed = movement.speed;
-        }
-        let ship_uid = self.sol.internal_set_fit_ship(self.uid, type_id.into_aid(), u_physics);
-        Ship::new(self.sol, ship_uid)
     }
 }

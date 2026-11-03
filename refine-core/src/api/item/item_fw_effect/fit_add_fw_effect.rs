@@ -5,6 +5,19 @@ use crate::{
     ud::{UFitId, UFwEffect, UItem, UItemId},
 };
 
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Public
+////////////////////////////////////////////////////////////////////////////////////////////////////
+impl<'s> Fit<'s> {
+    pub fn add_fw_effect(&mut self, type_id: ItemTypeId) -> FwEffect<'_> {
+        let fw_effect_uid = self.sol.internal_add_fw_effect(self.uid, type_id.into_aid());
+        FwEffect::new(self.sol, fw_effect_uid)
+    }
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Private
+////////////////////////////////////////////////////////////////////////////////////////////////////
 impl SolarSystem {
     pub(in crate::api) fn internal_add_fw_effect(&mut self, fit_uid: UFitId, type_aid: AItemId) -> UItemId {
         let item_id = self.u_data.items.alloc_id();
@@ -27,12 +40,5 @@ impl SolarSystem {
         let u_fit = self.u_data.fits.get_mut(fit_uid);
         u_fit.fw_effects.insert(fw_effect_uid);
         SolarSystem::util_add_fw_effect(&mut self.u_data, &mut self.svc, fw_effect_uid, &mut self.reuse.eupdates);
-    }
-}
-
-impl<'s> Fit<'s> {
-    pub fn add_fw_effect(&mut self, type_id: ItemTypeId) -> FwEffect<'_> {
-        let fw_effect_uid = self.sol.internal_add_fw_effect(self.uid, type_id.into_aid());
-        FwEffect::new(self.sol, fw_effect_uid)
     }
 }

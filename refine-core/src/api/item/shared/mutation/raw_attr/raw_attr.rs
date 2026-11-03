@@ -1,5 +1,8 @@
 use crate::{AttrId, SolarSystem, ad::AAttrId, ud::UItemId};
 
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Public
+////////////////////////////////////////////////////////////////////////////////////////////////////
 /// Raw mutated attribute.
 ///
 /// This attribute represents a user-defined mutation for the attribute. It means, when there is no
@@ -14,15 +17,21 @@ pub struct RawMAttr<'s> {
     pub(super) attr_aid: AAttrId,
 }
 impl<'s> RawMAttr<'s> {
+    /// Mutated attribute ID.
+    pub fn get_attr_id(&self) -> AttrId {
+        AttrId::from_aid(self.attr_aid)
+    }
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Private
+////////////////////////////////////////////////////////////////////////////////////////////////////
+impl<'s> RawMAttr<'s> {
     pub(in crate::api) fn new(sol: &'s mut SolarSystem, item_uid: UItemId, attr_aid: AAttrId) -> Self {
         Self {
             sol,
             item_uid,
             attr_aid,
         }
-    }
-    /// Mutated attribute ID.
-    pub fn get_attr_id(&self) -> AttrId {
-        AttrId::from_aid(self.attr_aid)
     }
 }

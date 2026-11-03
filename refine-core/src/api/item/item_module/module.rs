@@ -7,14 +7,14 @@ use crate::{
     ud::{UItemId, UModule},
 };
 
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Public
+////////////////////////////////////////////////////////////////////////////////////////////////////
 pub struct Module<'s> {
     pub(super) sol: &'s mut SolarSystem,
     pub(super) uid: UItemId,
 }
 impl<'s> Module<'s> {
-    pub(in crate::api) fn new(sol: &'s mut SolarSystem, uid: UItemId) -> Self {
-        Self { sol, uid }
-    }
     pub fn get_fit_id(&self) -> FitId {
         let fit_uid = get_u_module(self.sol, self.uid).get_fit_uid();
         self.sol.u_data.fits.ext_id_by_int_id(fit_uid)
@@ -65,6 +65,16 @@ impl<'s> Module<'s> {
         self.sol.svc.get_effect_spool_cycle_count(&self.sol.u_data, self.uid)
     }
 }
+impl<'s> ItemCommon for Module<'s> {}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Private
+////////////////////////////////////////////////////////////////////////////////////////////////////
+impl<'s> Module<'s> {
+    pub(in crate::api) fn new(sol: &'s mut SolarSystem, uid: UItemId) -> Self {
+        Self { sol, uid }
+    }
+}
 impl<'s> ItemSealed for Module<'s> {
     fn get_uid(&self) -> UItemId {
         self.uid
@@ -76,7 +86,6 @@ impl<'s> ItemSealed for Module<'s> {
         self.sol
     }
 }
-impl<'s> ItemCommon for Module<'s> {}
 
 fn get_u_module(sol: &SolarSystem, module_uid: UItemId) -> &UModule {
     sol.u_data.items.get(module_uid).dc_module().unwrap()

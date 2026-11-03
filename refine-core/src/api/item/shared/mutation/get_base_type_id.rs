@@ -1,5 +1,17 @@
 use crate::{EffectiveMutation, ItemTypeId, SolarSystem, ud::UItemId};
 
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Public
+////////////////////////////////////////////////////////////////////////////////////////////////////
+impl<'s> EffectiveMutation<'s> {
+    pub fn get_base_type_id(&self) -> ItemTypeId {
+        self.sol.api_get_base_type_id(self.item_uid)
+    }
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Private
+////////////////////////////////////////////////////////////////////////////////////////////////////
 impl SolarSystem {
     fn api_get_base_type_id(&self, item_uid: UItemId) -> ItemTypeId {
         ItemTypeId::from_aid(
@@ -12,11 +24,5 @@ impl SolarSystem {
                 .unwrap()
                 .get_base_type_aid(),
         )
-    }
-}
-
-impl<'s> EffectiveMutation<'s> {
-    pub fn get_base_type_id(&self) -> ItemTypeId {
-        self.sol.api_get_base_type_id(self.item_uid)
     }
 }

@@ -5,6 +5,19 @@ use crate::{
     ud::{UAutocharges, UItemId},
 };
 
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Public
+////////////////////////////////////////////////////////////////////////////////////////////////////
+impl<'s> Fighter<'s> {
+    /// Set type ID, replacing currently used EVE item by another, preserving all the user data.
+    pub fn set_type_id(&mut self, type_id: ItemTypeId) {
+        self.sol.internal_set_fighter_type_aid(self.uid, type_id.into_aid())
+    }
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Private
+////////////////////////////////////////////////////////////////////////////////////////////////////
 impl SolarSystem {
     pub(in crate::api) fn internal_set_fighter_type_aid(&mut self, fighter_uid: UItemId, type_aid: AItemId) {
         let u_item = self.u_data.items.get(fighter_uid);
@@ -73,12 +86,5 @@ impl SolarSystem {
             fighter_uid,
             &mut self.reuse.eupdates,
         );
-    }
-}
-
-impl<'s> Fighter<'s> {
-    /// Set type ID, replacing currently used EVE item by another, preserving all the user data.
-    pub fn set_type_id(&mut self, type_id: ItemTypeId) {
-        self.sol.internal_set_fighter_type_aid(self.uid, type_id.into_aid())
     }
 }

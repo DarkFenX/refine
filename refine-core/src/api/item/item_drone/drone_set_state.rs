@@ -1,5 +1,21 @@
 use crate::{Drone, MinionState, SolarSystem, sol::UndoStep, ud::UItemId};
 
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Public
+////////////////////////////////////////////////////////////////////////////////////////////////////
+impl<'s> Drone<'s> {
+    pub fn set_state(&mut self, state: MinionState) {
+        let u_drone = self.sol.u_data.items.get(self.uid).dc_drone().unwrap();
+        if state == u_drone.get_drone_state() {
+            return;
+        }
+        self.sol.internal_set_drone_state(self.uid, state);
+    }
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Private
+////////////////////////////////////////////////////////////////////////////////////////////////////
 impl SolarSystem {
     pub(in crate::api) fn internal_set_drone_state(&mut self, drone_uid: UItemId, state: MinionState) {
         let u_drone = self.u_data.items.get_mut(drone_uid).dc_drone_mut().unwrap();
@@ -19,15 +35,5 @@ impl SolarSystem {
             new_a_state,
             &self.reuse.eupdates,
         );
-    }
-}
-
-impl<'s> Drone<'s> {
-    pub fn set_state(&mut self, state: MinionState) {
-        let u_drone = self.sol.u_data.items.get(self.uid).dc_drone().unwrap();
-        if state == u_drone.get_drone_state() {
-            return;
-        }
-        self.sol.internal_set_drone_state(self.uid, state);
     }
 }

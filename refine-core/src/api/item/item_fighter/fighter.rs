@@ -4,14 +4,14 @@ use crate::{
     ud::{UFighter, UItemId},
 };
 
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Public
+////////////////////////////////////////////////////////////////////////////////////////////////////
 pub struct Fighter<'s> {
     pub(super) sol: &'s mut SolarSystem,
     pub(super) uid: UItemId,
 }
 impl<'s> Fighter<'s> {
-    pub(in crate::api) fn new(sol: &'s mut SolarSystem, uid: UItemId) -> Self {
-        Self { sol, uid }
-    }
     pub fn get_fit_id(&self) -> FitId {
         let fit_uid = get_u_fighter(self.sol, self.uid).get_fit_uid();
         self.sol.u_data.fits.ext_id_by_int_id(fit_uid)
@@ -38,6 +38,16 @@ impl<'s> Fighter<'s> {
         get_u_fighter(self.sol, self.uid).get_rearm_minion_override()
     }
 }
+impl<'s> ItemCommon for Fighter<'s> {}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Private
+////////////////////////////////////////////////////////////////////////////////////////////////////
+impl<'s> Fighter<'s> {
+    pub(in crate::api) fn new(sol: &'s mut SolarSystem, uid: UItemId) -> Self {
+        Self { sol, uid }
+    }
+}
 impl<'s> ItemSealed for Fighter<'s> {
     fn get_uid(&self) -> UItemId {
         self.uid
@@ -49,7 +59,6 @@ impl<'s> ItemSealed for Fighter<'s> {
         self.sol
     }
 }
-impl<'s> ItemCommon for Fighter<'s> {}
 
 fn get_u_fighter(sol: &SolarSystem, fighter_uid: UItemId) -> &UFighter {
     sol.u_data.items.get(fighter_uid).dc_fighter().unwrap()

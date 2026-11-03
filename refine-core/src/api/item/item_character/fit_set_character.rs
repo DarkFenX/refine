@@ -5,6 +5,20 @@ use crate::{
     ud::{UCharacter, UFitId, UItem, UItemId},
 };
 
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Public
+////////////////////////////////////////////////////////////////////////////////////////////////////
+impl<'s> Fit<'s> {
+    /// Set character, replacing current one with a new item.
+    pub fn set_character(&mut self, type_id: ItemTypeId) -> Character<'_> {
+        let character_uid = self.sol.internal_set_fit_character(self.uid, type_id.into_aid());
+        Character::new(self.sol, character_uid)
+    }
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Private
+////////////////////////////////////////////////////////////////////////////////////////////////////
 impl SolarSystem {
     pub(in crate::api) fn internal_set_fit_character(&mut self, fit_uid: UFitId, type_aid: AItemId) -> UItemId {
         let u_fit = self.u_data.fits.get(fit_uid);
@@ -33,13 +47,5 @@ impl SolarSystem {
         let u_fit = self.u_data.fits.get_mut(fit_uid);
         u_fit.character = Some(character_uid);
         SolarSystem::util_add_character(&mut self.u_data, &mut self.svc, character_uid, &mut self.reuse.eupdates);
-    }
-}
-
-impl<'s> Fit<'s> {
-    /// Set character, replacing current one with a new item.
-    pub fn set_character(&mut self, type_id: ItemTypeId) -> Character<'_> {
-        let character_uid = self.sol.internal_set_fit_character(self.uid, type_id.into_aid());
-        Character::new(self.sol, character_uid)
     }
 }

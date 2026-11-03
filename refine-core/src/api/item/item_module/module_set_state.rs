@@ -1,5 +1,21 @@
 use crate::{Module, ModuleState, SolarSystem, sol::UndoStep, ud::UItemId};
 
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Public
+////////////////////////////////////////////////////////////////////////////////////////////////////
+impl<'s> Module<'s> {
+    pub fn set_state(&mut self, state: ModuleState) {
+        let u_module = self.sol.u_data.items.get(self.uid).dc_module().unwrap();
+        if state == u_module.get_module_state() {
+            return;
+        }
+        self.sol.internal_set_module_state(self.uid, state);
+    }
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Private
+////////////////////////////////////////////////////////////////////////////////////////////////////
 impl SolarSystem {
     pub(in crate::api) fn internal_set_module_state(&mut self, module_uid: UItemId, state: ModuleState) {
         // Update user data for module
@@ -33,15 +49,5 @@ impl SolarSystem {
                 &mut self.reuse.eupdates,
             );
         }
-    }
-}
-
-impl<'s> Module<'s> {
-    pub fn set_state(&mut self, state: ModuleState) {
-        let u_module = self.sol.u_data.items.get(self.uid).dc_module().unwrap();
-        if state == u_module.get_module_state() {
-            return;
-        }
-        self.sol.internal_set_module_state(self.uid, state);
     }
 }

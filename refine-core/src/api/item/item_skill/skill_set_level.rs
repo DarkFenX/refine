@@ -1,5 +1,17 @@
 use crate::{Skill, SkillLevel, SolarSystem, sol::UndoStep, ud::UItemId};
 
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Public
+////////////////////////////////////////////////////////////////////////////////////////////////////
+impl<'s> Skill<'s> {
+    pub fn set_level(&mut self, level: SkillLevel) {
+        self.sol.internal_set_skill_level(self.uid, level);
+    }
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Private
+////////////////////////////////////////////////////////////////////////////////////////////////////
 impl SolarSystem {
     pub(in crate::api) fn internal_set_skill_level(&mut self, skill_uid: UItemId, level: SkillLevel) {
         let u_skill = self.u_data.items.get_mut(skill_uid).dc_skill_mut().unwrap();
@@ -21,11 +33,5 @@ impl SolarSystem {
         fit_skill.level = level;
         let u_skill = self.u_data.items.get(skill_uid).dc_skill().unwrap();
         self.svc.notify_skill_level_changed(&self.u_data, skill_uid, u_skill);
-    }
-}
-
-impl<'s> Skill<'s> {
-    pub fn set_level(&mut self, level: SkillLevel) {
-        self.sol.internal_set_skill_level(self.uid, level);
     }
 }

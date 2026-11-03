@@ -5,6 +5,18 @@ use crate::{
     ud::{UItemId, UItemVecShiftDir},
 };
 
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Public
+////////////////////////////////////////////////////////////////////////////////////////////////////
+impl<'s> Module<'s> {
+    pub fn move_(&mut self, pos_mode: MoveMode) {
+        self.sol.internal_move_module(self.uid, pos_mode)
+    }
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Private
+////////////////////////////////////////////////////////////////////////////////////////////////////
 impl SolarSystem {
     pub(in crate::api) fn internal_move_module(&mut self, module_uid: UItemId, pos_mode: MoveMode) {
         let u_module = self.u_data.items.get_mut(module_uid).dc_module_mut().unwrap();
@@ -44,11 +56,5 @@ impl SolarSystem {
             };
             self.undo.record(UndoStep::ModuleMoved(module_uid, undo_pos_mode));
         }
-    }
-}
-
-impl<'s> Module<'s> {
-    pub fn move_(&mut self, pos_mode: MoveMode) {
-        self.sol.internal_move_module(self.uid, pos_mode)
     }
 }

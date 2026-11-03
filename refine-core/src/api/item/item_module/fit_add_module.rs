@@ -6,6 +6,27 @@ use crate::{
     ud::{UCharge, UFitId, UItem, UItemId, UItemMutationRequest, UModule},
 };
 
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Public
+////////////////////////////////////////////////////////////////////////////////////////////////////
+impl<'s> Fit<'s> {
+    pub fn add_module(
+        &mut self,
+        rack: ModRack,
+        pos_mode: AddMode,
+        type_id: ItemTypeId,
+        state: ModuleState,
+    ) -> Module<'_> {
+        let module_uid = self
+            .sol
+            .internal_add_module(self.uid, rack, pos_mode, type_id.into_aid(), state, None, None);
+        Module::new(self.sol, module_uid)
+    }
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Private
+////////////////////////////////////////////////////////////////////////////////////////////////////
 impl SolarSystem {
     pub(in crate::api) fn internal_add_module(
         &mut self,
@@ -141,20 +162,5 @@ impl SolarSystem {
             }
             SolarSystem::util_add_charge(&mut self.u_data, &mut self.svc, charge_uid, &mut self.reuse.eupdates);
         }
-    }
-}
-
-impl<'s> Fit<'s> {
-    pub fn add_module(
-        &mut self,
-        rack: ModRack,
-        pos_mode: AddMode,
-        type_id: ItemTypeId,
-        state: ModuleState,
-    ) -> Module<'_> {
-        let module_uid = self
-            .sol
-            .internal_add_module(self.uid, rack, pos_mode, type_id.into_aid(), state, None, None);
-        Module::new(self.sol, module_uid)
     }
 }

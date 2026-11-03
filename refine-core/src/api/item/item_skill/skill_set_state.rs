@@ -1,5 +1,21 @@
 use crate::{Skill, SolarSystem, sol::UndoStep, ud::UItemId};
 
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Public
+////////////////////////////////////////////////////////////////////////////////////////////////////
+impl<'s> Skill<'s> {
+    pub fn set_state(&mut self, state: bool) {
+        let u_skill = self.sol.u_data.items.get(self.uid).dc_skill().unwrap();
+        if state == u_skill.get_skill_state() {
+            return;
+        }
+        self.sol.internal_set_skill_state(self.uid, state)
+    }
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Private
+////////////////////////////////////////////////////////////////////////////////////////////////////
 impl SolarSystem {
     pub(in crate::api) fn internal_set_skill_state(&mut self, skill_uid: UItemId, state: bool) {
         let u_skill = self.u_data.items.get_mut(skill_uid).dc_skill_mut().unwrap();
@@ -19,15 +35,5 @@ impl SolarSystem {
             new_a_state,
             &self.reuse.eupdates,
         );
-    }
-}
-
-impl<'s> Skill<'s> {
-    pub fn set_state(&mut self, state: bool) {
-        let u_skill = self.sol.u_data.items.get(self.uid).dc_skill().unwrap();
-        if state == u_skill.get_skill_state() {
-            return;
-        }
-        self.sol.internal_set_skill_state(self.uid, state)
     }
 }

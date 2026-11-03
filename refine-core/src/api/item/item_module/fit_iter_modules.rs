@@ -2,19 +2,13 @@ use lender::{ExactSizeLender, Lender, Lending, check_covariance};
 
 use crate::{Fit, ModRack, Module, SolarSystem, ud::UItemId};
 
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Public
+////////////////////////////////////////////////////////////////////////////////////////////////////
 pub struct ModuleIter<'iter> {
     sol: &'iter mut SolarSystem,
     module_uids: Vec<Option<UItemId>>,
     index: usize,
-}
-impl<'iter> ModuleIter<'iter> {
-    fn new(sol: &'iter mut SolarSystem, module_uids: Vec<Option<UItemId>>) -> Self {
-        Self {
-            sol,
-            module_uids,
-            index: 0,
-        }
-    }
 }
 impl<'iter, 'lend> Lending<'lend> for ModuleIter<'iter> {
     type Lend = Option<Module<'lend>>;
@@ -45,5 +39,18 @@ impl<'s> Fit<'s> {
         };
         let module_uids = u_module_vec.iter_all().collect();
         ModuleIter::new(self.sol, module_uids)
+    }
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Private
+////////////////////////////////////////////////////////////////////////////////////////////////////
+impl<'iter> ModuleIter<'iter> {
+    fn new(sol: &'iter mut SolarSystem, module_uids: Vec<Option<UItemId>>) -> Self {
+        Self {
+            sol,
+            module_uids,
+            index: 0,
+        }
     }
 }

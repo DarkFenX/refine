@@ -7,22 +7,15 @@ use crate::{
     ud::UItemId,
 };
 
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Public
+////////////////////////////////////////////////////////////////////////////////////////////////////
 /// Lending iterator for side effects
 pub struct SideEffectIter<'iter> {
     sol: &'iter mut SolarSystem,
     item_uid: UItemId,
     effects_with_chances: Vec<(AEffectId, AAttrId)>,
     index: usize,
-}
-impl<'iter> SideEffectIter<'iter> {
-    fn new(sol: &'iter mut SolarSystem, item_uid: UItemId, effects_with_chances: Vec<(AEffectId, AAttrId)>) -> Self {
-        Self {
-            sol,
-            item_uid,
-            effects_with_chances,
-            index: 0,
-        }
-    }
 }
 impl<'iter, 'lend> Lending<'lend> for SideEffectIter<'iter> {
     type Lend = SideEffect<'lend>;
@@ -59,5 +52,19 @@ impl<'s> Booster<'s> {
             })
             .collect();
         SideEffectIter::new(self.sol, self.uid, effects_with_chances)
+    }
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Private
+////////////////////////////////////////////////////////////////////////////////////////////////////
+impl<'iter> SideEffectIter<'iter> {
+    fn new(sol: &'iter mut SolarSystem, item_uid: UItemId, effects_with_chances: Vec<(AEffectId, AAttrId)>) -> Self {
+        Self {
+            sol,
+            item_uid,
+            effects_with_chances,
+            index: 0,
+        }
     }
 }

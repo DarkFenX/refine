@@ -1,5 +1,18 @@
 use crate::{ItemTypeId, Ship, SolarSystem, ad::AItemId, sol::UndoStep, ud::UItemId};
 
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Public
+////////////////////////////////////////////////////////////////////////////////////////////////////
+impl<'s> Ship<'s> {
+    /// Set type ID, replacing currently used EVE item by another, preserving all the user data.
+    pub fn set_type_id(&mut self, type_id: ItemTypeId) {
+        self.sol.internal_set_ship_type_aid(self.uid, type_id.into_aid())
+    }
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Private
+////////////////////////////////////////////////////////////////////////////////////////////////////
 impl SolarSystem {
     pub(in crate::api) fn internal_set_ship_type_aid(&mut self, ship_uid: UItemId, type_aid: AItemId) {
         let u_item = self.u_data.items.get(ship_uid);
@@ -38,12 +51,5 @@ impl SolarSystem {
             }
         }
         SolarSystem::util_add_ship(&mut self.u_data, &mut self.svc, ship_uid, &mut self.reuse.eupdates);
-    }
-}
-
-impl<'s> Ship<'s> {
-    /// Set type ID, replacing currently used EVE item by another, preserving all the user data.
-    pub fn set_type_id(&mut self, type_id: ItemTypeId) {
-        self.sol.internal_set_ship_type_aid(self.uid, type_id.into_aid())
     }
 }

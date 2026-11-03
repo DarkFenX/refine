@@ -2,23 +2,15 @@ use lender::{ExactSizeLender, Lender, Lending, check_covariance};
 
 use crate::{Proj, SolarSystem, api::item::shared::proj::iter_projectee_uids, ud::UItemId};
 
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Public
+////////////////////////////////////////////////////////////////////////////////////////////////////
 /// Lending iterator for non-ranged projections
 pub struct ProjIter<'iter> {
     sol: &'iter mut SolarSystem,
     item_uid: UItemId,
     projectee_uids: Vec<UItemId>,
     index: usize,
-}
-impl<'iter> ProjIter<'iter> {
-    pub(in crate::api) fn new(sol: &'iter mut SolarSystem, item_uid: UItemId) -> Self {
-        let projectee_uids = iter_projectee_uids(sol, item_uid).collect();
-        Self {
-            sol,
-            item_uid,
-            projectee_uids,
-            index: 0,
-        }
-    }
 }
 impl<'iter, 'lend> Lending<'lend> for ProjIter<'iter> {
     type Lend = Proj<'lend>;
@@ -38,3 +30,18 @@ impl<'iter> Lender for ProjIter<'iter> {
     }
 }
 impl<'iter> ExactSizeLender for ProjIter<'iter> {}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Private
+////////////////////////////////////////////////////////////////////////////////////////////////////
+impl<'iter> ProjIter<'iter> {
+    pub(in crate::api) fn new(sol: &'iter mut SolarSystem, item_uid: UItemId) -> Self {
+        let projectee_uids = iter_projectee_uids(sol, item_uid).collect();
+        Self {
+            sol,
+            item_uid,
+            projectee_uids,
+            index: 0,
+        }
+    }
+}

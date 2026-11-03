@@ -3,6 +3,9 @@ use crate::{
     err::{ItemKindMatchError, basic::ItemFoundError},
 };
 
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Public
+////////////////////////////////////////////////////////////////////////////////////////////////////
 impl SolarSystem {
     pub fn get_subsystem(&mut self, item_id: &ItemId) -> Result<Subsystem<'_>, SubsystemGetError> {
         let subsystem_uid = self.u_data.items.int_id_by_ext_id_err(item_id)?;

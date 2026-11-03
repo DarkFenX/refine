@@ -3,16 +3,9 @@ use crate::{
     ud::{UItem, UItemId, err::ItemMutatedError},
 };
 
-impl SolarSystem {
-    pub(in crate::api) fn internal_remove_item_mutation(&mut self, item_uid: UItemId) -> Result<(), ItemMutatedError> {
-        match self.u_data.items.get(item_uid) {
-            UItem::Drone(..) => self.internal_remove_drone_mutation(item_uid),
-            UItem::Module(..) => self.internal_remove_module_mutation(item_uid),
-            _ => unreachable!("unmutable item kind is used in mutation"),
-        }
-    }
-}
-
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Public
+////////////////////////////////////////////////////////////////////////////////////////////////////
 impl<'s> Mutation<'s> {
     pub fn remove(self) {
         match self {
@@ -31,5 +24,18 @@ impl<'s> EffectiveMutation<'s> {
 impl<'s> DormantMutation<'s> {
     pub fn remove(self) {
         self.sol.internal_remove_item_mutation(self.item_uid).unwrap();
+    }
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Private
+////////////////////////////////////////////////////////////////////////////////////////////////////
+impl SolarSystem {
+    pub(in crate::api) fn internal_remove_item_mutation(&mut self, item_uid: UItemId) -> Result<(), ItemMutatedError> {
+        match self.u_data.items.get(item_uid) {
+            UItem::Drone(..) => self.internal_remove_drone_mutation(item_uid),
+            UItem::Module(..) => self.internal_remove_module_mutation(item_uid),
+            _ => unreachable!("unmutable item kind is used in mutation"),
+        }
     }
 }

@@ -1,5 +1,18 @@
 use crate::{ItemTypeId, ProjEffect, SolarSystem, ad::AItemId, sol::UndoStep, ud::UItemId};
 
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Public
+////////////////////////////////////////////////////////////////////////////////////////////////////
+impl<'s> ProjEffect<'s> {
+    /// Set type ID, replacing currently used EVE item by another, preserving all the user data.
+    pub fn set_type_id(&mut self, type_id: ItemTypeId) {
+        self.sol.internal_set_proj_effect_type_aid(self.uid, type_id.into_aid())
+    }
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Private
+////////////////////////////////////////////////////////////////////////////////////////////////////
 impl SolarSystem {
     pub(in crate::api) fn internal_set_proj_effect_type_aid(&mut self, proj_effect_uid: UItemId, type_aid: AItemId) {
         let u_item = self.u_data.items.get(proj_effect_uid);
@@ -25,12 +38,5 @@ impl SolarSystem {
             proj_effect_uid,
             &mut self.reuse.eupdates,
         );
-    }
-}
-
-impl<'s> ProjEffect<'s> {
-    /// Set type ID, replacing currently used EVE item by another, preserving all the user data.
-    pub fn set_type_id(&mut self, type_id: ItemTypeId) {
-        self.sol.internal_set_proj_effect_type_aid(self.uid, type_id.into_aid())
     }
 }

@@ -1,5 +1,21 @@
 use crate::{Fighter, RearmMinion, SolarSystem, sol::UndoStep, ud::UItemId};
 
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Public
+////////////////////////////////////////////////////////////////////////////////////////////////////
+impl<'s> Fighter<'s> {
+    /// Force the fighter squad's rearm behavior.
+    ///
+    /// Solar system's default is used when override is not set.
+    pub fn set_rearm_minion_override(&mut self, rearm_minion_override: Option<RearmMinion>) {
+        self.sol
+            .internal_set_fighter_rearm_minion_override(self.uid, rearm_minion_override);
+    }
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Private
+////////////////////////////////////////////////////////////////////////////////////////////////////
 impl SolarSystem {
     pub(in crate::api) fn internal_set_fighter_rearm_minion_override(
         &mut self,
@@ -18,15 +34,5 @@ impl SolarSystem {
             ));
         }
         u_fighter.set_rearm_minion_override(rearm_minion_override);
-    }
-}
-
-impl<'s> Fighter<'s> {
-    /// Force the fighter squad's rearm behavior.
-    ///
-    /// Solar system's default is used when override is not set.
-    pub fn set_rearm_minion_override(&mut self, rearm_minion_override: Option<RearmMinion>) {
-        self.sol
-            .internal_set_fighter_rearm_minion_override(self.uid, rearm_minion_override);
     }
 }

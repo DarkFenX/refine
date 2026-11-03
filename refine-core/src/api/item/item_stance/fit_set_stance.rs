@@ -5,6 +5,20 @@ use crate::{
     ud::{UFitId, UItem, UItemId, UStance},
 };
 
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Public
+////////////////////////////////////////////////////////////////////////////////////////////////////
+impl<'s> Fit<'s> {
+    /// Set stance, replacing current one with a new item.
+    pub fn set_stance(&mut self, type_id: ItemTypeId) -> Stance<'_> {
+        let stance_uid = self.sol.internal_set_fit_stance(self.uid, type_id.into_aid());
+        Stance::new(self.sol, stance_uid)
+    }
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Private
+////////////////////////////////////////////////////////////////////////////////////////////////////
 impl SolarSystem {
     pub(in crate::api) fn internal_set_fit_stance(&mut self, fit_uid: UFitId, type_aid: AItemId) -> UItemId {
         let u_fit = self.u_data.fits.get(fit_uid);
@@ -33,13 +47,5 @@ impl SolarSystem {
         let u_fit = self.u_data.fits.get_mut(fit_uid);
         u_fit.stance = Some(stance_uid);
         SolarSystem::util_add_stance(&mut self.u_data, &mut self.svc, stance_uid, &mut self.reuse.eupdates);
-    }
-}
-
-impl<'s> Fit<'s> {
-    /// Set stance, replacing current one with a new item.
-    pub fn set_stance(&mut self, type_id: ItemTypeId) -> Stance<'_> {
-        let stance_uid = self.sol.internal_set_fit_stance(self.uid, type_id.into_aid());
-        Stance::new(self.sol, stance_uid)
     }
 }

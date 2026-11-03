@@ -1,5 +1,21 @@
 use crate::{SolarSystem, Stance, sol::UndoStep, ud::UItemId};
 
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Public
+////////////////////////////////////////////////////////////////////////////////////////////////////
+impl<'s> Stance<'s> {
+    pub fn set_state(&mut self, state: bool) {
+        let u_stance = self.sol.u_data.items.get(self.uid).dc_stance().unwrap();
+        if state == u_stance.get_stance_state() {
+            return;
+        }
+        self.sol.internal_set_stance_state(self.uid, state)
+    }
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Private
+////////////////////////////////////////////////////////////////////////////////////////////////////
 impl SolarSystem {
     pub(in crate::api) fn internal_set_stance_state(&mut self, stance_uid: UItemId, state: bool) {
         let u_stance = self.u_data.items.get_mut(stance_uid).dc_stance_mut().unwrap();
@@ -19,15 +35,5 @@ impl SolarSystem {
             new_a_state,
             &self.reuse.eupdates,
         );
-    }
-}
-
-impl<'s> Stance<'s> {
-    pub fn set_state(&mut self, state: bool) {
-        let u_stance = self.sol.u_data.items.get(self.uid).dc_stance().unwrap();
-        if state == u_stance.get_stance_state() {
-            return;
-        }
-        self.sol.internal_set_stance_state(self.uid, state)
     }
 }

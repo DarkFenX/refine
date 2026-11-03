@@ -1,5 +1,20 @@
 use crate::{CountNz, Fighter, SolarSystem, sol::UndoStep, ud::UItemId};
 
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Public
+////////////////////////////////////////////////////////////////////////////////////////////////////
+impl<'s> Fighter<'s> {
+    /// Force the fighter squad to have passed fighter count.
+    ///
+    /// Max supported count is used when override is not set.
+    pub fn set_count_override(&mut self, count_override: Option<CountNz>) {
+        self.sol.internal_set_fighter_count_override(self.uid, count_override);
+    }
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Private
+////////////////////////////////////////////////////////////////////////////////////////////////////
 impl SolarSystem {
     pub(in crate::api) fn internal_set_fighter_count_override(
         &mut self,
@@ -25,14 +40,5 @@ impl SolarSystem {
             self.svc
                 .notify_fighter_count_changed(&self.u_data, fighter_uid, u_fighter);
         }
-    }
-}
-
-impl<'s> Fighter<'s> {
-    /// Force the fighter squad to have passed fighter count.
-    ///
-    /// Max supported count is used when override is not set.
-    pub fn set_count_override(&mut self, count_override: Option<CountNz>) {
-        self.sol.internal_set_fighter_count_override(self.uid, count_override);
     }
 }

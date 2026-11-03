@@ -1,5 +1,21 @@
 use crate::{ProjEffect, SolarSystem, sol::UndoStep, ud::UItemId};
 
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Public
+////////////////////////////////////////////////////////////////////////////////////////////////////
+impl<'s> ProjEffect<'s> {
+    pub fn set_state(&mut self, state: bool) {
+        let u_proj_effect = self.sol.u_data.items.get(self.uid).dc_proj_effect().unwrap();
+        if state == u_proj_effect.get_proj_effect_state() {
+            return;
+        }
+        self.sol.internal_set_proj_effect_state(self.uid, state)
+    }
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Private
+////////////////////////////////////////////////////////////////////////////////////////////////////
 impl SolarSystem {
     pub(in crate::api) fn internal_set_proj_effect_state(&mut self, proj_effect_uid: UItemId, state: bool) {
         let u_proj_effect = self.u_data.items.get_mut(proj_effect_uid).dc_proj_effect_mut().unwrap();
@@ -21,15 +37,5 @@ impl SolarSystem {
             new_a_state,
             &self.reuse.eupdates,
         );
-    }
-}
-
-impl<'s> ProjEffect<'s> {
-    pub fn set_state(&mut self, state: bool) {
-        let u_proj_effect = self.sol.u_data.items.get(self.uid).dc_proj_effect().unwrap();
-        if state == u_proj_effect.get_proj_effect_state() {
-            return;
-        }
-        self.sol.internal_set_proj_effect_state(self.uid, state)
     }
 }

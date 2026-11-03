@@ -4,6 +4,9 @@ use itertools::Itertools;
 
 use crate::{Fit, ItemTypeId, svc::vast::ValOptionsInt, val::ValOptions};
 
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Public
+////////////////////////////////////////////////////////////////////////////////////////////////////
 impl<'s> Fit<'s> {
     pub fn benchmark_try_items(&mut self, type_ids: &[ItemTypeId], val_options: &ValOptions, iterations: usize) {
         let type_aids = type_ids.iter().map(|v| v.into_aid()).collect_vec();

@@ -3,28 +3,10 @@ use crate::{
     ProjEffect, Rig, Service, Ship, Skill, Stance, Subsystem, SwEffect, err::ItemKindMatchError,
 };
 
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Public
+////////////////////////////////////////////////////////////////////////////////////////////////////
 impl<'s> Item<'s> {
-    fn get_item_kind(&self) -> ItemKind {
-        match self {
-            Self::Autocharge(..) => ItemKind::Autocharge,
-            Self::Booster(..) => ItemKind::Booster,
-            Self::Character(..) => ItemKind::Character,
-            Self::Charge(..) => ItemKind::Charge,
-            Self::Drone(..) => ItemKind::Drone,
-            Self::Fighter(..) => ItemKind::Fighter,
-            Self::FwEffect(..) => ItemKind::FwEffect,
-            Self::Implant(..) => ItemKind::Implant,
-            Self::Module(..) => ItemKind::Module,
-            Self::ProjEffect(..) => ItemKind::ProjEffect,
-            Self::Rig(..) => ItemKind::Rig,
-            Self::Service(..) => ItemKind::Service,
-            Self::Ship(..) => ItemKind::Ship,
-            Self::Skill(..) => ItemKind::Skill,
-            Self::Stance(..) => ItemKind::Stance,
-            Self::Subsystem(..) => ItemKind::Subsystem,
-            Self::SwEffect(..) => ItemKind::SwEffect,
-        }
-    }
     pub fn dc_autocharge(&mut self) -> Result<&mut Autocharge<'s>, ItemKindMatchError> {
         match self {
             Self::Autocharge(autocharge) => Ok(autocharge),
@@ -193,6 +175,33 @@ impl<'s> Item<'s> {
                 expected_kind: ItemKind::SwEffect,
                 actual_kind: self.get_item_kind(),
             }),
+        }
+    }
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Private
+////////////////////////////////////////////////////////////////////////////////////////////////////
+impl<'s> Item<'s> {
+    fn get_item_kind(&self) -> ItemKind {
+        match self {
+            Self::Autocharge(..) => ItemKind::Autocharge,
+            Self::Booster(..) => ItemKind::Booster,
+            Self::Character(..) => ItemKind::Character,
+            Self::Charge(..) => ItemKind::Charge,
+            Self::Drone(..) => ItemKind::Drone,
+            Self::Fighter(..) => ItemKind::Fighter,
+            Self::FwEffect(..) => ItemKind::FwEffect,
+            Self::Implant(..) => ItemKind::Implant,
+            Self::Module(..) => ItemKind::Module,
+            Self::ProjEffect(..) => ItemKind::ProjEffect,
+            Self::Rig(..) => ItemKind::Rig,
+            Self::Service(..) => ItemKind::Service,
+            Self::Ship(..) => ItemKind::Ship,
+            Self::Skill(..) => ItemKind::Skill,
+            Self::Stance(..) => ItemKind::Stance,
+            Self::Subsystem(..) => ItemKind::Subsystem,
+            Self::SwEffect(..) => ItemKind::SwEffect,
         }
     }
 }

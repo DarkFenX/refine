@@ -8,6 +8,20 @@ use crate::{
     ud::{UItemId, UProjData},
 };
 
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Public
+////////////////////////////////////////////////////////////////////////////////////////////////////
+impl<'s> Drone<'s> {
+    pub fn add_proj(&mut self, projectee_item_id: &ItemId) -> Result<RangedProj<'_>, ProjAddError> {
+        let projectee_uid = self.sol.u_data.items.int_id_by_ext_id_err(projectee_item_id)?;
+        self.sol.internal_add_drone_proj(self.uid, projectee_uid)?;
+        Ok(RangedProj::new(self.sol, self.uid, projectee_uid))
+    }
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Private
+////////////////////////////////////////////////////////////////////////////////////////////////////
 impl SolarSystem {
     pub(in crate::api) fn internal_add_drone_proj(
         &mut self,
@@ -50,13 +64,5 @@ impl SolarSystem {
             self.undo.record(UndoStep::ProjAdded(drone_uid, projectee_uid));
         }
         Ok(())
-    }
-}
-
-impl<'s> Drone<'s> {
-    pub fn add_proj(&mut self, projectee_item_id: &ItemId) -> Result<RangedProj<'_>, ProjAddError> {
-        let projectee_uid = self.sol.u_data.items.int_id_by_ext_id_err(projectee_item_id)?;
-        self.sol.internal_add_drone_proj(self.uid, projectee_uid)?;
-        Ok(RangedProj::new(self.sol, self.uid, projectee_uid))
     }
 }

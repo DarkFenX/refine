@@ -4,6 +4,22 @@ use crate::{
     ud::{UItem, UItemId},
 };
 
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Public
+////////////////////////////////////////////////////////////////////////////////////////////////////
+#[derive(Debug, thiserror::Error)]
+pub enum ProjAddError {
+    #[error(transparent)]
+    ProjecteeNotFound(#[from] ItemFoundError),
+    #[error(transparent)]
+    ProjecteeCantTakeProjs(#[from] ItemReceiveProjError),
+    #[error(transparent)]
+    ProjectionAlreadyExists(#[from] ProjNotFoundError),
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Private
+////////////////////////////////////////////////////////////////////////////////////////////////////
 impl SolarSystem {
     pub(in crate::api) fn internal_add_projection(
         &mut self,
@@ -19,14 +35,4 @@ impl SolarSystem {
             _ => unreachable!("unprojectable item kind is used in projection"),
         }
     }
-}
-
-#[derive(Debug, thiserror::Error)]
-pub enum ProjAddError {
-    #[error(transparent)]
-    ProjecteeNotFound(#[from] ItemFoundError),
-    #[error(transparent)]
-    ProjecteeCantTakeProjs(#[from] ItemReceiveProjError),
-    #[error(transparent)]
-    ProjectionAlreadyExists(#[from] ProjNotFoundError),
 }

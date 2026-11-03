@@ -8,27 +8,8 @@ use crate::{
     ud::ProjecteeUidError,
 };
 
-impl<'s> Fit<'s> {
-    pub(super) fn get_character_for_stats(&mut self) -> Result<Character<'_>, FitHasCharacterError> {
-        let Some(char_uid) = self.sol.u_data.fits.get(self.uid).character else {
-            return Err(FitHasCharacterError {
-                fit_id: self.sol.u_data.fits.ext_id_by_int_id(self.uid),
-            });
-        };
-        Ok(Character::new(self.sol, char_uid))
-    }
-    pub(super) fn get_ship_for_stats(&mut self) -> Result<Ship<'_>, FitHasShipError> {
-        let Some(ship_uid) = self.sol.u_data.fits.get(self.uid).ship else {
-            return Err(FitHasShipError {
-                fit_id: self.sol.u_data.fits.ext_id_by_int_id(self.uid),
-            });
-        };
-        Ok(Ship::new(self.sol, ship_uid))
-    }
-}
-
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-// Fit errors
+// Public - fit errors
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 #[derive(Clone, Debug, thiserror::Error)]
 pub enum StatFitAppliedError {
@@ -48,7 +29,7 @@ impl From<ProjecteeUidError> for StatFitAppliedError {
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-// Fit ship errors
+// Public - fit ship errors
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 #[derive(Clone, Debug, thiserror::Error)]
 pub enum StatFitShipError<SS>
@@ -113,7 +94,7 @@ where
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-// Fit character errors
+// Public - fit character errors
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 #[derive(Clone, Debug, thiserror::Error)]
 pub enum StatFitCharacterError<SS>
@@ -140,5 +121,27 @@ where
             StatItemError::UnsupportedStat(err) => err.into(),
             StatItemError::StatSpecific(err) => Self::StatSpecific(err),
         }
+    }
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Private
+////////////////////////////////////////////////////////////////////////////////////////////////////
+impl<'s> Fit<'s> {
+    pub(super) fn get_character_for_stats(&mut self) -> Result<Character<'_>, FitHasCharacterError> {
+        let Some(char_uid) = self.sol.u_data.fits.get(self.uid).character else {
+            return Err(FitHasCharacterError {
+                fit_id: self.sol.u_data.fits.ext_id_by_int_id(self.uid),
+            });
+        };
+        Ok(Character::new(self.sol, char_uid))
+    }
+    pub(super) fn get_ship_for_stats(&mut self) -> Result<Ship<'_>, FitHasShipError> {
+        let Some(ship_uid) = self.sol.u_data.fits.get(self.uid).ship else {
+            return Err(FitHasShipError {
+                fit_id: self.sol.u_data.fits.ext_id_by_int_id(self.uid),
+            });
+        };
+        Ok(Ship::new(self.sol, ship_uid))
     }
 }

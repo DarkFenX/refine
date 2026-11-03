@@ -3,6 +3,9 @@ use crate::{
     ud::UItemId,
 };
 
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Public
+////////////////////////////////////////////////////////////////////////////////////////////////////
 impl<'s> Mutation<'s> {
     /// Mutate an attribute with a roll quality.
     ///
@@ -36,6 +39,15 @@ impl<'s> DormantMutation<'s> {
     }
 }
 
+#[derive(Debug, thiserror::Error)]
+pub enum AttrMutateRawError {
+    #[error("attribute {1} on item {0} already contains mutation data")]
+    AlreadyMutated(ItemId, AttrId),
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Private
+////////////////////////////////////////////////////////////////////////////////////////////////////
 fn mutate_raw(
     sol: &mut SolarSystem,
     item_uid: UItemId,
@@ -61,10 +73,4 @@ fn mutate_raw(
             Ok(raw_mattr)
         }
     }
-}
-
-#[derive(Debug, thiserror::Error)]
-pub enum AttrMutateRawError {
-    #[error("attribute {1} on item {0} already contains mutation data")]
-    AlreadyMutated(ItemId, AttrId),
 }

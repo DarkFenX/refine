@@ -1,5 +1,8 @@
 use crate::{AttrId, EffectiveMutation, FullMAttr, ItemId, ItemTypeId, err::basic::AttrFoundError};
 
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Public
+////////////////////////////////////////////////////////////////////////////////////////////////////
 impl<'s> EffectiveMutation<'s> {
     /// Get mutation's full mutated attribute for requested attribute ID.
     pub fn get_full_mattr(&mut self, attr_id: AttrId) -> Result<FullMAttr<'_>, FullMAttrGetError> {

@@ -4,14 +4,14 @@ use crate::{
     ud::{UCharge, UItemId},
 };
 
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Public
+////////////////////////////////////////////////////////////////////////////////////////////////////
 pub struct Charge<'s> {
     pub(super) sol: &'s mut SolarSystem,
     pub(super) uid: UItemId,
 }
 impl<'s> Charge<'s> {
-    pub(in crate::api) fn new(sol: &'s mut SolarSystem, uid: UItemId) -> Self {
-        Self { sol, uid }
-    }
     pub fn get_fit_id(&self) -> FitId {
         let fit_uid = get_u_charge(self.sol, self.uid).get_fit_uid();
         self.sol.u_data.fits.ext_id_by_int_id(fit_uid)
@@ -22,6 +22,16 @@ impl<'s> Charge<'s> {
     }
     pub fn get_state(&self) -> bool {
         !get_u_charge(self.sol, self.uid).get_force_disabled()
+    }
+}
+impl<'s> ItemCommon for Charge<'s> {}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Private
+////////////////////////////////////////////////////////////////////////////////////////////////////
+impl<'s> Charge<'s> {
+    pub(in crate::api) fn new(sol: &'s mut SolarSystem, uid: UItemId) -> Self {
+        Self { sol, uid }
     }
 }
 impl<'s> ItemSealed for Charge<'s> {
@@ -35,7 +45,6 @@ impl<'s> ItemSealed for Charge<'s> {
         self.sol
     }
 }
-impl<'s> ItemCommon for Charge<'s> {}
 
 fn get_u_charge(sol: &SolarSystem, charge_uid: UItemId) -> &UCharge {
     sol.u_data.items.get(charge_uid).dc_charge().unwrap()

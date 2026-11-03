@@ -4,6 +4,50 @@ use crate::{
     ud::{UItem, UItemId},
 };
 
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Public
+////////////////////////////////////////////////////////////////////////////////////////////////////
+impl<'s> Item<'s> {
+    /// Remove item.
+    ///
+    /// Removal mode is used only for modules.
+    pub fn remove(self, pos_mode: RemoveMode) -> Result<(), ItemRemoveError> {
+        match self {
+            // Autocharge can not be removed no matter what
+            Item::Autocharge(..) => {
+                return Err(ItemRemoveError::UnremovableAutocharge);
+            }
+            // For the rest, delegate to per-item removal methods
+            Item::Booster(booster) => booster.remove(),
+            Item::Character(character) => character.remove(),
+            Item::Charge(charge) => charge.remove(),
+            Item::Drone(drone) => drone.remove(),
+            Item::Fighter(fighter) => fighter.remove(),
+            Item::FwEffect(fw_effect) => fw_effect.remove(),
+            Item::Implant(implant) => implant.remove(),
+            Item::Module(module) => module.remove(pos_mode),
+            Item::ProjEffect(proj_effect) => proj_effect.remove(),
+            Item::Rig(rig) => rig.remove(),
+            Item::Service(service) => service.remove(),
+            Item::Ship(ship) => ship.remove(),
+            Item::Skill(skill) => skill.remove(),
+            Item::Stance(stance) => stance.remove(),
+            Item::Subsystem(subsystem) => subsystem.remove(),
+            Item::SwEffect(sw_effect) => sw_effect.remove(),
+        }
+        Ok(())
+    }
+}
+
+#[derive(Debug, thiserror::Error)]
+pub enum ItemRemoveError {
+    #[error("autocharge cannot be manually removed")]
+    UnremovableAutocharge,
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Private
+////////////////////////////////////////////////////////////////////////////////////////////////////
 impl SolarSystem {
     pub(in crate::api) fn internal_remove_item(
         &mut self,
@@ -61,42 +105,4 @@ impl SolarSystem {
             }
         }
     }
-}
-
-impl<'s> Item<'s> {
-    /// Remove item.
-    ///
-    /// Removal mode is used only for modules.
-    pub fn remove(self, pos_mode: RemoveMode) -> Result<(), ItemRemoveError> {
-        match self {
-            // Autocharge can not be removed no matter what
-            Item::Autocharge(..) => {
-                return Err(ItemRemoveError::UnremovableAutocharge);
-            }
-            // For the rest, delegate to per-item removal methods
-            Item::Booster(booster) => booster.remove(),
-            Item::Character(character) => character.remove(),
-            Item::Charge(charge) => charge.remove(),
-            Item::Drone(drone) => drone.remove(),
-            Item::Fighter(fighter) => fighter.remove(),
-            Item::FwEffect(fw_effect) => fw_effect.remove(),
-            Item::Implant(implant) => implant.remove(),
-            Item::Module(module) => module.remove(pos_mode),
-            Item::ProjEffect(proj_effect) => proj_effect.remove(),
-            Item::Rig(rig) => rig.remove(),
-            Item::Service(service) => service.remove(),
-            Item::Ship(ship) => ship.remove(),
-            Item::Skill(skill) => skill.remove(),
-            Item::Stance(stance) => stance.remove(),
-            Item::Subsystem(subsystem) => subsystem.remove(),
-            Item::SwEffect(sw_effect) => sw_effect.remove(),
-        }
-        Ok(())
-    }
-}
-
-#[derive(Debug, thiserror::Error)]
-pub enum ItemRemoveError {
-    #[error("autocharge cannot be manually removed")]
-    UnremovableAutocharge,
 }

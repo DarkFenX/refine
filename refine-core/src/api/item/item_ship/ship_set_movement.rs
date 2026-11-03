@@ -1,5 +1,19 @@
 use crate::{Movement, PValue, Ship, SolarSystem, misc::Xyz, sol::UndoStep, ud::UItemId};
 
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Public
+////////////////////////////////////////////////////////////////////////////////////////////////////
+impl<'s> Ship<'s> {
+    /// Set ship movement.
+    pub fn set_movement(&mut self, movement: Movement) {
+        self.sol
+            .internal_set_ship_movement(self.uid, movement.direction.into_xyz(), movement.speed);
+    }
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Private
+////////////////////////////////////////////////////////////////////////////////////////////////////
 impl SolarSystem {
     pub(in crate::api) fn internal_set_ship_movement(&mut self, ship_uid: UItemId, direction: Xyz, speed: PValue) {
         let u_ship = self.u_data.items.get_mut(ship_uid).dc_ship_mut().unwrap();
@@ -14,13 +28,5 @@ impl SolarSystem {
         ship_u_physics.direction = direction;
         ship_u_physics.speed = speed;
         SolarSystem::util_update_ship_physics(&mut self.u_data, &self.rev_projs, &mut self.svc, ship_uid);
-    }
-}
-
-impl<'s> Ship<'s> {
-    /// Set ship movement.
-    pub fn set_movement(&mut self, movement: Movement) {
-        self.sol
-            .internal_set_ship_movement(self.uid, movement.direction.into_xyz(), movement.speed);
     }
 }

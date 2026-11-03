@@ -1,5 +1,17 @@
 use crate::{ProjEffect, SolarSystem, sol::UndoStep, ud::UItemId};
 
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Public
+////////////////////////////////////////////////////////////////////////////////////////////////////
+impl<'s> ProjEffect<'s> {
+    pub fn remove(self) {
+        self.sol.internal_remove_proj_effect(self.uid)
+    }
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Private
+////////////////////////////////////////////////////////////////////////////////////////////////////
 impl SolarSystem {
     pub(in crate::api) fn internal_remove_proj_effect(&mut self, proj_effect_uid: UItemId) {
         // Remove outgoing projections; effect keeps them, in case it gets reattached
@@ -17,11 +29,5 @@ impl SolarSystem {
         // Remove effect from user data
         self.u_data.proj_effects.remove(&proj_effect_uid);
         self.internal_discard_item(proj_effect_uid, UndoStep::ProjEffectRemoved);
-    }
-}
-
-impl<'s> ProjEffect<'s> {
-    pub fn remove(self) {
-        self.sol.internal_remove_proj_effect(self.uid)
     }
 }

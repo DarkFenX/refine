@@ -5,6 +5,20 @@ use crate::{
     ud::{UCharge, UItem, UItemId},
 };
 
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Public
+////////////////////////////////////////////////////////////////////////////////////////////////////
+impl<'s> Module<'s> {
+    /// Set charge, replacing current one with a new item.
+    pub fn set_charge_type_id(&mut self, charge_type_id: ItemTypeId) -> Charge<'_> {
+        let charge_uid = self.sol.internal_set_module_charge(self.uid, charge_type_id.into_aid());
+        Charge::new(self.sol, charge_uid)
+    }
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Private
+////////////////////////////////////////////////////////////////////////////////////////////////////
 impl SolarSystem {
     pub(in crate::api) fn internal_set_module_charge(
         &mut self,
@@ -73,13 +87,5 @@ impl SolarSystem {
         u_module.set_charge_uid(Some(charge_uid));
         // Update services
         SolarSystem::util_add_charge(&mut self.u_data, &mut self.svc, charge_uid, &mut self.reuse.eupdates);
-    }
-}
-
-impl<'s> Module<'s> {
-    /// Set charge, replacing current one with a new item.
-    pub fn set_charge_type_id(&mut self, charge_type_id: ItemTypeId) -> Charge<'_> {
-        let charge_uid = self.sol.internal_set_module_charge(self.uid, charge_type_id.into_aid());
-        Charge::new(self.sol, charge_uid)
     }
 }

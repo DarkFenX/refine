@@ -2,6 +2,9 @@ use crate::{
     AttrId, DormantMutation, EffectiveMutation, ItemId, Mutation, RawMAttr, SolarSystem, ad::AAttrId, ud::UItemId,
 };
 
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Public
+////////////////////////////////////////////////////////////////////////////////////////////////////
 impl<'s> Mutation<'s> {
     /// Get mutation's raw mutated attribute for requested attribute ID.
     pub fn get_raw_mattr(&mut self, attr_id: AttrId) -> Result<RawMAttr<'_>, RawMAttrGetError> {
@@ -26,6 +29,15 @@ impl<'s> DormantMutation<'s> {
     }
 }
 
+#[derive(Debug, thiserror::Error)]
+pub enum RawMAttrGetError {
+    #[error("attribute {1} on item {0} contains no mutation data")]
+    MutationNotFound(ItemId, AttrId),
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Private
+////////////////////////////////////////////////////////////////////////////////////////////////////
 fn get_raw_mattr(
     sol: &mut SolarSystem,
     item_uid: UItemId,
@@ -46,10 +58,4 @@ fn get_raw_mattr(
             AttrId::from_aid(attr_aid),
         )),
     }
-}
-
-#[derive(Debug, thiserror::Error)]
-pub enum RawMAttrGetError {
-    #[error("attribute {1} on item {0} contains no mutation data")]
-    MutationNotFound(ItemId, AttrId),
 }

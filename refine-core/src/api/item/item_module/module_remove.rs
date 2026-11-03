@@ -1,6 +1,18 @@
 use super::shared::get_fit_rack_mut;
 use crate::{Index, Module, RemoveMode, SolarSystem, sol::UndoStep, ud::UItemId};
 
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Public
+////////////////////////////////////////////////////////////////////////////////////////////////////
+impl<'s> Module<'s> {
+    pub fn remove(self, pos_mode: RemoveMode) {
+        self.sol.internal_remove_module(self.uid, pos_mode)
+    }
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Private
+////////////////////////////////////////////////////////////////////////////////////////////////////
 impl SolarSystem {
     pub(in crate::api) fn internal_remove_module(&mut self, module_uid: UItemId, pos_mode: RemoveMode) {
         let u_module = self.u_data.items.get(module_uid).dc_module().unwrap();
@@ -38,11 +50,5 @@ impl SolarSystem {
             self.internal_discard_child_item(charge_uid);
         }
         self.internal_discard_item(module_uid, |module_uid| UndoStep::ModuleRemoved(module_uid, pos_mode));
-    }
-}
-
-impl<'s> Module<'s> {
-    pub fn remove(self, pos_mode: RemoveMode) {
-        self.sol.internal_remove_module(self.uid, pos_mode)
     }
 }

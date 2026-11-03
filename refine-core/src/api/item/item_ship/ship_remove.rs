@@ -4,6 +4,18 @@ use crate::{
     ud::{UItemId, UShipKind},
 };
 
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Public
+////////////////////////////////////////////////////////////////////////////////////////////////////
+impl<'s> Ship<'s> {
+    pub fn remove(self) {
+        self.sol.internal_remove_ship(self.uid)
+    }
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Private
+////////////////////////////////////////////////////////////////////////////////////////////////////
 impl SolarSystem {
     pub(in crate::api) fn internal_remove_ship(&mut self, ship_uid: UItemId) {
         let u_ship = self.u_data.items.get(ship_uid).dc_ship().unwrap();
@@ -19,11 +31,5 @@ impl SolarSystem {
         self.internal_discard_item(ship_uid, UndoStep::ShipRemoved);
         // Update projections outgoing from on-ship items
         SolarSystem::util_update_ship_radius_for_outgoing_projs(&mut self.u_data, &mut self.svc, fit_uid, PValue::ZERO);
-    }
-}
-
-impl<'s> Ship<'s> {
-    pub fn remove(self) {
-        self.sol.internal_remove_ship(self.uid)
     }
 }

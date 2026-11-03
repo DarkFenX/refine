@@ -2,6 +2,9 @@ use lender::{ExactSizeLender, Lender, Lending, check_covariance};
 
 use crate::{DormantMutation, EffectiveMutation, Mutation, RawMAttr, SolarSystem, ad::AAttrId, ud::UItemId};
 
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Public
+////////////////////////////////////////////////////////////////////////////////////////////////////
 impl<'s> Mutation<'s> {
     /// Iterates over mutation's raw mutated attributes.
     pub fn iter_raw_mattrs(&mut self) -> RawMAttrIter<'_> {
@@ -33,6 +36,28 @@ pub struct RawMAttrIter<'iter> {
     attr_aids: Vec<AAttrId>,
     index: usize,
 }
+impl<'iter, 'lend> Lending<'lend> for RawMAttrIter<'iter> {
+    type Lend = RawMAttr<'lend>;
+}
+impl<'iter> Lender for RawMAttrIter<'iter> {
+    check_covariance!();
+
+    fn next(&mut self) -> Option<RawMAttr<'_>> {
+        let attr_aid = *self.attr_aids.get(self.index)?;
+        self.index += 1;
+        Some(RawMAttr::new(self.sol, self.item_uid, attr_aid))
+    }
+
+    fn size_hint(&self) -> (usize, Option<usize>) {
+        let remaining = self.attr_aids.len() - self.index;
+        (remaining, Some(remaining))
+    }
+}
+impl<'iter> ExactSizeLender for RawMAttrIter<'iter> {}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Private
+////////////////////////////////////////////////////////////////////////////////////////////////////
 impl<'iter> RawMAttrIter<'iter> {
     pub(in crate::api) fn new(sol: &'iter mut SolarSystem, item_uid: UItemId) -> Self {
         let attr_aids = sol
@@ -53,21 +78,3 @@ impl<'iter> RawMAttrIter<'iter> {
         }
     }
 }
-impl<'iter, 'lend> Lending<'lend> for RawMAttrIter<'iter> {
-    type Lend = RawMAttr<'lend>;
-}
-impl<'iter> Lender for RawMAttrIter<'iter> {
-    check_covariance!();
-
-    fn next(&mut self) -> Option<RawMAttr<'_>> {
-        let attr_aid = *self.attr_aids.get(self.index)?;
-        self.index += 1;
-        Some(RawMAttr::new(self.sol, self.item_uid, attr_aid))
-    }
-
-    fn size_hint(&self) -> (usize, Option<usize>) {
-        let remaining = self.attr_aids.len() - self.index;
-        (remaining, Some(remaining))
-    }
-}
-impl<'iter> ExactSizeLender for RawMAttrIter<'iter> {}

@@ -2,6 +2,18 @@ use itertools::Itertools;
 
 use crate::{Fit, RemoveMode, SolarSystem, sol::UndoStep, ud::UFitId};
 
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Public
+////////////////////////////////////////////////////////////////////////////////////////////////////
+impl<'s> Fit<'s> {
+    pub fn remove(self) {
+        self.sol.internal_remove_fit(self.uid);
+    }
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Private
+////////////////////////////////////////////////////////////////////////////////////////////////////
 impl SolarSystem {
     pub(in crate::api) fn internal_remove_fit(&mut self, fit_uid: UFitId) {
         self.internal_set_fit_fleet(fit_uid, None);
@@ -19,11 +31,5 @@ impl SolarSystem {
                 self.u_data.fits.remove(fit_uid);
             }
         }
-    }
-}
-
-impl<'s> Fit<'s> {
-    pub fn remove(self) {
-        self.sol.internal_remove_fit(self.uid);
     }
 }

@@ -5,6 +5,9 @@ use crate::{
     ad::{ACustomEffectId, ADogmaEffectId, AEffectId},
 };
 
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Public - general
+////////////////////////////////////////////////////////////////////////////////////////////////////
 /// ID of an effect.
 #[derive(Copy, Clone, Eq, PartialEq, Hash, Debug)]
 pub enum EffectId {
@@ -49,44 +52,8 @@ impl CustomEffectId {
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-// Conversions
+// Public - custom de/serialization
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-impl EffectId {
-    pub(crate) fn from_aid(effect_aid: AEffectId) -> Self {
-        match effect_aid {
-            AEffectId::Dogma(id) => Self::Dogma(DogmaEffectId(id.into_i32())),
-            AEffectId::SystemWide(id) => Self::SystemWide(ItemTypeId::from_aid(id)),
-            AEffectId::SystemEmitter(id) => Self::SystemEmitter(ItemTypeId::from_aid(id)),
-            AEffectId::ProxyEffect(id) => Self::ProxyEffect(ItemTypeId::from_aid(id)),
-            AEffectId::ProxyTrigger(id) => Self::ProxyTrigger(ItemTypeId::from_aid(id)),
-            AEffectId::ShipLink(id) => Self::ShipLink(ItemTypeId::from_aid(id)),
-            AEffectId::Custom(id) => Self::Custom(CustomEffectId(id.into_i32())),
-        }
-    }
-    pub(in crate::api) fn into_aid(self) -> AEffectId {
-        match self {
-            EffectId::Dogma(id) => AEffectId::Dogma(ADogmaEffectId::from_i32(id.0)),
-            EffectId::SystemWide(id) => AEffectId::SystemWide(id.into_aid()),
-            EffectId::SystemEmitter(id) => AEffectId::SystemEmitter(id.into_aid()),
-            EffectId::ProxyEffect(id) => AEffectId::ProxyEffect(id.into_aid()),
-            EffectId::ProxyTrigger(id) => AEffectId::ProxyTrigger(id.into_aid()),
-            EffectId::ShipLink(id) => AEffectId::ShipLink(id.into_aid()),
-            EffectId::Custom(id) => AEffectId::Custom(ACustomEffectId::from_i32(id.0)),
-        }
-    }
-}
-
-////////////////////////////////////////////////////////////////////////////////////////////////////
-// Custom de/serialization
-////////////////////////////////////////////////////////////////////////////////////////////////////
-const DOGMA_PREFIX: &str = "d";
-const SYSWIDE_PREFIX: &str = "sw";
-const SYSEMIT_PREFIX: &str = "se";
-const PROXYEFF_PREFIX: &str = "pe";
-const PROXYTRIG_PREFIX: &str = "pt";
-const SHIPLINK_PREFIX: &str = "sl";
-const CUSTOM_PREFIX: &str = "c";
-
 impl std::fmt::Display for EffectId {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         match self {
@@ -185,3 +152,42 @@ mod custom_serde {
         }
     }
 }
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Private - conversions
+////////////////////////////////////////////////////////////////////////////////////////////////////
+impl EffectId {
+    pub(crate) fn from_aid(effect_aid: AEffectId) -> Self {
+        match effect_aid {
+            AEffectId::Dogma(id) => Self::Dogma(DogmaEffectId(id.into_i32())),
+            AEffectId::SystemWide(id) => Self::SystemWide(ItemTypeId::from_aid(id)),
+            AEffectId::SystemEmitter(id) => Self::SystemEmitter(ItemTypeId::from_aid(id)),
+            AEffectId::ProxyEffect(id) => Self::ProxyEffect(ItemTypeId::from_aid(id)),
+            AEffectId::ProxyTrigger(id) => Self::ProxyTrigger(ItemTypeId::from_aid(id)),
+            AEffectId::ShipLink(id) => Self::ShipLink(ItemTypeId::from_aid(id)),
+            AEffectId::Custom(id) => Self::Custom(CustomEffectId(id.into_i32())),
+        }
+    }
+    pub(in crate::api) fn into_aid(self) -> AEffectId {
+        match self {
+            EffectId::Dogma(id) => AEffectId::Dogma(ADogmaEffectId::from_i32(id.0)),
+            EffectId::SystemWide(id) => AEffectId::SystemWide(id.into_aid()),
+            EffectId::SystemEmitter(id) => AEffectId::SystemEmitter(id.into_aid()),
+            EffectId::ProxyEffect(id) => AEffectId::ProxyEffect(id.into_aid()),
+            EffectId::ProxyTrigger(id) => AEffectId::ProxyTrigger(id.into_aid()),
+            EffectId::ShipLink(id) => AEffectId::ShipLink(id.into_aid()),
+            EffectId::Custom(id) => AEffectId::Custom(ACustomEffectId::from_i32(id.0)),
+        }
+    }
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Private - custom de/serialization
+////////////////////////////////////////////////////////////////////////////////////////////////////
+const DOGMA_PREFIX: &str = "d";
+const SYSWIDE_PREFIX: &str = "sw";
+const SYSEMIT_PREFIX: &str = "se";
+const PROXYEFF_PREFIX: &str = "pe";
+const PROXYTRIG_PREFIX: &str = "pt";
+const SHIPLINK_PREFIX: &str = "sl";
+const CUSTOM_PREFIX: &str = "c";

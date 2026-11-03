@@ -1,5 +1,19 @@
 use crate::{Fighter, Movement, PValue, SolarSystem, misc::Xyz, sol::UndoStep, ud::UItemId};
 
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Public
+////////////////////////////////////////////////////////////////////////////////////////////////////
+impl<'s> Fighter<'s> {
+    /// Set fighter movement.
+    pub fn set_movement(&mut self, movement: Movement) {
+        self.sol
+            .internal_set_fighter_movement(self.uid, movement.direction.into_xyz(), movement.speed);
+    }
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Private
+////////////////////////////////////////////////////////////////////////////////////////////////////
 impl SolarSystem {
     pub(in crate::api) fn internal_set_fighter_movement(
         &mut self,
@@ -19,13 +33,5 @@ impl SolarSystem {
         fighter_u_physics.direction = direction;
         fighter_u_physics.speed = speed;
         SolarSystem::util_update_fighter_physics(&mut self.u_data, &self.rev_projs, &mut self.svc, fighter_uid);
-    }
-}
-
-impl<'s> Fighter<'s> {
-    /// Set fighter movement.
-    pub fn set_movement(&mut self, movement: Movement) {
-        self.sol
-            .internal_set_fighter_movement(self.uid, movement.direction.into_xyz(), movement.speed);
     }
 }

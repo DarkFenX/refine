@@ -15,6 +15,9 @@ use crate::{
     ud::{UFitId, UFleetId, UItemId},
 };
 
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Public
+////////////////////////////////////////////////////////////////////////////////////////////////////
 #[expect(private_bounds)]
 pub struct EntityIter<'iter, T>
 where
@@ -24,20 +27,6 @@ where
     uids: Vec<T::UId>,
     index: usize,
     phantom: std::marker::PhantomData<T>,
-}
-#[expect(private_bounds)]
-impl<'iter, T> EntityIter<'iter, T>
-where
-    T: FromUid,
-{
-    pub(in crate::api) fn new(sol: &'iter mut SolarSystem, uids: Vec<T::UId>) -> Self {
-        Self {
-            sol,
-            uids,
-            index: 0,
-            phantom: std::marker::PhantomData,
-        }
-    }
 }
 impl<'iter, 'lend, T> Lending<'lend> for EntityIter<'iter, T>
 where
@@ -63,6 +52,24 @@ where
     }
 }
 impl<'iter, T> ExactSizeLender for EntityIter<'iter, T> where T: FromUid {}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Private
+////////////////////////////////////////////////////////////////////////////////////////////////////
+#[expect(private_bounds)]
+impl<'iter, T> EntityIter<'iter, T>
+where
+    T: FromUid,
+{
+    pub(in crate::api) fn new(sol: &'iter mut SolarSystem, uids: Vec<T::UId>) -> Self {
+        Self {
+            sol,
+            uids,
+            index: 0,
+            phantom: std::marker::PhantomData,
+        }
+    }
+}
 
 pub trait EntityFamily {
     type Handle<'a>;

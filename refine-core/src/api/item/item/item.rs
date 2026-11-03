@@ -3,6 +3,9 @@ use crate::{
     Rig, Service, Ship, Skill, SolarSystem, Stance, Subsystem, SwEffect, api::ItemSealed, ud::UItemId,
 };
 
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Public
+////////////////////////////////////////////////////////////////////////////////////////////////////
 pub enum Item<'s> {
     Autocharge(Autocharge<'s>),
     Booster(Booster<'s>),
@@ -23,9 +26,6 @@ pub enum Item<'s> {
     SwEffect(SwEffect<'s>),
 }
 impl<'s> Item<'s> {
-    pub(in crate::api) fn new(sol: &'s mut SolarSystem, uid: UItemId) -> Self {
-        sol.internal_get_item(uid)
-    }
     pub fn get_fit_id(&self) -> Option<FitId> {
         match self {
             Item::Autocharge(autocharge) => Some(autocharge.get_fit_id()),
@@ -46,6 +46,16 @@ impl<'s> Item<'s> {
             Item::Subsystem(subsystem) => Some(subsystem.get_fit_id()),
             Item::SwEffect(..) => None,
         }
+    }
+}
+impl<'s> ItemCommon for Item<'s> {}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Private
+////////////////////////////////////////////////////////////////////////////////////////////////////
+impl<'s> Item<'s> {
+    pub(in crate::api) fn new(sol: &'s mut SolarSystem, uid: UItemId) -> Self {
+        sol.internal_get_item(uid)
     }
 }
 impl<'s> ItemSealed for Item<'s> {
@@ -113,4 +123,3 @@ impl<'s> ItemSealed for Item<'s> {
         }
     }
 }
-impl<'s> ItemCommon for Item<'s> {}

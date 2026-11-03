@@ -5,6 +5,23 @@ use crate::{
     ud::{UItemId, UItemMutationRequest},
 };
 
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Public
+////////////////////////////////////////////////////////////////////////////////////////////////////
+impl<'s> Module<'s> {
+    pub fn mutate(&mut self, mutator_type_id: ItemTypeId) -> Result<Mutation<'_>, MutationAddError> {
+        let mutation = UItemMutationRequest {
+            mutator_type_aid: mutator_type_id.into_aid(),
+            attrs: Vec::new(),
+        };
+        self.sol.internal_add_module_mutation(self.uid, mutation)?;
+        Ok(self.get_mutation().unwrap())
+    }
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Private
+////////////////////////////////////////////////////////////////////////////////////////////////////
 impl SolarSystem {
     pub(in crate::api) fn internal_add_module_mutation(
         &mut self,
@@ -36,16 +53,5 @@ impl SolarSystem {
             &mut self.reuse.eupdates,
         );
         Ok(())
-    }
-}
-
-impl<'s> Module<'s> {
-    pub fn mutate(&mut self, mutator_type_id: ItemTypeId) -> Result<Mutation<'_>, MutationAddError> {
-        let mutation = UItemMutationRequest {
-            mutator_type_aid: mutator_type_id.into_aid(),
-            attrs: Vec::new(),
-        };
-        self.sol.internal_add_module_mutation(self.uid, mutation)?;
-        Ok(self.get_mutation().unwrap())
     }
 }

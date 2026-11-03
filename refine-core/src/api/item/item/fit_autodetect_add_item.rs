@@ -6,6 +6,31 @@ use crate::{
     val::DetectedItemKind,
 };
 
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Public
+////////////////////////////////////////////////////////////////////////////////////////////////////
+impl<'s> Fit<'s> {
+    pub fn autodetect_add_item(&mut self, type_id: ItemTypeId) -> Result<Item<'_>, FitItemAutodetectAddError> {
+        let item_uid = self
+            .sol
+            .internal_fit_autodetect_add_item(self.uid, type_id.into_aid())?;
+        Ok(Item::new(self.sol, item_uid))
+    }
+}
+
+#[derive(Debug, thiserror::Error)]
+pub enum FitItemAutodetectAddError {
+    #[error("type ID {0} not found")]
+    TypeId(ItemTypeId),
+    #[error("item kind could not be detected")]
+    KindUnknown,
+    #[error("item of kind \"{0}\" cannot be auto-added to the fit")]
+    KindInvalid(DetectedItemKind),
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Private
+////////////////////////////////////////////////////////////////////////////////////////////////////
 impl SolarSystem {
     pub(in crate::api) fn internal_fit_autodetect_add_item(
         &mut self,
@@ -63,15 +88,6 @@ impl SolarSystem {
     }
 }
 
-impl<'s> Fit<'s> {
-    pub fn autodetect_add_item(&mut self, type_id: ItemTypeId) -> Result<Item<'_>, FitItemAutodetectAddError> {
-        let item_uid = self
-            .sol
-            .internal_fit_autodetect_add_item(self.uid, type_id.into_aid())?;
-        Ok(Item::new(self.sol, item_uid))
-    }
-}
-
 fn conv_state(r_state: RState) -> ModuleState {
     match r_state {
         RState::Ghost => ModuleState::Disabled,
@@ -81,14 +97,4 @@ fn conv_state(r_state: RState) -> ModuleState {
         RState::Active => ModuleState::Active,
         RState::Overload => ModuleState::Active,
     }
-}
-
-#[derive(Debug, thiserror::Error)]
-pub enum FitItemAutodetectAddError {
-    #[error("type ID {0} not found")]
-    TypeId(ItemTypeId),
-    #[error("item kind could not be detected")]
-    KindUnknown,
-    #[error("item of kind \"{0}\" cannot be auto-added to the fit")]
-    KindInvalid(DetectedItemKind),
 }

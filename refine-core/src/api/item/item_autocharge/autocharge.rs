@@ -4,14 +4,14 @@ use crate::{
     ud::{UAutocharge, UItemId},
 };
 
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Public
+////////////////////////////////////////////////////////////////////////////////////////////////////
 pub struct Autocharge<'s> {
     pub(super) sol: &'s mut SolarSystem,
     pub(super) uid: UItemId,
 }
 impl<'s> Autocharge<'s> {
-    pub(in crate::api) fn new(sol: &'s mut SolarSystem, uid: UItemId) -> Self {
-        Self { sol, uid }
-    }
     pub fn get_fit_id(&self) -> FitId {
         let fit_uid = get_u_autocharge(self.sol, self.uid).get_fit_uid();
         self.sol.u_data.fits.ext_id_by_int_id(fit_uid)
@@ -29,6 +29,16 @@ impl<'s> Autocharge<'s> {
         !get_u_autocharge(self.sol, self.uid).get_force_disabled()
     }
 }
+impl<'s> ItemCommon for Autocharge<'s> {}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Private
+////////////////////////////////////////////////////////////////////////////////////////////////////
+impl<'s> Autocharge<'s> {
+    pub(in crate::api) fn new(sol: &'s mut SolarSystem, uid: UItemId) -> Self {
+        Self { sol, uid }
+    }
+}
 impl<'s> ItemSealed for Autocharge<'s> {
     fn get_uid(&self) -> UItemId {
         self.uid
@@ -40,7 +50,6 @@ impl<'s> ItemSealed for Autocharge<'s> {
         self.sol
     }
 }
-impl<'s> ItemCommon for Autocharge<'s> {}
 
 fn get_u_autocharge(sol: &SolarSystem, autocharge_uid: UItemId) -> &UAutocharge {
     sol.u_data.items.get(autocharge_uid).dc_autocharge().unwrap()

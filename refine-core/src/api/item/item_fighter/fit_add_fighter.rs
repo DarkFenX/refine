@@ -7,6 +7,35 @@ use crate::{
     ud::{UFighter, UFitId, UItem, UItemId, UPhysics},
 };
 
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Public
+////////////////////////////////////////////////////////////////////////////////////////////////////
+impl<'s> Fit<'s> {
+    pub fn add_fighter(
+        &mut self,
+        type_id: ItemTypeId,
+        state: MinionState,
+        coordinates: Option<Coordinates>,
+        movement: Option<Movement>,
+    ) -> Fighter<'_> {
+        let mut u_physics = UPhysics::default();
+        if let Some(coordinates) = coordinates {
+            u_physics.coordinates = coordinates.into_xyz();
+        }
+        if let Some(movement) = movement {
+            u_physics.direction = movement.direction.into_xyz();
+            u_physics.speed = movement.speed;
+        }
+        let fighter_uid = self
+            .sol
+            .internal_add_fighter(self.uid, type_id.into_aid(), state, u_physics);
+        Fighter::new(self.sol, fighter_uid)
+    }
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Private
+////////////////////////////////////////////////////////////////////////////////////////////////////
 impl SolarSystem {
     pub(in crate::api) fn internal_add_fighter(
         &mut self,
@@ -57,28 +86,5 @@ impl SolarSystem {
             fighter_uid,
             &mut self.reuse.eupdates,
         );
-    }
-}
-
-impl<'s> Fit<'s> {
-    pub fn add_fighter(
-        &mut self,
-        type_id: ItemTypeId,
-        state: MinionState,
-        coordinates: Option<Coordinates>,
-        movement: Option<Movement>,
-    ) -> Fighter<'_> {
-        let mut u_physics = UPhysics::default();
-        if let Some(coordinates) = coordinates {
-            u_physics.coordinates = coordinates.into_xyz();
-        }
-        if let Some(movement) = movement {
-            u_physics.direction = movement.direction.into_xyz();
-            u_physics.speed = movement.speed;
-        }
-        let fighter_uid = self
-            .sol
-            .internal_add_fighter(self.uid, type_id.into_aid(), state, u_physics);
-        Fighter::new(self.sol, fighter_uid)
     }
 }

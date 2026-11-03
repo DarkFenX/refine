@@ -5,6 +5,19 @@ use crate::{
     ud::{UFitId, UItem, UItemId, URig},
 };
 
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Public
+////////////////////////////////////////////////////////////////////////////////////////////////////
+impl<'s> Fit<'s> {
+    pub fn add_rig(&mut self, type_id: ItemTypeId) -> Rig<'_> {
+        let rig_uid = self.sol.internal_add_rig(self.uid, type_id.into_aid());
+        Rig::new(self.sol, rig_uid)
+    }
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Private
+////////////////////////////////////////////////////////////////////////////////////////////////////
 impl SolarSystem {
     pub(in crate::api) fn internal_add_rig(&mut self, fit_uid: UFitId, type_aid: AItemId) -> UItemId {
         let item_id = self.u_data.items.alloc_id();
@@ -27,12 +40,5 @@ impl SolarSystem {
         let u_fit = self.u_data.fits.get_mut(fit_uid);
         u_fit.rigs.insert(rig_uid);
         SolarSystem::util_add_rig(&mut self.u_data, &mut self.svc, rig_uid, &mut self.reuse.eupdates);
-    }
-}
-
-impl<'s> Fit<'s> {
-    pub fn add_rig(&mut self, type_id: ItemTypeId) -> Rig<'_> {
-        let rig_uid = self.sol.internal_add_rig(self.uid, type_id.into_aid());
-        Rig::new(self.sol, rig_uid)
     }
 }

@@ -1,5 +1,19 @@
 use crate::{Drone, ItemTypeId, SolarSystem, ad::AItemId, sol::UndoStep, ud::UItemId};
 
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Public
+////////////////////////////////////////////////////////////////////////////////////////////////////
+impl<'s> Drone<'s> {
+    /// Set type ID, replacing currently used EVE item by another, preserving all the user data. If
+    /// item is mutated, base item type ID is updated.
+    pub fn set_type_id(&mut self, type_id: ItemTypeId) {
+        self.sol.internal_set_drone_type_aid(self.uid, type_id.into_aid())
+    }
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Private
+////////////////////////////////////////////////////////////////////////////////////////////////////
 impl SolarSystem {
     pub(in crate::api) fn internal_set_drone_type_aid(&mut self, drone_uid: UItemId, type_aid: AItemId) {
         let u_drone = self.u_data.items.get_mut(drone_uid).dc_drone_mut().unwrap();
@@ -30,13 +44,5 @@ impl SolarSystem {
         }
         SolarSystem::util_update_item_radius_in_projs(&mut self.u_data, &self.rev_projs, &mut self.svc, drone_uid);
         SolarSystem::util_add_drone(&mut self.u_data, &mut self.svc, drone_uid, &mut self.reuse.eupdates);
-    }
-}
-
-impl<'s> Drone<'s> {
-    /// Set type ID, replacing currently used EVE item by another, preserving all the user data. If
-    /// item is mutated, base item type ID is updated.
-    pub fn set_type_id(&mut self, type_id: ItemTypeId) {
-        self.sol.internal_set_drone_type_aid(self.uid, type_id.into_aid())
     }
 }
