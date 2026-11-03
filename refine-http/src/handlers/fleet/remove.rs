@@ -28,7 +28,7 @@ async fn internal_remove_fleet(
     fleet_id: String,
     payload: rs::FleetRemoveCmd,
 ) -> Result<(), ApiError> {
-    let sol_id = rs::SolarSystemId::from_str(&sol_id)?;
+    let sol_id = rs::SolId::from_str(&sol_id)?;
     let fleet_id = rs::FleetId::from_str(&fleet_id)?;
     state
         .get_refine()

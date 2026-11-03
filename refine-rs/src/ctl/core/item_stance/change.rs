@@ -185,10 +185,7 @@ pub enum ItemStanceChangeError {
 }
 
 impl StanceChangeCmdCtxAny {
-    pub(in crate::ctl) fn execute(
-        self,
-        core_sol: &mut rc::SolarSystem,
-    ) -> Result<ChangedItemIdsResp, StanceChangeError> {
+    pub(in crate::ctl) fn execute(self, core_sol: &mut rc::Sol) -> Result<ChangedItemIdsResp, StanceChangeError> {
         Ok(match self {
             Self::Fit(cmd) => cmd.execute(core_sol)?,
             Self::Item(cmd) => cmd.execute(core_sol)?,
@@ -204,10 +201,7 @@ pub enum StanceChangeError {
 }
 
 impl StanceChangeCmdCtxFit {
-    pub(in crate::ctl) fn execute(
-        self,
-        core_sol: &mut rc::SolarSystem,
-    ) -> Result<ChangedItemIdsResp, FitGetStanceChangeError> {
+    pub(in crate::ctl) fn execute(self, core_sol: &mut rc::Sol) -> Result<ChangedItemIdsResp, FitGetStanceChangeError> {
         let mut core_fit = core_sol.get_fit(&self.fit_id)?;
         Ok(self.core.execute_via_fit(&mut core_fit)?)
     }
@@ -230,7 +224,7 @@ impl From<FitStanceChangeError> for FitGetStanceChangeError {
 impl StanceChangeCmdCtxItem {
     pub(in crate::ctl) fn execute(
         self,
-        core_sol: &mut rc::SolarSystem,
+        core_sol: &mut rc::Sol,
     ) -> Result<ChangedItemIdsResp, ItemGetStanceChangeError> {
         let mut core_stance = core_sol.get_stance(&self.item_id)?;
         Ok(self.core.execute(&mut core_stance))

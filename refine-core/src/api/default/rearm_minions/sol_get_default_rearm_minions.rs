@@ -1,10 +1,10 @@
-use crate::{RearmMinion, SolarSystem};
+use crate::{RearmMinion, Sol};
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Public
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-impl SolarSystem {
+impl Sol {
     pub fn get_default_rearm_minions(&self) -> RearmMinion {
-        self.u_data.default_rearm_minions
+        self.inner().u_data.default_rearm_minions
     }
 }

@@ -1,10 +1,10 @@
-use crate::{FleetId, SolarSystem, ud::UFleetId};
+use crate::{FleetId, sol::CoreInner, ud::UFleetId};
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Public
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 pub struct Fleet<'s> {
-    pub(in crate::api) sol: &'s mut SolarSystem,
+    pub(in crate::api) sol: &'s mut CoreInner,
     pub(in crate::api) uid: UFleetId,
 }
 impl<'s> Fleet<'s> {
@@ -17,7 +17,7 @@ impl<'s> Fleet<'s> {
 // Private
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl<'s> Fleet<'s> {
-    pub(in crate::api) fn new(sol: &'s mut SolarSystem, uid: UFleetId) -> Self {
+    pub(in crate::api) fn new(sol: &'s mut CoreInner, uid: UFleetId) -> Self {
         Self { sol, uid }
     }
 }

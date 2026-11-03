@@ -13,6 +13,7 @@ use crate::{
 pub(crate) type SolStatsEnumCmd = SolStatsEnumCmdGen<FleetId, FitId, ItemId>;
 pub type SolStatsEnumCmdBr = SolStatsEnumCmdGen<FleetIdBr, FitIdBr, ItemIdBr>;
 
+#[doc(hidden)]
 #[expect(clippy::enum_variant_names)]
 #[cfg_attr(
     feature = "serde",
@@ -72,7 +73,7 @@ impl SolStatsEnumCmdBr {
 // Execution
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl SolStatsEnumCmd {
-    pub(crate) fn execute(self, core_sol: &mut rc::SolarSystem) -> Result<CmdResp, SolStatsEnumError> {
+    pub(crate) fn execute(self, core_sol: &mut rc::Sol) -> Result<CmdResp, SolStatsEnumError> {
         Ok(match self {
             Self::SolStats(cmd) => cmd.execute(core_sol).into(),
             Self::FleetStats(cmd) => cmd.execute(core_sol)?.into(),

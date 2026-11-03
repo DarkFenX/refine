@@ -1,10 +1,22 @@
-use crate::{SolarSystem, Spool, sol::UndoStep};
+use crate::{
+    Sol, Spool,
+    sol::{CoreInner, UndoStep},
+};
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Public
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-impl SolarSystem {
+impl Sol {
     pub fn set_default_spool(&mut self, spool: Spool) {
+        self.inner_mut().internal_set_default_spool(spool);
+    }
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Private
+////////////////////////////////////////////////////////////////////////////////////////////////////
+impl CoreInner {
+    pub(in crate::api) fn internal_set_default_spool(&mut self, spool: Spool) {
         let old_spool = std::mem::replace(&mut self.u_data.default_spool, spool);
         if old_spool != spool && self.undo.is_recording() {
             self.undo.record(UndoStep::DefaultSpool(old_spool));

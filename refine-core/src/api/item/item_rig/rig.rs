@@ -1,6 +1,7 @@
 use crate::{
-    FitId, ItemCommon, SolarSystem,
+    FitId, ItemCommon,
     api::ItemSealed,
+    sol::CoreInner,
     ud::{UItemId, URig},
 };
 
@@ -8,7 +9,7 @@ use crate::{
 // Public
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 pub struct Rig<'s> {
-    pub(super) sol: &'s mut SolarSystem,
+    pub(super) sol: &'s mut CoreInner,
     pub(super) uid: UItemId,
 }
 impl<'s> Rig<'s> {
@@ -26,7 +27,7 @@ impl<'s> ItemCommon for Rig<'s> {}
 // Private
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl<'s> Rig<'s> {
-    pub(in crate::api) fn new(sol: &'s mut SolarSystem, uid: UItemId) -> Self {
+    pub(in crate::api) fn new(sol: &'s mut CoreInner, uid: UItemId) -> Self {
         Self { sol, uid }
     }
 }
@@ -34,14 +35,14 @@ impl<'s> ItemSealed for Rig<'s> {
     fn get_uid(&self) -> UItemId {
         self.uid
     }
-    fn get_sol(&self) -> &SolarSystem {
+    fn get_sol(&self) -> &CoreInner {
         self.sol
     }
-    fn get_sol_mut(&mut self) -> &mut SolarSystem {
+    fn get_sol_mut(&mut self) -> &mut CoreInner {
         self.sol
     }
 }
 
-fn get_u_rig(sol: &SolarSystem, rig_uid: UItemId) -> &URig {
+fn get_u_rig(sol: &CoreInner, rig_uid: UItemId) -> &URig {
     sol.u_data.items.get(rig_uid).dc_rig().unwrap()
 }

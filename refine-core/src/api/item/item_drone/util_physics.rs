@@ -1,15 +1,14 @@
 use crate::{
-    SolarSystem,
-    sol::RevProjs,
+    sol::{CoreInner, RevProjs},
     svc::Svc,
     ud::{UData, UItemId, UPhysics},
 };
 
-impl SolarSystem {
+impl CoreInner {
     pub(in crate::api) fn internal_restore_drone_physics(&mut self, drone_uid: UItemId, physics: UPhysics) {
         let u_drone = self.u_data.items.get_mut(drone_uid).dc_drone_mut().unwrap();
         *u_drone.get_physics_mut() = physics;
-        SolarSystem::util_update_drone_physics(&mut self.u_data, &self.rev_projs, &mut self.svc, drone_uid);
+        CoreInner::util_update_drone_physics(&mut self.u_data, &self.rev_projs, &mut self.svc, drone_uid);
     }
     pub(super) fn util_update_drone_physics(
         u_data: &mut UData,
@@ -26,10 +25,10 @@ impl SolarSystem {
             }
             let u_drone = u_data.items.get(drone_uid).dc_drone().unwrap();
             for (projectee_uid, u_proj_data) in u_drone.get_projs().iter_projectees_and_datas() {
-                SolarSystem::util_change_item_proj_data(u_data, svc, drone_uid, projectee_uid, Some(u_proj_data));
+                CoreInner::util_change_item_proj_data(u_data, svc, drone_uid, projectee_uid, Some(u_proj_data));
             }
         }
         // Handle incoming projections
-        SolarSystem::util_update_physics_for_incoming(u_data, rev_projs, svc, drone_uid, u_physics);
+        CoreInner::util_update_physics_for_incoming(u_data, rev_projs, svc, drone_uid, u_physics);
     }
 }

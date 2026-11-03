@@ -29,7 +29,7 @@ impl From<DevBenchmarkStatsCmd> for DevBenchmarkCmd {
 // Execution
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl DevBenchmarkStatsCmd {
-    pub(super) fn execute(self, core_sol: &mut rc::SolarSystem) {
+    pub(super) fn execute(self, core_sol: &mut rc::Sol) {
         let mut core_fit = core_sol.get_fit(&self.fit_id).unwrap();
         core_fit.benchmark_stats(self.projectee_item_id, self.iterations);
     }

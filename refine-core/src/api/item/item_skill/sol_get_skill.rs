@@ -1,16 +1,17 @@
 use crate::{
-    ItemId, Skill, SolarSystem,
+    ItemId, Skill, Sol,
     err::{ItemKindMatchError, basic::ItemFoundError},
 };
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Public
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-impl SolarSystem {
+impl Sol {
     pub fn get_skill(&mut self, item_id: &ItemId) -> Result<Skill<'_>, SkillGetError> {
-        let skill_uid = self.u_data.items.int_id_by_ext_id_err(item_id)?;
-        self.u_data.items.get(skill_uid).dc_skill()?;
-        Ok(Skill::new(self, skill_uid))
+        let sol = self.inner_mut();
+        let skill_uid = sol.u_data.items.int_id_by_ext_id_err(item_id)?;
+        sol.u_data.items.get(skill_uid).dc_skill()?;
+        Ok(Skill::new(sol, skill_uid))
     }
 }
 

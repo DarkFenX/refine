@@ -1,6 +1,6 @@
 use crate::{
-    CmdResps, FitId, FitIdBr, FitInfoMode, FleetId, FleetIdBr, FleetInfoMode, ItemId, ItemIdBr, ItemInfoMode, SolInfo,
-    SolInfoExt, SolInfoMode, SolarSystemId, SrcAlias,
+    CmdResps, FitId, FitIdBr, FitInfoMode, FleetId, FleetIdBr, FleetInfoMode, ItemId, ItemIdBr, ItemInfoMode, SolId,
+    SolInfo, SolInfoExt, SolInfoMode, SrcAlias,
     shared::{OvrdCompact, OvrdMapLight},
 };
 
@@ -125,7 +125,7 @@ impl SolInfoCmdBr {
 // Execution
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl SolInfoCmd {
-    pub(crate) fn execute(self, sol_id: SolarSystemId, src_alias: SrcAlias, core_sol: &mut rc::SolarSystem) -> SolInfo {
+    pub(crate) fn execute(self, sol_id: SolId, src_alias: SrcAlias, core_sol: &mut rc::Sol) -> SolInfo {
         SolInfo::from_ids_and_core(
             sol_id,
             src_alias,
@@ -136,7 +136,7 @@ impl SolInfoCmd {
             &self.item_mode,
         )
     }
-    pub(crate) fn execute_into_info_ext(self, core_sol: &mut rc::SolarSystem) -> Option<SolInfoExt> {
+    pub(crate) fn execute_into_info_ext(self, core_sol: &mut rc::Sol) -> Option<SolInfoExt> {
         SolInfoExt::try_from_core(
             core_sol,
             self.shared.sol_mode,

@@ -1,5 +1,5 @@
 use crate::{
-    CmdResps, SolChangeEnumCmdBr, SolInfo, SolInfoCmdBr, SolarSystem,
+    CmdResps, Sol, SolChangeEnumCmdBr, SolInfo, SolInfoCmdBr,
     err::{BrResolveError, SolChangeEnumError},
     stats::{SolStatsCmdBr, SolStatsResp},
     val::{SolValCmdBr, SolValResult},
@@ -18,7 +18,7 @@ pub enum ValCheckerResult<E> {
     Veto(E),
 }
 
-impl SolarSystem<'_> {
+impl Sol<'_> {
     /// Apply changes requested by control commands and run validation of the solar system. After
     /// validation is complete, the validation checker decides fate of the transaction: it can
     /// accept validation results, reject them, or request fixes.

@@ -1,6 +1,6 @@
 use crate::{
     Autocharge, Booster, Character, Charge, Drone, Fighter, FitId, FwEffect, Implant, ItemCommon, Module, ProjEffect,
-    Rig, Service, Ship, Skill, SolarSystem, Stance, Subsystem, SwEffect, api::ItemSealed, ud::UItemId,
+    Rig, Service, Ship, Skill, Stance, Subsystem, SwEffect, api::ItemSealed, sol::CoreInner, ud::UItemId,
 };
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -54,7 +54,7 @@ impl<'s> ItemCommon for Item<'s> {}
 // Private
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl<'s> Item<'s> {
-    pub(in crate::api) fn new(sol: &'s mut SolarSystem, uid: UItemId) -> Self {
+    pub(in crate::api) fn new(sol: &'s mut CoreInner, uid: UItemId) -> Self {
         sol.internal_get_item(uid)
     }
 }
@@ -80,7 +80,7 @@ impl<'s> ItemSealed for Item<'s> {
             Item::SwEffect(sw_effect) => sw_effect.get_uid(),
         }
     }
-    fn get_sol(&self) -> &SolarSystem {
+    fn get_sol(&self) -> &CoreInner {
         match self {
             Item::Autocharge(autocharge) => autocharge.get_sol(),
             Item::Booster(booster) => booster.get_sol(),
@@ -101,7 +101,7 @@ impl<'s> ItemSealed for Item<'s> {
             Item::SwEffect(sw_effect) => sw_effect.get_sol(),
         }
     }
-    fn get_sol_mut(&mut self) -> &mut SolarSystem {
+    fn get_sol_mut(&mut self) -> &mut CoreInner {
         match self {
             Item::Autocharge(autocharge) => autocharge.get_sol_mut(),
             Item::Booster(booster) => booster.get_sol_mut(),

@@ -1,8 +1,13 @@
 use itertools::Itertools;
 
-use crate::{EffectMode, SolarSystem, ad::AEffectId, sol::UndoStep, ud::UItemId};
+use crate::{
+    EffectMode,
+    ad::AEffectId,
+    sol::{CoreInner, UndoStep},
+    ud::UItemId,
+};
 
-impl SolarSystem {
+impl CoreInner {
     pub(in crate::api) fn internal_set_effect_id_mode(
         &mut self,
         item_uid: UItemId,
@@ -49,7 +54,7 @@ impl SolarSystem {
         self.effect_mode_update_postprocess(item_uid);
     }
     fn effect_mode_update_postprocess(&mut self, item_uid: UItemId) {
-        SolarSystem::util_process_effect_updates(&self.u_data, &mut self.svc, item_uid, &self.reuse.eupdates);
+        CoreInner::util_process_effect_updates(&self.u_data, &mut self.svc, item_uid, &self.reuse.eupdates);
         let u_item = self.u_data.items.get(item_uid);
         let charge_uid = u_item.get_charge_uid();
         // Autocharges - use secondary effect updates container for their effects
@@ -67,7 +72,7 @@ impl SolarSystem {
                         .map(|ac_uid| (ac_uid, ac_act.active))
                 })
                 .collect_vec();
-            SolarSystem::util_process_autocharge_activations(
+            CoreInner::util_process_autocharge_activations(
                 &mut self.u_data,
                 &mut self.svc,
                 ac_activations,
@@ -78,7 +83,7 @@ impl SolarSystem {
         if let Some(charge_activated) = self.reuse.eupdates.charge
             && let Some(charge_uid) = charge_uid
         {
-            SolarSystem::util_process_charge_activation(
+            CoreInner::util_process_charge_activation(
                 &mut self.u_data,
                 &mut self.svc,
                 charge_uid,

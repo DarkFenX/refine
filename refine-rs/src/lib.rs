@@ -4,7 +4,7 @@
 #![cfg_attr(feature = "serde", feature(cfg_eval))]
 #![expect(unevaluated_default_field_value)]
 
-pub use api::{Fit, Fleet, Item, Refine, SolFittingAppResp, SolarSystem, SolarSystemId};
+pub use api::{Fit, Fleet, Item, Refine, Sol, SolFittingAppResp, SolId};
 pub use ctl::{
     AddMutation, AddedFitIdResp, AddedFleetIdResp, AddedItemIdsResp, AttrMutation, AutochargeChangeCmd,
     AutochargeItemIds, BoosterAddCmd, BoosterChangeCmd, ChangeMutation, ChangedItemIdsResp, CharacterChangeCmd,
@@ -19,9 +19,6 @@ pub use ctl::{
     StanceChangeCmd, StanceSetCmd, StanceUnsetCmd, SubsystemAddCmd, SubsystemChangeCmd, SwEffectAddCmd,
     SwEffectChangeCmd,
 };
-pub(crate) use ctl::{
-    DroneAddCmdGen, FighterAddCmdGen, FitAddCmdGen, FleetAddCmdGen, ModuleAddCmdGen, ProjEffectAddCmdGen,
-};
 pub use hyb::{FitHybridCmdBr, SolHybridCmdBr};
 pub use info::{
     AbilityInfo, AttrMutationInfo, AutochargeInfo, AutochargeInfoExt, BoosterInfo, BoosterInfoExt, CharacterInfo,
@@ -29,10 +26,10 @@ pub use info::{
     FitInfoCmd, FitInfoCmdBr, FitInfoEnumCmdBr, FitInfoExt, FitInfoMode, FleetInfo, FleetInfoCmd, FleetInfoCmdBr,
     FleetInfoExt, FleetInfoMode, FwEffectInfo, FwEffectInfoExt, ImplantInfo, ImplantInfoExt, ItemInfo, ItemInfoCmd,
     ItemInfoCmdBr, ItemInfoMode, ItemMutationDormantInfo, ItemMutationEffectiveInfo, ItemMutationInfo, ModuleInfo,
-    ModuleInfoExt, ProjEffectInfo, ProjEffectInfoExt, ProjInfo, RangedProjInfo, RigInfo, RigInfoExt, ServiceInfo,
-    ServiceInfoExt, ShipInfo, ShipInfoExt, SideEffectInfo, SideEffectMod, SideEffectOp, SkillInfo, SkillInfoExt,
-    SolInfo, SolInfoCmd, SolInfoCmdBr, SolInfoEnumCmdBr, SolInfoExt, SolInfoMode, StanceInfo, StanceInfoExt,
-    SubsystemInfo, SubsystemInfoExt, SwEffectInfo, SwEffectInfoExt,
+    ModuleInfoExt, ModuleRacks, ProjEffectInfo, ProjEffectInfoExt, ProjInfo, RangedProjInfo, RigInfo, RigInfoExt,
+    ServiceInfo, ServiceInfoExt, ShipInfo, ShipInfoExt, SideEffectInfo, SideEffectMod, SideEffectOp, SkillInfo,
+    SkillInfoExt, SolInfo, SolInfoCmd, SolInfoCmdBr, SolInfoEnumCmdBr, SolInfoExt, SolInfoMode, StanceInfo,
+    StanceInfoExt, SubsystemInfo, SubsystemInfoExt, SwEffectInfo, SwEffectInfoExt,
 };
 pub use rc::{
     AbilityId, AddMode, Affector, AttrId, BreacherProfile, Coordinates, Count, CountNz, CustomAttrId, CustomEffectId,

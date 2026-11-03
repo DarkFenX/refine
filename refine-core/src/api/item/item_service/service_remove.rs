@@ -1,4 +1,8 @@
-use crate::{Service, SolarSystem, sol::UndoStep, ud::UItemId};
+use crate::{
+    Service,
+    sol::{CoreInner, UndoStep},
+    ud::UItemId,
+};
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Public
@@ -12,9 +16,9 @@ impl<'s> Service<'s> {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Private
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-impl SolarSystem {
+impl CoreInner {
     pub(in crate::api) fn internal_remove_service(&mut self, service_uid: UItemId) {
-        SolarSystem::util_remove_service(&mut self.u_data, &mut self.svc, service_uid, &mut self.reuse.eupdates);
+        CoreInner::util_remove_service(&mut self.u_data, &mut self.svc, service_uid, &mut self.reuse.eupdates);
         let u_service = self.u_data.items.get(service_uid).dc_service().unwrap();
         let u_fit = self.u_data.fits.get_mut(u_service.get_fit_uid());
         u_fit.services.remove(&service_uid);

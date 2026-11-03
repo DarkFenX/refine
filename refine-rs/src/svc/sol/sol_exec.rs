@@ -1,7 +1,7 @@
 use super::ctx::SolCtx;
-use crate::SolarSystem;
+use crate::Sol;
 
-impl<'r> SolarSystem<'r> {
+impl<'r> Sol<'r> {
     /// Methods which execute solar system changes in a threadpool are split into two groups:
     ///
     /// - infallible methods run commands which cannot fail, thus solar system never has to be
@@ -13,19 +13,16 @@ impl<'r> SolarSystem<'r> {
     /// requested next.
     pub(crate) async fn exec_standard<F, T, E>(&mut self, func: F) -> Result<T, E>
     where
-        F: FnOnce(&mut rc::SolarSystem) -> Result<T, E> + Send + 'static,
+        F: FnOnce(&mut rc::Sol) -> Result<T, E> + Send + 'static,
         T: Send + 'static,
         E: Send + 'static,
     {
-        let core_sol_guarded = self.inner.core_sol.clone();
+        let core_guarded = self.inner.core.clone();
         self.refine
             .tpool
             .exec_standard(move || {
-                let mut core_sol = core_sol_guarded.lock();
-                let mut tx = match core_sol.begin_tx() {
-                    Ok(tx) => tx,
-                    Err(rc::err::TxBeginError::InTransaction) => unreachable!("sol shouldn't be mid-transaction"),
-                };
+                let mut core = core_guarded.lock();
+                let mut tx = core.begin_tx();
                 let result = func(&mut tx);
                 match result {
                     Ok(..) => tx.commit(),
@@ -37,40 +34,40 @@ impl<'r> SolarSystem<'r> {
     }
     pub(crate) async fn exec_standard_infallible<F, R>(&mut self, func: F) -> R
     where
-        F: FnOnce(&mut rc::SolarSystem) -> R + Send + 'static,
+        F: FnOnce(&mut rc::Core) -> R + Send + 'static,
         R: Send + 'static,
     {
-        let core_sol_guarded = self.inner.core_sol.clone();
+        let core_guarded = self.inner.core.clone();
         self.refine
             .tpool
-            .exec_standard(move || func(&mut core_sol_guarded.lock()))
+            .exec_standard(move || func(&mut core_guarded.lock()))
             .await
     }
     #[cfg(feature = "dev")]
     pub(crate) async fn exec_heavy_infallible<F, R>(&mut self, func: F) -> R
     where
-        F: FnOnce(&mut rc::SolarSystem) -> R + Send + 'static,
+        F: FnOnce(&mut rc::Core) -> R + Send + 'static,
         R: Send + 'static,
     {
-        let core_sol_guarded = self.inner.core_sol.clone();
+        let core_guarded = self.inner.core.clone();
         self.refine
             .tpool
-            .exec_heavy(move || func(&mut core_sol_guarded.lock()))
+            .exec_heavy(move || func(&mut core_guarded.lock()))
             .await
     }
     /// Executes in current thread.
     pub(crate) fn exec_inplace<F, R>(&mut self, func: F) -> R
     where
-        F: FnOnce(&mut rc::SolarSystem) -> R,
+        F: FnOnce(&mut rc::Core) -> R,
     {
-        func(&mut self.inner.core_sol.lock())
+        func(&mut self.inner.core.lock())
     }
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Helpers
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-impl<'r> SolarSystem<'r> {
+impl<'r> Sol<'r> {
     pub(crate) fn get_ctx(&self) -> SolCtx {
         SolCtx {
             sol_id: self.get_id(),

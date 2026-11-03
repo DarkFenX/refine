@@ -3,14 +3,14 @@ use std::collections::hash_map::Entry;
 use parking_lot::RwLock;
 
 use super::inner::{SolInner, SolInnerGuarded};
-use crate::{SolarSystemId, SrcAlias, util::RMap};
+use crate::{SolId, SrcAlias, util::RMap};
 
 /// Map of solar systems by their IDs.
 ///
 /// Solar systems are closed when removed, so that requests which were waiting for their lock do not
 /// work on them. Removal requires holding the solar system's lock.
 pub(crate) struct SolMapGuarded {
-    inner: RwLock<RMap<SolarSystemId, SolInnerGuarded>>,
+    inner: RwLock<RMap<SolId, SolInnerGuarded>>,
 }
 impl SolMapGuarded {
     pub(crate) fn new() -> Self {
@@ -18,21 +18,21 @@ impl SolMapGuarded {
             inner: RwLock::new(RMap::default()),
         }
     }
-    pub(crate) fn get(&self, id: &SolarSystemId) -> Option<SolInnerGuarded> {
+    pub(crate) fn get(&self, id: &SolId) -> Option<SolInnerGuarded> {
         self.inner.read().get(id).cloned()
     }
-    pub(crate) fn add(&self, src_alias: SrcAlias, core_sol: rc::SolarSystem) -> SolInnerGuarded {
-        let mut id = SolarSystemId::new();
+    pub(crate) fn add(&self, src_alias: SrcAlias, core: rc::Core) -> SolInnerGuarded {
+        let mut id = SolId::new();
         let mut map = self.inner.write();
         loop {
             match map.entry(id) {
                 Entry::Vacant(entry) => {
-                    let inner_sol = SolInnerGuarded::new(id, src_alias, core_sol);
+                    let inner_sol = SolInnerGuarded::new(id, src_alias, core);
                     entry.insert(inner_sol.clone());
                     return inner_sol;
                 }
                 Entry::Occupied(..) => {
-                    id = SolarSystemId::new();
+                    id = SolId::new();
                     continue;
                 }
             }

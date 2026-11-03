@@ -1,16 +1,17 @@
 use crate::{
-    Drone, ItemId, SolarSystem,
+    Drone, ItemId, Sol,
     err::{ItemKindMatchError, basic::ItemFoundError},
 };
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Public
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-impl SolarSystem {
+impl Sol {
     pub fn get_drone(&mut self, item_id: &ItemId) -> Result<Drone<'_>, DroneGetError> {
-        let drone_uid = self.u_data.items.int_id_by_ext_id_err(item_id)?;
-        self.u_data.items.get(drone_uid).dc_drone()?;
-        Ok(Drone::new(self, drone_uid))
+        let sol = self.inner_mut();
+        let drone_uid = sol.u_data.items.int_id_by_ext_id_err(item_id)?;
+        sol.u_data.items.get(drone_uid).dc_drone()?;
+        Ok(Drone::new(sol, drone_uid))
     }
 }
 

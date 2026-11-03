@@ -8,6 +8,7 @@ use crate::{
 pub type FitValCmd = FitValCmdGen<ItemId>;
 pub type FitValCmdBr = FitValCmdGen<ItemIdBr>;
 
+#[doc(hidden)]
 #[cfg_attr(
     feature = "serde",
     derive(serde::Deserialize),
@@ -119,7 +120,7 @@ impl FitValCmd {
 }
 
 impl FitValCmdCtxFit {
-    pub(in crate::val) fn execute(self, core_sol: &mut rc::SolarSystem) -> Result<FitValResult, FitGetFitValError> {
+    pub(in crate::val) fn execute(self, core_sol: &mut rc::Sol) -> Result<FitValResult, FitGetFitValError> {
         let mut core_fit = core_sol.get_fit(&self.fit_id)?;
         Ok(self.core.execute(&mut core_fit))
     }

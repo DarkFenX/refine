@@ -1,4 +1,8 @@
-use crate::{Service, ServiceState, SolarSystem, sol::UndoStep, ud::UItemId};
+use crate::{
+    Service, ServiceState,
+    sol::{CoreInner, UndoStep},
+    ud::UItemId,
+};
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Public
@@ -16,7 +20,7 @@ impl<'s> Service<'s> {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Private
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-impl SolarSystem {
+impl CoreInner {
     pub(in crate::api) fn internal_set_service_state(&mut self, service_uid: UItemId, state: ServiceState) {
         let u_service = self.u_data.items.get_mut(service_uid).dc_service_mut().unwrap();
         if self.undo.is_recording() {
@@ -27,7 +31,7 @@ impl SolarSystem {
         u_service.set_service_state(state);
         let new_a_state = u_service.get_state();
         u_service.update_reffs(&mut self.reuse.eupdates, &self.u_data.r_data);
-        SolarSystem::util_switch_item_state(
+        CoreInner::util_switch_item_state(
             &self.u_data,
             &mut self.svc,
             service_uid,

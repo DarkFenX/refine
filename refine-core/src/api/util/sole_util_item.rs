@@ -1,18 +1,18 @@
 use crate::{
-    SolarSystem,
     rd::RState,
+    sol::CoreInner,
     svc::Svc,
     ud::{UData, UEffectUpdates, UItemId},
 };
 
-impl SolarSystem {
+impl CoreInner {
     pub(in crate::api) fn util_add_item(u_data: &UData, svc: &mut Svc, item_uid: UItemId, eupdates: &UEffectUpdates) {
         let u_item = u_data.items.get(item_uid);
         svc.notify_item_added(u_data, item_uid, u_item);
         if u_item.is_loaded() {
             svc.notify_item_loaded(u_data, item_uid, u_item);
         }
-        SolarSystem::util_internal_switch_item_state(
+        CoreInner::util_internal_switch_item_state(
             u_data,
             svc,
             item_uid,
@@ -29,7 +29,7 @@ impl SolarSystem {
         reuse_eupdates: &mut UEffectUpdates,
     ) {
         let u_item = u_data.items.get(item_uid);
-        SolarSystem::util_internal_switch_item_state(
+        CoreInner::util_internal_switch_item_state(
             u_data,
             svc,
             item_uid,

@@ -1,7 +1,7 @@
 use crate::{
-    Fit, FleetId, SolarSystem,
+    Fit, FleetId,
     err::basic::FleetFoundError,
-    sol::UndoStep,
+    sol::{CoreInner, UndoStep},
     ud::{UFitId, UFleetId},
 };
 
@@ -29,7 +29,7 @@ pub enum FitFleetSetError {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Private
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-impl SolarSystem {
+impl CoreInner {
     // Compiler keeps it out of line with 6 callers; inlined, fleet changes are cheaper
     #[inline(always)]
     pub(in crate::api) fn internal_set_fit_fleet(&mut self, fit_uid: UFitId, fleet_uid: Option<UFleetId>) {

@@ -1,31 +1,22 @@
 use crate::{
-    SolTx, SolarSystem,
-    sol::{Savepoint, UndoStep},
+    Core, SolTx,
+    sol::{CoreInner, Savepoint, UndoStep},
 };
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Public
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-impl SolarSystem {
-    pub fn begin_tx(&mut self) -> Result<SolTx<'_>, TxBeginError> {
-        if self.undo.is_recording() {
-            return Err(TxBeginError::InTransaction);
-        }
-        let savepoint = self.internal_tx_savepoint();
-        Ok(SolTx::new(self, savepoint))
+impl Core {
+    pub fn begin_tx(&mut self) -> SolTx<'_> {
+        let savepoint = self.inner_mut().internal_tx_savepoint();
+        SolTx::new(self, savepoint)
     }
-}
-
-#[derive(Debug, thiserror::Error)]
-pub enum TxBeginError {
-    #[error("transaction cannot be started within a transaction")]
-    InTransaction,
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Private
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-impl SolarSystem {
+impl CoreInner {
     pub(in crate::api) fn internal_tx_savepoint(&mut self) -> Savepoint {
         self.undo.savepoint(
             self.u_data.fleets.get_id_counter(),
@@ -82,16 +73,16 @@ impl SolarSystem {
     fn internal_tx_rollback_cold_step(&mut self, step: UndoStep) {
         match step {
             // Solar system
-            UndoStep::SecZone(sec_zone) => self.set_sec_zone(sec_zone),
-            UndoStep::DefaultNpcProp(npc_prop) => self.set_default_npc_prop(npc_prop),
+            UndoStep::SecZone(sec_zone) => self.internal_set_sec_zone(sec_zone),
+            UndoStep::DefaultNpcProp(npc_prop) => self.internal_set_default_npc_prop(npc_prop),
             UndoStep::DefaultOptionalReloads(optional_reloads) => {
-                self.set_default_optional_reloads(optional_reloads);
+                self.internal_set_default_optional_reloads(optional_reloads);
             }
-            UndoStep::DefaultRearmMinions(rearm_minions) => self.set_default_rearm_minions(rearm_minions),
-            UndoStep::DefaultSpool(spool) => self.set_default_spool(spool),
+            UndoStep::DefaultRearmMinions(rearm_minions) => self.internal_set_default_rearm_minions(rearm_minions),
+            UndoStep::DefaultSpool(spool) => self.internal_set_default_spool(spool),
             UndoStep::DefaultIncomingDps => {
                 let dps_profile = self.undo.pop_dps_profile().unwrap();
-                self.set_default_incoming_dps(dps_profile);
+                self.internal_set_default_incoming_dps(dps_profile);
             }
             // Fleet
             UndoStep::FleetAdded(fleet_uid) => self.internal_remove_fleet(fleet_uid),

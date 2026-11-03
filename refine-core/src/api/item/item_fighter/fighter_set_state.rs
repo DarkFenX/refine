@@ -1,6 +1,10 @@
 use itertools::Itertools;
 
-use crate::{Fighter, MinionState, SolarSystem, sol::UndoStep, ud::UItemId};
+use crate::{
+    Fighter, MinionState,
+    sol::{CoreInner, UndoStep},
+    ud::UItemId,
+};
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Public
@@ -18,7 +22,7 @@ impl<'s> Fighter<'s> {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Private
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-impl SolarSystem {
+impl CoreInner {
     pub(in crate::api) fn internal_set_fighter_state(&mut self, fighter_uid: UItemId, state: MinionState) {
         // Update user data for fighter
         let u_fighter = self.u_data.items.get_mut(fighter_uid).dc_fighter_mut().unwrap();
@@ -45,7 +49,7 @@ impl SolarSystem {
             })
             .collect_vec();
         // Update services for fighter
-        SolarSystem::util_switch_item_state(
+        CoreInner::util_switch_item_state(
             &self.u_data,
             &mut self.svc,
             fighter_uid,
@@ -53,7 +57,7 @@ impl SolarSystem {
             new_state,
             &self.reuse.eupdates,
         );
-        SolarSystem::util_process_autocharge_activations(
+        CoreInner::util_process_autocharge_activations(
             &mut self.u_data,
             &mut self.svc,
             ac_activations,

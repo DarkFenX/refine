@@ -1,12 +1,12 @@
 use itertools::Itertools;
 
 use crate::{
-    Fighter, ItemId, Proj, SolarSystem,
+    Fighter, ItemId, Proj,
     err::{
         ProjAddError,
         basic::{ItemReceiveProjError, ProjNotFoundError},
     },
-    sol::UndoStep,
+    sol::{CoreInner, UndoStep},
     ud::{UItemId, UProjData},
 };
 
@@ -24,7 +24,7 @@ impl<'s> Fighter<'s> {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Private
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-impl SolarSystem {
+impl CoreInner {
     pub(in crate::api) fn internal_add_fighter_proj(
         &mut self,
         fighter_uid: UItemId,
@@ -62,14 +62,14 @@ impl SolarSystem {
         u_fighter.get_projs_mut().add(projectee_uid, u_proj_data);
         self.rev_projs.reg_projectee(fighter_uid, projectee_uid);
         // Update services for fighte
-        SolarSystem::util_add_item_projection(&self.u_data, &mut self.svc, fighter_uid, projectee_uid, u_proj_data);
+        CoreInner::util_add_item_projection(&self.u_data, &mut self.svc, fighter_uid, projectee_uid, u_proj_data);
         for autocharge_uid in autocharge_uids {
             // Update user data for autocharge
             let u_autocharge = self.u_data.items.get_mut(autocharge_uid).dc_autocharge_mut().unwrap();
             u_autocharge.get_projs_mut().add(projectee_uid, u_proj_data);
             self.rev_projs.reg_projectee(autocharge_uid, projectee_uid);
             // Update services for autocharge
-            SolarSystem::util_add_item_projection(
+            CoreInner::util_add_item_projection(
                 &self.u_data,
                 &mut self.svc,
                 autocharge_uid,

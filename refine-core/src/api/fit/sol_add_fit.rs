@@ -1,23 +1,24 @@
 use crate::{
-    Fit, SolarSystem,
-    sol::UndoStep,
+    Fit, Sol,
+    sol::{CoreInner, UndoStep},
     ud::{UFit, UFitId},
 };
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Public
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-impl SolarSystem {
+impl Sol {
     pub fn add_fit(&mut self) -> Fit<'_> {
-        let fit_uid = self.add_fit_internal();
-        Fit::new(self, fit_uid)
+        let sol = self.inner_mut();
+        let fit_uid = sol.add_fit_internal();
+        Fit::new(sol, fit_uid)
     }
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Private
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-impl SolarSystem {
+impl CoreInner {
     pub(in crate::api) fn add_fit_internal(&mut self) -> UFitId {
         let fit_id = self.u_data.fits.alloc_id();
         let u_fit = UFit::new(fit_id);

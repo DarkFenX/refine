@@ -1,7 +1,7 @@
 use crate::{
-    Coordinates, Fit, ItemTypeId, Movement, Ship, SolarSystem,
+    Coordinates, Fit, ItemTypeId, Movement, Ship,
     ad::AItemId,
-    sol::UndoStep,
+    sol::{CoreInner, UndoStep},
     ud::{UFitId, UItem, UItemId, UPhysics, UShip},
 };
 
@@ -32,7 +32,7 @@ impl<'s> Fit<'s> {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Private
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-impl SolarSystem {
+impl CoreInner {
     pub(in crate::api) fn internal_set_fit_ship(
         &mut self,
         fit_uid: UFitId,
@@ -68,8 +68,8 @@ impl SolarSystem {
         let u_fit = self.u_data.fits.get_mut(fit_uid);
         u_fit.ship = Some(ship_uid);
         u_fit.ship_kind = ship_kind;
-        SolarSystem::util_add_ship(&mut self.u_data, &mut self.svc, ship_uid, &mut self.reuse.eupdates);
+        CoreInner::util_add_ship(&mut self.u_data, &mut self.svc, ship_uid, &mut self.reuse.eupdates);
         // Update projections outgoing from on-ship items
-        SolarSystem::util_update_ship_radius_for_outgoing_projs(&mut self.u_data, &mut self.svc, fit_uid, ship_radius);
+        CoreInner::util_update_ship_radius_for_outgoing_projs(&mut self.u_data, &mut self.svc, fit_uid, ship_radius);
     }
 }

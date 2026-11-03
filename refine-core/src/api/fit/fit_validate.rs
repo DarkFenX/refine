@@ -1,5 +1,6 @@
 use crate::{
-    Fit, SolarSystem,
+    Fit,
+    sol::CoreInner,
     svc::vast::ValOptionsInt,
     ud::UFitId,
     val::{ValOptions, ValResultFit},
@@ -22,7 +23,7 @@ impl<'s> Fit<'s> {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Private
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-impl SolarSystem {
+impl CoreInner {
     pub(in crate::api::fit) fn internal_validate_fit_fast(&mut self, fit_uid: UFitId, options: &ValOptionsInt) -> bool {
         self.svc.validate_fit_fast(&self.u_data, fit_uid, options)
     }

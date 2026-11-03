@@ -1,10 +1,22 @@
-use crate::{DpsProfile, SolarSystem, sol::UndoStep};
+use crate::{
+    DpsProfile, Sol,
+    sol::{CoreInner, UndoStep},
+};
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Public
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-impl SolarSystem {
+impl Sol {
     pub fn set_default_incoming_dps(&mut self, dps_profile: DpsProfile) {
+        self.inner_mut().internal_set_default_incoming_dps(dps_profile);
+    }
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Private
+////////////////////////////////////////////////////////////////////////////////////////////////////
+impl CoreInner {
+    pub(in crate::api) fn internal_set_default_incoming_dps(&mut self, dps_profile: DpsProfile) {
         // Update user data
         let old_dps_profile = std::mem::replace(&mut self.u_data.default_incoming_dps, dps_profile);
         if old_dps_profile == dps_profile {

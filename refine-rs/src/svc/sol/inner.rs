@@ -1,6 +1,6 @@
 use std::{sync::Arc, time::Instant};
 
-use crate::{SolarSystemId, SrcAlias};
+use crate::{SolId, SrcAlias};
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Inner guarded
@@ -8,10 +8,8 @@ use crate::{SolarSystemId, SrcAlias};
 #[derive(Clone)]
 pub(crate) struct SolInnerGuarded(Arc<tokio::sync::Mutex<SolInner>>);
 impl SolInnerGuarded {
-    pub(crate) fn new(id: SolarSystemId, src_alias: SrcAlias, core_sol: rc::SolarSystem) -> Self {
-        Self(Arc::new(tokio::sync::Mutex::new(SolInner::new(
-            id, src_alias, core_sol,
-        ))))
+    pub(crate) fn new(id: SolId, src_alias: SrcAlias, core: rc::Core) -> Self {
+        Self(Arc::new(tokio::sync::Mutex::new(SolInner::new(id, src_alias, core))))
     }
     pub(in crate::svc) fn try_lock(&self) -> Result<tokio::sync::MutexGuard<'_, SolInner>, tokio::sync::TryLockError> {
         self.0.try_lock()
@@ -48,25 +46,25 @@ impl std::ops::DerefMut for SolOwnedMutexGuard {
 // Inner unguarded
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 pub(crate) struct SolInner {
-    id: SolarSystemId,
+    id: SolId,
     src_alias: SrcAlias,
     last_accessed: Instant,
     // Set when the solar system is removed from the map, so that requests which were waiting for
     // its lock do not work on it
     closed: bool,
-    pub(super) core_sol: SolCoreGuarded,
+    pub(super) core: SolCoreGuarded,
 }
 impl SolInner {
-    fn new(id: SolarSystemId, src_alias: SrcAlias, core_sol: rc::SolarSystem) -> Self {
+    fn new(id: SolId, src_alias: SrcAlias, core: rc::Core) -> Self {
         Self {
             id,
             src_alias,
             last_accessed: Instant::now(),
             closed: false,
-            core_sol: SolCoreGuarded::new(core_sol),
+            core: SolCoreGuarded::new(core),
         }
     }
-    pub(crate) fn get_id(&self) -> SolarSystemId {
+    pub(crate) fn get_id(&self) -> SolId {
         self.id
     }
     pub(crate) fn get_src_alias(&self) -> SrcAlias {
@@ -88,7 +86,7 @@ impl SolInner {
         self.closed
     }
     pub(crate) fn is_poisoned(&self) -> bool {
-        self.core_sol.0.is_poisoned()
+        self.core.0.is_poisoned()
     }
 }
 
@@ -96,12 +94,12 @@ impl SolInner {
 // Core guarded
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 #[derive(Clone)]
-pub(super) struct SolCoreGuarded(Arc<std::sync::Mutex<rc::SolarSystem>>);
+pub(super) struct SolCoreGuarded(Arc<std::sync::Mutex<rc::Core>>);
 impl SolCoreGuarded {
-    fn new(core_sol: rc::SolarSystem) -> Self {
-        Self(Arc::new(std::sync::Mutex::new(core_sol)))
+    fn new(core: rc::Core) -> Self {
+        Self(Arc::new(std::sync::Mutex::new(core)))
     }
-    pub(super) fn lock(&self) -> std::sync::MutexGuard<'_, rc::SolarSystem> {
+    pub(super) fn lock(&self) -> std::sync::MutexGuard<'_, rc::Core> {
         self.0.lock().unwrap()
     }
 }

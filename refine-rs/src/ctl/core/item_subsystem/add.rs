@@ -17,6 +17,7 @@ pub struct SubsystemAddCmd {
 pub type SubsystemAddCmdCtxFit = SubsystemAddCmdCtxFitGen<FitId>;
 pub type SubsystemAddCmdCtxFitBr = SubsystemAddCmdCtxFitGen<FitIdBr>;
 
+#[doc(hidden)]
 #[cfg_attr(
     feature = "serde",
     derive(serde::Deserialize),
@@ -93,10 +94,7 @@ impl SubsystemAddCmd {
 }
 
 impl SubsystemAddCmdCtxFit {
-    pub(in crate::ctl) fn execute(
-        self,
-        core_sol: &mut rc::SolarSystem,
-    ) -> Result<AddedItemIdsResp, FitGetSubsystemAddError> {
+    pub(in crate::ctl) fn execute(self, core_sol: &mut rc::Sol) -> Result<AddedItemIdsResp, FitGetSubsystemAddError> {
         let mut core_fit = core_sol.get_fit(&self.fit_id)?;
         Ok(self.core.execute(&mut core_fit))
     }

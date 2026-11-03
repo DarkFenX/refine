@@ -48,7 +48,7 @@ impl SolChangeCmd {
 // Execution
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl SolChangeCmd {
-    pub(in crate::ctl) fn execute(self, core_sol: &mut rc::SolarSystem) {
+    pub(in crate::ctl) fn execute(self, core_sol: &mut rc::Sol) {
         let Self {
             sec_zone,
             default_incoming_dps,

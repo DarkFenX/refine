@@ -1,6 +1,7 @@
 use crate::{
-    FitId, ItemCommon, SlotIndex, SolarSystem,
+    FitId, ItemCommon, SlotIndex,
     api::ItemSealed,
+    sol::CoreInner,
     ud::{UBooster, UItemId},
 };
 
@@ -8,7 +9,7 @@ use crate::{
 // Public
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 pub struct Booster<'s> {
-    pub(super) sol: &'s mut SolarSystem,
+    pub(super) sol: &'s mut CoreInner,
     pub(super) uid: UItemId,
 }
 impl<'s> Booster<'s> {
@@ -29,7 +30,7 @@ impl<'s> ItemCommon for Booster<'s> {}
 // Private
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl<'s> Booster<'s> {
-    pub(in crate::api) fn new(sol: &'s mut SolarSystem, uid: UItemId) -> Self {
+    pub(in crate::api) fn new(sol: &'s mut CoreInner, uid: UItemId) -> Self {
         Self { sol, uid }
     }
 }
@@ -37,14 +38,14 @@ impl<'s> ItemSealed for Booster<'s> {
     fn get_uid(&self) -> UItemId {
         self.uid
     }
-    fn get_sol(&self) -> &SolarSystem {
+    fn get_sol(&self) -> &CoreInner {
         self.sol
     }
-    fn get_sol_mut(&mut self) -> &mut SolarSystem {
+    fn get_sol_mut(&mut self) -> &mut CoreInner {
         self.sol
     }
 }
 
-fn get_u_booster(sol: &SolarSystem, booster_uid: UItemId) -> &UBooster {
+fn get_u_booster(sol: &CoreInner, booster_uid: UItemId) -> &UBooster {
     sol.u_data.items.get(booster_uid).dc_booster().unwrap()
 }

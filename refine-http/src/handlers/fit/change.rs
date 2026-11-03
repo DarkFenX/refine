@@ -30,7 +30,7 @@ async fn internal_change_fit(
     params: FitParams,
     payload: rs::FitChangeEnumCmd,
 ) -> Result<rs::FitInfo, ApiError> {
-    let sol_id = rs::SolarSystemId::from_str(&sol_id)?;
+    let sol_id = rs::SolId::from_str(&sol_id)?;
     let fit_id = rs::FitId::from_str(&fit_id)?;
     let (_, fit_info) = state
         .get_refine()

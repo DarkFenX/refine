@@ -1,6 +1,10 @@
 use itertools::Itertools;
 
-use crate::{Fit, RemoveMode, SolarSystem, sol::UndoStep, ud::UFitId};
+use crate::{
+    Fit, RemoveMode,
+    sol::{CoreInner, UndoStep},
+    ud::UFitId,
+};
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Public
@@ -14,7 +18,7 @@ impl<'s> Fit<'s> {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Private
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-impl SolarSystem {
+impl CoreInner {
     pub(in crate::api) fn internal_remove_fit(&mut self, fit_uid: UFitId) {
         self.internal_set_fit_fleet(fit_uid, None);
         let item_uids = self.u_data.fits.get(fit_uid).iter_direct_items().collect_vec();

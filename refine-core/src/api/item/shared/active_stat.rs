@@ -1,9 +1,9 @@
 use smallvec::SmallVec;
 
 use crate::{
-    ItemCommon, MinionState, ModuleState, SolarSystem,
+    ItemCommon, MinionState, ModuleState,
     rd::RState,
-    sol::Savepoint,
+    sol::{CoreInner, Savepoint},
     stats::{StatItemChargeOptions, StatItemStateOptions},
     ud::{UItem, UItemId},
 };
@@ -109,7 +109,7 @@ fn prepare_module(
     module_uid: UItemId,
     module_state: ModuleState,
     module_max_state: Option<RState>,
-    sol: &mut SolarSystem,
+    sol: &mut CoreInner,
 ) {
     match module_state {
         ModuleState::Disabled | ModuleState::Offline | ModuleState::Online => match module_max_state {
@@ -122,7 +122,7 @@ fn prepare_module(
     }
 }
 
-fn prepare_fighter(fighter_uid: UItemId, fighter_state: MinionState, sol: &mut SolarSystem) {
+fn prepare_fighter(fighter_uid: UItemId, fighter_state: MinionState, sol: &mut CoreInner) {
     match fighter_state {
         MinionState::InBay | MinionState::InSpace => {
             sol.internal_set_fighter_state(fighter_uid, MinionState::Engaging);
@@ -131,7 +131,7 @@ fn prepare_fighter(fighter_uid: UItemId, fighter_state: MinionState, sol: &mut S
     }
 }
 
-fn prepare_charge_parent(sol: &mut SolarSystem, parent_uid: UItemId) {
+fn prepare_charge_parent(sol: &mut CoreInner, parent_uid: UItemId) {
     match sol.u_data.items.get(parent_uid) {
         UItem::Fighter(fighter) => prepare_fighter(parent_uid, fighter.get_fighter_state(), sol),
         UItem::Module(module) => prepare_module(

@@ -1,6 +1,10 @@
-use crate::{SolarSystem, err::basic::ProjFoundError, sol::UndoStep, ud::UItemId};
+use crate::{
+    err::basic::ProjFoundError,
+    sol::{CoreInner, UndoStep},
+    ud::UItemId,
+};
 
-impl SolarSystem {
+impl CoreInner {
     pub(in crate::api::item) fn internal_remove_module_proj(
         &mut self,
         module_uid: UItemId,
@@ -17,10 +21,10 @@ impl SolarSystem {
         let charge_uid = u_module.get_charge_uid();
         // Update services for charge
         if let Some(charge_uid) = charge_uid {
-            SolarSystem::util_remove_item_projection(&self.u_data, &mut self.svc, charge_uid, projectee_uid);
+            CoreInner::util_remove_item_projection(&self.u_data, &mut self.svc, charge_uid, projectee_uid);
         }
         // Update services for module
-        SolarSystem::util_remove_item_projection(&self.u_data, &mut self.svc, module_uid, projectee_uid);
+        CoreInner::util_remove_item_projection(&self.u_data, &mut self.svc, module_uid, projectee_uid);
         // Update user data for charge
         if let Some(charge_uid) = charge_uid {
             self.rev_projs.unreg_projectee(&charge_uid, projectee_uid);

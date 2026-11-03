@@ -1,6 +1,6 @@
 use lender::{ExactSizeLender, Lender, Lending, check_covariance};
 
-use crate::{EffectiveMutation, FullMAttr, SolarSystem, ad::AAttrId, ud::UItemId};
+use crate::{EffectiveMutation, FullMAttr, ad::AAttrId, sol::CoreInner, ud::UItemId};
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Public
@@ -14,7 +14,7 @@ impl<'s> EffectiveMutation<'s> {
 
 // Lending iterator for attribute rolls
 pub struct FullMAttrIter<'iter> {
-    sol: &'iter mut SolarSystem,
+    sol: &'iter mut CoreInner,
     item_uid: UItemId,
     attr_aids: Vec<AAttrId>,
     index: usize,
@@ -42,7 +42,7 @@ impl<'iter> ExactSizeLender for FullMAttrIter<'iter> {}
 // Private
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl<'iter> FullMAttrIter<'iter> {
-    pub(in crate::api) fn new(sol: &'iter mut SolarSystem, item_uid: UItemId) -> Self {
+    pub(in crate::api) fn new(sol: &'iter mut CoreInner, item_uid: UItemId) -> Self {
         let u_item = sol.u_data.items.get(item_uid);
         let attr_aids = u_item
             .get_mutation_data()

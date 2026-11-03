@@ -1,7 +1,8 @@
 use itertools::Itertools;
 
 use crate::{
-    OptionExt, SolarSystem,
+    OptionExt,
+    sol::CoreInner,
     svc::vast::val::ValKind,
     ud::{UFitId, UItemId},
     util::RSet,
@@ -14,7 +15,7 @@ pub(crate) struct ValOptionsSolInt {
     pub(in crate::svc::vast::val) fit_uids: Vec<UFitId>,
 }
 impl ValOptionsSolInt {
-    pub(crate) fn from_pub(pub_sol_opts: &ValOptionsSol, sol: &SolarSystem) -> Self {
+    pub(crate) fn from_pub(pub_sol_opts: &ValOptionsSol, sol: &CoreInner) -> Self {
         Self {
             options: ValOptionsInt::from_pub(&pub_sol_opts.options, sol),
             fit_uids: pub_sol_opts
@@ -29,7 +30,7 @@ impl ValOptionsSolInt {
 
 pub(crate) struct ValOptionsInt([ValOptionInt; std::mem::variant_count::<ValKind>()]);
 impl ValOptionsInt {
-    pub(crate) fn from_pub(pub_opts: &ValOptions, sol: &SolarSystem) -> Self {
+    pub(crate) fn from_pub(pub_opts: &ValOptions, sol: &CoreInner) -> Self {
         let default = match pub_opts.default {
             true => ValOptionInt::Enabled(ValOptionEnabledInt { kfs: RSet::new() }),
             false => ValOptionInt::Disabled,
@@ -51,7 +52,7 @@ pub(in crate::svc::vast::val) enum ValOptionInt {
     Disabled,
 }
 impl ValOptionInt {
-    fn from_pub(pub_opt: &OptionExt<ValEnabled>, sol: &SolarSystem) -> Self {
+    fn from_pub(pub_opt: &OptionExt<ValEnabled>, sol: &CoreInner) -> Self {
         match pub_opt {
             OptionExt::Disabled => Self::Disabled,
             OptionExt::Enabled => Self::Enabled(ValOptionEnabledInt { kfs: RSet::new() }),

@@ -28,7 +28,7 @@ async fn internal_get_item(
     item_id: String,
     params: ItemParams,
 ) -> Result<rs::ItemInfo, ApiError> {
-    let sol_id = rs::SolarSystemId::from_str(&sol_id)?;
+    let sol_id = rs::SolId::from_str(&sol_id)?;
     let item_id = rs::ItemId::from_str(&item_id)?;
     let item_info = state
         .get_refine()

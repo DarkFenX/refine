@@ -1,11 +1,12 @@
-use crate::{EntityIter, Fit, SolarSystem};
+use crate::{EntityIter, Fit, Sol};
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Public
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-impl SolarSystem {
+impl Sol {
     pub fn iter_fits(&mut self) -> EntityIter<'_, Fit<'_>> {
-        let fit_uids = self.u_data.fits.keys().collect();
-        EntityIter::new(self, fit_uids)
+        let sol = self.inner_mut();
+        let fit_uids = sol.u_data.fits.keys().collect();
+        EntityIter::new(sol, fit_uids)
     }
 }

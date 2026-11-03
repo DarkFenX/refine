@@ -185,10 +185,7 @@ pub enum ItemCharacterChangeError {
 }
 
 impl CharacterChangeCmdCtxAny {
-    pub(in crate::ctl) fn execute(
-        self,
-        core_sol: &mut rc::SolarSystem,
-    ) -> Result<ChangedItemIdsResp, CharacterChangeError> {
+    pub(in crate::ctl) fn execute(self, core_sol: &mut rc::Sol) -> Result<ChangedItemIdsResp, CharacterChangeError> {
         Ok(match self {
             Self::Fit(cmd) => cmd.execute(core_sol)?,
             Self::Item(cmd) => cmd.execute(core_sol)?,
@@ -206,7 +203,7 @@ pub enum CharacterChangeError {
 impl CharacterChangeCmdCtxFit {
     pub(in crate::ctl) fn execute(
         self,
-        core_sol: &mut rc::SolarSystem,
+        core_sol: &mut rc::Sol,
     ) -> Result<ChangedItemIdsResp, FitGetCharacterChangeError> {
         let mut core_fit = core_sol.get_fit(&self.fit_id)?;
         Ok(self.core.execute_via_fit(&mut core_fit)?)
@@ -230,7 +227,7 @@ impl From<FitCharacterChangeError> for FitGetCharacterChangeError {
 impl CharacterChangeCmdCtxItem {
     pub(in crate::ctl) fn execute(
         self,
-        core_sol: &mut rc::SolarSystem,
+        core_sol: &mut rc::Sol,
     ) -> Result<ChangedItemIdsResp, ItemGetCharacterChangeError> {
         let mut core_character = core_sol.get_character(&self.item_id)?;
         Ok(self.core.execute(&mut core_character))

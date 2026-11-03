@@ -17,6 +17,7 @@ pub struct StanceSetCmd {
 pub type StanceSetCmdCtxFit = StanceSetCmdCtxFitGen<FitId>;
 pub type StanceSetCmdCtxFitBr = StanceSetCmdCtxFitGen<FitIdBr>;
 
+#[doc(hidden)]
 #[cfg_attr(
     feature = "serde",
     derive(serde::Deserialize),
@@ -93,10 +94,7 @@ impl StanceSetCmd {
 }
 
 impl StanceSetCmdCtxFit {
-    pub(in crate::ctl) fn execute(
-        self,
-        core_sol: &mut rc::SolarSystem,
-    ) -> Result<AddedItemIdsResp, FitGetStanceSetError> {
+    pub(in crate::ctl) fn execute(self, core_sol: &mut rc::Sol) -> Result<AddedItemIdsResp, FitGetStanceSetError> {
         let mut core_fit = core_sol.get_fit(&self.fit_id)?;
         Ok(self.core.execute(&mut core_fit))
     }

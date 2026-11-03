@@ -1,4 +1,8 @@
-use crate::{Skill, SkillLevel, SolarSystem, sol::UndoStep, ud::UItemId};
+use crate::{
+    Skill, SkillLevel,
+    sol::{CoreInner, UndoStep},
+    ud::UItemId,
+};
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Public
@@ -12,7 +16,7 @@ impl<'s> Skill<'s> {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Private
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-impl SolarSystem {
+impl CoreInner {
     pub(in crate::api) fn internal_set_skill_level(&mut self, skill_uid: UItemId, level: SkillLevel) {
         let u_skill = self.u_data.items.get_mut(skill_uid).dc_skill_mut().unwrap();
         let old_level = u_skill.get_level();

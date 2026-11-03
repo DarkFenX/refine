@@ -1,4 +1,4 @@
-use crate::{DefOption, ud::UItem};
+use crate::{misc::DefOption, ud::UItem};
 
 /// Items which will be included in outgoing rep stats.
 #[cfg_attr(feature = "serde", derive(serde::Deserialize))]

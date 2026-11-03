@@ -27,7 +27,7 @@ async fn internal_try_fit_items(
     fit_id: String,
     payload: rs::trial::FitTryItemsCmd,
 ) -> Result<Vec<rs::ItemTypeId>, ApiError> {
-    let sol_id = rs::SolarSystemId::from_str(&sol_id)?;
+    let sol_id = rs::SolId::from_str(&sol_id)?;
     let fit_id = rs::FitId::from_str(&fit_id)?;
     let fittable = state
         .get_refine()

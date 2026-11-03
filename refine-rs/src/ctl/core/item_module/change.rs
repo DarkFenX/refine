@@ -9,6 +9,7 @@ use crate::{
 pub type ModuleChangeCmd = ModuleChangeCmdGen<ItemId>;
 pub type ModuleChangeCmdBr = ModuleChangeCmdGen<ItemIdBr>;
 
+#[doc(hidden)]
 #[cfg_attr(
     feature = "serde",
     derive(serde::Deserialize),
@@ -276,7 +277,7 @@ pub enum ModuleChangeError {
 impl ModuleChangeCmdCtxItem {
     pub(in crate::ctl) fn execute(
         self,
-        core_sol: &mut rc::SolarSystem,
+        core_sol: &mut rc::Sol,
     ) -> Result<ChangedItemIdsResp, ItemGetModuleChangeError> {
         let mut core_item = core_sol
             .get_item(&self.item_id)

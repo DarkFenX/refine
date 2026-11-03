@@ -7,6 +7,7 @@ use crate::{
 pub type ProjEffectChangeCmd = ProjEffectChangeCmdGen<ItemId>;
 pub type ProjEffectChangeCmdBr = ProjEffectChangeCmdGen<ItemIdBr>;
 
+#[doc(hidden)]
 #[cfg_attr(
     feature = "serde",
     derive(serde::Deserialize),
@@ -173,7 +174,7 @@ pub enum ProjEffectChangeError {
 impl ProjEffectChangeCmdCtxItem {
     pub(in crate::ctl) fn execute(
         self,
-        core_sol: &mut rc::SolarSystem,
+        core_sol: &mut rc::Sol,
     ) -> Result<ChangedItemIdsResp, ItemGetProjEffectChangeError> {
         let mut core_item = core_sol.get_item(&self.item_id)?;
         Ok(self.core.execute(&mut core_item)?)

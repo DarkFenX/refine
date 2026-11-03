@@ -2,13 +2,13 @@ use rc::Lender;
 
 use crate::{
     DpsProfile, FitId, FitInfo, FitInfoMode, FleetId, FleetInfo, FleetInfoMode, ItemId, ItemInfoMode, ProjEffectInfo,
-    SecZone, SolInfoMode, SolarSystemId, Spool, SrcAlias, SwEffectInfo, shared::OvrdMapLight,
+    SecZone, SolId, SolInfoMode, Spool, SrcAlias, SwEffectInfo, shared::OvrdMapLight,
 };
 
 #[cfg_attr(feature = "serde", derive(serde::Serialize))]
 #[derive(Clone)]
 pub struct SolInfo {
-    pub id: SolarSystemId,
+    pub id: SolId,
     pub src_alias: SrcAlias,
     #[cfg_attr(feature = "serde", serde(flatten, skip_serializing_if = "Option::is_none"))]
     pub extended: Option<SolInfoExt>,
@@ -35,9 +35,9 @@ pub struct SolInfoExt {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl SolInfo {
     pub(in crate::info::sol) fn from_ids_and_core(
-        sol_id: SolarSystemId,
+        sol_id: SolId,
         src_alias: SrcAlias,
-        core_sol: &mut rc::SolarSystem,
+        core_sol: &mut rc::Sol,
         sol_info_mode: SolInfoMode,
         fleet_info_modes: &OvrdMapLight<FleetId, FleetInfoMode>,
         fit_info_modes: &OvrdMapLight<FitId, FitInfoMode>,
@@ -55,11 +55,7 @@ impl SolInfo {
             ),
         }
     }
-    pub(crate) fn from_ids_and_ext(
-        sol_id: SolarSystemId,
-        src_alias: SrcAlias,
-        sol_info_ext: Option<SolInfoExt>,
-    ) -> Self {
+    pub(crate) fn from_ids_and_ext(sol_id: SolId, src_alias: SrcAlias, sol_info_ext: Option<SolInfoExt>) -> Self {
         Self {
             id: sol_id,
             src_alias,
@@ -70,7 +66,7 @@ impl SolInfo {
 
 impl SolInfoExt {
     pub(in crate::info) fn try_from_core(
-        core_sol: &mut rc::SolarSystem,
+        core_sol: &mut rc::Sol,
         sol_info_mode: SolInfoMode,
         fleet_info_modes: &OvrdMapLight<FleetId, FleetInfoMode>,
         fit_info_modes: &OvrdMapLight<FitId, FitInfoMode>,

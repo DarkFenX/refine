@@ -1,16 +1,17 @@
 use crate::{
-    Autocharge, ItemId, SolarSystem,
+    Autocharge, ItemId, Sol,
     err::{ItemKindMatchError, basic::ItemFoundError},
 };
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Public
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-impl SolarSystem {
+impl Sol {
     pub fn get_autocharge(&mut self, item_id: &ItemId) -> Result<Autocharge<'_>, AutochargeGetError> {
-        let autocharge_uid = self.u_data.items.int_id_by_ext_id_err(item_id)?;
-        self.u_data.items.get(autocharge_uid).dc_autocharge()?;
-        Ok(Autocharge::new(self, autocharge_uid))
+        let sol = self.inner_mut();
+        let autocharge_uid = sol.u_data.items.int_id_by_ext_id_err(item_id)?;
+        sol.u_data.items.get(autocharge_uid).dc_autocharge()?;
+        Ok(Autocharge::new(sol, autocharge_uid))
     }
 }
 

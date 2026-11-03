@@ -30,7 +30,7 @@ async fn internal_add_fleet(
     params: FleetParams,
     payload: rs::FleetAddCmd,
 ) -> Result<rs::FleetInfo, ApiError> {
-    let sol_id = rs::SolarSystemId::from_str(&sol_id)?;
+    let sol_id = rs::SolId::from_str(&sol_id)?;
     let (_, fleet_info) = state
         .get_refine()
         .get_sol(sol_id)

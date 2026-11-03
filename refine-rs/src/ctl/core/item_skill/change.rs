@@ -116,10 +116,7 @@ pub enum SkillChangeError {
 }
 
 impl SkillChangeCmdCtxItem {
-    pub(in crate::ctl) fn execute(
-        self,
-        core_sol: &mut rc::SolarSystem,
-    ) -> Result<ChangedItemIdsResp, ItemGetSkillChangeError> {
+    pub(in crate::ctl) fn execute(self, core_sol: &mut rc::Sol) -> Result<ChangedItemIdsResp, ItemGetSkillChangeError> {
         let mut core_item = core_sol
             .get_item(&self.item_id)
             .map_err(ItemGetSkillChangeError::ItemGet)?;

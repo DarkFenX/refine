@@ -370,7 +370,7 @@ impl SolHybridCmdBr {
 // Execution
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl SolHybridCmd {
-    pub(crate) fn execute(self, ctx: SolCtx, core_sol: &mut rc::SolarSystem) -> Result<CmdResp, SolHybridError> {
+    pub(crate) fn execute(self, ctx: SolCtx, core_sol: &mut rc::Sol) -> Result<CmdResp, SolHybridError> {
         Ok(match self {
             Self::Ctl(ctl_cmd) => ctl_cmd.execute(core_sol)?,
             Self::Info(info_cmd) => info_cmd.execute(ctx, core_sol)?,

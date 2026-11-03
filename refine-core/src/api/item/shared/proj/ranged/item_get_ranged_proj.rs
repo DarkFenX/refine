@@ -1,10 +1,11 @@
 use crate::{
-    ItemId, RangedProj, SolarSystem,
+    ItemId, RangedProj,
     err::{ProjGetError, basic::ProjFoundError},
+    sol::CoreInner,
     ud::UItemId,
 };
 
-impl SolarSystem {
+impl CoreInner {
     pub(in crate::api::item) fn internal_get_ranged_proj(
         &mut self,
         projector_uid: UItemId,

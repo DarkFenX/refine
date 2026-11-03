@@ -30,7 +30,7 @@ async fn internal_change_item(
     params: ItemParams,
     payload: rs::ItemChangeEnumCmd,
 ) -> Result<rs::ItemInfo, ApiError> {
-    let sol_id = rs::SolarSystemId::from_str(&sol_id)?;
+    let sol_id = rs::SolId::from_str(&sol_id)?;
     let item_id = rs::ItemId::from_str(&item_id)?;
     let (_, item_info) = state
         .get_refine()

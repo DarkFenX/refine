@@ -29,7 +29,7 @@ async fn internal_add_item(
     params: ItemParams,
     payload: rs::ItemAddEnumCmd,
 ) -> Result<rs::ItemInfo, ApiError> {
-    let sol_id = rs::SolarSystemId::from_str(&sol_id)?;
+    let sol_id = rs::SolId::from_str(&sol_id)?;
     let (_, item_info) = state
         .get_refine()
         .get_sol(sol_id)

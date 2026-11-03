@@ -116,7 +116,7 @@ pub enum BoosterChangeError {
 impl BoosterChangeCmdCtxItem {
     pub(in crate::ctl) fn execute(
         self,
-        core_sol: &mut rc::SolarSystem,
+        core_sol: &mut rc::Sol,
     ) -> Result<ChangedItemIdsResp, ItemGetBoosterChangeError> {
         let mut core_item = core_sol
             .get_item(&self.item_id)

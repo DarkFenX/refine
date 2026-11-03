@@ -31,7 +31,7 @@ impl SwEffectAddCmd {
 // Execution
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl SwEffectAddCmd {
-    pub(in crate::ctl) fn execute(self, core_sol: &mut rc::SolarSystem) -> AddedItemIdsResp {
+    pub(in crate::ctl) fn execute(self, core_sol: &mut rc::Sol) -> AddedItemIdsResp {
         let Self {
             type_id,
             state,

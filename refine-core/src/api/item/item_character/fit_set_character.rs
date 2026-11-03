@@ -1,7 +1,7 @@
 use crate::{
-    Character, Fit, ItemTypeId, SolarSystem,
+    Character, Fit, ItemTypeId,
     ad::AItemId,
-    sol::UndoStep,
+    sol::{CoreInner, UndoStep},
     ud::{UCharacter, UFitId, UItem, UItemId},
 };
 
@@ -19,7 +19,7 @@ impl<'s> Fit<'s> {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Private
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-impl SolarSystem {
+impl CoreInner {
     pub(in crate::api) fn internal_set_fit_character(&mut self, fit_uid: UFitId, type_aid: AItemId) -> UItemId {
         let u_fit = self.u_data.fits.get(fit_uid);
         // Remove old character, if it was set
@@ -46,6 +46,6 @@ impl SolarSystem {
     fn attach_character(&mut self, fit_uid: UFitId, character_uid: UItemId) {
         let u_fit = self.u_data.fits.get_mut(fit_uid);
         u_fit.character = Some(character_uid);
-        SolarSystem::util_add_character(&mut self.u_data, &mut self.svc, character_uid, &mut self.reuse.eupdates);
+        CoreInner::util_add_character(&mut self.u_data, &mut self.svc, character_uid, &mut self.reuse.eupdates);
     }
 }

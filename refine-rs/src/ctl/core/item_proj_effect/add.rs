@@ -7,6 +7,7 @@ use crate::{
 pub type ProjEffectAddCmd = ProjEffectAddCmdGen<ItemId>;
 pub type ProjEffectAddCmdBr = ProjEffectAddCmdGen<ItemIdBr>;
 
+#[doc(hidden)]
 #[cfg_attr(
     feature = "serde",
     derive(serde::Deserialize),
@@ -61,10 +62,7 @@ impl ProjEffectAddCmdBr {
 // Execution
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl ProjEffectAddCmd {
-    pub(in crate::ctl) fn execute(
-        self,
-        core_sol: &mut rc::SolarSystem,
-    ) -> Result<AddedItemIdsResp, ProjEffectAddError> {
+    pub(in crate::ctl) fn execute(self, core_sol: &mut rc::Sol) -> Result<AddedItemIdsResp, ProjEffectAddError> {
         let Self {
             type_id,
             state,

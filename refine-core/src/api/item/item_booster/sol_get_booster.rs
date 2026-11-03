@@ -1,16 +1,17 @@
 use crate::{
-    Booster, ItemId, SolarSystem,
+    Booster, ItemId, Sol,
     err::{ItemKindMatchError, basic::ItemFoundError},
 };
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Public
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-impl SolarSystem {
+impl Sol {
     pub fn get_booster(&mut self, item_id: &ItemId) -> Result<Booster<'_>, BoosterGetError> {
-        let booster_uid = self.u_data.items.int_id_by_ext_id_err(item_id)?;
-        self.u_data.items.get(booster_uid).dc_booster()?;
-        Ok(Booster::new(self, booster_uid))
+        let sol = self.inner_mut();
+        let booster_uid = sol.u_data.items.int_id_by_ext_id_err(item_id)?;
+        sol.u_data.items.get(booster_uid).dc_booster()?;
+        Ok(Booster::new(sol, booster_uid))
     }
 }
 

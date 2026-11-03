@@ -1,7 +1,7 @@
 use crate::{
-    Fit, ItemTypeId, Service, ServiceState, SolarSystem,
+    Fit, ItemTypeId, Service, ServiceState,
     ad::AItemId,
-    sol::UndoStep,
+    sol::{CoreInner, UndoStep},
     ud::{UFitId, UItem, UItemId, UService},
 };
 
@@ -18,7 +18,7 @@ impl<'s> Fit<'s> {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Private
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-impl SolarSystem {
+impl CoreInner {
     pub(in crate::api) fn internal_add_service(
         &mut self,
         fit_uid: UFitId,
@@ -44,6 +44,6 @@ impl SolarSystem {
     fn attach_service(&mut self, fit_uid: UFitId, service_uid: UItemId) {
         let u_fit = self.u_data.fits.get_mut(fit_uid);
         u_fit.services.insert(service_uid);
-        SolarSystem::util_add_service(&mut self.u_data, &mut self.svc, service_uid, &mut self.reuse.eupdates);
+        CoreInner::util_add_service(&mut self.u_data, &mut self.svc, service_uid, &mut self.reuse.eupdates);
     }
 }

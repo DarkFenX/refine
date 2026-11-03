@@ -8,6 +8,7 @@ use crate::{
 pub type StatOptionFitDmg = StatOptionFitDmgGen<ItemId>;
 pub type StatOptionFitDmgBr = StatOptionFitDmgGen<ItemIdBr>;
 
+#[doc(hidden)]
 #[cfg_attr(
     feature = "serde",
     derive(serde::Deserialize),
@@ -32,6 +33,7 @@ impl<I> Default for StatOptionFitDmgGen<I> {
 pub type StatOptionItemDmg = StatOptionItemDmgGen<ItemId>;
 pub type StatOptionItemDmgBr = StatOptionItemDmgGen<ItemIdBr>;
 
+#[doc(hidden)]
 #[cfg_attr(
     feature = "serde",
     derive(serde::Deserialize),

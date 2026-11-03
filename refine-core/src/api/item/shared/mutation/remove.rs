@@ -1,5 +1,6 @@
 use crate::{
-    DormantMutation, EffectiveMutation, Mutation, SolarSystem,
+    DormantMutation, EffectiveMutation, Mutation,
+    sol::CoreInner,
     ud::{UItem, UItemId, err::ItemMutatedError},
 };
 
@@ -30,7 +31,7 @@ impl<'s> DormantMutation<'s> {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Private
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-impl SolarSystem {
+impl CoreInner {
     pub(in crate::api) fn internal_remove_item_mutation(&mut self, item_uid: UItemId) -> Result<(), ItemMutatedError> {
         match self.u_data.items.get(item_uid) {
             UItem::Drone(..) => self.internal_remove_drone_mutation(item_uid),

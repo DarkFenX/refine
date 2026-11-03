@@ -1,11 +1,11 @@
 use crate::{
-    SolarSystem,
     rd::RState,
+    sol::CoreInner,
     svc::Svc,
     ud::{UData, UEffectUpdates, UItem, UItemId},
 };
 
-impl SolarSystem {
+impl CoreInner {
     pub(in crate::api) fn util_switch_item_state(
         u_data: &UData,
         svc: &mut Svc,
@@ -16,7 +16,7 @@ impl SolarSystem {
     ) {
         if new_state != old_state {
             let u_item = u_data.items.get(item_uid);
-            SolarSystem::util_internal_switch_item_state(u_data, svc, item_uid, u_item, old_state, new_state, eupdates);
+            CoreInner::util_internal_switch_item_state(u_data, svc, item_uid, u_item, old_state, new_state, eupdates);
         }
     }
     pub(in crate::api::util) fn util_internal_switch_item_state(
@@ -29,7 +29,7 @@ impl SolarSystem {
         eupdates: &UEffectUpdates,
     ) {
         switch_item_state(svc, item_uid, u_item, old_state, new_state);
-        SolarSystem::util_internal_process_effect_updates(u_data, svc, item_uid, u_item, eupdates);
+        CoreInner::util_internal_process_effect_updates(u_data, svc, item_uid, u_item, eupdates);
     }
 }
 

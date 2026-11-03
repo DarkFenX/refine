@@ -1,7 +1,7 @@
 use crate::{
-    Booster, Fit, ItemTypeId, SolarSystem,
+    Booster, Fit, ItemTypeId,
     ad::AItemId,
-    sol::UndoStep,
+    sol::{CoreInner, UndoStep},
     ud::{UBooster, UFitId, UItem, UItemId},
 };
 
@@ -18,7 +18,7 @@ impl<'s> Fit<'s> {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Private
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-impl SolarSystem {
+impl CoreInner {
     pub(in crate::api) fn internal_add_booster(&mut self, fit_uid: UFitId, type_aid: AItemId) -> UItemId {
         let item_id = self.u_data.items.alloc_id();
         let u_booster = UBooster::new(item_id, type_aid, fit_uid, true, &self.u_data.r_data);
@@ -39,6 +39,6 @@ impl SolarSystem {
     fn attach_booster(&mut self, fit_uid: UFitId, booster_uid: UItemId) {
         let u_fit = self.u_data.fits.get_mut(fit_uid);
         u_fit.boosters.insert(booster_uid);
-        SolarSystem::util_add_booster(&mut self.u_data, &mut self.svc, booster_uid, &mut self.reuse.eupdates);
+        CoreInner::util_add_booster(&mut self.u_data, &mut self.svc, booster_uid, &mut self.reuse.eupdates);
     }
 }

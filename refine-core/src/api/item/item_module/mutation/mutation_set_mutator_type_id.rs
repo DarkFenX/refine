@@ -1,14 +1,13 @@
 use crate::{
-    SolarSystem,
     ad::AItemId,
-    sol::UndoStep,
+    sol::{CoreInner, UndoStep},
     ud::{
         UItemId,
         err::{ItemMutatedError, MutatorInplaceError},
     },
 };
 
-impl SolarSystem {
+impl CoreInner {
     pub(in crate::api) fn internal_set_module_mutator_aid(
         &mut self,
         module_uid: UItemId,
@@ -39,7 +38,7 @@ impl SolarSystem {
             Err(MutatorInplaceError::NotMutated(_)) => unreachable!("item is checked to be mutated"),
             Err(MutatorInplaceError::MutatedTypeChange) => (),
         }
-        SolarSystem::util_remove_module_with_charge_act(
+        CoreInner::util_remove_module_with_charge_act(
             &mut self.u_data,
             &mut self.svc,
             module_uid,
@@ -53,7 +52,7 @@ impl SolarSystem {
             self.undo
                 .record(UndoStep::ModuleMutator(module_uid, old_mutator_type_aid));
         }
-        SolarSystem::util_add_module_with_charge_act(
+        CoreInner::util_add_module_with_charge_act(
             &mut self.u_data,
             &mut self.svc,
             module_uid,

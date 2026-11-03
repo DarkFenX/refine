@@ -11,7 +11,8 @@ use lender::{ExactSizeLender, Lender, Lending, unsafe_assume_covariance};
 
 use crate::{
     Autocharge, Booster, Drone, Fighter, Fit, Fleet, FwEffect, Implant, Item, Module, ProjEffect, Rig, Service, Skill,
-    SolarSystem, Subsystem, SwEffect,
+    Subsystem, SwEffect,
+    sol::CoreInner,
     ud::{UFitId, UFleetId, UItemId},
 };
 
@@ -23,7 +24,7 @@ pub struct EntityIter<'iter, T>
 where
     T: FromUid,
 {
-    sol: &'iter mut SolarSystem,
+    sol: &'iter mut CoreInner,
     uids: Vec<T::UId>,
     index: usize,
     phantom: std::marker::PhantomData<T>,
@@ -61,7 +62,7 @@ impl<'iter, T> EntityIter<'iter, T>
 where
     T: FromUid,
 {
-    pub(in crate::api) fn new(sol: &'iter mut SolarSystem, uids: Vec<T::UId>) -> Self {
+    pub(in crate::api) fn new(sol: &'iter mut CoreInner, uids: Vec<T::UId>) -> Self {
         Self {
             sol,
             uids,
@@ -71,6 +72,7 @@ where
     }
 }
 
+#[doc(hidden)]
 pub trait EntityFamily {
     type Handle<'a>;
 
@@ -80,7 +82,7 @@ pub trait EntityFamily {
 }
 pub(crate) trait FromUid: EntityFamily {
     type UId: Copy;
-    fn from_uid(sol: &mut SolarSystem, uid: Self::UId) -> <Self as EntityFamily>::Handle<'_>;
+    fn from_uid(sol: &mut CoreInner, uid: Self::UId) -> <Self as EntityFamily>::Handle<'_>;
 }
 
 // Implementations for non-item entities
@@ -95,7 +97,7 @@ impl EntityFamily for Fleet<'_> {
 }
 impl FromUid for Fleet<'_> {
     type UId = UFleetId;
-    fn from_uid(sol: &mut SolarSystem, uid: Self::UId) -> Self::Handle<'_> {
+    fn from_uid(sol: &mut CoreInner, uid: Self::UId) -> Self::Handle<'_> {
         Fleet::__check_covariance(CovariantProof::new());
         Fleet::new(sol, uid)
     }
@@ -111,7 +113,7 @@ impl EntityFamily for Fit<'_> {
 }
 impl FromUid for Fit<'_> {
     type UId = UFitId;
-    fn from_uid(sol: &mut SolarSystem, uid: Self::UId) -> Self::Handle<'_> {
+    fn from_uid(sol: &mut CoreInner, uid: Self::UId) -> Self::Handle<'_> {
         Fit::__check_covariance(CovariantProof::new());
         Fit::new(sol, uid)
     }
@@ -128,7 +130,7 @@ impl EntityFamily for Item<'_> {
 }
 impl FromUid for Item<'_> {
     type UId = UItemId;
-    fn from_uid(sol: &mut SolarSystem, uid: Self::UId) -> Self::Handle<'_> {
+    fn from_uid(sol: &mut CoreInner, uid: Self::UId) -> Self::Handle<'_> {
         Item::__check_covariance(CovariantProof::new());
         Item::new(sol, uid)
     }
@@ -144,7 +146,7 @@ impl EntityFamily for Autocharge<'_> {
 }
 impl FromUid for Autocharge<'_> {
     type UId = UItemId;
-    fn from_uid(sol: &mut SolarSystem, uid: Self::UId) -> Self::Handle<'_> {
+    fn from_uid(sol: &mut CoreInner, uid: Self::UId) -> Self::Handle<'_> {
         Autocharge::__check_covariance(CovariantProof::new());
         Autocharge::new(sol, uid)
     }
@@ -160,7 +162,7 @@ impl EntityFamily for Booster<'_> {
 }
 impl FromUid for Booster<'_> {
     type UId = UItemId;
-    fn from_uid(sol: &mut SolarSystem, uid: Self::UId) -> Self::Handle<'_> {
+    fn from_uid(sol: &mut CoreInner, uid: Self::UId) -> Self::Handle<'_> {
         Booster::__check_covariance(CovariantProof::new());
         Booster::new(sol, uid)
     }
@@ -176,7 +178,7 @@ impl EntityFamily for Drone<'_> {
 }
 impl FromUid for Drone<'_> {
     type UId = UItemId;
-    fn from_uid(sol: &mut SolarSystem, uid: Self::UId) -> Self::Handle<'_> {
+    fn from_uid(sol: &mut CoreInner, uid: Self::UId) -> Self::Handle<'_> {
         Drone::__check_covariance(CovariantProof::new());
         Drone::new(sol, uid)
     }
@@ -192,7 +194,7 @@ impl EntityFamily for Fighter<'_> {
 }
 impl FromUid for Fighter<'_> {
     type UId = UItemId;
-    fn from_uid(sol: &mut SolarSystem, uid: Self::UId) -> Self::Handle<'_> {
+    fn from_uid(sol: &mut CoreInner, uid: Self::UId) -> Self::Handle<'_> {
         Fighter::__check_covariance(CovariantProof::new());
         Fighter::new(sol, uid)
     }
@@ -208,7 +210,7 @@ impl EntityFamily for FwEffect<'_> {
 }
 impl FromUid for FwEffect<'_> {
     type UId = UItemId;
-    fn from_uid(sol: &mut SolarSystem, uid: Self::UId) -> Self::Handle<'_> {
+    fn from_uid(sol: &mut CoreInner, uid: Self::UId) -> Self::Handle<'_> {
         FwEffect::__check_covariance(CovariantProof::new());
         FwEffect::new(sol, uid)
     }
@@ -224,7 +226,7 @@ impl EntityFamily for Implant<'_> {
 }
 impl FromUid for Implant<'_> {
     type UId = UItemId;
-    fn from_uid(sol: &mut SolarSystem, uid: Self::UId) -> Self::Handle<'_> {
+    fn from_uid(sol: &mut CoreInner, uid: Self::UId) -> Self::Handle<'_> {
         Implant::__check_covariance(CovariantProof::new());
         Implant::new(sol, uid)
     }
@@ -240,7 +242,7 @@ impl EntityFamily for Module<'_> {
 }
 impl FromUid for Module<'_> {
     type UId = UItemId;
-    fn from_uid(sol: &mut SolarSystem, uid: Self::UId) -> Self::Handle<'_> {
+    fn from_uid(sol: &mut CoreInner, uid: Self::UId) -> Self::Handle<'_> {
         Module::__check_covariance(CovariantProof::new());
         Module::new(sol, uid)
     }
@@ -256,7 +258,7 @@ impl EntityFamily for ProjEffect<'_> {
 }
 impl FromUid for ProjEffect<'_> {
     type UId = UItemId;
-    fn from_uid(sol: &mut SolarSystem, uid: Self::UId) -> Self::Handle<'_> {
+    fn from_uid(sol: &mut CoreInner, uid: Self::UId) -> Self::Handle<'_> {
         ProjEffect::__check_covariance(CovariantProof::new());
         ProjEffect::new(sol, uid)
     }
@@ -272,7 +274,7 @@ impl EntityFamily for Rig<'_> {
 }
 impl FromUid for Rig<'_> {
     type UId = UItemId;
-    fn from_uid(sol: &mut SolarSystem, uid: Self::UId) -> Self::Handle<'_> {
+    fn from_uid(sol: &mut CoreInner, uid: Self::UId) -> Self::Handle<'_> {
         Rig::__check_covariance(CovariantProof::new());
         Rig::new(sol, uid)
     }
@@ -288,7 +290,7 @@ impl EntityFamily for Service<'_> {
 }
 impl FromUid for Service<'_> {
     type UId = UItemId;
-    fn from_uid(sol: &mut SolarSystem, uid: Self::UId) -> Self::Handle<'_> {
+    fn from_uid(sol: &mut CoreInner, uid: Self::UId) -> Self::Handle<'_> {
         Service::__check_covariance(CovariantProof::new());
         Service::new(sol, uid)
     }
@@ -304,7 +306,7 @@ impl EntityFamily for Skill<'_> {
 }
 impl FromUid for Skill<'_> {
     type UId = UItemId;
-    fn from_uid(sol: &mut SolarSystem, uid: Self::UId) -> Self::Handle<'_> {
+    fn from_uid(sol: &mut CoreInner, uid: Self::UId) -> Self::Handle<'_> {
         Skill::__check_covariance(CovariantProof::new());
         Skill::new(sol, uid)
     }
@@ -320,7 +322,7 @@ impl EntityFamily for Subsystem<'_> {
 }
 impl FromUid for Subsystem<'_> {
     type UId = UItemId;
-    fn from_uid(sol: &mut SolarSystem, uid: Self::UId) -> Self::Handle<'_> {
+    fn from_uid(sol: &mut CoreInner, uid: Self::UId) -> Self::Handle<'_> {
         Subsystem::__check_covariance(CovariantProof::new());
         Subsystem::new(sol, uid)
     }
@@ -336,13 +338,14 @@ impl EntityFamily for SwEffect<'_> {
 }
 impl FromUid for SwEffect<'_> {
     type UId = UItemId;
-    fn from_uid(sol: &mut SolarSystem, uid: Self::UId) -> Self::Handle<'_> {
+    fn from_uid(sol: &mut CoreInner, uid: Self::UId) -> Self::Handle<'_> {
         SwEffect::__check_covariance(CovariantProof::new());
         SwEffect::new(sol, uid)
     }
 }
 
 // Covariance check-specific things
+#[doc(hidden)]
 pub struct CovariantProof<T>(core::marker::PhantomData<fn() -> T>);
 impl<T> CovariantProof<T> {
     fn new() -> Self {

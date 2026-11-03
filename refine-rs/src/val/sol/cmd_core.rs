@@ -7,6 +7,7 @@ use crate::{
 pub type SolValCmd = SolValCmdGen<FitId, ItemId>;
 pub type SolValCmdBr = SolValCmdGen<FitIdBr, ItemIdBr>;
 
+#[doc(hidden)]
 #[cfg_attr(
     feature = "serde",
     derive(serde::Deserialize),
@@ -71,10 +72,10 @@ impl SolValCmdBr {
 // Execution
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl SolValCmd {
-    pub(crate) fn execute_owned(mut self, core_sol: &mut rc::SolarSystem) -> SolValResult {
+    pub(crate) fn execute_owned(mut self, core_sol: &mut rc::Sol) -> SolValResult {
         self.execute_borrowed(core_sol)
     }
-    pub(crate) fn execute_borrowed(&mut self, core_sol: &mut rc::SolarSystem) -> SolValResult {
+    pub(crate) fn execute_borrowed(&mut self, core_sol: &mut rc::Sol) -> SolValResult {
         let mut core_options = rc::val::ValOptionsSol {
             fit_ids: Vec::default(),
             options: ValOptions::default(),

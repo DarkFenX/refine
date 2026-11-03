@@ -4,6 +4,7 @@ use crate::{CmdResps, FitId, FitIdBr, FleetId, FleetIdBr, err::BrResolveError};
 pub type FleetChangeCmd = FleetChangeCmdGen<FitId>;
 pub type FleetChangeCmdBr = FleetChangeCmdGen<FitIdBr>;
 
+#[doc(hidden)]
 #[cfg_attr(
     feature = "serde",
     derive(serde::Deserialize),
@@ -133,7 +134,7 @@ pub enum FleetChangeError {
 }
 
 impl FleetChangeCmdCtxFleet {
-    pub(in crate::ctl) fn execute(self, core_sol: &mut rc::SolarSystem) -> Result<(), FleetGetFleetChangeError> {
+    pub(in crate::ctl) fn execute(self, core_sol: &mut rc::Sol) -> Result<(), FleetGetFleetChangeError> {
         let mut core_fleet = core_sol.get_fleet(&self.fleet_id)?;
         Ok(self.core.execute(&mut core_fleet)?)
     }

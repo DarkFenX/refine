@@ -1,10 +1,10 @@
 use crate::{
-    Drone, ItemId, RangedProj, SolarSystem,
+    Drone, ItemId, RangedProj,
     err::{
         ProjAddError,
         basic::{ItemReceiveProjError, ProjNotFoundError},
     },
-    sol::UndoStep,
+    sol::{CoreInner, UndoStep},
     ud::{UItemId, UProjData},
 };
 
@@ -22,7 +22,7 @@ impl<'s> Drone<'s> {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Private
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-impl SolarSystem {
+impl CoreInner {
     pub(in crate::api) fn internal_add_drone_proj(
         &mut self,
         drone_uid: UItemId,
@@ -59,7 +59,7 @@ impl SolarSystem {
         u_drone.get_projs_mut().add(projectee_uid, u_proj_data);
         self.rev_projs.reg_projectee(drone_uid, projectee_uid);
         // Update services
-        SolarSystem::util_add_item_projection(&self.u_data, &mut self.svc, drone_uid, projectee_uid, u_proj_data);
+        CoreInner::util_add_item_projection(&self.u_data, &mut self.svc, drone_uid, projectee_uid, u_proj_data);
         if self.undo.is_recording() {
             self.undo.record(UndoStep::ProjAdded(drone_uid, projectee_uid));
         }

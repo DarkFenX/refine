@@ -41,7 +41,7 @@ pub(crate) enum ApiError {
     SrcRemove(#[from] rs::src::err::SrcRemoveError),
     // Solar system-related
     #[error(transparent)]
-    PathSolParse(#[from] rs::err::SolarSystemIdParseError),
+    PathSolParse(#[from] rs::err::SolIdParseError),
     #[error(transparent)]
     PathSolNotFound(#[from] rs::err::SolGetError),
     #[error(transparent)]

@@ -7,6 +7,7 @@ use crate::{
 pub(crate) type SolTryItemsEnumCmd = SolTryItemsEnumCmdGen<FitId, ItemId>;
 pub type SolTryItemsEnumCmdBr = SolTryItemsEnumCmdGen<FitIdBr, ItemIdBr>;
 
+#[doc(hidden)]
 #[cfg_attr(
     feature = "serde",
     derive(serde::Deserialize),
@@ -42,7 +43,7 @@ impl SolTryItemsEnumCmdBr {
 // Execution
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl SolTryItemsEnumCmd {
-    pub(crate) fn execute(self, core_sol: &mut rc::SolarSystem) -> Result<CmdResp, SolTryItemsEnumError> {
+    pub(crate) fn execute(self, core_sol: &mut rc::Sol) -> Result<CmdResp, SolTryItemsEnumError> {
         Ok(match self {
             Self::FitTryItems(cmd) => CmdResp::TryItems(cmd.execute(core_sol)?),
         })

@@ -7,6 +7,7 @@ use crate::{
 pub type DroneAddCmd = DroneAddCmdGen<ItemId>;
 pub type DroneAddCmdBr = DroneAddCmdGen<ItemIdBr>;
 
+#[doc(hidden)]
 #[cfg_attr(
     feature = "serde",
     derive(serde::Deserialize),
@@ -30,6 +31,7 @@ pub struct DroneAddCmdGen<I> {
 pub type DroneAddCmdCtxFit = DroneAddCmdCtxFitGen<FitId, ItemId>;
 pub type DroneAddCmdCtxFitBr = DroneAddCmdCtxFitGen<FitIdBr, ItemIdBr>;
 
+#[doc(hidden)]
 #[cfg_attr(
     feature = "serde",
     derive(serde::Deserialize),
@@ -161,10 +163,7 @@ pub enum DroneAddError {
 }
 
 impl DroneAddCmdCtxFit {
-    pub(in crate::ctl) fn execute(
-        self,
-        core_sol: &mut rc::SolarSystem,
-    ) -> Result<AddedItemIdsResp, FitGetDroneAddError> {
+    pub(in crate::ctl) fn execute(self, core_sol: &mut rc::Sol) -> Result<AddedItemIdsResp, FitGetDroneAddError> {
         let mut core_fit = core_sol.get_fit(&self.fit_id)?;
         Ok(self.core.execute(&mut core_fit)?)
     }

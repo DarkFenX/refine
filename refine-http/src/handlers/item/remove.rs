@@ -28,7 +28,7 @@ async fn internal_remove_item(
     item_id: String,
     payload: rs::ItemRemoveCmd,
 ) -> Result<(), ApiError> {
-    let sol_id = rs::SolarSystemId::from_str(&sol_id)?;
+    let sol_id = rs::SolId::from_str(&sol_id)?;
     let item_id = rs::ItemId::from_str(&item_id)?;
     state
         .get_refine()

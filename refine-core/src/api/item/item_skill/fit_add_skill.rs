@@ -1,10 +1,10 @@
 use std::collections::hash_map::Entry;
 
 use crate::{
-    Fit, ItemTypeId, Skill, SkillLevel, SolarSystem,
+    Fit, ItemTypeId, Skill, SkillLevel,
     ad::AItemId,
     err::basic::SkillEveTypeError,
-    sol::UndoStep,
+    sol::{CoreInner, UndoStep},
     ud::{UFitId, UFitSkill, UItem, UItemId, USkill},
 };
 
@@ -27,7 +27,7 @@ pub enum SkillAddError {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Private
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-impl SolarSystem {
+impl CoreInner {
     pub(in crate::api) fn internal_add_skill(
         &mut self,
         fit_uid: UFitId,
@@ -42,7 +42,7 @@ impl SolarSystem {
                 let item = UItem::Skill(skill);
                 let skill_uid = self.u_data.items.add(item);
                 entry.insert(UFitSkill { skill_uid, level });
-                SolarSystem::util_add_skill(&mut self.u_data, &mut self.svc, skill_uid, &mut self.reuse.eupdates);
+                CoreInner::util_add_skill(&mut self.u_data, &mut self.svc, skill_uid, &mut self.reuse.eupdates);
                 if self.undo.is_recording() {
                     self.undo.record(UndoStep::SkillAdded(skill_uid));
                 }
@@ -66,6 +66,6 @@ impl SolarSystem {
                 level: u_skill.get_level(),
             },
         );
-        SolarSystem::util_add_skill(&mut self.u_data, &mut self.svc, skill_uid, &mut self.reuse.eupdates);
+        CoreInner::util_add_skill(&mut self.u_data, &mut self.svc, skill_uid, &mut self.reuse.eupdates);
     }
 }

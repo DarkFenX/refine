@@ -1,9 +1,9 @@
 use itertools::Itertools;
 
 use crate::{
-    Coordinates, Fighter, Fit, ItemTypeId, MinionState, Movement, SolarSystem,
+    Coordinates, Fighter, Fit, ItemTypeId, MinionState, Movement,
     ad::AItemId,
-    sol::UndoStep,
+    sol::{CoreInner, UndoStep},
     ud::{UFighter, UFitId, UItem, UItemId, UPhysics},
 };
 
@@ -36,7 +36,7 @@ impl<'s> Fit<'s> {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Private
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-impl SolarSystem {
+impl CoreInner {
     pub(in crate::api) fn internal_add_fighter(
         &mut self,
         fit_uid: UFitId,
@@ -51,7 +51,7 @@ impl SolarSystem {
         let fighter_uid = self.u_data.items.add(u_item);
         u_fit.fighters.insert(fighter_uid);
         // Add fighter and autocharges to services
-        SolarSystem::util_add_fighter_with_acs(
+        CoreInner::util_add_fighter_with_acs(
             &mut self.u_data,
             &mut self.svc,
             &mut self.rev_projs,
@@ -75,11 +75,11 @@ impl SolarSystem {
         let u_fit = self.u_data.fits.get_mut(fit_uid);
         u_fit.fighters.insert(fighter_uid);
         // Add fighter and its existing autocharges to services
-        SolarSystem::util_add_fighter(&mut self.u_data, &mut self.svc, fighter_uid, &mut self.reuse.eupdates);
+        CoreInner::util_add_fighter(&mut self.u_data, &mut self.svc, fighter_uid, &mut self.reuse.eupdates);
         if has_projs {
-            SolarSystem::util_reg_item_projs(&self.u_data, &mut self.svc, &mut self.rev_projs, fighter_uid);
+            CoreInner::util_reg_item_projs(&self.u_data, &mut self.svc, &mut self.rev_projs, fighter_uid);
         }
-        SolarSystem::util_reattach_item_autocharges(
+        CoreInner::util_reattach_item_autocharges(
             &mut self.u_data,
             &mut self.svc,
             &mut self.rev_projs,

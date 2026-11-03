@@ -19,6 +19,7 @@ pub struct ShipSetCmd {
 pub type ShipSetCmdCtxFit = ShipSetCmdCtxFitGen<FitId>;
 pub type ShipSetCmdCtxFitBr = ShipSetCmdCtxFitGen<FitIdBr>;
 
+#[doc(hidden)]
 #[cfg_attr(
     feature = "serde",
     derive(serde::Deserialize),
@@ -105,10 +106,7 @@ impl ShipSetCmd {
 }
 
 impl ShipSetCmdCtxFit {
-    pub(in crate::ctl) fn execute(
-        self,
-        core_sol: &mut rc::SolarSystem,
-    ) -> Result<AddedItemIdsResp, FitGetShipSetError> {
+    pub(in crate::ctl) fn execute(self, core_sol: &mut rc::Sol) -> Result<AddedItemIdsResp, FitGetShipSetError> {
         let mut core_fit = core_sol.get_fit(&self.fit_id)?;
         Ok(self.core.execute(&mut core_fit))
     }

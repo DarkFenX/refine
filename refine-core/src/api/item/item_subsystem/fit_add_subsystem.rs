@@ -1,7 +1,7 @@
 use crate::{
-    Fit, ItemTypeId, SolarSystem, Subsystem,
+    Fit, ItemTypeId, Subsystem,
     ad::AItemId,
-    sol::UndoStep,
+    sol::{CoreInner, UndoStep},
     ud::{UFitId, UItem, UItemId, USubsystem},
 };
 
@@ -18,7 +18,7 @@ impl<'s> Fit<'s> {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Private
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-impl SolarSystem {
+impl CoreInner {
     pub(in crate::api) fn internal_add_subsystem(&mut self, fit_uid: UFitId, type_aid: AItemId) -> UItemId {
         let item_id = self.u_data.items.alloc_id();
         let u_subsystem = USubsystem::new(item_id, type_aid, fit_uid, true, &self.u_data.r_data);
@@ -39,6 +39,6 @@ impl SolarSystem {
     fn attach_subsystem(&mut self, fit_uid: UFitId, subsystem_uid: UItemId) {
         let u_fit = self.u_data.fits.get_mut(fit_uid);
         u_fit.subsystems.insert(subsystem_uid);
-        SolarSystem::util_add_subsystem(&mut self.u_data, &mut self.svc, subsystem_uid, &mut self.reuse.eupdates);
+        CoreInner::util_add_subsystem(&mut self.u_data, &mut self.svc, subsystem_uid, &mut self.reuse.eupdates);
     }
 }

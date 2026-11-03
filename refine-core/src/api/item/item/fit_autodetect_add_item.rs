@@ -1,7 +1,8 @@
 use crate::{
-    AddMode, Fit, Item, ItemTypeId, MinionState, ModRack, ModuleState, ServiceState, SolarSystem,
+    AddMode, Fit, Item, ItemTypeId, MinionState, ModRack, ModuleState, ServiceState,
     ad::AItemId,
     rd::RState,
+    sol::CoreInner,
     ud::{UFitId, UItemId, UPhysics},
     val::DetectedItemKind,
 };
@@ -31,7 +32,7 @@ pub enum FitItemAutodetectAddError {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Private
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-impl SolarSystem {
+impl CoreInner {
     pub(in crate::api) fn internal_fit_autodetect_add_item(
         &mut self,
         fit_uid: UFitId,

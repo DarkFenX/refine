@@ -4,6 +4,7 @@ use crate::{AddedFitIdResp, CmdResps, DpsProfile, FitSecStatus, FleetId, FleetId
 pub type FitAddCmd = FitAddCmdGen<FleetId>;
 pub type FitAddCmdBr = FitAddCmdGen<FleetIdBr>;
 
+#[doc(hidden)]
 #[cfg_attr(
     feature = "serde",
     derive(serde::Deserialize),
@@ -66,7 +67,7 @@ impl FitAddCmdBr {
 // Execution
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl FitAddCmd {
-    pub(crate) fn execute(self, core_sol: &mut rc::SolarSystem) -> Result<AddedFitIdResp, FitAddError> {
+    pub(crate) fn execute(self, core_sol: &mut rc::Sol) -> Result<AddedFitIdResp, FitAddError> {
         let Self {
             fleet_id,
             sec_status,

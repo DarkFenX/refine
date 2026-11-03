@@ -11,6 +11,7 @@
 pub(crate) use fit::FitInfoEnumCmd;
 pub use fit::{
     FitGetFitInfoError, FitInfo, FitInfoCmd, FitInfoCmdBr, FitInfoEnumCmdBr, FitInfoEnumError, FitInfoExt, FitInfoMode,
+    ModuleRacks,
 };
 pub use fleet::{FleetGetFleetInfoError, FleetInfo, FleetInfoCmd, FleetInfoCmdBr, FleetInfoExt, FleetInfoMode};
 pub use item::{

@@ -1,4 +1,8 @@
-use crate::{Module, ModuleState, SolarSystem, sol::UndoStep, ud::UItemId};
+use crate::{
+    Module, ModuleState,
+    sol::{CoreInner, UndoStep},
+    ud::UItemId,
+};
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Public
@@ -16,7 +20,7 @@ impl<'s> Module<'s> {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Private
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-impl SolarSystem {
+impl CoreInner {
     pub(in crate::api) fn internal_set_module_state(&mut self, module_uid: UItemId, state: ModuleState) {
         // Update user data for module
         let u_module = self.u_data.items.get_mut(module_uid).dc_module_mut().unwrap();
@@ -30,7 +34,7 @@ impl SolarSystem {
         let new_a_state = u_module.get_state();
         u_module.update_reffs(&mut self.reuse.eupdates, &self.u_data.r_data);
         // Update services for module
-        SolarSystem::util_switch_item_state(
+        CoreInner::util_switch_item_state(
             &self.u_data,
             &mut self.svc,
             module_uid,
@@ -41,7 +45,7 @@ impl SolarSystem {
         if let Some(charge_activated) = self.reuse.eupdates.charge
             && let Some(charge_uid) = charge_uid
         {
-            SolarSystem::util_process_charge_activation(
+            CoreInner::util_process_charge_activation(
                 &mut self.u_data,
                 &mut self.svc,
                 charge_uid,

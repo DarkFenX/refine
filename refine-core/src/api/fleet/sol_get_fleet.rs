@@ -1,12 +1,13 @@
-use crate::{Fleet, FleetId, SolarSystem, err::basic::FleetFoundError};
+use crate::{Fleet, FleetId, Sol, err::basic::FleetFoundError};
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Public
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-impl SolarSystem {
+impl Sol {
     pub fn get_fleet(&mut self, fleet_id: &FleetId) -> Result<Fleet<'_>, FleetGetError> {
-        let fleet_uid = self.u_data.fleets.int_id_by_ext_id_err(fleet_id)?;
-        Ok(Fleet::new(self, fleet_uid))
+        let sol = self.inner_mut();
+        let fleet_uid = sol.u_data.fleets.int_id_by_ext_id_err(fleet_id)?;
+        Ok(Fleet::new(sol, fleet_uid))
     }
 }
 

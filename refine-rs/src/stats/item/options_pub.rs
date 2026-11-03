@@ -14,6 +14,7 @@ pub type ItemStatsOptionsBr = ItemStatsOptionsGen<FitIdBr, ItemIdBr>;
 /// Which stats to fetch for an item.
 ///
 /// By default, all stats are not fetched.
+#[doc(hidden)]
 #[derive(Clone)]
 pub struct ItemStatsOptionsGen<F, I> {
     default: bool = false,

@@ -67,7 +67,7 @@ impl FleetRemoveCmd {
 }
 
 impl FleetRemoveCmdCtxFleet {
-    pub(in crate::ctl) fn execute(self, core_sol: &mut rc::SolarSystem) -> Result<(), FleetGetFleetRemoveError> {
+    pub(in crate::ctl) fn execute(self, core_sol: &mut rc::Sol) -> Result<(), FleetGetFleetRemoveError> {
         let core_fleet = core_sol.get_fleet(&self.fleet_id)?;
         self.core.execute(core_fleet);
         Ok(())

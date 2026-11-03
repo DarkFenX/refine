@@ -26,7 +26,7 @@ async fn internal_dev_benchmark_sol(
     sol_id: String,
     payload: rs::dev::DevBenchmarkCmd,
 ) -> Result<(), ApiError> {
-    let sol_id = rs::SolarSystemId::from_str(&sol_id)?;
+    let sol_id = rs::SolId::from_str(&sol_id)?;
     state.get_refine().get_sol(sol_id).await?.dev_benchmark(payload).await;
     Ok(())
 }

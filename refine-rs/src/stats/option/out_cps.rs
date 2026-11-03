@@ -8,6 +8,7 @@ use crate::{
 pub type StatOptionFitOutCps = StatOptionFitOutCpsGen<ItemId>;
 pub type StatOptionFitOutCpsBr = StatOptionFitOutCpsGen<ItemIdBr>;
 
+#[doc(hidden)]
 #[cfg_attr(
     feature = "serde",
     derive(serde::Deserialize),
@@ -28,6 +29,7 @@ impl<I> Default for StatOptionFitOutCpsGen<I> {
 pub type StatOptionItemOutCps = StatOptionItemOutCpsGen<ItemId>;
 pub type StatOptionItemOutCpsBr = StatOptionItemOutCpsGen<ItemIdBr>;
 
+#[doc(hidden)]
 #[cfg_attr(
     feature = "serde",
     derive(serde::Deserialize),

@@ -17,6 +17,7 @@ pub struct RigAddCmd {
 pub type RigAddCmdCtxFit = RigAddCmdCtxFitGen<FitId>;
 pub type RigAddCmdCtxFitBr = RigAddCmdCtxFitGen<FitIdBr>;
 
+#[doc(hidden)]
 #[cfg_attr(
     feature = "serde",
     derive(serde::Deserialize),
@@ -93,7 +94,7 @@ impl RigAddCmd {
 }
 
 impl RigAddCmdCtxFit {
-    pub(in crate::ctl) fn execute(self, core_sol: &mut rc::SolarSystem) -> Result<AddedItemIdsResp, FitGetRigAddError> {
+    pub(in crate::ctl) fn execute(self, core_sol: &mut rc::Sol) -> Result<AddedItemIdsResp, FitGetRigAddError> {
         let mut core_fit = core_sol.get_fit(&self.fit_id)?;
         Ok(self.core.execute(&mut core_fit))
     }

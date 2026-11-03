@@ -6,6 +6,7 @@ use crate::{
 pub type FitChangeCmd = FitChangeCmdGen<FleetId>;
 pub type FitChangeCmdBr = FitChangeCmdGen<FleetIdBr>;
 
+#[doc(hidden)]
 #[cfg_attr(
     feature = "serde",
     derive(serde::Deserialize),
@@ -142,7 +143,7 @@ pub enum FitChangeError {
 }
 
 impl FitChangeCmdCtxFit {
-    pub(in crate::ctl) fn execute(self, core_sol: &mut rc::SolarSystem) -> Result<(), FitGetFitChangeError> {
+    pub(in crate::ctl) fn execute(self, core_sol: &mut rc::Sol) -> Result<(), FitGetFitChangeError> {
         let mut core_fit = core_sol.get_fit(&self.fit_id)?;
         Ok(self.core.execute(&mut core_fit)?)
     }

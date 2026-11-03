@@ -29,7 +29,7 @@ async fn internal_change_sol(
     params: SolParams,
     payload: rs::SolChangeEnumCmd,
 ) -> Result<rs::SolInfo, ApiError> {
-    let sol_id = rs::SolarSystemId::from_str(&sol_id)?;
+    let sol_id = rs::SolId::from_str(&sol_id)?;
     let (_, sol_info) = state
         .get_refine()
         .get_sol(sol_id)

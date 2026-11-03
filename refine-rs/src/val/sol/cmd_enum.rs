@@ -7,6 +7,7 @@ use crate::{
 pub(crate) type SolValEnumCmd = SolValEnumCmdGen<FitId, ItemId>;
 pub type SolValEnumCmdBr = SolValEnumCmdGen<FitIdBr, ItemIdBr>;
 
+#[doc(hidden)]
 #[cfg_attr(
     feature = "serde",
     derive(serde::Deserialize),
@@ -51,7 +52,7 @@ impl SolValEnumCmdBr {
 // Execution
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl SolValEnumCmd {
-    pub(crate) fn execute(self, core_sol: &mut rc::SolarSystem) -> Result<CmdResp, SolValEnumError> {
+    pub(crate) fn execute(self, core_sol: &mut rc::Sol) -> Result<CmdResp, SolValEnumError> {
         Ok(match self {
             Self::SolValidate(cmd) => cmd.execute_owned(core_sol).into(),
             Self::FitValidate(cmd) => cmd.execute(core_sol)?.into(),

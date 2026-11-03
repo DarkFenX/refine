@@ -1,4 +1,9 @@
-use crate::{ItemTypeId, Rig, SolarSystem, ad::AItemId, sol::UndoStep, ud::UItemId};
+use crate::{
+    ItemTypeId, Rig,
+    ad::AItemId,
+    sol::{CoreInner, UndoStep},
+    ud::UItemId,
+};
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Public
@@ -13,19 +18,19 @@ impl<'s> Rig<'s> {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Private
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-impl SolarSystem {
+impl CoreInner {
     pub(in crate::api) fn internal_set_rig_type_aid(&mut self, rig_uid: UItemId, type_aid: AItemId) {
         let u_item = self.u_data.items.get(rig_uid);
         let old_type_aid = u_item.get_base_type_aid();
         if old_type_aid == type_aid {
             return;
         }
-        SolarSystem::util_remove_rig(&mut self.u_data, &mut self.svc, rig_uid, &mut self.reuse.eupdates);
+        CoreInner::util_remove_rig(&mut self.u_data, &mut self.svc, rig_uid, &mut self.reuse.eupdates);
         let u_rig = self.u_data.items.get_mut(rig_uid).dc_rig_mut().unwrap();
         u_rig.set_type_aid(type_aid, &self.u_data.r_data);
         if self.undo.is_recording() {
             self.undo.record(UndoStep::RigType(rig_uid, old_type_aid));
         }
-        SolarSystem::util_add_rig(&mut self.u_data, &mut self.svc, rig_uid, &mut self.reuse.eupdates);
+        CoreInner::util_add_rig(&mut self.u_data, &mut self.svc, rig_uid, &mut self.reuse.eupdates);
     }
 }

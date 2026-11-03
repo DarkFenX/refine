@@ -1,4 +1,9 @@
-use crate::{ItemTypeId, SolarSystem, Stance, ad::AItemId, sol::UndoStep, ud::UItemId};
+use crate::{
+    ItemTypeId, Stance,
+    ad::AItemId,
+    sol::{CoreInner, UndoStep},
+    ud::UItemId,
+};
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Public
@@ -13,19 +18,19 @@ impl<'s> Stance<'s> {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Private
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-impl SolarSystem {
+impl CoreInner {
     pub(in crate::api) fn internal_set_stance_type_aid(&mut self, stance_uid: UItemId, type_aid: AItemId) {
         let u_item = self.u_data.items.get(stance_uid);
         let old_type_aid = u_item.get_base_type_aid();
         if old_type_aid == type_aid {
             return;
         }
-        SolarSystem::util_remove_stance(&mut self.u_data, &mut self.svc, stance_uid, &mut self.reuse.eupdates);
+        CoreInner::util_remove_stance(&mut self.u_data, &mut self.svc, stance_uid, &mut self.reuse.eupdates);
         let u_stance = self.u_data.items.get_mut(stance_uid).dc_stance_mut().unwrap();
         u_stance.set_type_aid(type_aid, &self.u_data.r_data);
         if self.undo.is_recording() {
             self.undo.record(UndoStep::StanceType(stance_uid, old_type_aid));
         }
-        SolarSystem::util_add_stance(&mut self.u_data, &mut self.svc, stance_uid, &mut self.reuse.eupdates);
+        CoreInner::util_add_stance(&mut self.u_data, &mut self.svc, stance_uid, &mut self.reuse.eupdates);
     }
 }

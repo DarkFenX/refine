@@ -1,6 +1,7 @@
 use crate::{
-    Coordinates, FitId, ItemCommon, MinionState, Movement, NpcProp, SolarSystem,
+    Coordinates, FitId, ItemCommon, MinionState, Movement, NpcProp,
     api::ItemSealed,
+    sol::CoreInner,
     ud::{UDrone, UItemId},
 };
 
@@ -8,7 +9,7 @@ use crate::{
 // Public
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 pub struct Drone<'s> {
-    pub(super) sol: &'s mut SolarSystem,
+    pub(super) sol: &'s mut CoreInner,
     pub(super) uid: UItemId,
 }
 impl<'s> Drone<'s> {
@@ -39,7 +40,7 @@ impl<'s> ItemCommon for Drone<'s> {}
 // Private
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl<'s> Drone<'s> {
-    pub(in crate::api) fn new(sol: &'s mut SolarSystem, uid: UItemId) -> Self {
+    pub(in crate::api) fn new(sol: &'s mut CoreInner, uid: UItemId) -> Self {
         Self { sol, uid }
     }
 }
@@ -47,14 +48,14 @@ impl<'s> ItemSealed for Drone<'s> {
     fn get_uid(&self) -> UItemId {
         self.uid
     }
-    fn get_sol(&self) -> &SolarSystem {
+    fn get_sol(&self) -> &CoreInner {
         self.sol
     }
-    fn get_sol_mut(&mut self) -> &mut SolarSystem {
+    fn get_sol_mut(&mut self) -> &mut CoreInner {
         self.sol
     }
 }
 
-fn get_u_drone(sol: &SolarSystem, drone_uid: UItemId) -> &UDrone {
+fn get_u_drone(sol: &CoreInner, drone_uid: UItemId) -> &UDrone {
     sol.u_data.items.get(drone_uid).dc_drone().unwrap()
 }

@@ -1,10 +1,10 @@
-use crate::{OptionalReload, SolarSystem};
+use crate::{OptionalReload, Sol};
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Public
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-impl SolarSystem {
+impl Sol {
     pub fn get_default_optional_reloads(&self) -> OptionalReload {
-        self.u_data.default_optional_reloads
+        self.inner().u_data.default_optional_reloads
     }
 }

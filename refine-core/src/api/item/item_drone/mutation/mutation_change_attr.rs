@@ -1,10 +1,9 @@
 use crate::{
-    SolarSystem,
-    sol::UndoStep,
+    sol::{CoreInner, UndoStep},
     ud::{UAttrMutationRequest, UItemId, err::ItemMutatedError},
 };
 
-impl SolarSystem {
+impl CoreInner {
     pub(in crate::api::item) fn internal_change_drone_mutation_attr(
         &mut self,
         drone_uid: UItemId,

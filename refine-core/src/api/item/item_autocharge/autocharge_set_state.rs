@@ -1,4 +1,8 @@
-use crate::{Autocharge, SolarSystem, sol::UndoStep, ud::UItemId};
+use crate::{
+    Autocharge,
+    sol::{CoreInner, UndoStep},
+    ud::UItemId,
+};
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Public
@@ -16,7 +20,7 @@ impl<'s> Autocharge<'s> {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Private
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-impl SolarSystem {
+impl CoreInner {
     pub(in crate::api) fn internal_set_autocharge_state(&mut self, autocharge_uid: UItemId, state: bool) {
         let u_autocharge = self.u_data.items.get_mut(autocharge_uid).dc_autocharge_mut().unwrap();
         if self.undo.is_recording() {
@@ -29,7 +33,7 @@ impl SolarSystem {
         u_autocharge.set_force_disabled(!state);
         let new_r_state = u_autocharge.get_state();
         u_autocharge.update_reffs(&mut self.reuse.eupdates, &self.u_data.r_data);
-        SolarSystem::util_switch_item_state(
+        CoreInner::util_switch_item_state(
             &self.u_data,
             &mut self.svc,
             autocharge_uid,

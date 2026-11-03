@@ -107,7 +107,7 @@ pub enum SubsystemChangeError {
 impl SubsystemChangeCmdCtxItem {
     pub(in crate::ctl) fn execute(
         self,
-        core_sol: &mut rc::SolarSystem,
+        core_sol: &mut rc::Sol,
     ) -> Result<ChangedItemIdsResp, ItemGetSubsystemChangeError> {
         let mut core_item = core_sol
             .get_item(&self.item_id)

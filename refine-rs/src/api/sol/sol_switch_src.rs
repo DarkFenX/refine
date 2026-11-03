@@ -1,6 +1,6 @@
-use crate::{SolInfo, SolInfoCmd, SolarSystem, SrcAlias, src::err::SrcGetError};
+use crate::{Sol, SolInfo, SolInfoCmd, SrcAlias, src::err::SrcGetError};
 
-impl SolarSystem<'_> {
+impl Sol<'_> {
     #[tracing::instrument(name = "sol-swt-src", level = "error", skip_all)]
     pub async fn switch_src(&mut self, src_alias: Option<SrcAlias>) -> Result<(), SolSwitchSrcError> {
         let inner_src = self.refine.internal_get_src(src_alias)?;
@@ -8,8 +8,7 @@ impl SolarSystem<'_> {
         // Variables for move
         let core_src = inner_src.get_core().clone();
         // Source is switched outside of transactions
-        self.exec_standard_infallible(move |core_sol| core_sol.set_src(&core_src).unwrap())
-            .await;
+        self.exec_standard_infallible(move |core| core.set_src(&core_src)).await;
         Ok(())
     }
     #[tracing::instrument(name = "sol-swt-src-inf", level = "error", skip_all)]
@@ -25,12 +24,9 @@ impl SolarSystem<'_> {
         let sol_id = self.get_id();
         let src_alias = inner_src.get_alias();
         let sol_info = self
-            .exec_standard_infallible(move |core_sol| {
-                match core_sol.set_src(&core_src) {
-                    Ok(..) => (),
-                    Err(rc::err::SrcSetError::InTransaction) => unreachable!("sol shouldn't be mid-transaction"),
-                }
-                info_cmd.execute(sol_id, src_alias, core_sol)
+            .exec_standard_infallible(move |core| {
+                core.set_src(&core_src);
+                info_cmd.execute(sol_id, src_alias, core)
             })
             .await;
         Ok(sol_info)

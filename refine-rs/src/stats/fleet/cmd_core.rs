@@ -19,6 +19,7 @@ use crate::{
 pub type FleetStatsCmd = FleetStatsCmdGen<FitId, ItemId>;
 pub type FleetStatsCmdBr = FleetStatsCmdGen<FitIdBr, ItemIdBr>;
 
+#[doc(hidden)]
 #[cfg_attr(
     feature = "serde",
     derive(serde::Deserialize),
@@ -163,10 +164,7 @@ impl FleetStatsCmd {
 }
 
 impl FleetStatsCmdCtxFleet {
-    pub(in crate::stats) fn execute(
-        self,
-        core_sol: &mut rc::SolarSystem,
-    ) -> Result<FleetStatsResp, FleetGetFleetStatsError> {
+    pub(in crate::stats) fn execute(self, core_sol: &mut rc::Sol) -> Result<FleetStatsResp, FleetGetFleetStatsError> {
         let mut core_fleet = core_sol.get_fleet(&self.fleet_id)?;
         Ok(self.core.execute(&mut core_fleet))
     }

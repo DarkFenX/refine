@@ -17,7 +17,7 @@ pub(crate) async fn dev_check_sol(State(state): State<AppState>, Path(sol_id): P
 }
 
 async fn internal_dev_check_sol(state: AppState, sol_id: String) -> Result<bool, ApiError> {
-    let sol_id = rs::SolarSystemId::from_str(&sol_id)?;
+    let sol_id = rs::SolId::from_str(&sol_id)?;
     let passed = state
         .get_refine()
         .get_sol(sol_id)

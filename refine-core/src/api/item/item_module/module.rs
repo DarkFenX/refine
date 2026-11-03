@@ -1,7 +1,8 @@
 use crate::{
-    Charge, Count, FitId, Index, ItemCommon, ItemSpoolInfo, ModRack, ModuleState, OptionalReload, SolarSystem, Spool,
+    Charge, Count, FitId, Index, ItemCommon, ItemSpoolInfo, ModRack, ModuleState, OptionalReload, Spool,
     api::{ItemSealed, active_stat_prepare},
     misc::InfCount,
+    sol::CoreInner,
     stats::{StatItemChargeOptions, StatItemStateOptions},
     svc::cycle::CseqMap,
     ud::{UItemId, UModule},
@@ -11,7 +12,7 @@ use crate::{
 // Public
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 pub struct Module<'s> {
-    pub(super) sol: &'s mut SolarSystem,
+    pub(super) sol: &'s mut CoreInner,
     pub(super) uid: UItemId,
 }
 impl<'s> Module<'s> {
@@ -71,7 +72,7 @@ impl<'s> ItemCommon for Module<'s> {}
 // Private
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl<'s> Module<'s> {
-    pub(in crate::api) fn new(sol: &'s mut SolarSystem, uid: UItemId) -> Self {
+    pub(in crate::api) fn new(sol: &'s mut CoreInner, uid: UItemId) -> Self {
         Self { sol, uid }
     }
 }
@@ -79,14 +80,14 @@ impl<'s> ItemSealed for Module<'s> {
     fn get_uid(&self) -> UItemId {
         self.uid
     }
-    fn get_sol(&self) -> &SolarSystem {
+    fn get_sol(&self) -> &CoreInner {
         self.sol
     }
-    fn get_sol_mut(&mut self) -> &mut SolarSystem {
+    fn get_sol_mut(&mut self) -> &mut CoreInner {
         self.sol
     }
 }
 
-fn get_u_module(sol: &SolarSystem, module_uid: UItemId) -> &UModule {
+fn get_u_module(sol: &CoreInner, module_uid: UItemId) -> &UModule {
     sol.u_data.items.get(module_uid).dc_module().unwrap()
 }

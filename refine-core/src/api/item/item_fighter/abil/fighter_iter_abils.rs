@@ -1,13 +1,13 @@
 use lender::{ExactSizeLender, Lender, Lending, check_covariance};
 
-use crate::{Ability, Fighter, SolarSystem, ad::AAbilId, ud::UItemId};
+use crate::{Ability, Fighter, ad::AAbilId, sol::CoreInner, ud::UItemId};
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Public
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 /// Lending iterator for fighter abilities
 pub struct AbilityIter<'iter> {
-    sol: &'iter mut SolarSystem,
+    sol: &'iter mut CoreInner,
     fighter_uid: UItemId,
     abil_aids: Vec<AAbilId>,
     index: usize,
@@ -54,7 +54,7 @@ impl<'s> Fighter<'s> {
 // Private
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl<'iter> AbilityIter<'iter> {
-    fn new(sol: &'iter mut SolarSystem, fighter_uid: UItemId, abil_aids: Vec<AAbilId>) -> Self {
+    fn new(sol: &'iter mut CoreInner, fighter_uid: UItemId, abil_aids: Vec<AAbilId>) -> Self {
         Self {
             sol,
             fighter_uid,

@@ -9,7 +9,7 @@ pub use crate::{
         ItemAttrGetError, ItemAttrsIterError, ItemEffectsIterError, ItemGetError, ItemModifiersIterError,
         ItemRemoveError, ModuleGetError, MutationAddError, ProjAddError, ProjEffectGetError, ProjGetError,
         RawMAttrGetError, RigGetError, ServiceGetError, ShipGetError, SideEffectGetError, SkillAddError, SkillGetError,
-        SkillTypeIdSetError, SrcSetError, StanceGetError, SubsystemGetError, SwEffectGetError, TxBeginError,
+        SkillTypeIdSetError, StanceGetError, SubsystemGetError, SwEffectGetError,
     },
     misc::SpoolParseError,
     num::{

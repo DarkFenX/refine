@@ -4,6 +4,7 @@ use crate::{CmdResps, FitId, FitIdBr, ItemId, ItemIdBr, ItemTypeId, err::BrResol
 pub type FitTryItemsCmd = FitTryItemsCmdGen<ItemId>;
 pub type FitTryItemsCmdBr = FitTryItemsCmdGen<ItemIdBr>;
 
+#[doc(hidden)]
 #[cfg_attr(
     feature = "serde",
     derive(serde::Deserialize),
@@ -102,10 +103,7 @@ impl FitTryItemsCmd {
 }
 
 impl FitTryItemsCmdCtxFit {
-    pub(in crate::trial) fn execute(
-        self,
-        core_sol: &mut rc::SolarSystem,
-    ) -> Result<Vec<ItemTypeId>, FitGetFitTryItemsError> {
+    pub(in crate::trial) fn execute(self, core_sol: &mut rc::Sol) -> Result<Vec<ItemTypeId>, FitGetFitTryItemsError> {
         let mut core_fit = core_sol.get_fit(&self.fit_id)?;
         Ok(self.core.execute(&mut core_fit))
     }

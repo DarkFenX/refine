@@ -9,6 +9,7 @@ use crate::{
 pub type FighterAddCmd = FighterAddCmdGen<ItemId>;
 pub type FighterAddCmdBr = FighterAddCmdGen<ItemIdBr>;
 
+#[doc(hidden)]
 #[cfg_attr(
     feature = "serde",
     derive(serde::Deserialize),
@@ -34,6 +35,7 @@ pub struct FighterAddCmdGen<I> {
 pub type FighterAddCmdCtxFit = FighterAddCmdCtxFitGen<FitId, ItemId>;
 pub type FighterAddCmdCtxFitBr = FighterAddCmdCtxFitGen<FitIdBr, ItemIdBr>;
 
+#[doc(hidden)]
 #[cfg_attr(
     feature = "serde",
     derive(serde::Deserialize),
@@ -171,10 +173,7 @@ pub enum FighterAddError {
 }
 
 impl FighterAddCmdCtxFit {
-    pub(in crate::ctl) fn execute(
-        self,
-        core_sol: &mut rc::SolarSystem,
-    ) -> Result<AddedItemIdsResp, FitGetFighterAddError> {
+    pub(in crate::ctl) fn execute(self, core_sol: &mut rc::Sol) -> Result<AddedItemIdsResp, FitGetFighterAddError> {
         let mut core_fit = core_sol.get_fit(&self.fit_id)?;
         Ok(self.core.execute(&mut core_fit)?)
     }

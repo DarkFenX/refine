@@ -1,6 +1,7 @@
 use crate::{
-    FitId, ItemCommon, SolarSystem,
+    FitId, ItemCommon,
     api::ItemSealed,
+    sol::CoreInner,
     ud::{UFwEffect, UItemId},
 };
 
@@ -8,7 +9,7 @@ use crate::{
 // Public
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 pub struct FwEffect<'s> {
-    pub(super) sol: &'s mut SolarSystem,
+    pub(super) sol: &'s mut CoreInner,
     pub(super) uid: UItemId,
 }
 impl<'s> FwEffect<'s> {
@@ -26,7 +27,7 @@ impl<'s> ItemCommon for FwEffect<'s> {}
 // Private
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl<'s> FwEffect<'s> {
-    pub(in crate::api) fn new(sol: &'s mut SolarSystem, uid: UItemId) -> Self {
+    pub(in crate::api) fn new(sol: &'s mut CoreInner, uid: UItemId) -> Self {
         Self { sol, uid }
     }
 }
@@ -34,14 +35,14 @@ impl<'s> ItemSealed for FwEffect<'s> {
     fn get_uid(&self) -> UItemId {
         self.uid
     }
-    fn get_sol(&self) -> &SolarSystem {
+    fn get_sol(&self) -> &CoreInner {
         self.sol
     }
-    fn get_sol_mut(&mut self) -> &mut SolarSystem {
+    fn get_sol_mut(&mut self) -> &mut CoreInner {
         self.sol
     }
 }
 
-fn get_u_fw_effect(sol: &SolarSystem, fw_effect_uid: UItemId) -> &UFwEffect {
+fn get_u_fw_effect(sol: &CoreInner, fw_effect_uid: UItemId) -> &UFwEffect {
     sol.u_data.items.get(fw_effect_uid).dc_fw_effect().unwrap()
 }

@@ -34,7 +34,7 @@ async fn internal_batch_sol(
     sol_id: String,
     payload: SolBatchReqBody,
 ) -> Result<rs::CmdResps, ApiError> {
-    let sol_id = rs::SolarSystemId::from_str(&sol_id)?;
+    let sol_id = rs::SolId::from_str(&sol_id)?;
     let mut cmds = Vec::with_capacity(payload.0.len());
     for (index, raw_cmd) in payload.0.into_iter().enumerate() {
         match serde_json::from_value(raw_cmd) {

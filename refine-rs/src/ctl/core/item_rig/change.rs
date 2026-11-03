@@ -105,10 +105,7 @@ pub enum RigChangeError {
 }
 
 impl RigChangeCmdCtxItem {
-    pub(in crate::ctl) fn execute(
-        self,
-        core_sol: &mut rc::SolarSystem,
-    ) -> Result<ChangedItemIdsResp, ItemGetRigChangeError> {
+    pub(in crate::ctl) fn execute(self, core_sol: &mut rc::Sol) -> Result<ChangedItemIdsResp, ItemGetRigChangeError> {
         let mut core_item = core_sol
             .get_item(&self.item_id)
             .map_err(ItemGetRigChangeError::ItemGet)?;

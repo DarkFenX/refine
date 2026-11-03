@@ -1,9 +1,10 @@
 use itertools::Itertools;
 
 use crate::{
-    AddMode, Fit, ItemTypeId, MinionState, ModRack, ModuleState, PValue, ServiceState, SolarSystem,
+    AddMode, Fit, ItemTypeId, MinionState, ModRack, ModuleState, PValue, ServiceState,
     ad::AItemId,
     rd::RState,
+    sol::CoreInner,
     svc::vast::ValOptionsInt,
     ud::{UData, UFitId, UItemId, UPhysics},
     val::{DetectedItemKind, ValOptions},
@@ -24,7 +25,7 @@ impl<'s> Fit<'s> {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Private - general
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-impl SolarSystem {
+impl CoreInner {
     pub(in crate::api) fn internal_fit_try_items(
         &mut self,
         fit_uid: UFitId,
@@ -158,7 +159,7 @@ fn conv_state(r_state: RState) -> ModuleState {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Private - charge-specific
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-impl SolarSystem {
+impl CoreInner {
     fn internal_try_charges(
         &mut self,
         fit_uid: UFitId,

@@ -1,5 +1,5 @@
 use crate::{
-    AttrId, DormantMutation, EffectiveMutation, ItemId, Mutation, RawMAttr, SolarSystem, UnitInterval, ad::AAttrId,
+    AttrId, DormantMutation, EffectiveMutation, ItemId, Mutation, RawMAttr, UnitInterval, ad::AAttrId, sol::CoreInner,
     ud::UItemId,
 };
 
@@ -49,7 +49,7 @@ pub enum AttrMutateRawError {
 // Private
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 fn mutate_raw(
-    sol: &mut SolarSystem,
+    sol: &mut CoreInner,
     item_uid: UItemId,
     attr_aid: AAttrId,
     roll: UnitInterval,

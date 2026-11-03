@@ -1,4 +1,9 @@
-use crate::{ItemTypeId, Module, SolarSystem, ad::AItemId, sol::UndoStep, ud::UItemId};
+use crate::{
+    ItemTypeId, Module,
+    ad::AItemId,
+    sol::{CoreInner, UndoStep},
+    ud::UItemId,
+};
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Public
@@ -14,7 +19,7 @@ impl<'s> Module<'s> {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Private
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-impl SolarSystem {
+impl CoreInner {
     pub(in crate::api) fn internal_set_module_type_aid(&mut self, module_uid: UItemId, type_aid: AItemId) {
         let u_module = self.u_data.items.get_mut(module_uid).dc_module_mut().unwrap();
         let old_type_aid = u_module.get_base_type_aid();
@@ -36,7 +41,7 @@ impl SolarSystem {
             }
             return;
         }
-        SolarSystem::util_remove_module_with_charge_act(
+        CoreInner::util_remove_module_with_charge_act(
             &mut self.u_data,
             &mut self.svc,
             module_uid,
@@ -47,7 +52,7 @@ impl SolarSystem {
         if self.undo.is_recording() {
             self.undo.record(UndoStep::ModuleType(module_uid, old_type_aid));
         }
-        SolarSystem::util_add_module_with_charge_act(
+        CoreInner::util_add_module_with_charge_act(
             &mut self.u_data,
             &mut self.svc,
             module_uid,

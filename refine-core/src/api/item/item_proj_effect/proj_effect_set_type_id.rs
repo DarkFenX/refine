@@ -1,4 +1,9 @@
-use crate::{ItemTypeId, ProjEffect, SolarSystem, ad::AItemId, sol::UndoStep, ud::UItemId};
+use crate::{
+    ItemTypeId, ProjEffect,
+    ad::AItemId,
+    sol::{CoreInner, UndoStep},
+    ud::UItemId,
+};
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Public
@@ -13,14 +18,14 @@ impl<'s> ProjEffect<'s> {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Private
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-impl SolarSystem {
+impl CoreInner {
     pub(in crate::api) fn internal_set_proj_effect_type_aid(&mut self, proj_effect_uid: UItemId, type_aid: AItemId) {
         let u_item = self.u_data.items.get(proj_effect_uid);
         let old_type_aid = u_item.get_base_type_aid();
         if old_type_aid == type_aid {
             return;
         }
-        SolarSystem::util_remove_proj_effect(
+        CoreInner::util_remove_proj_effect(
             &mut self.u_data,
             &mut self.svc,
             proj_effect_uid,
@@ -32,7 +37,7 @@ impl SolarSystem {
             self.undo
                 .record(UndoStep::ProjEffectType(proj_effect_uid, old_type_aid));
         }
-        SolarSystem::util_add_proj_effect(
+        CoreInner::util_add_proj_effect(
             &mut self.u_data,
             &mut self.svc,
             proj_effect_uid,

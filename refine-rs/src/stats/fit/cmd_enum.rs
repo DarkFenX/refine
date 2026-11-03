@@ -9,6 +9,7 @@ use crate::{
 pub(crate) type FitStatsEnumCmd = FitStatsEnumCmdGen<FitId, ItemId>;
 pub type FitStatsEnumCmdBr = FitStatsEnumCmdGen<FitIdBr, ItemIdBr>;
 
+#[doc(hidden)]
 #[cfg_attr(
     feature = "serde",
     derive(serde::Deserialize),

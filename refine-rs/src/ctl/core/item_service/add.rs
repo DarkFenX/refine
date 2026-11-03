@@ -17,6 +17,7 @@ pub struct ServiceAddCmd {
 pub type ServiceAddCmdCtxFit = ServiceAddCmdCtxFitGen<FitId>;
 pub type ServiceAddCmdCtxFitBr = ServiceAddCmdCtxFitGen<FitIdBr>;
 
+#[doc(hidden)]
 #[cfg_attr(
     feature = "serde",
     derive(serde::Deserialize),
@@ -86,10 +87,7 @@ impl ServiceAddCmd {
 }
 
 impl ServiceAddCmdCtxFit {
-    pub(in crate::ctl) fn execute(
-        self,
-        core_sol: &mut rc::SolarSystem,
-    ) -> Result<AddedItemIdsResp, FitGetServiceAddError> {
+    pub(in crate::ctl) fn execute(self, core_sol: &mut rc::Sol) -> Result<AddedItemIdsResp, FitGetServiceAddError> {
         let mut core_fit = core_sol.get_fit(&self.fit_id)?;
         Ok(self.core.execute(&mut core_fit))
     }

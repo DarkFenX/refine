@@ -1,4 +1,8 @@
-use crate::{Rig, SolarSystem, sol::UndoStep, ud::UItemId};
+use crate::{
+    Rig,
+    sol::{CoreInner, UndoStep},
+    ud::UItemId,
+};
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Public
@@ -12,9 +16,9 @@ impl<'s> Rig<'s> {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Private
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-impl SolarSystem {
+impl CoreInner {
     pub(in crate::api) fn internal_remove_rig(&mut self, rig_uid: UItemId) {
-        SolarSystem::util_remove_rig(&mut self.u_data, &mut self.svc, rig_uid, &mut self.reuse.eupdates);
+        CoreInner::util_remove_rig(&mut self.u_data, &mut self.svc, rig_uid, &mut self.reuse.eupdates);
         let u_rig = self.u_data.items.get(rig_uid).dc_rig().unwrap();
         let u_fit = self.u_data.fits.get_mut(u_rig.get_fit_uid());
         u_fit.rigs.remove(&rig_uid);

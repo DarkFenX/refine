@@ -1,4 +1,9 @@
-use crate::{Drone, Movement, PValue, SolarSystem, misc::Xyz, sol::UndoStep, ud::UItemId};
+use crate::{
+    Drone, Movement, PValue,
+    misc::Xyz,
+    sol::{CoreInner, UndoStep},
+    ud::UItemId,
+};
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Public
@@ -14,7 +19,7 @@ impl<'s> Drone<'s> {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Private
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-impl SolarSystem {
+impl CoreInner {
     pub(in crate::api) fn internal_set_drone_movement(&mut self, drone_uid: UItemId, direction: Xyz, speed: PValue) {
         let u_drone = self.u_data.items.get_mut(drone_uid).dc_drone_mut().unwrap();
         let drone_u_physics = u_drone.get_physics_mut();
@@ -27,6 +32,6 @@ impl SolarSystem {
         }
         drone_u_physics.direction = direction;
         drone_u_physics.speed = speed;
-        SolarSystem::util_update_drone_physics(&mut self.u_data, &self.rev_projs, &mut self.svc, drone_uid);
+        CoreInner::util_update_drone_physics(&mut self.u_data, &self.rev_projs, &mut self.svc, drone_uid);
     }
 }

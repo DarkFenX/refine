@@ -1,5 +1,9 @@
 use super::shared::get_fit_rack_mut;
-use crate::{Index, Module, RemoveMode, SolarSystem, sol::UndoStep, ud::UItemId};
+use crate::{
+    Index, Module, RemoveMode,
+    sol::{CoreInner, UndoStep},
+    ud::UItemId,
+};
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Public
@@ -13,7 +17,7 @@ impl<'s> Module<'s> {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Private
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-impl SolarSystem {
+impl CoreInner {
     pub(in crate::api) fn internal_remove_module(&mut self, module_uid: UItemId, pos_mode: RemoveMode) {
         let u_module = self.u_data.items.get(module_uid).dc_module().unwrap();
         let fit_uid = u_module.get_fit_uid();
@@ -23,17 +27,17 @@ impl SolarSystem {
         // Remove outgoing projections for both module and charge; they keep them, in case they get
         // reattached. Charge projects whatever its module projects
         if !u_module.get_projs().is_empty() {
-            SolarSystem::util_unreg_item_projs(&self.u_data, &mut self.svc, &mut self.rev_projs, module_uid);
+            CoreInner::util_unreg_item_projs(&self.u_data, &mut self.svc, &mut self.rev_projs, module_uid);
             if let Some(charge_uid) = charge_uid {
-                SolarSystem::util_unreg_item_projs(&self.u_data, &mut self.svc, &mut self.rev_projs, charge_uid);
+                CoreInner::util_unreg_item_projs(&self.u_data, &mut self.svc, &mut self.rev_projs, charge_uid);
             }
         }
         // Remove charge from services
         if let Some(charge_uid) = charge_uid {
-            SolarSystem::util_remove_charge(&mut self.u_data, &mut self.svc, charge_uid, &mut self.reuse.eupdates);
+            CoreInner::util_remove_charge(&mut self.u_data, &mut self.svc, charge_uid, &mut self.reuse.eupdates);
         }
         // Remove module from services
-        SolarSystem::util_remove_module(&mut self.u_data, &mut self.svc, module_uid, &mut self.reuse.eupdates);
+        CoreInner::util_remove_module(&mut self.u_data, &mut self.svc, module_uid, &mut self.reuse.eupdates);
         // Update user data - not updating module<->charge references because both are discarded
         // together
         let u_fit_rack = get_fit_rack_mut(&mut self.u_data.fits, fit_uid, rack);

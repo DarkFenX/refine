@@ -4,6 +4,7 @@ use crate::{AddedFleetIdResp, CmdResps, FitId, FitIdBr, err::BrResolveError};
 pub type FleetAddCmd = FleetAddCmdGen<FitId>;
 pub type FleetAddCmdBr = FleetAddCmdGen<FitIdBr>;
 
+#[doc(hidden)]
 #[cfg_attr(
     feature = "serde",
     derive(serde::Deserialize),
@@ -50,7 +51,7 @@ impl FleetAddCmdBr {
 // Execution
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl FleetAddCmd {
-    pub(crate) fn execute(self, core_sol: &mut rc::SolarSystem) -> Result<AddedFleetIdResp, FleetAddError> {
+    pub(crate) fn execute(self, core_sol: &mut rc::Sol) -> Result<AddedFleetIdResp, FleetAddError> {
         let mut core_fleet = core_sol.add_fleet();
         for fit_id in &self.fit_ids {
             match core_fleet.add_fit(fit_id) {

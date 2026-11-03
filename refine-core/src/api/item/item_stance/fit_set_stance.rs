@@ -1,7 +1,7 @@
 use crate::{
-    Fit, ItemTypeId, SolarSystem, Stance,
+    Fit, ItemTypeId, Stance,
     ad::AItemId,
-    sol::UndoStep,
+    sol::{CoreInner, UndoStep},
     ud::{UFitId, UItem, UItemId, UStance},
 };
 
@@ -19,7 +19,7 @@ impl<'s> Fit<'s> {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Private
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-impl SolarSystem {
+impl CoreInner {
     pub(in crate::api) fn internal_set_fit_stance(&mut self, fit_uid: UFitId, type_aid: AItemId) -> UItemId {
         let u_fit = self.u_data.fits.get(fit_uid);
         // Remove old stance, if it was set
@@ -46,6 +46,6 @@ impl SolarSystem {
     fn attach_stance(&mut self, fit_uid: UFitId, stance_uid: UItemId) {
         let u_fit = self.u_data.fits.get_mut(fit_uid);
         u_fit.stance = Some(stance_uid);
-        SolarSystem::util_add_stance(&mut self.u_data, &mut self.svc, stance_uid, &mut self.reuse.eupdates);
+        CoreInner::util_add_stance(&mut self.u_data, &mut self.svc, stance_uid, &mut self.reuse.eupdates);
     }
 }

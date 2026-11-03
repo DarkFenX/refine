@@ -9,6 +9,7 @@ use crate::{
 pub type StatOptionJump = StatOptionJumpGen<FitId>;
 pub type StatOptionJumpBr = StatOptionJumpGen<FitIdBr>;
 
+#[doc(hidden)]
 #[cfg_attr(
     feature = "serde",
     derive(serde::Deserialize),

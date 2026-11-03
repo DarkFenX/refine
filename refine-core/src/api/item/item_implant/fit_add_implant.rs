@@ -1,7 +1,7 @@
 use crate::{
-    Fit, Implant, ItemTypeId, SolarSystem,
+    Fit, Implant, ItemTypeId,
     ad::AItemId,
-    sol::UndoStep,
+    sol::{CoreInner, UndoStep},
     ud::{UFitId, UImplant, UItem, UItemId},
 };
 
@@ -18,7 +18,7 @@ impl<'s> Fit<'s> {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Private
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-impl SolarSystem {
+impl CoreInner {
     pub(in crate::api) fn internal_add_implant(&mut self, fit_uid: UFitId, type_aid: AItemId) -> UItemId {
         let item_id = self.u_data.items.alloc_id();
         let u_implant = UImplant::new(item_id, type_aid, fit_uid, true, &self.u_data.r_data);
@@ -39,6 +39,6 @@ impl SolarSystem {
     fn attach_implant(&mut self, fit_uid: UFitId, implant_uid: UItemId) {
         let u_fit = self.u_data.fits.get_mut(fit_uid);
         u_fit.implants.insert(implant_uid);
-        SolarSystem::util_add_implant(&mut self.u_data, &mut self.svc, implant_uid, &mut self.reuse.eupdates);
+        CoreInner::util_add_implant(&mut self.u_data, &mut self.svc, implant_uid, &mut self.reuse.eupdates);
     }
 }

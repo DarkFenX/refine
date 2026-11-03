@@ -1,6 +1,7 @@
 use crate::{
-    DormantMutation, EffectiveMutation, ItemTypeId, Mutation, SolarSystem,
+    DormantMutation, EffectiveMutation, ItemTypeId, Mutation,
     ad::AItemId,
+    sol::CoreInner,
     ud::{UItem, UItemId, err::ItemMutatedError},
 };
 
@@ -37,7 +38,7 @@ impl<'s> DormantMutation<'s> {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Private
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-impl SolarSystem {
+impl CoreInner {
     pub(in crate::api) fn internal_set_mutator_aid(
         &mut self,
         item_uid: UItemId,

@@ -9,6 +9,7 @@ use crate::{
 pub type DroneChangeCmd = DroneChangeCmdGen<ItemId>;
 pub type DroneChangeCmdBr = DroneChangeCmdGen<ItemIdBr>;
 
+#[doc(hidden)]
 #[cfg_attr(
     feature = "serde",
     derive(serde::Deserialize),
@@ -244,10 +245,7 @@ pub enum DroneChangeError {
 }
 
 impl DroneChangeCmdCtxItem {
-    pub(in crate::ctl) fn execute(
-        self,
-        core_sol: &mut rc::SolarSystem,
-    ) -> Result<ChangedItemIdsResp, ItemGetDroneChangeError> {
+    pub(in crate::ctl) fn execute(self, core_sol: &mut rc::Sol) -> Result<ChangedItemIdsResp, ItemGetDroneChangeError> {
         let mut core_item = core_sol
             .get_item(&self.item_id)
             .map_err(ItemGetDroneChangeError::ItemGet)?;

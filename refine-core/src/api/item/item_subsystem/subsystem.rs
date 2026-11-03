@@ -1,6 +1,7 @@
 use crate::{
-    FitId, ItemCommon, SlotIndex, SolarSystem,
+    FitId, ItemCommon, SlotIndex,
     api::ItemSealed,
+    sol::CoreInner,
     ud::{UItemId, USubsystem},
 };
 
@@ -8,7 +9,7 @@ use crate::{
 // Public
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 pub struct Subsystem<'s> {
-    pub(super) sol: &'s mut SolarSystem,
+    pub(super) sol: &'s mut CoreInner,
     pub(super) uid: UItemId,
 }
 impl<'s> Subsystem<'s> {
@@ -29,7 +30,7 @@ impl<'s> ItemCommon for Subsystem<'s> {}
 // Private
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl<'s> Subsystem<'s> {
-    pub(in crate::api) fn new(sol: &'s mut SolarSystem, uid: UItemId) -> Self {
+    pub(in crate::api) fn new(sol: &'s mut CoreInner, uid: UItemId) -> Self {
         Self { sol, uid }
     }
 }
@@ -37,14 +38,14 @@ impl<'s> ItemSealed for Subsystem<'s> {
     fn get_uid(&self) -> UItemId {
         self.uid
     }
-    fn get_sol(&self) -> &SolarSystem {
+    fn get_sol(&self) -> &CoreInner {
         self.sol
     }
-    fn get_sol_mut(&mut self) -> &mut SolarSystem {
+    fn get_sol_mut(&mut self) -> &mut CoreInner {
         self.sol
     }
 }
 
-fn get_u_subsystem(sol: &SolarSystem, subsystem_uid: UItemId) -> &USubsystem {
+fn get_u_subsystem(sol: &CoreInner, subsystem_uid: UItemId) -> &USubsystem {
     sol.u_data.items.get(subsystem_uid).dc_subsystem().unwrap()
 }

@@ -1,9 +1,8 @@
 use itertools::Itertools;
 
 use crate::{
-    SolarSystem,
     rd::REffectId,
-    sol::RevProjs,
+    sol::{CoreInner, RevProjs},
     svc::Svc,
     ud::{UAutocharge, UData, UEffectUpdates, UItem, UItemId},
 };
@@ -13,7 +12,7 @@ struct AutochargeData {
     autocharge_uid: UItemId,
 }
 
-impl SolarSystem {
+impl CoreInner {
     pub(in crate::api::item) fn util_add_item_autocharges(
         u_data: &mut UData,
         svc: &mut Svc,
@@ -86,7 +85,7 @@ impl SolarSystem {
         for ac_data in ac_datas.iter() {
             let autocharge_u_item = u_data.items.get_mut(ac_data.autocharge_uid);
             autocharge_u_item.update_reffs(reuse_eupdates, &u_data.r_data);
-            SolarSystem::util_add_item(u_data, svc, ac_data.autocharge_uid, reuse_eupdates);
+            CoreInner::util_add_item(u_data, svc, ac_data.autocharge_uid, reuse_eupdates);
             if !projections.is_empty() {
                 let u_autocharge = u_data
                     .items
@@ -99,7 +98,7 @@ impl SolarSystem {
                 }
                 let u_autocharge = u_data.items.get(ac_data.autocharge_uid).dc_autocharge().unwrap();
                 for (projectee_uid, range) in u_autocharge.get_projs().iter() {
-                    SolarSystem::util_add_item_projection(u_data, svc, ac_data.autocharge_uid, projectee_uid, range);
+                    CoreInner::util_add_item_projection(u_data, svc, ac_data.autocharge_uid, projectee_uid, range);
                 }
             }
         }
@@ -117,8 +116,7 @@ impl SolarSystem {
         item_uid: UItemId,
         reuse_eupdates: &mut UEffectUpdates,
     ) {
-        let autocharge_uids =
-            SolarSystem::util_detach_item_autocharges(u_data, svc, rev_projs, item_uid, reuse_eupdates);
+        let autocharge_uids = CoreInner::util_detach_item_autocharges(u_data, svc, rev_projs, item_uid, reuse_eupdates);
         // Update items
         let cont_u_item = u_data.items.get_mut(item_uid);
         let Some(cont_acs) = cont_u_item.get_autocharges_mut() else {
@@ -150,11 +148,11 @@ impl SolarSystem {
                 .get_projs()
                 .is_empty()
             {
-                SolarSystem::util_unreg_item_projs(u_data, svc, rev_projs, autocharge_uid);
+                CoreInner::util_unreg_item_projs(u_data, svc, rev_projs, autocharge_uid);
             }
             let autocharge_u_item = u_data.items.get_mut(autocharge_uid);
             autocharge_u_item.stop_all_reffs(reuse_eupdates, &u_data.r_data);
-            SolarSystem::util_remove_item(u_data, svc, autocharge_uid, reuse_eupdates);
+            CoreInner::util_remove_item(u_data, svc, autocharge_uid, reuse_eupdates);
         }
         autocharge_uids
     }
@@ -173,7 +171,7 @@ impl SolarSystem {
         for autocharge_uid in autocharge_uids.into_iter() {
             let autocharge_u_item = u_data.items.get_mut(autocharge_uid);
             autocharge_u_item.update_reffs(reuse_eupdates, &u_data.r_data);
-            SolarSystem::util_add_item(u_data, svc, autocharge_uid, reuse_eupdates);
+            CoreInner::util_add_item(u_data, svc, autocharge_uid, reuse_eupdates);
             if !u_data
                 .items
                 .get(autocharge_uid)
@@ -182,7 +180,7 @@ impl SolarSystem {
                 .get_projs()
                 .is_empty()
             {
-                SolarSystem::util_reg_item_projs(u_data, svc, rev_projs, autocharge_uid);
+                CoreInner::util_reg_item_projs(u_data, svc, rev_projs, autocharge_uid);
             }
         }
     }

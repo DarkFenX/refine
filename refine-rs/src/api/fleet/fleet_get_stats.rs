@@ -9,10 +9,10 @@ impl Fleet<'_, '_> {
         // Variables for move
         let fleet_id = self.id;
         self.sol
-            .exec_standard_infallible(move |core_sol| {
+            .exec_standard_infallible(move |core| {
                 // Holding mutex on sol - nothing can remove the core fleet without consuming the
                 // high-level Fleet
-                let mut core_fleet = core_sol.get_fleet(&fleet_id).unwrap();
+                let mut core_fleet = core.get_fleet(&fleet_id).unwrap();
                 stats_cmd.execute(&mut core_fleet)
             })
             .await

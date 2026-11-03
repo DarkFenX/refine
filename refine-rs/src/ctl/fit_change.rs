@@ -1,16 +1,19 @@
 use crate::{
     AutochargeChangeCmd, BoosterAddCmd, BoosterChangeCmd, CharacterChangeCmd, CharacterSetCmd, CharacterUnsetCmd,
-    ChargeChangeCmd, CmdResp, CmdResps, DroneAddCmd, DroneAddCmdBr, DroneAddCmdGen, DroneChangeCmd, DroneChangeCmdBr,
-    FighterAddCmd, FighterAddCmdBr, FighterAddCmdGen, FighterChangeCmd, FighterChangeCmdBr, FitChangeCmd,
-    FwEffectAddCmd, FwEffectChangeCmd, ImplantAddCmd, ImplantChangeCmd, ItemAutodetectAddCmd, ItemId, ItemIdBr,
-    ItemRemoveCmd, ModuleAddCmd, ModuleAddCmdBr, ModuleAddCmdGen, ModuleChangeCmd, ModuleChangeCmdBr, RigAddCmd,
-    RigChangeCmd, ServiceAddCmd, ServiceChangeCmd, ShipChangeCmd, ShipSetCmd, ShipUnsetCmd, SkillAddCmd,
-    SkillChangeCmd, StanceChangeCmd, StanceSetCmd, StanceUnsetCmd, SubsystemAddCmd, SubsystemChangeCmd,
-    ctl::core::{
-        AutochargeChangeCmdCtxItemGen, BoosterChangeCmdCtxItemGen, ChargeChangeCmdCtxItemGen, DroneChangeCmdCtxItemGen,
-        FighterChangeCmdCtxItemGen, FwEffectChangeCmdCtxItemGen, ImplantChangeCmdCtxItemGen, ItemRemoveCmdCtxItemGen,
-        ModuleChangeCmdCtxItemGen, RigChangeCmdCtxItemGen, ServiceChangeCmdCtxItemGen, SkillChangeCmdCtxItemGen,
-        SubsystemChangeCmdCtxItemGen,
+    ChargeChangeCmd, CmdResp, CmdResps, DroneAddCmd, DroneAddCmdBr, DroneChangeCmd, DroneChangeCmdBr, FighterAddCmd,
+    FighterAddCmdBr, FighterChangeCmd, FighterChangeCmdBr, FitChangeCmd, FwEffectAddCmd, FwEffectChangeCmd,
+    ImplantAddCmd, ImplantChangeCmd, ItemAutodetectAddCmd, ItemId, ItemIdBr, ItemRemoveCmd, ModuleAddCmd,
+    ModuleAddCmdBr, ModuleChangeCmd, ModuleChangeCmdBr, RigAddCmd, RigChangeCmd, ServiceAddCmd, ServiceChangeCmd,
+    ShipChangeCmd, ShipSetCmd, ShipUnsetCmd, SkillAddCmd, SkillChangeCmd, StanceChangeCmd, StanceSetCmd,
+    StanceUnsetCmd, SubsystemAddCmd, SubsystemChangeCmd,
+    ctl::{
+        DroneAddCmdGen, FighterAddCmdGen, ModuleAddCmdGen,
+        core::{
+            AutochargeChangeCmdCtxItemGen, BoosterChangeCmdCtxItemGen, ChargeChangeCmdCtxItemGen,
+            DroneChangeCmdCtxItemGen, FighterChangeCmdCtxItemGen, FwEffectChangeCmdCtxItemGen,
+            ImplantChangeCmdCtxItemGen, ItemRemoveCmdCtxItemGen, ModuleChangeCmdCtxItemGen, RigChangeCmdCtxItemGen,
+            ServiceChangeCmdCtxItemGen, SkillChangeCmdCtxItemGen, SubsystemChangeCmdCtxItemGen,
+        },
     },
     err::{
         BrResolveError, DroneAddError, FighterAddError, FitChangeError, FitCharacterChangeError,
@@ -25,6 +28,7 @@ use crate::{
 pub type FitChangeEnumCmd = FitChangeEnumCmdGen<ItemId>;
 pub type FitChangeEnumCmdBr = FitChangeEnumCmdGen<ItemIdBr>;
 
+#[doc(hidden)]
 #[cfg_attr(
     feature = "serde",
     derive(serde::Deserialize),

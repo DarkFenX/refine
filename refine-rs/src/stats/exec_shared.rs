@@ -26,7 +26,7 @@ pub(in crate::stats) fn get_stats_for_passed_fleets(
         .collect()
 }
 pub(in crate::stats) fn get_stats_for_fleets_in_overrides(
-    core_sol: &mut rc::SolarSystem,
+    core_sol: &mut rc::Sol,
     fleet_options: &OvrdMapHeavy<FleetId, FleetStatsOptionsResolved>,
 ) -> Vec<(FleetId, FleetStats)> {
     let mut stats = Vec::with_capacity(fleet_options.override_len());
@@ -63,7 +63,7 @@ pub(in crate::stats) fn get_stats_for_fits_in_overrides<S>(
     fit_options: &OvrdMapHeavy<FitId, FitStatsOptionsResolved>,
 ) -> Vec<(FitId, FitStats)>
 where
-    S: FitSource,
+    S: FitSource + ?Sized,
 {
     let mut stats = Vec::with_capacity(fit_options.override_len());
     for (fit_id, options) in fit_options.iter_overrides() {
@@ -111,7 +111,7 @@ pub(in crate::stats) fn get_stats_for_items_in_overrides<S>(
     item_options: &OvrdMapHeavy<ItemId, ItemStatsOptionsResolved>,
 ) -> Vec<(ItemId, ItemStats)>
 where
-    S: ItemSource,
+    S: ItemSource + ?Sized,
 {
     let mut stats = Vec::with_capacity(item_options.override_len());
     for (item_id, options) in item_options.iter_overrides() {
@@ -190,7 +190,7 @@ where
 pub(in crate::stats) trait FitSource {
     fn get_core_fit(&mut self, fit_id: &FitId) -> Option<rc::Fit<'_>>;
 }
-impl FitSource for rc::SolarSystem {
+impl FitSource for rc::Sol {
     fn get_core_fit(&mut self, fit_id: &FitId) -> Option<rc::Fit<'_>> {
         self.get_fit(fit_id).ok()
     }
@@ -204,7 +204,7 @@ impl FitSource for rc::Fleet<'_> {
 pub(in crate::stats) trait ItemSource {
     fn get_core_item(&mut self, item_id: &ItemId) -> Option<rc::Item<'_>>;
 }
-impl ItemSource for rc::SolarSystem {
+impl ItemSource for rc::Sol {
     fn get_core_item(&mut self, item_id: &ItemId) -> Option<rc::Item<'_>> {
         self.get_item(item_id).ok()
     }

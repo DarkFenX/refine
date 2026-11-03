@@ -1,10 +1,10 @@
 use crate::{
-    ItemId, Proj, ProjEffect, SolarSystem,
+    ItemId, Proj, ProjEffect,
     err::{
         ProjAddError,
         basic::{ItemReceiveProjError, ProjNotFoundError},
     },
-    sol::UndoStep,
+    sol::{CoreInner, UndoStep},
     ud::UItemId,
 };
 
@@ -22,7 +22,7 @@ impl<'s> ProjEffect<'s> {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Private
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-impl SolarSystem {
+impl CoreInner {
     pub(in crate::api) fn internal_add_proj_effect_proj(
         &mut self,
         proj_effect_uid: UItemId,
@@ -53,7 +53,7 @@ impl SolarSystem {
         u_proj_effect.get_projs_mut().add(projectee_uid, None);
         self.rev_projs.reg_projectee(proj_effect_uid, projectee_uid);
         // Update services
-        SolarSystem::util_add_item_projection(&self.u_data, &mut self.svc, proj_effect_uid, projectee_uid, None);
+        CoreInner::util_add_item_projection(&self.u_data, &mut self.svc, proj_effect_uid, projectee_uid, None);
         if self.undo.is_recording() {
             self.undo.record(UndoStep::ProjAdded(proj_effect_uid, projectee_uid));
         }

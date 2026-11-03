@@ -6,6 +6,7 @@ use crate::{
 pub type StatOptionCapSim = StatOptionCapSimGen<ItemId>;
 pub type StatOptionCapSimBr = StatOptionCapSimGen<ItemIdBr>;
 
+#[doc(hidden)]
 #[cfg_attr(
     feature = "serde",
     derive(serde::Deserialize),

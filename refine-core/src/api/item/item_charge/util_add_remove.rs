@@ -1,10 +1,10 @@
 use crate::{
-    SolarSystem,
+    sol::CoreInner,
     svc::Svc,
     ud::{UData, UEffectUpdates, UItemId},
 };
 
-impl SolarSystem {
+impl CoreInner {
     pub(in crate::api) fn util_add_charge(
         u_data: &mut UData,
         svc: &mut Svc,
@@ -13,7 +13,7 @@ impl SolarSystem {
     ) {
         let u_item = u_data.items.get_mut(charge_uid);
         u_item.update_reffs(reuse_eupdates, &u_data.r_data);
-        SolarSystem::util_add_item(u_data, svc, charge_uid, reuse_eupdates);
+        CoreInner::util_add_item(u_data, svc, charge_uid, reuse_eupdates);
     }
     pub(in crate::api) fn util_remove_charge(
         u_data: &mut UData,
@@ -23,6 +23,6 @@ impl SolarSystem {
     ) {
         let u_item = u_data.items.get_mut(charge_uid);
         u_item.stop_all_reffs(reuse_eupdates, &u_data.r_data);
-        SolarSystem::util_remove_item(u_data, svc, charge_uid, reuse_eupdates);
+        CoreInner::util_remove_item(u_data, svc, charge_uid, reuse_eupdates);
     }
 }

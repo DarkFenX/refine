@@ -1,7 +1,7 @@
 use crate::{
-    Fit, ItemTypeId, Rig, SolarSystem,
+    Fit, ItemTypeId, Rig,
     ad::AItemId,
-    sol::UndoStep,
+    sol::{CoreInner, UndoStep},
     ud::{UFitId, UItem, UItemId, URig},
 };
 
@@ -18,7 +18,7 @@ impl<'s> Fit<'s> {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Private
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-impl SolarSystem {
+impl CoreInner {
     pub(in crate::api) fn internal_add_rig(&mut self, fit_uid: UFitId, type_aid: AItemId) -> UItemId {
         let item_id = self.u_data.items.alloc_id();
         let u_rig = URig::new(item_id, type_aid, fit_uid, true, &self.u_data.r_data);
@@ -39,6 +39,6 @@ impl SolarSystem {
     fn attach_rig(&mut self, fit_uid: UFitId, rig_uid: UItemId) {
         let u_fit = self.u_data.fits.get_mut(fit_uid);
         u_fit.rigs.insert(rig_uid);
-        SolarSystem::util_add_rig(&mut self.u_data, &mut self.svc, rig_uid, &mut self.reuse.eupdates);
+        CoreInner::util_add_rig(&mut self.u_data, &mut self.svc, rig_uid, &mut self.reuse.eupdates);
     }
 }

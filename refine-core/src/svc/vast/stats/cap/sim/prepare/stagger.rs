@@ -5,7 +5,8 @@ use super::{
     timing_key::{CSeqHardDtTimingKey, CSeqPartTimingKey},
 };
 use crate::{
-    ItemId, PValue, SolarSystem,
+    ItemId, PValue,
+    sol::CoreInner,
     svc::{
         cycle::CycleSeq,
         vast::{aggr::AggrIterData, stats::cap::sim::shared::Direction},
@@ -59,7 +60,7 @@ pub(crate) struct StatCapSimStaggerInt {
     exception_item_uids: Vec<UItemId>,
 }
 impl StatCapSimStaggerInt {
-    pub(crate) fn from_pub(sol: &SolarSystem, pub_opts: &StatCapSimStagger) -> Self {
+    pub(crate) fn from_pub(sol: &CoreInner, pub_opts: &StatCapSimStagger) -> Self {
         Self {
             default: pub_opts.default,
             exception_item_uids: pub_opts

@@ -1,23 +1,21 @@
 use std::ops::{Deref, DerefMut};
 
-use crate::{SolarSystem, sol::Savepoint};
+use crate::{Core, Sol, sol::Savepoint};
 
 /// Transaction on a solar system.
 ///
-/// Derefs to the solar system. Commit to keep changes, roll back or drop to revert them. Only one
-/// transaction can be open on a solar system at a time.
+/// Derefs to the solar system's interface. Commit to keep changes, roll back or drop to revert
+/// them.
 ///
-/// Restrictions:
-/// - the solar system must not be replaced through the guard, and cloning it panics;
-/// - a guard dropped while panicking neither rolls back nor commits, since rolling back half-done
-///   changes could panic again; the solar system has to be discarded then.
+/// A guard dropped while panicking neither rolls back nor commits, since rolling back half-done
+/// changes could panic again; the solar system has to be discarded then.
 pub struct SolTx<'a> {
-    sol: &'a mut SolarSystem,
+    sol: &'a mut Core,
     // Taken on commit and rollback
     savepoint: Option<Savepoint>,
 }
 impl<'a> SolTx<'a> {
-    pub(crate) fn new(sol: &'a mut SolarSystem, savepoint: Savepoint) -> Self {
+    pub(crate) fn new(sol: &'a mut Core, savepoint: Savepoint) -> Self {
         Self {
             sol,
             savepoint: Some(savepoint),
@@ -25,22 +23,22 @@ impl<'a> SolTx<'a> {
     }
     pub fn commit(mut self) {
         self.savepoint = None;
-        self.sol.internal_tx_commit();
+        self.sol.inner_mut().internal_tx_commit();
     }
     pub fn rollback(mut self) {
         let savepoint = self.savepoint.take().unwrap();
-        self.sol.internal_tx_rollback(savepoint);
+        self.sol.inner_mut().internal_tx_rollback(savepoint);
     }
 }
 impl Deref for SolTx<'_> {
-    type Target = SolarSystem;
+    type Target = Sol;
 
-    fn deref(&self) -> &SolarSystem {
+    fn deref(&self) -> &Sol {
         self.sol
     }
 }
 impl DerefMut for SolTx<'_> {
-    fn deref_mut(&mut self) -> &mut SolarSystem {
+    fn deref_mut(&mut self) -> &mut Sol {
         self.sol
     }
 }
@@ -49,7 +47,7 @@ impl Drop for SolTx<'_> {
         if let Some(savepoint) = self.savepoint.take()
             && !std::thread::panicking()
         {
-            self.sol.internal_tx_rollback(savepoint);
+            self.sol.inner_mut().internal_tx_rollback(savepoint);
         }
     }
 }

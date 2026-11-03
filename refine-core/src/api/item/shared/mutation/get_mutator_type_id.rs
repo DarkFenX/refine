@@ -1,4 +1,4 @@
-use crate::{DormantMutation, EffectiveMutation, ItemTypeId, Mutation, SolarSystem, ud::UItemId};
+use crate::{DormantMutation, EffectiveMutation, ItemTypeId, Mutation, sol::CoreInner, ud::UItemId};
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Public
@@ -27,7 +27,7 @@ impl<'s> DormantMutation<'s> {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Private
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-impl SolarSystem {
+impl CoreInner {
     fn api_get_mutator_type_id(&self, item_uid: UItemId) -> ItemTypeId {
         ItemTypeId::from_aid(
             self.u_data

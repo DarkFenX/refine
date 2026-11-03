@@ -1,5 +1,5 @@
 use crate::{
-    AttrId, DormantMutation, EffectiveMutation, ItemId, Mutation, RawMAttr, SolarSystem, ad::AAttrId, ud::UItemId,
+    AttrId, DormantMutation, EffectiveMutation, ItemId, Mutation, RawMAttr, ad::AAttrId, sol::CoreInner, ud::UItemId,
 };
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -38,11 +38,7 @@ pub enum RawMAttrGetError {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Private
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-fn get_raw_mattr(
-    sol: &mut SolarSystem,
-    item_uid: UItemId,
-    attr_aid: AAttrId,
-) -> Result<RawMAttr<'_>, RawMAttrGetError> {
+fn get_raw_mattr(sol: &mut CoreInner, item_uid: UItemId, attr_aid: AAttrId) -> Result<RawMAttr<'_>, RawMAttrGetError> {
     match sol
         .u_data
         .items

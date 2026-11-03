@@ -32,10 +32,10 @@
 //!   CPU, expect it to take approximately 1 second with locally sourced data. Adapted data is then
 //!   fed to adapted data cacher implementation for caching and further converted for ease of access
 //!   by the lib;
-//! - you create [`SolarSystem`], specifying [`Src`] it should usee, and manipulate it to create
-//!   fits with ships and items, and fetch various and stats.
+//! - you create [`Core`], specifying [`Src`] it should usee, and manipulate it through its [`Sol`]
+//!   interface to create fits with ships and items, and fetch various and stats.
 //!
-//! Three main entities available via [`SolarSystem`] are fleets, fits and items. Items come in many
+//! Three main entities available via [`Sol`] are fleets, fits and items. Items come in many
 //! kinds:
 //!
 //! - autocharges: charges which are automatically loaded into some item kinds by some effects, e.g.
@@ -97,9 +97,8 @@ pub use misc::{
     BreacherProfile, DpsProfile, EffectMode, FighterCountInfo, ItemKind, ItemSpoolInfo, ModRack, NpcProp, OptionExt,
     OptionalReload, RearmMinion, SecZone, SecZoneCorruption, Spool,
 };
-pub(crate) use misc::{DefOption, DefOptionExt};
 pub use num::{Count, CountNz, FitSecStatus, Index, PValue, SkillLevel, SlotIndex, UnitInterval, Value};
-pub use sol::{SolTx, SolarSystem};
+pub use sol::{Core, Sol, SolTx};
 pub use src::Src;
 pub use ud::{FitId, FleetId, ItemId};
 

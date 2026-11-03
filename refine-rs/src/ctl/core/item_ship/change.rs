@@ -203,7 +203,7 @@ pub enum ItemShipChangeError {
 }
 
 impl ShipChangeCmdCtxAny {
-    pub(in crate::ctl) fn execute(self, core_sol: &mut rc::SolarSystem) -> Result<ChangedItemIdsResp, ShipChangeError> {
+    pub(in crate::ctl) fn execute(self, core_sol: &mut rc::Sol) -> Result<ChangedItemIdsResp, ShipChangeError> {
         Ok(match self {
             Self::Fit(cmd) => cmd.execute(core_sol)?,
             Self::Item(cmd) => cmd.execute(core_sol)?,
@@ -219,10 +219,7 @@ pub enum ShipChangeError {
 }
 
 impl ShipChangeCmdCtxFit {
-    pub(in crate::ctl) fn execute(
-        self,
-        core_sol: &mut rc::SolarSystem,
-    ) -> Result<ChangedItemIdsResp, FitGetShipChangeError> {
+    pub(in crate::ctl) fn execute(self, core_sol: &mut rc::Sol) -> Result<ChangedItemIdsResp, FitGetShipChangeError> {
         let mut core_fit = core_sol.get_fit(&self.fit_id)?;
         Ok(self.core.execute_via_fit(&mut core_fit)?)
     }
@@ -243,10 +240,7 @@ impl From<FitShipChangeError> for FitGetShipChangeError {
 }
 
 impl ShipChangeCmdCtxItem {
-    pub(in crate::ctl) fn execute(
-        self,
-        core_sol: &mut rc::SolarSystem,
-    ) -> Result<ChangedItemIdsResp, ItemGetShipChangeError> {
+    pub(in crate::ctl) fn execute(self, core_sol: &mut rc::Sol) -> Result<ChangedItemIdsResp, ItemGetShipChangeError> {
         let mut core_ship = core_sol.get_ship(&self.item_id)?;
         Ok(self.core.execute(&mut core_ship))
     }

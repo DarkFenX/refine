@@ -1,4 +1,9 @@
-use crate::{FwEffect, ItemTypeId, SolarSystem, ad::AItemId, sol::UndoStep, ud::UItemId};
+use crate::{
+    FwEffect, ItemTypeId,
+    ad::AItemId,
+    sol::{CoreInner, UndoStep},
+    ud::UItemId,
+};
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Public
@@ -13,19 +18,19 @@ impl<'s> FwEffect<'s> {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Private
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-impl SolarSystem {
+impl CoreInner {
     pub(in crate::api) fn internal_set_fw_effect_type_aid(&mut self, fw_effect_uid: UItemId, type_aid: AItemId) {
         let u_item = self.u_data.items.get(fw_effect_uid);
         let old_type_aid = u_item.get_base_type_aid();
         if old_type_aid == type_aid {
             return;
         }
-        SolarSystem::util_remove_fw_effect(&mut self.u_data, &mut self.svc, fw_effect_uid, &mut self.reuse.eupdates);
+        CoreInner::util_remove_fw_effect(&mut self.u_data, &mut self.svc, fw_effect_uid, &mut self.reuse.eupdates);
         let u_fw_effect = self.u_data.items.get_mut(fw_effect_uid).dc_fw_effect_mut().unwrap();
         u_fw_effect.set_type_aid(type_aid, &self.u_data.r_data);
         if self.undo.is_recording() {
             self.undo.record(UndoStep::FwEffectType(fw_effect_uid, old_type_aid));
         }
-        SolarSystem::util_add_fw_effect(&mut self.u_data, &mut self.svc, fw_effect_uid, &mut self.reuse.eupdates);
+        CoreInner::util_add_fw_effect(&mut self.u_data, &mut self.svc, fw_effect_uid, &mut self.reuse.eupdates);
     }
 }

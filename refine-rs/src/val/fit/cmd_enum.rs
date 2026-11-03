@@ -6,6 +6,7 @@ use crate::{
 pub(crate) type FitValEnumCmd = FitValEnumCmdGen<ItemId>;
 pub type FitValEnumCmdBr = FitValEnumCmdGen<ItemIdBr>;
 
+#[doc(hidden)]
 #[cfg_attr(
     feature = "serde",
     derive(serde::Deserialize),

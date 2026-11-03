@@ -1,5 +1,6 @@
 use crate::{
-    DefOption, DefOptionExt, ItemId, OptionExt, UnitInterval,
+    ItemId, OptionExt, UnitInterval,
+    misc::{DefOption, DefOptionExt},
     ud::{ProjecteeUidError, UData, UItemId},
 };
 

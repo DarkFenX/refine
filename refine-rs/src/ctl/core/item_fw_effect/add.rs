@@ -17,6 +17,7 @@ pub struct FwEffectAddCmd {
 pub type FwEffectAddCmdCtxFit = FwEffectAddCmdCtxFitGen<FitId>;
 pub type FwEffectAddCmdCtxFitBr = FwEffectAddCmdCtxFitGen<FitIdBr>;
 
+#[doc(hidden)]
 #[cfg_attr(
     feature = "serde",
     derive(serde::Deserialize),
@@ -93,10 +94,7 @@ impl FwEffectAddCmd {
 }
 
 impl FwEffectAddCmdCtxFit {
-    pub(in crate::ctl) fn execute(
-        self,
-        core_sol: &mut rc::SolarSystem,
-    ) -> Result<AddedItemIdsResp, FitGetFwEffectAddError> {
+    pub(in crate::ctl) fn execute(self, core_sol: &mut rc::Sol) -> Result<AddedItemIdsResp, FitGetFwEffectAddError> {
         let mut core_fit = core_sol.get_fit(&self.fit_id)?;
         Ok(self.core.execute(&mut core_fit))
     }

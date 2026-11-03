@@ -1,25 +1,29 @@
 use crate::{
     AutochargeChangeCmd, BoosterAddCmd, BoosterChangeCmd, CharacterChangeCmd, CharacterSetCmd, CharacterUnsetCmd,
     ChargeChangeCmd, CmdResp, CmdResps, DroneAddCmd, DroneAddCmdBr, DroneChangeCmd, DroneChangeCmdBr, FighterAddCmd,
-    FighterAddCmdBr, FighterChangeCmd, FighterChangeCmdBr, FitAddCmd, FitAddCmdBr, FitAddCmdGen, FitChangeCmd,
-    FitChangeCmdBr, FitId, FitIdBr, FitRemoveCmd, FleetAddCmd, FleetAddCmdBr, FleetAddCmdGen, FleetChangeCmd,
-    FleetChangeCmdBr, FleetId, FleetIdBr, FleetRemoveCmd, FwEffectAddCmd, FwEffectChangeCmd, ImplantAddCmd,
-    ImplantChangeCmd, ItemAutodetectAddCmd, ItemId, ItemIdBr, ItemRemoveCmd, ModuleAddCmd, ModuleAddCmdBr,
-    ModuleChangeCmd, ModuleChangeCmdBr, ProjEffectAddCmd, ProjEffectAddCmdBr, ProjEffectAddCmdGen, ProjEffectChangeCmd,
-    ProjEffectChangeCmdBr, RigAddCmd, RigChangeCmd, ServiceAddCmd, ServiceChangeCmd, ShipChangeCmd, ShipSetCmd,
-    ShipUnsetCmd, SkillAddCmd, SkillChangeCmd, SolChangeCmd, StanceChangeCmd, StanceSetCmd, StanceUnsetCmd,
-    SubsystemAddCmd, SubsystemChangeCmd, SwEffectAddCmd, SwEffectChangeCmd,
-    ctl::core::{
-        AutochargeChangeCmdCtxItemGen, BoosterAddCmdCtxFitGen, BoosterChangeCmdCtxItemGen, CharacterChangeCmdCtxAnyGen,
-        CharacterSetCmdCtxFitGen, CharacterUnsetCmdCtxFitGen, ChargeChangeCmdCtxItemGen, DroneAddCmdCtxFitGen,
-        DroneChangeCmdCtxItemGen, FighterAddCmdCtxFitGen, FighterChangeCmdCtxItemGen, FitChangeCmdCtxFitGen,
-        FitRemoveCmdCtxFitGen, FleetChangeCmdCtxFleetGen, FleetRemoveCmdCtxFleetGen, FwEffectAddCmdCtxFitGen,
-        FwEffectChangeCmdCtxItemGen, ImplantAddCmdCtxFitGen, ImplantChangeCmdCtxItemGen, ItemAutodetectAddCmdCtxFitGen,
-        ItemRemoveCmdCtxItemGen, ModuleAddCmdCtxFitGen, ModuleChangeCmdCtxItemGen, ProjEffectChangeCmdCtxItemGen,
-        RigAddCmdCtxFitGen, RigChangeCmdCtxItemGen, ServiceAddCmdCtxFitGen, ServiceChangeCmdCtxItemGen,
-        ShipChangeCmdCtxAnyGen, ShipSetCmdCtxFitGen, ShipUnsetCmdCtxFitGen, SkillAddCmdCtxFitGen,
-        SkillChangeCmdCtxItemGen, StanceChangeCmdCtxAnyGen, StanceSetCmdCtxFitGen, StanceUnsetCmdCtxFitGen,
-        SubsystemAddCmdCtxFitGen, SubsystemChangeCmdCtxItemGen, SwEffectChangeCmdCtxItemGen,
+    FighterAddCmdBr, FighterChangeCmd, FighterChangeCmdBr, FitAddCmd, FitAddCmdBr, FitChangeCmd, FitChangeCmdBr, FitId,
+    FitIdBr, FitRemoveCmd, FleetAddCmd, FleetAddCmdBr, FleetChangeCmd, FleetChangeCmdBr, FleetId, FleetIdBr,
+    FleetRemoveCmd, FwEffectAddCmd, FwEffectChangeCmd, ImplantAddCmd, ImplantChangeCmd, ItemAutodetectAddCmd, ItemId,
+    ItemIdBr, ItemRemoveCmd, ModuleAddCmd, ModuleAddCmdBr, ModuleChangeCmd, ModuleChangeCmdBr, ProjEffectAddCmd,
+    ProjEffectAddCmdBr, ProjEffectChangeCmd, ProjEffectChangeCmdBr, RigAddCmd, RigChangeCmd, ServiceAddCmd,
+    ServiceChangeCmd, ShipChangeCmd, ShipSetCmd, ShipUnsetCmd, SkillAddCmd, SkillChangeCmd, SolChangeCmd,
+    StanceChangeCmd, StanceSetCmd, StanceUnsetCmd, SubsystemAddCmd, SubsystemChangeCmd, SwEffectAddCmd,
+    SwEffectChangeCmd,
+    ctl::{
+        FitAddCmdGen, FleetAddCmdGen, ProjEffectAddCmdGen,
+        core::{
+            AutochargeChangeCmdCtxItemGen, BoosterAddCmdCtxFitGen, BoosterChangeCmdCtxItemGen,
+            CharacterChangeCmdCtxAnyGen, CharacterSetCmdCtxFitGen, CharacterUnsetCmdCtxFitGen,
+            ChargeChangeCmdCtxItemGen, DroneAddCmdCtxFitGen, DroneChangeCmdCtxItemGen, FighterAddCmdCtxFitGen,
+            FighterChangeCmdCtxItemGen, FitChangeCmdCtxFitGen, FitRemoveCmdCtxFitGen, FleetChangeCmdCtxFleetGen,
+            FleetRemoveCmdCtxFleetGen, FwEffectAddCmdCtxFitGen, FwEffectChangeCmdCtxItemGen, ImplantAddCmdCtxFitGen,
+            ImplantChangeCmdCtxItemGen, ItemAutodetectAddCmdCtxFitGen, ItemRemoveCmdCtxItemGen, ModuleAddCmdCtxFitGen,
+            ModuleChangeCmdCtxItemGen, ProjEffectChangeCmdCtxItemGen, RigAddCmdCtxFitGen, RigChangeCmdCtxItemGen,
+            ServiceAddCmdCtxFitGen, ServiceChangeCmdCtxItemGen, ShipChangeCmdCtxAnyGen, ShipSetCmdCtxFitGen,
+            ShipUnsetCmdCtxFitGen, SkillAddCmdCtxFitGen, SkillChangeCmdCtxItemGen, StanceChangeCmdCtxAnyGen,
+            StanceSetCmdCtxFitGen, StanceUnsetCmdCtxFitGen, SubsystemAddCmdCtxFitGen, SubsystemChangeCmdCtxItemGen,
+            SwEffectChangeCmdCtxItemGen,
+        },
     },
     err::{
         BrResolveError, CharacterChangeError, FitAddError, FitGetBoosterAddError, FitGetCharacterSetError,
@@ -38,6 +42,7 @@ use crate::{
 pub type SolChangeEnumCmd = SolChangeEnumCmdGen<FleetId, FitId, ItemId>;
 pub type SolChangeEnumCmdBr = SolChangeEnumCmdGen<FleetIdBr, FitIdBr, ItemIdBr>;
 
+#[doc(hidden)]
 #[cfg_attr(
     feature = "serde",
     derive(serde::Deserialize),
@@ -611,7 +616,7 @@ impl SolChangeEnumCmdBr {
 // Execution
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl SolChangeEnumCmd {
-    pub(crate) fn execute(self, core_sol: &mut rc::SolarSystem) -> Result<CmdResp, SolChangeEnumError> {
+    pub(crate) fn execute(self, core_sol: &mut rc::Sol) -> Result<CmdResp, SolChangeEnumError> {
         Ok(match self {
             // Solar system
             #[expect(clippy::unit_arg)]

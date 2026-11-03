@@ -1,4 +1,8 @@
-use crate::{FwEffect, SolarSystem, sol::UndoStep, ud::UItemId};
+use crate::{
+    FwEffect,
+    sol::{CoreInner, UndoStep},
+    ud::UItemId,
+};
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Public
@@ -16,7 +20,7 @@ impl<'s> FwEffect<'s> {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Private
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-impl SolarSystem {
+impl CoreInner {
     pub(in crate::api) fn internal_set_fw_effect_state(&mut self, fw_effect_uid: UItemId, state: bool) {
         let u_fw_effect = self.u_data.items.get_mut(fw_effect_uid).dc_fw_effect_mut().unwrap();
         if self.undo.is_recording() {
@@ -29,7 +33,7 @@ impl SolarSystem {
         u_fw_effect.set_fw_effect_state(state);
         let new_a_state = u_fw_effect.get_state();
         u_fw_effect.update_reffs(&mut self.reuse.eupdates, &self.u_data.r_data);
-        SolarSystem::util_switch_item_state(
+        CoreInner::util_switch_item_state(
             &self.u_data,
             &mut self.svc,
             fw_effect_uid,

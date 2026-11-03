@@ -6,7 +6,7 @@ pub(in crate::dev) struct SolCloner<'a> {
     inner: Arc<Mutex<SolClonerInner<'a>>>,
 }
 impl<'a> SolCloner<'a> {
-    pub(in crate::dev) fn new(original: &'a rc::SolarSystem) -> Self {
+    pub(in crate::dev) fn new(original: &'a rc::Core) -> Self {
         Self {
             inner: Arc::new(Mutex::new(SolClonerInner::new(original))),
         }
@@ -17,23 +17,23 @@ impl<'a> SolCloner<'a> {
 }
 
 pub(in crate::dev) struct SolClonerInner<'a> {
-    original: &'a rc::SolarSystem,
-    allocated: Vec<Box<rc::SolarSystem>>,
+    original: &'a rc::Core,
+    allocated: Vec<Box<rc::Core>>,
 }
 impl<'a> SolClonerInner<'a> {
-    fn new(original: &'a rc::SolarSystem) -> Self {
+    fn new(original: &'a rc::Core) -> Self {
         Self {
             original,
             allocated: Vec::with_capacity(tokio_rayon::rayon::current_num_threads()),
         }
     }
-    pub(in crate::dev) fn take(&mut self) -> Box<rc::SolarSystem> {
+    pub(in crate::dev) fn take(&mut self) -> Box<rc::Core> {
         match self.allocated.pop() {
             Some(sol) => sol,
             None => Box::new(self.original.clone()),
         }
     }
-    pub(in crate::dev) fn put(&mut self, sol: Box<rc::SolarSystem>) {
+    pub(in crate::dev) fn put(&mut self, sol: Box<rc::Core>) {
         self.allocated.push(sol);
     }
 }

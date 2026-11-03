@@ -79,7 +79,7 @@ pub enum ItemRemoveError {
 }
 
 impl ItemRemoveCmdCtxItem {
-    pub(in crate::ctl) fn execute(self, core_sol: &mut rc::SolarSystem) -> Result<(), ItemGetItemRemoveError> {
+    pub(in crate::ctl) fn execute(self, core_sol: &mut rc::Sol) -> Result<(), ItemGetItemRemoveError> {
         let core_item = core_sol
             .get_item(&self.item_id)
             .map_err(ItemGetItemRemoveError::ItemGet)?;

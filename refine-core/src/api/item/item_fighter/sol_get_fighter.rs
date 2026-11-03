@@ -1,16 +1,17 @@
 use crate::{
-    Fighter, ItemId, SolarSystem,
+    Fighter, ItemId, Sol,
     err::{ItemKindMatchError, basic::ItemFoundError},
 };
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Public
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-impl SolarSystem {
+impl Sol {
     pub fn get_fighter(&mut self, item_id: &ItemId) -> Result<Fighter<'_>, FighterGetError> {
-        let fighter_uid = self.u_data.items.int_id_by_ext_id_err(item_id)?;
-        self.u_data.items.get(fighter_uid).dc_fighter()?;
-        Ok(Fighter::new(self, fighter_uid))
+        let sol = self.inner_mut();
+        let fighter_uid = sol.u_data.items.int_id_by_ext_id_err(item_id)?;
+        sol.u_data.items.get(fighter_uid).dc_fighter()?;
+        Ok(Fighter::new(sol, fighter_uid))
     }
 }
 

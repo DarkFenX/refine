@@ -1,6 +1,6 @@
 use crate::{
-    Item, RemoveMode, SolarSystem,
-    sol::UndoStep,
+    Item, RemoveMode,
+    sol::{CoreInner, UndoStep},
     ud::{UItem, UItemId},
 };
 
@@ -48,7 +48,7 @@ pub enum ItemRemoveError {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Private
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-impl SolarSystem {
+impl CoreInner {
     pub(in crate::api) fn internal_remove_item(
         &mut self,
         item_uid: UItemId,

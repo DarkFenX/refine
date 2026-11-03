@@ -1,4 +1,8 @@
-use crate::{Fit, FitSecStatus, SolarSystem, sol::UndoStep, ud::UFitId};
+use crate::{
+    Fit, FitSecStatus,
+    sol::{CoreInner, UndoStep},
+    ud::UFitId,
+};
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Public
@@ -12,7 +16,7 @@ impl<'s> Fit<'s> {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Private
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-impl SolarSystem {
+impl CoreInner {
     pub(in crate::api) fn internal_set_fit_sec_status(&mut self, fit_uid: UFitId, sec_status: FitSecStatus) {
         let u_fit = self.u_data.fits.get_mut(fit_uid);
         let old_sec_status = u_fit.sec_status;

@@ -1,16 +1,17 @@
 use crate::{
-    ItemId, SolarSystem, Subsystem,
+    ItemId, Sol, Subsystem,
     err::{ItemKindMatchError, basic::ItemFoundError},
 };
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Public
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-impl SolarSystem {
+impl Sol {
     pub fn get_subsystem(&mut self, item_id: &ItemId) -> Result<Subsystem<'_>, SubsystemGetError> {
-        let subsystem_uid = self.u_data.items.int_id_by_ext_id_err(item_id)?;
-        self.u_data.items.get(subsystem_uid).dc_subsystem()?;
-        Ok(Subsystem::new(self, subsystem_uid))
+        let sol = self.inner_mut();
+        let subsystem_uid = sol.u_data.items.int_id_by_ext_id_err(item_id)?;
+        sol.u_data.items.get(subsystem_uid).dc_subsystem()?;
+        Ok(Subsystem::new(sol, subsystem_uid))
     }
 }
 

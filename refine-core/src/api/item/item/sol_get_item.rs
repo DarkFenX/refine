@@ -1,17 +1,19 @@
 use crate::{
     Autocharge, Booster, Character, Charge, Drone, Fighter, FwEffect, Implant, Item, ItemId, Module, ProjEffect, Rig,
-    Service, Ship, Skill, SolarSystem, Stance, Subsystem, SwEffect,
+    Service, Ship, Skill, Sol, Stance, Subsystem, SwEffect,
     err::basic::ItemFoundError,
+    sol::CoreInner,
     ud::{UItem, UItemId},
 };
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Public
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-impl SolarSystem {
+impl Sol {
     pub fn get_item(&mut self, item_id: &ItemId) -> Result<Item<'_>, ItemGetError> {
-        let item_uid = self.u_data.items.int_id_by_ext_id_err(item_id)?;
-        Ok(self.internal_get_item(item_uid))
+        let sol = self.inner_mut();
+        let item_uid = sol.u_data.items.int_id_by_ext_id_err(item_id)?;
+        Ok(sol.internal_get_item(item_uid))
     }
 }
 
@@ -24,7 +26,7 @@ pub enum ItemGetError {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Private
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-impl SolarSystem {
+impl CoreInner {
     pub(in crate::api::item::item) fn internal_get_item(&mut self, item_uid: UItemId) -> Item<'_> {
         let u_item = self.u_data.items.get(item_uid);
         match u_item {

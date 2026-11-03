@@ -1,6 +1,7 @@
 use crate::{
-    FitId, ItemCommon, SolarSystem,
+    FitId, ItemCommon,
     api::ItemSealed,
+    sol::CoreInner,
     ud::{UItemId, UStance},
 };
 
@@ -8,7 +9,7 @@ use crate::{
 // Public
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 pub struct Stance<'s> {
-    pub(super) sol: &'s mut SolarSystem,
+    pub(super) sol: &'s mut CoreInner,
     pub(super) uid: UItemId,
 }
 impl<'s> Stance<'s> {
@@ -26,7 +27,7 @@ impl<'s> ItemCommon for Stance<'s> {}
 // Private
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl<'s> Stance<'s> {
-    pub(in crate::api) fn new(sol: &'s mut SolarSystem, uid: UItemId) -> Self {
+    pub(in crate::api) fn new(sol: &'s mut CoreInner, uid: UItemId) -> Self {
         Self { sol, uid }
     }
 }
@@ -34,14 +35,14 @@ impl<'s> ItemSealed for Stance<'s> {
     fn get_uid(&self) -> UItemId {
         self.uid
     }
-    fn get_sol(&self) -> &SolarSystem {
+    fn get_sol(&self) -> &CoreInner {
         self.sol
     }
-    fn get_sol_mut(&mut self) -> &mut SolarSystem {
+    fn get_sol_mut(&mut self) -> &mut CoreInner {
         self.sol
     }
 }
 
-fn get_u_stance(sol: &SolarSystem, stance_uid: UItemId) -> &UStance {
+fn get_u_stance(sol: &CoreInner, stance_uid: UItemId) -> &UStance {
     sol.u_data.items.get(stance_uid).dc_stance().unwrap()
 }

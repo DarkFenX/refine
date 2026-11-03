@@ -16,7 +16,7 @@ pub(crate) async fn remove_sol(State(state): State<AppState>, Path(sol_id): Path
 }
 
 async fn internal_remove_sol(state: AppState, sol_id: String) -> Result<(), ApiError> {
-    let sol_id = rs::SolarSystemId::from_str(&sol_id)?;
+    let sol_id = rs::SolId::from_str(&sol_id)?;
     state.get_refine().get_sol(sol_id).await?.remove().await?;
     Ok(())
 }

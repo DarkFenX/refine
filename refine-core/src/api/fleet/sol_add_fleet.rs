@@ -1,23 +1,24 @@
 use crate::{
-    Fleet, SolarSystem,
-    sol::UndoStep,
+    Fleet, Sol,
+    sol::{CoreInner, UndoStep},
     ud::{UFleet, UFleetId},
 };
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Public
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-impl SolarSystem {
+impl Sol {
     pub fn add_fleet(&mut self) -> Fleet<'_> {
-        let fleet_uid = self.add_fleet_internal();
-        Fleet::new(self, fleet_uid)
+        let sol = self.inner_mut();
+        let fleet_uid = sol.add_fleet_internal();
+        Fleet::new(sol, fleet_uid)
     }
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Private
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-impl SolarSystem {
+impl CoreInner {
     pub(in crate::api) fn add_fleet_internal(&mut self) -> UFleetId {
         let fleet_id = self.u_data.fleets.alloc_id();
         let u_fleet = UFleet::new(fleet_id);

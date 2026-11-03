@@ -1,14 +1,13 @@
 use crate::{
-    SolarSystem,
     ad::AItemId,
-    sol::UndoStep,
+    sol::{CoreInner, UndoStep},
     ud::{
         UItemId,
         err::{ItemMutatedError, MutatorInplaceError},
     },
 };
 
-impl SolarSystem {
+impl CoreInner {
     pub(in crate::api) fn internal_set_drone_mutator_type_aid(
         &mut self,
         drone_uid: UItemId,
@@ -39,7 +38,7 @@ impl SolarSystem {
             Err(MutatorInplaceError::NotMutated(_)) => unreachable!("item is checked to be mutated"),
             Err(MutatorInplaceError::MutatedTypeChange) => (),
         }
-        SolarSystem::util_remove_drone(&mut self.u_data, &mut self.svc, drone_uid, &mut self.reuse.eupdates);
+        CoreInner::util_remove_drone(&mut self.u_data, &mut self.svc, drone_uid, &mut self.reuse.eupdates);
         let u_drone = self.u_data.items.get_mut(drone_uid).dc_drone_mut().unwrap();
         u_drone
             .set_mutator_type_aid_replace(mutator_type_aid, &self.u_data.r_data)
@@ -48,8 +47,8 @@ impl SolarSystem {
             self.undo
                 .record(UndoStep::DroneMutator(drone_uid, old_mutator_type_aid));
         }
-        SolarSystem::util_update_item_radius_in_projs(&mut self.u_data, &self.rev_projs, &mut self.svc, drone_uid);
-        SolarSystem::util_add_drone(&mut self.u_data, &mut self.svc, drone_uid, &mut self.reuse.eupdates);
+        CoreInner::util_update_item_radius_in_projs(&mut self.u_data, &self.rev_projs, &mut self.svc, drone_uid);
+        CoreInner::util_add_drone(&mut self.u_data, &mut self.svc, drone_uid, &mut self.reuse.eupdates);
         Ok(())
     }
 }

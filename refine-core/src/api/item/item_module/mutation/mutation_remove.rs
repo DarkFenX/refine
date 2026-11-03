@@ -1,10 +1,9 @@
 use crate::{
-    SolarSystem,
-    sol::UndoStep,
+    sol::{CoreInner, UndoStep},
     ud::{ItemMutationData, UItemId, err::ItemMutatedError},
 };
 
-impl SolarSystem {
+impl CoreInner {
     pub(in crate::api) fn internal_remove_module_mutation(
         &mut self,
         module_uid: UItemId,
@@ -14,7 +13,7 @@ impl SolarSystem {
         if u_module.get_mutator_type_aid().is_none() {
             return Err(ItemMutatedError);
         }
-        SolarSystem::util_remove_module_with_charge_act(
+        CoreInner::util_remove_module_with_charge_act(
             &mut self.u_data,
             &mut self.svc,
             module_uid,
@@ -26,7 +25,7 @@ impl SolarSystem {
             self.undo
                 .record_mutation(UndoStep::ModuleMutationRemoved(module_uid), item_mutation_data);
         }
-        SolarSystem::util_add_module_with_charge_act(
+        CoreInner::util_add_module_with_charge_act(
             &mut self.u_data,
             &mut self.svc,
             module_uid,
@@ -39,7 +38,7 @@ impl SolarSystem {
         module_uid: UItemId,
         item_mutation_data: ItemMutationData,
     ) {
-        SolarSystem::util_remove_module_with_charge_act(
+        CoreInner::util_remove_module_with_charge_act(
             &mut self.u_data,
             &mut self.svc,
             module_uid,
@@ -47,7 +46,7 @@ impl SolarSystem {
         );
         let u_module = self.u_data.items.get_mut(module_uid).dc_module_mut().unwrap();
         u_module.restore_mutation(item_mutation_data, &self.u_data.r_data);
-        SolarSystem::util_add_module_with_charge_act(
+        CoreInner::util_add_module_with_charge_act(
             &mut self.u_data,
             &mut self.svc,
             module_uid,

@@ -1,16 +1,17 @@
 use crate::{
-    ItemId, SolarSystem, Stance,
+    ItemId, Sol, Stance,
     err::{ItemKindMatchError, basic::ItemFoundError},
 };
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Public
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-impl SolarSystem {
+impl Sol {
     pub fn get_stance(&mut self, item_id: &ItemId) -> Result<Stance<'_>, StanceGetError> {
-        let stance_uid = self.u_data.items.int_id_by_ext_id_err(item_id)?;
-        self.u_data.items.get(stance_uid).dc_stance()?;
-        Ok(Stance::new(self, stance_uid))
+        let sol = self.inner_mut();
+        let stance_uid = sol.u_data.items.int_id_by_ext_id_err(item_id)?;
+        sol.u_data.items.get(stance_uid).dc_stance()?;
+        Ok(Stance::new(sol, stance_uid))
     }
 }
 

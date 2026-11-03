@@ -1,7 +1,7 @@
 use crate::{
-    ItemTypeId, Module, Mutation, SolarSystem,
+    ItemTypeId, Module, Mutation,
     err::{MutationAddError, basic::ItemNotMutatedError},
-    sol::UndoStep,
+    sol::{CoreInner, UndoStep},
     ud::{UItemId, UItemMutationRequest},
 };
 
@@ -22,7 +22,7 @@ impl<'s> Module<'s> {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Private
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-impl SolarSystem {
+impl CoreInner {
     pub(in crate::api) fn internal_add_module_mutation(
         &mut self,
         module_uid: UItemId,
@@ -35,7 +35,7 @@ impl SolarSystem {
                 item_id: u_module.get_item_id(),
             });
         }
-        SolarSystem::util_remove_module_with_charge_act(
+        CoreInner::util_remove_module_with_charge_act(
             &mut self.u_data,
             &mut self.svc,
             module_uid,
@@ -46,7 +46,7 @@ impl SolarSystem {
         if self.undo.is_recording() {
             self.undo.record(UndoStep::ModuleMutationAdded(module_uid));
         }
-        SolarSystem::util_add_module_with_charge_act(
+        CoreInner::util_add_module_with_charge_act(
             &mut self.u_data,
             &mut self.svc,
             module_uid,

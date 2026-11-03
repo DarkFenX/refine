@@ -1,8 +1,9 @@
 use std::{cmp::Ordering, collections::hash_map::Entry};
 
 use crate::{
-    ModuleState, Op, SolarSystem, Value,
+    ModuleState, Op, Value,
     rd::{RAttrId, RState},
+    sol::CoreInner,
     svc::calc::CalcModInfo,
     ud::{UData, UItem, UItemId},
     util::RMap,
@@ -36,7 +37,7 @@ pub(in crate::api) enum AffectionDir {
     Decrease,
 }
 
-impl SolarSystem {
+impl CoreInner {
     /// This function attempts to disable modifications upon certain attribute. Only modifications
     /// which are isolated within the same fit are considered.
     ///

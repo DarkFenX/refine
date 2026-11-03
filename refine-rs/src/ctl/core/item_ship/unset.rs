@@ -69,7 +69,7 @@ impl ShipUnsetCmd {
 }
 
 impl ShipUnsetCmdCtxFit {
-    pub(in crate::ctl) fn execute(self, core_sol: &mut rc::SolarSystem) -> Result<(), FitGetShipUnsetError> {
+    pub(in crate::ctl) fn execute(self, core_sol: &mut rc::Sol) -> Result<(), FitGetShipUnsetError> {
         let mut core_fit = core_sol.get_fit(&self.fit_id)?;
         self.core.execute(&mut core_fit);
         Ok(())

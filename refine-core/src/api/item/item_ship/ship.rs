@@ -1,6 +1,7 @@
 use crate::{
-    Coordinates, FitId, ItemCommon, Movement, SolarSystem,
+    Coordinates, FitId, ItemCommon, Movement,
     api::ItemSealed,
+    sol::CoreInner,
     ud::{UItemId, UShip},
 };
 
@@ -8,7 +9,7 @@ use crate::{
 // Public
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 pub struct Ship<'s> {
-    pub(super) sol: &'s mut SolarSystem,
+    pub(super) sol: &'s mut CoreInner,
     pub(super) uid: UItemId,
 }
 impl<'s> Ship<'s> {
@@ -32,7 +33,7 @@ impl<'s> ItemCommon for Ship<'s> {}
 // Private
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl<'s> Ship<'s> {
-    pub(in crate::api) fn new(sol: &'s mut SolarSystem, uid: UItemId) -> Self {
+    pub(in crate::api) fn new(sol: &'s mut CoreInner, uid: UItemId) -> Self {
         Self { sol, uid }
     }
 }
@@ -40,14 +41,14 @@ impl<'s> ItemSealed for Ship<'s> {
     fn get_uid(&self) -> UItemId {
         self.uid
     }
-    fn get_sol(&self) -> &SolarSystem {
+    fn get_sol(&self) -> &CoreInner {
         self.sol
     }
-    fn get_sol_mut(&mut self) -> &mut SolarSystem {
+    fn get_sol_mut(&mut self) -> &mut CoreInner {
         self.sol
     }
 }
 
-fn get_u_ship(sol: &SolarSystem, ship_uid: UItemId) -> &UShip {
+fn get_u_ship(sol: &CoreInner, ship_uid: UItemId) -> &UShip {
     sol.u_data.items.get(ship_uid).dc_ship().unwrap()
 }

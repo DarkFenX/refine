@@ -95,7 +95,7 @@ pub enum AutochargeChangeError {
 impl AutochargeChangeCmdCtxItem {
     pub(in crate::ctl) fn execute(
         self,
-        core_sol: &mut rc::SolarSystem,
+        core_sol: &mut rc::Sol,
     ) -> Result<ChangedItemIdsResp, ItemGetAutochargeChangeError> {
         let mut core_item = core_sol
             .get_item(&self.item_id)

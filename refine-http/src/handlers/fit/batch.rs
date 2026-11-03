@@ -35,7 +35,7 @@ async fn internal_batch_fit(
     fit_id: String,
     payload: FitBatchReqBody,
 ) -> Result<rs::CmdResps, ApiError> {
-    let sol_id = rs::SolarSystemId::from_str(&sol_id)?;
+    let sol_id = rs::SolId::from_str(&sol_id)?;
     let fit_id = rs::FitId::from_str(&fit_id)?;
     let mut cmds = Vec::with_capacity(payload.0.len());
     for (index, raw_cmd) in payload.0.into_iter().enumerate() {

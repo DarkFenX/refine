@@ -1,4 +1,9 @@
-use crate::{Drone, ItemTypeId, SolarSystem, ad::AItemId, sol::UndoStep, ud::UItemId};
+use crate::{
+    Drone, ItemTypeId,
+    ad::AItemId,
+    sol::{CoreInner, UndoStep},
+    ud::UItemId,
+};
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Public
@@ -14,7 +19,7 @@ impl<'s> Drone<'s> {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Private
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-impl SolarSystem {
+impl CoreInner {
     pub(in crate::api) fn internal_set_drone_type_aid(&mut self, drone_uid: UItemId, type_aid: AItemId) {
         let u_drone = self.u_data.items.get_mut(drone_uid).dc_drone_mut().unwrap();
         let old_type_aid = u_drone.get_base_type_aid();
@@ -36,13 +41,13 @@ impl SolarSystem {
             }
             return;
         }
-        SolarSystem::util_remove_drone(&mut self.u_data, &mut self.svc, drone_uid, &mut self.reuse.eupdates);
+        CoreInner::util_remove_drone(&mut self.u_data, &mut self.svc, drone_uid, &mut self.reuse.eupdates);
         let u_drone = self.u_data.items.get_mut(drone_uid).dc_drone_mut().unwrap();
         u_drone.set_base_type_aid(type_aid, &self.u_data.r_data);
         if self.undo.is_recording() {
             self.undo.record(UndoStep::DroneType(drone_uid, old_type_aid));
         }
-        SolarSystem::util_update_item_radius_in_projs(&mut self.u_data, &self.rev_projs, &mut self.svc, drone_uid);
-        SolarSystem::util_add_drone(&mut self.u_data, &mut self.svc, drone_uid, &mut self.reuse.eupdates);
+        CoreInner::util_update_item_radius_in_projs(&mut self.u_data, &self.rev_projs, &mut self.svc, drone_uid);
+        CoreInner::util_add_drone(&mut self.u_data, &mut self.svc, drone_uid, &mut self.reuse.eupdates);
     }
 }

@@ -37,8 +37,8 @@ impl From<DevBenchmarkTryFitItemsCmd> for DevBenchmarkCmd {
 // Execution
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl DevBenchmarkTryFitItemsCmd {
-    pub(super) fn execute(self, core_sol: &mut rc::SolarSystem) {
-        let cloner = SolCloner::new(core_sol);
+    pub(super) fn execute(self, core: &mut rc::Core) {
+        let cloner = SolCloner::new(core);
         let chunk_size = usize::max(
             100,
             (self.type_ids.len() as f64 / tokio_rayon::rayon::current_num_threads() as f64 / 16.0).ceil() as usize,

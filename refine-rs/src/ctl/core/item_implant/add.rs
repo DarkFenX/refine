@@ -17,6 +17,7 @@ pub struct ImplantAddCmd {
 pub type ImplantAddCmdCtxFit = ImplantAddCmdCtxFitGen<FitId>;
 pub type ImplantAddCmdCtxFitBr = ImplantAddCmdCtxFitGen<FitIdBr>;
 
+#[doc(hidden)]
 #[cfg_attr(
     feature = "serde",
     derive(serde::Deserialize),
@@ -93,10 +94,7 @@ impl ImplantAddCmd {
 }
 
 impl ImplantAddCmdCtxFit {
-    pub(in crate::ctl) fn execute(
-        self,
-        core_sol: &mut rc::SolarSystem,
-    ) -> Result<AddedItemIdsResp, FitGetImplantAddError> {
+    pub(in crate::ctl) fn execute(self, core_sol: &mut rc::Sol) -> Result<AddedItemIdsResp, FitGetImplantAddError> {
         let mut core_fit = core_sol.get_fit(&self.fit_id)?;
         Ok(self.core.execute(&mut core_fit))
     }

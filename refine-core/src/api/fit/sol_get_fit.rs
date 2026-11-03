@@ -1,12 +1,13 @@
-use crate::{Fit, FitId, SolarSystem, err::basic::FitFoundError};
+use crate::{Fit, FitId, Sol, err::basic::FitFoundError};
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Public
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-impl SolarSystem {
+impl Sol {
     pub fn get_fit(&mut self, fit_id: &FitId) -> Result<Fit<'_>, FitGetError> {
-        let fit_uid = self.u_data.fits.int_id_by_ext_id_err(fit_id)?;
-        Ok(Fit::new(self, fit_uid))
+        let sol = self.inner_mut();
+        let fit_uid = sol.u_data.fits.int_id_by_ext_id_err(fit_id)?;
+        Ok(Fit::new(sol, fit_uid))
     }
 }
 

@@ -7,6 +7,7 @@ use crate::{
 pub type ModuleAddCmd = ModuleAddCmdGen<ItemId>;
 pub type ModuleAddCmdBr = ModuleAddCmdGen<ItemIdBr>;
 
+#[doc(hidden)]
 #[cfg_attr(
     feature = "serde",
     derive(serde::Deserialize),
@@ -32,6 +33,7 @@ pub struct ModuleAddCmdGen<I> {
 pub type ModuleAddCmdCtxFit = ModuleAddCmdCtxFitGen<FitId, ItemId>;
 pub type ModuleAddCmdCtxFitBr = ModuleAddCmdCtxFitGen<FitIdBr, ItemIdBr>;
 
+#[doc(hidden)]
 #[cfg_attr(
     feature = "serde",
     derive(serde::Deserialize),
@@ -179,10 +181,7 @@ pub enum ModuleAddError {
 }
 
 impl ModuleAddCmdCtxFit {
-    pub(in crate::ctl) fn execute(
-        self,
-        core_sol: &mut rc::SolarSystem,
-    ) -> Result<AddedItemIdsResp, FitGetModuleAddError> {
+    pub(in crate::ctl) fn execute(self, core_sol: &mut rc::Sol) -> Result<AddedItemIdsResp, FitGetModuleAddError> {
         let mut core_fit = core_sol.get_fit(&self.fit_id)?;
         Ok(self.core.execute(&mut core_fit)?)
     }

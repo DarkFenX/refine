@@ -1,11 +1,12 @@
-use crate::{EntityIter, Fleet, SolarSystem};
+use crate::{EntityIter, Fleet, Sol};
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Public
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-impl SolarSystem {
+impl Sol {
     pub fn iter_fleets(&mut self) -> EntityIter<'_, Fleet<'_>> {
-        let fleet_uids = self.u_data.fleets.keys().collect();
-        EntityIter::new(self, fleet_uids)
+        let sol = self.inner_mut();
+        let fleet_uids = sol.u_data.fleets.keys().collect();
+        EntityIter::new(sol, fleet_uids)
     }
 }

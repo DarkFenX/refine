@@ -1,13 +1,13 @@
 use lender::{ExactSizeLender, Lender, Lending, check_covariance};
 
-use crate::{RangedProj, SolarSystem, api::item::shared::proj::iter_projectee_uids, ud::UItemId};
+use crate::{RangedProj, api::item::shared::proj::iter_projectee_uids, sol::CoreInner, ud::UItemId};
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Public
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 /// Lending iterator for ranged projections
 pub struct RangedProjIter<'iter> {
-    sol: &'iter mut SolarSystem,
+    sol: &'iter mut CoreInner,
     item_uid: UItemId,
     projectee_uids: Vec<UItemId>,
     index: usize,
@@ -35,7 +35,7 @@ impl<'iter> ExactSizeLender for RangedProjIter<'iter> {}
 // Private
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl<'iter> RangedProjIter<'iter> {
-    pub(in crate::api) fn new(sol: &'iter mut SolarSystem, item_uid: UItemId) -> Self {
+    pub(in crate::api) fn new(sol: &'iter mut CoreInner, item_uid: UItemId) -> Self {
         let projectee_uids = iter_projectee_uids(sol, item_uid).collect();
         Self {
             sol,

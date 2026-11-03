@@ -17,6 +17,7 @@ use crate::{
 pub type SolStatsCmd = SolStatsCmdGen<FleetId, FitId, ItemId>;
 pub type SolStatsCmdBr = SolStatsCmdGen<FleetIdBr, FitIdBr, ItemIdBr>;
 
+#[doc(hidden)]
 #[cfg_attr(
     feature = "serde",
     derive(serde::Deserialize),
@@ -103,7 +104,7 @@ impl SolStatsCmdBr {
 // Execution
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl SolStatsCmd {
-    pub(crate) fn execute(self, core_sol: &mut rc::SolarSystem) -> SolStatsResp {
+    pub(crate) fn execute(self, core_sol: &mut rc::Sol) -> SolStatsResp {
         let fleet_options: OvrdMapHeavy<_, FleetStatsOptionsResolved> =
             OvrdMapHeavy::from_compact_with_conversion(self.fleet_options);
         let fit_options: OvrdMapHeavy<_, FitStatsOptionsResolved> =

@@ -28,7 +28,7 @@ async fn internal_remove_fit(
     fit_id: String,
     payload: rs::FitRemoveCmd,
 ) -> Result<(), ApiError> {
-    let sol_id = rs::SolarSystemId::from_str(&sol_id)?;
+    let sol_id = rs::SolId::from_str(&sol_id)?;
     let fit_id = rs::FitId::from_str(&fit_id)?;
     state
         .get_refine()

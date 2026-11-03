@@ -1,12 +1,12 @@
 use crate::{
-    CmdResps, SolHybridCmdBr, SolarSystem,
+    CmdResps, Sol, SolHybridCmdBr,
     err::{BrResolveError, SolChangeEnumError, SolHybridError, SolInfoEnumError},
     stats::err::SolStatsEnumError,
     trial::err::SolTryItemsEnumError,
     val::err::SolValEnumError,
 };
 
-impl SolarSystem<'_> {
+impl Sol<'_> {
     #[tracing::instrument(name = "sol-hyb", level = "error", skip_all)]
     pub async fn hybrid_batch(&mut self, cmds: Vec<SolHybridCmdBr>) -> Result<CmdResps, SolHybridBatchError> {
         // Variables for move

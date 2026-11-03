@@ -1,6 +1,10 @@
-use crate::{SolarSystem, err::basic::ProjFoundError, sol::UndoStep, ud::UItemId};
+use crate::{
+    err::basic::ProjFoundError,
+    sol::{CoreInner, UndoStep},
+    ud::UItemId,
+};
 
-impl SolarSystem {
+impl CoreInner {
     pub(in crate::api::item) fn internal_remove_drone_proj(
         &mut self,
         drone_uid: UItemId,
@@ -15,7 +19,7 @@ impl SolarSystem {
             });
         };
         // Update services
-        SolarSystem::util_remove_item_projection(&self.u_data, &mut self.svc, drone_uid, projectee_uid);
+        CoreInner::util_remove_item_projection(&self.u_data, &mut self.svc, drone_uid, projectee_uid);
         // Update user data
         self.rev_projs.unreg_projectee(&drone_uid, projectee_uid);
         let u_drone = self.u_data.items.get_mut(drone_uid).dc_drone_mut().unwrap();

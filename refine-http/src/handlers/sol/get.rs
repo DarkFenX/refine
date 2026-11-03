@@ -23,7 +23,7 @@ pub(crate) async fn get_sol(
 }
 
 async fn internal_get_sol(state: AppState, sol_id: String, params: SolParams) -> Result<rs::SolInfo, ApiError> {
-    let sol_id = rs::SolarSystemId::from_str(&sol_id)?;
+    let sol_id = rs::SolId::from_str(&sol_id)?;
     let sol_info = state
         .get_refine()
         .get_sol(sol_id)

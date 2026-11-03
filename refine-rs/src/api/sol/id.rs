@@ -1,22 +1,22 @@
 use std::str::FromStr;
 
 #[derive(Copy, Clone, Eq, PartialEq, Hash, Debug, derive_more::Display)]
-pub struct SolarSystemId(uuid::Uuid);
+pub struct SolId(uuid::Uuid);
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Private
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-impl SolarSystemId {
+impl SolId {
     pub(crate) fn new() -> Self {
-        SolarSystemId(uuid::Uuid::new_v4())
+        SolId(uuid::Uuid::new_v4())
     }
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Custom de/serialization
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-impl FromStr for SolarSystemId {
-    type Err = SolarSystemIdParseError;
+impl FromStr for SolId {
+    type Err = SolIdParseError;
 
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         let inner = uuid::Uuid::try_parse(s)?;
@@ -26,7 +26,7 @@ impl FromStr for SolarSystemId {
 
 #[derive(thiserror::Error, Debug)]
 #[error(transparent)]
-pub struct SolarSystemIdParseError(#[from] uuid::Error);
+pub struct SolIdParseError(#[from] uuid::Error);
 
 #[cfg(feature = "serde")]
 mod custom_serde {
@@ -37,7 +37,7 @@ mod custom_serde {
 
     use super::*;
 
-    impl Serialize for SolarSystemId {
+    impl Serialize for SolId {
         fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
         where
             S: Serializer,
@@ -47,7 +47,7 @@ mod custom_serde {
         }
     }
 
-    impl<'de> Deserialize<'de> for SolarSystemId {
+    impl<'de> Deserialize<'de> for SolId {
         fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
         where
             D: Deserializer<'de>,
@@ -55,7 +55,7 @@ mod custom_serde {
             struct VisitorImpl;
 
             impl<'de> Visitor<'de> for VisitorImpl {
-                type Value = SolarSystemId;
+                type Value = SolId;
 
                 fn expecting(&self, formatter: &mut std::fmt::Formatter) -> std::fmt::Result {
                     formatter.write_str("string with UUID")

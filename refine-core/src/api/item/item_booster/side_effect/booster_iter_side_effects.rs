@@ -2,8 +2,9 @@ use lender::{ExactSizeLender, Lender, Lending, check_covariance};
 
 use super::shared::get_se_chance_attr_aid_by_effect_rid;
 use crate::{
-    Booster, SideEffect, SolarSystem,
+    Booster, SideEffect,
     ad::{AAttrId, AEffectId},
+    sol::CoreInner,
     ud::UItemId,
 };
 
@@ -12,7 +13,7 @@ use crate::{
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 /// Lending iterator for side effects
 pub struct SideEffectIter<'iter> {
-    sol: &'iter mut SolarSystem,
+    sol: &'iter mut CoreInner,
     item_uid: UItemId,
     effects_with_chances: Vec<(AEffectId, AAttrId)>,
     index: usize,
@@ -59,7 +60,7 @@ impl<'s> Booster<'s> {
 // Private
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl<'iter> SideEffectIter<'iter> {
-    fn new(sol: &'iter mut SolarSystem, item_uid: UItemId, effects_with_chances: Vec<(AEffectId, AAttrId)>) -> Self {
+    fn new(sol: &'iter mut CoreInner, item_uid: UItemId, effects_with_chances: Vec<(AEffectId, AAttrId)>) -> Self {
         Self {
             sol,
             item_uid,

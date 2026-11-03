@@ -1,4 +1,8 @@
-use crate::{Rig, SolarSystem, sol::UndoStep, ud::UItemId};
+use crate::{
+    Rig,
+    sol::{CoreInner, UndoStep},
+    ud::UItemId,
+};
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Public
@@ -16,7 +20,7 @@ impl<'s> Rig<'s> {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Private
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-impl SolarSystem {
+impl CoreInner {
     pub(in crate::api) fn internal_set_rig_state(&mut self, rig_uid: UItemId, state: bool) {
         let u_rig = self.u_data.items.get_mut(rig_uid).dc_rig_mut().unwrap();
         if self.undo.is_recording() {
@@ -26,7 +30,7 @@ impl SolarSystem {
         u_rig.set_rig_state(state);
         let new_a_state = u_rig.get_state();
         u_rig.update_reffs(&mut self.reuse.eupdates, &self.u_data.r_data);
-        SolarSystem::util_switch_item_state(
+        CoreInner::util_switch_item_state(
             &self.u_data,
             &mut self.svc,
             rig_uid,

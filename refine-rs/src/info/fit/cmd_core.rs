@@ -34,6 +34,7 @@ pub struct FitInfoCmdCtxFit {
     fit_id: FitId,
     core: FitInfoCmd,
 }
+#[doc(hidden)]
 #[cfg_attr(feature = "serde", derive(serde::Deserialize))]
 #[derive(Clone)]
 pub struct FitInfoCmdCtxFitBr {
@@ -128,7 +129,7 @@ impl FitInfoCmd {
 }
 
 impl FitInfoCmdCtxFit {
-    pub(in crate::info) fn execute(self, core_sol: &mut rc::SolarSystem) -> Result<FitInfo, FitGetFitInfoError> {
+    pub(in crate::info) fn execute(self, core_sol: &mut rc::Sol) -> Result<FitInfo, FitGetFitInfoError> {
         let mut core_fit = core_sol.get_fit(&self.fit_id)?;
         Ok(self.core.execute(&mut core_fit))
     }

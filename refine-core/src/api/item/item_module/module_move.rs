@@ -1,7 +1,7 @@
 use super::shared::get_fit_rack_mut;
 use crate::{
-    Index, Module, MoveMode, SolarSystem,
-    sol::UndoStep,
+    Index, Module, MoveMode,
+    sol::{CoreInner, UndoStep},
     ud::{UItemId, UItemVecShiftDir},
 };
 
@@ -17,7 +17,7 @@ impl<'s> Module<'s> {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Private
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-impl SolarSystem {
+impl CoreInner {
     pub(in crate::api) fn internal_move_module(&mut self, module_uid: UItemId, pos_mode: MoveMode) {
         let u_module = self.u_data.items.get_mut(module_uid).dc_module_mut().unwrap();
         let init_pos = u_module.get_pos();

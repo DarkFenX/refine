@@ -1,6 +1,6 @@
-use crate::{CmdResps, Item, ItemAddEnumCmd, ItemInfo, ItemInfoCmdBr, SolarSystem, err::ItemAddEnumError};
+use crate::{CmdResps, Item, ItemAddEnumCmd, ItemInfo, ItemInfoCmdBr, Sol, err::ItemAddEnumError};
 
-impl<'r, 's> SolarSystem<'r> {
+impl<'r, 's> Sol<'r> {
     #[tracing::instrument(name = "itm-add", level = "error", skip_all)]
     pub async fn add_item(&'s mut self, ctl_cmd: ItemAddEnumCmd) -> Result<Item<'r, 's>, ItemAddEnumError> {
         let item_id = self

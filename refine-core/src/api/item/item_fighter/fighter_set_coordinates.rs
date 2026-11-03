@@ -1,4 +1,9 @@
-use crate::{Coordinates, Fighter, SolarSystem, misc::Xyz, sol::UndoStep, ud::UItemId};
+use crate::{
+    Coordinates, Fighter,
+    misc::Xyz,
+    sol::{CoreInner, UndoStep},
+    ud::UItemId,
+};
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Public
@@ -14,7 +19,7 @@ impl<'s> Fighter<'s> {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Private
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-impl SolarSystem {
+impl CoreInner {
     pub(in crate::api) fn internal_set_fighter_coordinates(&mut self, fighter_uid: UItemId, coordinates: Xyz) {
         let u_fighter = self.u_data.items.get_mut(fighter_uid).dc_fighter_mut().unwrap();
         if u_fighter.get_physics().coordinates == coordinates {
@@ -25,6 +30,6 @@ impl SolarSystem {
                 .record_physics(UndoStep::FighterPhysics(fighter_uid), *u_fighter.get_physics());
         }
         u_fighter.get_physics_mut().coordinates = coordinates;
-        SolarSystem::util_update_fighter_physics(&mut self.u_data, &self.rev_projs, &mut self.svc, fighter_uid);
+        CoreInner::util_update_fighter_physics(&mut self.u_data, &self.rev_projs, &mut self.svc, fighter_uid);
     }
 }

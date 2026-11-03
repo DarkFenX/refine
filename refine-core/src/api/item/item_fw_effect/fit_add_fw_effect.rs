@@ -1,7 +1,7 @@
 use crate::{
-    Fit, FwEffect, ItemTypeId, SolarSystem,
+    Fit, FwEffect, ItemTypeId,
     ad::AItemId,
-    sol::UndoStep,
+    sol::{CoreInner, UndoStep},
     ud::{UFitId, UFwEffect, UItem, UItemId},
 };
 
@@ -18,7 +18,7 @@ impl<'s> Fit<'s> {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Private
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-impl SolarSystem {
+impl CoreInner {
     pub(in crate::api) fn internal_add_fw_effect(&mut self, fit_uid: UFitId, type_aid: AItemId) -> UItemId {
         let item_id = self.u_data.items.alloc_id();
         let u_fw_effect = UFwEffect::new(item_id, type_aid, fit_uid, true, &self.u_data.r_data);
@@ -39,6 +39,6 @@ impl SolarSystem {
     fn attach_fw_effect(&mut self, fit_uid: UFitId, fw_effect_uid: UItemId) {
         let u_fit = self.u_data.fits.get_mut(fit_uid);
         u_fit.fw_effects.insert(fw_effect_uid);
-        SolarSystem::util_add_fw_effect(&mut self.u_data, &mut self.svc, fw_effect_uid, &mut self.reuse.eupdates);
+        CoreInner::util_add_fw_effect(&mut self.u_data, &mut self.svc, fw_effect_uid, &mut self.reuse.eupdates);
     }
 }

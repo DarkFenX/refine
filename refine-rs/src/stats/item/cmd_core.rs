@@ -9,6 +9,7 @@ use crate::{
 pub type ItemStatsCmd = ItemStatsCmdGen<FitId, ItemId>;
 pub type ItemStatsCmdBr = ItemStatsCmdGen<FitIdBr, ItemIdBr>;
 
+#[doc(hidden)]
 #[cfg_attr(
     feature = "serde",
     derive(serde::Deserialize),
@@ -100,10 +101,7 @@ impl ItemStatsCmd {
 }
 
 impl ItemStatsCmdCtxItem {
-    pub(in crate::stats) fn execute(
-        self,
-        core_sol: &mut rc::SolarSystem,
-    ) -> Result<ItemStatsResp, ItemGetItemStatsError> {
+    pub(in crate::stats) fn execute(self, core_sol: &mut rc::Sol) -> Result<ItemStatsResp, ItemGetItemStatsError> {
         let mut core_item = core_sol.get_item(&self.item_id)?;
         Ok(self.core.execute(&mut core_item))
     }

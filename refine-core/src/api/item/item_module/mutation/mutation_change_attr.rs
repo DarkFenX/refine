@@ -1,10 +1,9 @@
 use crate::{
-    SolarSystem,
-    sol::UndoStep,
+    sol::{CoreInner, UndoStep},
     ud::{UAttrMutationRequest, UItemId, err::ItemMutatedError},
 };
 
-impl SolarSystem {
+impl CoreInner {
     pub(in crate::api::item) fn internal_change_module_mutation_attr(
         &mut self,
         module_uid: UItemId,

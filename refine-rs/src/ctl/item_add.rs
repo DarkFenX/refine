@@ -128,7 +128,7 @@ impl SwEffectAddCmd {
 // Execution
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl ItemAddEnumCmd {
-    pub(crate) fn execute(self, core_sol: &mut rc::SolarSystem) -> Result<AddedItemIdsResp, ItemAddEnumError> {
+    pub(crate) fn execute(self, core_sol: &mut rc::Sol) -> Result<AddedItemIdsResp, ItemAddEnumError> {
         Ok(match self {
             Self::Autodetect(cmd) => cmd.execute(core_sol)?,
             Self::Booster(cmd) => cmd.execute(core_sol)?,

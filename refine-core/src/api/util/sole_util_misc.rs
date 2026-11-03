@@ -1,13 +1,13 @@
 use itertools::Itertools;
 
 use crate::{
-    SolarSystem,
     rd::RAttrId,
+    sol::CoreInner,
     svc::{calc::CalcAttrVals, err::UItemLoadedError},
     ud::{UItem, UItemId},
 };
 
-impl SolarSystem {
+impl CoreInner {
     pub(in crate::api) fn internal_get_item_attr(
         &mut self,
         item_uid: UItemId,

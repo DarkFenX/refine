@@ -13,6 +13,7 @@ pub type FleetStatsOptionsBr = FleetStatsOptionsGen<ItemIdBr>;
 /// Which stats to fetch for a fleet.
 ///
 /// By default, all stats are not fetched.
+#[doc(hidden)]
 #[derive(Clone)]
 pub struct FleetStatsOptionsGen<I> {
     default: bool = false,

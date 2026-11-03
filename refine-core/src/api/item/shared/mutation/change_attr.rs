@@ -1,9 +1,9 @@
 use crate::{
-    SolarSystem,
+    sol::CoreInner,
     ud::{UAttrMutationRequest, UItem, UItemId, err::ItemMutatedError},
 };
 
-impl SolarSystem {
+impl CoreInner {
     pub(in crate::api) fn internal_change_item_mutation_attr(
         &mut self,
         item_uid: UItemId,

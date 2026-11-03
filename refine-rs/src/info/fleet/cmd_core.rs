@@ -39,6 +39,7 @@ pub struct FleetInfoCmdCtxFleet {
     fleet_id: FleetId,
     core: FleetInfoCmd,
 }
+#[doc(hidden)]
 #[cfg_attr(feature = "serde", derive(serde::Deserialize))]
 #[derive(Clone)]
 pub struct FleetInfoCmdCtxFleetBr {
@@ -151,7 +152,7 @@ impl FleetInfoCmd {
 }
 
 impl FleetInfoCmdCtxFleet {
-    pub(crate) fn execute(self, core_sol: &mut rc::SolarSystem) -> Result<FleetInfo, FleetGetFleetInfoError> {
+    pub(crate) fn execute(self, core_sol: &mut rc::Sol) -> Result<FleetInfo, FleetGetFleetInfoError> {
         let mut core_fleet = core_sol.get_fleet(&self.fleet_id)?;
         Ok(self.core.execute(&mut core_fleet))
     }

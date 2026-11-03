@@ -28,7 +28,7 @@ async fn internal_get_fit_stats(
     fit_id: String,
     payload: rs::stats::FitStatsCmd,
 ) -> Result<rs::stats::FitStatsResp, ApiError> {
-    let sol_id = rs::SolarSystemId::from_str(&sol_id)?;
+    let sol_id = rs::SolId::from_str(&sol_id)?;
     let fit_id = rs::FitId::from_str(&fit_id)?;
     let fit_stats = state
         .get_refine()

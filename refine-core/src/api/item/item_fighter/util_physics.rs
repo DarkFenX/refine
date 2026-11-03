@@ -1,17 +1,16 @@
 use itertools::Itertools;
 
 use crate::{
-    SolarSystem,
-    sol::RevProjs,
+    sol::{CoreInner, RevProjs},
     svc::Svc,
     ud::{UData, UItemId, UPhysics},
 };
 
-impl SolarSystem {
+impl CoreInner {
     pub(in crate::api) fn internal_restore_fighter_physics(&mut self, fighter_uid: UItemId, physics: UPhysics) {
         let u_fighter = self.u_data.items.get_mut(fighter_uid).dc_fighter_mut().unwrap();
         *u_fighter.get_physics_mut() = physics;
-        SolarSystem::util_update_fighter_physics(&mut self.u_data, &self.rev_projs, &mut self.svc, fighter_uid);
+        CoreInner::util_update_fighter_physics(&mut self.u_data, &self.rev_projs, &mut self.svc, fighter_uid);
     }
     pub(super) fn util_update_fighter_physics(
         u_data: &mut UData,
@@ -28,7 +27,7 @@ impl SolarSystem {
             }
             let u_fighter = u_data.items.get(fighter_uid).dc_fighter().unwrap();
             for (projectee_uid, u_proj_data) in u_fighter.get_projs().iter_projectees_and_datas() {
-                SolarSystem::util_change_item_proj_data(u_data, svc, fighter_uid, projectee_uid, Some(u_proj_data));
+                CoreInner::util_change_item_proj_data(u_data, svc, fighter_uid, projectee_uid, Some(u_proj_data));
             }
             // Handle outgoing projections for autocharges itself
             let autocharge_uids = u_fighter.get_autocharges().values().collect_vec();
@@ -39,7 +38,7 @@ impl SolarSystem {
                 }
                 let u_autocharge = u_data.items.get(autocharge_uid).dc_autocharge().unwrap();
                 for (projectee_uid, u_proj_data) in u_autocharge.get_projs().iter_projectees_and_datas() {
-                    SolarSystem::util_change_item_proj_data(
+                    CoreInner::util_change_item_proj_data(
                         u_data,
                         svc,
                         autocharge_uid,
@@ -50,6 +49,6 @@ impl SolarSystem {
             }
         }
         // Handle incoming projections
-        SolarSystem::util_update_physics_for_incoming(u_data, rev_projs, svc, fighter_uid, u_physics);
+        CoreInner::util_update_physics_for_incoming(u_data, rev_projs, svc, fighter_uid, u_physics);
     }
 }

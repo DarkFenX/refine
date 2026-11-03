@@ -17,6 +17,7 @@ pub struct CharacterSetCmd {
 pub type CharacterSetCmdCtxFit = CharacterSetCmdCtxFitGen<FitId>;
 pub type CharacterSetCmdCtxFitBr = CharacterSetCmdCtxFitGen<FitIdBr>;
 
+#[doc(hidden)]
 #[cfg_attr(
     feature = "serde",
     derive(serde::Deserialize),
@@ -93,10 +94,7 @@ impl CharacterSetCmd {
 }
 
 impl CharacterSetCmdCtxFit {
-    pub(in crate::ctl) fn execute(
-        self,
-        core_sol: &mut rc::SolarSystem,
-    ) -> Result<AddedItemIdsResp, FitGetCharacterSetError> {
+    pub(in crate::ctl) fn execute(self, core_sol: &mut rc::Sol) -> Result<AddedItemIdsResp, FitGetCharacterSetError> {
         let mut core_fit = core_sol.get_fit(&self.fit_id)?;
         Ok(self.core.execute(&mut core_fit))
     }

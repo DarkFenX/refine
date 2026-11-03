@@ -18,6 +18,7 @@ pub struct SkillAddCmd {
 pub type SkillAddCmdCtxFit = SkillAddCmdCtxFitGen<FitId>;
 pub type SkillAddCmdCtxFitBr = SkillAddCmdCtxFitGen<FitIdBr>;
 
+#[doc(hidden)]
 #[cfg_attr(
     feature = "serde",
     derive(serde::Deserialize),
@@ -100,10 +101,7 @@ pub enum SkillAddError {
 }
 
 impl SkillAddCmdCtxFit {
-    pub(in crate::ctl) fn execute(
-        self,
-        core_sol: &mut rc::SolarSystem,
-    ) -> Result<AddedItemIdsResp, FitGetSkillAddError> {
+    pub(in crate::ctl) fn execute(self, core_sol: &mut rc::Sol) -> Result<AddedItemIdsResp, FitGetSkillAddError> {
         let mut core_fit = core_sol.get_fit(&self.fit_id)?;
         Ok(self.core.execute(&mut core_fit)?)
     }

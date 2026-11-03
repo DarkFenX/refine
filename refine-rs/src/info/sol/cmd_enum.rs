@@ -76,7 +76,7 @@ impl SolInfoEnumCmdBr {
 // Execution
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl SolInfoEnumCmd {
-    pub(crate) fn execute(self, ctx: SolCtx, core_sol: &mut rc::SolarSystem) -> Result<CmdResp, SolInfoEnumError> {
+    pub(crate) fn execute(self, ctx: SolCtx, core_sol: &mut rc::Sol) -> Result<CmdResp, SolInfoEnumError> {
         Ok(match self {
             Self::SolInfo(cmd) => cmd.execute(ctx.sol_id, ctx.src_alias, core_sol).into(),
             Self::FleetInfo(cmd) => cmd.execute(core_sol)?.into(),

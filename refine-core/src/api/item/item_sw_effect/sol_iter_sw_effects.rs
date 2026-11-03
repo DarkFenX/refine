@@ -1,11 +1,12 @@
-use crate::{EntityIter, SolarSystem, SwEffect};
+use crate::{EntityIter, Sol, SwEffect};
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Public
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-impl SolarSystem {
+impl Sol {
     pub fn iter_sw_effects(&mut self) -> EntityIter<'_, SwEffect<'_>> {
-        let sw_effect_uids = self.u_data.sw_effects.iter().copied().collect();
-        EntityIter::new(self, sw_effect_uids)
+        let sol = self.inner_mut();
+        let sw_effect_uids = sol.u_data.sw_effects.iter().copied().collect();
+        EntityIter::new(sol, sw_effect_uids)
     }
 }

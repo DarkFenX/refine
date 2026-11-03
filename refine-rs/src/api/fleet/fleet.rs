@@ -1,7 +1,7 @@
-use crate::{FleetId, SolarSystem};
+use crate::{FleetId, Sol};
 
 pub struct Fleet<'r, 's> {
-    pub(super) sol: &'s mut SolarSystem<'r>,
+    pub(super) sol: &'s mut Sol<'r>,
     pub(super) id: FleetId,
 }
 impl<'r, 's> Fleet<'r, 's> {
@@ -14,7 +14,7 @@ impl<'r, 's> Fleet<'r, 's> {
 // Private
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl<'r, 's> Fleet<'r, 's> {
-    pub(super) fn new(sol: &'s mut SolarSystem<'r>, id: FleetId) -> Self {
+    pub(super) fn new(sol: &'s mut Sol<'r>, id: FleetId) -> Self {
         Self { sol, id }
     }
 }

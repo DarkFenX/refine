@@ -1,16 +1,17 @@
 use crate::{
-    FwEffect, ItemId, SolarSystem,
+    FwEffect, ItemId, Sol,
     err::{ItemKindMatchError, basic::ItemFoundError},
 };
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Public
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-impl SolarSystem {
+impl Sol {
     pub fn get_fw_effect(&mut self, item_id: &ItemId) -> Result<FwEffect<'_>, FwEffectGetError> {
-        let fw_effect_uid = self.u_data.items.int_id_by_ext_id_err(item_id)?;
-        self.u_data.items.get(fw_effect_uid).dc_fw_effect()?;
-        Ok(FwEffect::new(self, fw_effect_uid))
+        let sol = self.inner_mut();
+        let fw_effect_uid = sol.u_data.items.int_id_by_ext_id_err(item_id)?;
+        sol.u_data.items.get(fw_effect_uid).dc_fw_effect()?;
+        Ok(FwEffect::new(sol, fw_effect_uid))
     }
 }
 

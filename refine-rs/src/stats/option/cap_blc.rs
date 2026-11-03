@@ -8,6 +8,7 @@ use crate::{
 pub type StatOptionCapBlc = StatOptionCapBlcGen<ItemId>;
 pub type StatOptionCapBlcBr = StatOptionCapBlcGen<ItemIdBr>;
 
+#[doc(hidden)]
 #[cfg_attr(
     feature = "serde",
     derive(serde::Deserialize),
