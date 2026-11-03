@@ -18,10 +18,6 @@ impl UAutocharges {
     pub(crate) fn values(&self) -> impl ExactSizeIterator<Item = UItemId> {
         self.data.values().copied()
     }
-    #[cfg(feature = "dev")]
-    pub(crate) fn is_empty(&self) -> bool {
-        self.data.is_empty()
-    }
     // Modification methods
     pub(crate) fn set(&mut self, effect_rid: REffectId, autocharge_uid: UItemId) {
         self.data.insert(effect_rid, autocharge_uid);
@@ -41,6 +37,9 @@ mod debug {
     use crate::{dbg::DebugResult, ud::UData};
 
     impl UAutocharges {
+        pub(crate) fn is_empty(&self) -> bool {
+            self.data.is_empty()
+        }
         pub(in crate::ud::item) fn consistency_check(&self, u_data: &UData) -> DebugResult {
             for autocharge_uid in self.values() {
                 // All autocharges are supposed to be loaded

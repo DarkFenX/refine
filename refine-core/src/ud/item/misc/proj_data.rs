@@ -52,10 +52,6 @@ impl UProjData {
     pub(crate) fn get_range_c2s(&self) -> PValue {
         calc_range_c2s(self.range_c2c, self.tgt_radius)
     }
-    #[cfg(feature = "dev")]
-    pub(crate) fn get_src_radius(&self) -> PValue {
-        self.src_radius
-    }
     pub(crate) fn get_tgt_radius(&self) -> PValue {
         self.tgt_radius
     }
@@ -141,6 +137,9 @@ mod debug {
     use crate::dbg::DebugResult;
 
     impl UProjData {
+        pub(crate) fn get_src_radius(&self) -> PValue {
+            self.src_radius
+        }
         pub(crate) fn consistency_check(&self) -> DebugResult {
             let Self {
                 range_c2c,

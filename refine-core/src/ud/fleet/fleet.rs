@@ -16,10 +16,6 @@ impl UFleet {
     pub(crate) fn iter_fits(&self) -> impl ExactSizeIterator<Item = UFitId> {
         self.fits.iter().copied()
     }
-    #[cfg(feature = "dev")]
-    pub(crate) fn contains_fit(&self, fit: &UFitId) -> bool {
-        self.fits.contains(fit)
-    }
     pub(crate) fn add_fit(&mut self, fit_uid: UFitId) {
         self.fits.insert(fit_uid);
     }
@@ -47,6 +43,9 @@ mod debug {
     use crate::{dbg::DebugResult, ud::UData};
 
     impl UFleet {
+        pub(crate) fn contains_fit(&self, fit: &UFitId) -> bool {
+            self.fits.contains(fit)
+        }
         pub(in crate::ud) fn consistency_check(&self, u_data: &UData) -> DebugResult {
             let Self { id, fits } = self;
             let Some(fleet_uid) = u_data.fleets.int_id_by_ext_id(id) else {
