@@ -1,5 +1,5 @@
 use crate::{
-    api::ServiceMut,
+    api::Service,
     sol::{SolarSystem, UndoStep},
     ud::UItemId,
 };
@@ -14,7 +14,7 @@ impl SolarSystem {
     }
 }
 
-impl<'s> ServiceMut<'s> {
+impl<'s> Service<'s> {
     pub fn remove(self) {
         self.sol.internal_remove_service(self.uid);
     }

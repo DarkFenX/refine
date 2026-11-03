@@ -1,5 +1,5 @@
 use crate::{
-    api::FighterMut,
+    api::Fighter,
     num::CountNz,
     sol::{SolarSystem, UndoStep},
     ud::UItemId,
@@ -33,7 +33,7 @@ impl SolarSystem {
     }
 }
 
-impl<'s> FighterMut<'s> {
+impl<'s> Fighter<'s> {
     /// Force the fighter squad to have passed fighter count.
     ///
     /// Max supported count is used when override is not set.

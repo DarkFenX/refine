@@ -152,9 +152,9 @@ impl ShipChangeCmdCtxItemBr {
 impl ShipChangeCmd {
     pub(in crate::ctl) fn execute_via_fit(
         self,
-        core_fit: &mut rc::FitMut,
+        core_fit: &mut rc::Fit,
     ) -> Result<ChangedItemIdsResp, FitShipChangeError> {
-        let mut core_ship = match core_fit.get_ship_mut() {
+        let mut core_ship = match core_fit.get_ship() {
             Some(core_ship) => core_ship,
             None => return Err(FitShipChangeError::FitNoShip(core_fit.get_fit_id())),
         };
@@ -162,12 +162,12 @@ impl ShipChangeCmd {
     }
     pub(in crate::ctl) fn execute_via_item(
         self,
-        core_item: &mut rc::ItemMut,
+        core_item: &mut rc::Item,
     ) -> Result<ChangedItemIdsResp, ItemShipChangeError> {
         let core_ship = core_item.dc_ship()?;
         Ok(self.execute(core_ship))
     }
-    fn execute(self, core_ship: &mut rc::ShipMut) -> ChangedItemIdsResp {
+    fn execute(self, core_ship: &mut rc::Ship) -> ChangedItemIdsResp {
         let Self {
             type_id,
             state,
@@ -223,7 +223,7 @@ impl ShipChangeCmdCtxFit {
         self,
         core_sol: &mut rc::SolarSystem,
     ) -> Result<ChangedItemIdsResp, FitGetShipChangeError> {
-        let mut core_fit = core_sol.get_fit_mut(&self.fit_id)?;
+        let mut core_fit = core_sol.get_fit(&self.fit_id)?;
         Ok(self.core.execute_via_fit(&mut core_fit)?)
     }
 }
@@ -247,7 +247,7 @@ impl ShipChangeCmdCtxItem {
         self,
         core_sol: &mut rc::SolarSystem,
     ) -> Result<ChangedItemIdsResp, ItemGetShipChangeError> {
-        let mut core_ship = core_sol.get_ship_mut(&self.item_id)?;
+        let mut core_ship = core_sol.get_ship(&self.item_id)?;
         Ok(self.core.execute(&mut core_ship))
     }
 }

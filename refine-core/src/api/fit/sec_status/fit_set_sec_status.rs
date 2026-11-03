@@ -1,5 +1,5 @@
 use crate::{
-    api::FitMut,
+    api::Fit,
     num::FitSecStatus,
     sol::{SolarSystem, UndoStep},
     ud::UFitId,
@@ -22,7 +22,7 @@ impl SolarSystem {
     }
 }
 
-impl<'s> FitMut<'s> {
+impl<'s> Fit<'s> {
     pub fn set_sec_status(&mut self, sec_status: FitSecStatus) {
         self.sol.internal_set_fit_sec_status(self.uid, sec_status);
     }

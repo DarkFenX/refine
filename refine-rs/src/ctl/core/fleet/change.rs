@@ -100,7 +100,7 @@ impl FleetChangeCmdCtxFleetBr {
 // Execution
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl FleetChangeCmd {
-    pub(crate) fn execute(self, core_fleet: &mut rc::FleetMut) -> Result<(), FleetChangeError> {
+    pub(crate) fn execute(self, core_fleet: &mut rc::Fleet) -> Result<(), FleetChangeError> {
         let Self {
             add_fit_ids,
             rm_fit_ids,
@@ -134,7 +134,7 @@ pub enum FleetChangeError {
 
 impl FleetChangeCmdCtxFleet {
     pub(in crate::ctl) fn execute(self, core_sol: &mut rc::SolarSystem) -> Result<(), FleetGetFleetChangeError> {
-        let mut core_fleet = core_sol.get_fleet_mut(&self.fleet_id)?;
+        let mut core_fleet = core_sol.get_fleet(&self.fleet_id)?;
         Ok(self.core.execute(&mut core_fleet)?)
     }
 }

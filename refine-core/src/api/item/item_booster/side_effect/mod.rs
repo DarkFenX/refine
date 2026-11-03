@@ -1,7 +1,7 @@
 pub use booster_get_side_effect::SideEffectGetError;
 pub use booster_iter_side_effects::SideEffectIter;
-pub use side_effect::{SideEffect, SideEffectMut};
-pub use side_effect_get_strength::{SideEffectPartialStr, SideEffectStr};
+pub use side_effect::SideEffect;
+pub use side_effect_get_strength::SideEffectStr;
 
 mod booster_get_side_effect;
 mod booster_iter_side_effects;

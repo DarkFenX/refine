@@ -1,10 +1,8 @@
 pub(in crate::api::item::shared::mutation) use abs_resolve::resolve_absolute_into_roll;
 pub use add::MutationAddError;
-pub use full_attr::{FullMAttr, FullMAttrGetError, FullMAttrIter, FullMAttrMut, FullMAttrValueSetError};
-pub use mutation::{
-    DormantMutation, DormantMutationMut, EffectiveMutation, EffectiveMutationMut, Mutation, MutationMut,
-};
-pub use raw_attr::{AttrMutateRawError, RawMAttr, RawMAttrGetError, RawMAttrIter, RawMAttrMut};
+pub use full_attr::{FullMAttr, FullMAttrGetError, FullMAttrIter, FullMAttrValueSetError};
+pub use mutation::{DormantMutation, EffectiveMutation, Mutation};
+pub use raw_attr::{AttrMutateRawError, RawMAttr, RawMAttrGetError, RawMAttrIter};
 
 mod abs_resolve;
 mod add;

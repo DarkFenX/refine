@@ -96,7 +96,7 @@ impl FitTryItemsCmdCtxFitBr {
 // Execution
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl FitTryItemsCmd {
-    pub(crate) fn execute(self, core_fit: &mut rc::FitMut) -> Vec<ItemTypeId> {
+    pub(crate) fn execute(self, core_fit: &mut rc::Fit) -> Vec<ItemTypeId> {
         core_fit.try_items(&self.type_ids, &self.val_options)
     }
 }
@@ -106,7 +106,7 @@ impl FitTryItemsCmdCtxFit {
         self,
         core_sol: &mut rc::SolarSystem,
     ) -> Result<Vec<ItemTypeId>, FitGetFitTryItemsError> {
-        let mut core_fit = core_sol.get_fit_mut(&self.fit_id)?;
+        let mut core_fit = core_sol.get_fit(&self.fit_id)?;
         Ok(self.core.execute(&mut core_fit))
     }
 }

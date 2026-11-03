@@ -1,7 +1,7 @@
 use itertools::Itertools;
 
 use crate::{
-    api::FleetMut,
+    api::Fleet,
     sol::{SolarSystem, UndoStep},
     ud::UFleetId,
 };
@@ -25,7 +25,7 @@ impl SolarSystem {
     }
 }
 
-impl<'s> FleetMut<'s> {
+impl<'s> Fleet<'s> {
     pub fn remove(self) {
         self.sol.internal_remove_fleet(self.uid);
     }

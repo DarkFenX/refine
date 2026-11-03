@@ -55,7 +55,7 @@ pub struct StanceInfoExt {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl StanceInfo {
     pub(in crate::info) fn from_core(
-        core_stance: &mut rc::StanceMut,
+        core_stance: &mut rc::Stance,
         item_info_modes: &OvrdMapLight<ItemId, ItemInfoMode>,
     ) -> Self {
         let stance_id = core_stance.get_item_id();

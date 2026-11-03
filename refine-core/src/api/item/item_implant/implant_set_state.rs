@@ -1,5 +1,5 @@
 use crate::{
-    api::ImplantMut,
+    api::Implant,
     sol::{SolarSystem, UndoStep},
     ud::UItemId,
 };
@@ -26,7 +26,7 @@ impl SolarSystem {
     }
 }
 
-impl<'s> ImplantMut<'s> {
+impl<'s> Implant<'s> {
     pub fn set_state(&mut self, state: bool) {
         let u_implant = self.sol.u_data.items.get(self.uid).dc_implant().unwrap();
         if state == u_implant.get_implant_state() {

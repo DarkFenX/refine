@@ -1,7 +1,7 @@
 use smallvec::SmallVec;
 
 use crate::{
-    ItemMutCommon, MinionState, ModuleState, SolarSystem,
+    ItemCommon, MinionState, ModuleState, SolarSystem,
     rd::RState,
     sol::Savepoint,
     stats::{StatItemChargeOptions, StatItemStateOptions},
@@ -16,10 +16,10 @@ pub(in crate::api) fn active_stat_prepare<T>(
     state_options: StatItemStateOptions,
 ) -> Savepoint
 where
-    T: ItemMutCommon,
+    T: ItemCommon,
 {
     let item_uid = item.get_uid();
-    let sol = item.get_sol_mut();
+    let sol = item.get_sol();
     let savepoint = sol.internal_tx_savepoint();
     if matches!(state_options, StatItemStateOptions::Retain) {
         return savepoint;

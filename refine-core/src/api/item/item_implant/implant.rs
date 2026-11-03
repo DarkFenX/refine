@@ -1,87 +1,43 @@
 use crate::{
-    api::{Fit, FitMut, ItemCommon, ItemMutCommon, ItemSealed},
+    api::{Fit, ItemCommon, ItemSealed},
     num::SlotIndex,
     sol::SolarSystem,
     ud::{UImplant, UItemId},
 };
 
 pub struct Implant<'s> {
-    sol: &'s SolarSystem,
-    uid: UItemId,
+    pub(super) sol: &'s mut SolarSystem,
+    pub(super) uid: UItemId,
 }
 impl<'s> Implant<'s> {
-    pub(in crate::api) fn new(sol: &'s SolarSystem, uid: UItemId) -> Self {
+    pub(in crate::api) fn new(sol: &'s mut SolarSystem, uid: UItemId) -> Self {
         Self { sol, uid }
     }
-    pub fn get_fit(&self) -> Fit<'_> {
-        get_fit(self.sol, self.uid)
+    pub fn get_fit(&mut self) -> Fit<'_> {
+        let fit_uid = get_u_implant(self.sol, self.uid).get_fit_uid();
+        Fit::new(self.sol, fit_uid)
     }
     pub fn get_slot(&self) -> Option<SlotIndex> {
-        get_slot(self.sol, self.uid)
+        get_u_implant(self.sol, self.uid).get_r_item_base()?.implant_slot
     }
     pub fn get_state(&self) -> bool {
-        get_state(self.sol, self.uid)
+        get_u_implant(self.sol, self.uid).get_implant_state()
     }
 }
 impl<'s> ItemSealed for Implant<'s> {
     fn get_uid(&self) -> UItemId {
         self.uid
     }
+    fn get_sol_ref(&self) -> &SolarSystem {
+        self.sol
+    }
 }
 impl<'s> ItemCommon for Implant<'s> {
-    fn get_sol(&self) -> &SolarSystem {
+    fn get_sol(&mut self) -> &mut SolarSystem {
         self.sol
     }
 }
 
-pub struct ImplantMut<'s> {
-    pub(super) sol: &'s mut SolarSystem,
-    pub(super) uid: UItemId,
-}
-impl<'s> ImplantMut<'s> {
-    pub(in crate::api) fn new(sol: &'s mut SolarSystem, uid: UItemId) -> Self {
-        Self { sol, uid }
-    }
-    pub fn get_fit(&self) -> Fit<'_> {
-        get_fit(self.sol, self.uid)
-    }
-    pub fn get_fit_mut(&mut self) -> FitMut<'_> {
-        let fit_uid = get_u_implant(self.sol, self.uid).get_fit_uid();
-        FitMut::new(self.sol, fit_uid)
-    }
-    pub fn get_slot(&self) -> Option<SlotIndex> {
-        get_slot(self.sol, self.uid)
-    }
-    pub fn get_state(&self) -> bool {
-        get_state(self.sol, self.uid)
-    }
-}
-impl<'s> ItemSealed for ImplantMut<'s> {
-    fn get_uid(&self) -> UItemId {
-        self.uid
-    }
-}
-impl<'s> ItemCommon for ImplantMut<'s> {
-    fn get_sol(&self) -> &SolarSystem {
-        self.sol
-    }
-}
-impl<'s> ItemMutCommon for ImplantMut<'s> {
-    fn get_sol_mut(&mut self) -> &mut SolarSystem {
-        self.sol
-    }
-}
-
-fn get_fit(sol: &SolarSystem, implant_uid: UItemId) -> Fit<'_> {
-    let fit_uid = get_u_implant(sol, implant_uid).get_fit_uid();
-    Fit::new(sol, fit_uid)
-}
-fn get_slot(sol: &SolarSystem, implant_uid: UItemId) -> Option<SlotIndex> {
-    get_u_implant(sol, implant_uid).get_r_item_base()?.implant_slot
-}
-fn get_state(sol: &SolarSystem, implant_uid: UItemId) -> bool {
-    get_u_implant(sol, implant_uid).get_implant_state()
-}
 fn get_u_implant(sol: &SolarSystem, implant_uid: UItemId) -> &UImplant {
     sol.u_data.items.get(implant_uid).dc_implant().unwrap()
 }

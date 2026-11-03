@@ -63,7 +63,7 @@ pub struct BoosterInfoExt {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl BoosterInfo {
     pub(in crate::info) fn from_core(
-        core_booster: &mut rc::BoosterMut,
+        core_booster: &mut rc::Booster,
         item_info_modes: &OvrdMapLight<ItemId, ItemInfoMode>,
     ) -> Self {
         let booster_id = core_booster.get_item_id();
@@ -80,7 +80,7 @@ impl BoosterInfo {
                     slot: core_booster.get_slot(),
                     state: core_booster.get_state(),
                     side_effects: core_booster
-                        .iter_side_effects_mut()
+                        .iter_side_effects()
                         .map_into_iter(|core_side_effect| {
                             (
                                 core_side_effect.get_effect_id(),

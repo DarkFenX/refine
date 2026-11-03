@@ -1,7 +1,7 @@
 use itertools::Itertools;
 
 use crate::{
-    api::FitMut,
+    api::Fit,
     num::UnitInterval,
     svc::{
         cycle::CseqMap,
@@ -9,7 +9,7 @@ use crate::{
     },
 };
 
-impl<'s> FitMut<'s> {
+impl<'s> Fit<'s> {
     pub fn benchmark_cap_sim(&mut self, staggers: &[StatCapSimStagger], iterations: usize) {
         let ship_uid = self.sol.u_data.fits.get(self.uid).ship.unwrap();
         let staggers = match staggers.is_empty() {

@@ -1,4 +1,4 @@
-pub use service::{Service, ServiceMut};
+pub use service::Service;
 pub use sol_get_service::ServiceGetError;
 
 mod fit_add_service;

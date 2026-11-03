@@ -8,8 +8,8 @@ use crate::{
 /// Holds all the user data, and exposes the interface to manipulate, process and fetch it.
 ///
 /// Everything is accessed through a solar system: fits, fleets and items are reached by their IDs,
-/// which returns a short-lived handle borrowing the solar system. Since handles borrow, only one
-/// mutable handle can be held at a time.
+/// which returns a short-lived handle borrowing the solar system. Since handles borrow mutably,
+/// only one handle can be held at a time.
 pub struct SolarSystem {
     pub(crate) u_data: UData,
     pub(crate) svc: Svc,

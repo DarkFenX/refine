@@ -43,7 +43,7 @@ impl FitValEnumCmdBr {
 // Execution
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl FitValEnumCmd {
-    pub(crate) fn execute(self, core_fit: &mut rc::FitMut) -> CmdResp {
+    pub(crate) fn execute(self, core_fit: &mut rc::Fit) -> CmdResp {
         match self {
             Self::FitValidate(cmd) => cmd.execute(core_fit).into(),
         }

@@ -1,5 +1,5 @@
 use crate::{
-    api::{ItemMut, RemoveMode},
+    api::{Item, RemoveMode},
     sol::{SolarSystem, UndoStep},
     ud::{UItem, UItemId},
 };
@@ -63,33 +63,33 @@ impl SolarSystem {
     }
 }
 
-impl<'s> ItemMut<'s> {
+impl<'s> Item<'s> {
     /// Remove item.
     ///
     /// Removal mode is used only for modules.
     pub fn remove(self, pos_mode: RemoveMode) -> Result<(), ItemRemoveError> {
         match self {
             // Autocharge can not be removed no matter what
-            ItemMut::Autocharge(..) => {
+            Item::Autocharge(..) => {
                 return Err(ItemRemoveError::UnremovableAutocharge);
             }
             // For the rest, delegate to per-item removal methods
-            ItemMut::Booster(booster) => booster.remove(),
-            ItemMut::Character(character) => character.remove(),
-            ItemMut::Charge(charge) => charge.remove(),
-            ItemMut::Drone(drone) => drone.remove(),
-            ItemMut::Fighter(fighter) => fighter.remove(),
-            ItemMut::FwEffect(fw_effect) => fw_effect.remove(),
-            ItemMut::Implant(implant) => implant.remove(),
-            ItemMut::Module(module) => module.remove(pos_mode),
-            ItemMut::ProjEffect(proj_effect) => proj_effect.remove(),
-            ItemMut::Rig(rig) => rig.remove(),
-            ItemMut::Service(service) => service.remove(),
-            ItemMut::Ship(ship) => ship.remove(),
-            ItemMut::Skill(skill) => skill.remove(),
-            ItemMut::Stance(stance) => stance.remove(),
-            ItemMut::Subsystem(subsystem) => subsystem.remove(),
-            ItemMut::SwEffect(sw_effect) => sw_effect.remove(),
+            Item::Booster(booster) => booster.remove(),
+            Item::Character(character) => character.remove(),
+            Item::Charge(charge) => charge.remove(),
+            Item::Drone(drone) => drone.remove(),
+            Item::Fighter(fighter) => fighter.remove(),
+            Item::FwEffect(fw_effect) => fw_effect.remove(),
+            Item::Implant(implant) => implant.remove(),
+            Item::Module(module) => module.remove(pos_mode),
+            Item::ProjEffect(proj_effect) => proj_effect.remove(),
+            Item::Rig(rig) => rig.remove(),
+            Item::Service(service) => service.remove(),
+            Item::Ship(ship) => ship.remove(),
+            Item::Skill(skill) => skill.remove(),
+            Item::Stance(stance) => stance.remove(),
+            Item::Subsystem(subsystem) => subsystem.remove(),
+            Item::SwEffect(sw_effect) => sw_effect.remove(),
         }
         Ok(())
     }

@@ -1,4 +1,4 @@
-use rc::ItemCommon;
+use rc::{ItemCommon, Lender};
 
 use crate::{EffectId, FitId, FleetId, ItemId};
 
@@ -37,7 +37,7 @@ pub struct ChangedItemIdsResp {
 // Conversions
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl AddedFleetIdResp {
-    pub(in crate::ctl::core) fn from_core_fleet(core_fleet: rc::FleetMut) -> Self {
+    pub(in crate::ctl::core) fn from_core_fleet(core_fleet: rc::Fleet) -> Self {
         Self {
             fleet_id: core_fleet.get_fleet_id(),
         }
@@ -45,7 +45,7 @@ impl AddedFleetIdResp {
 }
 
 impl AddedFitIdResp {
-    pub(in crate::ctl::core) fn from_core_fit(core_fit: rc::FitMut) -> Self {
+    pub(in crate::ctl::core) fn from_core_fit(core_fit: rc::Fit) -> Self {
         Self {
             fit_id: core_fit.get_fit_id(),
         }
@@ -53,103 +53,103 @@ impl AddedFitIdResp {
 }
 
 impl AddedItemIdsResp {
-    pub(in crate::ctl::core) fn from_core_item(core_item: rc::ItemMut) -> Self {
+    pub(in crate::ctl::core) fn from_core_item(mut core_item: rc::Item) -> Self {
         Self {
             item_id: core_item.get_item_id(),
-            autocharge_item_ids: match &core_item {
-                rc::ItemMut::Fighter(core_fighter) => AutochargeItemIds::from_core_fighter(core_fighter),
+            autocharge_item_ids: match &mut core_item {
+                rc::Item::Fighter(core_fighter) => AutochargeItemIds::from_core_fighter(core_fighter),
                 _ => AutochargeItemIds::NotGenerated,
             },
             ..
         }
     }
-    pub(in crate::ctl::core) fn from_core_booster(core_booster: rc::BoosterMut) -> Self {
+    pub(in crate::ctl::core) fn from_core_booster(core_booster: rc::Booster) -> Self {
         Self {
             item_id: core_booster.get_item_id(),
             ..
         }
     }
-    pub(in crate::ctl::core) fn from_core_character(core_character: rc::CharacterMut) -> Self {
+    pub(in crate::ctl::core) fn from_core_character(core_character: rc::Character) -> Self {
         Self {
             item_id: core_character.get_item_id(),
             ..
         }
     }
-    pub(in crate::ctl::core) fn from_core_drone(core_drone: rc::DroneMut) -> Self {
+    pub(in crate::ctl::core) fn from_core_drone(core_drone: rc::Drone) -> Self {
         Self {
             item_id: core_drone.get_item_id(),
             ..
         }
     }
-    pub(in crate::ctl::core) fn from_core_fighter(core_fighter: rc::FighterMut) -> Self {
+    pub(in crate::ctl::core) fn from_core_fighter(mut core_fighter: rc::Fighter) -> Self {
         Self {
             item_id: core_fighter.get_item_id(),
-            autocharge_item_ids: AutochargeItemIds::from_core_fighter(&core_fighter),
+            autocharge_item_ids: AutochargeItemIds::from_core_fighter(&mut core_fighter),
             ..
         }
     }
-    pub(in crate::ctl::core) fn from_core_fw_effect(core_fw_effect: rc::FwEffectMut) -> Self {
+    pub(in crate::ctl::core) fn from_core_fw_effect(core_fw_effect: rc::FwEffect) -> Self {
         Self {
             item_id: core_fw_effect.get_item_id(),
             ..
         }
     }
-    pub(in crate::ctl::core) fn from_core_implant(core_implant: rc::ImplantMut) -> Self {
+    pub(in crate::ctl::core) fn from_core_implant(core_implant: rc::Implant) -> Self {
         Self {
             item_id: core_implant.get_item_id(),
             ..
         }
     }
-    pub(in crate::ctl::core) fn from_core_module(core_module: rc::ModuleMut) -> Self {
+    pub(in crate::ctl::core) fn from_core_module(mut core_module: rc::Module) -> Self {
         Self {
             item_id: core_module.get_item_id(),
             charge_item_id: core_module.get_charge().map(|core_charge| core_charge.get_item_id()),
             ..
         }
     }
-    pub(in crate::ctl::core) fn from_core_proj_effect(core_proj_effect: rc::ProjEffectMut) -> Self {
+    pub(in crate::ctl::core) fn from_core_proj_effect(core_proj_effect: rc::ProjEffect) -> Self {
         Self {
             item_id: core_proj_effect.get_item_id(),
             ..
         }
     }
-    pub(in crate::ctl::core) fn from_core_rig(core_rig: rc::RigMut) -> Self {
+    pub(in crate::ctl::core) fn from_core_rig(core_rig: rc::Rig) -> Self {
         Self {
             item_id: core_rig.get_item_id(),
             ..
         }
     }
-    pub(in crate::ctl::core) fn from_core_service(core_service: rc::ServiceMut) -> Self {
+    pub(in crate::ctl::core) fn from_core_service(core_service: rc::Service) -> Self {
         Self {
             item_id: core_service.get_item_id(),
             ..
         }
     }
-    pub(in crate::ctl::core) fn from_core_ship(core_ship: rc::ShipMut) -> Self {
+    pub(in crate::ctl::core) fn from_core_ship(core_ship: rc::Ship) -> Self {
         Self {
             item_id: core_ship.get_item_id(),
             ..
         }
     }
-    pub(in crate::ctl::core) fn from_core_skill(core_skill: rc::SkillMut) -> Self {
+    pub(in crate::ctl::core) fn from_core_skill(core_skill: rc::Skill) -> Self {
         Self {
             item_id: core_skill.get_item_id(),
             ..
         }
     }
-    pub(in crate::ctl::core) fn from_core_stance(core_stance: rc::StanceMut) -> Self {
+    pub(in crate::ctl::core) fn from_core_stance(core_stance: rc::Stance) -> Self {
         Self {
             item_id: core_stance.get_item_id(),
             ..
         }
     }
-    pub(in crate::ctl::core) fn from_core_subsystem(core_subsystem: rc::SubsystemMut) -> Self {
+    pub(in crate::ctl::core) fn from_core_subsystem(core_subsystem: rc::Subsystem) -> Self {
         Self {
             item_id: core_subsystem.get_item_id(),
             ..
         }
     }
-    pub(in crate::ctl::core) fn from_core_sw_effect(core_sw_effect: rc::SwEffectMut) -> Self {
+    pub(in crate::ctl::core) fn from_core_sw_effect(core_sw_effect: rc::SwEffect) -> Self {
         Self {
             item_id: core_sw_effect.get_item_id(),
             ..
@@ -158,10 +158,10 @@ impl AddedItemIdsResp {
 }
 
 impl ChangedItemIdsResp {
-    pub(in crate::ctl::core) fn add_core_charge(&mut self, core_charge: rc::ChargeMut) {
+    pub(in crate::ctl::core) fn add_core_charge(&mut self, core_charge: rc::Charge) {
         self.charge_item_id = Some(core_charge.get_item_id());
     }
-    pub(in crate::ctl::core) fn add_core_fighter_autocharges(&mut self, core_fighter: &rc::FighterMut) {
+    pub(in crate::ctl::core) fn add_core_fighter_autocharges(&mut self, core_fighter: &mut rc::Fighter) {
         self.autocharge_item_ids = AutochargeItemIds::from_core_fighter(core_fighter);
     }
 }
@@ -186,11 +186,11 @@ pub enum AutochargeItemIds {
     Generated(Vec<(EffectId, ItemId)>),
 }
 impl AutochargeItemIds {
-    fn from_core_fighter(core_fighter: &rc::FighterMut) -> Self {
+    fn from_core_fighter(core_fighter: &mut rc::Fighter) -> Self {
         Self::Generated(
             core_fighter
                 .iter_autocharges()
-                .map(|core_autocharge| (core_autocharge.get_cont_effect_id(), core_autocharge.get_item_id()))
+                .map_into_iter(|core_autocharge| (core_autocharge.get_cont_effect_id(), core_autocharge.get_item_id()))
                 .collect(),
         )
     }

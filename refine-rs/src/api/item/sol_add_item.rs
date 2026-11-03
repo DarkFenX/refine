@@ -22,7 +22,7 @@ impl<'r, 's> SolarSystem<'r> {
                 let ctl_cmd_resps = CmdResps::with_resp(ctl_cmd_resp.into());
                 let info_cmd = info_cmd.br_resolve(&ctl_cmd_resps);
                 // The item which we just added should still be there, we hold sol mutex
-                let mut core_item = core_sol.get_item_mut(&item_id).unwrap();
+                let mut core_item = core_sol.get_item(&item_id).unwrap();
                 let item_info = info_cmd.execute(&mut core_item);
                 Ok::<_, ItemAddEnumError>((item_id, item_info))
             })

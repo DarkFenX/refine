@@ -1,8 +1,8 @@
+pub use entity_iter::EntityIter;
 use misc::is_effect_projectable;
-pub use mut_iter::MutIter;
 
+mod entity_iter;
 mod misc;
-mod mut_iter;
 mod sole_util_change_physics;
 mod sole_util_change_radius;
 mod sole_util_item;

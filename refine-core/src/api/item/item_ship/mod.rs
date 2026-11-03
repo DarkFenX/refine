@@ -1,4 +1,4 @@
-pub use ship::{Ship, ShipMut};
+pub use ship::Ship;
 pub use sol_get_ship::ShipGetError;
 
 mod fit_get_ship;

@@ -1,10 +1,10 @@
 use crate::{
-    FleetMut, ItemId,
+    Fleet, ItemId,
     err::basic::{ItemFoundError, ItemReceiveProjError},
     ud::UItemId,
 };
 
-impl<'s> FleetMut<'s> {
+impl<'s> Fleet<'s> {
     pub(super) fn get_stat_applied_projectee_uid(
         &self,
         projectee_item_id: &ItemId,

@@ -2,7 +2,7 @@ use itertools::Itertools;
 
 use crate::{
     ad::AItemId,
-    api::{Coordinates, FighterMut, FitMut, ItemTypeId, MinionState, Movement},
+    api::{Coordinates, Fighter, Fit, ItemTypeId, MinionState, Movement},
     sol::{SolarSystem, UndoStep},
     ud::{UFighter, UFitId, UItem, UItemId, UPhysics},
 };
@@ -60,14 +60,14 @@ impl SolarSystem {
     }
 }
 
-impl<'s> FitMut<'s> {
+impl<'s> Fit<'s> {
     pub fn add_fighter(
         &mut self,
         type_id: ItemTypeId,
         state: MinionState,
         coordinates: Option<Coordinates>,
         movement: Option<Movement>,
-    ) -> FighterMut<'_> {
+    ) -> Fighter<'_> {
         let mut u_physics = UPhysics::default();
         if let Some(coordinates) = coordinates {
             u_physics.coordinates = coordinates.into_xyz();
@@ -79,6 +79,6 @@ impl<'s> FitMut<'s> {
         let fighter_uid = self
             .sol
             .internal_add_fighter(self.uid, type_id.into_aid(), state, u_physics);
-        FighterMut::new(self.sol, fighter_uid)
+        Fighter::new(self.sol, fighter_uid)
     }
 }

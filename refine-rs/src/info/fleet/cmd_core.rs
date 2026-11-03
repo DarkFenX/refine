@@ -140,7 +140,7 @@ impl FleetInfoCmdCtxFleetBr {
 // Execution
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl FleetInfoCmd {
-    pub(crate) fn execute(self, core_fleet: &mut rc::FleetMut) -> FleetInfo {
+    pub(crate) fn execute(self, core_fleet: &mut rc::Fleet) -> FleetInfo {
         FleetInfo::from_core(
             core_fleet,
             &OvrdMapLight::from_default(self.shared.fleet_mode),
@@ -152,7 +152,7 @@ impl FleetInfoCmd {
 
 impl FleetInfoCmdCtxFleet {
     pub(crate) fn execute(self, core_sol: &mut rc::SolarSystem) -> Result<FleetInfo, FleetGetFleetInfoError> {
-        let mut core_fleet = core_sol.get_fleet_mut(&self.fleet_id)?;
+        let mut core_fleet = core_sol.get_fleet(&self.fleet_id)?;
         Ok(self.core.execute(&mut core_fleet))
     }
 }

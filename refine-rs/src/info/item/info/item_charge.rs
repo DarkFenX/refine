@@ -56,7 +56,7 @@ pub struct ChargeInfoExt {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl ChargeInfo {
     pub(super) fn from_core(
-        core_charge: &mut rc::ChargeMut,
+        core_charge: &mut rc::Charge,
         item_info_modes: &OvrdMapLight<ItemId, ItemInfoMode>,
     ) -> Self {
         let charge_id = core_charge.get_item_id();

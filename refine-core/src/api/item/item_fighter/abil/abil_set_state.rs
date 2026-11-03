@@ -1,6 +1,6 @@
-use crate::{api::AbilityMut, misc::EffectMode};
+use crate::{api::Ability, misc::EffectMode};
 
-impl<'s> AbilityMut<'s> {
+impl<'s> Ability<'s> {
     pub fn set_state(&mut self, state: bool) {
         // Only abilities which exist in source and only for loaded fighters are exposed by API, so
         // just unwrap everything

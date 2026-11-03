@@ -61,14 +61,14 @@ impl FitRemoveCmdCtxFitBr {
 // Execution
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl FitRemoveCmd {
-    pub(crate) fn execute(self, core_fit: rc::FitMut) {
+    pub(crate) fn execute(self, core_fit: rc::Fit) {
         core_fit.remove()
     }
 }
 
 impl FitRemoveCmdCtxFit {
     pub(in crate::ctl) fn execute(self, core_sol: &mut rc::SolarSystem) -> Result<(), FitGetFitRemoveError> {
-        let core_fit = core_sol.get_fit_mut(&self.fit_id)?;
+        let core_fit = core_sol.get_fit(&self.fit_id)?;
         self.core.execute(core_fit);
         Ok(())
     }

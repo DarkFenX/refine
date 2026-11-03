@@ -1,4 +1,4 @@
-use rc::ItemMutCommon;
+use rc::ItemCommon;
 
 use crate::{
     PValue, Value,
@@ -15,7 +15,7 @@ use crate::{
 };
 
 impl ItemStatsOptionsResolved {
-    pub(in crate::stats) fn execute(&self, core_item: &mut rc::ItemMut) -> ItemStats {
+    pub(in crate::stats) fn execute(&self, core_item: &mut rc::Item) -> ItemStats {
         let Self {
             dmg,
             mps,
@@ -189,7 +189,7 @@ impl ItemStatsOptionsResolved {
 // Output
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 fn get_dmg_stats(
-    core_item: &mut rc::ItemMut,
+    core_item: &mut rc::Item,
     options: &[Result<StatOptionItemDmg, BrResolveError>],
 ) -> StatResult<StatDmg, StatItemAppliedError<!>, StatBrFallibleError<StatItemAppliedError<!>>> {
     collect_stats_err_both_br(options, |option| match option.projectee_item_id {
@@ -209,7 +209,7 @@ fn get_dmg_stats(
     })
 }
 fn get_mps_stats(
-    core_item: &mut rc::ItemMut,
+    core_item: &mut rc::Item,
     options: &[StatOptionItemMining],
 ) -> StatResult<StatMining, StatItemError<!>, !> {
     collect_stats_err_inner(options, |option| {
@@ -217,7 +217,7 @@ fn get_mps_stats(
     })
 }
 fn get_outgoing_nps_stats(
-    core_item: &mut rc::ItemMut,
+    core_item: &mut rc::Item,
     options: &[Result<StatOptionItemOutNps, BrResolveError>],
 ) -> StatResult<PValue, StatItemAppliedError<!>, StatBrFallibleError<StatItemAppliedError<!>>> {
     collect_stats_err_both_br(options, |option| match option.projectee_item_id {
@@ -230,7 +230,7 @@ fn get_outgoing_nps_stats(
     })
 }
 fn get_outgoing_rps_stats(
-    core_item: &mut rc::ItemMut,
+    core_item: &mut rc::Item,
     options: &[Result<StatOptionItemOutRps, BrResolveError>],
 ) -> StatResult<StatOutReps, StatItemAppliedError<!>, StatBrFallibleError<StatItemAppliedError<!>>> {
     collect_stats_err_both_br(options, |option| match option.projectee_item_id {
@@ -243,7 +243,7 @@ fn get_outgoing_rps_stats(
     })
 }
 fn get_outgoing_cps_stats(
-    core_item: &mut rc::ItemMut,
+    core_item: &mut rc::Item,
     options: &[Result<StatOptionItemOutCps, BrResolveError>],
 ) -> StatResult<PValue, StatItemAppliedError<!>, StatBrFallibleError<StatItemAppliedError<!>>> {
     collect_stats_err_both_br(options, |option| match option.projectee_item_id {
@@ -259,18 +259,15 @@ fn get_outgoing_cps_stats(
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Tank
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-fn get_ehp_stats(core_item: &mut rc::ItemMut, options: &[StatOptionEhp]) -> StatResult<StatEhp, StatItemError<!>, !> {
+fn get_ehp_stats(core_item: &mut rc::Item, options: &[StatOptionEhp]) -> StatResult<StatEhp, StatItemError<!>, !> {
     collect_stats_err_inner(options, |option| core_item.get_stat_ehp(option.incoming_dps))
 }
-fn get_rps_stats(core_item: &mut rc::ItemMut, options: &[StatOptionRps]) -> StatResult<StatRps, StatItemError<!>, !> {
+fn get_rps_stats(core_item: &mut rc::Item, options: &[StatOptionRps]) -> StatResult<StatRps, StatItemError<!>, !> {
     collect_stats_err_inner(options, |option| {
         core_item.get_stat_rps(option.time, option.shield_perc)
     })
 }
-fn get_erps_stats(
-    core_item: &mut rc::ItemMut,
-    options: &[StatOptionErps],
-) -> StatResult<StatErps, StatItemError<!>, !> {
+fn get_erps_stats(core_item: &mut rc::Item, options: &[StatOptionErps]) -> StatResult<StatErps, StatItemError<!>, !> {
     collect_stats_err_inner(options, |option| {
         core_item.get_stat_erps(option.incoming_dps, option.time, option.shield_perc)
     })
@@ -280,7 +277,7 @@ fn get_erps_stats(
 // Cap
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 fn get_cap_balance_stats(
-    core_item: &mut rc::ItemMut,
+    core_item: &mut rc::Item,
     options: &[Result<StatOptionCapBlc, BrResolveError>],
 ) -> StatResult<Value, StatItemAppliedError<!>, StatBrFallibleError<StatItemAppliedError<!>>> {
     collect_stats_err_both_br(options, |option| {
@@ -288,7 +285,7 @@ fn get_cap_balance_stats(
     })
 }
 fn get_cap_sim_stats(
-    core_item: &mut rc::ItemMut,
+    core_item: &mut rc::Item,
     options: &[Result<StatOptionCapSim, BrResolveError>],
 ) -> StatResult<StatCapSim, StatItemAppliedError<!>, StatBrFallibleError<StatItemAppliedError<!>>> {
     collect_stats_err_both_br(options, |option| {
@@ -305,7 +302,7 @@ fn get_cap_sim_stats(
 // Sensors
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 fn get_incoming_jam_stats(
-    core_item: &mut rc::ItemMut,
+    core_item: &mut rc::Item,
     options: &[StatOptionIncomingJam],
 ) -> StatResult<StatInJam, StatItemError<!>, !> {
     collect_stats_err_inner(options, |option| core_item.get_stat_incoming_jam(option.time))
@@ -314,11 +311,11 @@ fn get_incoming_jam_stats(
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Execution getters - mobility
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-fn get_mass_stats(core_item: &mut rc::ItemMut, options: &[StatOptionMass]) -> StatResult<PValue, StatItemError<!>, !> {
+fn get_mass_stats(core_item: &mut rc::Item, options: &[StatOptionMass]) -> StatResult<PValue, StatItemError<!>, !> {
     collect_stats_err_inner(options, |option| core_item.get_stat_mass(option.affectors))
 }
 fn get_jump_stats(
-    core_item: &mut rc::ItemMut,
+    core_item: &mut rc::Item,
     options: &[StatOptionJump],
 ) -> StatResult<StatJump, StatItemError<StatJumpError>, !> {
     collect_stats_err_inner(options, |option| {

@@ -1,5 +1,5 @@
 use crate::{
-    api::{ModuleMut, ModuleState},
+    api::{Module, ModuleState},
     sol::{SolarSystem, UndoStep},
     ud::UItemId,
 };
@@ -40,7 +40,7 @@ impl SolarSystem {
     }
 }
 
-impl<'s> ModuleMut<'s> {
+impl<'s> Module<'s> {
     pub fn set_state(&mut self, state: ModuleState) {
         let u_module = self.sol.u_data.items.get(self.uid).dc_module().unwrap();
         if state == u_module.get_module_state() {

@@ -1,6 +1,6 @@
 use super::shared::get_fit_rack_mut;
 use crate::{
-    api::{ModuleMut, MoveMode},
+    api::{Module, MoveMode},
     num::Index,
     sol::{SolarSystem, UndoStep},
     ud::{UItemId, UItemVecShiftDir},
@@ -48,7 +48,7 @@ impl SolarSystem {
     }
 }
 
-impl<'s> ModuleMut<'s> {
+impl<'s> Module<'s> {
     pub fn move_(&mut self, pos_mode: MoveMode) {
         self.sol.internal_move_module(self.uid, pos_mode)
     }

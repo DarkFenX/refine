@@ -1,5 +1,5 @@
 use crate::{
-    api::ChargeMut,
+    api::Charge,
     sol::{SolarSystem, UndoStep},
     ud::UItemId,
 };
@@ -21,7 +21,7 @@ impl SolarSystem {
     }
 }
 
-impl<'s> ChargeMut<'s> {
+impl<'s> Charge<'s> {
     pub fn remove(self) {
         self.sol.internal_remove_charge(self.uid)
     }

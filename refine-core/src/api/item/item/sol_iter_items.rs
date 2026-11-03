@@ -1,14 +1,11 @@
 use crate::{
-    api::{Item, ItemMut, MutIter},
+    api::{EntityIter, Item},
     sol::SolarSystem,
 };
 
 impl SolarSystem {
-    pub fn iter_items(&self) -> impl ExactSizeIterator<Item = Item<'_>> {
-        self.u_data.items.keys().map(|item_uid| Item::new(self, item_uid))
-    }
-    pub fn iter_items_mut(&mut self) -> MutIter<'_, ItemMut<'_>> {
+    pub fn iter_items(&mut self) -> EntityIter<'_, Item<'_>> {
         let item_uids = self.u_data.items.keys().collect();
-        MutIter::new(self, item_uids)
+        EntityIter::new(self, item_uids)
     }
 }

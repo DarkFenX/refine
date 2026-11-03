@@ -67,7 +67,7 @@ impl ItemRemoveCmdCtxItemBr {
 // Execution
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl ItemRemoveCmd {
-    pub(crate) fn execute(self, core_item: rc::ItemMut) -> Result<(), ItemRemoveError> {
+    pub(crate) fn execute(self, core_item: rc::Item) -> Result<(), ItemRemoveError> {
         core_item.remove(self.rm_mode.unwrap_or(RemoveMode::Free))?;
         Ok(())
     }
@@ -80,7 +80,7 @@ pub enum ItemRemoveError {
 
 impl ItemRemoveCmdCtxItem {
     pub(in crate::ctl) fn execute(self, core_sol: &mut rc::SolarSystem) -> Result<(), ItemGetItemRemoveError> {
-        let core_item = core_sol.get_item_mut(&self.item_id)?;
+        let core_item = core_sol.get_item(&self.item_id)?;
         Ok(self.core.execute(core_item)?)
     }
 }

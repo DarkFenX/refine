@@ -17,10 +17,10 @@ impl Abilities {
     pub(in crate::ctl) fn extend(&mut self, effect_modes: impl IntoIterator<Item = (rc::AbilityId, bool)>) {
         self.data.extend(effect_modes);
     }
-    pub(in crate::ctl::core) fn apply(&self, core_fighter: &mut rc::FighterMut) {
+    pub(in crate::ctl::core) fn apply(&self, core_fighter: &mut rc::Fighter) {
         // Apply state changes only to existing abilities, ignore the rest
         for (abil_id, new_state) in self.data.iter() {
-            if let Ok(mut core_ability) = core_fighter.get_ability_mut(abil_id) {
+            if let Ok(mut core_ability) = core_fighter.get_ability(abil_id) {
                 core_ability.set_state(*new_state);
             }
         }

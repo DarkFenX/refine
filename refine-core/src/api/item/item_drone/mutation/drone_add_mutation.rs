@@ -1,5 +1,5 @@
 use crate::{
-    api::{DroneMut, ItemTypeId, MutationAddError, MutationMut},
+    api::{Drone, ItemTypeId, Mutation, MutationAddError},
     err::basic::ItemNotMutatedError,
     sol::{SolarSystem, UndoStep},
     ud::{UItemId, UItemMutationRequest},
@@ -30,13 +30,13 @@ impl SolarSystem {
     }
 }
 
-impl<'s> DroneMut<'s> {
-    pub fn mutate(&mut self, mutator_type_id: ItemTypeId) -> Result<MutationMut<'_>, MutationAddError> {
+impl<'s> Drone<'s> {
+    pub fn mutate(&mut self, mutator_type_id: ItemTypeId) -> Result<Mutation<'_>, MutationAddError> {
         let mutation = UItemMutationRequest {
             mutator_type_aid: mutator_type_id.into_aid(),
             attrs: Vec::new(),
         };
         self.sol.internal_add_drone_mutation(self.uid, mutation)?;
-        Ok(self.get_mutation_mut().unwrap())
+        Ok(self.get_mutation().unwrap())
     }
 }

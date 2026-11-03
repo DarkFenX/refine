@@ -1,5 +1,5 @@
 use crate::{
-    api::{Coordinates, DroneMut},
+    api::{Coordinates, Drone},
     misc::Xyz,
     sol::{SolarSystem, UndoStep},
     ud::UItemId,
@@ -20,7 +20,7 @@ impl SolarSystem {
     }
 }
 
-impl<'s> DroneMut<'s> {
+impl<'s> Drone<'s> {
     /// Set drone position in its solar system.
     pub fn set_coordinates(&mut self, coordinates: Coordinates) {
         self.sol

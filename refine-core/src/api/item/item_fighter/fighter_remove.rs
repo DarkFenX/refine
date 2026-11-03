@@ -1,5 +1,5 @@
 use crate::{
-    api::FighterMut,
+    api::Fighter,
     sol::{SolarSystem, UndoStep},
     ud::UItemId,
 };
@@ -34,7 +34,7 @@ impl SolarSystem {
     }
 }
 
-impl<'s> FighterMut<'s> {
+impl<'s> Fighter<'s> {
     pub fn remove(self) {
         self.sol.internal_remove_fighter(self.uid);
     }

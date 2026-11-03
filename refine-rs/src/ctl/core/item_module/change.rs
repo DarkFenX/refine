@@ -167,7 +167,7 @@ impl ModuleChangeCmdCtxItemBr {
 // Execution
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl ModuleChangeCmd {
-    pub(in crate::ctl) fn execute(self, core_item: &mut rc::ItemMut) -> Result<ChangedItemIdsResp, ModuleChangeError> {
+    pub(in crate::ctl) fn execute(self, core_item: &mut rc::Item) -> Result<ChangedItemIdsResp, ModuleChangeError> {
         let Self {
             type_id,
             move_,
@@ -183,7 +183,7 @@ impl ModuleChangeCmd {
         let mut resp = ChangedItemIdsResp::default();
         let core_module = core_item.dc_module()?;
         for projectee_item_id in rm_proj_item_ids.iter() {
-            match core_module.get_proj_mut(projectee_item_id) {
+            match core_module.get_proj(projectee_item_id) {
                 Ok(core_proj) => core_proj.remove(),
                 // Silently accept failure due to missing projection
                 Err(rc::err::ProjGetError::ProjectionNotFound(..)) => (),
@@ -203,13 +203,13 @@ impl ModuleChangeCmd {
             TriStateField::Value(mutation) => {
                 // Mutates item or updates existing mutation
                 if let Some(mutator_id) = mutation.mutator_id {
-                    match core_module.get_mutation_mut() {
+                    match core_module.get_mutation() {
                         Some(core_mutation) => core_mutation.set_mutator_type_id(mutator_id),
                         None => core_module.mutate(mutator_id).unwrap(),
                     };
                 }
                 if !mutation.attrs.is_empty() {
-                    match core_module.get_mutation_mut() {
+                    match core_module.get_mutation() {
                         Some(mut core_mutation) => mutation.apply_attrs(&mut core_mutation),
                         None => return Err(ModuleChangeError::NotMutated(core_module.get_item_id())),
                     };
@@ -217,7 +217,7 @@ impl ModuleChangeCmd {
             }
             TriStateField::None => {
                 // Do nothing if mutation was not there
-                if let Some(core_mutation) = core_module.get_mutation_mut() {
+                if let Some(core_mutation) = core_module.get_mutation() {
                     core_mutation.remove();
                 }
             }
@@ -231,7 +231,7 @@ impl ModuleChangeCmd {
             }
             TriStateField::None => {
                 // Do nothing if module had no charge
-                if let Some(core_charge) = core_module.get_charge_mut() {
+                if let Some(core_charge) = core_module.get_charge() {
                     core_charge.remove()
                 }
             }
@@ -278,7 +278,7 @@ impl ModuleChangeCmdCtxItem {
         self,
         core_sol: &mut rc::SolarSystem,
     ) -> Result<ChangedItemIdsResp, ItemGetModuleChangeError> {
-        let mut core_item = core_sol.get_item_mut(&self.item_id)?;
+        let mut core_item = core_sol.get_item(&self.item_id)?;
         Ok(self.core.execute(&mut core_item)?)
     }
 }

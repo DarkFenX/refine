@@ -82,7 +82,7 @@ impl SolInfoExt {
                 // Force fits in fleets to use ID mode regardless of passed preference. The
                 // preference will be used for fits themselves
                 fleets: core_sol
-                    .iter_fleets_mut()
+                    .iter_fleets()
                     .map_into_iter(|mut core_fleet| {
                         FleetInfo::from_core(
                             &mut core_fleet,
@@ -93,15 +93,15 @@ impl SolInfoExt {
                     })
                     .collect(),
                 fits: core_sol
-                    .iter_fits_mut()
+                    .iter_fits()
                     .map_into_iter(|mut core_fit| FitInfo::from_core(&mut core_fit, fit_info_modes, item_info_modes))
                     .collect(),
                 sw_effects: core_sol
-                    .iter_sw_effects_mut()
+                    .iter_sw_effects()
                     .map_into_iter(|mut core_sw_effect| SwEffectInfo::from_core(&mut core_sw_effect, item_info_modes))
                     .collect(),
                 proj_effects: core_sol
-                    .iter_proj_effects_mut()
+                    .iter_proj_effects()
                     .map_into_iter(|mut proj_effect| ProjEffectInfo::from_core(&mut proj_effect, item_info_modes))
                     .collect(),
                 sec_zone: core_sol.get_sec_zone(),

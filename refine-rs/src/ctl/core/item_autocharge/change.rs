@@ -76,10 +76,7 @@ impl AutochargeChangeCmdCtxItemBr {
 // Execution
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl AutochargeChangeCmd {
-    pub(in crate::ctl) fn execute(
-        self,
-        core_item: &mut rc::ItemMut,
-    ) -> Result<ChangedItemIdsResp, AutochargeChangeError> {
+    pub(in crate::ctl) fn execute(self, core_item: &mut rc::Item) -> Result<ChangedItemIdsResp, AutochargeChangeError> {
         let Self { state, effect_modes } = self;
         let core_autocharge = core_item.dc_autocharge()?;
         if let Some(state) = state {
@@ -100,7 +97,7 @@ impl AutochargeChangeCmdCtxItem {
         self,
         core_sol: &mut rc::SolarSystem,
     ) -> Result<ChangedItemIdsResp, ItemGetAutochargeChangeError> {
-        let mut core_item = core_sol.get_item_mut(&self.item_id)?;
+        let mut core_item = core_sol.get_item(&self.item_id)?;
         Ok(self.core.execute(&mut core_item)?)
     }
 }

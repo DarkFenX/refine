@@ -43,7 +43,7 @@ impl FitTryItemsEnumCmdBr {
 // Execution
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl FitTryItemsEnumCmd {
-    pub(crate) fn execute(self, core_fit: &mut rc::FitMut) -> CmdResp {
+    pub(crate) fn execute(self, core_fit: &mut rc::Fit) -> CmdResp {
         match self {
             Self::FitTryItems(cmd) => CmdResp::TryItems(cmd.execute(core_fit)),
         }

@@ -55,7 +55,7 @@ pub struct CharacterInfoExt {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl CharacterInfo {
     pub(in crate::info) fn from_core(
-        core_character: &mut rc::CharacterMut,
+        core_character: &mut rc::Character,
         item_info_modes: &OvrdMapLight<ItemId, ItemInfoMode>,
     ) -> Self {
         let character_id = core_character.get_item_id();

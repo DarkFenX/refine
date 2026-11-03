@@ -53,10 +53,10 @@ impl FitInfoEnumCmdBr {
 // Execution
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl FitInfoEnumCmd {
-    pub(crate) fn execute(self, core_fit: &mut rc::FitMut) -> Result<CmdResp, FitInfoEnumError> {
+    pub(crate) fn execute(self, core_fit: &mut rc::Fit) -> Result<CmdResp, FitInfoEnumError> {
         Ok(match self {
             Self::FitInfo(cmd) => cmd.execute(core_fit).into(),
-            Self::ItemInfo(cmd) => cmd.execute(core_fit.get_sol_mut())?.into(),
+            Self::ItemInfo(cmd) => cmd.execute(core_fit.get_sol())?.into(),
         })
     }
 }

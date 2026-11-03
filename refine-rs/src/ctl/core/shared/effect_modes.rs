@@ -1,4 +1,4 @@
-use rc::ItemMutCommon;
+use rc::ItemCommon;
 
 use crate::{EffectId, EffectMode};
 
@@ -21,7 +21,7 @@ impl EffectModes {
     pub(in crate::ctl) fn extend(&mut self, effect_modes: impl IntoIterator<Item = (EffectId, EffectMode)>) {
         self.data.extend(effect_modes);
     }
-    pub(in crate::ctl::core) fn apply(&self, core_item: &mut impl ItemMutCommon) {
+    pub(in crate::ctl::core) fn apply(&self, core_item: &mut impl ItemCommon) {
         if !self.data.is_empty() {
             core_item.set_effect_modes(self.data.iter().map(|(k, v)| (*k, *v)));
         }

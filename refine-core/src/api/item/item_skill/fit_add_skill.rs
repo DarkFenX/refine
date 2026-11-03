@@ -2,7 +2,7 @@ use std::collections::hash_map::Entry;
 
 use crate::{
     ad::AItemId,
-    api::{FitMut, ItemTypeId, SkillMut},
+    api::{Fit, ItemTypeId, Skill},
     err::basic::SkillEveTypeError,
     num::SkillLevel,
     sol::{SolarSystem, UndoStep},
@@ -52,10 +52,10 @@ impl SolarSystem {
     }
 }
 
-impl<'s> FitMut<'s> {
-    pub fn add_skill(&mut self, type_id: ItemTypeId, level: SkillLevel) -> Result<SkillMut<'_>, SkillAddError> {
+impl<'s> Fit<'s> {
+    pub fn add_skill(&mut self, type_id: ItemTypeId, level: SkillLevel) -> Result<Skill<'_>, SkillAddError> {
         let skill_uid = self.sol.internal_add_skill(self.uid, type_id.into_aid(), level)?;
-        Ok(SkillMut::new(self.sol, skill_uid))
+        Ok(Skill::new(self.sol, skill_uid))
     }
 }
 

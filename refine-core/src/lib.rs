@@ -83,17 +83,13 @@
 extern crate core;
 
 pub use api::{
-    Ability, AbilityId, AbilityIter, AbilityMut, AddMode, Affector, AttrId, Autocharge, AutochargeMut, Booster,
-    BoosterMut, Character, CharacterMut, Charge, ChargeMut, Coordinates, CtlAffectors, CustomAttrId, CustomEffectId,
-    Direction, DogmaEffectId, DormantMutation, DormantMutationMut, Drone, DroneMut, EffectId, EffectiveMutation,
-    EffectiveMutationMut, EveAttrId, Fighter, FighterMut, Fit, FitMut, Fleet, FleetMut, FullMAttr, FullMAttrIter,
-    FullMAttrMut, FwEffect, FwEffectMut, Implant, ImplantMut, Item, ItemAttrValues, ItemCommon, ItemEffectInfo,
-    ItemGrpId, ItemMut, ItemMutCommon, ItemTypeId, MinionState, Modification, Module, ModuleIter, ModuleMut,
-    ModuleState, MoveMode, Movement, MutIter, Mutation, MutationMut, Op, Proj, ProjEffect, ProjEffectMut, ProjIter,
-    ProjMut, ProjRange, RangedProj, RangedProjIter, RangedProjMut, RawMAttr, RawMAttrIter, RawMAttrMut, RemoveMode,
-    Rig, RigMut, Service, ServiceMut, ServiceState, Ship, ShipMut, SideEffect, SideEffectIter, SideEffectMut,
-    SideEffectPartialStr, SideEffectStr, Skill, SkillMut, Stance, StanceMut, Subsystem, SubsystemMut, SwEffect,
-    SwEffectMut,
+    Ability, AbilityId, AbilityIter, AddMode, Affector, AttrId, Autocharge, Booster, Character, Charge, Coordinates,
+    CtlAffectors, CustomAttrId, CustomEffectId, Direction, DogmaEffectId, DormantMutation, Drone, EffectId,
+    EffectiveMutation, EntityIter, EveAttrId, Fighter, Fit, Fleet, FullMAttr, FullMAttrIter, FwEffect, Implant, Item,
+    ItemAttrValues, ItemCommon, ItemEffectInfo, ItemGrpId, ItemTypeId, MinionState, Modification, Module, ModuleIter,
+    ModuleState, MoveMode, Movement, Mutation, Op, Proj, ProjEffect, ProjIter, ProjRange, RangedProj, RangedProjIter,
+    RawMAttr, RawMAttrIter, RemoveMode, Rig, Service, ServiceState, Ship, SideEffect, SideEffectIter, SideEffectStr,
+    Skill, Stance, Subsystem, SwEffect,
 };
 pub use def::VERSION;
 pub use lender::Lender;

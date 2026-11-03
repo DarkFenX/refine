@@ -63,7 +63,7 @@ impl ItemAutodetectAddCmdCtxFitBr {
 // Execution
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl ItemAutodetectAddCmd {
-    pub(in crate::ctl) fn execute(self, core_fit: &mut rc::FitMut) -> Result<AddedItemIdsResp, ItemAutodetectAddError> {
+    pub(in crate::ctl) fn execute(self, core_fit: &mut rc::Fit) -> Result<AddedItemIdsResp, ItemAutodetectAddError> {
         let core_item = core_fit.autodetect_add_item(self.type_id)?;
         Ok(AddedItemIdsResp::from_core_item(core_item))
     }
@@ -79,7 +79,7 @@ impl ItemAutodetectAddCmdCtxFit {
         self,
         core_sol: &mut rc::SolarSystem,
     ) -> Result<AddedItemIdsResp, FitGetItemAutodetectAddError> {
-        let mut core_fit = core_sol.get_fit_mut(&self.fit_id)?;
+        let mut core_fit = core_sol.get_fit(&self.fit_id)?;
         Ok(self.core.execute(&mut core_fit)?)
     }
 }

@@ -12,7 +12,7 @@ impl Fleet<'_, '_> {
             .exec_standard_infallible(move |core_sol| {
                 // Holding mutex on sol - nothing can remove the core fleet without consuming the
                 // high-level Fleet
-                let mut core_fleet = core_sol.get_fleet_mut(&fleet_id).unwrap();
+                let mut core_fleet = core_sol.get_fleet(&fleet_id).unwrap();
                 stats_cmd.execute(&mut core_fleet)
             })
             .await

@@ -1,5 +1,5 @@
 use crate::{
-    api::ProjEffectMut,
+    api::ProjEffect,
     sol::{SolarSystem, UndoStep},
     ud::UItemId,
 };
@@ -28,7 +28,7 @@ impl SolarSystem {
     }
 }
 
-impl<'s> ProjEffectMut<'s> {
+impl<'s> ProjEffect<'s> {
     pub fn set_state(&mut self, state: bool) {
         let u_proj_effect = self.sol.u_data.items.get(self.uid).dc_proj_effect().unwrap();
         if state == u_proj_effect.get_proj_effect_state() {

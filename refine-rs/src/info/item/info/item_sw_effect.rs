@@ -54,7 +54,7 @@ pub struct SwEffectInfoExt {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl SwEffectInfo {
     pub(in crate::info) fn from_core(
-        core_sw_effect: &mut rc::SwEffectMut,
+        core_sw_effect: &mut rc::SwEffect,
         item_info_modes: &OvrdMapLight<ItemId, ItemInfoMode>,
     ) -> Self {
         let sw_effect_id = core_sw_effect.get_item_id();

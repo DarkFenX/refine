@@ -1,20 +1,15 @@
 use crate::{
-    api::{Autocharge, AutochargeMut},
+    api::Autocharge,
     err::basic::{ItemFoundError, ItemKindMatchError},
     sol::SolarSystem,
     ud::ItemId,
 };
 
 impl SolarSystem {
-    pub fn get_autocharge(&self, item_id: &ItemId) -> Result<Autocharge<'_>, AutochargeGetError> {
+    pub fn get_autocharge(&mut self, item_id: &ItemId) -> Result<Autocharge<'_>, AutochargeGetError> {
         let autocharge_uid = self.u_data.items.int_id_by_ext_id_err(item_id)?;
         self.u_data.items.get(autocharge_uid).dc_autocharge()?;
         Ok(Autocharge::new(self, autocharge_uid))
-    }
-    pub fn get_autocharge_mut(&mut self, item_id: &ItemId) -> Result<AutochargeMut<'_>, AutochargeGetError> {
-        let autocharge_uid = self.u_data.items.int_id_by_ext_id_err(item_id)?;
-        self.u_data.items.get(autocharge_uid).dc_autocharge()?;
-        Ok(AutochargeMut::new(self, autocharge_uid))
     }
 }
 

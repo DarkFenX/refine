@@ -1,35 +1,17 @@
-use crate::{
-    ad::AEffectId,
-    api::{SideEffect, SideEffectMut},
-    misc::EffectMode,
-    sol::SolarSystem,
-    ud::UItemId,
-};
+use crate::{api::SideEffect, misc::EffectMode};
 
 impl<'s> SideEffect<'s> {
     /// Get side effect state.
     ///
     /// Disabled side effects are not applied when parent item is in effect, while enabled do.
     pub fn get_state(&self) -> bool {
-        get_state(self.sol, self.item_uid, &self.effect_aid)
-    }
-}
-
-impl<'s> SideEffectMut<'s> {
-    /// Get side effect state.
-    ///
-    /// Disabled side effects are not applied when parent item is in effect, while enabled do.
-    pub fn get_state(&self) -> bool {
-        get_state(self.sol, self.item_uid, &self.effect_aid)
-    }
-}
-
-fn get_state(sol: &SolarSystem, booster_uid: UItemId, effect_id: &AEffectId) -> bool {
-    let u_booster = sol.u_data.items.get(booster_uid).dc_booster().unwrap();
-    match u_booster.get_effect_mode_by_aid(effect_id) {
-        EffectMode::FullCompliance => false,
-        EffectMode::StateCompliance => true,
-        EffectMode::ForceRun => true,
-        EffectMode::ForceStop => false,
+        let effect_id = &self.effect_aid;
+        let u_booster = self.sol.u_data.items.get(self.item_uid).dc_booster().unwrap();
+        match u_booster.get_effect_mode_by_aid(effect_id) {
+            EffectMode::FullCompliance => false,
+            EffectMode::StateCompliance => true,
+            EffectMode::ForceRun => true,
+            EffectMode::ForceStop => false,
+        }
     }
 }

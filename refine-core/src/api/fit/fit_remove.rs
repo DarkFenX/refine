@@ -1,7 +1,7 @@
 use itertools::Itertools;
 
 use crate::{
-    api::{FitMut, RemoveMode},
+    api::{Fit, RemoveMode},
     sol::{SolarSystem, UndoStep},
     ud::UFitId,
 };
@@ -26,7 +26,7 @@ impl SolarSystem {
     }
 }
 
-impl<'s> FitMut<'s> {
+impl<'s> Fit<'s> {
     pub fn remove(self) {
         self.sol.internal_remove_fit(self.uid);
     }

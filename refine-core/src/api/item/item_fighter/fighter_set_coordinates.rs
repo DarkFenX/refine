@@ -1,5 +1,5 @@
 use crate::{
-    api::{Coordinates, FighterMut},
+    api::{Coordinates, Fighter},
     misc::Xyz,
     sol::{SolarSystem, UndoStep},
     ud::UItemId,
@@ -20,7 +20,7 @@ impl SolarSystem {
     }
 }
 
-impl<'s> FighterMut<'s> {
+impl<'s> Fighter<'s> {
     /// Set fighter position in its solar system.
     pub fn set_coordinates(&mut self, coordinates: Coordinates) {
         self.sol

@@ -1,6 +1,6 @@
 use crate::{
     ad::AItemId,
-    api::{FitMut, ImplantMut, ItemTypeId},
+    api::{Fit, Implant, ItemTypeId},
     sol::{SolarSystem, UndoStep},
     ud::{UFitId, UImplant, UItem, UItemId},
 };
@@ -30,9 +30,9 @@ impl SolarSystem {
     }
 }
 
-impl<'s> FitMut<'s> {
-    pub fn add_implant(&mut self, type_id: ItemTypeId) -> ImplantMut<'_> {
+impl<'s> Fit<'s> {
+    pub fn add_implant(&mut self, type_id: ItemTypeId) -> Implant<'_> {
         let implant_uid = self.sol.internal_add_implant(self.uid, type_id.into_aid());
-        ImplantMut::new(self.sol, implant_uid)
+        Implant::new(self.sol, implant_uid)
     }
 }

@@ -1,5 +1,5 @@
 use crate::{
-    api::BoosterMut,
+    api::Booster,
     sol::{SolarSystem, UndoStep},
     ud::UItemId,
 };
@@ -26,7 +26,7 @@ impl SolarSystem {
     }
 }
 
-impl<'s> BoosterMut<'s> {
+impl<'s> Booster<'s> {
     pub fn set_state(&mut self, state: bool) {
         let u_booster = self.sol.u_data.items.get(self.uid).dc_booster().unwrap();
         if state == u_booster.get_booster_state() {

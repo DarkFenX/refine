@@ -1,6 +1,6 @@
 use crate::{
     ad::AItemId,
-    api::{FitMut, ItemTypeId, RigMut},
+    api::{Fit, ItemTypeId, Rig},
     sol::{SolarSystem, UndoStep},
     ud::{UFitId, UItem, UItemId, URig},
 };
@@ -30,9 +30,9 @@ impl SolarSystem {
     }
 }
 
-impl<'s> FitMut<'s> {
-    pub fn add_rig(&mut self, type_id: ItemTypeId) -> RigMut<'_> {
+impl<'s> Fit<'s> {
+    pub fn add_rig(&mut self, type_id: ItemTypeId) -> Rig<'_> {
         let rig_uid = self.sol.internal_add_rig(self.uid, type_id.into_aid());
-        RigMut::new(self.sol, rig_uid)
+        Rig::new(self.sol, rig_uid)
     }
 }

@@ -57,7 +57,7 @@ pub struct ImplantInfoExt {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl ImplantInfo {
     pub(in crate::info) fn from_core(
-        core_implant: &mut rc::ImplantMut,
+        core_implant: &mut rc::Implant,
         item_info_modes: &OvrdMapLight<ItemId, ItemInfoMode>,
     ) -> Self {
         let implant_id = core_implant.get_item_id();

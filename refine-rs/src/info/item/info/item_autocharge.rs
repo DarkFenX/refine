@@ -57,7 +57,7 @@ pub struct AutochargeInfoExt {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl AutochargeInfo {
     pub(super) fn from_core(
-        core_autocharge: &mut rc::AutochargeMut,
+        core_autocharge: &mut rc::Autocharge,
         item_info_modes: &OvrdMapLight<ItemId, ItemInfoMode>,
     ) -> Self {
         let autocharge_id = core_autocharge.get_item_id();

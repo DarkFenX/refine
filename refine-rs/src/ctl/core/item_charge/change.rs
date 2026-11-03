@@ -81,7 +81,7 @@ impl ChargeChangeCmdCtxItemBr {
 // Execution
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl ChargeChangeCmd {
-    pub(in crate::ctl) fn execute(self, core_item: &mut rc::ItemMut) -> Result<ChangedItemIdsResp, ChargeChangeError> {
+    pub(in crate::ctl) fn execute(self, core_item: &mut rc::Item) -> Result<ChangedItemIdsResp, ChargeChangeError> {
         let Self {
             type_id,
             state,
@@ -109,7 +109,7 @@ impl ChargeChangeCmdCtxItem {
         self,
         core_sol: &mut rc::SolarSystem,
     ) -> Result<ChangedItemIdsResp, ItemGetChargeChangeError> {
-        let mut core_item = core_sol.get_item_mut(&self.item_id)?;
+        let mut core_item = core_sol.get_item(&self.item_id)?;
         Ok(self.core.execute(&mut core_item)?)
     }
 }

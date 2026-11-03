@@ -11,7 +11,7 @@ use crate::{
 };
 
 impl FleetStatsOptionsResolved {
-    pub(in crate::stats) fn execute(&self, core_fleet: &mut rc::FleetMut) -> FleetStats {
+    pub(in crate::stats) fn execute(&self, core_fleet: &mut rc::Fleet) -> FleetStats {
         let Self {
             dmg,
             mps,
@@ -44,7 +44,7 @@ impl FleetStatsOptionsResolved {
 }
 
 fn get_dmg_stats(
-    core_fleet: &mut rc::FleetMut,
+    core_fleet: &mut rc::Fleet,
     options: &[Result<StatOptionFitDmg, BrResolveError>],
 ) -> StatResult<StatDmg, !, StatBrFallibleError<StatFleetAppliedError>> {
     collect_stats_err_outer_br(options, |option| match option.projectee_item_id {
@@ -58,13 +58,13 @@ fn get_dmg_stats(
         ))),
     })
 }
-fn get_mps_stats(core_fleet: &mut rc::FleetMut, options: &[StatOptionFitMining]) -> StatResult<StatMining, !, !> {
+fn get_mps_stats(core_fleet: &mut rc::Fleet, options: &[StatOptionFitMining]) -> StatResult<StatMining, !, !> {
     collect_stats_err_inner(options, |option| {
         Ok(core_fleet.get_stat_mps(option.item_kinds, option.time, option.resource_kind))
     })
 }
 fn get_outgoing_nps_stats(
-    core_fleet: &mut rc::FleetMut,
+    core_fleet: &mut rc::Fleet,
     options: &[Result<StatOptionFitOutNps, BrResolveError>],
 ) -> StatResult<PValue, !, StatBrFallibleError<StatFleetAppliedError>> {
     collect_stats_err_outer_br(options, |option| match option.projectee_item_id {
@@ -75,7 +75,7 @@ fn get_outgoing_nps_stats(
     })
 }
 fn get_outgoing_rps_stats(
-    core_fleet: &mut rc::FleetMut,
+    core_fleet: &mut rc::Fleet,
     options: &[Result<StatOptionFitOutRps, BrResolveError>],
 ) -> StatResult<StatOutReps, !, StatBrFallibleError<StatFleetAppliedError>> {
     collect_stats_err_outer_br(options, |option| match option.projectee_item_id {
@@ -86,7 +86,7 @@ fn get_outgoing_rps_stats(
     })
 }
 fn get_outgoing_cps_stats(
-    core_fleet: &mut rc::FleetMut,
+    core_fleet: &mut rc::Fleet,
     options: &[Result<StatOptionFitOutCps, BrResolveError>],
 ) -> StatResult<PValue, !, StatBrFallibleError<StatFleetAppliedError>> {
     collect_stats_err_outer_br(options, |option| match option.projectee_item_id {
@@ -94,6 +94,6 @@ fn get_outgoing_cps_stats(
         None => Ok(core_fleet.get_stat_outgoing_cps(option.time)),
     })
 }
-fn get_mass_stats(core_fleet: &mut rc::FleetMut, options: &[StatOptionMass]) -> StatResult<PValue, !, !> {
+fn get_mass_stats(core_fleet: &mut rc::Fleet, options: &[StatOptionMass]) -> StatResult<PValue, !, !> {
     collect_stats_err_inner(options, |option| Ok(core_fleet.get_stat_mass(option.affectors)))
 }

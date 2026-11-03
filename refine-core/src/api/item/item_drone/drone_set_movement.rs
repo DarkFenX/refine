@@ -1,5 +1,5 @@
 use crate::{
-    api::{DroneMut, Movement},
+    api::{Drone, Movement},
     misc::Xyz,
     num::PValue,
     sol::{SolarSystem, UndoStep},
@@ -23,7 +23,7 @@ impl SolarSystem {
     }
 }
 
-impl<'s> DroneMut<'s> {
+impl<'s> Drone<'s> {
     /// Set drone movement.
     pub fn set_movement(&mut self, movement: Movement) {
         self.sol

@@ -1,6 +1,6 @@
 use crate::{
     ad::AItemId,
-    api::{FitMut, FwEffectMut, ItemTypeId},
+    api::{Fit, FwEffect, ItemTypeId},
     sol::{SolarSystem, UndoStep},
     ud::{UFitId, UFwEffect, UItem, UItemId},
 };
@@ -30,9 +30,9 @@ impl SolarSystem {
     }
 }
 
-impl<'s> FitMut<'s> {
-    pub fn add_fw_effect(&mut self, type_id: ItemTypeId) -> FwEffectMut<'_> {
+impl<'s> Fit<'s> {
+    pub fn add_fw_effect(&mut self, type_id: ItemTypeId) -> FwEffect<'_> {
         let fw_effect_uid = self.sol.internal_add_fw_effect(self.uid, type_id.into_aid());
-        FwEffectMut::new(self.sol, fw_effect_uid)
+        FwEffect::new(self.sol, fw_effect_uid)
     }
 }

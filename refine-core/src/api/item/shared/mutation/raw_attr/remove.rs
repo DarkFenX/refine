@@ -1,6 +1,6 @@
-use crate::{api::RawMAttrMut, ud::UAttrMutationRequest};
+use crate::{api::RawMAttr, ud::UAttrMutationRequest};
 
-impl<'s> RawMAttrMut<'s> {
+impl<'s> RawMAttr<'s> {
     /// Remove user-defined mutation for the attribute.
     pub fn remove(self) {
         let attr_mutation = UAttrMutationRequest {

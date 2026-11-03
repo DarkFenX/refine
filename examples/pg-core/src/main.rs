@@ -13,8 +13,8 @@ use std::{
 use chrono::Utc;
 use itertools::Itertools;
 use rc::{
-    AddMode, ItemCommon, ItemMutCommon, ItemTypeId, Lender, MinionState, ModRack, ModuleState, NpcProp, SecZone,
-    SecZoneCorruption, SkillLevel, SolarSystem, Src, VERSION,
+    AddMode, ItemCommon, ItemTypeId, Lender, MinionState, ModRack, ModuleState, NpcProp, SecZone, SecZoneCorruption,
+    SkillLevel, SolarSystem, Src, VERSION,
     ad::{AState, AdaptedDataCacher},
     ed::{EItemCatId, EveDataHandler, EveDataHandlerCore},
     src::SrcOrigin,
@@ -56,10 +56,7 @@ fn test_random(edh: &EveDataHandler, adc: &AdaptedDataCacher) {
     let mut sol_sys = SolarSystem::new(&src);
     let mut fit = sol_sys.add_fit();
     let mut fighter = fit.add_fighter(ItemTypeId::from_i32(40562), MinionState::InBay, None, None);
-    let autocharges: Vec<_> = fighter
-        .iter_autocharges_mut()
-        .map_into_iter(|v| v.get_item_id())
-        .collect();
+    let autocharges: Vec<_> = fighter.iter_autocharges().map_into_iter(|v| v.get_item_id()).collect();
     println!("{:?}", autocharges);
 }
 
@@ -101,7 +98,7 @@ fn test_crusader(edh: &EveDataHandler, adc: &AdaptedDataCacher) {
     let before = Utc::now();
     for _ in 0..iterations {
         let anp_id = sol_sys
-            .get_fit_mut(&fit_id)
+            .get_fit(&fit_id)
             .unwrap()
             .add_module(
                 ModRack::Low,
@@ -110,23 +107,9 @@ fn test_crusader(edh: &EveDataHandler, adc: &AdaptedDataCacher) {
                 ModuleState::Online,
             )
             .get_item_id();
-        black_box(
-            sol_sys
-                .get_item_mut(&ship_id)
-                .unwrap()
-                .iter_attrs()
-                .unwrap()
-                .for_each(drop),
-        );
-        sol_sys.get_item_mut(&anp_id).unwrap().remove(rc::RemoveMode::Free);
-        black_box(
-            sol_sys
-                .get_item_mut(&ship_id)
-                .unwrap()
-                .iter_attrs()
-                .unwrap()
-                .for_each(drop),
-        );
+        black_box(sol_sys.get_item(&ship_id).unwrap().iter_attrs().unwrap().for_each(drop));
+        sol_sys.get_item(&anp_id).unwrap().remove(rc::RemoveMode::Free);
+        black_box(sol_sys.get_item(&ship_id).unwrap().iter_attrs().unwrap().for_each(drop));
     }
     let after = Utc::now();
     tracing::error!("done with crusader test");

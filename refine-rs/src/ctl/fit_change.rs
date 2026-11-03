@@ -456,46 +456,46 @@ impl FitChangeEnumCmdBr {
 // Execution
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl FitChangeEnumCmd {
-    pub(crate) fn execute(self, core_fit: &mut rc::FitMut) -> Result<CmdResp, FitChangeEnumError> {
+    pub(crate) fn execute(self, core_fit: &mut rc::Fit) -> Result<CmdResp, FitChangeEnumError> {
         Ok(match self {
             // Fit
             Self::FitChange(cmd) => cmd.execute(core_fit)?.into(),
             // Item
             Self::ItemAutodetectAdd(cmd) => cmd.execute(core_fit)?.into(),
-            Self::ItemRemove(cmd) => cmd.execute(core_fit.get_sol_mut())?.into(),
+            Self::ItemRemove(cmd) => cmd.execute(core_fit.get_sol())?.into(),
             // Item - autocharge
-            Self::AutochargeChange(cmd) => cmd.execute(core_fit.get_sol_mut())?.into(),
+            Self::AutochargeChange(cmd) => cmd.execute(core_fit.get_sol())?.into(),
             // Item - booster
             Self::BoosterAdd(cmd) => cmd.execute(core_fit).into(),
-            Self::BoosterChange(cmd) => cmd.execute(core_fit.get_sol_mut())?.into(),
+            Self::BoosterChange(cmd) => cmd.execute(core_fit.get_sol())?.into(),
             // Item - character
             Self::CharacterSet(cmd) => cmd.execute(core_fit).into(),
             Self::CharacterChange(cmd) => cmd.execute_via_fit(core_fit)?.into(),
             #[expect(clippy::unit_arg)]
             Self::CharacterUnset(cmd) => cmd.execute(core_fit).into(),
             // Item - charge
-            Self::ChargeChange(cmd) => cmd.execute(core_fit.get_sol_mut())?.into(),
+            Self::ChargeChange(cmd) => cmd.execute(core_fit.get_sol())?.into(),
             // Item - drone
             Self::DroneAdd(cmd) => cmd.execute(core_fit)?.into(),
-            Self::DroneChange(cmd) => cmd.execute(core_fit.get_sol_mut())?.into(),
+            Self::DroneChange(cmd) => cmd.execute(core_fit.get_sol())?.into(),
             // Item - fighter
             Self::FighterAdd(cmd) => cmd.execute(core_fit)?.into(),
-            Self::FighterChange(cmd) => cmd.execute(core_fit.get_sol_mut())?.into(),
+            Self::FighterChange(cmd) => cmd.execute(core_fit.get_sol())?.into(),
             // Item - fit-wide effect
             Self::FwEffectAdd(cmd) => cmd.execute(core_fit).into(),
-            Self::FwEffectChange(cmd) => cmd.execute(core_fit.get_sol_mut())?.into(),
+            Self::FwEffectChange(cmd) => cmd.execute(core_fit.get_sol())?.into(),
             // Item - implant
             Self::ImplantAdd(cmd) => cmd.execute(core_fit).into(),
-            Self::ImplantChange(cmd) => cmd.execute(core_fit.get_sol_mut())?.into(),
+            Self::ImplantChange(cmd) => cmd.execute(core_fit.get_sol())?.into(),
             // Item - module
             Self::ModuleAdd(cmd) => cmd.execute(core_fit)?.into(),
-            Self::ModuleChange(cmd) => cmd.execute(core_fit.get_sol_mut())?.into(),
+            Self::ModuleChange(cmd) => cmd.execute(core_fit.get_sol())?.into(),
             // Item - rig
             Self::RigAdd(cmd) => cmd.execute(core_fit).into(),
-            Self::RigChange(cmd) => cmd.execute(core_fit.get_sol_mut())?.into(),
+            Self::RigChange(cmd) => cmd.execute(core_fit.get_sol())?.into(),
             // Item - service
             Self::ServiceAdd(cmd) => cmd.execute(core_fit).into(),
-            Self::ServiceChange(cmd) => cmd.execute(core_fit.get_sol_mut())?.into(),
+            Self::ServiceChange(cmd) => cmd.execute(core_fit.get_sol())?.into(),
             // Item - ship
             Self::ShipSet(cmd) => cmd.execute(core_fit).into(),
             Self::ShipChange(cmd) => cmd.execute_via_fit(core_fit)?.into(),
@@ -503,7 +503,7 @@ impl FitChangeEnumCmd {
             Self::ShipUnset(cmd) => cmd.execute(core_fit).into(),
             // Item - skill
             Self::SkillAdd(cmd) => cmd.execute(core_fit)?.into(),
-            Self::SkillChange(cmd) => cmd.execute(core_fit.get_sol_mut())?.into(),
+            Self::SkillChange(cmd) => cmd.execute(core_fit.get_sol())?.into(),
             // Item - stance
             Self::StanceSet(cmd) => cmd.execute(core_fit).into(),
             Self::StanceChange(cmd) => cmd.execute_via_fit(core_fit)?.into(),
@@ -511,7 +511,7 @@ impl FitChangeEnumCmd {
             Self::StanceUnset(cmd) => cmd.execute(core_fit).into(),
             // Item - subsystem
             Self::SubsystemAdd(cmd) => cmd.execute(core_fit).into(),
-            Self::SubsystemChange(cmd) => cmd.execute(core_fit.get_sol_mut())?.into(),
+            Self::SubsystemChange(cmd) => cmd.execute(core_fit.get_sol())?.into(),
         })
     }
 }

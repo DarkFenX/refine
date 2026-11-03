@@ -1,132 +1,57 @@
 use crate::{
-    Coordinates, CountNz, FighterCountInfo, Fit, FitMut, ItemCommon, ItemMutCommon, MinionState, Movement, RearmMinion,
-    SolarSystem,
+    Coordinates, CountNz, FighterCountInfo, Fit, ItemCommon, MinionState, Movement, RearmMinion, SolarSystem,
     api::ItemSealed,
     ud::{UFighter, UItemId},
 };
 
 pub struct Fighter<'s> {
-    pub(super) sol: &'s SolarSystem,
+    pub(super) sol: &'s mut SolarSystem,
     pub(super) uid: UItemId,
 }
 impl<'s> Fighter<'s> {
-    pub(in crate::api) fn new(sol: &'s SolarSystem, uid: UItemId) -> Self {
+    pub(in crate::api) fn new(sol: &'s mut SolarSystem, uid: UItemId) -> Self {
         Self { sol, uid }
     }
-    pub fn get_fit(&self) -> Fit<'_> {
-        get_fit(self.sol, self.uid)
+    pub fn get_fit(&mut self) -> Fit<'_> {
+        let fit_uid = get_u_fighter(self.sol, self.uid).get_fit_uid();
+        Fit::new(self.sol, fit_uid)
     }
     pub fn get_state(&self) -> MinionState {
-        get_state(self.sol, self.uid)
+        get_u_fighter(self.sol, self.uid).get_fighter_state()
     }
     pub fn get_count(&self) -> Option<FighterCountInfo> {
-        get_count(self.sol, self.uid)
+        get_u_fighter(self.sol, self.uid).get_count_info()
     }
     pub fn get_count_override(&self) -> Option<CountNz> {
-        get_count_override(self.sol, self.uid)
+        get_u_fighter(self.sol, self.uid).get_count_override()
     }
     pub fn get_coordinates(&self) -> Coordinates {
-        get_coordinates(self.sol, self.uid)
+        Coordinates::from_xyz(get_u_fighter(self.sol, self.uid).get_physics().coordinates)
     }
     pub fn get_movement(&self) -> Movement {
-        get_movement(self.sol, self.uid)
+        Movement::from_u_physics(get_u_fighter(self.sol, self.uid).get_physics())
     }
     pub fn get_rearm_minion(&self) -> RearmMinion {
-        get_rearm_minion(self.sol, self.uid)
+        self.sol.u_data.get_item_rearm_minion(self.uid, None)
     }
     pub fn get_rearm_minion_override(&self) -> Option<RearmMinion> {
-        get_rearm_minion_override(self.sol, self.uid)
+        get_u_fighter(self.sol, self.uid).get_rearm_minion_override()
     }
 }
 impl<'s> ItemSealed for Fighter<'s> {
     fn get_uid(&self) -> UItemId {
         self.uid
     }
+    fn get_sol_ref(&self) -> &SolarSystem {
+        self.sol
+    }
 }
 impl<'s> ItemCommon for Fighter<'s> {
-    fn get_sol(&self) -> &SolarSystem {
+    fn get_sol(&mut self) -> &mut SolarSystem {
         self.sol
     }
 }
 
-pub struct FighterMut<'s> {
-    pub(super) sol: &'s mut SolarSystem,
-    pub(super) uid: UItemId,
-}
-impl<'s> FighterMut<'s> {
-    pub(in crate::api) fn new(sol: &'s mut SolarSystem, uid: UItemId) -> Self {
-        Self { sol, uid }
-    }
-    pub fn get_fit(&self) -> Fit<'_> {
-        get_fit(self.sol, self.uid)
-    }
-    pub fn get_fit_mut(&mut self) -> FitMut<'_> {
-        let fit_uid = get_u_fighter(self.sol, self.uid).get_fit_uid();
-        FitMut::new(self.sol, fit_uid)
-    }
-    pub fn get_state(&self) -> MinionState {
-        get_state(self.sol, self.uid)
-    }
-    pub fn get_count(&self) -> Option<FighterCountInfo> {
-        get_count(self.sol, self.uid)
-    }
-    pub fn get_count_override(&self) -> Option<CountNz> {
-        get_count_override(self.sol, self.uid)
-    }
-    pub fn get_coordinates(&self) -> Coordinates {
-        get_coordinates(self.sol, self.uid)
-    }
-    pub fn get_movement(&self) -> Movement {
-        get_movement(self.sol, self.uid)
-    }
-    pub fn get_rearm_minion(&self) -> RearmMinion {
-        get_rearm_minion(self.sol, self.uid)
-    }
-    pub fn get_rearm_minion_override(&self) -> Option<RearmMinion> {
-        get_rearm_minion_override(self.sol, self.uid)
-    }
-}
-impl<'s> ItemSealed for FighterMut<'s> {
-    fn get_uid(&self) -> UItemId {
-        self.uid
-    }
-}
-impl<'s> ItemCommon for FighterMut<'s> {
-    fn get_sol(&self) -> &SolarSystem {
-        self.sol
-    }
-}
-impl<'s> ItemMutCommon for FighterMut<'s> {
-    fn get_sol_mut(&mut self) -> &mut SolarSystem {
-        self.sol
-    }
-}
-
-fn get_fit(sol: &SolarSystem, fighter_uid: UItemId) -> Fit<'_> {
-    let fit_uid = get_u_fighter(sol, fighter_uid).get_fit_uid();
-    Fit::new(sol, fit_uid)
-}
-fn get_state(sol: &SolarSystem, fighter_uid: UItemId) -> MinionState {
-    get_u_fighter(sol, fighter_uid).get_fighter_state()
-}
-fn get_count(sol: &SolarSystem, fighter_uid: UItemId) -> Option<FighterCountInfo> {
-    get_u_fighter(sol, fighter_uid).get_count_info()
-}
-fn get_count_override(sol: &SolarSystem, fighter_uid: UItemId) -> Option<CountNz> {
-    get_u_fighter(sol, fighter_uid).get_count_override()
-}
-fn get_coordinates(sol: &SolarSystem, fighter_uid: UItemId) -> Coordinates {
-    Coordinates::from_xyz(get_u_fighter(sol, fighter_uid).get_physics().coordinates)
-}
-fn get_movement(sol: &SolarSystem, fighter_uid: UItemId) -> Movement {
-    Movement::from_u_physics(get_u_fighter(sol, fighter_uid).get_physics())
-}
-fn get_rearm_minion(sol: &SolarSystem, fighter_uid: UItemId) -> RearmMinion {
-    sol.u_data.get_item_rearm_minion(fighter_uid, None)
-}
-fn get_rearm_minion_override(sol: &SolarSystem, fighter_uid: UItemId) -> Option<RearmMinion> {
-    get_u_fighter(sol, fighter_uid).get_rearm_minion_override()
-}
 fn get_u_fighter(sol: &SolarSystem, fighter_uid: UItemId) -> &UFighter {
     sol.u_data.items.get(fighter_uid).dc_fighter().unwrap()
 }

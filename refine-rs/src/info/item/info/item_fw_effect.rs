@@ -55,7 +55,7 @@ pub struct FwEffectInfoExt {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl FwEffectInfo {
     pub(in crate::info) fn from_core(
-        core_fw_effect: &mut rc::FwEffectMut,
+        core_fw_effect: &mut rc::FwEffect,
         item_info_modes: &OvrdMapLight<ItemId, ItemInfoMode>,
     ) -> Self {
         let fw_effect_id = core_fw_effect.get_item_id();

@@ -1,5 +1,5 @@
 use crate::{
-    api::FitMut,
+    api::Fit,
     misc::DpsProfile,
     num::{PValue, UnitInterval},
     stats::{
@@ -14,7 +14,7 @@ use crate::{
     ud::ItemId,
 };
 
-impl<'s> FitMut<'s> {
+impl<'s> Fit<'s> {
     pub fn benchmark_stats(&mut self, projectee_item_id: ItemId, iterations: usize) {
         let u_fit = self.sol.u_data.fits.get(self.uid);
         let ship_uid = u_fit.ship.unwrap();

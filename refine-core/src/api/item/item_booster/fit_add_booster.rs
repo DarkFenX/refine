@@ -1,6 +1,6 @@
 use crate::{
     ad::AItemId,
-    api::{BoosterMut, FitMut, ItemTypeId},
+    api::{Booster, Fit, ItemTypeId},
     sol::{SolarSystem, UndoStep},
     ud::{UBooster, UFitId, UItem, UItemId},
 };
@@ -30,9 +30,9 @@ impl SolarSystem {
     }
 }
 
-impl<'s> FitMut<'s> {
-    pub fn add_booster(&mut self, type_id: ItemTypeId) -> BoosterMut<'_> {
+impl<'s> Fit<'s> {
+    pub fn add_booster(&mut self, type_id: ItemTypeId) -> Booster<'_> {
         let booster_uid = self.sol.internal_add_booster(self.uid, type_id.into_aid());
-        BoosterMut::new(self.sol, booster_uid)
+        Booster::new(self.sol, booster_uid)
     }
 }

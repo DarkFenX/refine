@@ -1,7 +1,5 @@
-pub use booster::{Booster, BoosterMut};
-pub use side_effect::{
-    SideEffect, SideEffectGetError, SideEffectIter, SideEffectMut, SideEffectPartialStr, SideEffectStr,
-};
+pub use booster::Booster;
+pub use side_effect::{SideEffect, SideEffectGetError, SideEffectIter, SideEffectStr};
 pub use sol_get_booster::BoosterGetError;
 
 mod booster;

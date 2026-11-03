@@ -1,5 +1,5 @@
 use crate::{
-    CharacterMut, FitMut, ShipMut,
+    Character, Fit, Ship,
     err::basic::{
         FitHasCharacterError, FitHasShipError, ItemFoundError, ItemLoadedError, ItemReceiveProjError,
         SupportedStatError,
@@ -8,22 +8,22 @@ use crate::{
     ud::ProjecteeUidError,
 };
 
-impl<'s> FitMut<'s> {
-    pub(super) fn get_character_for_stats(&mut self) -> Result<CharacterMut<'_>, FitHasCharacterError> {
+impl<'s> Fit<'s> {
+    pub(super) fn get_character_for_stats(&mut self) -> Result<Character<'_>, FitHasCharacterError> {
         let Some(char_uid) = self.sol.u_data.fits.get(self.uid).character else {
             return Err(FitHasCharacterError {
                 fit_id: self.sol.u_data.fits.ext_id_by_int_id(self.uid),
             });
         };
-        Ok(CharacterMut::new(self.sol, char_uid))
+        Ok(Character::new(self.sol, char_uid))
     }
-    pub(super) fn get_ship_for_stats(&mut self) -> Result<ShipMut<'_>, FitHasShipError> {
+    pub(super) fn get_ship_for_stats(&mut self) -> Result<Ship<'_>, FitHasShipError> {
         let Some(ship_uid) = self.sol.u_data.fits.get(self.uid).ship else {
             return Err(FitHasShipError {
                 fit_id: self.sol.u_data.fits.ext_id_by_int_id(self.uid),
             });
         };
-        Ok(ShipMut::new(self.sol, ship_uid))
+        Ok(Ship::new(self.sol, ship_uid))
     }
 }
 

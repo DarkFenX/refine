@@ -1,6 +1,6 @@
 use itertools::Itertools;
 
-use crate::{FighterMut, MinionState, SolarSystem, sol::UndoStep, ud::UItemId};
+use crate::{Fighter, MinionState, SolarSystem, sol::UndoStep, ud::UItemId};
 
 impl SolarSystem {
     pub(in crate::api) fn internal_set_fighter_state(&mut self, fighter_uid: UItemId, state: MinionState) {
@@ -46,7 +46,7 @@ impl SolarSystem {
     }
 }
 
-impl<'s> FighterMut<'s> {
+impl<'s> Fighter<'s> {
     pub fn set_state(&mut self, state: MinionState) {
         let u_fighter = self.sol.u_data.items.get(self.uid).dc_fighter().unwrap();
         if state == u_fighter.get_fighter_state() {

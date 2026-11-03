@@ -1,6 +1,6 @@
 use crate::{
     ad::AItemId,
-    api::{ChargeMut, ItemTypeId, ModuleMut},
+    api::{Charge, ItemTypeId, Module},
     sol::{SolarSystem, UndoStep},
     ud::{UCharge, UItem, UItemId},
 };
@@ -76,10 +76,10 @@ impl SolarSystem {
     }
 }
 
-impl<'s> ModuleMut<'s> {
+impl<'s> Module<'s> {
     /// Set charge, replacing current one with a new item.
-    pub fn set_charge_type_id(&mut self, charge_type_id: ItemTypeId) -> ChargeMut<'_> {
+    pub fn set_charge_type_id(&mut self, charge_type_id: ItemTypeId) -> Charge<'_> {
         let charge_uid = self.sol.internal_set_module_charge(self.uid, charge_type_id.into_aid());
-        ChargeMut::new(self.sol, charge_uid)
+        Charge::new(self.sol, charge_uid)
     }
 }

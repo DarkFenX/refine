@@ -1,7 +1,7 @@
 pub use mutation_add::AttrMutateRawError;
 pub use mutation_get::RawMAttrGetError;
 pub use mutation_iter::RawMAttrIter;
-pub use raw_attr::{RawMAttr, RawMAttrMut};
+pub use raw_attr::RawMAttr;
 
 mod get_roll;
 mod mutation_add;

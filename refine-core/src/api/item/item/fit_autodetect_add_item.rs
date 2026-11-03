@@ -1,5 +1,5 @@
 use crate::{
-    AddMode, FitMut, ItemMut, ItemTypeId, MinionState, ModRack, ModuleState, ServiceState, SolarSystem,
+    AddMode, Fit, Item, ItemTypeId, MinionState, ModRack, ModuleState, ServiceState, SolarSystem,
     ad::AItemId,
     rd::RState,
     ud::{UFitId, UItemId, UPhysics},
@@ -63,12 +63,12 @@ impl SolarSystem {
     }
 }
 
-impl<'s> FitMut<'s> {
-    pub fn autodetect_add_item(&mut self, type_id: ItemTypeId) -> Result<ItemMut<'_>, FitItemAutodetectAddError> {
+impl<'s> Fit<'s> {
+    pub fn autodetect_add_item(&mut self, type_id: ItemTypeId) -> Result<Item<'_>, FitItemAutodetectAddError> {
         let item_uid = self
             .sol
             .internal_fit_autodetect_add_item(self.uid, type_id.into_aid())?;
-        Ok(ItemMut::new(self.sol, item_uid))
+        Ok(Item::new(self.sol, item_uid))
     }
 }
 

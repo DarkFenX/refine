@@ -134,16 +134,16 @@ impl FleetStatsCmdCtxFleetBr {
 // Execution
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl FleetStatsCmd {
-    pub(crate) fn execute(self, core_fleet: &mut rc::FleetMut) -> FleetStatsResp {
+    pub(crate) fn execute(self, core_fleet: &mut rc::Fleet) -> FleetStatsResp {
         let fit_options: OvrdMapHeavy<_, FitStatsOptionsResolved> =
             OvrdMapHeavy::from_compact_with_conversion(self.fit_options);
         let item_options: OvrdMapHeavy<_, ItemStatsOptionsResolved> =
             OvrdMapHeavy::from_compact_with_conversion(self.item_options);
         let fits = match fit_options.get_default().is_any_stat_requested() {
-            true => get_stats_for_passed_fits(core_fleet.iter_fits_mut(), &fit_options),
+            true => get_stats_for_passed_fits(core_fleet.iter_fits(), &fit_options),
             false => {
                 let fleet_id = core_fleet.get_fleet_id();
-                get_stats_for_fits_in_overrides(core_fleet.get_sol_mut(), &fit_options, |core_fit| {
+                get_stats_for_fits_in_overrides(core_fleet.get_sol(), &fit_options, |core_fit| {
                     core_fit.get_fleet().map(|core_fit_fleet| core_fit_fleet.get_fleet_id()) == Some(fleet_id)
                 })
             }
@@ -151,18 +151,18 @@ impl FleetStatsCmd {
         let items = match item_options.get_default().is_any_stat_requested() {
             true => {
                 let mut stats = Vec::new();
-                let mut core_fits = core_fleet.iter_fits_mut();
+                let mut core_fits = core_fleet.iter_fits();
                 while let Some(mut core_fit) = core_fits.next() {
-                    extend_stats_for_passed_items(core_fit.iter_items_mut(), &item_options, &mut stats);
+                    extend_stats_for_passed_items(core_fit.iter_items(), &item_options, &mut stats);
                 }
                 stats
             }
             false => {
                 let fleet_id = core_fleet.get_fleet_id();
-                get_stats_for_items_in_overrides(core_fleet.get_sol_mut(), &item_options, |core_item| {
+                get_stats_for_items_in_overrides(core_fleet.get_sol(), &item_options, |core_item| {
                     core_item
                         .get_fit()
-                        .and_then(|core_item_fit| core_item_fit.get_fleet().map(|fleet| fleet.get_fleet_id()))
+                        .and_then(|mut core_item_fit| core_item_fit.get_fleet().map(|fleet| fleet.get_fleet_id()))
                         == Some(fleet_id)
                 })
             }
@@ -180,7 +180,7 @@ impl FleetStatsCmdCtxFleet {
         self,
         core_sol: &mut rc::SolarSystem,
     ) -> Result<FleetStatsResp, FleetGetFleetStatsError> {
-        let mut core_fleet = core_sol.get_fleet_mut(&self.fleet_id)?;
+        let mut core_fleet = core_sol.get_fleet(&self.fleet_id)?;
         Ok(self.core.execute(&mut core_fleet))
     }
 }

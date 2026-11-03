@@ -1,63 +1,37 @@
 use crate::{
-    api::{ItemCommon, ItemMutCommon, ItemSealed},
+    api::{ItemCommon, ItemSealed},
     sol::SolarSystem,
-    ud::{UItemId, UProjEffect},
+    ud::UItemId,
 };
 
 pub struct ProjEffect<'s> {
-    pub(super) sol: &'s SolarSystem,
+    pub(super) sol: &'s mut SolarSystem,
     pub(super) uid: UItemId,
 }
 impl<'s> ProjEffect<'s> {
-    pub(in crate::api) fn new(sol: &'s SolarSystem, uid: UItemId) -> Self {
+    pub(in crate::api) fn new(sol: &'s mut SolarSystem, uid: UItemId) -> Self {
         Self { sol, uid }
     }
     pub fn get_state(&self) -> bool {
-        get_state(self.sol, self.uid)
+        self.sol
+            .u_data
+            .items
+            .get(self.uid)
+            .dc_proj_effect()
+            .unwrap()
+            .get_proj_effect_state()
     }
 }
 impl<'s> ItemSealed for ProjEffect<'s> {
     fn get_uid(&self) -> UItemId {
         self.uid
     }
+    fn get_sol_ref(&self) -> &SolarSystem {
+        self.sol
+    }
 }
 impl<'s> ItemCommon for ProjEffect<'s> {
-    fn get_sol(&self) -> &SolarSystem {
+    fn get_sol(&mut self) -> &mut SolarSystem {
         self.sol
     }
-}
-
-pub struct ProjEffectMut<'s> {
-    pub(super) sol: &'s mut SolarSystem,
-    pub(super) uid: UItemId,
-}
-impl<'s> ProjEffectMut<'s> {
-    pub(in crate::api) fn new(sol: &'s mut SolarSystem, uid: UItemId) -> Self {
-        Self { sol, uid }
-    }
-    pub fn get_state(&self) -> bool {
-        get_state(self.sol, self.uid)
-    }
-}
-impl<'s> ItemSealed for ProjEffectMut<'s> {
-    fn get_uid(&self) -> UItemId {
-        self.uid
-    }
-}
-impl<'s> ItemCommon for ProjEffectMut<'s> {
-    fn get_sol(&self) -> &SolarSystem {
-        self.sol
-    }
-}
-impl<'s> ItemMutCommon for ProjEffectMut<'s> {
-    fn get_sol_mut(&mut self) -> &mut SolarSystem {
-        self.sol
-    }
-}
-
-fn get_state(sol: &SolarSystem, proj_effect_uid: UItemId) -> bool {
-    get_u_proj_effect(sol, proj_effect_uid).get_proj_effect_state()
-}
-fn get_u_proj_effect(sol: &SolarSystem, proj_effect_uid: UItemId) -> &UProjEffect {
-    sol.u_data.items.get(proj_effect_uid).dc_proj_effect().unwrap()
 }

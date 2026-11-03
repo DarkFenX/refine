@@ -1,5 +1,5 @@
 use crate::{
-    api::{ItemTypeId, ModuleMut, MutationAddError, MutationMut},
+    api::{ItemTypeId, Module, Mutation, MutationAddError},
     err::basic::ItemNotMutatedError,
     sol::{SolarSystem, UndoStep},
     ud::{UItemId, UItemMutationRequest},
@@ -39,13 +39,13 @@ impl SolarSystem {
     }
 }
 
-impl<'s> ModuleMut<'s> {
-    pub fn mutate(&mut self, mutator_type_id: ItemTypeId) -> Result<MutationMut<'_>, MutationAddError> {
+impl<'s> Module<'s> {
+    pub fn mutate(&mut self, mutator_type_id: ItemTypeId) -> Result<Mutation<'_>, MutationAddError> {
         let mutation = UItemMutationRequest {
             mutator_type_aid: mutator_type_id.into_aid(),
             attrs: Vec::new(),
         };
         self.sol.internal_add_module_mutation(self.uid, mutation)?;
-        Ok(self.get_mutation_mut().unwrap())
+        Ok(self.get_mutation().unwrap())
     }
 }

@@ -1,3 +1,5 @@
+use rc::Lender;
+
 use crate::{AttrId, ItemTypeId, UnitInterval, Value};
 
 #[cfg_attr(
@@ -82,23 +84,23 @@ pub struct AttrMutationInfo {
 impl ItemMutationInfo {
     pub(in crate::info::item) fn try_from_core(core_mutation: rc::Mutation) -> Self {
         match core_mutation {
-            rc::Mutation::Effective(core_mutation) => Self::Effective(ItemMutationEffectiveInfo {
+            rc::Mutation::Effective(mut core_mutation) => Self::Effective(ItemMutationEffectiveInfo {
                 base_type_id: core_mutation.get_base_type_id(),
                 mutator_id: core_mutation.get_mutator_type_id(),
                 attrs: core_mutation
                     .iter_full_mattrs()
-                    .map(|v| (v.get_attr_id(), AttrMutationInfo::from_core(v)))
+                    .map_into_iter(|v| (v.get_attr_id(), AttrMutationInfo::from_core(v)))
                     .collect(),
                 rolls: core_mutation
                     .iter_raw_mattrs()
-                    .map(|v| (v.get_attr_id(), v.get_roll()))
+                    .map_into_iter(|v| (v.get_attr_id(), v.get_roll()))
                     .collect(),
             }),
-            rc::Mutation::Dormant(core_mutation) => Self::Dormant(ItemMutationDormantInfo {
+            rc::Mutation::Dormant(mut core_mutation) => Self::Dormant(ItemMutationDormantInfo {
                 mutator_id: core_mutation.get_mutator_type_id(),
                 rolls: core_mutation
                     .iter_raw_mattrs()
-                    .map(|v| (v.get_attr_id(), v.get_roll()))
+                    .map_into_iter(|v| (v.get_attr_id(), v.get_roll()))
                     .collect(),
             }),
         }

@@ -1,5 +1,5 @@
 use crate::{
-    api::SubsystemMut,
+    api::Subsystem,
     sol::{SolarSystem, UndoStep},
     ud::UItemId,
 };
@@ -28,7 +28,7 @@ impl SolarSystem {
     }
 }
 
-impl<'s> SubsystemMut<'s> {
+impl<'s> Subsystem<'s> {
     pub fn set_state(&mut self, state: bool) {
         let u_subsystem = self.sol.u_data.items.get(self.uid).dc_subsystem().unwrap();
         if state == u_subsystem.get_subsystem_state() {

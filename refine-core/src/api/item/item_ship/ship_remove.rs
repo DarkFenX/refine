@@ -1,5 +1,5 @@
 use crate::{
-    api::ShipMut,
+    api::Ship,
     num::PValue,
     sol::{SolarSystem, UndoStep},
     ud::{UItemId, UShipKind},
@@ -23,7 +23,7 @@ impl SolarSystem {
     }
 }
 
-impl<'s> ShipMut<'s> {
+impl<'s> Ship<'s> {
     pub fn remove(self) {
         self.sol.internal_remove_ship(self.uid)
     }

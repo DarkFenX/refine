@@ -2,7 +2,7 @@ use lender::{ExactSizeLender, Lender, Lending, check_covariance};
 
 use crate::{
     ad::AAbilId,
-    api::{Ability, AbilityMut, Fighter, FighterMut},
+    api::{Ability, Fighter},
     sol::SolarSystem,
     ud::UItemId,
 };
@@ -25,15 +25,15 @@ impl<'iter> AbilityIter<'iter> {
     }
 }
 impl<'iter, 'lend> Lending<'lend> for AbilityIter<'iter> {
-    type Lend = AbilityMut<'lend>;
+    type Lend = Ability<'lend>;
 }
 impl<'iter> Lender for AbilityIter<'iter> {
     check_covariance!();
 
-    fn next(&mut self) -> Option<AbilityMut<'_>> {
+    fn next(&mut self) -> Option<Ability<'_>> {
         let abil_aid = *self.abil_aids.get(self.index)?;
         self.index += 1;
-        Some(AbilityMut::new(self.sol, self.fighter_uid, abil_aid))
+        Some(Ability::new(self.sol, self.fighter_uid, abil_aid))
     }
 
     fn size_hint(&self) -> (usize, Option<usize>) {
@@ -45,39 +45,19 @@ impl<'iter> ExactSizeLender for AbilityIter<'iter> {}
 
 impl<'s> Fighter<'s> {
     /// Iterates over fighter's abilities.
-    pub fn iter_abilities(&self) -> impl ExactSizeIterator<Item = Ability<'_>> {
-        iter_abils(self.sol, self.uid)
-    }
-}
-
-impl<'s> FighterMut<'s> {
-    /// Iterates over fighter's abilities.
-    pub fn iter_abilities(&self) -> impl ExactSizeIterator<Item = Ability<'_>> {
-        iter_abils(self.sol, self.uid)
-    }
-    /// Iterates over fighter's abilities.
-    pub fn iter_abilities_mut(&mut self) -> AbilityIter<'_> {
-        let abil_aids = get_abil_aids(self.sol, self.uid);
+    pub fn iter_abilities(&mut self) -> AbilityIter<'_> {
+        let abil_aids = match self
+            .sol
+            .u_data
+            .items
+            .get(self.uid)
+            .dc_fighter()
+            .unwrap()
+            .get_r_item_base()
+        {
+            Some(rib) => rib.abil_ids.clone(),
+            None => Vec::new(),
+        };
         AbilityIter::new(self.sol, self.uid, abil_aids)
-    }
-}
-
-fn iter_abils(sol: &SolarSystem, fighter_uid: UItemId) -> impl ExactSizeIterator<Item = Ability<'_>> {
-    get_abil_aids(sol, fighter_uid)
-        .into_iter()
-        .map(move |abil_aid| Ability::new(sol, fighter_uid, abil_aid))
-}
-
-fn get_abil_aids(sol: &SolarSystem, fighter_uid: UItemId) -> Vec<AAbilId> {
-    match sol
-        .u_data
-        .items
-        .get(fighter_uid)
-        .dc_fighter()
-        .unwrap()
-        .get_r_item_base()
-    {
-        Some(rib) => rib.abil_ids.clone(),
-        None => Vec::new(),
     }
 }

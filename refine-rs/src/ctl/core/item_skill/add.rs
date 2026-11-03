@@ -78,7 +78,7 @@ impl SkillAddCmdCtxFitBr {
 // Execution
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl SkillAddCmd {
-    pub(in crate::ctl) fn execute(self, core_fit: &mut rc::FitMut) -> Result<AddedItemIdsResp, SkillAddError> {
+    pub(in crate::ctl) fn execute(self, core_fit: &mut rc::Fit) -> Result<AddedItemIdsResp, SkillAddError> {
         let Self {
             type_id,
             level,
@@ -104,7 +104,7 @@ impl SkillAddCmdCtxFit {
         self,
         core_sol: &mut rc::SolarSystem,
     ) -> Result<AddedItemIdsResp, FitGetSkillAddError> {
-        let mut core_fit = core_sol.get_fit_mut(&self.fit_id)?;
+        let mut core_fit = core_sol.get_fit(&self.fit_id)?;
         Ok(self.core.execute(&mut core_fit)?)
     }
 }

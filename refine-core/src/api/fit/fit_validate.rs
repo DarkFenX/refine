@@ -1,5 +1,5 @@
 use crate::{
-    api::FitMut,
+    api::Fit,
     sol::SolarSystem,
     svc::vast::{ValOptions, ValOptionsInt, ValResultFit},
     ud::UFitId,
@@ -18,7 +18,7 @@ impl SolarSystem {
     }
 }
 
-impl<'s> FitMut<'s> {
+impl<'s> Fit<'s> {
     pub fn validate_fast(&mut self, options: &ValOptions) -> bool {
         let int_options = ValOptionsInt::from_pub(options, self.sol);
         self.sol.internal_validate_fit_fast(self.uid, &int_options)

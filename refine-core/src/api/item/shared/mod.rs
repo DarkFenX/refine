@@ -1,11 +1,9 @@
 pub(in crate::api) use active_stat::active_stat_prepare;
 pub use mutation::{
-    AttrMutateRawError, DormantMutation, DormantMutationMut, EffectiveMutation, EffectiveMutationMut, FullMAttr,
-    FullMAttrGetError, FullMAttrIter, FullMAttrMut, FullMAttrValueSetError, Mutation, MutationAddError, MutationMut,
-    RawMAttr, RawMAttrGetError, RawMAttrIter, RawMAttrMut,
+    AttrMutateRawError, DormantMutation, EffectiveMutation, FullMAttr, FullMAttrGetError, FullMAttrIter,
+    FullMAttrValueSetError, Mutation, MutationAddError, RawMAttr, RawMAttrGetError, RawMAttrIter,
 };
-pub use proj::{Proj, ProjAddError, ProjGetError, ProjIter, ProjMut, RangedProj, RangedProjIter, RangedProjMut};
-pub(in crate::api) use proj::{iter_projs, iter_ranged_projs};
+pub use proj::{Proj, ProjAddError, ProjGetError, ProjIter, RangedProj, RangedProjIter};
 pub(in crate::api) use ship_rib::get_ship_rib;
 
 mod active_stat;

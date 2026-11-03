@@ -16,7 +16,7 @@ use crate::{
 // Execution
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl FitStatsOptionsResolved {
-    pub(in crate::stats) fn execute(&self, core_fit: &mut rc::FitMut) -> FitStats {
+    pub(in crate::stats) fn execute(&self, core_fit: &mut rc::Fit) -> FitStats {
         let Self {
             dmg,
             mps,
@@ -281,7 +281,7 @@ impl FitStatsOptionsResolved {
 // Fit output stats
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 fn get_dmg_stats(
-    core_fit: &mut rc::FitMut,
+    core_fit: &mut rc::Fit,
     options: &[Result<StatOptionFitDmg, BrResolveError>],
 ) -> StatResult<StatDmg, !, StatBrFallibleError<StatFitAppliedError>> {
     collect_stats_err_outer_br(options, |option| match option.projectee_item_id {
@@ -295,13 +295,13 @@ fn get_dmg_stats(
         ))),
     })
 }
-fn get_mps_stats(core_fit: &mut rc::FitMut, options: &[StatOptionFitMining]) -> StatResult<StatMining, !, !> {
+fn get_mps_stats(core_fit: &mut rc::Fit, options: &[StatOptionFitMining]) -> StatResult<StatMining, !, !> {
     collect_stats_err_inner(options, |option| {
         Ok(core_fit.get_stat_mps(option.item_kinds, option.time, option.resource_kind))
     })
 }
 fn get_outgoing_nps_stats(
-    core_fit: &mut rc::FitMut,
+    core_fit: &mut rc::Fit,
     options: &[Result<StatOptionFitOutNps, BrResolveError>],
 ) -> StatResult<PValue, !, StatBrFallibleError<StatFitAppliedError>> {
     collect_stats_err_outer_br(options, |option| match option.projectee_item_id {
@@ -312,7 +312,7 @@ fn get_outgoing_nps_stats(
     })
 }
 fn get_outgoing_rps_stats(
-    core_fit: &mut rc::FitMut,
+    core_fit: &mut rc::Fit,
     options: &[Result<StatOptionFitOutRps, BrResolveError>],
 ) -> StatResult<StatOutReps, !, StatBrFallibleError<StatFitAppliedError>> {
     collect_stats_err_outer_br(options, |option| match option.projectee_item_id {
@@ -323,7 +323,7 @@ fn get_outgoing_rps_stats(
     })
 }
 fn get_outgoing_cps_stats(
-    core_fit: &mut rc::FitMut,
+    core_fit: &mut rc::Fit,
     options: &[Result<StatOptionFitOutCps, BrResolveError>],
 ) -> StatResult<PValue, !, StatBrFallibleError<StatFitAppliedError>> {
     collect_stats_err_outer_br(options, |option| match option.projectee_item_id {
@@ -335,16 +335,13 @@ fn get_outgoing_cps_stats(
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Ship tank
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-fn get_ehp_stats(core_fit: &mut rc::FitMut, options: &[StatOptionEhp]) -> StatResult<StatEhp, StatFitShipError<!>, !> {
+fn get_ehp_stats(core_fit: &mut rc::Fit, options: &[StatOptionEhp]) -> StatResult<StatEhp, StatFitShipError<!>, !> {
     collect_stats_err_inner(options, |option| core_fit.get_stat_ehp(option.incoming_dps))
 }
-fn get_rps_stats(core_fit: &mut rc::FitMut, options: &[StatOptionRps]) -> StatResult<StatRps, StatFitShipError<!>, !> {
+fn get_rps_stats(core_fit: &mut rc::Fit, options: &[StatOptionRps]) -> StatResult<StatRps, StatFitShipError<!>, !> {
     collect_stats_err_inner(options, |option| core_fit.get_stat_rps(option.time, option.shield_perc))
 }
-fn get_erps_stats(
-    core_fit: &mut rc::FitMut,
-    options: &[StatOptionErps],
-) -> StatResult<StatErps, StatFitShipError<!>, !> {
+fn get_erps_stats(core_fit: &mut rc::Fit, options: &[StatOptionErps]) -> StatResult<StatErps, StatFitShipError<!>, !> {
     collect_stats_err_inner(options, |option| {
         core_fit.get_stat_erps(option.incoming_dps, option.time, option.shield_perc)
     })
@@ -354,7 +351,7 @@ fn get_erps_stats(
 // Ship cap
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 fn get_cap_balance_stats(
-    core_fit: &mut rc::FitMut,
+    core_fit: &mut rc::Fit,
     options: &[Result<StatOptionCapBlc, BrResolveError>],
 ) -> StatResult<Value, StatFitShipAppliedError<!>, StatBrFallibleError<StatFitShipAppliedError<!>>> {
     collect_stats_err_both_br(options, |option| {
@@ -362,7 +359,7 @@ fn get_cap_balance_stats(
     })
 }
 fn get_cap_sim_stats(
-    core_fit: &mut rc::FitMut,
+    core_fit: &mut rc::Fit,
     options: &[Result<StatOptionCapSim, BrResolveError>],
 ) -> StatResult<StatCapSim, StatFitShipAppliedError<!>, StatBrFallibleError<StatFitShipAppliedError<!>>> {
     collect_stats_err_both_br(options, |option| {
@@ -379,7 +376,7 @@ fn get_cap_sim_stats(
 // Ship sensors
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 fn get_incoming_jam_stats(
-    core_fit: &mut rc::FitMut,
+    core_fit: &mut rc::Fit,
     options: &[StatOptionIncomingJam],
 ) -> StatResult<StatInJam, StatFitShipError<!>, !> {
     collect_stats_err_inner(options, |option| core_fit.get_stat_incoming_jam(option.time))
@@ -388,11 +385,11 @@ fn get_incoming_jam_stats(
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Ship mobility
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-fn get_mass_stats(core_fit: &mut rc::FitMut, options: &[StatOptionMass]) -> StatResult<PValue, StatFitShipError<!>, !> {
+fn get_mass_stats(core_fit: &mut rc::Fit, options: &[StatOptionMass]) -> StatResult<PValue, StatFitShipError<!>, !> {
     collect_stats_err_inner(options, |option| core_fit.get_stat_mass(option.affectors))
 }
 fn get_jump_stats(
-    core_fit: &mut rc::FitMut,
+    core_fit: &mut rc::Fit,
     options: &[StatOptionJump],
 ) -> StatResult<StatJump, StatFitShipError<StatJumpError>, !> {
     collect_stats_err_inner(options, |option| {

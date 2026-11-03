@@ -1,5 +1,5 @@
 use crate::{
-    api::RigMut,
+    api::Rig,
     sol::{SolarSystem, UndoStep},
     ud::UItemId,
 };
@@ -25,7 +25,7 @@ impl SolarSystem {
     }
 }
 
-impl<'s> RigMut<'s> {
+impl<'s> Rig<'s> {
     pub fn set_state(&mut self, state: bool) {
         let u_rig = self.sol.u_data.items.get(self.uid).dc_rig().unwrap();
         if state == u_rig.get_rig_state() {

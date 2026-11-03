@@ -1,5 +1,5 @@
 use crate::{
-    api::StanceMut,
+    api::Stance,
     sol::{SolarSystem, UndoStep},
     ud::UItemId,
 };
@@ -14,7 +14,7 @@ impl SolarSystem {
     }
 }
 
-impl<'s> StanceMut<'s> {
+impl<'s> Stance<'s> {
     pub fn remove(self) {
         self.sol.internal_remove_stance(self.uid);
     }

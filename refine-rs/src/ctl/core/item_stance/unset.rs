@@ -61,8 +61,8 @@ impl StanceUnsetCmdCtxFitBr {
 // Execution
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl StanceUnsetCmd {
-    pub(in crate::ctl) fn execute(self, core_fit: &mut rc::FitMut) {
-        if let Some(core_stance) = core_fit.get_stance_mut() {
+    pub(in crate::ctl) fn execute(self, core_fit: &mut rc::Fit) {
+        if let Some(core_stance) = core_fit.get_stance() {
             core_stance.remove();
         }
     }
@@ -70,7 +70,7 @@ impl StanceUnsetCmd {
 
 impl StanceUnsetCmdCtxFit {
     pub(in crate::ctl) fn execute(self, core_sol: &mut rc::SolarSystem) -> Result<(), FitGetStanceUnsetError> {
-        let mut core_fit = core_sol.get_fit_mut(&self.fit_id)?;
+        let mut core_fit = core_sol.get_fit(&self.fit_id)?;
         self.core.execute(&mut core_fit);
         Ok(())
     }

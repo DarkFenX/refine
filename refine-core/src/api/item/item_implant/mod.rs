@@ -1,4 +1,4 @@
-pub use implant::{Implant, ImplantMut};
+pub use implant::Implant;
 pub use sol_get_implant::ImplantGetError;
 
 mod fit_add_implant;

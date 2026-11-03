@@ -55,7 +55,7 @@ pub struct RigInfoExt {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl RigInfo {
     pub(in crate::info) fn from_core(
-        core_rig: &mut rc::RigMut,
+        core_rig: &mut rc::Rig,
         item_info_modes: &OvrdMapLight<ItemId, ItemInfoMode>,
     ) -> Self {
         let rig_id = core_rig.get_item_id();

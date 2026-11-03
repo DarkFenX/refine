@@ -1,20 +1,15 @@
 use crate::{
-    api::{Service, ServiceMut},
+    api::Service,
     err::basic::{ItemFoundError, ItemKindMatchError},
     sol::SolarSystem,
     ud::ItemId,
 };
 
 impl SolarSystem {
-    pub fn get_service(&self, item_id: &ItemId) -> Result<Service<'_>, ServiceGetError> {
+    pub fn get_service(&mut self, item_id: &ItemId) -> Result<Service<'_>, ServiceGetError> {
         let service_uid = self.u_data.items.int_id_by_ext_id_err(item_id)?;
         self.u_data.items.get(service_uid).dc_service()?;
         Ok(Service::new(self, service_uid))
-    }
-    pub fn get_service_mut(&mut self, item_id: &ItemId) -> Result<ServiceMut<'_>, ServiceGetError> {
-        let service_uid = self.u_data.items.int_id_by_ext_id_err(item_id)?;
-        self.u_data.items.get(service_uid).dc_service()?;
-        Ok(ServiceMut::new(self, service_uid))
     }
 }
 

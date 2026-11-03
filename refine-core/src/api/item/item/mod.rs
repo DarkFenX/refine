@@ -1,5 +1,5 @@
 pub use fit_autodetect_add_item::FitItemAutodetectAddError;
-pub use item::{Item, ItemMut};
+pub use item::Item;
 pub use item_get::ItemGetError;
 pub use item_remove::ItemRemoveError;
 

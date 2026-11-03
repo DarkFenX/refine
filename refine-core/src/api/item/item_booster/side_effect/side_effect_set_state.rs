@@ -1,6 +1,6 @@
-use crate::{api::SideEffectMut, misc::EffectMode};
+use crate::{api::SideEffect, misc::EffectMode};
 
-impl<'s> SideEffectMut<'s> {
+impl<'s> SideEffect<'s> {
     /// Set side effect state.
     ///
     /// Disabled side effects are not applied when parent item is in effect, while enabled do.

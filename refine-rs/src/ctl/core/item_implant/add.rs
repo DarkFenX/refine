@@ -77,7 +77,7 @@ impl ImplantAddCmdCtxFitBr {
 // Execution
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl ImplantAddCmd {
-    pub(in crate::ctl) fn execute(self, core_fit: &mut rc::FitMut) -> AddedItemIdsResp {
+    pub(in crate::ctl) fn execute(self, core_fit: &mut rc::Fit) -> AddedItemIdsResp {
         let Self {
             type_id,
             state,
@@ -97,7 +97,7 @@ impl ImplantAddCmdCtxFit {
         self,
         core_sol: &mut rc::SolarSystem,
     ) -> Result<AddedItemIdsResp, FitGetImplantAddError> {
-        let mut core_fit = core_sol.get_fit_mut(&self.fit_id)?;
+        let mut core_fit = core_sol.get_fit(&self.fit_id)?;
         Ok(self.core.execute(&mut core_fit))
     }
 }

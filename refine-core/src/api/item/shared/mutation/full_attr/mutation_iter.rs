@@ -2,25 +2,14 @@ use lender::{ExactSizeLender, Lender, Lending, check_covariance};
 
 use crate::{
     ad::AAttrId,
-    api::{EffectiveMutation, EffectiveMutationMut, FullMAttr, FullMAttrMut},
+    api::{EffectiveMutation, FullMAttr},
     sol::SolarSystem,
     ud::UItemId,
 };
 
 impl<'s> EffectiveMutation<'s> {
     /// Iterates over mutation's full mutated attributes.
-    pub fn iter_full_mattrs(&self) -> impl Iterator<Item = FullMAttr<'_>> {
-        iter_full_mattrs(self.sol, self.item_uid)
-    }
-}
-
-impl<'s> EffectiveMutationMut<'s> {
-    /// Iterates over mutation's full mutated attributes.
-    pub fn iter_full_mattrs(&self) -> impl Iterator<Item = FullMAttr<'_>> {
-        iter_full_mattrs(self.sol, self.item_uid)
-    }
-    /// Iterates over mutation's full mutated attributes.
-    pub fn iter_full_mattrs_mut(&mut self) -> FullMAttrIter<'_> {
+    pub fn iter_full_mattrs(&mut self) -> FullMAttrIter<'_> {
         FullMAttrIter::new(self.sol, self.item_uid)
     }
 }
@@ -34,7 +23,22 @@ pub struct FullMAttrIter<'iter> {
 }
 impl<'iter> FullMAttrIter<'iter> {
     pub(in crate::api) fn new(sol: &'iter mut SolarSystem, item_uid: UItemId) -> Self {
-        let attr_aids = full_mutated_attr_aid_iter(sol, item_uid).collect();
+        let u_item = sol.u_data.items.get(item_uid);
+        let attr_aids = u_item
+            .get_mutation_data()
+            .unwrap()
+            .get_cache()
+            .unwrap()
+            .get_r_mutator()
+            .attr_mods
+            .keys()
+            .filter_map(
+                |&attr_rid| match u_item.get_r_item_flex_data().unwrap().attrs.contains_key(&attr_rid) {
+                    true => Some(sol.u_data.r_data.get_attr_by_rid(attr_rid).aid),
+                    false => None,
+                },
+            )
+            .collect();
         Self {
             sol,
             item_uid,
@@ -44,15 +48,15 @@ impl<'iter> FullMAttrIter<'iter> {
     }
 }
 impl<'iter, 'lend> Lending<'lend> for FullMAttrIter<'iter> {
-    type Lend = FullMAttrMut<'lend>;
+    type Lend = FullMAttr<'lend>;
 }
 impl<'iter> Lender for FullMAttrIter<'iter> {
     check_covariance!();
 
-    fn next(&mut self) -> Option<FullMAttrMut<'_>> {
+    fn next(&mut self) -> Option<FullMAttr<'_>> {
         let attr_aid = *self.attr_aids.get(self.index)?;
         self.index += 1;
-        Some(FullMAttrMut::new(self.sol, self.item_uid, attr_aid))
+        Some(FullMAttr::new(self.sol, self.item_uid, attr_aid))
     }
 
     fn size_hint(&self) -> (usize, Option<usize>) {
@@ -61,25 +65,3 @@ impl<'iter> Lender for FullMAttrIter<'iter> {
     }
 }
 impl<'iter> ExactSizeLender for FullMAttrIter<'iter> {}
-
-fn full_mutated_attr_aid_iter(sol: &SolarSystem, item_uid: UItemId) -> impl Iterator<Item = AAttrId> {
-    let u_item = sol.u_data.items.get(item_uid);
-    u_item
-        .get_mutation_data()
-        .unwrap()
-        .get_cache()
-        .unwrap()
-        .get_r_mutator()
-        .attr_mods
-        .keys()
-        .filter_map(
-            |&attr_rid| match u_item.get_r_item_flex_data().unwrap().attrs.contains_key(&attr_rid) {
-                true => Some(sol.u_data.r_data.get_attr_by_rid(attr_rid).aid),
-                false => None,
-            },
-        )
-}
-
-fn iter_full_mattrs(sol: &SolarSystem, item_uid: UItemId) -> impl Iterator<Item = FullMAttr<'_>> + use<'_> {
-    full_mutated_attr_aid_iter(sol, item_uid).map(move |attr_aid| FullMAttr::new(sol, item_uid, attr_aid))
-}

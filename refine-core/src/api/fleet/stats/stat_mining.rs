@@ -1,12 +1,12 @@
 use crate::{
-    api::FleetMut,
+    api::Fleet,
     svc::{
         cycle::CseqMap,
         vast::{StatMining, StatMiningItemKinds, StatMiningResourceKind, StatTimeOptions},
     },
 };
 
-impl<'s> FleetMut<'s> {
+impl<'s> Fleet<'s> {
     pub fn get_stat_mps(
         &mut self,
         item_kinds: StatMiningItemKinds,

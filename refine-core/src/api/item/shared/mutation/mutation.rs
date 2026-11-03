@@ -6,29 +6,12 @@ pub enum Mutation<'s> {
     Dormant(DormantMutation<'s>),
 }
 
-/// Mutation applied to an item.
-pub enum MutationMut<'s> {
-    Effective(EffectiveMutationMut<'s>),
-    Dormant(DormantMutationMut<'s>),
-}
-
 /// Mutation which has enough prerequisites met to affect item it mutates.
 pub struct EffectiveMutation<'s> {
-    pub(super) sol: &'s SolarSystem,
-    pub(super) item_uid: UItemId,
-}
-impl<'s> EffectiveMutation<'s> {
-    pub(in crate::api) fn new(sol: &'s SolarSystem, item_uid: UItemId) -> Self {
-        Self { sol, item_uid }
-    }
-}
-
-/// Mutation which has enough prerequisites met to affect item it mutates.
-pub struct EffectiveMutationMut<'s> {
     pub(super) sol: &'s mut SolarSystem,
     pub(super) item_uid: UItemId,
 }
-impl<'s> EffectiveMutationMut<'s> {
+impl<'s> EffectiveMutation<'s> {
     pub(in crate::api) fn new(sol: &'s mut SolarSystem, item_uid: UItemId) -> Self {
         Self { sol, item_uid }
     }
@@ -37,22 +20,10 @@ impl<'s> EffectiveMutationMut<'s> {
 /// Mutation which doesn't have enough data available, thus doesn't change anything on the item it's
 /// applied to.
 pub struct DormantMutation<'s> {
-    pub(super) sol: &'s SolarSystem,
-    pub(super) item_uid: UItemId,
-}
-impl<'s> DormantMutation<'s> {
-    pub(in crate::api) fn new(sol: &'s SolarSystem, item_uid: UItemId) -> Self {
-        Self { sol, item_uid }
-    }
-}
-
-/// Mutation which doesn't have enough data available, thus doesn't change anything on the item it's
-/// applied to.
-pub struct DormantMutationMut<'s> {
     pub(super) sol: &'s mut SolarSystem,
     pub(super) item_uid: UItemId,
 }
-impl<'s> DormantMutationMut<'s> {
+impl<'s> DormantMutation<'s> {
     pub(in crate::api) fn new(sol: &'s mut SolarSystem, item_uid: UItemId) -> Self {
         Self { sol, item_uid }
     }

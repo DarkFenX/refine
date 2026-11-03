@@ -1,33 +1,18 @@
-use crate::{
-    ad::AAbilId,
-    api::{Ability, AbilityMut},
-    misc::EffectMode,
-    sol::SolarSystem,
-    ud::UItemId,
-};
+use crate::{api::Ability, misc::EffectMode};
 
 impl<'s> Ability<'s> {
     pub fn get_state(&self) -> bool {
-        get_state(self.sol, self.fighter_uid, &self.abil_aid)
-    }
-}
-
-impl<'s> AbilityMut<'s> {
-    pub fn get_state(&self) -> bool {
-        get_state(self.sol, self.fighter_uid, &self.abil_aid)
-    }
-}
-
-fn get_state(sol: &SolarSystem, fighter_uid: UItemId, abil_id: &AAbilId) -> bool {
-    // Only abilities which exist in source are exposed by API, just unwrap
-    let r_abil = sol.u_data.r_data.get_ability_by_aid(abil_id).unwrap();
-    let u_fighter = sol.u_data.items.get(fighter_uid).dc_fighter().unwrap();
-    match u_fighter.get_effect_mode_by_rid(&r_abil.effect_rid) {
-        // Default disabled/active effects are ran if fighter becomes disabled+/active+, others are
-        // not
-        EffectMode::FullCompliance => Some(r_abil.effect_rid) == u_fighter.get_r_item_base().unwrap().defeff_rid,
-        EffectMode::StateCompliance => true,
-        EffectMode::ForceRun => true,
-        EffectMode::ForceStop => false,
+        let abil_id = &self.abil_aid;
+        // Only abilities which exist in source are exposed by API, just unwrap
+        let r_abil = self.sol.u_data.r_data.get_ability_by_aid(abil_id).unwrap();
+        let u_fighter = self.sol.u_data.items.get(self.fighter_uid).dc_fighter().unwrap();
+        match u_fighter.get_effect_mode_by_rid(&r_abil.effect_rid) {
+            // Default disabled/active effects are ran if fighter becomes disabled+/active+, others
+            // are not
+            EffectMode::FullCompliance => Some(r_abil.effect_rid) == u_fighter.get_r_item_base().unwrap().defeff_rid,
+            EffectMode::StateCompliance => true,
+            EffectMode::ForceRun => true,
+            EffectMode::ForceStop => false,
+        }
     }
 }

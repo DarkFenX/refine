@@ -1,5 +1,5 @@
 use crate::{
-    api::FitMut,
+    api::Fit,
     err::basic::FleetFoundError,
     sol::{SolarSystem, UndoStep},
     ud::{FleetId, UFitId, UFleetId},
@@ -37,7 +37,7 @@ impl SolarSystem {
     }
 }
 
-impl<'s> FitMut<'s> {
+impl<'s> Fit<'s> {
     /// Set fleet, moving fit out of its current one.
     pub fn set_fleet(&mut self, fleet_id: Option<&FleetId>) -> Result<(), FitFleetSetError> {
         let fleet_uid = match fleet_id {

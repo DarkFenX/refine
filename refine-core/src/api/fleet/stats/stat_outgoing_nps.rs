@@ -1,5 +1,5 @@
 use crate::{
-    api::{FleetMut, StatFleetAppliedError},
+    api::{Fleet, StatFleetAppliedError},
     num::PValue,
     svc::{
         cycle::CseqMap,
@@ -8,7 +8,7 @@ use crate::{
     ud::ItemId,
 };
 
-impl<'s> FleetMut<'s> {
+impl<'s> Fleet<'s> {
     pub fn get_stat_outgoing_nps(&mut self, item_kinds: StatNeutItemKinds, time_options: StatTimeOptions) -> PValue {
         let u_fleet = self.sol.u_data.fleets.get(self.uid);
         self.sol.svc.get_stat_fits_outgoing_nps(

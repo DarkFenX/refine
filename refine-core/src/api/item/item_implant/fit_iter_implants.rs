@@ -1,26 +1,8 @@
-use crate::{
-    api::{Fit, FitMut, Implant, ImplantMut, MutIter},
-    sol::SolarSystem,
-    ud::UFitId,
-};
+use crate::api::{EntityIter, Fit, Implant};
 
 impl<'s> Fit<'s> {
-    pub fn iter_implants(&self) -> impl ExactSizeIterator<Item = Implant<'_>> {
-        iter_implants(self.sol, self.uid)
-    }
-}
-
-impl<'s> FitMut<'s> {
-    pub fn iter_implants(&self) -> impl ExactSizeIterator<Item = Implant<'_>> {
-        iter_implants(self.sol, self.uid)
-    }
-    pub fn iter_implants_mut(&mut self) -> MutIter<'_, ImplantMut<'_>> {
+    pub fn iter_implants(&mut self) -> EntityIter<'_, Implant<'_>> {
         let implant_uids = self.sol.u_data.fits.get(self.uid).implants.iter().copied().collect();
-        MutIter::new(self.sol, implant_uids)
+        EntityIter::new(self.sol, implant_uids)
     }
-}
-
-fn iter_implants(sol: &SolarSystem, fit_uid: UFitId) -> impl ExactSizeIterator<Item = Implant<'_>> {
-    let implant_uids = sol.u_data.fits.get(fit_uid).implants.iter();
-    implant_uids.map(|implant_uid| Implant::new(sol, *implant_uid))
 }

@@ -113,17 +113,17 @@ impl SolStatsCmd {
         // Everything in a solar system belongs to it, so overridden entities need no membership
         // check - unlike with fit and fleet commands
         let fleets = match fleet_options.get_default().is_any_stat_requested() {
-            true => get_stats_for_passed_fleets(core_sol.iter_fleets_mut(), &fleet_options),
+            true => get_stats_for_passed_fleets(core_sol.iter_fleets(), &fleet_options),
             false => get_stats_for_fleets_in_overrides(core_sol, &fleet_options),
         };
         let fits = match fit_options.get_default().is_any_stat_requested() {
-            true => get_stats_for_passed_fits(core_sol.iter_fits_mut(), &fit_options),
+            true => get_stats_for_passed_fits(core_sol.iter_fits(), &fit_options),
             false => get_stats_for_fits_in_overrides(core_sol, &fit_options, |_| true),
         };
         let items = match item_options.get_default().is_any_stat_requested() {
             true => {
                 let mut stats = Vec::new();
-                extend_stats_for_passed_items(core_sol.iter_items_mut(), &item_options, &mut stats);
+                extend_stats_for_passed_items(core_sol.iter_items(), &item_options, &mut stats);
                 stats
             }
             false => get_stats_for_items_in_overrides(core_sol, &item_options, |_| true),

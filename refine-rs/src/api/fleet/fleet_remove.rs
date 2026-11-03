@@ -8,7 +8,7 @@ impl Fleet<'_, '_> {
         self.sol
             .exec_standard_infallible(move |core_sol| {
                 // Holding mutex on sol - nothing can remove the fleet before we get it
-                let core_fleet = core_sol.get_fleet_mut(&fleet_id).unwrap();
+                let core_fleet = core_sol.get_fleet(&fleet_id).unwrap();
                 ctl_cmd.execute(core_fleet)
             })
             .await

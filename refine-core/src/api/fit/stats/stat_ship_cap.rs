@@ -1,12 +1,12 @@
 use crate::{
-    api::{FitMut, ItemMutCommon, StatFitShipAppliedError, StatFitShipError},
+    api::{Fit, ItemCommon, StatFitShipAppliedError, StatFitShipError},
     misc::OptionalReload,
     num::{PValue, UnitInterval, Value},
     svc::vast::{StatCapBlcSrcKinds, StatCapSim, StatCapSimStagger, StatTimeOptions},
     ud::ItemId,
 };
 
-impl<'s> FitMut<'s> {
+impl<'s> Fit<'s> {
     pub fn get_stat_cap_amount(&mut self) -> Result<PValue, StatFitShipError<!>> {
         Ok(self.get_ship_for_stats()?.get_stat_cap_amount()?)
     }

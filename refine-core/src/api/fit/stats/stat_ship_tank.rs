@@ -1,12 +1,12 @@
 use crate::{
-    api::{FitMut, ItemMutCommon},
+    api::{Fit, ItemCommon},
     misc::DpsProfile,
     num::UnitInterval,
     stats::err::StatFitShipError,
     svc::vast::{StatEhp, StatErps, StatHp, StatResists, StatRps, StatTimeOptions},
 };
 
-impl<'s> FitMut<'s> {
+impl<'s> Fit<'s> {
     pub fn get_stat_resists(&mut self) -> Result<StatResists, StatFitShipError<!>> {
         Ok(self.get_ship_for_stats()?.get_stat_resists()?)
     }

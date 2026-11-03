@@ -44,7 +44,7 @@ pub enum AttrMutation {
 // Non-public
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl AddMutation {
-    pub(in crate::ctl::core) fn apply_attrs(&self, core_mutation: &mut rc::MutationMut) {
+    pub(in crate::ctl::core) fn apply_attrs(&self, core_mutation: &mut rc::Mutation) {
         for (attr_id, value) in self.attrs.iter() {
             match value {
                 AttrMutation::Absolute(value) => apply_absolute(core_mutation, *attr_id, *value),
@@ -55,13 +55,13 @@ impl AddMutation {
 }
 
 impl ChangeMutation {
-    pub(in crate::ctl::core) fn apply_attrs(&self, core_mutation: &mut rc::MutationMut) {
+    pub(in crate::ctl::core) fn apply_attrs(&self, core_mutation: &mut rc::Mutation) {
         for (attr_id, value) in self.attrs.iter() {
             match value {
                 Some(AttrMutation::Absolute(value)) => apply_absolute(core_mutation, *attr_id, *value),
                 Some(AttrMutation::Roll(roll)) => apply_roll(core_mutation, *attr_id, *roll),
                 None => {
-                    if let Ok(core_raw_mattr) = core_mutation.get_raw_mattr_mut(*attr_id) {
+                    if let Ok(core_raw_mattr) = core_mutation.get_raw_mattr(*attr_id) {
                         core_raw_mattr.remove();
                     }
                 }
@@ -70,10 +70,10 @@ impl ChangeMutation {
     }
 }
 
-fn apply_absolute(core_mutation: &mut rc::MutationMut, attr_id: AttrId, value: Value) {
+fn apply_absolute(core_mutation: &mut rc::Mutation, attr_id: AttrId, value: Value) {
     // Absolute values can be applied only to effective mutations, via full mutated attributes
-    if let rc::MutationMut::Effective(core_effective_mutation) = core_mutation
-        && let Ok(mut core_full_mattr) = core_effective_mutation.get_full_mattr_mut(attr_id)
+    if let rc::Mutation::Effective(core_effective_mutation) = core_mutation
+        && let Ok(mut core_full_mattr) = core_effective_mutation.get_full_mattr(attr_id)
     {
         match core_full_mattr.set_value(Some(value)) {
             Ok(()) => (),
@@ -83,9 +83,9 @@ fn apply_absolute(core_mutation: &mut rc::MutationMut, attr_id: AttrId, value: V
     }
 }
 
-fn apply_roll(core_mutation: &mut rc::MutationMut, attr_id: AttrId, roll: UnitInterval) {
+fn apply_roll(core_mutation: &mut rc::Mutation, attr_id: AttrId, roll: UnitInterval) {
     // Try to get raw attr, if it's not available - add it
-    match core_mutation.get_raw_mattr_mut(attr_id) {
+    match core_mutation.get_raw_mattr(attr_id) {
         Ok(mut core_raw_mattr) => {
             core_raw_mattr.set_roll(roll);
         }

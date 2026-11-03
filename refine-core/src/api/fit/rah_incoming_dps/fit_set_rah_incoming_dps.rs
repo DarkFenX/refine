@@ -1,5 +1,5 @@
 use crate::{
-    api::FitMut,
+    api::Fit,
     misc::DpsProfile,
     sol::{SolarSystem, UndoStep},
     ud::UFitId,
@@ -30,7 +30,7 @@ impl SolarSystem {
     }
 }
 
-impl<'s> FitMut<'s> {
+impl<'s> Fit<'s> {
     pub fn set_rah_incoming_dps(&mut self, dps_profile: Option<DpsProfile>) {
         self.sol.internal_set_fit_rah_incoming_dps(self.uid, dps_profile)
     }

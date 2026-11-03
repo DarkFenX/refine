@@ -1,13 +1,13 @@
 use crate::{
-    api::FleetMut,
+    api::Fleet,
     sol::{SolarSystem, UndoStep},
     ud::{UFleet, UFleetId},
 };
 
 impl SolarSystem {
-    pub fn add_fleet(&mut self) -> FleetMut<'_> {
+    pub fn add_fleet(&mut self) -> Fleet<'_> {
         let fleet_uid = self.add_fleet_internal();
-        FleetMut::new(self, fleet_uid)
+        Fleet::new(self, fleet_uid)
     }
     pub(in crate::api) fn add_fleet_internal(&mut self) -> UFleetId {
         let fleet_id = self.u_data.fleets.alloc_id();

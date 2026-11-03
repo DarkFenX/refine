@@ -1,6 +1,6 @@
 use lender::{ExactSizeLender, Lender, Lending, check_covariance};
 
-use crate::{RangedProj, RangedProjMut, SolarSystem, api::item::shared::proj::iter_projectee_uids, ud::UItemId};
+use crate::{RangedProj, SolarSystem, api::item::shared::proj::iter_projectee_uids, ud::UItemId};
 
 /// Lending iterator for ranged projections
 pub struct RangedProjIter<'iter> {
@@ -21,15 +21,15 @@ impl<'iter> RangedProjIter<'iter> {
     }
 }
 impl<'iter, 'lend> Lending<'lend> for RangedProjIter<'iter> {
-    type Lend = RangedProjMut<'lend>;
+    type Lend = RangedProj<'lend>;
 }
 impl<'iter> Lender for RangedProjIter<'iter> {
     check_covariance!();
 
-    fn next(&mut self) -> Option<RangedProjMut<'_>> {
+    fn next(&mut self) -> Option<RangedProj<'_>> {
         let projectee_uid = *self.projectee_uids.get(self.index)?;
         self.index += 1;
-        Some(RangedProjMut::new(self.sol, self.item_uid, projectee_uid))
+        Some(RangedProj::new(self.sol, self.item_uid, projectee_uid))
     }
 
     fn size_hint(&self) -> (usize, Option<usize>) {
@@ -38,10 +38,3 @@ impl<'iter> Lender for RangedProjIter<'iter> {
     }
 }
 impl<'iter> ExactSizeLender for RangedProjIter<'iter> {}
-
-pub(in crate::api) fn iter_ranged_projs(
-    sol: &SolarSystem,
-    item_uid: UItemId,
-) -> impl ExactSizeIterator<Item = RangedProj<'_>> {
-    iter_projectee_uids(sol, item_uid).map(move |projectee_uid| RangedProj::new(sol, item_uid, projectee_uid))
-}

@@ -1,6 +1,6 @@
-use crate::api::{FitMut, ItemMutCommon, StatFitShipError};
+use crate::api::{Fit, ItemCommon, StatFitShipError};
 
-impl<'s> FitMut<'s> {
+impl<'s> Fit<'s> {
     pub fn get_stat_can_warp(&mut self) -> Result<bool, StatFitShipError<!>> {
         Ok(self.get_ship_for_stats()?.get_stat_can_warp()?)
     }

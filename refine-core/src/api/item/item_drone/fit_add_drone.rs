@@ -1,6 +1,6 @@
 use crate::{
     ad::AItemId,
-    api::{Coordinates, DroneMut, FitMut, ItemTypeId, MinionState, Movement},
+    api::{Coordinates, Drone, Fit, ItemTypeId, MinionState, Movement},
     sol::{SolarSystem, UndoStep},
     ud::{UDrone, UFitId, UItem, UItemId, UItemMutationRequest, UPhysics},
 };
@@ -50,14 +50,14 @@ impl SolarSystem {
     }
 }
 
-impl<'s> FitMut<'s> {
+impl<'s> Fit<'s> {
     pub fn add_drone(
         &mut self,
         type_id: ItemTypeId,
         state: MinionState,
         coordinates: Option<Coordinates>,
         movement: Option<Movement>,
-    ) -> DroneMut<'_> {
+    ) -> Drone<'_> {
         let mut u_physics = UPhysics::default();
         if let Some(coordinates) = coordinates {
             u_physics.coordinates = coordinates.into_xyz();
@@ -69,6 +69,6 @@ impl<'s> FitMut<'s> {
         let drone_uid = self
             .sol
             .internal_add_drone(self.uid, type_id.into_aid(), state, None, u_physics);
-        DroneMut::new(self.sol, drone_uid)
+        Drone::new(self.sol, drone_uid)
     }
 }

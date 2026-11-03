@@ -61,8 +61,8 @@ impl CharacterUnsetCmdCtxFitBr {
 // Execution
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl CharacterUnsetCmd {
-    pub(in crate::ctl) fn execute(self, core_fit: &mut rc::FitMut) {
-        if let Some(core_character) = core_fit.get_character_mut() {
+    pub(in crate::ctl) fn execute(self, core_fit: &mut rc::Fit) {
+        if let Some(core_character) = core_fit.get_character() {
             core_character.remove();
         }
     }
@@ -70,7 +70,7 @@ impl CharacterUnsetCmd {
 
 impl CharacterUnsetCmdCtxFit {
     pub(in crate::ctl) fn execute(self, core_sol: &mut rc::SolarSystem) -> Result<(), FitGetCharacterUnsetError> {
-        let mut core_fit = core_sol.get_fit_mut(&self.fit_id)?;
+        let mut core_fit = core_sol.get_fit(&self.fit_id)?;
         self.core.execute(&mut core_fit);
         Ok(())
     }

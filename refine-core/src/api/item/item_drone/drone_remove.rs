@@ -1,5 +1,5 @@
 use crate::{
-    api::DroneMut,
+    api::Drone,
     sol::{SolarSystem, UndoStep},
     ud::UItemId,
 };
@@ -23,7 +23,7 @@ impl SolarSystem {
     }
 }
 
-impl<'s> DroneMut<'s> {
+impl<'s> Drone<'s> {
     pub fn remove(self) {
         self.sol.internal_remove_drone(self.uid);
     }

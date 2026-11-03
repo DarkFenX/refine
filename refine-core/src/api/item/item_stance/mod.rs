@@ -1,5 +1,5 @@
 pub use sol_get_stance::StanceGetError;
-pub use stance::{Stance, StanceMut};
+pub use stance::Stance;
 
 mod fit_get_stance;
 mod fit_set_stance;

@@ -1,4 +1,4 @@
-pub use full_attr::{FullMAttr, FullMAttrMut};
+pub use full_attr::FullMAttr;
 pub use mutation_get::FullMAttrGetError;
 pub use mutation_iter::FullMAttrIter;
 pub use set_value::FullMAttrValueSetError;

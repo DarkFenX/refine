@@ -1,4 +1,4 @@
-use rc::ItemMutCommon;
+use rc::ItemCommon;
 
 use crate::{AttrId, ItemAttrValues, ItemInfoMode};
 
@@ -7,7 +7,7 @@ pub(in crate::info::item::info) fn get_attrs<T>(
     item_info_mode: ItemInfoMode,
 ) -> Vec<(AttrId, ItemAttrValues)>
 where
-    T: ItemMutCommon,
+    T: ItemCommon,
 {
     match item_info_mode {
         ItemInfoMode::Id | ItemInfoMode::Partial => Vec::new(),

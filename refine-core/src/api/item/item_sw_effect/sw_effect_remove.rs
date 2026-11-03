@@ -1,5 +1,5 @@
 use crate::{
-    api::SwEffectMut,
+    api::SwEffect,
     sol::{SolarSystem, UndoStep},
     ud::UItemId,
 };
@@ -12,7 +12,7 @@ impl SolarSystem {
     }
 }
 
-impl<'s> SwEffectMut<'s> {
+impl<'s> SwEffect<'s> {
     pub fn remove(self) {
         self.sol.internal_remove_sw_effect(self.uid);
     }

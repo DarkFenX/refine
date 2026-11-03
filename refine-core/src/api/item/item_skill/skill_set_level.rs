@@ -1,5 +1,5 @@
 use crate::{
-    api::SkillMut,
+    api::Skill,
     num::SkillLevel,
     sol::{SolarSystem, UndoStep},
     ud::UItemId,
@@ -29,7 +29,7 @@ impl SolarSystem {
     }
 }
 
-impl<'s> SkillMut<'s> {
+impl<'s> Skill<'s> {
     pub fn set_level(&mut self, level: SkillLevel) {
         self.sol.internal_set_skill_level(self.uid, level);
     }

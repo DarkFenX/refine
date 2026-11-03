@@ -1,6 +1,6 @@
-use crate::{api::RawMAttrMut, num::UnitInterval, ud::UAttrMutationRequest};
+use crate::{api::RawMAttr, num::UnitInterval, ud::UAttrMutationRequest};
 
-impl<'s> RawMAttrMut<'s> {
+impl<'s> RawMAttr<'s> {
     /// Set roll for the attribute.
     pub fn set_roll(&mut self, roll: UnitInterval) {
         let attr_mutation = UAttrMutationRequest {

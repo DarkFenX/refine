@@ -1,12 +1,12 @@
 use crate::{
-    Count, FitMut, ItemMutCommon, PValue,
+    Count, Fit, ItemCommon, PValue,
     stats::{
         StatInJam, StatSensors, StatTimeOptions,
         err::{StatFitShipError, StatProbingSizeError},
     },
 };
 
-impl<'s> FitMut<'s> {
+impl<'s> Fit<'s> {
     pub fn get_stat_locks(&mut self) -> Result<Count, StatFitShipError<!>> {
         Ok(self.get_ship_for_stats()?.get_stat_locks()?)
     }

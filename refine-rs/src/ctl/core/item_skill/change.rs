@@ -86,7 +86,7 @@ impl SkillChangeCmdCtxItemBr {
 // Execution
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl SkillChangeCmd {
-    pub(in crate::ctl) fn execute(self, core_item: &mut rc::ItemMut) -> Result<ChangedItemIdsResp, SkillChangeError> {
+    pub(in crate::ctl) fn execute(self, core_item: &mut rc::Item) -> Result<ChangedItemIdsResp, SkillChangeError> {
         let Self {
             type_id,
             level,
@@ -120,7 +120,7 @@ impl SkillChangeCmdCtxItem {
         self,
         core_sol: &mut rc::SolarSystem,
     ) -> Result<ChangedItemIdsResp, ItemGetSkillChangeError> {
-        let mut core_item = core_sol.get_item_mut(&self.item_id)?;
+        let mut core_item = core_sol.get_item(&self.item_id)?;
         Ok(self.core.execute(&mut core_item)?)
     }
 }

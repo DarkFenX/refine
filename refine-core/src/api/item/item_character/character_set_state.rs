@@ -1,5 +1,5 @@
 use crate::{
-    api::CharacterMut,
+    api::Character,
     sol::{SolarSystem, UndoStep},
     ud::UItemId,
 };
@@ -28,7 +28,7 @@ impl SolarSystem {
     }
 }
 
-impl<'s> CharacterMut<'s> {
+impl<'s> Character<'s> {
     pub fn set_state(&mut self, state: bool) {
         let u_character = self.sol.u_data.items.get(self.uid).dc_character().unwrap();
         if state == u_character.get_character_state() {

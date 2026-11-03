@@ -26,7 +26,7 @@ pub enum SideEffectOp {
 // Conversions
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl SideEffectInfo {
-    pub(in crate::info::item) fn from_core(mut core_side_effect: rc::SideEffectMut) -> Self {
+    pub(in crate::info::item) fn from_core(mut core_side_effect: rc::SideEffect) -> Self {
         Self {
             chance: core_side_effect.get_chance(),
             state: core_side_effect.get_state(),

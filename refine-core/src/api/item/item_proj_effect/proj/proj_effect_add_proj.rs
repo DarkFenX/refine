@@ -1,5 +1,5 @@
 use crate::{
-    ItemId, ProjEffectMut, ProjMut, SolarSystem,
+    ItemId, Proj, ProjEffect, SolarSystem,
     err::{
         ProjAddError,
         basic::{ItemReceiveProjError, ProjNotFoundError},
@@ -47,10 +47,10 @@ impl SolarSystem {
     }
 }
 
-impl<'s> ProjEffectMut<'s> {
-    pub fn add_proj(&mut self, projectee_item_id: &ItemId) -> Result<ProjMut<'_>, ProjAddError> {
+impl<'s> ProjEffect<'s> {
+    pub fn add_proj(&mut self, projectee_item_id: &ItemId) -> Result<Proj<'_>, ProjAddError> {
         let projectee_uid = self.sol.u_data.items.int_id_by_ext_id_err(projectee_item_id)?;
         self.sol.internal_add_proj_effect_proj(self.uid, projectee_uid)?;
-        Ok(ProjMut::new(self.sol, self.uid, projectee_uid))
+        Ok(Proj::new(self.sol, self.uid, projectee_uid))
     }
 }

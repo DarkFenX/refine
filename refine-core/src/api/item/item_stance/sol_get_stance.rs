@@ -1,20 +1,15 @@
 use crate::{
-    api::{Stance, StanceMut},
+    api::Stance,
     err::basic::{ItemFoundError, ItemKindMatchError},
     sol::SolarSystem,
     ud::ItemId,
 };
 
 impl SolarSystem {
-    pub fn get_stance(&self, item_id: &ItemId) -> Result<Stance<'_>, StanceGetError> {
+    pub fn get_stance(&mut self, item_id: &ItemId) -> Result<Stance<'_>, StanceGetError> {
         let stance_uid = self.u_data.items.int_id_by_ext_id_err(item_id)?;
         self.u_data.items.get(stance_uid).dc_stance()?;
         Ok(Stance::new(self, stance_uid))
-    }
-    pub fn get_stance_mut(&mut self, item_id: &ItemId) -> Result<StanceMut<'_>, StanceGetError> {
-        let stance_uid = self.u_data.items.int_id_by_ext_id_err(item_id)?;
-        self.u_data.items.get(stance_uid).dc_stance()?;
-        Ok(StanceMut::new(self, stance_uid))
     }
 }
 

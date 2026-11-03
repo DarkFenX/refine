@@ -1,4 +1,4 @@
-use rc::ItemCommon;
+use rc::{ItemCommon, Lender};
 
 use super::shared::{get_attrs, get_effect_mode_overrides, get_effects, get_mods};
 #[cfg(feature = "serde")]
@@ -75,13 +75,13 @@ pub struct ModuleInfoExt {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl ModuleInfo {
     pub(in crate::info) fn from_core(
-        core_module: &mut rc::ModuleMut,
+        core_module: &mut rc::Module,
         item_info_modes: &OvrdMapLight<ItemId, ItemInfoMode>,
     ) -> Self {
         let module_id = core_module.get_item_id();
         let module_info_mode = item_info_modes.get(&module_id);
         let charge_info = core_module
-            .get_charge_mut()
+            .get_charge()
             .map(|mut core_charge| ChargeInfo::from_core(&mut core_charge, item_info_modes));
         let has_charge = charge_info.is_some();
         Self {
@@ -119,7 +119,10 @@ impl ModuleInfo {
                         spool_override: core_module.get_spool_override(),
                         optional_reload: core_module.get_optional_reload(),
                         optional_reload_override: core_module.get_optional_reload_override(),
-                        projs: core_module.iter_projs().map(RangedProjInfo::from_core).collect(),
+                        projs: core_module
+                            .iter_projs()
+                            .map_into_iter(RangedProjInfo::from_core)
+                            .collect(),
                         effect_mode_overrides: get_effect_mode_overrides(core_module, module_info_mode),
                         attrs: get_attrs(core_module, module_info_mode),
                         effects: get_effects(core_module, module_info_mode),

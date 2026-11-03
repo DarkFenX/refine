@@ -14,7 +14,7 @@ use crate::{
 // Fleets
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 pub(in crate::stats) fn get_stats_for_passed_fleets(
-    core_fleets: rc::MutIter<'_, rc::FleetMut<'_>>,
+    core_fleets: rc::EntityIter<'_, rc::Fleet<'_>>,
     fleet_options: &OvrdMapHeavy<FleetId, FleetStatsOptionsResolved>,
 ) -> Vec<(FleetId, FleetStats)> {
     core_fleets
@@ -34,7 +34,7 @@ pub(in crate::stats) fn get_stats_for_fleets_in_overrides(
         if !options.is_any_stat_requested() {
             continue;
         }
-        let Ok(mut core_fleet) = core_sol.get_fleet_mut(&fleet_id) else {
+        let Ok(mut core_fleet) = core_sol.get_fleet(&fleet_id) else {
             continue;
         };
         stats.push((fleet_id, options.execute(&mut core_fleet)));
@@ -46,7 +46,7 @@ pub(in crate::stats) fn get_stats_for_fleets_in_overrides(
 // Fits
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 pub(in crate::stats) fn get_stats_for_passed_fits(
-    core_fits: rc::MutIter<'_, rc::FitMut<'_>>,
+    core_fits: rc::EntityIter<'_, rc::Fit<'_>>,
     fit_options: &OvrdMapHeavy<FitId, FitStatsOptionsResolved>,
 ) -> Vec<(FitId, FitStats)> {
     core_fits
@@ -64,17 +64,17 @@ pub(in crate::stats) fn get_stats_for_fits_in_overrides<M>(
     is_member: M,
 ) -> Vec<(FitId, FitStats)>
 where
-    M: Fn(&rc::FitMut) -> bool,
+    M: Fn(&mut rc::Fit) -> bool,
 {
     let mut stats = Vec::with_capacity(fit_options.override_len());
     for (fit_id, options) in fit_options.iter_overrides() {
         if !options.is_any_stat_requested() {
             continue;
         }
-        let Ok(mut core_fit) = core_sol.get_fit_mut(&fit_id) else {
+        let Ok(mut core_fit) = core_sol.get_fit(&fit_id) else {
             continue;
         };
-        if !is_member(&core_fit) {
+        if !is_member(&mut core_fit) {
             continue;
         }
         stats.push((fit_id, options.execute(&mut core_fit)));
@@ -86,7 +86,7 @@ where
 // Items
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 pub(in crate::stats) fn extend_stats_for_passed_items(
-    core_items: rc::MutIter<'_, rc::ItemMut<'_>>,
+    core_items: rc::EntityIter<'_, rc::Item<'_>>,
     item_options: &OvrdMapHeavy<ItemId, ItemStatsOptionsResolved>,
     stats: &mut Vec<(ItemId, ItemStats)>,
 ) {
@@ -103,17 +103,17 @@ pub(in crate::stats) fn get_stats_for_items_in_overrides<M>(
     is_member: M,
 ) -> Vec<(ItemId, ItemStats)>
 where
-    M: Fn(&rc::ItemMut) -> bool,
+    M: Fn(&mut rc::Item) -> bool,
 {
     let mut stats = Vec::with_capacity(item_options.override_len());
     for (item_id, options) in item_options.iter_overrides() {
         if !options.is_any_stat_requested() {
             continue;
         }
-        let Ok(mut core_item) = core_sol.get_item_mut(&item_id) else {
+        let Ok(mut core_item) = core_sol.get_item(&item_id) else {
             continue;
         };
-        if !is_member(&core_item) {
+        if !is_member(&mut core_item) {
             continue;
         }
         stats.push((item_id, options.execute(&mut core_item)));

@@ -1,5 +1,5 @@
 use crate::{
-    api::FighterMut,
+    api::Fighter,
     misc::RearmMinion,
     sol::{SolarSystem, UndoStep},
     ud::UItemId,
@@ -26,7 +26,7 @@ impl SolarSystem {
     }
 }
 
-impl<'s> FighterMut<'s> {
+impl<'s> Fighter<'s> {
     /// Force the fighter squad's rearm behavior.
     ///
     /// Solar system's default is used when override is not set.

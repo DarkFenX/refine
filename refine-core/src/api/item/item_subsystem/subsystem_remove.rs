@@ -1,5 +1,5 @@
 use crate::{
-    api::SubsystemMut,
+    api::Subsystem,
     sol::{SolarSystem, UndoStep},
     ud::UItemId,
 };
@@ -14,7 +14,7 @@ impl SolarSystem {
     }
 }
 
-impl<'s> SubsystemMut<'s> {
+impl<'s> Subsystem<'s> {
     pub fn remove(self) {
         self.sol.internal_remove_subsystem(self.uid)
     }

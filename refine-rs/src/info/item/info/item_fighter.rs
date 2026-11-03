@@ -79,7 +79,7 @@ pub struct FighterInfoExt {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl FighterInfo {
     pub(in crate::info) fn from_core(
-        core_fighter: &mut rc::FighterMut,
+        core_fighter: &mut rc::Fighter,
         item_info_modes: &OvrdMapLight<ItemId, ItemInfoMode>,
     ) -> Self {
         let fighter_id = core_fighter.get_item_id();
@@ -87,7 +87,7 @@ impl FighterInfo {
         Self {
             id: fighter_id,
             autocharges: core_fighter
-                .iter_autocharges_mut()
+                .iter_autocharges()
                 .map_into_iter(|mut autocharge| {
                     (
                         autocharge.get_cont_effect_id(),
@@ -107,13 +107,16 @@ impl FighterInfo {
                     count_override: core_fighter.get_count_override(),
                     abilities: core_fighter
                         .iter_abilities()
-                        .map(|v| (v.get_id(), AbilityInfo::from_core(v)))
+                        .map_into_iter(|v| (v.get_id(), AbilityInfo::from_core(v)))
                         .collect(),
                     rearm_minion: core_fighter.get_rearm_minion(),
                     rearm_minion_override: core_fighter.get_rearm_minion_override(),
                     coordinates: core_fighter.get_coordinates(),
                     movement: core_fighter.get_movement(),
-                    projs: core_fighter.iter_projs().map(RangedProjInfo::from_core).collect(),
+                    projs: core_fighter
+                        .iter_projs()
+                        .map_into_iter(RangedProjInfo::from_core)
+                        .collect(),
                     effect_mode_overrides: get_effect_mode_overrides(core_fighter, fighter_info_mode),
                     attrs: get_attrs(core_fighter, fighter_info_mode),
                     effects: get_effects(core_fighter, fighter_info_mode),

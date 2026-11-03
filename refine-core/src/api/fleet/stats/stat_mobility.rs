@@ -1,9 +1,9 @@
 use crate::{
-    api::{AffectionDir, CtlAffectors, FleetMut},
+    api::{AffectionDir, CtlAffectors, Fleet},
     num::PValue,
 };
 
-impl<'s> FleetMut<'s> {
+impl<'s> Fleet<'s> {
     pub fn get_stat_mass(&mut self, ctl_affectors: CtlAffectors) -> PValue {
         let mut fleet_mass = PValue::ZERO;
         let savepoint = self.sol.internal_tx_savepoint();

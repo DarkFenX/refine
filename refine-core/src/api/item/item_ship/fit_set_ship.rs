@@ -1,6 +1,6 @@
 use crate::{
     ad::AItemId,
-    api::{Coordinates, FitMut, ItemTypeId, Movement, ShipMut},
+    api::{Coordinates, Fit, ItemTypeId, Movement, Ship},
     sol::{SolarSystem, UndoStep},
     ud::{UFitId, UItem, UItemId, UPhysics, UShip},
 };
@@ -47,14 +47,14 @@ impl SolarSystem {
     }
 }
 
-impl<'s> FitMut<'s> {
+impl<'s> Fit<'s> {
     /// Set ship, replacing current one with a new item.
     pub fn set_ship(
         &mut self,
         type_id: ItemTypeId,
         coordinates: Option<Coordinates>,
         movement: Option<Movement>,
-    ) -> ShipMut<'_> {
+    ) -> Ship<'_> {
         let mut u_physics = UPhysics::default();
         if let Some(coordinates) = coordinates {
             u_physics.coordinates = coordinates.into_xyz();
@@ -64,6 +64,6 @@ impl<'s> FitMut<'s> {
             u_physics.speed = movement.speed;
         }
         let ship_uid = self.sol.internal_set_fit_ship(self.uid, type_id.into_aid(), u_physics);
-        ShipMut::new(self.sol, ship_uid)
+        Ship::new(self.sol, ship_uid)
     }
 }

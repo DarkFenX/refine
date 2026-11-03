@@ -1,5 +1,5 @@
 use crate::{
-    api::{DroneMut, MinionState},
+    api::{Drone, MinionState},
     sol::{SolarSystem, UndoStep},
     ud::UItemId,
 };
@@ -26,7 +26,7 @@ impl SolarSystem {
     }
 }
 
-impl<'s> DroneMut<'s> {
+impl<'s> Drone<'s> {
     pub fn set_state(&mut self, state: MinionState) {
         let u_drone = self.sol.u_data.items.get(self.uid).dc_drone().unwrap();
         if state == u_drone.get_drone_state() {

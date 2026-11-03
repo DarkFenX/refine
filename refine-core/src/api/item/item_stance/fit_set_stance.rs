@@ -1,6 +1,6 @@
 use crate::{
     ad::AItemId,
-    api::{FitMut, ItemTypeId, StanceMut},
+    api::{Fit, ItemTypeId, Stance},
     sol::{SolarSystem, UndoStep},
     ud::{UFitId, UItem, UItemId, UStance},
 };
@@ -36,10 +36,10 @@ impl SolarSystem {
     }
 }
 
-impl<'s> FitMut<'s> {
+impl<'s> Fit<'s> {
     /// Set stance, replacing current one with a new item.
-    pub fn set_stance(&mut self, type_id: ItemTypeId) -> StanceMut<'_> {
+    pub fn set_stance(&mut self, type_id: ItemTypeId) -> Stance<'_> {
         let stance_uid = self.sol.internal_set_fit_stance(self.uid, type_id.into_aid());
-        StanceMut::new(self.sol, stance_uid)
+        Stance::new(self.sol, stance_uid)
     }
 }

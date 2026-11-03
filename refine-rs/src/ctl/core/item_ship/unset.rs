@@ -61,8 +61,8 @@ impl ShipUnsetCmdCtxFitBr {
 // Execution
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl ShipUnsetCmd {
-    pub(in crate::ctl) fn execute(self, core_fit: &mut rc::FitMut) {
-        if let Some(core_ship) = core_fit.get_ship_mut() {
+    pub(in crate::ctl) fn execute(self, core_fit: &mut rc::Fit) {
+        if let Some(core_ship) = core_fit.get_ship() {
             core_ship.remove();
         }
     }
@@ -70,7 +70,7 @@ impl ShipUnsetCmd {
 
 impl ShipUnsetCmdCtxFit {
     pub(in crate::ctl) fn execute(self, core_sol: &mut rc::SolarSystem) -> Result<(), FitGetShipUnsetError> {
-        let mut core_fit = core_sol.get_fit_mut(&self.fit_id)?;
+        let mut core_fit = core_sol.get_fit(&self.fit_id)?;
         self.core.execute(&mut core_fit);
         Ok(())
     }

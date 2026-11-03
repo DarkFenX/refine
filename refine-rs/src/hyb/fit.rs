@@ -276,7 +276,7 @@ impl FitHybridCmdBr {
 // Execution
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl FitHybridCmd {
-    pub(crate) fn execute(self, core_fit: &mut rc::FitMut) -> Result<CmdResp, FitHybridError> {
+    pub(crate) fn execute(self, core_fit: &mut rc::Fit) -> Result<CmdResp, FitHybridError> {
         Ok(match self {
             Self::Ctl(ctl_cmd) => ctl_cmd.execute(core_fit)?,
             Self::Info(info_cmd) => info_cmd.execute(core_fit)?,

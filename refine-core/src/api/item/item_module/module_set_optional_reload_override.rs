@@ -1,5 +1,5 @@
 use crate::{
-    api::ModuleMut,
+    api::Module,
     misc::OptionalReload,
     sol::{SolarSystem, UndoStep},
     ud::UItemId,
@@ -26,7 +26,7 @@ impl SolarSystem {
     }
 }
 
-impl<'s> ModuleMut<'s> {
+impl<'s> Module<'s> {
     /// Force module to use specific optional reload behavior.
     ///
     /// Solar system's default is used when override is not set.

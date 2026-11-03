@@ -1,5 +1,5 @@
 use crate::{
-    api::BoosterMut,
+    api::Booster,
     sol::{SolarSystem, UndoStep},
     ud::UItemId,
 };
@@ -14,7 +14,7 @@ impl SolarSystem {
     }
 }
 
-impl<'s> BoosterMut<'s> {
+impl<'s> Booster<'s> {
     pub fn remove(self) {
         self.sol.internal_remove_booster(self.uid);
     }

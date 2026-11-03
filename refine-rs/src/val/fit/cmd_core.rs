@@ -101,7 +101,7 @@ impl FitValCmdCtxFitBr {
 // Execution
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl FitValCmd {
-    pub(crate) fn execute(self, core_fit: &mut rc::FitMut) -> FitValResult {
+    pub(crate) fn execute(self, core_fit: &mut rc::Fit) -> FitValResult {
         match self.info_mode {
             ValResultMode::Simple => FitValResult {
                 passed: core_fit.validate_fast(&self.options),
@@ -120,7 +120,7 @@ impl FitValCmd {
 
 impl FitValCmdCtxFit {
     pub(in crate::val) fn execute(self, core_sol: &mut rc::SolarSystem) -> Result<FitValResult, FitGetFitValError> {
-        let mut core_fit = core_sol.get_fit_mut(&self.fit_id)?;
+        let mut core_fit = core_sol.get_fit(&self.fit_id)?;
         Ok(self.core.execute(&mut core_fit))
     }
 }

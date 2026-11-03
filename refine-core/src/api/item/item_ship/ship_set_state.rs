@@ -1,5 +1,5 @@
 use crate::{
-    api::ShipMut,
+    api::Ship,
     sol::{SolarSystem, UndoStep},
     ud::UItemId,
 };
@@ -25,7 +25,7 @@ impl SolarSystem {
     }
 }
 
-impl<'s> ShipMut<'s> {
+impl<'s> Ship<'s> {
     pub fn set_state(&mut self, state: bool) {
         let u_ship = self.sol.u_data.items.get(self.uid).dc_ship().unwrap();
         if state == u_ship.get_ship_state() {

@@ -133,7 +133,7 @@ impl ModuleAddCmdCtxFitBr {
 // Execution
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl ModuleAddCmd {
-    pub(in crate::ctl) fn execute(self, core_fit: &mut rc::FitMut) -> Result<AddedItemIdsResp, ModuleAddError> {
+    pub(in crate::ctl) fn execute(self, core_fit: &mut rc::Fit) -> Result<AddedItemIdsResp, ModuleAddError> {
         let Self {
             rack,
             add_mode,
@@ -183,7 +183,7 @@ impl ModuleAddCmdCtxFit {
         self,
         core_sol: &mut rc::SolarSystem,
     ) -> Result<AddedItemIdsResp, FitGetModuleAddError> {
-        let mut core_fit = core_sol.get_fit_mut(&self.fit_id)?;
+        let mut core_fit = core_sol.get_fit(&self.fit_id)?;
         Ok(self.core.execute(&mut core_fit)?)
     }
 }

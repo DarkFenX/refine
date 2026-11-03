@@ -1,6 +1,6 @@
 use super::shared::get_fit_rack_mut;
 use crate::{
-    api::{ModuleMut, RemoveMode},
+    api::{Module, RemoveMode},
     num::Index,
     sol::{SolarSystem, UndoStep},
     ud::UItemId,
@@ -46,7 +46,7 @@ impl SolarSystem {
     }
 }
 
-impl<'s> ModuleMut<'s> {
+impl<'s> Module<'s> {
     pub fn remove(self, pos_mode: RemoveMode) {
         self.sol.internal_remove_module(self.uid, pos_mode)
     }

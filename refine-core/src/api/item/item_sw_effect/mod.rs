@@ -1,5 +1,5 @@
 pub use sol_get_sw_effect::SwEffectGetError;
-pub use sw_effect::{SwEffect, SwEffectMut};
+pub use sw_effect::SwEffect;
 
 mod sol_add_sw_effect;
 mod sol_get_sw_effect;

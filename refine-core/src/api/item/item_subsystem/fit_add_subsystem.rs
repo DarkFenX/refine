@@ -1,6 +1,6 @@
 use crate::{
     ad::AItemId,
-    api::{FitMut, ItemTypeId, SubsystemMut},
+    api::{Fit, ItemTypeId, Subsystem},
     sol::{SolarSystem, UndoStep},
     ud::{UFitId, UItem, UItemId, USubsystem},
 };
@@ -30,9 +30,9 @@ impl SolarSystem {
     }
 }
 
-impl<'s> FitMut<'s> {
-    pub fn add_subsystem(&mut self, type_id: ItemTypeId) -> SubsystemMut<'_> {
+impl<'s> Fit<'s> {
+    pub fn add_subsystem(&mut self, type_id: ItemTypeId) -> Subsystem<'_> {
         let subsystem_uid = self.sol.internal_add_subsystem(self.uid, type_id.into_aid());
-        SubsystemMut::new(self.sol, subsystem_uid)
+        Subsystem::new(self.sol, subsystem_uid)
     }
 }

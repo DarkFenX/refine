@@ -56,7 +56,7 @@ pub struct SkillInfoExt {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl SkillInfo {
     pub(in crate::info) fn from_core(
-        core_skill: &mut rc::SkillMut,
+        core_skill: &mut rc::Skill,
         item_info_modes: &OvrdMapLight<ItemId, ItemInfoMode>,
     ) -> Self {
         let skill_id = core_skill.get_item_id();

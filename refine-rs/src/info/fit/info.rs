@@ -72,7 +72,7 @@ impl ModuleRacks {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl FitInfo {
     pub(in crate::info) fn from_core(
-        core_fit: &mut rc::FitMut,
+        core_fit: &mut rc::Fit,
         fit_info_modes: &OvrdMapLight<FitId, FitInfoMode>,
         item_info_modes: &OvrdMapLight<ItemId, ItemInfoMode>,
     ) -> Self {
@@ -85,49 +85,49 @@ impl FitInfo {
                 FitInfoMode::Full => Some(FitInfoExt {
                     fleet_id: core_fit.get_fleet().map(|v| v.get_fleet_id()),
                     character: core_fit
-                        .get_character_mut()
+                        .get_character()
                         .map(|mut core_character| CharacterInfo::from_core(&mut core_character, item_info_modes)),
                     skills: core_fit
-                        .iter_skills_mut()
+                        .iter_skills()
                         .map_into_iter(|mut core_skill| SkillInfo::from_core(&mut core_skill, item_info_modes))
                         .collect(),
                     implants: core_fit
-                        .iter_implants_mut()
+                        .iter_implants()
                         .map_into_iter(|mut core_implant| ImplantInfo::from_core(&mut core_implant, item_info_modes))
                         .collect(),
                     boosters: core_fit
-                        .iter_boosters_mut()
+                        .iter_boosters()
                         .map_into_iter(|mut core_booster| BoosterInfo::from_core(&mut core_booster, item_info_modes))
                         .collect(),
                     ship: core_fit
-                        .get_ship_mut()
+                        .get_ship()
                         .map(|mut core_ship| ShipInfo::from_core(&mut core_ship, item_info_modes)),
                     stance: core_fit
-                        .get_stance_mut()
+                        .get_stance()
                         .map(|mut core_stance| StanceInfo::from_core(&mut core_stance, item_info_modes)),
                     subsystems: core_fit
-                        .iter_subsystems_mut()
+                        .iter_subsystems()
                         .map_into_iter(|mut core_subsystem| {
                             SubsystemInfo::from_core(&mut core_subsystem, item_info_modes)
                         })
                         .collect(),
                     modules: ModuleRacks {
                         high: core_fit
-                            .iter_modules_mut(rc::ModRack::High)
+                            .iter_modules(rc::ModRack::High)
                             .map_into_iter(|core_module| {
                                 core_module
                                     .map(|mut core_module| ModuleInfo::from_core(&mut core_module, item_info_modes))
                             })
                             .collect(),
                         mid: core_fit
-                            .iter_modules_mut(rc::ModRack::Mid)
+                            .iter_modules(rc::ModRack::Mid)
                             .map_into_iter(|core_module| {
                                 core_module
                                     .map(|mut core_module| ModuleInfo::from_core(&mut core_module, item_info_modes))
                             })
                             .collect(),
                         low: core_fit
-                            .iter_modules_mut(rc::ModRack::Low)
+                            .iter_modules(rc::ModRack::Low)
                             .map_into_iter(|core_module| {
                                 core_module
                                     .map(|mut core_module| ModuleInfo::from_core(&mut core_module, item_info_modes))
@@ -135,23 +135,23 @@ impl FitInfo {
                             .collect(),
                     },
                     rigs: core_fit
-                        .iter_rigs_mut()
+                        .iter_rigs()
                         .map_into_iter(|mut core_rig| RigInfo::from_core(&mut core_rig, item_info_modes))
                         .collect(),
                     services: core_fit
-                        .iter_services_mut()
+                        .iter_services()
                         .map_into_iter(|mut core_service| ServiceInfo::from_core(&mut core_service, item_info_modes))
                         .collect(),
                     drones: core_fit
-                        .iter_drones_mut()
+                        .iter_drones()
                         .map_into_iter(|mut core_drone| DroneInfo::from_core(&mut core_drone, item_info_modes))
                         .collect(),
                     fighters: core_fit
-                        .iter_fighters_mut()
+                        .iter_fighters()
                         .map_into_iter(|mut core_fighter| FighterInfo::from_core(&mut core_fighter, item_info_modes))
                         .collect(),
                     fw_effects: core_fit
-                        .iter_fw_effects_mut()
+                        .iter_fw_effects()
                         .map_into_iter(|mut core_fw_effect| {
                             FwEffectInfo::from_core(&mut core_fw_effect, item_info_modes)
                         })

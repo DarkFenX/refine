@@ -1,6 +1,6 @@
 use crate::{
     ad::AItemId,
-    api::{DormantMutationMut, EffectiveMutationMut, ItemTypeId, MutationMut},
+    api::{DormantMutation, EffectiveMutation, ItemTypeId, Mutation},
     sol::SolarSystem,
     ud::{UItem, UItemId, err::ItemMutatedError},
 };
@@ -20,8 +20,8 @@ impl SolarSystem {
     }
 }
 
-impl<'s> MutationMut<'s> {
-    pub fn set_mutator_type_id(self, mutator_type_id: ItemTypeId) -> MutationMut<'s> {
+impl<'s> Mutation<'s> {
+    pub fn set_mutator_type_id(self, mutator_type_id: ItemTypeId) -> Mutation<'s> {
         match self {
             Self::Effective(effective_mutation) => effective_mutation.set_mutator_type_id(mutator_type_id),
             Self::Dormant(dormant_mutation) => dormant_mutation.set_mutator_type_id(mutator_type_id),
@@ -29,20 +29,20 @@ impl<'s> MutationMut<'s> {
     }
 }
 
-impl<'s> EffectiveMutationMut<'s> {
-    pub fn set_mutator_type_id(self, mutator_type_id: ItemTypeId) -> MutationMut<'s> {
+impl<'s> EffectiveMutation<'s> {
+    pub fn set_mutator_type_id(self, mutator_type_id: ItemTypeId) -> Mutation<'s> {
         self.sol
             .internal_set_mutator_aid(self.item_uid, mutator_type_id.into_aid())
             .unwrap();
-        self.sol.api_get_item_mutation_mut(self.item_uid).unwrap()
+        self.sol.api_get_item_mutation(self.item_uid).unwrap()
     }
 }
 
-impl<'s> DormantMutationMut<'s> {
-    pub fn set_mutator_type_id(self, mutator_type_id: ItemTypeId) -> MutationMut<'s> {
+impl<'s> DormantMutation<'s> {
+    pub fn set_mutator_type_id(self, mutator_type_id: ItemTypeId) -> Mutation<'s> {
         self.sol
             .internal_set_mutator_aid(self.item_uid, mutator_type_id.into_aid())
             .unwrap();
-        self.sol.api_get_item_mutation_mut(self.item_uid).unwrap()
+        self.sol.api_get_item_mutation(self.item_uid).unwrap()
     }
 }

@@ -18,7 +18,7 @@ impl<'r, 's> SolarSystem<'r> {
         let (fleet_id, fleet_info) = self
             .exec_standard(|core_sol| {
                 let fleet_id = ctl_cmd.execute(core_sol).map(|ctl_cmd_resp| ctl_cmd_resp.fleet_id)?;
-                let mut core_fleet = core_sol.get_fleet_mut(&fleet_id).unwrap();
+                let mut core_fleet = core_sol.get_fleet(&fleet_id).unwrap();
                 let fleet_info = info_cmd.execute(&mut core_fleet);
                 Ok::<_, FleetAddError>((fleet_id, fleet_info))
             })

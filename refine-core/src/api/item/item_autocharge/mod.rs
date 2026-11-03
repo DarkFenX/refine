@@ -1,4 +1,4 @@
-pub use autocharge::{Autocharge, AutochargeMut};
+pub use autocharge::Autocharge;
 pub use sol_get_autocharge::AutochargeGetError;
 
 mod autocharge;

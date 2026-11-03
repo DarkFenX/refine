@@ -1,5 +1,5 @@
 use crate::{
-    api::StanceMut,
+    api::Stance,
     sol::{SolarSystem, UndoStep},
     ud::UItemId,
 };
@@ -26,7 +26,7 @@ impl SolarSystem {
     }
 }
 
-impl<'s> StanceMut<'s> {
+impl<'s> Stance<'s> {
     pub fn set_state(&mut self, state: bool) {
         let u_stance = self.sol.u_data.items.get(self.uid).dc_stance().unwrap();
         if state == u_stance.get_stance_state() {

@@ -19,9 +19,9 @@ impl SideEffects {
     pub(in crate::ctl) fn extend(&mut self, effect_modes: impl IntoIterator<Item = (EffectId, bool)>) {
         self.data.extend(effect_modes);
     }
-    pub(in crate::ctl::core) fn apply(&self, core_booster: &mut rc::BoosterMut) {
+    pub(in crate::ctl::core) fn apply(&self, core_booster: &mut rc::Booster) {
         for (effect_id, status) in self.data.iter() {
-            if let Ok(mut core_side_effect) = core_booster.get_side_effect_mut(effect_id) {
+            if let Ok(mut core_side_effect) = core_booster.get_side_effect(effect_id) {
                 core_side_effect.set_state(*status);
             }
         }

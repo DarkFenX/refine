@@ -113,7 +113,7 @@ impl FitChangeCmdCtxFitBr {
 // Execution
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl FitChangeCmd {
-    pub(in crate::ctl) fn execute(self, core_fit: &mut rc::FitMut) -> Result<(), FitChangeError> {
+    pub(in crate::ctl) fn execute(self, core_fit: &mut rc::Fit) -> Result<(), FitChangeError> {
         let Self {
             fleet_id,
             sec_status,
@@ -143,7 +143,7 @@ pub enum FitChangeError {
 
 impl FitChangeCmdCtxFit {
     pub(in crate::ctl) fn execute(self, core_sol: &mut rc::SolarSystem) -> Result<(), FitGetFitChangeError> {
-        let mut core_fit = core_sol.get_fit_mut(&self.fit_id)?;
+        let mut core_fit = core_sol.get_fit(&self.fit_id)?;
         Ok(self.core.execute(&mut core_fit)?)
     }
 }

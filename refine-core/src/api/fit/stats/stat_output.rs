@@ -1,5 +1,5 @@
 use crate::{
-    FitMut, PValue,
+    Fit, PValue,
     stats::{
         StatCritOptions, StatDmg, StatDmgApplied, StatDmgItemKinds, StatMining, StatMiningItemKinds,
         StatMiningResourceKind, StatNeutItemKinds, StatOutRepItemKinds, StatOutReps, StatTimeOptions,
@@ -9,7 +9,7 @@ use crate::{
     ud::ItemId,
 };
 
-impl<'s> FitMut<'s> {
+impl<'s> Fit<'s> {
     pub fn get_stat_dmg(
         &mut self,
         item_kinds: StatDmgItemKinds,

@@ -92,7 +92,7 @@ impl ItemStatsCmdCtxItemBr {
 // Execution
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl ItemStatsCmd {
-    pub(crate) fn execute(self, core_item: &mut rc::ItemMut) -> ItemStatsResp {
+    pub(crate) fn execute(self, core_item: &mut rc::Item) -> ItemStatsResp {
         ItemStatsResp {
             item: self.item_options.stat_resolve().execute(core_item),
         }
@@ -104,7 +104,7 @@ impl ItemStatsCmdCtxItem {
         self,
         core_sol: &mut rc::SolarSystem,
     ) -> Result<ItemStatsResp, ItemGetItemStatsError> {
-        let mut core_item = core_sol.get_item_mut(&self.item_id)?;
+        let mut core_item = core_sol.get_item(&self.item_id)?;
         Ok(self.core.execute(&mut core_item))
     }
 }

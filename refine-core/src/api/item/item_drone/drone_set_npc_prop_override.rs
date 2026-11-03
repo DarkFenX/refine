@@ -1,5 +1,5 @@
 use crate::{
-    api::DroneMut,
+    api::Drone,
     misc::NpcProp,
     sol::{SolarSystem, UndoStep},
     ud::UItemId,
@@ -24,7 +24,7 @@ impl SolarSystem {
     }
 }
 
-impl<'s> DroneMut<'s> {
+impl<'s> Drone<'s> {
     /// Force drone to use specific propulsion mode.
     ///
     /// Solar system's default is used when override is not set.

@@ -1,6 +1,6 @@
 use crate::{
     ad::AItemId,
-    api::{FitMut, ItemTypeId, ServiceMut, ServiceState},
+    api::{Fit, ItemTypeId, Service, ServiceState},
     sol::{SolarSystem, UndoStep},
     ud::{UFitId, UItem, UItemId, UService},
 };
@@ -35,9 +35,9 @@ impl SolarSystem {
     }
 }
 
-impl<'s> FitMut<'s> {
-    pub fn add_service(&mut self, type_id: ItemTypeId, state: ServiceState) -> ServiceMut<'_> {
+impl<'s> Fit<'s> {
+    pub fn add_service(&mut self, type_id: ItemTypeId, state: ServiceState) -> Service<'_> {
         let service_uid = self.sol.internal_add_service(self.uid, type_id.into_aid(), state);
-        ServiceMut::new(self.sol, service_uid)
+        Service::new(self.sol, service_uid)
     }
 }

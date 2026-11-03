@@ -57,7 +57,7 @@ pub struct ShipInfoExt {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl ShipInfo {
     pub(in crate::info) fn from_core(
-        core_ship: &mut rc::ShipMut,
+        core_ship: &mut rc::Ship,
         item_info_modes: &OvrdMapLight<ItemId, ItemInfoMode>,
     ) -> Self {
         let ship_id = core_ship.get_item_id();

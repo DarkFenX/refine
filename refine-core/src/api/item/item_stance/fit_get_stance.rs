@@ -1,33 +1,12 @@
-use crate::{
-    api::{Fit, FitMut, Stance, StanceMut},
-    sol::SolarSystem,
-    ud::UFitId,
-};
+use crate::api::{Fit, Stance};
 
 impl<'s> Fit<'s> {
-    pub fn get_stance(&self) -> Option<Stance<'_>> {
-        get_stance(self.sol, self.uid)
-    }
-}
-
-impl<'s> FitMut<'s> {
-    pub fn get_stance(&self) -> Option<Stance<'_>> {
-        get_stance(self.sol, self.uid)
-    }
-    pub fn get_stance_mut(&mut self) -> Option<StanceMut<'_>> {
+    pub fn get_stance(&mut self) -> Option<Stance<'_>> {
         self.sol
             .u_data
             .fits
             .get(self.uid)
             .stance
-            .map(|stance_uid| StanceMut::new(self.sol, stance_uid))
+            .map(|stance_uid| Stance::new(self.sol, stance_uid))
     }
-}
-
-fn get_stance(sol: &SolarSystem, fit_uid: UFitId) -> Option<Stance<'_>> {
-    sol.u_data
-        .fits
-        .get(fit_uid)
-        .stance
-        .map(|stance_uid| Stance::new(sol, stance_uid))
 }

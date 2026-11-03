@@ -1,20 +1,15 @@
 use crate::{
-    api::{Ship, ShipMut},
+    api::Ship,
     err::basic::{ItemFoundError, ItemKindMatchError},
     sol::SolarSystem,
     ud::ItemId,
 };
 
 impl SolarSystem {
-    pub fn get_ship(&self, item_id: &ItemId) -> Result<Ship<'_>, ShipGetError> {
+    pub fn get_ship(&mut self, item_id: &ItemId) -> Result<Ship<'_>, ShipGetError> {
         let ship_uid = self.u_data.items.int_id_by_ext_id_err(item_id)?;
         self.u_data.items.get(ship_uid).dc_ship()?;
         Ok(Ship::new(self, ship_uid))
-    }
-    pub fn get_ship_mut(&mut self, item_id: &ItemId) -> Result<ShipMut<'_>, ShipGetError> {
-        let ship_uid = self.u_data.items.int_id_by_ext_id_err(item_id)?;
-        self.u_data.items.get(ship_uid).dc_ship()?;
-        Ok(ShipMut::new(self, ship_uid))
     }
 }
 

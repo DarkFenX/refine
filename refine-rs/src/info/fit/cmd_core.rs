@@ -118,7 +118,7 @@ impl FitInfoCmdCtxFitBr {
 // Execution
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl FitInfoCmd {
-    pub(crate) fn execute(self, core_fit: &mut rc::FitMut) -> FitInfo {
+    pub(crate) fn execute(self, core_fit: &mut rc::Fit) -> FitInfo {
         FitInfo::from_core(
             core_fit,
             &OvrdMapLight::from_default(self.shared.fit_mode),
@@ -129,7 +129,7 @@ impl FitInfoCmd {
 
 impl FitInfoCmdCtxFit {
     pub(in crate::info) fn execute(self, core_sol: &mut rc::SolarSystem) -> Result<FitInfo, FitGetFitInfoError> {
-        let mut core_fit = core_sol.get_fit_mut(&self.fit_id)?;
+        let mut core_fit = core_sol.get_fit(&self.fit_id)?;
         Ok(self.core.execute(&mut core_fit))
     }
 }

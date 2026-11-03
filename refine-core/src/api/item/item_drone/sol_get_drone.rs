@@ -1,20 +1,15 @@
 use crate::{
-    api::{Drone, DroneMut},
+    api::Drone,
     err::basic::{ItemFoundError, ItemKindMatchError},
     sol::SolarSystem,
     ud::ItemId,
 };
 
 impl SolarSystem {
-    pub fn get_drone(&self, item_id: &ItemId) -> Result<Drone<'_>, DroneGetError> {
+    pub fn get_drone(&mut self, item_id: &ItemId) -> Result<Drone<'_>, DroneGetError> {
         let drone_uid = self.u_data.items.int_id_by_ext_id_err(item_id)?;
         self.u_data.items.get(drone_uid).dc_drone()?;
         Ok(Drone::new(self, drone_uid))
-    }
-    pub fn get_drone_mut(&mut self, item_id: &ItemId) -> Result<DroneMut<'_>, DroneGetError> {
-        let drone_uid = self.u_data.items.int_id_by_ext_id_err(item_id)?;
-        self.u_data.items.get(drone_uid).dc_drone()?;
-        Ok(DroneMut::new(self, drone_uid))
     }
 }
 

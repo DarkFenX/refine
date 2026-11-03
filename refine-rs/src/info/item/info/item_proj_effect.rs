@@ -1,4 +1,4 @@
-use rc::ItemCommon;
+use rc::{ItemCommon, Lender};
 
 use super::shared::{get_attrs, get_effect_mode_overrides, get_effects, get_mods};
 #[cfg(feature = "serde")]
@@ -59,7 +59,7 @@ pub struct ProjEffectInfoExt {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl ProjEffectInfo {
     pub(in crate::info) fn from_core(
-        core_proj_effect: &mut rc::ProjEffectMut,
+        core_proj_effect: &mut rc::ProjEffect,
         item_info_modes: &OvrdMapLight<ItemId, ItemInfoMode>,
     ) -> Self {
         let proj_effect_id = core_proj_effect.get_item_id();
@@ -73,7 +73,10 @@ impl ProjEffectInfo {
                     kind: ItemKind::ProjEffect,
                     type_id: core_proj_effect.get_type_id(),
                     state: core_proj_effect.get_state(),
-                    projs: core_proj_effect.iter_projs().map(ProjInfo::from_core).collect(),
+                    projs: core_proj_effect
+                        .iter_projs()
+                        .map_into_iter(ProjInfo::from_core)
+                        .collect(),
                     effect_mode_overrides: get_effect_mode_overrides(core_proj_effect, proj_effect_info_mode),
                     attrs: get_attrs(core_proj_effect, proj_effect_info_mode),
                     effects: get_effects(core_proj_effect, proj_effect_info_mode),

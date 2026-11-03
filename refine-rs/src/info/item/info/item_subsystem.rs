@@ -57,7 +57,7 @@ pub struct SubsystemInfoExt {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl SubsystemInfo {
     pub(in crate::info) fn from_core(
-        core_subsystem: &mut rc::SubsystemMut,
+        core_subsystem: &mut rc::Subsystem,
         item_info_modes: &OvrdMapLight<ItemId, ItemInfoMode>,
     ) -> Self {
         let subsystem_id = core_subsystem.get_item_id();

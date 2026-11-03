@@ -1,5 +1,5 @@
 pub use fit_add_skill::SkillAddError;
-pub use skill::{Skill, SkillMut};
+pub use skill::Skill;
 pub use skill_set_type_id::SkillTypeIdSetError;
 pub use sol_get_skill::SkillGetError;
 

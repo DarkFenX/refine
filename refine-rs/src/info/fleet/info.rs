@@ -22,7 +22,7 @@ pub struct FleetInfoExt {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl FleetInfo {
     pub(in crate::info) fn from_core(
-        core_fleet: &mut rc::FleetMut,
+        core_fleet: &mut rc::Fleet,
         fleet_info_modes: &OvrdMapLight<FleetId, FleetInfoMode>,
         fit_info_modes: &OvrdMapLight<FitId, FitInfoMode>,
         item_info_modes: &OvrdMapLight<ItemId, ItemInfoMode>,
@@ -35,7 +35,7 @@ impl FleetInfo {
                 FleetInfoMode::Id => None,
                 FleetInfoMode::Full => Some(FleetInfoExt {
                     fits: core_fleet
-                        .iter_fits_mut()
+                        .iter_fits()
                         .map_into_iter(|mut core_fit| {
                             FitInfo::from_core(&mut core_fit, fit_info_modes, item_info_modes)
                         })

@@ -1,5 +1,5 @@
 use crate::{
-    api::FwEffectMut,
+    api::FwEffect,
     sol::{SolarSystem, UndoStep},
     ud::UItemId,
 };
@@ -28,7 +28,7 @@ impl SolarSystem {
     }
 }
 
-impl<'s> FwEffectMut<'s> {
+impl<'s> FwEffect<'s> {
     pub fn set_state(&mut self, state: bool) {
         let u_fw_effect = self.sol.u_data.items.get(self.uid).dc_fw_effect().unwrap();
         if state == u_fw_effect.get_fw_effect_state() {

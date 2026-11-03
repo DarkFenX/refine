@@ -1,6 +1,6 @@
 use crate::{
     ad::AItemId,
-    api::{ItemTypeId, RigMut},
+    api::{ItemTypeId, Rig},
     sol::{SolarSystem, UndoStep},
     ud::UItemId,
 };
@@ -22,7 +22,7 @@ impl SolarSystem {
     }
 }
 
-impl<'s> RigMut<'s> {
+impl<'s> Rig<'s> {
     /// Set type ID, replacing currently used EVE item by another, preserving all the user data.
     pub fn set_type_id(&mut self, type_id: ItemTypeId) {
         self.sol.internal_set_rig_type_aid(self.uid, type_id.into_aid())

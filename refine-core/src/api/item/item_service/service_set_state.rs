@@ -1,5 +1,5 @@
 use crate::{
-    api::{ServiceMut, ServiceState},
+    api::{Service, ServiceState},
     sol::{SolarSystem, UndoStep},
     ud::UItemId,
 };
@@ -26,7 +26,7 @@ impl SolarSystem {
     }
 }
 
-impl<'s> ServiceMut<'s> {
+impl<'s> Service<'s> {
     pub fn set_state(&mut self, state: ServiceState) {
         let u_service = self.sol.u_data.items.get(self.uid).dc_service().unwrap();
         if state == u_service.get_service_state() {

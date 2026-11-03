@@ -1,4 +1,4 @@
-pub use proj_effect::{ProjEffect, ProjEffectMut};
+pub use proj_effect::ProjEffect;
 pub use sol_get_proj_effect::ProjEffectGetError;
 
 mod proj;

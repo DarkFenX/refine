@@ -1,33 +1,12 @@
-use crate::{
-    api::{Fit, FitMut, Ship, ShipMut},
-    sol::SolarSystem,
-    ud::UFitId,
-};
+use crate::api::{Fit, Ship};
 
 impl<'s> Fit<'s> {
-    pub fn get_ship(&self) -> Option<Ship<'_>> {
-        get_ship(self.sol, self.uid)
-    }
-}
-
-impl<'s> FitMut<'s> {
-    pub fn get_ship(&self) -> Option<Ship<'_>> {
-        get_ship(self.sol, self.uid)
-    }
-    pub fn get_ship_mut(&mut self) -> Option<ShipMut<'_>> {
+    pub fn get_ship(&mut self) -> Option<Ship<'_>> {
         self.sol
             .u_data
             .fits
             .get(self.uid)
             .ship
-            .map(|ship_uid| ShipMut::new(self.sol, ship_uid))
+            .map(|ship_uid| Ship::new(self.sol, ship_uid))
     }
-}
-
-fn get_ship(sol: &SolarSystem, fit_uid: UFitId) -> Option<Ship<'_>> {
-    sol.u_data
-        .fits
-        .get(fit_uid)
-        .ship
-        .map(|ship_uid| Ship::new(sol, ship_uid))
 }

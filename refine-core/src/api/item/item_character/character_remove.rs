@@ -1,5 +1,5 @@
 use crate::{
-    api::CharacterMut,
+    api::Character,
     sol::{SolarSystem, UndoStep},
     ud::UItemId,
 };
@@ -14,7 +14,7 @@ impl SolarSystem {
     }
 }
 
-impl<'s> CharacterMut<'s> {
+impl<'s> Character<'s> {
     pub fn remove(self) {
         self.sol.internal_remove_character(self.uid);
     }

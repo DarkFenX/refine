@@ -55,7 +55,7 @@ pub struct ServiceInfoExt {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl ServiceInfo {
     pub(in crate::info) fn from_core(
-        core_service: &mut rc::ServiceMut,
+        core_service: &mut rc::Service,
         item_info_modes: &OvrdMapLight<ItemId, ItemInfoMode>,
     ) -> Self {
         let service_id = core_service.get_item_id();

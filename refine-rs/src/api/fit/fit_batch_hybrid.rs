@@ -13,7 +13,7 @@ impl Fit<'_, '_> {
             .exec_standard(move |core_sol| {
                 // Holding mutex on sol - nothing can remove the core fit without consuming the
                 // high-level Fit
-                let mut core_fit = core_sol.get_fit_mut(&fit_id).unwrap();
+                let mut core_fit = core_sol.get_fit(&fit_id).unwrap();
                 let mut cmd_resps = CmdResps::with_capacity(cmds.len());
                 for (index, cmd) in cmds.into_iter().enumerate() {
                     let cmd_resp = cmd

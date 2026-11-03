@@ -1,4 +1,4 @@
-pub use drone::{Drone, DroneMut};
+pub use drone::Drone;
 pub use sol_get_drone::DroneGetError;
 
 mod drone;

@@ -1,4 +1,4 @@
-pub use charge::{Charge, ChargeMut};
+pub use charge::Charge;
 pub use sol_get_charge::ChargeGetError;
 
 mod charge;

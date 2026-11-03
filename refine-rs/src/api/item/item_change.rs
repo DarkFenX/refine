@@ -10,7 +10,7 @@ impl Item<'_, '_> {
         self.sol
             .exec_standard(move |core_sol| {
                 // Holding mutex on sol - nothing can remove the item before we get it here
-                let mut core_item = core_sol.get_item_mut(&item_id).unwrap();
+                let mut core_item = core_sol.get_item(&item_id).unwrap();
                 ctl_cmd.execute(&mut core_item)
             })
             .await
@@ -26,7 +26,7 @@ impl Item<'_, '_> {
         self.sol
             .exec_standard(move |core_sol| {
                 // Holding mutex on sol - nothing can remove the item before we get it here
-                let mut core_item = core_sol.get_item_mut(&item_id).unwrap();
+                let mut core_item = core_sol.get_item(&item_id).unwrap();
                 let ctl_cmd_resp = ctl_cmd.execute(&mut core_item)?;
                 let ctl_cmd_resps = CmdResps::with_resp(ctl_cmd_resp.into());
                 let info_cmd = info_cmd.br_resolve(&ctl_cmd_resps);

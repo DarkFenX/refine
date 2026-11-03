@@ -1,5 +1,5 @@
 use crate::{
-    api::ProjEffectMut,
+    api::ProjEffect,
     sol::{SolarSystem, UndoStep},
     ud::UItemId,
 };
@@ -24,7 +24,7 @@ impl SolarSystem {
     }
 }
 
-impl<'s> ProjEffectMut<'s> {
+impl<'s> ProjEffect<'s> {
     pub fn remove(self) {
         self.sol.internal_remove_proj_effect(self.uid)
     }

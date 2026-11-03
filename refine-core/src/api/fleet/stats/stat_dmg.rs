@@ -1,11 +1,11 @@
 use crate::{
-    FleetMut,
+    Fleet,
     stats::{StatCritOptions, StatDmg, StatDmgApplied, StatDmgItemKinds, StatTimeOptions, err::StatFleetAppliedError},
     svc::cycle::CseqMap,
     ud::ItemId,
 };
 
-impl<'s> FleetMut<'s> {
+impl<'s> Fleet<'s> {
     pub fn get_stat_dmg(
         &mut self,
         item_kinds: StatDmgItemKinds,

@@ -1,6 +1,6 @@
 use crate::{
     ad::AItemId,
-    api::{ItemTypeId, ServiceMut},
+    api::{ItemTypeId, Service},
     sol::{SolarSystem, UndoStep},
     ud::UItemId,
 };
@@ -22,7 +22,7 @@ impl SolarSystem {
     }
 }
 
-impl<'s> ServiceMut<'s> {
+impl<'s> Service<'s> {
     /// Set type ID, replacing currently used EVE item by another, preserving all the user data.
     pub fn set_type_id(&mut self, type_id: ItemTypeId) {
         self.sol.internal_set_service_type_aid(self.uid, type_id.into_aid())

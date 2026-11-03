@@ -1,11 +1,10 @@
 use lender::{ExactSizeLender, Lender, Lending, check_covariance};
 
-use super::shared::get_fit_rack;
 use crate::{
-    api::{Fit, FitMut, Module, ModuleMut},
+    api::{Fit, Module},
     misc::ModRack,
     sol::SolarSystem,
-    ud::{UFitId, UItemId},
+    ud::UItemId,
 };
 
 pub struct ModuleIter<'iter> {
@@ -23,15 +22,15 @@ impl<'iter> ModuleIter<'iter> {
     }
 }
 impl<'iter, 'lend> Lending<'lend> for ModuleIter<'iter> {
-    type Lend = Option<ModuleMut<'lend>>;
+    type Lend = Option<Module<'lend>>;
 }
 impl<'iter> Lender for ModuleIter<'iter> {
     check_covariance!();
 
-    fn next(&mut self) -> Option<Option<ModuleMut<'_>>> {
+    fn next(&mut self) -> Option<Option<Module<'_>>> {
         let module_uid = *self.module_uids.get(self.index)?;
         self.index += 1;
-        Some(module_uid.map(|module_uid| ModuleMut::new(self.sol, module_uid)))
+        Some(module_uid.map(|module_uid| Module::new(self.sol, module_uid)))
     }
 
     fn size_hint(&self) -> (usize, Option<usize>) {
@@ -42,29 +41,14 @@ impl<'iter> Lender for ModuleIter<'iter> {
 impl<'iter> ExactSizeLender for ModuleIter<'iter> {}
 
 impl<'s> Fit<'s> {
-    pub fn iter_modules(&self, rack: ModRack) -> impl ExactSizeIterator<Item = Option<Module<'_>>> {
-        iter_modules(self.sol, self.uid, rack)
-    }
-}
-
-impl<'s> FitMut<'s> {
-    pub fn iter_modules(&self, rack: ModRack) -> impl ExactSizeIterator<Item = Option<Module<'_>>> {
-        iter_modules(self.sol, self.uid, rack)
-    }
-    pub fn iter_modules_mut(&mut self, rack: ModRack) -> ModuleIter<'_> {
-        let u_module_vec = get_fit_rack(&self.sol.u_data.fits, self.uid, rack);
+    pub fn iter_modules(&mut self, rack: ModRack) -> ModuleIter<'_> {
+        let u_fit = self.sol.u_data.fits.get(self.uid);
+        let u_module_vec = match rack {
+            ModRack::High => &u_fit.mods_high,
+            ModRack::Mid => &u_fit.mods_mid,
+            ModRack::Low => &u_fit.mods_low,
+        };
         let module_uids = u_module_vec.iter_all().collect();
         ModuleIter::new(self.sol, module_uids)
     }
-}
-
-fn iter_modules(
-    sol: &SolarSystem,
-    fit_uid: UFitId,
-    rack: ModRack,
-) -> impl ExactSizeIterator<Item = Option<Module<'_>>> {
-    let u_module_vec = get_fit_rack(&sol.u_data.fits, fit_uid, rack);
-    u_module_vec
-        .iter_all()
-        .map(|module_uid| module_uid.map(|module_uid| Module::new(sol, module_uid)))
 }

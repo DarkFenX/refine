@@ -1,5 +1,5 @@
 use crate::{
-    api::{ModuleMut, ProjAddError, RangedProjMut, get_ship_rib},
+    api::{Module, ProjAddError, RangedProj, get_ship_rib},
     err::basic::{ItemReceiveProjError, ProjNotFoundError},
     sol::{SolarSystem, UndoStep},
     ud::{ItemId, UItemId, UProjData},
@@ -62,10 +62,10 @@ impl SolarSystem {
     }
 }
 
-impl<'s> ModuleMut<'s> {
-    pub fn add_proj(&mut self, projectee_item_id: &ItemId) -> Result<RangedProjMut<'_>, ProjAddError> {
+impl<'s> Module<'s> {
+    pub fn add_proj(&mut self, projectee_item_id: &ItemId) -> Result<RangedProj<'_>, ProjAddError> {
         let projectee_uid = self.sol.u_data.items.int_id_by_ext_id_err(projectee_item_id)?;
         self.sol.internal_add_module_proj(self.uid, projectee_uid)?;
-        Ok(RangedProjMut::new(self.sol, self.uid, projectee_uid))
+        Ok(RangedProj::new(self.sol, self.uid, projectee_uid))
     }
 }

@@ -1,4 +1,4 @@
-use rc::ItemCommon;
+use rc::{ItemCommon, Lender};
 
 use super::shared::{get_attrs, get_effect_mode_overrides, get_effects, get_mods};
 #[cfg(feature = "serde")]
@@ -64,7 +64,7 @@ pub struct DroneInfoExt {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl DroneInfo {
     pub(in crate::info) fn from_core(
-        core_drone: &mut rc::DroneMut,
+        core_drone: &mut rc::Drone,
         item_info_modes: &OvrdMapLight<ItemId, ItemInfoMode>,
     ) -> Self {
         let drone_id = core_drone.get_item_id();
@@ -84,7 +84,10 @@ impl DroneInfo {
                     npc_prop_override: core_drone.get_npc_prop_override(),
                     coordinates: core_drone.get_coordinates(),
                     movement: core_drone.get_movement(),
-                    projs: core_drone.iter_projs().map(RangedProjInfo::from_core).collect(),
+                    projs: core_drone
+                        .iter_projs()
+                        .map_into_iter(RangedProjInfo::from_core)
+                        .collect(),
                     effect_mode_overrides: get_effect_mode_overrides(core_drone, drone_info_mode),
                     attrs: get_attrs(core_drone, drone_info_mode),
                     effects: get_effects(core_drone, drone_info_mode),

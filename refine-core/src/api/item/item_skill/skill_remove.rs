@@ -1,5 +1,5 @@
 use crate::{
-    api::SkillMut,
+    api::Skill,
     sol::{SolarSystem, UndoStep},
     ud::UItemId,
 };
@@ -14,7 +14,7 @@ impl SolarSystem {
     }
 }
 
-impl<'s> SkillMut<'s> {
+impl<'s> Skill<'s> {
     pub fn remove(self) {
         self.sol.internal_remove_skill(self.uid);
     }

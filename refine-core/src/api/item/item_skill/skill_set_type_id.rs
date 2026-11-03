@@ -1,6 +1,6 @@
 use crate::{
     ad::AItemId,
-    api::{ItemTypeId, SkillMut},
+    api::{ItemTypeId, Skill},
     err::basic::SkillEveTypeError,
     sol::{SolarSystem, UndoStep},
     ud::UItemId,
@@ -46,7 +46,7 @@ impl SolarSystem {
     }
 }
 
-impl<'s> SkillMut<'s> {
+impl<'s> Skill<'s> {
     /// Set type ID, replacing currently used EVE item by another, preserving all the user data.
     pub fn set_type_id(&mut self, type_id: ItemTypeId) -> Result<(), SkillTypeIdSetError> {
         self.sol.internal_set_skill_type_aid(self.uid, type_id.into_aid())?;

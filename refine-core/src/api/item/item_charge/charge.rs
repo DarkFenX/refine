@@ -1,92 +1,43 @@
 use crate::{
-    api::{Fit, FitMut, Item, ItemCommon, ItemMut, ItemMutCommon, ItemSealed},
+    api::{Fit, Item, ItemCommon, ItemSealed},
     sol::SolarSystem,
     ud::{UCharge, UItemId},
 };
 
-/// Charges expose no projection info, since it fully matches projections of the parent item
 pub struct Charge<'s> {
-    sol: &'s SolarSystem,
-    uid: UItemId,
+    pub(super) sol: &'s mut SolarSystem,
+    pub(super) uid: UItemId,
 }
 impl<'s> Charge<'s> {
-    pub(in crate::api) fn new(sol: &'s SolarSystem, uid: UItemId) -> Self {
+    pub(in crate::api) fn new(sol: &'s mut SolarSystem, uid: UItemId) -> Self {
         Self { sol, uid }
     }
-    pub fn get_fit(&self) -> Fit<'_> {
-        get_fit(self.sol, self.uid)
+    pub fn get_fit(&mut self) -> Fit<'_> {
+        let fit_uid = get_u_charge(self.sol, self.uid).get_fit_uid();
+        Fit::new(self.sol, fit_uid)
     }
-    pub fn get_cont_item(&self) -> Item<'_> {
-        get_cont_item(self.sol, self.uid)
+    pub fn get_cont_item(&mut self) -> Item<'_> {
+        let cont_uid = get_u_charge(self.sol, self.uid).get_cont_item_uid();
+        Item::new(self.sol, cont_uid)
     }
     pub fn get_state(&self) -> bool {
-        get_state(self.sol, self.uid)
+        !get_u_charge(self.sol, self.uid).get_force_disabled()
     }
 }
 impl<'s> ItemSealed for Charge<'s> {
     fn get_uid(&self) -> UItemId {
         self.uid
     }
+    fn get_sol_ref(&self) -> &SolarSystem {
+        self.sol
+    }
 }
 impl<'s> ItemCommon for Charge<'s> {
-    fn get_sol(&self) -> &SolarSystem {
+    fn get_sol(&mut self) -> &mut SolarSystem {
         self.sol
     }
 }
 
-pub struct ChargeMut<'s> {
-    pub(super) sol: &'s mut SolarSystem,
-    pub(super) uid: UItemId,
-}
-impl<'s> ChargeMut<'s> {
-    pub(in crate::api) fn new(sol: &'s mut SolarSystem, uid: UItemId) -> Self {
-        Self { sol, uid }
-    }
-    pub fn get_fit(&self) -> Fit<'_> {
-        get_fit(self.sol, self.uid)
-    }
-    pub fn get_fit_mut(&mut self) -> FitMut<'_> {
-        let fit_uid = get_u_charge(self.sol, self.uid).get_fit_uid();
-        FitMut::new(self.sol, fit_uid)
-    }
-    pub fn get_cont_item(&self) -> Item<'_> {
-        get_cont_item(self.sol, self.uid)
-    }
-    pub fn get_cont_item_mut(&mut self) -> ItemMut<'_> {
-        let cont_uid = get_u_charge(self.sol, self.uid).get_cont_item_uid();
-        ItemMut::new(self.sol, cont_uid)
-    }
-    pub fn get_state(&self) -> bool {
-        get_state(self.sol, self.uid)
-    }
-}
-impl<'s> ItemSealed for ChargeMut<'s> {
-    fn get_uid(&self) -> UItemId {
-        self.uid
-    }
-}
-impl<'s> ItemCommon for ChargeMut<'s> {
-    fn get_sol(&self) -> &SolarSystem {
-        self.sol
-    }
-}
-impl<'s> ItemMutCommon for ChargeMut<'s> {
-    fn get_sol_mut(&mut self) -> &mut SolarSystem {
-        self.sol
-    }
-}
-
-fn get_fit(sol: &SolarSystem, charge_uid: UItemId) -> Fit<'_> {
-    let fit_uid = get_u_charge(sol, charge_uid).get_fit_uid();
-    Fit::new(sol, fit_uid)
-}
-fn get_cont_item(sol: &SolarSystem, charge_uid: UItemId) -> Item<'_> {
-    let cont_uid = get_u_charge(sol, charge_uid).get_cont_item_uid();
-    Item::new(sol, cont_uid)
-}
-fn get_state(sol: &SolarSystem, charge_uid: UItemId) -> bool {
-    !get_u_charge(sol, charge_uid).get_force_disabled()
-}
 fn get_u_charge(sol: &SolarSystem, charge_uid: UItemId) -> &UCharge {
     sol.u_data.items.get(charge_uid).dc_charge().unwrap()
 }

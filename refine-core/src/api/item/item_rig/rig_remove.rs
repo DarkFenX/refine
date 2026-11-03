@@ -1,5 +1,5 @@
 use crate::{
-    api::RigMut,
+    api::Rig,
     sol::{SolarSystem, UndoStep},
     ud::UItemId,
 };
@@ -14,7 +14,7 @@ impl SolarSystem {
     }
 }
 
-impl<'s> RigMut<'s> {
+impl<'s> Rig<'s> {
     pub fn remove(self) {
         self.sol.internal_remove_rig(self.uid)
     }

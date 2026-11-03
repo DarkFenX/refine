@@ -1,9 +1,8 @@
 use crate::{
-    AttrId, FullMAttrMut, ItemId, Value, api::item::shared::mutation::resolve_absolute_into_roll,
-    ud::UAttrMutationRequest,
+    AttrId, FullMAttr, ItemId, Value, api::item::shared::mutation::resolve_absolute_into_roll, ud::UAttrMutationRequest,
 };
 
-impl<'s> FullMAttrMut<'s> {
+impl<'s> FullMAttr<'s> {
     /// Set value for the attribute.
     ///
     /// If value is out of bounds allowed by mutator, it will be clamped. None as value removes

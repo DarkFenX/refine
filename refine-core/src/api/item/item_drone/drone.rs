@@ -1,115 +1,53 @@
 use crate::{
-    api::{Coordinates, Fit, FitMut, ItemCommon, ItemMutCommon, ItemSealed, MinionState, Movement},
+    api::{Coordinates, Fit, ItemCommon, ItemSealed, MinionState, Movement},
     misc::NpcProp,
     sol::SolarSystem,
     ud::{UDrone, UItemId},
 };
 
 pub struct Drone<'s> {
-    pub(super) sol: &'s SolarSystem,
+    pub(super) sol: &'s mut SolarSystem,
     pub(super) uid: UItemId,
 }
 impl<'s> Drone<'s> {
-    pub(in crate::api) fn new(sol: &'s SolarSystem, uid: UItemId) -> Self {
+    pub(in crate::api) fn new(sol: &'s mut SolarSystem, uid: UItemId) -> Self {
         Self { sol, uid }
     }
-    pub fn get_fit(&self) -> Fit<'_> {
-        get_fit(self.sol, self.uid)
+    pub fn get_fit(&mut self) -> Fit<'_> {
+        let fit_uid = get_u_drone(self.sol, self.uid).get_fit_uid();
+        Fit::new(self.sol, fit_uid)
     }
     pub fn get_state(&self) -> MinionState {
-        get_state(self.sol, self.uid)
+        get_u_drone(self.sol, self.uid).get_drone_state()
     }
     pub fn get_npc_prop(&self) -> NpcProp {
-        get_npc_prop(self.sol, self.uid)
+        let u_item = self.sol.u_data.items.get(self.uid);
+        self.sol.u_data.get_item_npc_prop(u_item).unwrap()
     }
     pub fn get_npc_prop_override(&self) -> Option<NpcProp> {
-        get_npc_prop_override(self.sol, self.uid)
+        get_u_drone(self.sol, self.uid).get_npc_prop_override()
     }
     pub fn get_coordinates(&self) -> Coordinates {
-        get_coordinates(self.sol, self.uid)
+        Coordinates::from_xyz(get_u_drone(self.sol, self.uid).get_physics().coordinates)
     }
     pub fn get_movement(&self) -> Movement {
-        get_movement(self.sol, self.uid)
+        Movement::from_u_physics(get_u_drone(self.sol, self.uid).get_physics())
     }
 }
 impl<'s> ItemSealed for Drone<'s> {
     fn get_uid(&self) -> UItemId {
         self.uid
     }
+    fn get_sol_ref(&self) -> &SolarSystem {
+        self.sol
+    }
 }
 impl<'s> ItemCommon for Drone<'s> {
-    fn get_sol(&self) -> &SolarSystem {
+    fn get_sol(&mut self) -> &mut SolarSystem {
         self.sol
     }
 }
 
-pub struct DroneMut<'s> {
-    pub(super) sol: &'s mut SolarSystem,
-    pub(super) uid: UItemId,
-}
-impl<'s> DroneMut<'s> {
-    pub(in crate::api) fn new(sol: &'s mut SolarSystem, uid: UItemId) -> Self {
-        Self { sol, uid }
-    }
-    pub fn get_fit(&self) -> Fit<'_> {
-        get_fit(self.sol, self.uid)
-    }
-    pub fn get_fit_mut(&mut self) -> FitMut<'_> {
-        let fit_uid = get_u_drone(self.sol, self.uid).get_fit_uid();
-        FitMut::new(self.sol, fit_uid)
-    }
-    pub fn get_state(&self) -> MinionState {
-        get_state(self.sol, self.uid)
-    }
-    pub fn get_npc_prop(&self) -> NpcProp {
-        get_npc_prop(self.sol, self.uid)
-    }
-    pub fn get_npc_prop_override(&self) -> Option<NpcProp> {
-        get_npc_prop_override(self.sol, self.uid)
-    }
-    pub fn get_coordinates(&self) -> Coordinates {
-        get_coordinates(self.sol, self.uid)
-    }
-    pub fn get_movement(&self) -> Movement {
-        get_movement(self.sol, self.uid)
-    }
-}
-impl<'s> ItemSealed for DroneMut<'s> {
-    fn get_uid(&self) -> UItemId {
-        self.uid
-    }
-}
-impl<'s> ItemCommon for DroneMut<'s> {
-    fn get_sol(&self) -> &SolarSystem {
-        self.sol
-    }
-}
-impl<'s> ItemMutCommon for DroneMut<'s> {
-    fn get_sol_mut(&mut self) -> &mut SolarSystem {
-        self.sol
-    }
-}
-
-fn get_fit(sol: &SolarSystem, drone_uid: UItemId) -> Fit<'_> {
-    let fit_uid = get_u_drone(sol, drone_uid).get_fit_uid();
-    Fit::new(sol, fit_uid)
-}
-fn get_state(sol: &SolarSystem, drone_uid: UItemId) -> MinionState {
-    get_u_drone(sol, drone_uid).get_drone_state()
-}
-fn get_npc_prop(sol: &SolarSystem, drone_uid: UItemId) -> NpcProp {
-    let u_item = sol.u_data.items.get(drone_uid);
-    sol.u_data.get_item_npc_prop(u_item).unwrap()
-}
-fn get_npc_prop_override(sol: &SolarSystem, drone_uid: UItemId) -> Option<NpcProp> {
-    get_u_drone(sol, drone_uid).get_npc_prop_override()
-}
-fn get_coordinates(sol: &SolarSystem, drone_uid: UItemId) -> Coordinates {
-    Coordinates::from_xyz(get_u_drone(sol, drone_uid).get_physics().coordinates)
-}
-fn get_movement(sol: &SolarSystem, drone_uid: UItemId) -> Movement {
-    Movement::from_u_physics(get_u_drone(sol, drone_uid).get_physics())
-}
 fn get_u_drone(sol: &SolarSystem, drone_uid: UItemId) -> &UDrone {
     sol.u_data.items.get(drone_uid).dc_drone().unwrap()
 }

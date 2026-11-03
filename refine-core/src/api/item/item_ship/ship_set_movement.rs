@@ -1,5 +1,5 @@
 use crate::{
-    api::{Movement, ShipMut},
+    api::{Movement, Ship},
     misc::Xyz,
     num::PValue,
     sol::{SolarSystem, UndoStep},
@@ -23,7 +23,7 @@ impl SolarSystem {
     }
 }
 
-impl<'s> ShipMut<'s> {
+impl<'s> Ship<'s> {
     /// Set ship movement.
     pub fn set_movement(&mut self, movement: Movement) {
         self.sol

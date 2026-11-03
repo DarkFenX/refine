@@ -1,5 +1,5 @@
 use crate::{
-    api::ChargeMut,
+    api::Charge,
     sol::{SolarSystem, UndoStep},
     ud::UItemId,
 };
@@ -26,7 +26,7 @@ impl SolarSystem {
     }
 }
 
-impl<'s> ChargeMut<'s> {
+impl<'s> Charge<'s> {
     pub fn set_state(&mut self, state: bool) {
         let u_charge = self.sol.u_data.items.get(self.uid).dc_charge().unwrap();
         if state == !u_charge.get_force_disabled() {

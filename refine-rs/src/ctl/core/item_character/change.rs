@@ -142,9 +142,9 @@ impl CharacterChangeCmdCtxItemBr {
 impl CharacterChangeCmd {
     pub(in crate::ctl) fn execute_via_fit(
         self,
-        core_fit: &mut rc::FitMut,
+        core_fit: &mut rc::Fit,
     ) -> Result<ChangedItemIdsResp, FitCharacterChangeError> {
-        let mut core_character = match core_fit.get_character_mut() {
+        let mut core_character = match core_fit.get_character() {
             Some(core_character) => core_character,
             None => return Err(FitCharacterChangeError::FitNoCharacter(core_fit.get_fit_id())),
         };
@@ -152,12 +152,12 @@ impl CharacterChangeCmd {
     }
     pub(in crate::ctl) fn execute_via_item(
         self,
-        core_item: &mut rc::ItemMut,
+        core_item: &mut rc::Item,
     ) -> Result<ChangedItemIdsResp, ItemCharacterChangeError> {
         let core_character = core_item.dc_character()?;
         Ok(self.execute(core_character))
     }
-    fn execute(self, core_character: &mut rc::CharacterMut) -> ChangedItemIdsResp {
+    fn execute(self, core_character: &mut rc::Character) -> ChangedItemIdsResp {
         let Self {
             type_id,
             state,
@@ -208,7 +208,7 @@ impl CharacterChangeCmdCtxFit {
         self,
         core_sol: &mut rc::SolarSystem,
     ) -> Result<ChangedItemIdsResp, FitGetCharacterChangeError> {
-        let mut core_fit = core_sol.get_fit_mut(&self.fit_id)?;
+        let mut core_fit = core_sol.get_fit(&self.fit_id)?;
         Ok(self.core.execute_via_fit(&mut core_fit)?)
     }
 }
@@ -232,7 +232,7 @@ impl CharacterChangeCmdCtxItem {
         self,
         core_sol: &mut rc::SolarSystem,
     ) -> Result<ChangedItemIdsResp, ItemGetCharacterChangeError> {
-        let mut core_character = core_sol.get_character_mut(&self.item_id)?;
+        let mut core_character = core_sol.get_character(&self.item_id)?;
         Ok(self.core.execute(&mut core_character))
     }
 }

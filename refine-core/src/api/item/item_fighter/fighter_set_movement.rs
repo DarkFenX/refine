@@ -1,5 +1,5 @@
 use crate::{
-    api::{FighterMut, Movement},
+    api::{Fighter, Movement},
     misc::Xyz,
     num::PValue,
     sol::{SolarSystem, UndoStep},
@@ -28,7 +28,7 @@ impl SolarSystem {
     }
 }
 
-impl<'s> FighterMut<'s> {
+impl<'s> Fighter<'s> {
     /// Set fighter movement.
     pub fn set_movement(&mut self, movement: Movement) {
         self.sol

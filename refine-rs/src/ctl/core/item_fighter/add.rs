@@ -132,7 +132,7 @@ impl FighterAddCmdCtxFitBr {
 // Execution
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl FighterAddCmd {
-    pub(in crate::ctl) fn execute(self, core_fit: &mut rc::FitMut) -> Result<AddedItemIdsResp, FighterAddError> {
+    pub(in crate::ctl) fn execute(self, core_fit: &mut rc::Fit) -> Result<AddedItemIdsResp, FighterAddError> {
         let Self {
             type_id,
             state,
@@ -175,7 +175,7 @@ impl FighterAddCmdCtxFit {
         self,
         core_sol: &mut rc::SolarSystem,
     ) -> Result<AddedItemIdsResp, FitGetFighterAddError> {
-        let mut core_fit = core_sol.get_fit_mut(&self.fit_id)?;
+        let mut core_fit = core_sol.get_fit(&self.fit_id)?;
         Ok(self.core.execute(&mut core_fit)?)
     }
 }

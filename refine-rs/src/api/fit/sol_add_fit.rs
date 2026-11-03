@@ -16,7 +16,7 @@ impl<'r, 's> SolarSystem<'r> {
         let (fit_id, fit_info) = self
             .exec_standard(|core_sol| {
                 let fit_id = ctl_cmd.execute(core_sol)?.fit_id;
-                let mut core_fit = core_sol.get_fit_mut(&fit_id).unwrap();
+                let mut core_fit = core_sol.get_fit(&fit_id).unwrap();
                 let fit_info = info_cmd.execute(&mut core_fit);
                 Ok::<_, FitAddError>((fit_id, fit_info))
             })

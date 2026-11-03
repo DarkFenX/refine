@@ -129,7 +129,7 @@ impl SwEffectChangeCmd {
 // Execution
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl ItemChangeEnumCmd {
-    pub(crate) fn execute(self, core_item: &mut rc::ItemMut) -> Result<ChangedItemIdsResp, ItemChangeEnumError> {
+    pub(crate) fn execute(self, core_item: &mut rc::Item) -> Result<ChangedItemIdsResp, ItemChangeEnumError> {
         Ok(match self {
             Self::Autocharge(cmd) => cmd.execute(core_item)?,
             Self::Booster(cmd) => cmd.execute(core_item)?,

@@ -99,14 +99,14 @@ impl ItemInfoCmdCtxItemBr {
 // Execution
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl ItemInfoCmd {
-    pub(crate) fn execute(self, core_item: &mut rc::ItemMut) -> ItemInfo {
+    pub(crate) fn execute(self, core_item: &mut rc::Item) -> ItemInfo {
         ItemInfo::from_core(core_item, &self.item_mode)
     }
 }
 
 impl ItemInfoCmdCtxItem {
     pub(crate) fn execute(self, core_sol: &mut rc::SolarSystem) -> Result<ItemInfo, ItemGetItemInfoError> {
-        let mut core_item = core_sol.get_item_mut(&self.item_id)?;
+        let mut core_item = core_sol.get_item(&self.item_id)?;
         Ok(self.core.execute(&mut core_item))
     }
 }

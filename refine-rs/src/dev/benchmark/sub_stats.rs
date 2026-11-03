@@ -30,7 +30,7 @@ impl From<DevBenchmarkStatsCmd> for DevBenchmarkCmd {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl DevBenchmarkStatsCmd {
     pub(super) fn execute(self, core_sol: &mut rc::SolarSystem) {
-        let mut core_fit = core_sol.get_fit_mut(&self.fit_id).unwrap();
+        let mut core_fit = core_sol.get_fit(&self.fit_id).unwrap();
         core_fit.benchmark_stats(self.projectee_item_id, self.iterations);
     }
 }

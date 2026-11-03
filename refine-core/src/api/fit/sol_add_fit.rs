@@ -1,13 +1,13 @@
 use crate::{
-    api::FitMut,
+    api::Fit,
     sol::{SolarSystem, UndoStep},
     ud::{UFit, UFitId},
 };
 
 impl SolarSystem {
-    pub fn add_fit(&mut self) -> FitMut<'_> {
+    pub fn add_fit(&mut self) -> Fit<'_> {
         let fit_uid = self.add_fit_internal();
-        FitMut::new(self, fit_uid)
+        Fit::new(self, fit_uid)
     }
     pub(in crate::api) fn add_fit_internal(&mut self) -> UFitId {
         let fit_id = self.u_data.fits.alloc_id();

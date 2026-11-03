@@ -157,7 +157,7 @@ impl DroneChangeCmdCtxItemBr {
 // Execution
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl DroneChangeCmd {
-    pub(in crate::ctl) fn execute(self, core_item: &mut rc::ItemMut) -> Result<ChangedItemIdsResp, DroneChangeError> {
+    pub(in crate::ctl) fn execute(self, core_item: &mut rc::Item) -> Result<ChangedItemIdsResp, DroneChangeError> {
         let Self {
             type_id,
             state,
@@ -171,7 +171,7 @@ impl DroneChangeCmd {
         } = self;
         let core_drone = core_item.dc_drone()?;
         for projectee_item_id in rm_proj_item_ids.iter() {
-            match core_drone.get_proj_mut(projectee_item_id) {
+            match core_drone.get_proj(projectee_item_id) {
                 Ok(core_proj) => core_proj.remove(),
                 // Silently accept failure due to missing projection
                 Err(rc::err::ProjGetError::ProjectionNotFound(..)) => (),
@@ -188,13 +188,13 @@ impl DroneChangeCmd {
             TriStateField::Value(mutation) => {
                 // Mutates item or updates existing mutation
                 if let Some(mutator_id) = mutation.mutator_id {
-                    match core_drone.get_mutation_mut() {
+                    match core_drone.get_mutation() {
                         Some(core_mutation) => core_mutation.set_mutator_type_id(mutator_id),
                         None => core_drone.mutate(mutator_id).unwrap(),
                     };
                 }
                 if !mutation.attrs.is_empty() {
-                    match core_drone.get_mutation_mut() {
+                    match core_drone.get_mutation() {
                         Some(mut core_mutation) => mutation.apply_attrs(&mut core_mutation),
                         None => return Err(DroneChangeError::NotMutated(core_drone.get_item_id())),
                     };
@@ -202,7 +202,7 @@ impl DroneChangeCmd {
             }
             TriStateField::None => {
                 // Do nothing if mutation was not there
-                if let Some(core_mutation) = core_drone.get_mutation_mut() {
+                if let Some(core_mutation) = core_drone.get_mutation() {
                     core_mutation.remove();
                 }
             }
@@ -248,7 +248,7 @@ impl DroneChangeCmdCtxItem {
         self,
         core_sol: &mut rc::SolarSystem,
     ) -> Result<ChangedItemIdsResp, ItemGetDroneChangeError> {
-        let mut core_item = core_sol.get_item_mut(&self.item_id)?;
+        let mut core_item = core_sol.get_item(&self.item_id)?;
         Ok(self.core.execute(&mut core_item)?)
     }
 }

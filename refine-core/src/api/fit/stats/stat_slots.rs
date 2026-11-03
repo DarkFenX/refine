@@ -1,6 +1,6 @@
-use crate::{api::FitMut, svc::vast::StatSlot};
+use crate::{api::Fit, svc::vast::StatSlot};
 
-impl<'s> FitMut<'s> {
+impl<'s> Fit<'s> {
     pub fn get_stat_high_slots(&mut self) -> StatSlot {
         let fit = self.sol.u_data.fits.get(self.uid);
         self.sol.svc.get_stat_fit_high_slots(&self.sol.u_data, self.uid, fit)

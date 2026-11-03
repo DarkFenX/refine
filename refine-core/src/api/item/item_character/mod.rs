@@ -1,4 +1,4 @@
-pub use character::{Character, CharacterMut};
+pub use character::Character;
 pub use sol_get::CharacterGetError;
 
 mod character;

@@ -125,10 +125,7 @@ impl ProjEffectChangeCmdCtxItemBr {
 // Execution
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl ProjEffectChangeCmd {
-    pub(in crate::ctl) fn execute(
-        self,
-        core_item: &mut rc::ItemMut,
-    ) -> Result<ChangedItemIdsResp, ProjEffectChangeError> {
+    pub(in crate::ctl) fn execute(self, core_item: &mut rc::Item) -> Result<ChangedItemIdsResp, ProjEffectChangeError> {
         let Self {
             type_id,
             state,
@@ -138,7 +135,7 @@ impl ProjEffectChangeCmd {
         } = self;
         let core_proj_effect = core_item.dc_proj_effect()?;
         for projectee_item_id in rm_proj_item_ids.iter() {
-            match core_proj_effect.get_proj_mut(projectee_item_id) {
+            match core_proj_effect.get_proj(projectee_item_id) {
                 Ok(core_proj) => core_proj.remove(),
                 // Silently accept failure due to missing projection
                 Err(rc::err::ProjGetError::ProjectionNotFound(..)) => (),
@@ -178,7 +175,7 @@ impl ProjEffectChangeCmdCtxItem {
         self,
         core_sol: &mut rc::SolarSystem,
     ) -> Result<ChangedItemIdsResp, ItemGetProjEffectChangeError> {
-        let mut core_item = core_sol.get_item_mut(&self.item_id)?;
+        let mut core_item = core_sol.get_item(&self.item_id)?;
         Ok(self.core.execute(&mut core_item)?)
     }
 }

@@ -1,4 +1,4 @@
-pub use fit::{Fit, FitMut};
+pub use fit::Fit;
 pub use fleet::FitFleetSetError;
 pub use sol_get_fit::FitGetError;
 pub use stats::{StatFitAppliedError, StatFitCharacterError, StatFitShipAppliedError, StatFitShipError};

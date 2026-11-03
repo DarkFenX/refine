@@ -1,14 +1,14 @@
 use crate::{
     ad::AItemId,
-    api::{ItemTypeId, ProjEffectMut},
+    api::{ItemTypeId, ProjEffect},
     sol::{SolarSystem, UndoStep},
     ud::{UItem, UItemId, UProjEffect},
 };
 
 impl SolarSystem {
-    pub fn add_proj_effect(&mut self, type_id: ItemTypeId) -> ProjEffectMut<'_> {
+    pub fn add_proj_effect(&mut self, type_id: ItemTypeId) -> ProjEffect<'_> {
         let proj_effect_uid = self.internal_add_proj_effect(type_id.into_aid());
-        ProjEffectMut::new(self, proj_effect_uid)
+        ProjEffect::new(self, proj_effect_uid)
     }
     pub(in crate::api) fn internal_add_proj_effect(&mut self, type_aid: AItemId) -> UItemId {
         let item_id = self.u_data.items.alloc_id();

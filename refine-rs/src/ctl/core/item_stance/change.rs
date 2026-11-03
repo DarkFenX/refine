@@ -142,9 +142,9 @@ impl StanceChangeCmdCtxItemBr {
 impl StanceChangeCmd {
     pub(in crate::ctl) fn execute_via_fit(
         self,
-        core_fit: &mut rc::FitMut,
+        core_fit: &mut rc::Fit,
     ) -> Result<ChangedItemIdsResp, FitStanceChangeError> {
-        let mut core_stance = match core_fit.get_stance_mut() {
+        let mut core_stance = match core_fit.get_stance() {
             Some(core_stance) => core_stance,
             None => return Err(FitStanceChangeError::FitNoStance(core_fit.get_fit_id())),
         };
@@ -152,12 +152,12 @@ impl StanceChangeCmd {
     }
     pub(in crate::ctl) fn execute_via_item(
         self,
-        core_item: &mut rc::ItemMut,
+        core_item: &mut rc::Item,
     ) -> Result<ChangedItemIdsResp, ItemStanceChangeError> {
         let core_stance = core_item.dc_stance()?;
         Ok(self.execute(core_stance))
     }
-    fn execute(self, core_stance: &mut rc::StanceMut) -> ChangedItemIdsResp {
+    fn execute(self, core_stance: &mut rc::Stance) -> ChangedItemIdsResp {
         let Self {
             type_id,
             state,
@@ -208,7 +208,7 @@ impl StanceChangeCmdCtxFit {
         self,
         core_sol: &mut rc::SolarSystem,
     ) -> Result<ChangedItemIdsResp, FitGetStanceChangeError> {
-        let mut core_fit = core_sol.get_fit_mut(&self.fit_id)?;
+        let mut core_fit = core_sol.get_fit(&self.fit_id)?;
         Ok(self.core.execute_via_fit(&mut core_fit)?)
     }
 }
@@ -232,7 +232,7 @@ impl StanceChangeCmdCtxItem {
         self,
         core_sol: &mut rc::SolarSystem,
     ) -> Result<ChangedItemIdsResp, ItemGetStanceChangeError> {
-        let mut core_stance = core_sol.get_stance_mut(&self.item_id)?;
+        let mut core_stance = core_sol.get_stance(&self.item_id)?;
         Ok(self.core.execute(&mut core_stance))
     }
 }

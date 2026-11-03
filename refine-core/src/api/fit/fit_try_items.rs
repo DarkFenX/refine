@@ -1,7 +1,7 @@
 use itertools::Itertools;
 
 use crate::{
-    AddMode, FitMut, ItemTypeId, MinionState, ModRack, ModuleState, PValue, ServiceState, SolarSystem,
+    AddMode, Fit, ItemTypeId, MinionState, ModRack, ModuleState, PValue, ServiceState, SolarSystem,
     ad::AItemId,
     rd::RState,
     svc::vast::ValOptionsInt,
@@ -12,7 +12,7 @@ use crate::{
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Public
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-impl<'s> FitMut<'s> {
+impl<'s> Fit<'s> {
     pub fn try_items(&mut self, type_ids: &[ItemTypeId], val_options: &ValOptions) -> Vec<ItemTypeId> {
         let type_aids = type_ids.iter().map(|v| v.into_aid()).collect_vec();
         let int_val_options = ValOptionsInt::from_pub(val_options, self.sol);

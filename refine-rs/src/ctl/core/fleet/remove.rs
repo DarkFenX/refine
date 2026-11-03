@@ -61,14 +61,14 @@ impl FleetRemoveCmdCtxFleetBr {
 // Execution
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl FleetRemoveCmd {
-    pub(crate) fn execute(self, core_fleet: rc::FleetMut) {
+    pub(crate) fn execute(self, core_fleet: rc::Fleet) {
         core_fleet.remove()
     }
 }
 
 impl FleetRemoveCmdCtxFleet {
     pub(in crate::ctl) fn execute(self, core_sol: &mut rc::SolarSystem) -> Result<(), FleetGetFleetRemoveError> {
-        let core_fleet = core_sol.get_fleet_mut(&self.fleet_id)?;
+        let core_fleet = core_sol.get_fleet(&self.fleet_id)?;
         self.core.execute(core_fleet);
         Ok(())
     }

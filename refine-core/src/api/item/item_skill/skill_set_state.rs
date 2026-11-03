@@ -1,5 +1,5 @@
 use crate::{
-    api::SkillMut,
+    api::Skill,
     sol::{SolarSystem, UndoStep},
     ud::UItemId,
 };
@@ -26,7 +26,7 @@ impl SolarSystem {
     }
 }
 
-impl<'s> SkillMut<'s> {
+impl<'s> Skill<'s> {
     pub fn set_state(&mut self, state: bool) {
         let u_skill = self.sol.u_data.items.get(self.uid).dc_skill().unwrap();
         if state == u_skill.get_skill_state() {

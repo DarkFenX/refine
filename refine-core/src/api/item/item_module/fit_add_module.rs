@@ -1,7 +1,7 @@
 use super::shared::get_fit_rack_mut;
 use crate::{
     ad::AItemId,
-    api::{AddMode, FitMut, ItemTypeId, ModuleMut, ModuleState, RemoveMode},
+    api::{AddMode, Fit, ItemTypeId, Module, ModuleState, RemoveMode},
     misc::ModRack,
     num::Index,
     sol::{SolarSystem, UndoStep},
@@ -146,17 +146,17 @@ impl SolarSystem {
     }
 }
 
-impl<'s> FitMut<'s> {
+impl<'s> Fit<'s> {
     pub fn add_module(
         &mut self,
         rack: ModRack,
         pos_mode: AddMode,
         type_id: ItemTypeId,
         state: ModuleState,
-    ) -> ModuleMut<'_> {
+    ) -> Module<'_> {
         let module_uid = self
             .sol
             .internal_add_module(self.uid, rack, pos_mode, type_id.into_aid(), state, None, None);
-        ModuleMut::new(self.sol, module_uid)
+        Module::new(self.sol, module_uid)
     }
 }

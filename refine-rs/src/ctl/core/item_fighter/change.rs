@@ -165,7 +165,7 @@ impl FighterChangeCmdCtxItemBr {
 // Execution
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl FighterChangeCmd {
-    pub(in crate::ctl) fn execute(self, core_item: &mut rc::ItemMut) -> Result<ChangedItemIdsResp, FighterChangeError> {
+    pub(in crate::ctl) fn execute(self, core_item: &mut rc::Item) -> Result<ChangedItemIdsResp, FighterChangeError> {
         let Self {
             type_id,
             state,
@@ -181,7 +181,7 @@ impl FighterChangeCmd {
         let mut resp = ChangedItemIdsResp::default();
         let core_fighter = core_item.dc_fighter()?;
         for projectee_item_id in rm_proj_item_ids.iter() {
-            match core_fighter.get_proj_mut(projectee_item_id) {
+            match core_fighter.get_proj(projectee_item_id) {
                 Ok(core_proj) => core_proj.remove(),
                 // Silently accept failure due to missing projection
                 Err(rc::err::ProjGetError::ProjectionNotFound(..)) => (),
@@ -242,7 +242,7 @@ impl FighterChangeCmdCtxItem {
         self,
         core_sol: &mut rc::SolarSystem,
     ) -> Result<ChangedItemIdsResp, ItemGetFighterChangeError> {
-        let mut core_item = core_sol.get_item_mut(&self.item_id)?;
+        let mut core_item = core_sol.get_item(&self.item_id)?;
         Ok(self.core.execute(&mut core_item)?)
     }
 }

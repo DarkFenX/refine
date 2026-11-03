@@ -30,7 +30,7 @@ impl From<DevBenchmarkCapSimCmd> for DevBenchmarkCmd {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl DevBenchmarkCapSimCmd {
     pub(super) fn execute(self, core_sol: &mut rc::SolarSystem) {
-        let mut core_fit = core_sol.get_fit_mut(&self.fit_id).unwrap();
+        let mut core_fit = core_sol.get_fit(&self.fit_id).unwrap();
         core_fit.benchmark_cap_sim(&self.staggers, self.iterations);
     }
 }

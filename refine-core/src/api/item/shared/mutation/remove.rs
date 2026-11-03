@@ -1,5 +1,5 @@
 use crate::{
-    api::{DormantMutationMut, EffectiveMutationMut, MutationMut},
+    api::{DormantMutation, EffectiveMutation, Mutation},
     sol::SolarSystem,
     ud::{UItem, UItemId, err::ItemMutatedError},
 };
@@ -14,22 +14,22 @@ impl SolarSystem {
     }
 }
 
-impl<'s> MutationMut<'s> {
+impl<'s> Mutation<'s> {
     pub fn remove(self) {
         match self {
-            MutationMut::Effective(effective_mutation) => effective_mutation.remove(),
-            MutationMut::Dormant(dormant_mutation) => dormant_mutation.remove(),
+            Mutation::Effective(effective_mutation) => effective_mutation.remove(),
+            Mutation::Dormant(dormant_mutation) => dormant_mutation.remove(),
         }
     }
 }
 
-impl<'s> EffectiveMutationMut<'s> {
+impl<'s> EffectiveMutation<'s> {
     pub fn remove(self) {
         self.sol.internal_remove_item_mutation(self.item_uid).unwrap();
     }
 }
 
-impl<'s> DormantMutationMut<'s> {
+impl<'s> DormantMutation<'s> {
     pub fn remove(self) {
         self.sol.internal_remove_item_mutation(self.item_uid).unwrap();
     }

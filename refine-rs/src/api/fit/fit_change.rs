@@ -9,7 +9,7 @@ impl Fit<'_, '_> {
             .exec_standard(move |core_sol| {
                 // Holding mutex on sol - nothing can remove the core fit without consuming the
                 // high-level Fit
-                let mut core_fit = core_sol.get_fit_mut(&fit_id).unwrap();
+                let mut core_fit = core_sol.get_fit(&fit_id).unwrap();
                 ctl_cmd.execute(&mut core_fit)
             })
             .await
@@ -26,7 +26,7 @@ impl Fit<'_, '_> {
             .exec_standard(move |core_sol| {
                 // Holding mutex on sol - nothing can remove the core fit without consuming the
                 // high-level Fit
-                let mut core_fit = core_sol.get_fit_mut(&fit_id).unwrap();
+                let mut core_fit = core_sol.get_fit(&fit_id).unwrap();
                 let ctl_cmd_resp = ctl_cmd.execute(&mut core_fit)?;
                 let ctl_cmd_resps = CmdResps::with_resp(ctl_cmd_resp);
                 let info_cmd = info_cmd.br_resolve(&ctl_cmd_resps);

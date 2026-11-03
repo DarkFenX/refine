@@ -1,14 +1,14 @@
 use crate::{
-    AttrId, DormantMutationMut, EffectiveMutationMut, ItemId, MutationMut, RawMAttrMut, SolarSystem, UnitInterval,
-    ad::AAttrId, ud::UItemId,
+    AttrId, DormantMutation, EffectiveMutation, ItemId, Mutation, RawMAttr, SolarSystem, UnitInterval, ad::AAttrId,
+    ud::UItemId,
 };
 
-impl<'s> MutationMut<'s> {
+impl<'s> Mutation<'s> {
     /// Mutate an attribute with a roll quality.
     ///
     /// Accepts roll of any attribute, even if it is not defined by item mutator. In this case, roll
     /// will be stored, and its effect won't be applied.
-    pub fn mutate_raw(&mut self, attr_id: AttrId, roll: UnitInterval) -> Result<RawMAttrMut<'_>, AttrMutateRawError> {
+    pub fn mutate_raw(&mut self, attr_id: AttrId, roll: UnitInterval) -> Result<RawMAttr<'_>, AttrMutateRawError> {
         match self {
             Self::Effective(effective_mutation) => effective_mutation.mutate_raw(attr_id, roll),
             Self::Dormant(dormant_mutation) => dormant_mutation.mutate_raw(attr_id, roll),
@@ -16,22 +16,22 @@ impl<'s> MutationMut<'s> {
     }
 }
 
-impl<'s> EffectiveMutationMut<'s> {
+impl<'s> EffectiveMutation<'s> {
     /// Mutate an attribute with a roll quality.
     ///
     /// Accepts roll of any attribute, even if it is not defined by item mutator. In this case, roll
     /// will be stored, and its effect won't be applied.
-    pub fn mutate_raw(&mut self, attr_id: AttrId, roll: UnitInterval) -> Result<RawMAttrMut<'_>, AttrMutateRawError> {
+    pub fn mutate_raw(&mut self, attr_id: AttrId, roll: UnitInterval) -> Result<RawMAttr<'_>, AttrMutateRawError> {
         mutate_raw(self.sol, self.item_uid, attr_id.into_aid(), roll)
     }
 }
 
-impl<'s> DormantMutationMut<'s> {
+impl<'s> DormantMutation<'s> {
     /// Mutate an attribute with a roll quality.
     ///
     /// Accepts roll of any attribute, even if it is not defined by item mutator. In this case, roll
     /// will be stored, and its effect won't be applied.
-    pub fn mutate_raw(&mut self, attr_id: AttrId, roll: UnitInterval) -> Result<RawMAttrMut<'_>, AttrMutateRawError> {
+    pub fn mutate_raw(&mut self, attr_id: AttrId, roll: UnitInterval) -> Result<RawMAttr<'_>, AttrMutateRawError> {
         mutate_raw(self.sol, self.item_uid, attr_id.into_aid(), roll)
     }
 }
@@ -41,7 +41,7 @@ fn mutate_raw(
     item_uid: UItemId,
     attr_aid: AAttrId,
     roll: UnitInterval,
-) -> Result<RawMAttrMut<'_>, AttrMutateRawError> {
+) -> Result<RawMAttr<'_>, AttrMutateRawError> {
     match sol
         .u_data
         .items
@@ -56,7 +56,7 @@ fn mutate_raw(
             AttrId::from_aid(attr_aid),
         )),
         None => {
-            let mut raw_mattr = RawMAttrMut::new(sol, item_uid, attr_aid);
+            let mut raw_mattr = RawMAttr::new(sol, item_uid, attr_aid);
             raw_mattr.set_roll(roll);
             Ok(raw_mattr)
         }

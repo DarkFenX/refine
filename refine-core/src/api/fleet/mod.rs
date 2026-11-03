@@ -1,4 +1,4 @@
-pub use fleet::{Fleet, FleetMut};
+pub use fleet::Fleet;
 pub use fleet_add_fit::FleetFitAddError;
 pub use fleet_remove_fit::FleetFitRemoveError;
 pub use sol_get_fleet::FleetGetError;

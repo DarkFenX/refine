@@ -1,34 +1,30 @@
-pub use item::{FitItemAutodetectAddError, Item, ItemGetError, ItemMut, ItemRemoveError};
-pub use item_autocharge::{Autocharge, AutochargeGetError, AutochargeMut};
-pub use item_booster::{
-    Booster, BoosterGetError, BoosterMut, SideEffect, SideEffectGetError, SideEffectIter, SideEffectMut,
-    SideEffectPartialStr, SideEffectStr,
-};
-pub use item_character::{Character, CharacterGetError, CharacterMut};
-pub use item_charge::{Charge, ChargeGetError, ChargeMut};
-pub use item_drone::{Drone, DroneGetError, DroneMut};
-pub use item_fighter::{Ability, AbilityGetError, AbilityIter, AbilityMut, Fighter, FighterGetError, FighterMut};
-pub use item_fw_effect::{FwEffect, FwEffectGetError, FwEffectMut};
-pub use item_implant::{Implant, ImplantGetError, ImplantMut};
-pub use item_module::{Module, ModuleGetError, ModuleIter, ModuleMut};
-pub use item_proj_effect::{ProjEffect, ProjEffectGetError, ProjEffectMut};
-pub use item_rig::{Rig, RigGetError, RigMut};
-pub use item_service::{Service, ServiceGetError, ServiceMut};
-pub use item_ship::{Ship, ShipGetError, ShipMut};
-pub use item_skill::{Skill, SkillAddError, SkillGetError, SkillMut, SkillTypeIdSetError};
-pub use item_stance::{Stance, StanceGetError, StanceMut};
-pub use item_subsystem::{Subsystem, SubsystemGetError, SubsystemMut};
-pub use item_sw_effect::{SwEffect, SwEffectGetError, SwEffectMut};
+pub use item::{FitItemAutodetectAddError, Item, ItemGetError, ItemRemoveError};
+pub use item_autocharge::{Autocharge, AutochargeGetError};
+pub use item_booster::{Booster, BoosterGetError, SideEffect, SideEffectGetError, SideEffectIter, SideEffectStr};
+pub use item_character::{Character, CharacterGetError};
+pub use item_charge::{Charge, ChargeGetError};
+pub use item_drone::{Drone, DroneGetError};
+pub use item_fighter::{Ability, AbilityGetError, AbilityIter, Fighter, FighterGetError};
+pub use item_fw_effect::{FwEffect, FwEffectGetError};
+pub use item_implant::{Implant, ImplantGetError};
+pub use item_module::{Module, ModuleGetError, ModuleIter};
+pub use item_proj_effect::{ProjEffect, ProjEffectGetError};
+pub use item_rig::{Rig, RigGetError};
+pub use item_service::{Service, ServiceGetError};
+pub use item_ship::{Ship, ShipGetError};
+pub use item_skill::{Skill, SkillAddError, SkillGetError, SkillTypeIdSetError};
+pub use item_stance::{Stance, StanceGetError};
+pub use item_subsystem::{Subsystem, SubsystemGetError};
+pub use item_sw_effect::{SwEffect, SwEffectGetError};
 pub use shared::{
-    AttrMutateRawError, DormantMutation, DormantMutationMut, EffectiveMutation, EffectiveMutationMut, FullMAttr,
-    FullMAttrGetError, FullMAttrIter, FullMAttrMut, FullMAttrValueSetError, Mutation, MutationAddError, MutationMut,
-    Proj, ProjAddError, ProjGetError, ProjIter, ProjMut, RangedProj, RangedProjIter, RangedProjMut, RawMAttr,
-    RawMAttrGetError, RawMAttrIter, RawMAttrMut,
+    AttrMutateRawError, DormantMutation, EffectiveMutation, FullMAttr, FullMAttrGetError, FullMAttrIter,
+    FullMAttrValueSetError, Mutation, MutationAddError, Proj, ProjAddError, ProjGetError, ProjIter, RangedProj,
+    RangedProjIter, RawMAttr, RawMAttrGetError, RawMAttrIter,
 };
-pub(in crate::api) use shared::{active_stat_prepare, get_ship_rib, iter_projs, iter_ranged_projs};
+pub(in crate::api) use shared::{active_stat_prepare, get_ship_rib};
 pub(in crate::api) use traits::ItemSealed;
 pub use traits::{
-    ItemAttrGetError, ItemAttrsIterError, ItemCommon, ItemEffectsIterError, ItemModifiersIterError, ItemMutCommon,
+    ItemAttrGetError, ItemAttrsIterError, ItemCommon, ItemEffectsIterError, ItemModifiersIterError,
     StatItemAppliedError, StatItemError, StatItemStateOptions,
 };
 
