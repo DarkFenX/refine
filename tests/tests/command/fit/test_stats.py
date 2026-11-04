@@ -71,6 +71,24 @@ def test_fit_item_override_backref(client, consts):
     assert api_item2_stats.speed.one() == 500
 
 
+def test_fit_item_override_other_fit(client, consts):
+    eve_speed_attr_id = client.mk_eve_attr(id_=consts.EveAttr.max_velocity)
+    eve_drone_id = client.mk_eve_drone(attrs={eve_speed_attr_id: 500})
+    client.create_sources()
+    api_sol = client.create_sol()
+    api_fit = api_sol.create_fit()
+    api_item = api_fit.add_drone(type_id=eve_drone_id)
+    api_other_fit = api_sol.create_fit()
+    api_other_fit_item = api_other_fit.add_drone(type_id=eve_drone_id)
+    api_no_fit_item = api_sol.add_sw_effect(type_id=eve_drone_id)
+    with api_fit.batch() as api_fit_batch:
+        api_fit_stats = api_fit_batch.get_fit_stats(item_options=(ItemStatsOptions(), [(
+            ItemStatsOptions(speed=True), [api_item.id, api_other_fit_item.id, api_no_fit_item.id])]))
+    # Verification - overrides for items which are not on the fit are ignored
+    assert api_fit_stats.items.keys() == {api_item.id}
+    assert api_fit_stats.items[api_item.id].speed.one() == 500
+
+
 def test_item_item(client, consts):
     eve_mass_attr_id = client.mk_eve_attr(id_=consts.EveAttr.mass)
     eve_speed_attr_id = client.mk_eve_attr(id_=consts.EveAttr.max_velocity)

@@ -331,6 +331,50 @@ def test_fleet_item_override_backref(client, consts):
     assert api_item2_stats.speed.one() == 500
 
 
+def test_fleet_fit_override_other_fleet(client, consts):
+    eve_speed_attr_id = client.mk_eve_attr(id_=consts.EveAttr.max_velocity)
+    eve_ship_id = client.mk_eve_ship(attrs={eve_speed_attr_id: 500})
+    client.create_sources()
+    api_sol = client.create_sol()
+    api_fleet = api_sol.create_fleet()
+    api_fit = api_sol.create_fit(fleet_id=api_fleet.id)
+    api_fit.set_ship(type_id=eve_ship_id)
+    api_other_fleet = api_sol.create_fleet()
+    api_other_fleet_fit = api_sol.create_fit(fleet_id=api_other_fleet.id)
+    api_other_fleet_fit.set_ship(type_id=eve_ship_id)
+    api_no_fleet_fit = api_sol.create_fit()
+    api_no_fleet_fit.set_ship(type_id=eve_ship_id)
+    with api_sol.batch() as api_sol_batch:
+        api_fleet_stats = api_sol_batch.get_fleet_stats(fleet_id=api_fleet.id, fit_options=(FitStatsOptions(), [(
+            FitStatsOptions(speed=True), [api_fit.id, api_other_fleet_fit.id, api_no_fleet_fit.id])]))
+    # Verification - overrides for fits which are not in the fleet are ignored
+    assert api_fleet_stats.fits.keys() == {api_fit.id}
+    assert api_fleet_stats.fits[api_fit.id].speed.one() == 500
+
+
+def test_fleet_item_override_other_fleet(client, consts):
+    eve_speed_attr_id = client.mk_eve_attr(id_=consts.EveAttr.max_velocity)
+    eve_drone_id = client.mk_eve_drone(attrs={eve_speed_attr_id: 500})
+    client.create_sources()
+    api_sol = client.create_sol()
+    api_fleet = api_sol.create_fleet()
+    api_fit = api_sol.create_fit(fleet_id=api_fleet.id)
+    api_item = api_fit.add_drone(type_id=eve_drone_id)
+    api_other_fleet = api_sol.create_fleet()
+    api_other_fleet_fit = api_sol.create_fit(fleet_id=api_other_fleet.id)
+    api_other_fleet_item = api_other_fleet_fit.add_drone(type_id=eve_drone_id)
+    api_no_fleet_fit = api_sol.create_fit()
+    api_no_fleet_item = api_no_fleet_fit.add_drone(type_id=eve_drone_id)
+    api_no_fit_item = api_sol.add_sw_effect(type_id=eve_drone_id)
+    with api_sol.batch() as api_sol_batch:
+        api_fleet_stats = api_sol_batch.get_fleet_stats(fleet_id=api_fleet.id, item_options=(ItemStatsOptions(), [(
+            ItemStatsOptions(speed=True),
+            [api_item.id, api_other_fleet_item.id, api_no_fleet_item.id, api_no_fit_item.id])]))
+    # Verification - overrides for items which are not in the fleet are ignored
+    assert api_fleet_stats.items.keys() == {api_item.id}
+    assert api_fleet_stats.items[api_item.id].speed.one() == 500
+
+
 def test_fit_fit(client, consts):
     eve_mass_attr_id = client.mk_eve_attr(id_=consts.EveAttr.mass)
     eve_speed_attr_id = client.mk_eve_attr(id_=consts.EveAttr.max_velocity)
