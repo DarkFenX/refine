@@ -1,7 +1,7 @@
 use itertools::Itertools;
 
 use crate::{
-    AddMode, Fit, ItemTypeId, MinionState, ModRack, ModuleState, PValue, ServiceState,
+    AddMode, Fit, ItemTypeId, MinionState, ModRack, ModuleState, PValue, RemoveMode, ServiceState,
     ad::AItemId,
     rd::RState,
     sol::CoreInner,
@@ -51,89 +51,123 @@ impl CoreInner {
             }
             match item_kind {
                 DetectedItemKind::Booster => {
-                    let savepoint = self.internal_tx_savepoint();
-                    self.internal_add_booster(fit_uid, *type_aid);
-                    if self.internal_validate_fit_fast(fit_uid, val_options) {
+                    if self.try_item(
+                        fit_uid,
+                        val_options,
+                        |core| core.internal_add_booster(fit_uid, *type_aid),
+                        CoreInner::internal_remove_booster,
+                    ) {
                         valid.push(*type_aid)
                     }
-                    self.internal_tx_rollback(savepoint);
                 }
                 // Charges are tried after all other items
                 DetectedItemKind::Charge => charge_type_aids.push(*type_aid),
                 DetectedItemKind::Drone => {
-                    let savepoint = self.internal_tx_savepoint();
-                    self.internal_add_drone(fit_uid, *type_aid, MinionState::InBay, None, u_physics);
-                    if self.internal_validate_fit_fast(fit_uid, val_options) {
+                    if self.try_item(
+                        fit_uid,
+                        val_options,
+                        |core| core.internal_add_drone(fit_uid, *type_aid, MinionState::InBay, None, u_physics),
+                        CoreInner::internal_remove_drone,
+                    ) {
                         valid.push(*type_aid)
                     }
-                    self.internal_tx_rollback(savepoint);
                 }
                 DetectedItemKind::Fighter => {
-                    let savepoint = self.internal_tx_savepoint();
-                    self.internal_add_fighter(fit_uid, *type_aid, MinionState::InBay, u_physics);
-                    if self.internal_validate_fit_fast(fit_uid, val_options) {
+                    if self.try_item(
+                        fit_uid,
+                        val_options,
+                        |core| core.internal_add_fighter(fit_uid, *type_aid, MinionState::InBay, u_physics),
+                        CoreInner::internal_remove_fighter,
+                    ) {
                         valid.push(*type_aid)
                     }
-                    self.internal_tx_rollback(savepoint);
                 }
                 DetectedItemKind::Implant => {
-                    let savepoint = self.internal_tx_savepoint();
-                    self.internal_add_implant(fit_uid, *type_aid);
-                    if self.internal_validate_fit_fast(fit_uid, val_options) {
+                    if self.try_item(
+                        fit_uid,
+                        val_options,
+                        |core| core.internal_add_implant(fit_uid, *type_aid),
+                        CoreInner::internal_remove_implant,
+                    ) {
                         valid.push(*type_aid)
                     }
-                    self.internal_tx_rollback(savepoint);
                 }
                 DetectedItemKind::ModuleHigh => {
                     let state = conv_state(r_item.base.max_state);
-                    let savepoint = self.internal_tx_savepoint();
-                    self.internal_add_module(fit_uid, ModRack::High, AddMode::Equip, *type_aid, state, None, None);
-                    if self.internal_validate_fit_fast(fit_uid, val_options) {
+                    if self.try_item(
+                        fit_uid,
+                        val_options,
+                        |core| {
+                            core.internal_add_module(
+                                fit_uid,
+                                ModRack::High,
+                                AddMode::Equip,
+                                *type_aid,
+                                state,
+                                None,
+                                None,
+                            )
+                        },
+                        |core, module_uid| core.internal_remove_module(module_uid, RemoveMode::Free),
+                    ) {
                         valid.push(*type_aid)
                     }
-                    self.internal_tx_rollback(savepoint);
                 }
                 DetectedItemKind::ModuleMid => {
                     let state = conv_state(r_item.base.max_state);
-                    let savepoint = self.internal_tx_savepoint();
-                    self.internal_add_module(fit_uid, ModRack::Mid, AddMode::Equip, *type_aid, state, None, None);
-                    if self.internal_validate_fit_fast(fit_uid, val_options) {
+                    if self.try_item(
+                        fit_uid,
+                        val_options,
+                        |core| {
+                            core.internal_add_module(fit_uid, ModRack::Mid, AddMode::Equip, *type_aid, state, None, None)
+                        },
+                        |core, module_uid| core.internal_remove_module(module_uid, RemoveMode::Free),
+                    ) {
                         valid.push(*type_aid)
                     }
-                    self.internal_tx_rollback(savepoint);
                 }
                 DetectedItemKind::ModuleLow => {
                     let state = conv_state(r_item.base.max_state);
-                    let savepoint = self.internal_tx_savepoint();
-                    self.internal_add_module(fit_uid, ModRack::Low, AddMode::Equip, *type_aid, state, None, None);
-                    if self.internal_validate_fit_fast(fit_uid, val_options) {
+                    if self.try_item(
+                        fit_uid,
+                        val_options,
+                        |core| {
+                            core.internal_add_module(fit_uid, ModRack::Low, AddMode::Equip, *type_aid, state, None, None)
+                        },
+                        |core, module_uid| core.internal_remove_module(module_uid, RemoveMode::Free),
+                    ) {
                         valid.push(*type_aid)
                     }
-                    self.internal_tx_rollback(savepoint);
                 }
                 DetectedItemKind::Rig => {
-                    let savepoint = self.internal_tx_savepoint();
-                    self.internal_add_rig(fit_uid, *type_aid);
-                    if self.internal_validate_fit_fast(fit_uid, val_options) {
+                    if self.try_item(
+                        fit_uid,
+                        val_options,
+                        |core| core.internal_add_rig(fit_uid, *type_aid),
+                        CoreInner::internal_remove_rig,
+                    ) {
                         valid.push(*type_aid)
                     }
-                    self.internal_tx_rollback(savepoint);
                 }
                 DetectedItemKind::Service => {
-                    let savepoint = self.internal_tx_savepoint();
-                    self.internal_add_service(fit_uid, *type_aid, ServiceState::Online);
-                    if self.internal_validate_fit_fast(fit_uid, val_options) {
+                    if self.try_item(
+                        fit_uid,
+                        val_options,
+                        |core| core.internal_add_service(fit_uid, *type_aid, ServiceState::Online),
+                        CoreInner::internal_remove_service,
+                    ) {
                         valid.push(*type_aid)
                     }
-                    self.internal_tx_rollback(savepoint);
                 }
                 DetectedItemKind::Subsystem => {
-                    let savepoint = self.internal_tx_savepoint();
-                    self.internal_add_subsystem(fit_uid, *type_aid);
-                    if self.internal_validate_fit_fast(fit_uid, val_options) {
+                    if self.try_item(
+                        fit_uid,
+                        val_options,
+                        |core| core.internal_add_subsystem(fit_uid, *type_aid),
+                        CoreInner::internal_remove_subsystem,
+                    ) {
                         valid.push(*type_aid)
                     }
-                    self.internal_tx_rollback(savepoint);
                 }
                 _ => continue,
             }
@@ -142,6 +176,36 @@ impl CoreInner {
             self.internal_try_charges(fit_uid, charge_type_aids, val_options, &mut valid);
         }
         valid
+    }
+    /// Adds an item, checks if the fit stays valid, and removes the item.
+    ///
+    /// Without recording, the item is removed directly instead of through a savepoint and
+    /// rollback, which call the same remove method.
+    #[inline(always)]
+    fn try_item(
+        &mut self,
+        fit_uid: UFitId,
+        val_options: &ValOptionsInt,
+        add: impl FnOnce(&mut Self) -> UItemId,
+        remove: impl FnOnce(&mut Self, UItemId),
+    ) -> bool {
+        match self.undo.is_recording() {
+            true => {
+                let savepoint = self.internal_tx_savepoint();
+                add(self);
+                let valid = self.internal_validate_fit_fast(fit_uid, val_options);
+                self.internal_tx_rollback(savepoint);
+                valid
+            }
+            false => {
+                let item_id_counter = self.u_data.items.get_id_counter();
+                let item_uid = add(self);
+                let valid = self.internal_validate_fit_fast(fit_uid, val_options);
+                remove(self, item_uid);
+                self.u_data.items.set_id_counter(item_id_counter);
+                valid
+            }
+        }
     }
 }
 
