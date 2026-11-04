@@ -10,6 +10,8 @@ impl CoreInner {
         *u_ship.get_physics_mut() = physics;
         CoreInner::util_update_ship_physics(&mut self.u_data, &self.rev_projs, &mut self.svc, ship_uid);
     }
+    // Compiler keeps it out of line with 3 callers; inlined, ship physics changes are cheaper
+    #[inline(always)]
     pub(super) fn util_update_ship_physics(u_data: &mut UData, rev_projs: &RevProjs, svc: &mut Svc, ship_uid: UItemId) {
         let u_ship = u_data.items.get_mut(ship_uid).dc_ship_mut().unwrap();
         let u_ship_physics = *u_ship.get_physics();
