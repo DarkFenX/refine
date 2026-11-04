@@ -425,7 +425,7 @@ impl CycleSoftDtFull {
                 reasons: CycleSoftDtReasons { reload: false },
             });
         }
-        let reactivation_delay = PValue::from_value_clamped(
+        let reactivation_delay = PValue::from_finite_value_clamped(
             calc.get_item_oattr_ffb_extra(ctx, item_uid, ctx.ac().mod_reactivation_delay, Value::ZERO)
                 / Value::THOUSAND,
         );
@@ -442,7 +442,7 @@ impl CycleSoftDtFull {
         let mut total_duration = get_reload_duration(ctx, calc, item_uid);
         // When item reloads, reactivation delay always kicks in, if set
         if rifd.specs_reactivation_delay {
-            let reactivation_delay = PValue::from_value_clamped(
+            let reactivation_delay = PValue::from_finite_value_clamped(
                 calc.get_item_oattr_ffb_extra(ctx, item_uid, ctx.ac().mod_reactivation_delay, Value::ZERO)
                     / Value::THOUSAND,
             );
@@ -483,7 +483,7 @@ impl SoftDts {
         // auto-repeats are not allowed) and if it is longer than already set duration. If it is
         // longer than reload duration, it extends reload soft downtime as well.
         if rifd.specs_reactivation_delay {
-            let reactivation_delay = PValue::from_value_clamped(
+            let reactivation_delay = PValue::from_finite_value_clamped(
                 calc.get_item_oattr_ffb_extra(ctx, item_uid, ctx.ac().mod_reactivation_delay, Value::ZERO)
                     / Value::THOUSAND,
             );

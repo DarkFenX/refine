@@ -20,8 +20,11 @@ impl UnitInterval {
     pub const fn from_f64_clamped(v: f64) -> Self {
         match v.is_nan() {
             true => Self::DEFAULT,
-            false => Self(v.clamp(Self::MIN.0, Self::MAX.0)),
+            false => Self::from_finite_f64_clamped(v),
         }
+    }
+    pub(crate) const fn from_finite_f64_clamped(v: f64) -> Self {
+        Self(v.clamp(Self::MIN.0, Self::MAX.0))
     }
     pub const fn into_f64(self) -> f64 {
         self.0
@@ -45,19 +48,19 @@ impl UnitInterval {
     pub const DEFAULT: Self = Self(0.0);
     pub const MIN: Self = Self(0.0);
     pub const MAX: Self = Self(1.0);
-    pub(crate) const ZERO: Self = Self::from_f64_clamped(0.0);
-    pub(crate) const ONE: Self = Self::from_f64_clamped(1.0);
+    pub(crate) const ZERO: Self = Self::from_finite_f64_clamped(0.0);
+    pub(crate) const ONE: Self = Self::from_finite_f64_clamped(1.0);
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Conversions
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl UnitInterval {
-    pub(crate) fn from_value_clamped(value: Value) -> Self {
-        Self::from_f64_clamped(value.into_f64())
+    pub(crate) fn from_finite_value_clamped(value: Value) -> Self {
+        Self::from_finite_f64_clamped(value.into_f64())
     }
-    pub(crate) fn from_pvalue_clamped(value: PValue) -> Self {
-        Self::from_f64_clamped(value.into_f64())
+    pub(crate) fn from_finite_pvalue_clamped(value: PValue) -> Self {
+        Self::from_finite_f64_clamped(value.into_f64())
     }
     pub(crate) fn into_value(self) -> Value {
         Value::from_f64_unchecked(self.0)

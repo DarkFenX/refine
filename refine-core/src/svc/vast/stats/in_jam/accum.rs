@@ -19,7 +19,7 @@ impl SeqAccum<SeqInstanceAccumEcm> {
         self.instances.get_unjam_chance()
     }
     pub(in crate::svc::vast::stats::in_jam) fn get_unjam_uptime(&self) -> UnitInterval {
-        UnitInterval::from_value_clamped(PValue::ONE - self.instances.jam_time / self.time)
+        UnitInterval::from_finite_value_clamped(PValue::ONE - self.instances.jam_time / self.time)
     }
 }
 
@@ -43,7 +43,7 @@ impl SeqInstanceAccumEcm {
         }
     }
     pub(in crate::svc::vast::stats::in_jam) fn get_unjam_chance(&self) -> UnitInterval {
-        UnitInterval::from_pvalue_clamped(self.unjam_chance)
+        UnitInterval::from_finite_pvalue_clamped(self.unjam_chance)
     }
 }
 impl SeqInstanceAccum<NEffectEcmAmount> for SeqInstanceAccumEcm {
@@ -65,9 +65,9 @@ impl SeqInstanceAccum<NEffectEcmAmount> for SeqInstanceAccumEcm {
         // for cases like: bomb has 10+ jam strength, target has 4 sensor strength, but bomb has 50%
         // chance to hit target (due to varying flight time), thus it can't jam target in more than
         // 50% cases in this case
-        let mut jam_chance = UnitInterval::from_pvalue_clamped(jam_str / self.sensors.strength);
+        let mut jam_chance = UnitInterval::from_finite_pvalue_clamped(jam_str / self.sensors.strength);
         if let Some(chance_mult) = chance_mult {
-            jam_chance = UnitInterval::from_pvalue_clamped(jam_chance.into_pvalue() * chance_mult);
+            jam_chance = UnitInterval::from_finite_pvalue_clamped(jam_chance.into_pvalue() * chance_mult);
         }
         // Record changes based on calculated jam chance
         self.jam_time += instance.duration * jam_chance.into_pvalue() * count.into_pvalue();

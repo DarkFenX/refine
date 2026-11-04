@@ -13,6 +13,6 @@ impl Vast {
         check_ship(ctx.u_data, item_uid)?;
         let neut_resist =
             Value::ONE - calc.get_item_oattr_ffb_extra(ctx, item_uid, ctx.ac().energy_warfare_resist, Value::ZERO);
-        Ok(UnitInterval::from_value_clamped(neut_resist))
+        Ok(UnitInterval::from_finite_value_clamped(neut_resist))
     }
 }

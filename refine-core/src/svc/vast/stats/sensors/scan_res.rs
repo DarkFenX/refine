@@ -12,6 +12,6 @@ impl Vast {
     ) -> Result<PValue, IntStatItemError<!>> {
         check_fighter_ship(ctx.u_data, item_uid)?;
         let scan_res = calc.get_item_oattr_ffb_extra(ctx, item_uid, ctx.ac().scan_resolution, Value::ZERO);
-        Ok(PValue::from_value_clamped(scan_res))
+        Ok(PValue::from_finite_value_clamped(scan_res))
     }
 }

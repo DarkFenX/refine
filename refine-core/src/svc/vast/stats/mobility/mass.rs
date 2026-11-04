@@ -19,6 +19,6 @@ impl Vast {
         item_uid: UItemId,
     ) -> PValue {
         let mass = calc.get_item_oattr_ffb_extra(ctx, item_uid, ctx.ac().mass, Value::ZERO);
-        PValue::from_value_clamped(mass)
+        PValue::from_finite_value_clamped(mass)
     }
 }

@@ -16,10 +16,10 @@ pub(in crate::svc::vast::stats) fn calc_regen_for_attrs(
     let regen_duration_ms = calc.get_item_oattr_ffb_extra(ctx, item_uid, regen_attr_rid, Value::ZERO);
     let regen_duration_s = match regen_duration_ms < Value::FLOAT_TOLERANCE {
         true => return PValue::ZERO,
-        false => PValue::from_value_clamped(regen_duration_ms / Value::THOUSAND),
+        false => PValue::from_finite_value_clamped(regen_duration_ms / Value::THOUSAND),
     };
     let resource_max =
-        PValue::from_value_clamped(calc.get_item_oattr_ffb_extra(ctx, item_uid, max_attr_rid, Value::ZERO));
+        PValue::from_finite_value_clamped(calc.get_item_oattr_ffb_extra(ctx, item_uid, max_attr_rid, Value::ZERO));
     calc_regen(resource_max, regen_duration_s, resource_perc)
 }
 

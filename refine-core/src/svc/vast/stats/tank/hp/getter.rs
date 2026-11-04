@@ -37,16 +37,24 @@ impl Vast {
     ) -> StatHp {
         let attr_consts = ctx.ac();
         // Buffer - if item is not loaded, fetching those will fail
-        let shield_buffer = PValue::from_value_clamped(calc.get_item_oattr_ffb_extra(
+        let shield_buffer = PValue::from_finite_value_clamped(calc.get_item_oattr_ffb_extra(
             ctx,
             item_uid,
             attr_consts.shield_capacity,
             Value::ZERO,
         ));
-        let armor_buffer =
-            PValue::from_value_clamped(calc.get_item_oattr_ffb_extra(ctx, item_uid, attr_consts.armor_hp, Value::ZERO));
-        let hull_buffer =
-            PValue::from_value_clamped(calc.get_item_oattr_ffb_extra(ctx, item_uid, attr_consts.hp, Value::ZERO));
+        let armor_buffer = PValue::from_finite_value_clamped(calc.get_item_oattr_ffb_extra(
+            ctx,
+            item_uid,
+            attr_consts.armor_hp,
+            Value::ZERO,
+        ));
+        let hull_buffer = PValue::from_finite_value_clamped(calc.get_item_oattr_ffb_extra(
+            ctx,
+            item_uid,
+            attr_consts.hp,
+            Value::ZERO,
+        ));
         // Local ancillary repairs
         let (local_asb, local_aar) = match item {
             UItem::Ship(u_ship) => {

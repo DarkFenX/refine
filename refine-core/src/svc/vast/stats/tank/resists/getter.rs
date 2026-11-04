@@ -71,7 +71,7 @@ impl Vast {
         check_ship(ctx.u_data, item_uid)?;
         let neut_resist =
             Value::ONE - calc.get_item_oattr_ffb_extra(ctx, item_uid, ctx.ac().breacher_pod_dmg_resist, Value::ZERO);
-        Ok(UnitInterval::from_value_clamped(neut_resist))
+        Ok(UnitInterval::from_finite_value_clamped(neut_resist))
     }
 }
 
@@ -85,16 +85,16 @@ fn get_item_layer_resists(
     expl_attr_rid: Option<RAttrId>,
 ) -> StatResistsLayer {
     StatResistsLayer {
-        em: UnitInterval::from_value_clamped(
+        em: UnitInterval::from_finite_value_clamped(
             Value::ONE - calc.get_item_oattr_ffb_extra(ctx, item_uid, em_attr_rid, Value::ONE),
         ),
-        thermal: UnitInterval::from_value_clamped(
+        thermal: UnitInterval::from_finite_value_clamped(
             Value::ONE - calc.get_item_oattr_ffb_extra(ctx, item_uid, therm_attr_rid, Value::ONE),
         ),
-        kinetic: UnitInterval::from_value_clamped(
+        kinetic: UnitInterval::from_finite_value_clamped(
             Value::ONE - calc.get_item_oattr_ffb_extra(ctx, item_uid, kin_attr_rid, Value::ONE),
         ),
-        explosive: UnitInterval::from_value_clamped(
+        explosive: UnitInterval::from_finite_value_clamped(
             Value::ONE - calc.get_item_oattr_ffb_extra(ctx, item_uid, expl_attr_rid, Value::ONE),
         ),
     }

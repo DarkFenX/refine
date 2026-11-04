@@ -13,6 +13,6 @@ impl Vast {
         check_character(ctx.u_data, item_uid)?;
         let drone_control_range =
             calc.get_item_oattr_ffb_extra(ctx, item_uid, ctx.ac().drone_control_distance, Value::ZERO);
-        Ok(PValue::from_value_clamped(drone_control_range))
+        Ok(PValue::from_finite_value_clamped(drone_control_range))
     }
 }

@@ -67,7 +67,7 @@ impl<I> StatCapBlcSrcKinds<I> {
 #[derive(Copy, Clone, Default)]
 pub struct StatCapBlcRegen {
     #[cfg_attr(feature = "serde", serde(default = "custom_serde::cap_perc_default"))]
-    pub cap_perc: UnitInterval = UnitInterval::from_f64_clamped(0.25),
+    pub cap_perc: UnitInterval = UnitInterval::from_finite_f64_clamped(0.25),
 }
 
 #[cfg_attr(
@@ -179,6 +179,6 @@ mod custom_serde {
     }
 
     pub(super) fn cap_perc_default() -> UnitInterval {
-        UnitInterval::from_f64_clamped(0.25)
+        UnitInterval::from_finite_f64_clamped(0.25)
     }
 }

@@ -16,6 +16,8 @@ impl<'s> SideEffect<'s> {
             .r_data
             .get_attr_rid_by_aid(&self.chance_attr_aid)
             .unwrap();
-        UnitInterval::from_value_clamped(self.core.internal_get_item_attr(self.item_uid, attr_rid).unwrap().extra)
+        UnitInterval::from_finite_value_clamped(
+            self.core.internal_get_item_attr(self.item_uid, attr_rid).unwrap().extra,
+        )
     }
 }

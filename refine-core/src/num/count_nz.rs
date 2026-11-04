@@ -47,10 +47,7 @@ impl CountNz {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl CountNz {
     pub(crate) fn from_f64_rounded(count: f64) -> Self {
-        match count.is_nan() {
-            true => Self::DEFAULT,
-            false => Self::from_u32_clamped(round_f64_to_u32(count)),
-        }
+        Self::from_u32_clamped(round_f64_to_u32(count))
     }
     pub(crate) fn into_value(self) -> Value {
         Value::from_f64_unchecked(self.0.get() as f64)

@@ -36,25 +36,25 @@ impl Vast {
     ) -> StatSensors {
         // Strength ties are resolved using the following order:
         // Radar > ladar > magnetometric > gravimetric
-        let str_radar = PValue::from_value_clamped(calc.get_item_oattr_ffb_extra(
+        let str_radar = PValue::from_finite_value_clamped(calc.get_item_oattr_ffb_extra(
             ctx,
             item_uid,
             ctx.ac().scan_radar_strength,
             Value::ZERO,
         ));
-        let str_ladar = PValue::from_value_clamped(calc.get_item_oattr_ffb_extra(
+        let str_ladar = PValue::from_finite_value_clamped(calc.get_item_oattr_ffb_extra(
             ctx,
             item_uid,
             ctx.ac().scan_ladar_strength,
             Value::ZERO,
         ));
-        let str_magnet = PValue::from_value_clamped(calc.get_item_oattr_ffb_extra(
+        let str_magnet = PValue::from_finite_value_clamped(calc.get_item_oattr_ffb_extra(
             ctx,
             item_uid,
             ctx.ac().scan_magnetometric_strength,
             Value::ZERO,
         ));
-        let str_grav = PValue::from_value_clamped(calc.get_item_oattr_ffb_extra(
+        let str_grav = PValue::from_finite_value_clamped(calc.get_item_oattr_ffb_extra(
             ctx,
             item_uid,
             ctx.ac().scan_gravimetric_strength,

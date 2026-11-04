@@ -79,7 +79,7 @@ fn get_std_full_range_mult(
                 true => PValue::ZERO,
                 false => {
                     let exponent =
-                        (PValue::from_value_clamped(proj_range - affector_optimal) / affector_falloff).powi(2);
+                        (PValue::from_finite_value_clamped(proj_range - affector_optimal) / affector_falloff).powi(2);
                     (-exponent).exp2()
                 }
             }
@@ -100,19 +100,27 @@ pub(in crate::nd::effect::specs::proj_mult_getter) fn get_missile_range_mult(
     projector_uid: UItemId,
     proj_data: UProjData,
 ) -> PValue {
-    let max_velocity = PValue::from_value_clamped(calc.get_item_oattr_ffb_extra(
+    let max_velocity = PValue::from_finite_value_clamped(calc.get_item_oattr_ffb_extra(
         ctx,
         projector_uid,
         ctx.ac().max_velocity,
         Value::ZERO,
     ));
-    let flight_duration = PValue::from_value_clamped(
+    let flight_duration = PValue::from_finite_value_clamped(
         calc.get_item_oattr_ffb_extra(ctx, projector_uid, ctx.ac().explosion_delay, Value::ZERO) / Value::THOUSAND,
     );
-    let mass =
-        PValue::from_value_clamped(calc.get_item_oattr_ffb_extra(ctx, projector_uid, ctx.ac().mass, Value::ZERO));
-    let agility =
-        PValue::from_value_clamped(calc.get_item_oattr_ffb_extra(ctx, projector_uid, ctx.ac().agility, Value::ZERO));
+    let mass = PValue::from_finite_value_clamped(calc.get_item_oattr_ffb_extra(
+        ctx,
+        projector_uid,
+        ctx.ac().mass,
+        Value::ZERO,
+    ));
+    let agility = PValue::from_finite_value_clamped(calc.get_item_oattr_ffb_extra(
+        ctx,
+        projector_uid,
+        ctx.ac().agility,
+        Value::ZERO,
+    ));
     let inertia_factor = calc_inertia_factor(mass, agility);
     let flight_duration_lower = flight_duration.floor_tick();
     // Missiles appear in center of attacking ship and explode on surface of target ship
@@ -155,7 +163,7 @@ pub(in crate::nd::effect::specs::proj_mult_getter) fn get_fof_missile_range_mult
 ) -> PValue {
     // FoF missiles are limited by c2s range
     if let Some(range_limit) = calc.get_item_oattr_oextra(ctx, projector_uid, ctx.ac().max_fof_tgt_range)
-        && proj_data.get_range_c2s() > PValue::from_value_clamped(range_limit)
+        && proj_data.get_range_c2s() > PValue::from_finite_value_clamped(range_limit)
     {
         return PValue::ZERO;
     }
@@ -169,21 +177,29 @@ pub(in crate::nd::effect::specs::proj_mult_getter) fn get_bomb_range_mult(
     proj_data: UProjData,
 ) -> PValue {
     // Bomb is similar to missile, but they have fixed flight range and AoE effect
-    let max_velocity = PValue::from_value_clamped(calc.get_item_oattr_ffb_extra(
+    let max_velocity = PValue::from_finite_value_clamped(calc.get_item_oattr_ffb_extra(
         ctx,
         projector_uid,
         ctx.ac().max_velocity,
         Value::ZERO,
     ));
-    let flight_duration = PValue::from_value_clamped(
+    let flight_duration = PValue::from_finite_value_clamped(
         calc.get_item_oattr_ffb_extra(ctx, projector_uid, ctx.ac().explosion_delay, Value::ZERO) / Value::THOUSAND,
     );
-    let mass =
-        PValue::from_value_clamped(calc.get_item_oattr_ffb_extra(ctx, projector_uid, ctx.ac().mass, Value::ZERO));
-    let agility =
-        PValue::from_value_clamped(calc.get_item_oattr_ffb_extra(ctx, projector_uid, ctx.ac().agility, Value::ZERO));
+    let mass = PValue::from_finite_value_clamped(calc.get_item_oattr_ffb_extra(
+        ctx,
+        projector_uid,
+        ctx.ac().mass,
+        Value::ZERO,
+    ));
+    let agility = PValue::from_finite_value_clamped(calc.get_item_oattr_ffb_extra(
+        ctx,
+        projector_uid,
+        ctx.ac().agility,
+        Value::ZERO,
+    ));
     let inertia_factor = calc_inertia_factor(mass, agility);
-    let aoe_range = PValue::from_value_clamped(calc.get_item_oattr_ffb_extra(
+    let aoe_range = PValue::from_finite_value_clamped(calc.get_item_oattr_ffb_extra(
         ctx,
         projector_uid,
         ctx.ac().emp_field_range,
@@ -197,7 +213,7 @@ pub(in crate::nd::effect::specs::proj_mult_getter) fn get_bomb_range_mult(
         // When flight duration is aligned to ticks, need to do fewer calculations
         true => {
             let flight_range = calc_flight_range(max_velocity, flight_duration, inertia_factor);
-            let short_range = PValue::from_value_clamped(flight_range - aoe_reach_range);
+            let short_range = PValue::from_finite_value_clamped(flight_range - aoe_reach_range);
             let long_range = flight_range + aoe_reach_range;
             match proj_range >= short_range && proj_range <= long_range {
                 true => PValue::ONE,
@@ -212,9 +228,9 @@ pub(in crate::nd::effect::specs::proj_mult_getter) fn get_bomb_range_mult(
             let flight_range_higher = calc_flight_range(max_velocity, flight_duration_higher, inertia_factor);
             let chance_higher = (flight_duration * PValue::SERVER_TICK_HZ).fract();
             let chance_lower = PValue::from_value_unchecked(PValue::ONE - chance_higher);
-            let lower_short_range = PValue::from_value_clamped(flight_range_lower - aoe_reach_range);
+            let lower_short_range = PValue::from_finite_value_clamped(flight_range_lower - aoe_reach_range);
             let lower_long_range = flight_range_lower + aoe_reach_range;
-            let higher_short_range = PValue::from_value_clamped(flight_range_higher - aoe_reach_range);
+            let higher_short_range = PValue::from_finite_value_clamped(flight_range_higher - aoe_reach_range);
             let higher_long_range = flight_range_higher + aoe_reach_range;
             let mut mult = PValue::ZERO;
             if proj_range >= lower_short_range && proj_range <= lower_long_range {
@@ -314,7 +330,7 @@ pub(super) fn get_dd_neut_range_mult(
 fn get_effect_range(ctx: &SvcCtx, calc: &mut Calc, projector_uid: UItemId, attr_rid: Option<RAttrId>) -> PValue {
     match attr_rid {
         Some(attr_rid) => match calc.get_item_attr_rfull(ctx, projector_uid, attr_rid) {
-            Ok(val) => PValue::from_value_clamped(val.extra),
+            Ok(val) => PValue::from_finite_value_clamped(val.extra),
             _ => PValue::ZERO,
         },
         None => PValue::ZERO,

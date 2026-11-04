@@ -12,6 +12,6 @@ impl Vast {
     ) -> Result<PValue, IntStatItemError<!>> {
         check_fighter_ship(ctx.u_data, item_uid)?;
         let lock_range = calc.get_item_oattr_ffb_extra(ctx, item_uid, ctx.ac().max_target_range, Value::ZERO);
-        Ok(PValue::from_value_clamped(lock_range))
+        Ok(PValue::from_finite_value_clamped(lock_range))
     }
 }

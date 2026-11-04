@@ -9,7 +9,7 @@ pub(in crate::rd::data::item::base) fn get_volume(
     attr_consts: &RAttrConsts,
 ) -> PValue {
     match attr_consts.volume.and_then(|v| item_attrs.get(&v)) {
-        Some(&volume) => PValue::from_value_clamped(volume),
+        Some(&volume) => PValue::from_finite_value_clamped(volume),
         None => Default::default(),
     }
 }
@@ -18,7 +18,7 @@ pub(in crate::rd::data::item::base) fn get_capacity(
     attr_consts: &RAttrConsts,
 ) -> PValue {
     match attr_consts.capacity.and_then(|v| item_attrs.get(&v)) {
-        Some(&capacity) => PValue::from_value_clamped(capacity),
+        Some(&capacity) => PValue::from_finite_value_clamped(capacity),
         None => Default::default(),
     }
 }
@@ -27,7 +27,7 @@ pub(in crate::rd::data::item::base) fn get_radius(
     attr_consts: &RAttrConsts,
 ) -> PValue {
     match attr_consts.radius.and_then(|v| item_attrs.get(&v)) {
-        Some(&radius) => PValue::from_value_clamped(radius),
+        Some(&radius) => PValue::from_finite_value_clamped(radius),
         None => Default::default(),
     }
 }
@@ -79,7 +79,7 @@ pub(in crate::rd::data::item::base) fn get_fighter_refuel_duration(
     attr_consts: &RAttrConsts,
 ) -> PValue {
     match attr_consts.ftr_refueling_time.and_then(|v| item_attrs.get(&v)) {
-        Some(&value) => PValue::from_value_clamped(value / Value::THOUSAND),
+        Some(&value) => PValue::from_finite_value_clamped(value / Value::THOUSAND),
         None => PValue::default(),
     }
 }

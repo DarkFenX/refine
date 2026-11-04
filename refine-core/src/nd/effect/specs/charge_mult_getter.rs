@@ -34,7 +34,7 @@ fn get_asb_cap(ctx: &SvcCtx, calc: &mut Calc, item_uid: UItemId) -> Option<PValu
         && charge_rib.grp_id == AItemGrpId::CAPACITOR_BOOSTER_CHARGE
         && let Some(cap_bonus_perc) = calc.get_item_oattr_oextra(ctx, charge_uid, ctx.ac().cap_need_bonus)
     {
-        return Some(PValue::from_value_clamped(cap_bonus_perc.perc_change_to_mult()));
+        return Some(PValue::from_finite_value_clamped(cap_bonus_perc.perc_change_to_mult()));
     }
     None
 }
@@ -44,7 +44,9 @@ fn get_aar_rep(ctx: &SvcCtx, calc: &mut Calc, item_uid: UItemId, chargedness: Un
         && ctx.u_data.items.get(charge_uid).get_rendered_type_aid() == AItemId::NANITE_REPAIR_PASTE
         && let Some(rep_mult) = calc.get_item_oattr_oextra(ctx, item_uid, ctx.ac().charged_armor_dmg_mult)
     {
-        return Some(PValue::from_value_clamped(rep_mult - Value::ONE) * chargedness.into_pvalue() + PValue::ONE);
+        return Some(
+            PValue::from_finite_value_clamped(rep_mult - Value::ONE) * chargedness.into_pvalue() + PValue::ONE,
+        );
     }
     None
 }

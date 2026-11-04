@@ -79,7 +79,12 @@ fn get_attr_dogma(
     applied_at_start: bool,
 ) -> Option<Output<PValue>> {
     Some(Output::Simple(OutputSimple {
-        instance: PValue::from_value_clamped(calc.get_item_oattr_ffb_dogma(ctx, item_uid, attr_rid, Value::ZERO)),
+        instance: PValue::from_finite_value_clamped(calc.get_item_oattr_ffb_dogma(
+            ctx,
+            item_uid,
+            attr_rid,
+            Value::ZERO,
+        )),
         delay: match applied_at_start {
             true => PValue::ZERO,
             false => funcs::get_effect_duration_s(ctx, calc, item_uid, effect)?,
@@ -96,7 +101,12 @@ fn get_attr_extra(
     applied_at_start: bool,
 ) -> Option<Output<PValue>> {
     Some(Output::Simple(OutputSimple {
-        instance: PValue::from_value_clamped(calc.get_item_oattr_ffb_extra(ctx, item_uid, attr_rid, Value::ZERO)),
+        instance: PValue::from_finite_value_clamped(calc.get_item_oattr_ffb_extra(
+            ctx,
+            item_uid,
+            attr_rid,
+            Value::ZERO,
+        )),
         delay: match applied_at_start {
             true => PValue::ZERO,
             false => funcs::get_effect_duration_s(ctx, calc, item_uid, effect)?,
@@ -116,13 +126,13 @@ fn get_neut_nosf(ctx: &SvcCtx, calc: &mut Calc, item_uid: UItemId, effect: &REff
 }
 
 fn get_neut_aoe(ctx: &SvcCtx, calc: &mut Calc, item_uid: UItemId) -> Option<Output<PValue>> {
-    let instance = PValue::from_value_clamped(calc.get_item_oattr_ffb_extra(
+    let instance = PValue::from_finite_value_clamped(calc.get_item_oattr_ffb_extra(
         ctx,
         item_uid,
         ctx.ac().energy_neut_amount,
         Value::ZERO,
     ));
-    let delay = PValue::from_value_clamped(
+    let delay = PValue::from_finite_value_clamped(
         calc.get_item_oattr_ffb_extra(ctx, item_uid, ctx.ac().doomsday_warning_duration, Value::ZERO) / Value::THOUSAND,
     );
     Some(Output::Simple(OutputSimple { instance, delay }))
@@ -145,7 +155,7 @@ fn get_neut_bomb(ctx: &SvcCtx, calc: &mut Calc, item_uid: UItemId) -> Option<Out
 }
 
 fn get_neut_ftr_abil(ctx: &SvcCtx, calc: &mut Calc, item_uid: UItemId) -> Option<Output<PValue>> {
-    let mut instance = PValue::from_value_clamped(calc.get_item_oattr_ffb_extra(
+    let mut instance = PValue::from_finite_value_clamped(calc.get_item_oattr_ffb_extra(
         ctx,
         item_uid,
         ctx.ac().ftr_abil_energy_neut_amount,
@@ -166,7 +176,7 @@ fn get_power_booster(ctx: &SvcCtx, calc: &mut Calc, item_uid: UItemId) -> Option
     let item = ctx.u_data.items.get(item_uid);
     let charge_uid = item.get_charge_uid()?;
     let attr_consts = ctx.ac();
-    let instance = PValue::from_value_clamped(calc.get_item_oattr_ffb_extra(
+    let instance = PValue::from_finite_value_clamped(calc.get_item_oattr_ffb_extra(
         ctx,
         charge_uid,
         attr_consts.capacitor_bonus,

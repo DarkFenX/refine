@@ -11,7 +11,7 @@ use crate::{
     },
 };
 
-const TIME_LIMIT: PValue = PValue::from_f64_clamped(4.0 * 60.0 * 60.0);
+const TIME_LIMIT: PValue = PValue::from_finite_f64_clamped(4.0 * 60.0 * 60.0);
 
 #[cfg_attr(feature = "serde", derive(serde::Serialize), serde(rename_all = "snake_case"))]
 #[derive(Copy, Clone)]
@@ -237,7 +237,7 @@ impl CapSim {
             false => (self.wm_low_cap + self.wm_aux_high) / (Value::TWO * self.max_cap),
         };
         // Extra checks for case when max cap is 0
-        StatCapSim::Stable(UnitInterval::from_value_clamped(match stability.is_finite() {
+        StatCapSim::Stable(UnitInterval::from_finite_value_clamped(match stability.is_finite() {
             true => stability,
             false => Value::ONE,
         }))
@@ -408,7 +408,7 @@ impl CapSim {
     }
     fn inject_emergency(&mut self, needed_cap_total: PValue) {
         while !self.injectors.is_empty() && needed_cap_total.into_value() > self.cap && self.max_cap > self.cap {
-            let needed_cap_extra = PValue::from_value_clamped(Value::min(
+            let needed_cap_extra = PValue::from_finite_value_clamped(Value::min(
                 needed_cap_total.into_value() - self.cap,
                 self.max_cap - self.cap,
             ));
@@ -437,7 +437,7 @@ impl CapSim {
     }
     fn inject_topup(&mut self) {
         while !self.injectors.is_empty() && self.cap < self.max_cap {
-            let max_injection = PValue::from_value_clamped(self.max_cap - self.cap);
+            let max_injection = PValue::from_finite_value_clamped(self.max_cap - self.cap);
             // Find an injector which does not overshoot and has the highest injection value
             let Some(idx) = self
                 .injectors
@@ -459,7 +459,7 @@ impl CapSim {
             // value if cap is not regenerating
             true => Some(match self.tau {
                 Some(..) => StatCapSim::Stable(UnitInterval::ONE),
-                None => StatCapSim::Stable(UnitInterval::from_value_clamped(self.cap / self.max_cap)),
+                None => StatCapSim::Stable(UnitInterval::from_finite_value_clamped(self.cap / self.max_cap)),
             }),
             false => None,
         }

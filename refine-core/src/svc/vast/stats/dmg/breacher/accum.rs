@@ -329,17 +329,17 @@ impl BreacherAccum for AppliedBreacherAccum {
             return;
         };
         // Applied output against target HP
-        let projectee_hp = PValue::from_value_clamped(calc.get_item_oattr_ffb_extra(
+        let projectee_hp = PValue::from_finite_value_clamped(calc.get_item_oattr_ffb_extra(
             ctx,
             projectee_uid,
             ctx.ac().shield_capacity,
             Value::ZERO,
-        )) + PValue::from_value_clamped(calc.get_item_oattr_ffb_extra(
+        )) + PValue::from_finite_value_clamped(calc.get_item_oattr_ffb_extra(
             ctx,
             projectee_uid,
             ctx.ac().armor_hp,
             Value::ZERO,
-        )) + PValue::from_value_clamped(calc.get_item_oattr_ffb_extra(
+        )) + PValue::from_finite_value_clamped(calc.get_item_oattr_ffb_extra(
             ctx,
             projectee_uid,
             ctx.ac().hp,

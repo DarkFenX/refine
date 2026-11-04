@@ -28,7 +28,7 @@ pub(in crate::rd::data::item::base) fn get_item_ship_kind(
 ) -> Option<RShipKind> {
     match item_cat_id {
         AItemCatId::MODULE => {
-            match get_volume(item_attrs, attr_consts) <= PValue::from_f64_clamped(MAX_SUBCAP_MODULE_VOLUME) {
+            match get_volume(item_attrs, attr_consts) <= PValue::from_finite_f64_clamped(MAX_SUBCAP_MODULE_VOLUME) {
                 true => Some(RShipKind::Ship),
                 false => Some(RShipKind::CapitalShip),
             }

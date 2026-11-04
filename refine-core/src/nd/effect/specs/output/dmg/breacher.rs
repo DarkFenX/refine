@@ -63,22 +63,22 @@ impl NEffectOutputGetter for NEffectBreacherOutputGetter {
 // Getter-related private functions
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 fn get_regular(ctx: &SvcCtx, calc: &mut Calc, projector_uid: UItemId) -> Option<Output<NEffectBreacherAmount>> {
-    let abs_max = PValue::from_value_clamped(calc.get_item_oattr_ffb_extra(
+    let abs_max = PValue::from_finite_value_clamped(calc.get_item_oattr_ffb_extra(
         ctx,
         projector_uid,
         ctx.ac().dot_max_dmg_per_tick,
         Value::ZERO,
     ));
-    let rel_max = PValue::from_value_clamped(
+    let rel_max = PValue::from_finite_value_clamped(
         calc.get_item_oattr_ffb_extra(ctx, projector_uid, ctx.ac().dot_max_hp_perc_per_tick, Value::ZERO)
             / Value::HUNDRED,
     );
-    let duration_s = PValue::from_value_clamped(
+    let duration_s = PValue::from_finite_value_clamped(
         calc.get_item_oattr_ffb_extra(ctx, projector_uid, ctx.ac().dot_duration, Value::ZERO) / Value::THOUSAND,
     );
     let breacher = NEffectBreacherAmount::try_new(
         abs_max,
-        UnitInterval::from_pvalue_clamped(rel_max),
+        UnitInterval::from_finite_pvalue_clamped(rel_max),
         Count::from_pvalue_trunced(duration_s * PValue::SERVER_TICK_HZ),
     )?;
     Some(Output::Simple(OutputSimple {

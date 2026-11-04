@@ -20,7 +20,7 @@ impl Vast {
         item_uid: UItemId,
     ) -> Result<PValue, StatMaxWarpRangeError> {
         let cap = Self::internal_get_stat_item_cap_amount_unchecked(ctx, calc, item_uid);
-        let cap_need = PValue::from_value_clamped(calc.get_item_oattr_ffb_extra(
+        let cap_need = PValue::from_finite_value_clamped(calc.get_item_oattr_ffb_extra(
             ctx,
             item_uid,
             ctx.ac().warp_capacitor_need,

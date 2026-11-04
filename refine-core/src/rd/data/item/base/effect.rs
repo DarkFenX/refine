@@ -34,14 +34,14 @@ impl RItemBaseEffectData {
             autocharge_attr_id,
         } = a_effect_data;
         self.ability_cooldown = ability_cooldown
-            .map(PValue::from_a_value_clamped)
+            .map(PValue::from_finite_a_value_clamped)
             .and_then(|v| match v {
                 PValue::ZERO => None,
                 _ => Some(v),
             });
         self.ability_charge_count = ability_charge_count.map(Count::from_a_count);
         self.ability_charge_reload_duration = ability_charge_reload_duration
-            .map(PValue::from_a_value_clamped)
+            .map(PValue::from_finite_a_value_clamped)
             .unwrap_or(PValue::ZERO);
         self.autocharge_aid = get_autocharge_aid(*autocharge_attr_id, r_item_attrs, attr_aid_rid_map);
         self.projectee_filter_rid = get_projectee_filter_rid(r_effect, r_item_attrs, item_list_aid_rid_map);

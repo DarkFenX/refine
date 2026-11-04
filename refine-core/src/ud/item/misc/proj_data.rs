@@ -121,11 +121,11 @@ fn calc_range_c2c(src_coordinates: Xyz, tgt_coordinates: Xyz) -> PValue {
 }
 
 fn calc_range_c2s(range_c2c: PValue, tgt_radius: PValue) -> PValue {
-    PValue::from_f64_clamped(range_c2c.into_f64() - tgt_radius.into_f64())
+    PValue::from_finite_value_clamped(range_c2c - tgt_radius)
 }
 
 fn calc_range_s2s(range_c2c: PValue, src_radius: PValue, tgt_radius: PValue) -> PValue {
-    PValue::from_f64_clamped(range_c2c.into_f64() - src_radius.into_f64() - tgt_radius.into_f64())
+    PValue::from_finite_value_clamped(range_c2c - src_radius - tgt_radius)
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -150,9 +150,7 @@ mod debug {
                 src_physics: _,
                 tgt_physics: _,
             } = self;
-            if *range_s2s
-                != PValue::from_f64_clamped(range_c2c.into_f64() - src_radius.into_f64() - tgt_radius.into_f64())
-            {
+            if *range_s2s != calc_range_s2s(*range_c2c, *src_radius, *tgt_radius) {
                 return Err(Default::default());
             }
             Ok(())

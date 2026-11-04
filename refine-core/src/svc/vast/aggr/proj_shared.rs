@@ -63,7 +63,7 @@ impl<I> AggrProjInvData<I> {
                 );
                 // Remote limit
                 if let Some(remote_limit) = calc.get_item_oattr_oextra(ctx, projectee_uid, ospec.remote_limit_attr_id) {
-                    let remote_limit = PValue::from_value_clamped(remote_limit);
+                    let remote_limit = PValue::from_finite_value_clamped(remote_limit);
                     match instance_limit {
                         Some(local_limit) => instance_limit = Some(local_limit.min(remote_limit)),
                         None => instance_limit = Some(remote_limit),
@@ -591,7 +591,7 @@ where
 {
     let mut output = inv_proj.base_output;
     // Spool
-    str_mult *= PValue::from_value_clamped(Value::ONE + spool_extra_mult);
+    str_mult *= PValue::from_finite_value_clamped(Value::ONE + spool_extra_mult);
     if str_mult != PValue::ONE {
         output.instance_mul_assign(str_mult);
     }

@@ -64,7 +64,7 @@ impl Lender for RahSimTickIter {
         // Clear state exposed to iter caller
         self.cycled.clear();
         // Pick time remaining until some RAH finishes its cycle
-        let time_passed = PValue::from_value_clamped(
+        let time_passed = PValue::from_finite_value_clamped(
             self.item_infos
                 .iter()
                 .map(|v| v.cycle_duration - v.cycle_time)

@@ -78,7 +78,7 @@ impl VastFitData {
         match module_volumes.is_empty() {
             true => None,
             false => Some(ValCapitalModFail {
-                max_subcap_volume: PValue::from_f64_clamped(MAX_SUBCAP_MODULE_VOLUME),
+                max_subcap_volume: PValue::from_finite_f64_clamped(MAX_SUBCAP_MODULE_VOLUME),
                 module_volumes,
             }),
         }

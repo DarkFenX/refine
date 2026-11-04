@@ -27,7 +27,7 @@ impl<'s> Fit<'s> {
             rearm_minions: None,
         });
         let time_sim_1200 = StatTimeOptions::Sim(StatTimeOptionsSim {
-            time: Some(StatTime::from_f64_clamped(1200.0)),
+            time: Some(StatTime::from_finite_f64_clamped(1200.0)),
             optional_reloads: None,
             rearm_minions: None,
         });
@@ -43,7 +43,7 @@ impl<'s> Fit<'s> {
             thermal: PValue::ONE,
             ..
         };
-        let shield_perc_peak = UnitInterval::from_f64_clamped(0.25);
+        let shield_perc_peak = UnitInterval::from_finite_f64_clamped(0.25);
         let dmg_item_kinds = StatDmgItemKinds::new(true);
         let mining_item_kinds = StatMiningItemKinds::new(true);
         let neut_item_kinds = StatNeutItemKinds::new(true);

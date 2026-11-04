@@ -16,8 +16,11 @@ impl StatTime {
     pub const fn from_f64_clamped(time: f64) -> Self {
         match time.is_nan() {
             true => Self::DEFAULT,
-            false => Self(time.clamp(Self::MIN.0, Self::MAX.0)),
+            false => Self::from_finite_f64_clamped(time),
         }
+    }
+    pub(crate) const fn from_finite_f64_clamped(time: f64) -> Self {
+        Self(time.clamp(Self::MIN.0, Self::MAX.0))
     }
     pub const fn into_f64(self) -> f64 {
         self.0

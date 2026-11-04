@@ -41,7 +41,7 @@ impl UData {
                 explosive: PValue::ONE,
                 ..
             },
-            default_spool: Spool::SpoolScale(UnitInterval::from_f64_clamped(1.0)),
+            default_spool: Spool::SpoolScale(UnitInterval::from_finite_f64_clamped(1.0)),
             default_npc_prop: NpcProp::Chase,
             default_optional_reloads: OptionalReload::OnEmpty,
             default_rearm_minions: RearmMinion::Disabled,

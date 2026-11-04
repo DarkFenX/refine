@@ -114,8 +114,8 @@ impl Vast {
             }
         }
         let jam = StatInJam {
-            chance: UnitInterval::from_value_clamped(Value::ONE - projectee_unjam_chance),
-            uptime: UnitInterval::from_value_clamped(Value::ONE - projectee_unjam_uptime),
+            chance: UnitInterval::from_finite_value_clamped(Value::ONE - projectee_unjam_chance),
+            uptime: UnitInterval::from_finite_value_clamped(Value::ONE - projectee_unjam_uptime),
         };
         Ok(jam)
     }

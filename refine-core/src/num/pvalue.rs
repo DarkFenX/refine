@@ -33,6 +33,10 @@ impl PValue {
             false => Self(v.max(Self::MIN.0).min(Self::MAX.0)),
         }
     }
+    pub(crate) const fn from_finite_f64_clamped(v: f64) -> Self {
+        // Finite values never exceed MAX
+        Self(v.max(Self::MIN.0))
+    }
     pub(crate) const fn from_f64_unchecked(v: f64) -> Self {
         Self(v)
     }
@@ -58,9 +62,9 @@ impl PValue {
     pub(crate) const ONE: Self = Self(1.0);
     pub(crate) const TEN: Self = Self(10.0);
     pub(crate) const MILLION: Self = Self(1000000.0);
-    pub(crate) const FLOAT_TOLERANCE: Self = Self::from_f64_clamped(FLOAT_TOLERANCE);
-    pub(crate) const SERVER_TICK_HZ: Self = Self::from_f64_clamped(SERVER_TICK_HZ as f64);
-    pub(crate) const SERVER_TICK_S: Self = Self::from_f64_clamped(SERVER_TICK_S);
+    pub(crate) const FLOAT_TOLERANCE: Self = Self::from_finite_f64_clamped(FLOAT_TOLERANCE);
+    pub(crate) const SERVER_TICK_HZ: Self = Self::from_finite_f64_clamped(SERVER_TICK_HZ as f64);
+    pub(crate) const SERVER_TICK_S: Self = Self::from_finite_f64_clamped(SERVER_TICK_S);
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -70,11 +74,11 @@ impl PValue {
     pub(crate) fn from_usize(v: usize) -> PValue {
         Self(v as f64)
     }
-    pub(crate) fn from_a_value_clamped(value: AValue) -> Self {
-        Self::from_f64_clamped(value.into_f64())
+    pub(crate) fn from_finite_a_value_clamped(value: AValue) -> Self {
+        Self::from_finite_f64_clamped(value.into_f64())
     }
-    pub(crate) fn from_value_clamped(value: Value) -> Self {
-        Self::from_f64_clamped(value.into_f64())
+    pub(crate) fn from_finite_value_clamped(value: Value) -> Self {
+        Self::from_finite_f64_clamped(value.into_f64())
     }
     pub(crate) fn from_value_unchecked(value: Value) -> Self {
         Self::from_f64_unchecked(value.into_f64())

@@ -55,7 +55,7 @@ impl VastFitData {
         }
         // Pass validation if ship is not loaded
         let max_cap = match calc.get_item_oattr_afb_oextra(ctx, ship_uid, ctx.ac().capacitor_capacity, Value::ZERO) {
-            Some(max_cap) => PValue::from_value_clamped(max_cap),
+            Some(max_cap) => PValue::from_finite_value_clamped(max_cap),
             None => return true,
         };
         for &item_uid in self.mods_cap_consumers.iter() {
@@ -85,7 +85,7 @@ impl VastFitData {
         }
         // Pass validation if ship is not loaded
         let max_cap = calc.get_item_oattr_afb_oextra(ctx, ship_uid, ctx.ac().capacitor_capacity, Value::ZERO)?;
-        let max_cap = PValue::from_value_clamped(max_cap);
+        let max_cap = PValue::from_finite_value_clamped(max_cap);
         let mut items = Vec::new();
         for &item_uid in self.mods_cap_consumers.iter() {
             let u_item = ctx.u_data.items.get(item_uid);
@@ -121,16 +121,14 @@ fn get_cap_consumption_instance(
     cap_consumer: &RItemCapConsumer,
 ) -> Option<PValue> {
     let r_effect = ctx.u_data.r_data.get_effect_by_rid(cap_consumer.effect_rid);
-    let mut cap_consumed = match cap_consumer.opc_spec.base {
-        // Same value the getter returns as output instance, without building whole output
-        NEffectGeneralOutputGetter::CapConsumer => PValue::from_value_clamped(calc.get_item_oattr_ffb_dogma(
-            ctx,
-            item_uid,
-            r_effect.discharge_attr_rid,
-            Value::ZERO,
-        )),
-        base => base.get(ctx, calc, item_uid, r_effect, ())?.get_instance(),
-    };
+    let mut cap_consumed =
+        match cap_consumer.opc_spec.base {
+            // Same value the getter returns as output instance, without building whole output
+            NEffectGeneralOutputGetter::CapConsumer => PValue::from_finite_value_clamped(
+                calc.get_item_oattr_ffb_dogma(ctx, item_uid, r_effect.discharge_attr_rid, Value::ZERO),
+            ),
+            base => base.get(ctx, calc, item_uid, r_effect, ())?.get_instance(),
+        };
     // Just assume chargedness is 100% when there is a charge for simplicity. The only case it's
     // needed in this case (ASBs) chargedness is ignored anyway.
     if let Some(charge_mult_getter) = cap_consumer.opc_spec.charge_mult

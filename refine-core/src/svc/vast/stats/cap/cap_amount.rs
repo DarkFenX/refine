@@ -19,6 +19,6 @@ impl Vast {
         item_uid: UItemId,
     ) -> PValue {
         let cap_amount = calc.get_item_oattr_ffb_extra(ctx, item_uid, ctx.ac().capacitor_capacity, Value::ZERO);
-        PValue::from_value_clamped(cap_amount)
+        PValue::from_finite_value_clamped(cap_amount)
     }
 }

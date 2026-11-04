@@ -13,6 +13,6 @@ impl Vast {
         check_ship(ctx.u_data, item_uid)?;
         let dscan_range =
             calc.get_item_oattr_ffb_extra(ctx, item_uid, ctx.ac().max_directional_scan_range, Value::ZERO) / Value::AU;
-        Ok(PValue::from_value_clamped(dscan_range))
+        Ok(PValue::from_finite_value_clamped(dscan_range))
     }
 }

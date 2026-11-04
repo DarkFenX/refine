@@ -51,12 +51,12 @@ fn internal_cycle_count(ctx: &SvcCtx, calc: &mut Calc, module: &UModule) -> InfC
     let chance = match calc.get_item_oattr_oextra(ctx, charge_uid, ctx.ac().crystal_volatility_chance) {
         Some(chance) => match chance < Value::FLOAT_TOLERANCE {
             true => return InfCount::Infinite,
-            false => UnitInterval::from_value_clamped(chance),
+            false => UnitInterval::from_finite_value_clamped(chance),
         },
         None => return InfCount::Infinite,
     };
     let hp = match charge_attrs.get_opt(ctx.ac().hp) {
-        Some(&hp) => PValue::from_value_clamped(hp),
+        Some(&hp) => PValue::from_finite_value_clamped(hp),
         None => PValue::ZERO,
     };
     let procs_until_killed = (hp / dmg).ceil_unerr();

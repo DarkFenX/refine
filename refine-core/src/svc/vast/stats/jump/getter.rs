@@ -142,7 +142,7 @@ fn get_stat_jump_portal(
 ) -> StatJumpPortal {
     let mut psgs = Vec::with_capacity(psg_fit_uids.len());
     if !psg_fit_uids.is_empty() {
-        let mass_limit = match PValue::from_value_clamped(calc.get_item_oattr_ffb_extra(
+        let mass_limit = match PValue::from_finite_value_clamped(calc.get_item_oattr_ffb_extra(
             ctx,
             ship_uid,
             ctx.ac().gate_max_jump_mass,
@@ -151,19 +151,19 @@ fn get_stat_jump_portal(
             PValue::ZERO => None,
             mass_limit => Some(mass_limit),
         };
-        let ship_fuel_use = PValue::from_value_clamped(calc.get_item_oattr_ffb_extra(
+        let ship_fuel_use = PValue::from_finite_value_clamped(calc.get_item_oattr_ffb_extra(
             ctx,
             ship_uid,
             ctx.ac().jump_drive_consumption_amount,
             Value::ZERO,
         ));
-        let mass_mult = PValue::from_value_clamped(calc.get_item_oattr_ffb_extra(
+        let mass_mult = PValue::from_finite_value_clamped(calc.get_item_oattr_ffb_extra(
             ctx,
             ship_uid,
             ctx.ac().jump_portal_consumption_mass_factor,
             Value::ZERO,
         ));
-        let fuel_use_add = PValue::from_value_clamped(calc.get_item_oattr_ffb_extra(
+        let fuel_use_add = PValue::from_finite_value_clamped(calc.get_item_oattr_ffb_extra(
             ctx,
             ship_uid,
             ctx.ac().jump_portal_additional_consumption,

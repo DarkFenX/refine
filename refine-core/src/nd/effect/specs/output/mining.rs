@@ -117,8 +117,8 @@ fn get_crit(
         true => {
             let crit_bonus =
                 calc.get_item_oattr_ffb_extra(ctx, item_uid, ctx.ac().mining_crit_bonus_yield, Value::ZERO);
-            let crit_chance = UnitInterval::from_value_clamped(crit_chance);
-            PValue::from_value_clamped(yield_ * (crit_chance.into_value().mul_add(crit_bonus, Value::ONE)))
+            let crit_chance = UnitInterval::from_finite_value_clamped(crit_chance);
+            PValue::from_finite_value_clamped(yield_ * (crit_chance.into_value().mul_add(crit_bonus, Value::ONE)))
         }
         false => yield_,
     };
@@ -136,8 +136,12 @@ fn get_mining_values(
     xargs: NEffectMiningXargs,
 ) -> Option<(PValue, PValue, PValue)> {
     let delay = funcs::get_effect_duration_s(ctx, calc, item_uid, effect)?;
-    let yield_ =
-        PValue::from_value_clamped(calc.get_item_oattr_ffb_extra(ctx, item_uid, ctx.ac().mining_amount, Value::ZERO));
+    let yield_ = PValue::from_finite_value_clamped(calc.get_item_oattr_ffb_extra(
+        ctx,
+        item_uid,
+        ctx.ac().mining_amount,
+        Value::ZERO,
+    ));
     // Mission ore is immune to waste
     let waste_chance_perc = match xargs.resource_kind {
         StatMiningResourceKind::Regular => {
@@ -147,13 +151,13 @@ fn get_mining_values(
     };
     let waste = match waste_chance_perc > Value::FLOAT_TOLERANCE {
         true => {
-            let waste_mult = PValue::from_value_clamped(calc.get_item_oattr_ffb_extra(
+            let waste_mult = PValue::from_finite_value_clamped(calc.get_item_oattr_ffb_extra(
                 ctx,
                 item_uid,
                 ctx.ac().mining_wasted_volume_mult,
                 Value::ZERO,
             ));
-            let waste_chance = UnitInterval::from_value_clamped(waste_chance_perc / Value::HUNDRED);
+            let waste_chance = UnitInterval::from_finite_value_clamped(waste_chance_perc / Value::HUNDRED);
             yield_ * waste_mult * waste_chance.into_pvalue()
         }
         false => PValue::ZERO,

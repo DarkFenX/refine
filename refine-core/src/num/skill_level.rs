@@ -53,10 +53,7 @@ impl SkillLevel {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl SkillLevel {
     pub(crate) fn from_f64_rounded(level: f64) -> Self {
-        match level.is_nan() {
-            true => Self::DEFAULT,
-            false => Self(level.clamp(Self::MIN.0 as f64, Self::MAX.0 as f64).round() as u8),
-        }
+        Self(level.clamp(Self::MIN.0 as f64, Self::MAX.0 as f64).round() as u8)
     }
     pub(crate) fn from_a_skill_level(a_skill_level: ASkillLevel) -> Self {
         Self(a_skill_level.into_u8())

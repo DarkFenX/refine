@@ -32,7 +32,7 @@ impl Vast {
         let recharge_time_ms = calc.get_item_oattr_ffb_extra(ctx, item_uid, ctx.ac().recharge_rate, Value::ZERO);
         let recharge_time_s = match recharge_time_ms < Value::FLOAT_TOLERANCE {
             true => None,
-            false => Some(PValue::from_value_clamped(recharge_time_ms / Value::THOUSAND)),
+            false => Some(PValue::from_finite_value_clamped(recharge_time_ms / Value::THOUSAND)),
         };
         let start_cap = max_cap * cap_perc.into_pvalue();
         let fit_data = self.get_fit_data(ship.get_fit_uid());

@@ -87,7 +87,7 @@ fn get_effect_info(
     // For fighter abilities, cooldown starts as soon as effect starts cycling. It typically is
     // longer than duration, but data format does not guarantee that
     let cooldown_duration =
-        PValue::from_value_clamped(effect_data.ability_cooldown.unwrap_or(PValue::ZERO) - active_duration);
+        PValue::from_finite_value_clamped(effect_data.ability_cooldown.unwrap_or(PValue::ZERO) - active_duration);
     // Assume any cooldown interrupts cycling, even if it shorter than ability cycle, and that any
     // abilities which have limited charge count also do
     let sdt_cd_nr = effect_data.ability_cooldown.is_some() || effect_data.ability_charge_count.is_some();

@@ -268,8 +268,8 @@ fn irr_data_to_raw(irr_data: &[IrrEntry]) -> PValue {
     irr_data.iter().filter_map(get_normal_rps).sum()
 }
 
-const RR_PEN_ADDITION: PValue = PValue::from_f64_clamped(7000.0);
-const RR_PEN_MULTIPLIER: PValue = PValue::from_f64_clamped(20.0);
+const RR_PEN_ADDITION: PValue = PValue::from_finite_f64_clamped(7000.0);
+const RR_PEN_MULTIPLIER: PValue = PValue::from_finite_f64_clamped(20.0);
 
 fn irr_data_to_penalized(irr_data: &[IrrEntry]) -> PValue {
     let total_adjusted_rps: PValue = irr_data.iter().filter_map(get_adjusted_rps).sum();
@@ -279,7 +279,7 @@ fn irr_data_to_penalized(irr_data: &[IrrEntry]) -> PValue {
             continue;
         };
         let modified_rps = adjusted_rps.mul_add(RR_PEN_MULTIPLIER, RR_PEN_ADDITION);
-        let mult = PValue::from_value_clamped(
+        let mult = PValue::from_finite_value_clamped(
             PValue::ONE - (((adjusted_rps + modified_rps) / (total_adjusted_rps + modified_rps)) - PValue::ONE).pow2(),
         );
         // Truncated cycle duration is used only for multiplier
