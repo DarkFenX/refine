@@ -4,8 +4,8 @@ use super::shared::{get_attrs, get_effect_mode_overrides, get_effects, get_mods}
 #[cfg(feature = "serde")]
 use crate::ItemKind;
 use crate::{
-    AttrId, ChargeInfo, Count, EffectId, EffectMode, FitId, Index, ItemAttrValues, ItemEffectInfo, ItemId,
-    ItemInfoMode, ItemMutationInfo, ItemSpoolInfo, ItemTypeId, ModRack, Modification, ModuleState, OptionalReload,
+    AttrId, ChargeInfo, Count, EffectId, EffectMode, FitId, ItemAttrValues, ItemEffectInfo, ItemId, ItemInfoMode,
+    ItemMutationInfo, ItemSpoolInfo, ItemTypeId, ModRack, Modification, ModuleState, OptionalReload, RackPos,
     RangedProjInfo, Spool, TriStateField, shared::OvrdMapLight,
 };
 
@@ -28,7 +28,7 @@ pub struct ModuleInfoExt {
     pub fit_id: FitId,
     pub state: ModuleState,
     pub rack: ModRack,
-    pub pos: Index,
+    pub pos: RackPos,
     #[cfg_attr(feature = "serde", serde(skip_serializing_if = "Option::is_none"))]
     pub mutation: Option<ItemMutationInfo>,
     #[cfg_attr(feature = "serde", serde(skip_serializing_if = "TriStateField::is_absent"))]

@@ -106,6 +106,7 @@ fn test_crusader(edh: &EveDataHandler, adc: &AdaptedDataCacher) {
                 ItemTypeId::from_i32(1306),
                 ModuleState::Online,
             )
+            .unwrap()
             .get_item_id();
         black_box(core.get_item(&ship_id).unwrap().iter_attrs().unwrap().for_each(drop));
         core.get_item(&anp_id).unwrap().remove(rc::RemoveMode::Free);
@@ -161,6 +162,7 @@ fn test_nphoon(edh: &EveDataHandler, adc: &AdaptedDataCacher) {
             ItemTypeId::from_i32(2929),
             ModuleState::Overload,
         )
+        .unwrap()
         .set_charge_type_id(ItemTypeId::from_i32(12779));
     }
     for _ in 0..2 {
@@ -171,6 +173,7 @@ fn test_nphoon(edh: &EveDataHandler, adc: &AdaptedDataCacher) {
             ItemTypeId::from_i32(2420),
             ModuleState::Overload,
         )
+        .unwrap()
         .set_charge_type_id(ItemTypeId::from_i32(2811));
     }
 
@@ -180,7 +183,8 @@ fn test_nphoon(edh: &EveDataHandler, adc: &AdaptedDataCacher) {
         AddMode::Equip,
         ItemTypeId::from_i32(5945),
         ModuleState::Active,
-    ); // Enduring 500MN
+    )
+    .unwrap(); // Enduring 500MN
     // T2 med cap booster with navy 800
     fit.add_module(
         ModRack::Mid,
@@ -188,19 +192,22 @@ fn test_nphoon(edh: &EveDataHandler, adc: &AdaptedDataCacher) {
         ItemTypeId::from_i32(2024),
         ModuleState::Active,
     )
+    .unwrap()
     .set_charge_type_id(ItemTypeId::from_i32(32014));
     fit.add_module(
         ModRack::Mid,
         AddMode::Equip,
         ItemTypeId::from_i32(2301),
         ModuleState::Active,
-    ); // T2 EM hardener
+    )
+    .unwrap(); // T2 EM hardener
     fit.add_module(
         ModRack::Mid,
         AddMode::Equip,
         ItemTypeId::from_i32(448),
         ModuleState::Active,
-    ); // T2 scram
+    )
+    .unwrap(); // T2 scram
     // core
     //     .add_module(
     //         fit.id,
@@ -219,14 +226,16 @@ fn test_nphoon(edh: &EveDataHandler, adc: &AdaptedDataCacher) {
         AddMode::Equip,
         ItemTypeId::from_i32(2048),
         ModuleState::Online,
-    ); // T2 DC
+    )
+    .unwrap(); // T2 DC
     for _ in 0..2 {
         fit.add_module(
             ModRack::Low,
             AddMode::Equip,
             ItemTypeId::from_i32(519),
             ModuleState::Online,
-        ); // T2 gyrostab
+        )
+        .unwrap(); // T2 gyrostab
     }
     for _ in 0..2 {
         fit.add_module(
@@ -234,7 +243,8 @@ fn test_nphoon(edh: &EveDataHandler, adc: &AdaptedDataCacher) {
             AddMode::Equip,
             ItemTypeId::from_i32(22291),
             ModuleState::Online,
-        ); // T2 BCS
+        )
+        .unwrap(); // T2 BCS
     }
     for _ in 0..1 {
         fit.add_module(
@@ -242,7 +252,8 @@ fn test_nphoon(edh: &EveDataHandler, adc: &AdaptedDataCacher) {
             AddMode::Equip,
             ItemTypeId::from_i32(4405),
             ModuleState::Online,
-        ); // T2 DDA
+        )
+        .unwrap(); // T2 DDA
     }
 
     // Rigs

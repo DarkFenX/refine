@@ -1,6 +1,7 @@
 use crate::{
     AddMode, Fit, Item, ItemTypeId, MinionState, ModRack, ModuleState, ServiceState,
     ad::AItemId,
+    err::basic::RackPosLimitError,
     rd::RState,
     sol::CoreInner,
     ud::{UFitId, UItemId, UPhysics},
@@ -27,6 +28,8 @@ pub enum FitItemAutodetectAddError {
     KindUnknown,
     #[error("item of kind \"{0}\" cannot be auto-added to the fit")]
     KindInvalid(DetectedItemKind),
+    #[error(transparent)]
+    RackPosLimit(#[from] RackPosLimitError),
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -61,7 +64,7 @@ impl CoreInner {
                 conv_state(r_item.base.max_state),
                 None,
                 None,
-            ),
+            )?,
             DetectedItemKind::ModuleMid => self.internal_add_module(
                 fit_uid,
                 ModRack::Mid,
@@ -70,7 +73,7 @@ impl CoreInner {
                 conv_state(r_item.base.max_state),
                 None,
                 None,
-            ),
+            )?,
             DetectedItemKind::ModuleLow => self.internal_add_module(
                 fit_uid,
                 ModRack::Low,
@@ -79,7 +82,7 @@ impl CoreInner {
                 conv_state(r_item.base.max_state),
                 None,
                 None,
-            ),
+            )?,
             DetectedItemKind::Rig => self.internal_add_rig(fit_uid, type_aid),
             DetectedItemKind::Service => self.internal_add_service(fit_uid, type_aid, ServiceState::Online),
             DetectedItemKind::Subsystem => self.internal_add_subsystem(fit_uid, type_aid),

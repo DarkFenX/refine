@@ -138,6 +138,26 @@ def test_item_module_low(client, consts):
     assert api_module.update().type_id == eve_module_id
 
 
+def test_item_module_limit(client, consts):
+    eve_module_id = client.mk_eve_module(rack=consts.Rack.low)
+    client.create_sources()
+    api_sol = client.create_sol()
+    api_fit = api_sol.create_fit()
+    with api_fit.batch() as api_fit_batch:
+        api_modules = [api_fit_batch.autodetect_add_item(type_id=eve_module_id) for _ in range(1000)]
+    # Verification
+    assert api_fit.update().modules.low.map(lambda m: m.id) == [m.id for m in api_modules]
+    # Action & verification
+    api_fit.autodetect_add_item(
+        type_id=eve_module_id,
+        status_code=400,
+        json_predicate={
+            'code': 'MOD-006',
+            'message': (f"failed to add autodetected item: "
+                        f"low rack of fit {api_fit.id} can't have modules past position 999")})
+    assert api_fit.update().modules.low.map(lambda m: m.id) == [m.id for m in api_modules]
+
+
 def test_item_module_state_offline(client, consts):
     eve_slot_effect_id = client.mk_eve_effect(id_=consts.EveEffect.hi_power, cat_id=consts.EveEffCat.passive)
     eve_module_id = client.mk_eve_item(eff_ids=[eve_slot_effect_id])

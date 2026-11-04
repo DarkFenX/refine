@@ -1,3 +1,4 @@
+pub use fit_add_module::ModuleAddError;
 pub use module::Module;
 pub use sol_get_module::ModuleGetError;
 

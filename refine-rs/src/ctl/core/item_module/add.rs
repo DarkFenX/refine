@@ -148,7 +148,7 @@ impl ModuleAddCmd {
             proj_item_ids,
             effect_modes,
         } = self;
-        let mut core_module = core_fit.add_module(rack, add_mode, type_id, state);
+        let mut core_module = core_fit.add_module(rack, add_mode, type_id, state)?;
         if let Some(mutation) = mutation.as_ref() {
             let mut core_mutation = core_module.mutate(mutation.mutator_id).unwrap();
             mutation.apply_attrs(&mut core_mutation);
@@ -176,6 +176,8 @@ impl ModuleAddCmd {
 }
 #[derive(thiserror::Error, Debug)]
 pub enum ModuleAddError {
+    #[error(transparent)]
+    ModuleAdd(#[from] rc::err::ModuleAddError),
     #[error("failed to add projection")]
     ProjAdd(#[from] rc::err::ProjAddError),
 }
@@ -190,12 +192,15 @@ impl ModuleAddCmdCtxFit {
 pub enum FitGetModuleAddError {
     #[error(transparent)]
     FitGet(#[from] rc::err::FitGetError),
+    #[error(transparent)]
+    ModuleAdd(rc::err::ModuleAddError),
     #[error("failed to add projection")]
     ProjAdd(#[source] rc::err::ProjAddError),
 }
 impl From<ModuleAddError> for FitGetModuleAddError {
     fn from(err: ModuleAddError) -> Self {
         match err {
+            ModuleAddError::ModuleAdd(inner) => Self::ModuleAdd(inner),
             ModuleAddError::ProjAdd(inner) => Self::ProjAdd(inner),
         }
     }

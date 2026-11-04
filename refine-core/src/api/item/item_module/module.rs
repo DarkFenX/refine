@@ -1,5 +1,5 @@
 use crate::{
-    Charge, Count, FitId, Index, ItemCommon, ItemSpoolInfo, ModRack, ModuleState, OptionalReload, Spool,
+    Charge, Count, FitId, ItemCommon, ItemSpoolInfo, ModRack, ModuleState, OptionalReload, RackPos, Spool,
     api::{ItemSealed, active_stat_prepare},
     misc::InfCount,
     sol::CoreInner,
@@ -26,7 +26,7 @@ impl<'s> Module<'s> {
     pub fn get_rack(&self) -> ModRack {
         get_u_module(self.core, self.uid).get_rack()
     }
-    pub fn get_pos(&self) -> Index {
+    pub fn get_pos(&self) -> RackPos {
         get_u_module(self.core, self.uid).get_pos()
     }
     pub fn get_charge(&mut self) -> Option<Charge<'_>> {

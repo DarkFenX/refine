@@ -1,79 +1,79 @@
 use std::str::FromStr;
 
-/// Zero-based position of an item within an ordered collection, e.g. of a module within its rack.
+/// Zero-based position of a module within its rack, within `[0, 999]` range.
 ///
 /// Serialization notes: deserialization clamps out-of-range input instead of failing.
 #[cfg_attr(feature = "serde", derive(serde::Serialize), serde(transparent))]
 #[derive(Copy, Clone, Eq, PartialEq, Ord, PartialOrd, derive_more::Display)]
-pub struct Index(usize);
-impl Index {
-    pub const fn from_usize(index: usize) -> Self {
-        Self(index)
+pub struct RackPos(u16);
+impl RackPos {
+    pub fn from_usize_checked(pos: usize) -> Result<Self, RackPosError> {
+        match pos <= Self::MAX.0 as usize {
+            true => Ok(Self(pos as u16)),
+            false => Err(RackPosError { pos }),
+        }
     }
-    pub const fn from_u64_clamped(index: u64) -> Self {
-        Self(index.saturating_cast())
+    pub const fn from_usize_clamped(pos: usize) -> Self {
+        Self(pos.clamp(Self::MIN.0 as usize, Self::MAX.0 as usize) as u16)
     }
-    pub const fn from_i64_clamped(index: i64) -> Self {
-        Self(index.saturating_cast())
+    pub const fn from_u64_clamped(pos: u64) -> Self {
+        Self(pos.clamp(Self::MIN.0 as u64, Self::MAX.0 as u64) as u16)
+    }
+    pub const fn from_i64_clamped(pos: i64) -> Self {
+        Self(pos.clamp(Self::MIN.0 as i64, Self::MAX.0 as i64) as u16)
     }
     pub const fn into_usize(self) -> usize {
-        self.0
+        self.0 as usize
     }
+}
+
+#[derive(Debug, thiserror::Error)]
+#[error("rack position {pos} is out of allowed range [{}, {}]", RackPos::MIN, RackPos::MAX)]
+pub struct RackPosError {
+    pub pos: usize,
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Constants
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-impl Index {
-    pub(crate) const ZERO: Self = Self(0);
-    pub(crate) const ONE: Self = Self(1);
+impl RackPos {
+    pub const MIN: Self = Self(0);
+    pub const MAX: Self = Self(999);
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Conversions
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-impl Index {
-    pub(crate) fn from_f64_rounded(index: f64) -> Self {
-        Self(index.round() as usize)
+impl RackPos {
+    pub(crate) fn from_f64_rounded(pos: f64) -> Self {
+        Self(pos.clamp(Self::MIN.0 as f64, Self::MAX.0 as f64).round() as u16)
     }
 }
-impl From<Index> for usize {
-    fn from(v: Index) -> Self {
-        v.0
-    }
-}
-impl From<Index> for u32 {
-    fn from(v: Index) -> Self {
-        v.0.saturating_cast()
+impl From<RackPos> for usize {
+    fn from(v: RackPos) -> Self {
+        v.0 as usize
     }
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Mathematics
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-impl std::ops::Add<Index> for Index {
-    type Output = Index;
-    fn add(self, rhs: Index) -> Self::Output {
-        Index(self.0 + rhs.0)
+impl RackPos {
+    // Callers ensure the result stays within range
+    pub(crate) fn inc_unchecked(self) -> Self {
+        debug_assert!(self < Self::MAX);
+        Self(self.0 + 1)
     }
-}
-impl std::ops::AddAssign<Index> for Index {
-    fn add_assign(&mut self, rhs: Index) {
-        self.0 += rhs.0;
-    }
-}
-impl std::ops::Sub<Index> for Index {
-    type Output = Index;
-    fn sub(self, rhs: Index) -> Self::Output {
-        Index(self.0 - rhs.0)
+    pub(crate) fn dec_unchecked(self) -> Self {
+        Self(self.0 - 1)
     }
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Custom de/serialization
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-impl FromStr for Index {
-    type Err = IndexParseError;
+impl FromStr for RackPos {
+    type Err = RackPosParseError;
 
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         if let Ok(value) = i64::from_str(s) {
@@ -81,7 +81,7 @@ impl FromStr for Index {
         }
         let value = f64::from_str(s)?;
         if !value.is_finite() {
-            return Err(IndexParseError::NotFinite(value));
+            return Err(RackPosParseError::NotFinite(value));
         }
         let value = Self::from_f64_rounded(value);
         Ok(value)
@@ -89,7 +89,7 @@ impl FromStr for Index {
 }
 
 #[derive(Debug, thiserror::Error)]
-pub enum IndexParseError {
+pub enum RackPosParseError {
     #[error(transparent)]
     InvalidNumber(#[from] std::num::ParseFloatError),
     #[error("value {0} is not finite")]
@@ -104,35 +104,35 @@ mod custom_serde {
 
     struct VisitorImpl;
     impl Visitor<'_> for VisitorImpl {
-        type Value = Index;
+        type Value = RackPos;
 
         fn expecting(&self, formatter: &mut std::fmt::Formatter) -> std::fmt::Result {
-            formatter.write_str("number with index")
+            formatter.write_str("number with rack position")
         }
 
         fn visit_u64<E>(self, v: u64) -> Result<Self::Value, E> {
-            Ok(Index::from_u64_clamped(v))
+            Ok(RackPos::from_u64_clamped(v))
         }
         fn visit_i64<E>(self, v: i64) -> Result<Self::Value, E> {
-            Ok(Index::from_i64_clamped(v))
+            Ok(RackPos::from_i64_clamped(v))
         }
         fn visit_f64<E>(self, v: f64) -> Result<Self::Value, E>
         where
             E: Error,
         {
             match v.is_finite() {
-                true => Ok(Index::from_f64_rounded(v)),
-                false => Err(Error::custom(IndexParseError::NotFinite(v))),
+                true => Ok(RackPos::from_f64_rounded(v)),
+                false => Err(Error::custom(RackPosParseError::NotFinite(v))),
             }
         }
     }
 
-    impl<'de> Deserialize<'de> for Index {
+    impl<'de> Deserialize<'de> for RackPos {
         fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
         where
             D: Deserializer<'de>,
         {
-            deserializer.deserialize_u64(VisitorImpl)
+            deserializer.deserialize_u16(VisitorImpl)
         }
     }
 }

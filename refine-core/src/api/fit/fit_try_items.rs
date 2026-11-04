@@ -54,7 +54,7 @@ impl CoreInner {
                     if self.try_item(
                         fit_uid,
                         val_options,
-                        |core| core.internal_add_booster(fit_uid, *type_aid),
+                        |core| Some(core.internal_add_booster(fit_uid, *type_aid)),
                         CoreInner::internal_remove_booster,
                     ) {
                         valid.push(*type_aid)
@@ -66,7 +66,7 @@ impl CoreInner {
                     if self.try_item(
                         fit_uid,
                         val_options,
-                        |core| core.internal_add_drone(fit_uid, *type_aid, MinionState::InBay, None, u_physics),
+                        |core| Some(core.internal_add_drone(fit_uid, *type_aid, MinionState::InBay, None, u_physics)),
                         CoreInner::internal_remove_drone,
                     ) {
                         valid.push(*type_aid)
@@ -76,7 +76,7 @@ impl CoreInner {
                     if self.try_item(
                         fit_uid,
                         val_options,
-                        |core| core.internal_add_fighter(fit_uid, *type_aid, MinionState::InBay, u_physics),
+                        |core| Some(core.internal_add_fighter(fit_uid, *type_aid, MinionState::InBay, u_physics)),
                         CoreInner::internal_remove_fighter,
                     ) {
                         valid.push(*type_aid)
@@ -86,7 +86,7 @@ impl CoreInner {
                     if self.try_item(
                         fit_uid,
                         val_options,
-                        |core| core.internal_add_implant(fit_uid, *type_aid),
+                        |core| Some(core.internal_add_implant(fit_uid, *type_aid)),
                         CoreInner::internal_remove_implant,
                     ) {
                         valid.push(*type_aid)
@@ -107,6 +107,7 @@ impl CoreInner {
                                 None,
                                 None,
                             )
+                            .ok()
                         },
                         |core, module_uid| core.internal_remove_module(module_uid, RemoveMode::Free),
                     ) {
@@ -128,6 +129,7 @@ impl CoreInner {
                                 None,
                                 None,
                             )
+                            .ok()
                         },
                         |core, module_uid| core.internal_remove_module(module_uid, RemoveMode::Free),
                     ) {
@@ -149,6 +151,7 @@ impl CoreInner {
                                 None,
                                 None,
                             )
+                            .ok()
                         },
                         |core, module_uid| core.internal_remove_module(module_uid, RemoveMode::Free),
                     ) {
@@ -159,7 +162,7 @@ impl CoreInner {
                     if self.try_item(
                         fit_uid,
                         val_options,
-                        |core| core.internal_add_rig(fit_uid, *type_aid),
+                        |core| Some(core.internal_add_rig(fit_uid, *type_aid)),
                         CoreInner::internal_remove_rig,
                     ) {
                         valid.push(*type_aid)
@@ -169,7 +172,7 @@ impl CoreInner {
                     if self.try_item(
                         fit_uid,
                         val_options,
-                        |core| core.internal_add_service(fit_uid, *type_aid, ServiceState::Online),
+                        |core| Some(core.internal_add_service(fit_uid, *type_aid, ServiceState::Online)),
                         CoreInner::internal_remove_service,
                     ) {
                         valid.push(*type_aid)
@@ -179,7 +182,7 @@ impl CoreInner {
                     if self.try_item(
                         fit_uid,
                         val_options,
-                        |core| core.internal_add_subsystem(fit_uid, *type_aid),
+                        |core| Some(core.internal_add_subsystem(fit_uid, *type_aid)),
                         CoreInner::internal_remove_subsystem,
                     ) {
                         valid.push(*type_aid)
@@ -193,7 +196,8 @@ impl CoreInner {
         }
         valid
     }
-    /// Adds an item, checks if the fit stays valid, and removes the item.
+    /// Adds an item, checks if the fit stays valid, and removes the item. Item which can't be
+    /// added is not valid.
     ///
     /// Without recording, the item is removed directly instead of through a savepoint and
     /// rollback, which call the same remove method.
@@ -202,20 +206,21 @@ impl CoreInner {
         &mut self,
         fit_uid: UFitId,
         val_options: &ValOptionsInt,
-        add: impl FnOnce(&mut Self) -> UItemId,
+        add: impl FnOnce(&mut Self) -> Option<UItemId>,
         remove: impl FnOnce(&mut Self, UItemId),
     ) -> bool {
         match self.undo.is_recording() {
             true => {
                 let savepoint = self.internal_tx_savepoint();
-                add(self);
-                let valid = self.internal_validate_fit_fast(fit_uid, val_options);
+                let valid = add(self).is_some() && self.internal_validate_fit_fast(fit_uid, val_options);
                 self.internal_tx_rollback(savepoint);
                 valid
             }
             false => {
                 let item_id_counter = self.u_data.items.get_id_counter();
-                let item_uid = add(self);
+                let Some(item_uid) = add(self) else {
+                    return false;
+                };
                 let valid = self.internal_validate_fit_fast(fit_uid, val_options);
                 remove(self, item_uid);
                 self.u_data.items.set_id_counter(item_id_counter);

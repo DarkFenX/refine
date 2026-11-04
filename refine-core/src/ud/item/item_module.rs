@@ -1,5 +1,5 @@
 use crate::{
-    Count, EffectMode, Index, ItemId, ItemKind, ModRack, ModuleState, OptionalReload, PValue, Spool,
+    Count, EffectMode, ItemId, ItemKind, ModRack, ModuleState, OptionalReload, PValue, RackPos, Spool,
     ad::{AEffectId, AItemId},
     err::basic::ItemNotMutatedError,
     rd::{RAttrId, RData, REffectId, RItemBase, RItemFlexData, RState},
@@ -15,7 +15,7 @@ pub(crate) struct UModule {
     base: UItemBaseMutable,
     fit_uid: UFitId,
     rack: ModRack,
-    pos: Index,
+    pos: RackPos,
     charge_uid: Option<UItemId>,
     projs: UProjs,
     // Optional settings related to cycling
@@ -29,7 +29,7 @@ impl UModule {
         fit_uid: UFitId,
         module_state: ModuleState,
         rack: ModRack,
-        pos: Index,
+        pos: RackPos,
         mutation: Option<UItemMutationRequest>,
         charge_uid: Option<UItemId>,
         r_data: &RData,
@@ -183,10 +183,10 @@ impl UModule {
     pub(crate) fn get_rack(&self) -> ModRack {
         self.rack
     }
-    pub(crate) fn get_pos(&self) -> Index {
+    pub(crate) fn get_pos(&self) -> RackPos {
         self.pos
     }
-    pub(crate) fn set_pos(&mut self, pos: Index) {
+    pub(crate) fn set_pos(&mut self, pos: RackPos) {
         self.pos = pos
     }
     pub(crate) fn get_charge_uid(&self) -> Option<UItemId> {

@@ -1,6 +1,6 @@
 use super::shared::get_fit_rack_mut;
 use crate::{
-    Index, Module, RemoveMode,
+    Module, RemoveMode,
     sol::{CoreInner, UndoStep},
     ud::UItemId,
 };
@@ -46,7 +46,7 @@ impl CoreInner {
             RemoveMode::Remove => {
                 for shift_module_uid in u_fit_rack.remove(pos) {
                     let shift_u_module = self.u_data.items.get_mut(shift_module_uid).dc_module_mut().unwrap();
-                    shift_u_module.set_pos(shift_u_module.get_pos() - Index::ONE)
+                    shift_u_module.set_pos(shift_u_module.get_pos().dec_unchecked())
                 }
             }
         }

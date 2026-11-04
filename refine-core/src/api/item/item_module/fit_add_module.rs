@@ -1,7 +1,8 @@
 use super::shared::get_fit_rack_mut;
 use crate::{
-    AddMode, Fit, Index, ItemTypeId, ModRack, Module, ModuleState, RemoveMode,
+    AddMode, Fit, ItemTypeId, ModRack, Module, ModuleState, RemoveMode,
     ad::AItemId,
+    err::basic::RackPosLimitError,
     sol::{CoreInner, UndoStep},
     ud::{UCharge, UFitId, UItem, UItemId, UItemMutationRequest, UModule},
 };
@@ -16,12 +17,18 @@ impl<'s> Fit<'s> {
         pos_mode: AddMode,
         type_id: ItemTypeId,
         state: ModuleState,
-    ) -> Module<'_> {
-        let module_uid = self
-            .core
-            .internal_add_module(self.uid, rack, pos_mode, type_id.into_aid(), state, None, None);
-        Module::new(self.core, module_uid)
+    ) -> Result<Module<'_>, ModuleAddError> {
+        let module_uid =
+            self.core
+                .internal_add_module(self.uid, rack, pos_mode, type_id.into_aid(), state, None, None)?;
+        Ok(Module::new(self.core, module_uid))
     }
+}
+
+#[derive(Debug, thiserror::Error)]
+pub enum ModuleAddError {
+    #[error(transparent)]
+    RackPosLimit(#[from] RackPosLimitError),
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -37,53 +44,59 @@ impl CoreInner {
         state: ModuleState,
         mutation: Option<UItemMutationRequest>,
         charge_type_aid: Option<AItemId>,
-    ) -> UItemId {
-        let module_item_id = self.u_data.items.alloc_id();
+    ) -> Result<UItemId, RackPosLimitError> {
         let u_fit_rack = get_fit_rack_mut(&mut self.u_data.fits, fit_uid, rack);
-        // Assume some random position for now; it will be overwritten later. Record effects to
-        // start into the effect container
+        // Calculate position for the module before changing anything, since the module or modules
+        // it shifts might need a position past the last one
+        let pos = match pos_mode {
+            // Add to the end of module rack
+            AddMode::Append => u_fit_rack.get_append_pos(),
+            // Take first spare slot in the rack
+            AddMode::Equip => u_fit_rack.get_equip_pos(),
+            AddMode::Insert(pos) => u_fit_rack.can_insert().then_some(pos),
+            AddMode::Replace(pos) => Some(pos),
+        };
+        let Some(pos) = pos else {
+            return Err(RackPosLimitError {
+                fit_id: self.u_data.fits.ext_id_by_int_id(fit_uid),
+                rack,
+            });
+        };
+        let module_item_id = self.u_data.items.alloc_id();
         let u_module = UModule::new(
             module_item_id,
             type_aid,
             fit_uid,
             state,
             rack,
-            Index::ZERO,
+            pos,
             mutation,
             None,
             &self.u_data.r_data,
         );
         let module_u_item = UItem::Module(u_module);
         let module_uid = self.u_data.items.add(module_u_item);
-        // Calculate position for the module and update part of user data (fit rack and modules from
-        // it)
-        let pos = match pos_mode {
-            // Add to the end of module rack
-            AddMode::Append => u_fit_rack.append(module_uid),
-            // Take first spare slot in the rack
-            AddMode::Equip => u_fit_rack.equip(module_uid),
+        // Update part of user data (fit rack and modules from it)
+        match pos_mode {
+            AddMode::Append | AddMode::Equip => u_fit_rack.place(pos, module_uid),
             // Insert at specified position, shifting other modules to the right
-            AddMode::Insert(pos) => {
+            AddMode::Insert(..) => {
                 for shift_module_uid in u_fit_rack.insert(pos, module_uid) {
                     let shift_u_module = self.u_data.items.get_mut(shift_module_uid).dc_module_mut().unwrap();
-                    shift_u_module.set_pos(shift_u_module.get_pos() + Index::ONE)
+                    shift_u_module.set_pos(shift_u_module.get_pos().inc_unchecked())
                 }
-                pos
             }
             // Check if there is a module on position we want to have module, and if yes, remove it
             // before adding new one
-            AddMode::Replace(pos) => {
-                match u_fit_rack.get(pos) {
-                    Some(old_module_uid) => {
-                        self.internal_remove_module(old_module_uid, RemoveMode::Free);
-                        let u_fit_rack = get_fit_rack_mut(&mut self.u_data.fits, fit_uid, rack);
-                        u_fit_rack.place(pos, module_uid);
-                    }
-                    None => u_fit_rack.place(pos, module_uid),
+            AddMode::Replace(..) => match u_fit_rack.get(pos) {
+                Some(old_module_uid) => {
+                    self.internal_remove_module(old_module_uid, RemoveMode::Free);
+                    let u_fit_rack = get_fit_rack_mut(&mut self.u_data.fits, fit_uid, rack);
+                    u_fit_rack.place(pos, module_uid);
                 }
-                pos
-            }
-        };
+                None => u_fit_rack.place(pos, module_uid),
+            },
+        }
         // Create and add charge
         let charge_uid = match charge_type_aid {
             Some(charge_type_aid) => {
@@ -104,9 +117,8 @@ impl CoreInner {
             }
             None => None,
         };
-        // Update on-module data regarding position and charge
+        // Update on-module data regarding charge
         let u_module = self.u_data.items.get_mut(module_uid).dc_module_mut().unwrap();
-        u_module.set_pos(pos);
         u_module.set_charge_uid(charge_uid);
         self.attach_module(module_uid, charge_uid);
         if self.undo.is_recording() {
@@ -117,7 +129,7 @@ impl CoreInner {
             };
             self.undo.record(UndoStep::ModuleAdded(module_uid, undo_pos_mode));
         }
-        module_uid
+        Ok(module_uid)
     }
     pub(in crate::api) fn internal_reattach_module(&mut self, module_uid: UItemId, pos_mode: RemoveMode) {
         self.u_data.items.reattach(module_uid);
@@ -137,7 +149,7 @@ impl CoreInner {
             RemoveMode::Remove => {
                 for shift_module_uid in u_fit_rack.insert(pos, module_uid) {
                     let shift_u_module = self.u_data.items.get_mut(shift_module_uid).dc_module_mut().unwrap();
-                    shift_u_module.set_pos(shift_u_module.get_pos() + Index::ONE)
+                    shift_u_module.set_pos(shift_u_module.get_pos().inc_unchecked())
                 }
             }
         }

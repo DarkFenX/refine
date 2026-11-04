@@ -1,6 +1,6 @@
 use super::shared::get_fit_rack_mut;
 use crate::{
-    Index, Module, MoveMode,
+    Module, MoveMode,
     sol::{CoreInner, UndoStep},
     ud::{UItemId, UItemVecShiftDir},
 };
@@ -32,8 +32,8 @@ impl CoreInner {
                     for shift_item_id in shift_item_ids {
                         let shift_u_module = self.u_data.items.get_mut(shift_item_id).dc_module_mut().unwrap();
                         shift_u_module.set_pos(match shift_dir {
-                            UItemVecShiftDir::Left => shift_u_module.get_pos() - Index::ONE,
-                            UItemVecShiftDir::Right => shift_u_module.get_pos() + Index::ONE,
+                            UItemVecShiftDir::Left => shift_u_module.get_pos().dec_unchecked(),
+                            UItemVecShiftDir::Right => shift_u_module.get_pos().inc_unchecked(),
                         })
                     }
                 }

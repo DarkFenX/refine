@@ -207,6 +207,175 @@ def test_add_absent(client, consts):
             'message': 'Failed to deserialize the JSON body into the target type: missing field `add_mode`'})
 
 
+def test_add_append_limit(client, consts):
+    eve_module_id = client.mk_eve_item()
+    client.create_sources()
+    api_sol = client.create_sol()
+    api_fit = api_sol.create_fit()
+    api_module1 = api_fit.add_module(
+        type_id=eve_module_id,
+        rack=consts.Rack.high,
+        add_mode={consts.ApiModAddMode.replace: 998})
+    # Action
+    api_module2 = api_fit.add_module(type_id=eve_module_id, rack=consts.Rack.high, add_mode=consts.ApiModAddMode.append)
+    # Verification
+    assert api_fit.update().modules.high.map(lambda m: m.id) == [None] * 998 + [api_module1.id, api_module2.id]
+    assert api_module1.update().pos == 998
+    assert api_module2.update().pos == 999
+    # Action & verification
+    api_fit.add_module(
+        type_id=eve_module_id,
+        rack=consts.Rack.high,
+        add_mode=consts.ApiModAddMode.append,
+        status_code=400,
+        json_predicate={
+            'code': 'MOD-006',
+            'message': f"failed to add module: high rack of fit {api_fit.id} can't have modules past position 999"})
+    assert api_fit.update().modules.high.map(lambda m: m.id) == [None] * 998 + [api_module1.id, api_module2.id]
+    assert api_module1.update().pos == 998
+    assert api_module2.update().pos == 999
+
+
+def test_add_equip_limit(client, consts):
+    eve_module_id = client.mk_eve_item()
+    client.create_sources()
+    api_sol = client.create_sol()
+    api_fit = api_sol.create_fit()
+    with api_fit.batch() as api_fit_batch:
+        api_modules = [
+            api_fit_batch.add_module(type_id=eve_module_id, rack=consts.Rack.high, add_mode=consts.ApiModAddMode.equip)
+            for _ in range(1000)]
+    # Verification
+    assert api_fit.update().modules.high.map(lambda m: m.id) == [m.id for m in api_modules]
+    # Action & verification
+    api_fit.add_module(
+        type_id=eve_module_id,
+        rack=consts.Rack.high,
+        add_mode=consts.ApiModAddMode.equip,
+        status_code=400,
+        json_predicate={
+            'code': 'MOD-006',
+            'message': f"failed to add module: high rack of fit {api_fit.id} can't have modules past position 999"})
+    assert api_fit.update().modules.high.map(lambda m: m.id) == [m.id for m in api_modules]
+    # Action
+    api_modules[500].remove(rm_mode=consts.ApiModRmMode.free)
+    api_module = api_fit.add_module(type_id=eve_module_id, rack=consts.Rack.high, add_mode=consts.ApiModAddMode.equip)
+    # Verification
+    assert api_module.update().pos == 500
+
+
+def test_add_insert_limit(client, consts):
+    eve_module_id = client.mk_eve_item()
+    client.create_sources()
+    api_sol = client.create_sol()
+    api_fit = api_sol.create_fit()
+    api_module1 = api_fit.add_module(
+        type_id=eve_module_id,
+        rack=consts.Rack.high,
+        add_mode={consts.ApiModAddMode.replace: 0})
+    api_module2 = api_fit.add_module(
+        type_id=eve_module_id,
+        rack=consts.Rack.high,
+        add_mode={consts.ApiModAddMode.replace: 998})
+    # Action
+    api_module3 = api_fit.add_module(
+        type_id=eve_module_id,
+        rack=consts.Rack.high,
+        add_mode={consts.ApiModAddMode.insert: 0})
+    # Verification
+    assert api_fit.update().modules.high.map(lambda m: m.id) == (
+        [api_module3.id, api_module1.id] + [None] * 997 + [api_module2.id])
+    assert api_module1.update().pos == 1
+    assert api_module2.update().pos == 999
+    assert api_module3.update().pos == 0
+    # Action & verification
+    api_fit.add_module(
+        type_id=eve_module_id,
+        rack=consts.Rack.high,
+        add_mode={consts.ApiModAddMode.insert: 2},
+        status_code=400,
+        json_predicate={
+            'code': 'MOD-006',
+            'message': f"failed to add module: high rack of fit {api_fit.id} can't have modules past position 999"})
+    assert api_fit.update().modules.high.map(lambda m: m.id) == (
+        [api_module3.id, api_module1.id] + [None] * 997 + [api_module2.id])
+    assert api_module1.update().pos == 1
+    assert api_module2.update().pos == 999
+    assert api_module3.update().pos == 0
+
+
+def test_add_limit_batch(client, consts):
+    eve_module_id = client.mk_eve_item()
+    client.create_sources()
+    api_sol = client.create_sol()
+    api_fit = api_sol.create_fit()
+    api_module = api_fit.add_module(
+        type_id=eve_module_id,
+        rack=consts.Rack.high,
+        add_mode={consts.ApiModAddMode.replace: 999})
+    # Action & verification
+    with api_fit.batch(status_code=400, json_predicate={
+            'code': 'MOD-006',
+            'message': f"failed to add module: high rack of fit {api_fit.id} can't have modules past position 999",
+            'cmd_index': 1,
+    }) as api_fit_batch:
+        api_fit_batch.add_module(
+            type_id=eve_module_id,
+            rack=consts.Rack.high,
+            add_mode={consts.ApiModAddMode.replace: 0})
+        api_fit_batch.add_module(type_id=eve_module_id, rack=consts.Rack.high, add_mode=consts.ApiModAddMode.append)
+    assert api_fit.update().modules.high.map(lambda m: m.id) == [None] * 999 + [api_module.id]
+    # Action & verification
+    with api_sol.batch(status_code=400, json_predicate={
+            'code': 'MOD-006',
+            'message': f"failed to add module: high rack of fit {api_fit.id} can't have modules past position 999",
+            'cmd_index': 1,
+    }) as api_sol_batch:
+        api_sol_batch.add_module(
+            fit_id=api_fit.id,
+            type_id=eve_module_id,
+            rack=consts.Rack.high,
+            add_mode={consts.ApiModAddMode.replace: 0})
+        api_sol_batch.add_module(
+            fit_id=api_fit.id,
+            type_id=eve_module_id,
+            rack=consts.Rack.high,
+            add_mode={consts.ApiModAddMode.insert: 0})
+    assert api_fit.update().modules.high.map(lambda m: m.id) == [None] * 999 + [api_module.id]
+
+
+def test_add_out_of_range(client, consts):
+    # Positions past the last one are clamped to it, negative positions to 0
+    eve_module_id = client.mk_eve_item()
+    client.create_sources()
+    api_sol = client.create_sol()
+    api_fit = api_sol.create_fit()
+    # Action
+    api_module1 = api_fit.add_module(
+        type_id=eve_module_id,
+        rack=consts.Rack.high,
+        add_mode={consts.ApiModAddMode.insert: 2 ** 64 - 1})
+    # Verification
+    assert api_module1.update().pos == 999
+    # Action
+    api_module2 = api_fit.add_module(
+        type_id=eve_module_id,
+        rack=consts.Rack.high,
+        add_mode={consts.ApiModAddMode.replace: 1000})
+    # Verification
+    assert api_fit.update().modules.high.map(lambda m: m.id) == [None] * 999 + [api_module2.id]
+    assert api_module2.update().pos == 999
+    # Action
+    api_module3 = api_fit.add_module(
+        type_id=eve_module_id,
+        rack=consts.Rack.high,
+        add_mode={consts.ApiModAddMode.replace: -5})
+    # Verification
+    assert api_fit.update().modules.high.map(lambda m: m.id) == [api_module3.id] + [None] * 998 + [api_module2.id]
+    assert api_module2.update().pos == 999
+    assert api_module3.update().pos == 0
+
+
 def test_move_swap(client, consts):
     eve_module_id = client.mk_eve_item()
     client.create_sources()
@@ -375,6 +544,34 @@ def test_move_shift(client, consts):
     assert api_module3.update().pos == 2
     assert api_module4.update().pos == 3
     assert api_module5.update().pos == 4
+
+
+def test_move_out_of_range(client, consts):
+    # Positions past the last one are clamped to it
+    eve_module_id = client.mk_eve_item()
+    client.create_sources()
+    api_sol = client.create_sol()
+    api_fit = api_sol.create_fit()
+    api_module1 = api_fit.add_module(
+        type_id=eve_module_id,
+        rack=consts.Rack.high,
+        add_mode={consts.ApiModAddMode.replace: 0})
+    api_module2 = api_fit.add_module(
+        type_id=eve_module_id,
+        rack=consts.Rack.high,
+        add_mode={consts.ApiModAddMode.replace: 1})
+    # Action
+    api_module1.change_module(move={consts.ApiModMvMode.shift: 5000})
+    # Verification
+    assert api_fit.update().modules.high.map(lambda m: m.id) == [api_module2.id] + [None] * 998 + [api_module1.id]
+    assert api_module1.update().pos == 999
+    assert api_module2.update().pos == 0
+    # Action
+    api_module2.change_module(move={consts.ApiModMvMode.swap: 5000})
+    # Verification
+    assert api_fit.update().modules.high.map(lambda m: m.id) == [api_module1.id] + [None] * 998 + [api_module2.id]
+    assert api_module1.update().pos == 0
+    assert api_module2.update().pos == 999
 
 
 def test_remove_remove(client, consts):

@@ -1,4 +1,4 @@
-use crate::Index;
+use crate::RackPos;
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Public
@@ -12,9 +12,9 @@ pub enum AddMode {
     /// Add to first free position of a rack.
     Equip,
     /// Add to specific position, shifting modules on this position and after it to the right.
-    Insert(Index),
+    Insert(RackPos),
     /// Add to specific position, replacing item if position is taken.
-    Replace(Index),
+    Replace(RackPos),
 }
 
 /// Defines how module is moved within its rack.
@@ -23,10 +23,10 @@ pub enum AddMode {
 pub enum MoveMode {
     /// Takes a module and moves it to new position, shifting modules between original and target
     /// positions.
-    Shift(Index),
+    Shift(RackPos),
     /// Swaps with specific position, which can have another module. Does not affect other modules
     /// (besides the one being moved, and the one possibly at target location).
-    Swap(Index),
+    Swap(RackPos),
 }
 
 /// Defines how module is removed from a rack.

@@ -21,15 +21,18 @@ impl<'s> Fit<'s> {
         }
         let type_aid = type_id.into_aid();
         for _ in 0..iterations {
-            let item_uid = self.core.internal_add_module(
-                self.uid,
-                ModRack::Low,
-                AddMode::Equip,
-                type_aid,
-                ModuleState::Online,
-                None,
-                None,
-            );
+            let item_uid = self
+                .core
+                .internal_add_module(
+                    self.uid,
+                    ModRack::Low,
+                    AddMode::Equip,
+                    type_aid,
+                    ModuleState::Online,
+                    None,
+                    None,
+                )
+                .unwrap();
             for attr_rid in attr_rids.iter().copied() {
                 let _ = self
                     .core

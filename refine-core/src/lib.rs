@@ -96,7 +96,7 @@ pub use misc::{
     BreacherProfile, DpsProfile, EffectMode, FighterCountInfo, ItemKind, ItemSpoolInfo, ModRack, NpcProp, OptionExt,
     OptionalReload, RearmMinion, SecZone, SecZoneCorruption, Spool,
 };
-pub use num::{Count, CountNz, FitSecStatus, Index, PValue, SkillLevel, SlotIndex, UnitInterval, Value};
+pub use num::{Count, CountNz, FitSecStatus, PValue, RackPos, SkillLevel, SlotIndex, UnitInterval, Value};
 pub use sol::{Core, Sol, SolTx};
 pub use src::Src;
 pub use ud::{FitId, FleetId, ItemId};

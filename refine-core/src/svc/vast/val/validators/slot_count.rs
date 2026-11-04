@@ -479,7 +479,7 @@ fn validate_fast_ordered(
         true => used <= max,
         false => match used <= max {
             true => true,
-            false => users.iter_uids_from_pos(max.into_index()).all(|v| kfs.contains(&v)),
+            false => users.iter_uids_from_pos(max.into_rack_pos()).all(|v| kfs.contains(&v)),
         },
     }
 }
@@ -543,7 +543,7 @@ fn validate_verbose_ordered(
         return None;
     }
     let users: Vec<_> = users
-        .iter_uids_from_pos(effective_max.into_index())
+        .iter_uids_from_pos(effective_max.into_rack_pos())
         .filter_map(|item_uid| match kfs.contains(&item_uid) {
             true => None,
             false => Some(ctx.u_data.items.ext_id_by_int_id(item_uid)),

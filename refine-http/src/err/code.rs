@@ -426,6 +426,9 @@ fn fit_change_enum(err: &rs::err::FitChangeEnumError) -> (StatusCode, &'static s
         // Item - implant
         rs::err::FitChangeEnumError::ImplantChange(err_l2) => gen_item_get_implant_change(err_l2, fit_item_get),
         // Item - module
+        rs::err::FitChangeEnumError::ModuleAdd(rs::err::ModuleAddError::ModuleAdd(
+            rs::err::core::ModuleAddError::RackPosLimit(..),
+        )) => (StatusCode::BAD_REQUEST, "MOD-006"),
         rs::err::FitChangeEnumError::ModuleAdd(rs::err::ModuleAddError::ProjAdd(..)) => {
             (StatusCode::BAD_REQUEST, "MOD-002")
         }
@@ -486,6 +489,7 @@ fn fit_add_item_auto(err: &rs::err::core::FitItemAutodetectAddError) -> (StatusC
         rs::err::core::FitItemAutodetectAddError::TypeId(..) => (StatusCode::BAD_REQUEST, "ITM-004"),
         rs::err::core::FitItemAutodetectAddError::KindUnknown => (StatusCode::BAD_REQUEST, "ITM-005"),
         rs::err::core::FitItemAutodetectAddError::KindInvalid(..) => (StatusCode::BAD_REQUEST, "ITM-006"),
+        rs::err::core::FitItemAutodetectAddError::RackPosLimit(..) => (StatusCode::BAD_REQUEST, "MOD-006"),
     }
 }
 
@@ -579,6 +583,9 @@ fn gen_item_get_implant_change<E>(
 fn fit_get_module_add(err: &rs::err::FitGetModuleAddError) -> (StatusCode, &'static str) {
     match err {
         rs::err::FitGetModuleAddError::FitGet(..) => (StatusCode::BAD_REQUEST, "FIT-001"),
+        rs::err::FitGetModuleAddError::ModuleAdd(rs::err::core::ModuleAddError::RackPosLimit(..)) => {
+            (StatusCode::BAD_REQUEST, "MOD-006")
+        }
         rs::err::FitGetModuleAddError::ProjAdd(..) => (StatusCode::BAD_REQUEST, "MOD-002"),
     }
 }

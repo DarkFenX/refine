@@ -1,7 +1,7 @@
 use std::str::FromStr;
 
 use crate::{
-    Index, PValue, Value,
+    PValue, RackPos, Value,
     ad::ACount,
     util::{ceil_f64_to_u32, round_f64_to_u32, trunc_f64_to_u32},
 };
@@ -71,8 +71,8 @@ impl Count {
     pub(crate) const fn into_pvalue(self) -> PValue {
         PValue::from_f64_unchecked(self.0 as f64)
     }
-    pub(crate) fn into_index(self) -> Index {
-        Index::from_usize(self.0.saturating_cast())
+    pub(crate) const fn into_rack_pos(self) -> RackPos {
+        RackPos::from_usize_clamped(self.0 as usize)
     }
 }
 impl From<Count> for u32 {
