@@ -44,7 +44,7 @@ impl REffectResist {
         projectee_aspec: &AttrSpec,
     ) -> Option<UnitInterval> {
         let mult = calc.get_item_attr_odogma(ctx, projectee_aspec.item_uid, projectee_aspec.attr_rid)?;
-        Some(match mult <= Value::from_f64(0.0001) {
+        Some(match mult <= Value::from_f64_unchecked(0.0001) {
             true => UnitInterval::ZERO,
             false => UnitInterval::from_f64_clamped(mult.into_f64()),
         })

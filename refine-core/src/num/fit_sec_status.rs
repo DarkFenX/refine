@@ -16,7 +16,10 @@ impl FitSecStatus {
         }
     }
     pub const fn from_f64_clamped(sec_status: f64) -> Self {
-        Self(sec_status.clamp(Self::MIN.0, Self::MAX.0))
+        match sec_status.is_nan() {
+            true => Self::DEFAULT,
+            false => Self(sec_status.clamp(Self::MIN.0, Self::MAX.0)),
+        }
     }
     pub const fn into_f64(self) -> f64 {
         self.0
@@ -24,7 +27,7 @@ impl FitSecStatus {
 }
 const impl Default for FitSecStatus {
     fn default() -> Self {
-        Self::ZERO
+        Self::DEFAULT
     }
 }
 
@@ -42,9 +45,10 @@ pub struct FitSecStatusError {
 // Constants
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl FitSecStatus {
-    pub const ZERO: Self = Self(0.0);
+    pub const DEFAULT: Self = Self(0.0);
     pub const MIN: Self = Self(-10.0);
     pub const MAX: Self = Self(5.0);
+    pub const ZERO: Self = Self(0.0);
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -52,7 +56,7 @@ impl FitSecStatus {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl FitSecStatus {
     pub(crate) fn into_value(self) -> Value {
-        Value::from_f64(self.0)
+        Value::from_f64_unchecked(self.0)
     }
 }
 impl From<FitSecStatus> for f64 {

@@ -45,17 +45,17 @@ impl SideEffectMod {
             }),
             Op::Sub => Some(Self {
                 op: SideEffectOp::Add,
-                str: Value::from_f64(-raw_strength.into_f64()),
+                str: Value::from_f64_clamped(-raw_strength.into_f64()),
             }),
             Op::PreMul | Op::PostMul | Op::ExtraMul => Some(Self {
                 op: SideEffectOp::Perc,
-                str: Value::from_f64(raw_strength.into_f64().mul_add(100.0, -100.0)),
+                str: Value::from_f64_clamped(raw_strength.into_f64().mul_add(100.0, -100.0)),
             }),
             Op::PreDiv | Op::PostDiv => match raw_strength.into_f64() {
                 0.0 => None,
                 v => Some(Self {
                     op: SideEffectOp::Perc,
-                    str: Value::from_f64(100.0 / v - 100.0),
+                    str: Value::from_f64_clamped(100.0 / v - 100.0),
                 }),
             },
             Op::PostPerc => Some(Self {

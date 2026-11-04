@@ -62,7 +62,7 @@ impl Vast {
                             projectee_unjam_uptime *= accum.get_unjam_uptime().into_value();
                         }
                     }
-                    StatTimeOptions::Sim(sim_options) => match sim_options.time {
+                    StatTimeOptions::Sim(sim_options) => match sim_options.time.map(|v| v.into_pvalue()) {
                         Some(time) if time > PValue::ZERO => {
                             if let Some(accum) = aggr_proj_time(
                                 ctx,

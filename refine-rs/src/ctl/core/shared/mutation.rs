@@ -201,19 +201,19 @@ mod custom_serde_attr {
                 where
                     E: Error,
                 {
-                    Ok(Self::Value::Absolute(Value::from_f64(v as f64)))
+                    Ok(Self::Value::Absolute(Value::from_f64_clamped(v as f64)))
                 }
                 fn visit_u64<E>(self, v: u64) -> Result<Self::Value, E>
                 where
                     E: Error,
                 {
-                    Ok(Self::Value::Absolute(Value::from_f64(v as f64)))
+                    Ok(Self::Value::Absolute(Value::from_f64_clamped(v as f64)))
                 }
                 fn visit_f64<E>(self, v: f64) -> Result<Self::Value, E>
                 where
                     E: Error,
                 {
-                    Ok(Self::Value::Absolute(Value::from_f64(v)))
+                    Ok(Self::Value::Absolute(Value::from_f64_clamped(v)))
                 }
 
                 fn visit_str<E>(self, v: &str) -> Result<Self::Value, E>

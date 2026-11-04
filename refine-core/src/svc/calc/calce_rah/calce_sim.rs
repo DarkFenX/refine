@@ -351,7 +351,7 @@ fn get_next_resonances(
     if recipients == 0 {
         return resonances;
     }
-    let recipients = Value::from_f64(recipients as f64);
+    let recipients = Value::from_f64_unchecked(recipients as f64);
     // Indices are against damage type container, i.e. order is EM, explosive, kinetic, thermal.
     // When equal damage is received across several damage types, those which come earlier in this
     // list will be picked as donors. In EVE, it's this way probably due to backing attribute IDs,

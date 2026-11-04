@@ -31,10 +31,10 @@ impl Count {
 // Constants
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl Count {
+    pub(crate) const MAX: Self = Self(u32::MAX);
     pub(crate) const ZERO: Self = Self(0);
     pub(crate) const ONE: Self = Self(1);
     pub(crate) const TWO: Self = Self(2);
-    pub(crate) const MAX: Self = Self(u32::MAX);
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -44,7 +44,7 @@ impl Count {
     pub(crate) fn from_usize(value: usize) -> Self {
         Self(value.saturating_cast())
     }
-    pub(crate) fn from_f64_rounded(value: f64) -> Self {
+    pub(crate) const fn from_f64_rounded(value: f64) -> Self {
         Self(round_f64_to_u32(value))
     }
     pub(crate) fn from_value_trunced(value: Value) -> Self {
@@ -66,7 +66,7 @@ impl Count {
         Self(a_count.into_u32())
     }
     pub(crate) fn into_value(self) -> Value {
-        Value::from_f64(self.0 as f64)
+        Value::from_f64_unchecked(self.0 as f64)
     }
     pub(crate) const fn into_pvalue(self) -> PValue {
         PValue::from_f64_unchecked(self.0 as f64)

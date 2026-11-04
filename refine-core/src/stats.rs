@@ -8,7 +8,7 @@ pub use crate::{
         StatItemChargeOptions, StatJump, StatJumpConduit, StatJumpPassenger, StatJumpPortal, StatJumpRange,
         StatJumpSelf, StatMining, StatMiningEntry, StatMiningItemKinds, StatMiningResourceKind, StatNeutItemKinds,
         StatOutRepItemKinds, StatOutReps, StatResists, StatResistsLayer, StatResource, StatRps, StatRpsLayer,
-        StatRpsLayerRegen, StatSensors, StatSensorsKind, StatSlot, StatTimeOptions, StatTimeOptionsBurst,
+        StatRpsLayerRegen, StatSensors, StatSensorsKind, StatSlot, StatTime, StatTimeOptions, StatTimeOptionsBurst,
         StatTimeOptionsSim,
     },
 };
@@ -19,6 +19,9 @@ pub mod err {
             StatFitAppliedError, StatFitCharacterError, StatFitShipAppliedError, StatFitShipError,
             StatFleetAppliedError, StatItemAppliedError, StatItemError,
         },
-        svc::vast::{StatAgilityError, StatJumpError, StatMaxWarpRangeError, StatProbingSizeError, StatWarpSpeedError},
+        svc::vast::{
+            StatAgilityError, StatJumpError, StatMaxWarpRangeError, StatProbingSizeError, StatTimeError,
+            StatWarpSpeedError,
+        },
     };
 }

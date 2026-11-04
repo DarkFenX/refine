@@ -47,7 +47,7 @@ impl Vast {
                     burst_opts.spool,
                     SeqAccum::new_stack(),
                 ),
-                StatTimeOptions::Sim(sim_options) => match sim_options.time {
+                StatTimeOptions::Sim(sim_options) => match sim_options.time.map(|v| v.into_pvalue()) {
                     Some(time) if time > PValue::ZERO => aggr_proj_time(
                         ctx,
                         calc,

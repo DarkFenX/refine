@@ -12,13 +12,16 @@ use crate::{PValue, Value};
 pub struct UnitInterval(f64);
 impl UnitInterval {
     pub fn from_f64_checked(v: f64) -> Result<Self, UnitIntervalError> {
-        match (0.0..=1.0).contains(&v) {
+        match (Self::MIN.0..=Self::MAX.0).contains(&v) {
             true => Ok(Self(v)),
             false => Err(UnitIntervalError { value: v }),
         }
     }
     pub const fn from_f64_clamped(v: f64) -> Self {
-        Self(v.clamp(0.0, 1.0))
+        match v.is_nan() {
+            true => Self::DEFAULT,
+            false => Self(v.clamp(Self::MIN.0, Self::MAX.0)),
+        }
     }
     pub const fn into_f64(self) -> f64 {
         self.0
@@ -26,7 +29,11 @@ impl UnitInterval {
 }
 
 #[derive(Debug, thiserror::Error)]
-#[error("value {value} is out of allowed unit interval range [0, 1]")]
+#[error(
+    "value {value} is out of allowed unit interval range [{}, {}]",
+    UnitInterval::MIN,
+    UnitInterval::MAX
+)]
 pub struct UnitIntervalError {
     pub value: f64,
 }
@@ -35,6 +42,9 @@ pub struct UnitIntervalError {
 // Constants
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl UnitInterval {
+    pub const DEFAULT: Self = Self(0.0);
+    pub const MIN: Self = Self(0.0);
+    pub const MAX: Self = Self(1.0);
     pub(crate) const ZERO: Self = Self::from_f64_clamped(0.0);
     pub(crate) const ONE: Self = Self::from_f64_clamped(1.0);
 }
@@ -50,7 +60,7 @@ impl UnitInterval {
         Self::from_f64_clamped(value.into_f64())
     }
     pub(crate) fn into_value(self) -> Value {
-        Value::from_f64(self.0)
+        Value::from_f64_unchecked(self.0)
     }
     pub(crate) fn into_pvalue(self) -> PValue {
         PValue::from_f64_unchecked(self.0)

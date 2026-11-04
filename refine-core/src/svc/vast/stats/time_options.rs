@@ -1,4 +1,5 @@
-use crate::{OptionalReload, PValue, RearmMinion, Spool};
+use super::StatTime;
+use crate::{OptionalReload, RearmMinion, Spool};
 
 #[cfg_attr(
     feature = "serde",
@@ -30,9 +31,9 @@ pub struct StatTimeOptionsBurst {
 #[cfg_attr(feature = "serde", derive(serde::Deserialize))]
 #[derive(Copy, Clone, Default)]
 pub struct StatTimeOptionsSim {
-    /// Time over which period stats will be considered. If not set or invalid, fetches stats over
+    /// Time over which period stats will be considered. If not set or zero, fetches stats over
     /// infinite period of time.
-    pub time: Option<PValue> = None,
+    pub time: Option<StatTime> = None,
     /// Overrides on-item and on-sol optional reload settings.
     pub optional_reloads: Option<OptionalReload> = None,
     /// Overrides on-item and on-sol rearm minion settings.

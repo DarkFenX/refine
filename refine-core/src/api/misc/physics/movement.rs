@@ -104,14 +104,14 @@ impl Movement {
 impl Direction {
     pub(in crate::api) fn from_xyz(xyz: Xyz) -> Self {
         Self {
-            azimuth: Value::from_f64(
+            azimuth: Value::from_f64_unchecked(
                 trig::arctan2d(
                     trig::UnitNegRange::clamp(xyz.y.into_f64()),
                     trig::UnitNegRange::clamp(xyz.x.into_f64()),
                 )
                 .0,
             ),
-            elevation: Value::from_f64(
+            elevation: Value::from_f64_unchecked(
                 trig::arctan2d(
                     trig::UnitNegRange::clamp(xyz.z.into_f64()),
                     trig::UnitNegRange::clamp((xyz.x.into_f64().powi(2) + xyz.y.into_f64().powi(2)).sqrt()),
@@ -128,9 +128,9 @@ impl Direction {
         let el_sin = elevation.sin().0;
         let el_cos = elevation.cos().0;
         Xyz {
-            x: Value::from_f64(az_cos * el_cos),
-            y: Value::from_f64(az_sin * el_cos),
-            z: Value::from_f64(el_sin),
+            x: Value::from_f64_unchecked(az_cos * el_cos),
+            y: Value::from_f64_unchecked(az_sin * el_cos),
+            z: Value::from_f64_unchecked(el_sin),
         }
     }
 }

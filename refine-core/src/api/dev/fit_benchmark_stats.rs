@@ -2,7 +2,7 @@ use crate::{
     DpsProfile, Fit, ItemId, PValue, UnitInterval,
     stats::{
         StatCapBlcRegen, StatCritOptions, StatDmgItemKinds, StatJumpRange, StatMiningItemKinds, StatMiningResourceKind,
-        StatNeutItemKinds, StatOutRepItemKinds, StatTimeOptions, StatTimeOptionsBurst, StatTimeOptionsSim,
+        StatNeutItemKinds, StatOutRepItemKinds, StatTime, StatTimeOptions, StatTimeOptionsBurst, StatTimeOptionsSim,
     },
     svc::{
         cycle::CseqMap,
@@ -27,7 +27,7 @@ impl<'s> Fit<'s> {
             rearm_minions: None,
         });
         let time_sim_1200 = StatTimeOptions::Sim(StatTimeOptionsSim {
-            time: Some(PValue::from_f64_clamped(1200.0)),
+            time: Some(StatTime::from_f64_clamped(1200.0)),
             optional_reloads: None,
             rearm_minions: None,
         });

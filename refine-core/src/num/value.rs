@@ -1,3 +1,5 @@
+use std::str::FromStr;
+
 use ordered_float::OrderedFloat;
 
 use crate::{
@@ -10,11 +12,25 @@ use crate::{
 /// Float value.
 ///
 /// Unlike regular float types, is totally ordered and hashable.
-#[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize), serde(transparent))]
-#[derive(Copy, Clone, Default, Debug, derive_more::Display, derive_more::FromStr)]
+///
+/// Serialization notes: deserialization clamps out-of-range input instead of failing.
+#[cfg_attr(feature = "serde", derive(serde::Serialize), serde(transparent))]
+#[derive(Copy, Clone, Default, Debug, derive_more::Display)]
 pub struct Value(f64);
 impl Value {
-    pub const fn from_f64(v: f64) -> Self {
+    pub fn from_f64_checked(v: f64) -> Result<Self, ValueError> {
+        match (Self::MIN.0..=Self::MAX.0).contains(&v) {
+            true => Ok(Self(v)),
+            false => Err(ValueError { value: v }),
+        }
+    }
+    pub const fn from_f64_clamped(v: f64) -> Self {
+        match v.is_nan() {
+            true => Self::DEFAULT,
+            false => Self(v.clamp(Self::MIN.0, Self::MAX.0)),
+        }
+    }
+    pub(crate) const fn from_f64_unchecked(v: f64) -> Self {
         Self(v)
     }
     pub const fn into_f64(self) -> f64 {
@@ -22,10 +38,19 @@ impl Value {
     }
 }
 
+#[derive(Debug, thiserror::Error)]
+#[error("value {value} is out of allowed range [{:e}, {:e}]", Value::MIN.0, Value::MAX.0)]
+pub struct ValueError {
+    pub value: f64,
+}
+
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Constants
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl Value {
+    pub const DEFAULT: Self = Self(0.0);
+    pub const MIN: Self = Self(f64::MIN);
+    pub const MAX: Self = Self(f64::MAX);
     pub(crate) const ZERO: Self = Self(0.0);
     pub(crate) const ONE: Self = Self(1.0);
     pub(crate) const TWO: Self = Self(2.0);
@@ -250,6 +275,41 @@ impl<'a> std::iter::Product<&'a Value> for Value {
         I: Iterator<Item = &'a Value>,
     {
         Value(iter.map(|v| v.0).product())
+    }
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Custom de/serialization
+////////////////////////////////////////////////////////////////////////////////////////////////////
+impl FromStr for Value {
+    type Err = ValueParseError;
+
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        let value = f64::from_str(s)?;
+        let value = Self::from_f64_clamped(value);
+        Ok(value)
+    }
+}
+
+#[derive(Debug, thiserror::Error)]
+pub enum ValueParseError {
+    #[error(transparent)]
+    InvalidFloat(#[from] std::num::ParseFloatError),
+}
+
+#[cfg(feature = "serde")]
+mod custom_serde {
+    use serde::de::{Deserialize, Deserializer};
+
+    use super::*;
+
+    impl<'de> Deserialize<'de> for Value {
+        fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
+        where
+            D: Deserializer<'de>,
+        {
+            f64::deserialize(deserializer).map(Value::from_f64_clamped)
+        }
     }
 }
 

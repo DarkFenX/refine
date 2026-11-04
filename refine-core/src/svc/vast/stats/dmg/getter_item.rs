@@ -45,7 +45,7 @@ impl Vast {
         )?;
         let (dps_breacher, volley_breacher) = match time_options {
             StatTimeOptions::Burst(..) => (breacher_accum.get_dps(), breacher_accum.get_volley()),
-            StatTimeOptions::Sim(sim_options) => match sim_options.time {
+            StatTimeOptions::Sim(sim_options) => match sim_options.time.map(|v| v.into_pvalue()) {
                 Some(time) if time > PValue::ZERO => (
                     breacher_accum.get_dps_by_time(time),
                     breacher_accum.get_volley_by_time(time),
@@ -86,7 +86,7 @@ impl Vast {
         )?;
         let (dps_breacher, volley_breacher) = match time_options {
             StatTimeOptions::Burst(..) => (breacher_accum.get_dps(), breacher_accum.get_volley()),
-            StatTimeOptions::Sim(sim_options) => match sim_options.time {
+            StatTimeOptions::Sim(sim_options) => match sim_options.time.map(|v| v.into_pvalue()) {
                 Some(time) if time > PValue::ZERO => (
                     breacher_accum.get_dps_by_time(time),
                     breacher_accum.get_volley_by_time(time),
@@ -138,7 +138,7 @@ impl Vast {
                             *volley_normal += accum.instances.max;
                         }
                     }
-                    StatTimeOptions::Sim(sim_options) => match sim_options.time {
+                    StatTimeOptions::Sim(sim_options) => match sim_options.time.map(|v| v.into_pvalue()) {
                         Some(time) if time > PValue::ZERO => {
                             if let Some(accum) = aggr_proj_time(
                                 ctx,
@@ -243,7 +243,7 @@ impl Vast {
                             *volley_normal += accum.instances.max;
                         }
                     }
-                    StatTimeOptions::Sim(sim_options) => match sim_options.time {
+                    StatTimeOptions::Sim(sim_options) => match sim_options.time.map(|v| v.into_pvalue()) {
                         Some(time) if time > PValue::ZERO => {
                             if let Some(accum) = aggr_proj_time(
                                 ctx,

@@ -53,7 +53,7 @@ pub use rc::{
         StatItemStateOptions, StatJump, StatJumpConduit, StatJumpPortal, StatJumpRange, StatJumpSelf, StatMining,
         StatMiningEntry, StatMiningItemKinds, StatMiningResourceKind, StatNeutItemKinds, StatOutRepItemKinds,
         StatOutReps, StatResists, StatResistsLayer, StatResource, StatRps, StatRpsLayer, StatRpsLayerRegen,
-        StatSensors, StatSensorsKind, StatSlot, StatTimeOptions, StatTimeOptionsBurst, StatTimeOptionsSim,
+        StatSensors, StatSensorsKind, StatSlot, StatTime, StatTimeOptions, StatTimeOptionsBurst, StatTimeOptionsSim,
     },
 };
 pub use result_details::{

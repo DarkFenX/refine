@@ -5,10 +5,10 @@ use crate::util::round_f64_to_i32;
 pub struct ASkillLevel(u8);
 impl ASkillLevel {
     pub fn from_u8_clamped(level: u8) -> Self {
-        Self(level.clamp(0, 5))
+        Self(level.clamp(Self::MIN.0, Self::MAX.0))
     }
     pub fn from_i32_clamped(level: i32) -> Self {
-        Self(level.clamp(0, 5) as u8)
+        Self(level.clamp(Self::MIN.0 as i32, Self::MAX.0 as i32) as u8)
     }
     pub fn into_u8(self) -> u8 {
         self.0
@@ -16,11 +16,23 @@ impl ASkillLevel {
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
+// Constants
+////////////////////////////////////////////////////////////////////////////////////////////////////
+impl ASkillLevel {
+    pub const DEFAULT: Self = Self(0);
+    pub const MIN: Self = Self(0);
+    pub const MAX: Self = Self(5);
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
 // Non-public
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl ASkillLevel {
     pub(in crate::ad) fn from_f64_rounded(level: f64) -> Self {
-        Self::from_i32_clamped(round_f64_to_i32(level))
+        match level.is_nan() {
+            true => Self::DEFAULT,
+            false => Self::from_i32_clamped(round_f64_to_i32(level)),
+        }
     }
 }
 

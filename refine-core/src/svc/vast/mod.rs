@@ -8,7 +8,7 @@ pub use stats::{
     StatJumpRange, StatJumpSelf, StatMaxWarpRangeError, StatMining, StatMiningEntry, StatMiningItemKinds,
     StatMiningResourceKind, StatNeutItemKinds, StatOutRepItemKinds, StatOutReps, StatProbingSizeError, StatResists,
     StatResistsLayer, StatResource, StatRps, StatRpsLayer, StatRpsLayerRegen, StatSensors, StatSensorsKind, StatSlot,
-    StatTimeOptions, StatTimeOptionsBurst, StatTimeOptionsSim, StatWarpSpeedError,
+    StatTime, StatTimeError, StatTimeOptions, StatTimeOptionsBurst, StatTimeOptionsSim, StatWarpSpeedError,
 };
 pub(crate) use stats::{StatCapBlcSrcKindsInt, StatCapSimStaggerInt};
 pub use val::{

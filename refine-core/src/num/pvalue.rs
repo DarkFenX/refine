@@ -22,13 +22,16 @@ pub struct PValue(f64);
 impl PValue {
     pub fn from_f64_checked(v: f64) -> Result<Self, PValueError> {
         // -0.0 passes the check intentionally
-        match v >= 0.0 {
+        match (Self::MIN.0..=Self::MAX.0).contains(&v) {
             true => Ok(Self(v)),
             false => Err(PValueError { value: v }),
         }
     }
     pub const fn from_f64_clamped(v: f64) -> Self {
-        Self(v.max(0.0))
+        match v.is_nan() {
+            true => Self::DEFAULT,
+            false => Self(v.max(Self::MIN.0).min(Self::MAX.0)),
+        }
     }
     pub(crate) const fn from_f64_unchecked(v: f64) -> Self {
         Self(v)
@@ -39,7 +42,7 @@ impl PValue {
 }
 
 #[derive(Debug, thiserror::Error)]
-#[error("value {value} is not 0 or greater")]
+#[error("value {value} is out of allowed range [{}, {:e}]", PValue::MIN, PValue::MAX.0)]
 pub struct PValueError {
     pub value: f64,
 }
@@ -48,6 +51,9 @@ pub struct PValueError {
 // Constants
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl PValue {
+    pub const DEFAULT: Self = Self(0.0);
+    pub const MIN: Self = Self(0.0);
+    pub const MAX: Self = Self(f64::MAX);
     pub(crate) const ZERO: Self = Self(0.0);
     pub(crate) const ONE: Self = Self(1.0);
     pub(crate) const TEN: Self = Self(10.0);
@@ -74,7 +80,7 @@ impl PValue {
         Self::from_f64_unchecked(value.into_f64())
     }
     pub(crate) fn into_value(self) -> Value {
-        Value::from_f64(self.0)
+        Value::from_f64_unchecked(self.0)
     }
 }
 impl From<PValue> for f64 {
@@ -167,7 +173,7 @@ impl PValue {
 impl std::ops::Neg for PValue {
     type Output = Value;
     fn neg(self) -> Self::Output {
-        Value::from_f64(-self.0)
+        Value::from_f64_unchecked(-self.0)
     }
 }
 // Addition
@@ -186,7 +192,7 @@ impl std::ops::AddAssign<PValue> for PValue {
 impl std::ops::Sub<PValue> for PValue {
     type Output = Value;
     fn sub(self, rhs: Self) -> Self::Output {
-        Value::from_f64(self.0 - rhs.0)
+        Value::from_f64_unchecked(self.0 - rhs.0)
     }
 }
 // Multiplication
@@ -199,7 +205,7 @@ impl std::ops::Mul<PValue> for PValue {
 impl std::ops::Mul<Value> for PValue {
     type Output = Value;
     fn mul(self, rhs: Value) -> Self::Output {
-        Value::from_f64(self.0 * rhs.into_f64())
+        Value::from_f64_unchecked(self.0 * rhs.into_f64())
     }
 }
 impl std::ops::MulAssign<PValue> for PValue {
@@ -222,7 +228,7 @@ const impl std::ops::Div<PValue> for PValue {
 impl std::ops::Div<Value> for PValue {
     type Output = Value;
     fn div(self, rhs: Value) -> Self::Output {
-        Value::from_f64(self.0 / rhs.into_f64())
+        Value::from_f64_unchecked(self.0 / rhs.into_f64())
     }
 }
 // Remainder

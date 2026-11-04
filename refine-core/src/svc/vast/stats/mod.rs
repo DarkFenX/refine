@@ -20,6 +20,7 @@ pub use tank::{
     StatEhp, StatEhpLayer, StatErps, StatErpsLayer, StatErpsLayerRegen, StatHp, StatHpLayer, StatResists,
     StatResistsLayer, StatRps, StatRpsLayer, StatRpsLayerRegen,
 };
+pub use time::{StatTime, StatTimeError};
 pub use time_options::{StatTimeOptions, StatTimeOptionsBurst, StatTimeOptionsSim};
 
 mod cap;
@@ -41,4 +42,5 @@ mod sensors;
 mod shared;
 mod slot;
 mod tank;
+mod time;
 mod time_options;

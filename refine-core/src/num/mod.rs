@@ -6,7 +6,7 @@ pub use pvalue::{PValue, PValueError, PValueParseError};
 pub use skill_level::{SkillLevel, SkillLevelError, SkillLevelParseError};
 pub use slot_index::SlotIndex;
 pub use unit_interval::{UnitInterval, UnitIntervalError, UnitIntervalParseError};
-pub use value::Value;
+pub use value::{Value, ValueError, ValueParseError};
 
 mod count;
 mod count_nz;

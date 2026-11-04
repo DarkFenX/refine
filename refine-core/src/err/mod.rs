@@ -14,7 +14,8 @@ pub use crate::{
     misc::SpoolParseError,
     num::{
         CountNzError, CountNzParseError, CountParseError, FitSecStatusError, IndexParseError, PValueError,
-        PValueParseError, SkillLevelError, SkillLevelParseError, UnitIntervalError, UnitIntervalParseError,
+        PValueParseError, SkillLevelError, SkillLevelParseError, UnitIntervalError, UnitIntervalParseError, ValueError,
+        ValueParseError,
     },
     ud::err::{FitIdParseError, FleetIdParseError, ItemIdParseError},
 };

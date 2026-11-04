@@ -137,7 +137,7 @@ fn get_local_rps(
                 StatTimeOptions::Burst(..) => {
                     aggr_local_burst(ctx, calc, item_uid, effect, cseq, ospec, (), SeqAccum::new_stack())
                 }
-                StatTimeOptions::Sim(sim_options) => match sim_options.time {
+                StatTimeOptions::Sim(sim_options) => match sim_options.time.map(|v| v.into_pvalue()) {
                     Some(time) if time > PValue::ZERO => aggr_local_time(
                         ctx,
                         calc,
@@ -207,7 +207,7 @@ fn get_irr_data(
                         });
                     }
                 }
-                StatTimeOptions::Sim(sim_options) => match sim_options.time {
+                StatTimeOptions::Sim(sim_options) => match sim_options.time.map(|v| v.into_pvalue()) {
                     Some(time) if time > PValue::ZERO => {
                         if let Some(accum) = aggr_proj_time(
                             ctx,

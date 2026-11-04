@@ -22,7 +22,7 @@ use crate::{
     misc::EffectSpec,
     nd::{NEffectBreacherOutputGetter, NEffectOutputGetter},
     rd::{REffect, REffectProjOpcSpec},
-    stats::{StatCritOptions, StatDmgEntryBreacher},
+    stats::{StatCritOptions, StatDmgEntryBreacher, StatTime},
     svc::{
         Calc, SvcCtx,
         cycle::{CSeqHardDtFull, CycleDataFull, CycleSeq},
@@ -31,9 +31,7 @@ use crate::{
     util::RMap,
 };
 
-const DAY: Count = Count::from_u32(24 * 60 * 60);
-const TICKS_LIMIT: Count = DAY * Count::from_u32(SERVER_TICK_HZ as u32);
-const TIME_LIMIT: PValue = DAY.into_pvalue();
+const TICKS_LIMIT: Count = Count::from_f64_rounded(StatTime::MAX.into_f64()) * Count::from_u32(SERVER_TICK_HZ as u32);
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Regular accumulator
@@ -134,7 +132,6 @@ impl BreacherAccum {
         if self.data.is_empty() {
             return dmg;
         };
-        let time = time.min(TIME_LIMIT);
         // The tick after the last tick which should be included in stats
         let stop_tick = duration_to_ticks_floor(time) + Count::ONE;
         // How many ticks does a loop take
@@ -356,7 +353,6 @@ impl AppliedBreacherAccum {
         if self.data.is_empty() {
             return total_dmg;
         };
-        let time = time.min(TIME_LIMIT);
         // The tick after the last tick which should be included in stats
         let stop_tick = duration_to_ticks_floor(time) + Count::ONE;
         // How many ticks does a loop take

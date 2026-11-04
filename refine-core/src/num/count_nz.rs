@@ -2,8 +2,6 @@ use std::{num::NonZeroU32, str::FromStr};
 
 use crate::{PValue, Value, util::round_f64_to_u32};
 
-const DEFAULT: NonZeroU32 = NonZeroU32::MIN;
-
 /// Count of something which cannot be zero, e.g. of fighters in a squad.
 ///
 /// Serialization notes: deserialization clamps out-of-range input instead of failing.
@@ -12,13 +10,13 @@ const DEFAULT: NonZeroU32 = NonZeroU32::MIN;
 pub struct CountNz(NonZeroU32);
 impl CountNz {
     pub fn from_u32_checked(count: u32) -> Result<Self, CountNzError> {
-        match NonZeroU32::try_from(count) {
-            Ok(count) => Ok(Self(count)),
-            Err(..) => Err(CountNzError),
+        match (Self::MIN.into_u32()..=Self::MAX.into_u32()).contains(&count) {
+            true => Ok(Self::from_u32_clamped(count)),
+            false => Err(CountNzError),
         }
     }
     pub const fn from_u32_clamped(count: u32) -> Self {
-        Self(NonZeroU32::try_from(count).unwrap_or(DEFAULT))
+        Self(NonZeroU32::try_from(count).unwrap_or(Self::MIN.0))
     }
     pub const fn from_u64_clamped(count: u64) -> Self {
         Self::from_u32_clamped(count.saturating_cast())
@@ -31,13 +29,16 @@ impl CountNz {
     }
 }
 #[derive(Debug, thiserror::Error)]
-#[error("non-zero count should be 1+, received 0")]
+#[error("non-zero count should be {}+, received 0", CountNz::MIN)]
 pub struct CountNzError;
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Constants
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl CountNz {
+    pub const DEFAULT: Self = Self(NonZeroU32::MIN);
+    pub const MIN: Self = Self(NonZeroU32::MIN);
+    pub const MAX: Self = Self(NonZeroU32::MAX);
     pub(crate) const ONE: Self = Self(NonZeroU32::MIN);
 }
 
@@ -46,10 +47,13 @@ impl CountNz {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl CountNz {
     pub(crate) fn from_f64_rounded(count: f64) -> Self {
-        Self::from_u32_clamped(round_f64_to_u32(count))
+        match count.is_nan() {
+            true => Self::DEFAULT,
+            false => Self::from_u32_clamped(round_f64_to_u32(count)),
+        }
     }
     pub(crate) fn into_value(self) -> Value {
-        Value::from_f64(self.0.get() as f64)
+        Value::from_f64_unchecked(self.0.get() as f64)
     }
     pub(crate) fn into_pvalue(self) -> PValue {
         PValue::from_f64_unchecked(self.0.get() as f64)
@@ -66,7 +70,7 @@ impl From<CountNz> for u32 {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 const impl Default for CountNz {
     fn default() -> Self {
-        Self(DEFAULT)
+        Self::DEFAULT
     }
 }
 

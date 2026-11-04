@@ -43,6 +43,7 @@ pub struct SkillLevelError {
 // Constants
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl SkillLevel {
+    pub const DEFAULT: Self = Self(0);
     pub const MIN: Self = Self(0);
     pub const MAX: Self = Self(5);
 }
@@ -52,13 +53,16 @@ impl SkillLevel {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl SkillLevel {
     pub(crate) fn from_f64_rounded(level: f64) -> Self {
-        Self(level.clamp(Self::MIN.0 as f64, Self::MAX.0 as f64).round() as u8)
+        match level.is_nan() {
+            true => Self::DEFAULT,
+            false => Self(level.clamp(Self::MIN.0 as f64, Self::MAX.0 as f64).round() as u8),
+        }
     }
     pub(crate) fn from_a_skill_level(a_skill_level: ASkillLevel) -> Self {
         Self(a_skill_level.into_u8())
     }
     pub(crate) fn into_value(self) -> Value {
-        Value::from_f64(self.0 as f64)
+        Value::from_f64_unchecked(self.0 as f64)
     }
 }
 impl From<SkillLevel> for u8 {

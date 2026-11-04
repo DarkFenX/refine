@@ -93,7 +93,7 @@ fn get_cap_injects(
                 StatTimeOptions::Burst(..) => {
                     aggr_local_burst(ctx, calc, item_uid, effect, cseq, ospec, (), SeqAccum::new_stack())
                 }
-                StatTimeOptions::Sim(sim_options) => match sim_options.time {
+                StatTimeOptions::Sim(sim_options) => match sim_options.time.map(|v| v.into_pvalue()) {
                     Some(time) if time > PValue::ZERO => aggr_local_time(
                         ctx,
                         calc,
@@ -137,7 +137,7 @@ fn get_cap_consumed(
                 StatTimeOptions::Burst(..) => {
                     aggr_local_burst(ctx, calc, item_uid, effect, cseq, ospec, (), SeqAccum::new_stack())
                 }
-                StatTimeOptions::Sim(sim_options) => match sim_options.time {
+                StatTimeOptions::Sim(sim_options) => match sim_options.time.map(|v| v.into_pvalue()) {
                     Some(time) if time > PValue::ZERO => aggr_local_time(
                         ctx,
                         calc,
@@ -192,7 +192,7 @@ fn get_nosfs(
                     burst_opts.spool,
                     SeqAccum::new_stack(),
                 ),
-                StatTimeOptions::Sim(sim_options) => match sim_options.time {
+                StatTimeOptions::Sim(sim_options) => match sim_options.time.map(|v| v.into_pvalue()) {
                     Some(time) if time > PValue::ZERO => aggr_proj_time(
                         ctx,
                         calc,
@@ -263,7 +263,7 @@ fn get_incoming_cap_transfers(
                     burst_opts.spool,
                     SeqAccum::new_stack(),
                 ),
-                StatTimeOptions::Sim(sim_options) => match sim_options.time {
+                StatTimeOptions::Sim(sim_options) => match sim_options.time.map(|v| v.into_pvalue()) {
                     Some(time) if time > PValue::ZERO => aggr_proj_time(
                         ctx,
                         calc,
@@ -334,7 +334,7 @@ fn get_incoming_neuts(
                     burst_opts.spool,
                     SeqAccum::new_stack(),
                 ),
-                StatTimeOptions::Sim(sim_options) => match sim_options.time {
+                StatTimeOptions::Sim(sim_options) => match sim_options.time.map(|v| v.into_pvalue()) {
                     Some(time) if time > PValue::ZERO => aggr_proj_time(
                         ctx,
                         calc,
