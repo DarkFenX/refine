@@ -253,19 +253,28 @@ impl Calc {
         item_uid: UItemId,
         attr_rid: RAttrId,
     ) -> Result<CalcAttrVals, UItemLoadedError> {
-        // Try accessing cached value
+        self.get_item_attr_rfull_inner::<true>(ctx, item_uid, attr_rid)
+    }
+    // Cached value, or value calculated and cached on a miss; postprocessed if PP
+    #[inline(always)]
+    fn get_item_attr_rfull_inner<const PP: bool>(
+        &mut self,
+        ctx: &SvcCtx,
+        item_uid: UItemId,
+        attr_rid: RAttrId,
+    ) -> Result<CalcAttrVals, UItemLoadedError> {
         let item_attr_data = self.get_item_data_with_err(item_uid)?;
         if let Some(attr_entry) = item_attr_data.get(&attr_rid)
             && let Some(cval) = attr_entry.value
         {
             let cval = match attr_entry.postproc {
-                Some(postproc) => postproc.fast(self, ctx, item_uid, cval),
-                None => cval,
+                Some(postproc) if PP => postproc.fast(self, ctx, item_uid, cval),
+                _ => cval,
             };
             return Ok(cval);
         }
         std::hint::cold_path(); // Misses are rare compared to hits
-        Ok(self.unchecked_calc_value_cache_and_postproc(ctx, item_uid, attr_rid))
+        Ok(self.unchecked_calc_value_cache::<PP>(ctx, item_uid, attr_rid))
     }
     fn get_item_oattr_rfull(
         &mut self,
@@ -288,7 +297,7 @@ impl Calc {
             return Ok(cval);
         }
         std::hint::cold_path(); // Misses are rare compared to hits
-        Ok(self.unchecked_calc_value_cache_and_postproc(ctx, item_uid, attr_rid))
+        Ok(self.unchecked_calc_value_cache::<true>(ctx, item_uid, attr_rid))
     }
     pub(in crate::svc::calc) fn get_item_oattr_ofull_nopp(
         &mut self,
@@ -296,14 +305,7 @@ impl Calc {
         item_uid: UItemId,
         attr_rid: Option<RAttrId>,
     ) -> Option<CalcAttrVals> {
-        let attr_rid = attr_rid?;
-        let item_attr_data = self.attrs.get_item_attr_data(item_uid)?;
-        if let Some(attr_entry) = item_attr_data.get(&attr_rid)
-            && let Some(cval) = attr_entry.value
-        {
-            return Some(cval);
-        }
-        Some(self.unchecked_calc_value_cache(ctx, item_uid, attr_rid))
+        self.get_item_attr_rfull_inner::<false>(ctx, item_uid, attr_rid?).ok()
     }
     /// Gets value with custom filter, but does not use cache (has to recalculate on every request)
     fn get_item_oattr_rfull_filtered<F>(
@@ -375,7 +377,8 @@ enum GetOAttrError {
 // Some common methods used in query methods
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl Calc {
-    fn unchecked_calc_value_cache_and_postproc(
+    // The returned value is postprocessed if PP, the cached one never is
+    fn unchecked_calc_value_cache<const PP: bool>(
         &mut self,
         ctx: &SvcCtx,
         item_uid: UItemId,
@@ -384,18 +387,10 @@ impl Calc {
         // This method assumes that item is loaded (= has attr data)
         let mut cval = self.calc_item_attr_val(ctx, item_uid, attr_rid, |_| true);
         let item_attr_data = self.attrs.get_item_attr_data_mut(item_uid).unwrap();
-        if let Some(postproc) = item_attr_data.set_value_and_get_postproc(attr_rid, cval) {
+        let postproc = item_attr_data.set_value_and_get_postproc(attr_rid, cval);
+        if PP && let Some(postproc) = postproc {
             cval = postproc.fast(self, ctx, item_uid, cval);
         }
-        cval
-    }
-    fn unchecked_calc_value_cache(&mut self, ctx: &SvcCtx, item_uid: UItemId, attr_rid: RAttrId) -> CalcAttrVals {
-        // This method assumes that item is loaded (= has attr data)
-        let cval = self.calc_item_attr_val(ctx, item_uid, attr_rid, |_| true);
-        self.attrs
-            .get_item_attr_data_mut(item_uid)
-            .unwrap()
-            .set_value_and_get_postproc(attr_rid, cval);
         cval
     }
     fn checked_calc_filtered_value_and_postproc<F>(
