@@ -13,7 +13,7 @@ use crate::{
 impl<'s> Skill<'s> {
     /// Set type ID, replacing currently used EVE item by another, preserving all the user data.
     pub fn set_type_id(&mut self, type_id: ItemTypeId) -> Result<(), SkillTypeIdSetError> {
-        self.sol.internal_set_skill_type_aid(self.uid, type_id.into_aid())?;
+        self.core.internal_set_skill_type_aid(self.uid, type_id.into_aid())?;
         Ok(())
     }
 }

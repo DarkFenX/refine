@@ -5,7 +5,7 @@ use crate::{Fit, FitSecStatus, sol::CoreInner, ud::UFitId};
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl<'s> Fit<'s> {
     pub fn get_sec_status(&self) -> FitSecStatus {
-        self.sol.internal_get_fit_sec_status(self.uid)
+        self.core.internal_get_fit_sec_status(self.uid)
     }
 }
 

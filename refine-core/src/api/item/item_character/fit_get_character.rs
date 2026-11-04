@@ -5,11 +5,11 @@ use crate::{Character, Fit};
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl<'s> Fit<'s> {
     pub fn get_character(&mut self) -> Option<Character<'_>> {
-        self.sol
+        self.core
             .u_data
             .fits
             .get(self.uid)
             .character
-            .map(|character_uid| Character::new(self.sol, character_uid))
+            .map(|character_uid| Character::new(self.core, character_uid))
     }
 }

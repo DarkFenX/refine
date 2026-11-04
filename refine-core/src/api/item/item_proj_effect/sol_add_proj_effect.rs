@@ -10,9 +10,9 @@ use crate::{
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl Sol {
     pub fn add_proj_effect(&mut self, type_id: ItemTypeId) -> ProjEffect<'_> {
-        let sol = self.inner_mut();
-        let proj_effect_uid = sol.internal_add_proj_effect(type_id.into_aid());
-        ProjEffect::new(sol, proj_effect_uid)
+        let core = self.inner_mut();
+        let proj_effect_uid = core.internal_add_proj_effect(type_id.into_aid());
+        ProjEffect::new(core, proj_effect_uid)
     }
 }
 

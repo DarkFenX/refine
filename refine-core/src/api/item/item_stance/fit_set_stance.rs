@@ -11,8 +11,8 @@ use crate::{
 impl<'s> Fit<'s> {
     /// Set stance, replacing current one with a new item.
     pub fn set_stance(&mut self, type_id: ItemTypeId) -> Stance<'_> {
-        let stance_uid = self.sol.internal_set_fit_stance(self.uid, type_id.into_aid());
-        Stance::new(self.sol, stance_uid)
+        let stance_uid = self.core.internal_set_fit_stance(self.uid, type_id.into_aid());
+        Stance::new(self.core, stance_uid)
     }
 }
 

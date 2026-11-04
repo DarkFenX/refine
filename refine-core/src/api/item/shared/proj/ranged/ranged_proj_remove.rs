@@ -5,7 +5,7 @@ use crate::RangedProj;
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl<'s> RangedProj<'s> {
     pub fn remove(self) {
-        self.sol
+        self.core
             .internal_remove_projection(self.projector_uid, self.projectee_uid)
             .unwrap()
     }

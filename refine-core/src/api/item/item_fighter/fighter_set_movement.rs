@@ -11,7 +11,7 @@ use crate::{
 impl<'s> Fighter<'s> {
     /// Set fighter movement.
     pub fn set_movement(&mut self, movement: Movement) {
-        self.sol
+        self.core
             .internal_set_fighter_movement(self.uid, movement.direction.into_xyz(), movement.speed);
     }
 }

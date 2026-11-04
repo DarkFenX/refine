@@ -9,7 +9,7 @@ use crate::{
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl<'s> Stance<'s> {
     pub fn remove(self) {
-        self.sol.internal_remove_stance(self.uid);
+        self.core.internal_remove_stance(self.uid);
     }
 }
 

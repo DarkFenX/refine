@@ -11,7 +11,8 @@ use crate::{
 impl<'s> Ship<'s> {
     /// Set ship position in its solar system.
     pub fn set_coordinates(&mut self, coordinates: Coordinates) {
-        self.sol.internal_set_ship_coordinates(self.uid, coordinates.into_xyz())
+        self.core
+            .internal_set_ship_coordinates(self.uid, coordinates.into_xyz())
     }
 }
 

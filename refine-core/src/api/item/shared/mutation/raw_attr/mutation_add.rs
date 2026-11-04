@@ -25,7 +25,7 @@ impl<'s> EffectiveMutation<'s> {
     /// Accepts roll of any attribute, even if it is not defined by item mutator. In this case, roll
     /// will be stored, and its effect won't be applied.
     pub fn mutate_raw(&mut self, attr_id: AttrId, roll: UnitInterval) -> Result<RawMAttr<'_>, AttrMutateRawError> {
-        mutate_raw(self.sol, self.item_uid, attr_id.into_aid(), roll)
+        mutate_raw(self.core, self.item_uid, attr_id.into_aid(), roll)
     }
 }
 
@@ -35,7 +35,7 @@ impl<'s> DormantMutation<'s> {
     /// Accepts roll of any attribute, even if it is not defined by item mutator. In this case, roll
     /// will be stored, and its effect won't be applied.
     pub fn mutate_raw(&mut self, attr_id: AttrId, roll: UnitInterval) -> Result<RawMAttr<'_>, AttrMutateRawError> {
-        mutate_raw(self.sol, self.item_uid, attr_id.into_aid(), roll)
+        mutate_raw(self.core, self.item_uid, attr_id.into_aid(), roll)
     }
 }
 
@@ -49,12 +49,12 @@ pub enum AttrMutateRawError {
 // Private
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 fn mutate_raw(
-    sol: &mut CoreInner,
+    core: &mut CoreInner,
     item_uid: UItemId,
     attr_aid: AAttrId,
     roll: UnitInterval,
 ) -> Result<RawMAttr<'_>, AttrMutateRawError> {
-    match sol
+    match core
         .u_data
         .items
         .get(item_uid)
@@ -64,11 +64,11 @@ fn mutate_raw(
         .get(&attr_aid)
     {
         Some(..) => Err(AttrMutateRawError::AlreadyMutated(
-            sol.u_data.items.ext_id_by_int_id(item_uid),
+            core.u_data.items.ext_id_by_int_id(item_uid),
             AttrId::from_aid(attr_aid),
         )),
         None => {
-            let mut raw_mattr = RawMAttr::new(sol, item_uid, attr_aid);
+            let mut raw_mattr = RawMAttr::new(core, item_uid, attr_aid);
             raw_mattr.set_roll(roll);
             Ok(raw_mattr)
         }

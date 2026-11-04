@@ -5,8 +5,8 @@ use crate::{EntityIter, Fit, Sol};
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl Sol {
     pub fn iter_fits(&mut self) -> EntityIter<'_, Fit<'_>> {
-        let sol = self.inner_mut();
-        let fit_uids = sol.u_data.fits.keys().collect();
-        EntityIter::new(sol, fit_uids)
+        let core = self.inner_mut();
+        let fit_uids = core.u_data.fits.keys().collect();
+        EntityIter::new(core, fit_uids)
     }
 }

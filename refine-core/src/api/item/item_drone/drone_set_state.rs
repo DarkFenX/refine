@@ -9,7 +9,7 @@ use crate::{
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl<'s> Drone<'s> {
     pub fn set_state(&mut self, state: MinionState) {
-        self.sol.internal_set_drone_state_inner::<true>(self.uid, state);
+        self.core.internal_set_drone_state_inner::<true>(self.uid, state);
     }
 }
 

@@ -12,7 +12,7 @@ impl<'s> SideEffect<'s> {
             true => EffectMode::StateCompliance,
             false => EffectMode::FullCompliance,
         };
-        self.sol
+        self.core
             .internal_set_effect_id_mode(self.item_uid, self.effect_aid, effect_mode);
     }
 }

@@ -10,8 +10,8 @@ use crate::{
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl<'s> Fit<'s> {
     pub fn add_booster(&mut self, type_id: ItemTypeId) -> Booster<'_> {
-        let booster_uid = self.sol.internal_add_booster(self.uid, type_id.into_aid());
-        Booster::new(self.sol, booster_uid)
+        let booster_uid = self.core.internal_add_booster(self.uid, type_id.into_aid());
+        Booster::new(self.core, booster_uid)
     }
 }
 

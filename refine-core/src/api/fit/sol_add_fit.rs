@@ -9,9 +9,9 @@ use crate::{
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl Sol {
     pub fn add_fit(&mut self) -> Fit<'_> {
-        let sol = self.inner_mut();
-        let fit_uid = sol.add_fit_internal();
-        Fit::new(sol, fit_uid)
+        let core = self.inner_mut();
+        let fit_uid = core.add_fit_internal();
+        Fit::new(core, fit_uid)
     }
 }
 

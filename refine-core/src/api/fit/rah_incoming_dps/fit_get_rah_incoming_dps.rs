@@ -5,7 +5,7 @@ use crate::{DpsProfile, Fit, sol::CoreInner, ud::UFitId};
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl<'s> Fit<'s> {
     pub fn get_rah_incoming_dps(&self) -> Option<DpsProfile> {
-        self.sol.internal_get_fit_rah_incoming_dps(self.uid)
+        self.core.internal_get_fit_rah_incoming_dps(self.uid)
     }
 }
 

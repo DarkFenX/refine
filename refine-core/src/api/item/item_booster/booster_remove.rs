@@ -9,7 +9,7 @@ use crate::{
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl<'s> Booster<'s> {
     pub fn remove(self) {
-        self.sol.internal_remove_booster(self.uid);
+        self.core.internal_remove_booster(self.uid);
     }
 }
 

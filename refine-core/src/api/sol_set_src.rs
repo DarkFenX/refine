@@ -14,27 +14,27 @@ impl Core {
     ///
     /// Not possible within a transaction, since switching source can't be rolled back.
     pub fn set_src(&mut self, src: &Src) {
-        let sol = self.inner_mut();
-        if Arc::ptr_eq(&sol.u_data.r_data, &src.r_data) {
+        let core = self.inner_mut();
+        if Arc::ptr_eq(&core.u_data.r_data, &src.r_data) {
             return;
         }
-        let item_uids = ItemUIds::from_u_data(&sol.u_data);
-        sol.unload_items(&item_uids);
+        let item_uids = ItemUIds::from_u_data(&core.u_data);
+        core.unload_items(&item_uids);
         // Set new runtime data
-        sol.u_data.r_data = src.r_data.clone();
-        for item in sol.u_data.items.values_mut() {
-            item.r_data_changed(&sol.u_data.r_data);
+        core.u_data.r_data = src.r_data.clone();
+        for item in core.u_data.items.values_mut() {
+            item.r_data_changed(&core.u_data.r_data);
         }
         // Update fit kind
-        for fit in sol.u_data.fits.values_mut() {
+        for fit in core.u_data.fits.values_mut() {
             fit.ship_kind = match fit.ship {
-                Some(ship_uid) => sol.u_data.items.get(ship_uid).dc_ship().unwrap().get_ship_kind(),
+                Some(ship_uid) => core.u_data.items.get(ship_uid).dc_ship().unwrap().get_ship_kind(),
                 None => UShipKind::Unknown,
             }
         }
         // Update on-projection data due to changed item radii
-        sol.update_projections();
-        sol.load_items(&item_uids);
+        core.update_projections();
+        core.load_items(&item_uids);
     }
 }
 

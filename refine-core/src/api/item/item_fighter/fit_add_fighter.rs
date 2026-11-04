@@ -27,9 +27,9 @@ impl<'s> Fit<'s> {
             u_physics.speed = movement.speed;
         }
         let fighter_uid = self
-            .sol
+            .core
             .internal_add_fighter(self.uid, type_id.into_aid(), state, u_physics);
-        Fighter::new(self.sol, fighter_uid)
+        Fighter::new(self.core, fighter_uid)
     }
 }
 

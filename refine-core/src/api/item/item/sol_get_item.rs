@@ -11,9 +11,9 @@ use crate::{
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl Sol {
     pub fn get_item(&mut self, item_id: &ItemId) -> Result<Item<'_>, ItemGetError> {
-        let sol = self.inner_mut();
-        let item_uid = sol.u_data.items.int_id_by_ext_id_err(item_id)?;
-        Ok(sol.internal_get_item(item_uid))
+        let core = self.inner_mut();
+        let item_uid = core.u_data.items.int_id_by_ext_id_err(item_id)?;
+        Ok(core.internal_get_item(item_uid))
     }
 }
 

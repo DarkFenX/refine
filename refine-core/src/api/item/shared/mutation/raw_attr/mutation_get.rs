@@ -18,14 +18,14 @@ impl<'s> Mutation<'s> {
 impl<'s> EffectiveMutation<'s> {
     /// Get mutation's raw mutated attribute for requested attribute ID.
     pub fn get_raw_mattr(&mut self, attr_id: AttrId) -> Result<RawMAttr<'_>, RawMAttrGetError> {
-        get_raw_mattr(self.sol, self.item_uid, attr_id.into_aid())
+        get_raw_mattr(self.core, self.item_uid, attr_id.into_aid())
     }
 }
 
 impl<'s> DormantMutation<'s> {
     /// Get mutation's raw mutated attribute for requested attribute ID.
     pub fn get_raw_mattr(&mut self, attr_id: AttrId) -> Result<RawMAttr<'_>, RawMAttrGetError> {
-        get_raw_mattr(self.sol, self.item_uid, attr_id.into_aid())
+        get_raw_mattr(self.core, self.item_uid, attr_id.into_aid())
     }
 }
 
@@ -38,8 +38,8 @@ pub enum RawMAttrGetError {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Private
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-fn get_raw_mattr(sol: &mut CoreInner, item_uid: UItemId, attr_aid: AAttrId) -> Result<RawMAttr<'_>, RawMAttrGetError> {
-    match sol
+fn get_raw_mattr(core: &mut CoreInner, item_uid: UItemId, attr_aid: AAttrId) -> Result<RawMAttr<'_>, RawMAttrGetError> {
+    match core
         .u_data
         .items
         .get(item_uid)
@@ -48,9 +48,9 @@ fn get_raw_mattr(sol: &mut CoreInner, item_uid: UItemId, attr_aid: AAttrId) -> R
         .get_attr_rolls()
         .get(&attr_aid)
     {
-        Some(..) => Ok(RawMAttr::new(sol, item_uid, attr_aid)),
+        Some(..) => Ok(RawMAttr::new(core, item_uid, attr_aid)),
         None => Err(RawMAttrGetError::MutationNotFound(
-            sol.u_data.items.ext_id_by_int_id(item_uid),
+            core.u_data.items.ext_id_by_int_id(item_uid),
             AttrId::from_aid(attr_aid),
         )),
     }

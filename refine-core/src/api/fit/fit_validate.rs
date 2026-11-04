@@ -11,12 +11,12 @@ use crate::{
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl<'s> Fit<'s> {
     pub fn validate_fast(&mut self, options: &ValOptions) -> bool {
-        let int_options = ValOptionsInt::from_pub(options, self.sol);
-        self.sol.internal_validate_fit_fast(self.uid, &int_options)
+        let int_options = ValOptionsInt::from_pub(options, self.core);
+        self.core.internal_validate_fit_fast(self.uid, &int_options)
     }
     pub fn validate_verbose(&mut self, options: &ValOptions) -> ValResultFit {
-        let int_options = ValOptionsInt::from_pub(options, self.sol);
-        self.sol.internal_validate_fit_verbose(self.uid, &int_options)
+        let int_options = ValOptionsInt::from_pub(options, self.core);
+        self.core.internal_validate_fit_verbose(self.uid, &int_options)
     }
 }
 

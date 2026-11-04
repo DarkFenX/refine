@@ -11,7 +11,7 @@ use crate::{
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl<'s> Fit<'s> {
     pub fn remove(self) {
-        self.sol.internal_remove_fit(self.uid);
+        self.core.internal_remove_fit(self.uid);
     }
 }
 

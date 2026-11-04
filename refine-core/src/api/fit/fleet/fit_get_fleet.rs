@@ -5,9 +5,9 @@ use crate::{Fit, FleetId};
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl<'s> Fit<'s> {
     pub fn get_fleet_id(&self) -> Option<FleetId> {
-        let u_fit = self.sol.u_data.fits.get(self.uid);
+        let u_fit = self.core.u_data.fits.get(self.uid);
         u_fit
             .fleet
-            .map(|fleet_uid| self.sol.u_data.fleets.ext_id_by_int_id(fleet_uid))
+            .map(|fleet_uid| self.core.u_data.fleets.ext_id_by_int_id(fleet_uid))
     }
 }

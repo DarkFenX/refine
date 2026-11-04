@@ -11,7 +11,7 @@ use crate::{
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl<'s> Fighter<'s> {
     pub fn set_state(&mut self, state: MinionState) {
-        self.sol.internal_set_fighter_state_inner::<true>(self.uid, state);
+        self.core.internal_set_fighter_state_inner::<true>(self.uid, state);
     }
 }
 

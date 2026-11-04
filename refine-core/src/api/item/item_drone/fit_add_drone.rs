@@ -25,9 +25,9 @@ impl<'s> Fit<'s> {
             u_physics.speed = movement.speed;
         }
         let drone_uid = self
-            .sol
+            .core
             .internal_add_drone(self.uid, type_id.into_aid(), state, None, u_physics);
-        Drone::new(self.sol, drone_uid)
+        Drone::new(self.core, drone_uid)
     }
 }
 

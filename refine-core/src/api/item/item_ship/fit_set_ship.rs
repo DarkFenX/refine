@@ -24,8 +24,8 @@ impl<'s> Fit<'s> {
             u_physics.direction = movement.direction.into_xyz();
             u_physics.speed = movement.speed;
         }
-        let ship_uid = self.sol.internal_set_fit_ship(self.uid, type_id.into_aid(), u_physics);
-        Ship::new(self.sol, ship_uid)
+        let ship_uid = self.core.internal_set_fit_ship(self.uid, type_id.into_aid(), u_physics);
+        Ship::new(self.core, ship_uid)
     }
 }
 

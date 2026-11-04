@@ -9,7 +9,7 @@ use crate::{
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl<'s> Character<'s> {
     pub fn set_state(&mut self, state: bool) {
-        self.sol.internal_set_character_state_inner::<true>(self.uid, state);
+        self.core.internal_set_character_state_inner::<true>(self.uid, state);
     }
 }
 

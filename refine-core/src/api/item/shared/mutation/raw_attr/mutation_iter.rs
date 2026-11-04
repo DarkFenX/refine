@@ -18,20 +18,20 @@ impl<'s> Mutation<'s> {
 impl<'s> EffectiveMutation<'s> {
     /// Iterates over mutation's raw mutated attributes.
     pub fn iter_raw_mattrs(&mut self) -> RawMAttrIter<'_> {
-        RawMAttrIter::new(self.sol, self.item_uid)
+        RawMAttrIter::new(self.core, self.item_uid)
     }
 }
 
 impl<'s> DormantMutation<'s> {
     /// Iterates over mutation's raw mutated attributes.
     pub fn iter_raw_mattrs(&mut self) -> RawMAttrIter<'_> {
-        RawMAttrIter::new(self.sol, self.item_uid)
+        RawMAttrIter::new(self.core, self.item_uid)
     }
 }
 
 // Lending iterator for attribute rolls
 pub struct RawMAttrIter<'iter> {
-    sol: &'iter mut CoreInner,
+    core: &'iter mut CoreInner,
     item_uid: UItemId,
     attr_aids: Vec<AAttrId>,
     index: usize,
@@ -45,7 +45,7 @@ impl<'iter> Lender for RawMAttrIter<'iter> {
     fn next(&mut self) -> Option<RawMAttr<'_>> {
         let attr_aid = *self.attr_aids.get(self.index)?;
         self.index += 1;
-        Some(RawMAttr::new(self.sol, self.item_uid, attr_aid))
+        Some(RawMAttr::new(self.core, self.item_uid, attr_aid))
     }
 
     fn size_hint(&self) -> (usize, Option<usize>) {
@@ -59,8 +59,8 @@ impl<'iter> ExactSizeLender for RawMAttrIter<'iter> {}
 // Private
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl<'iter> RawMAttrIter<'iter> {
-    pub(in crate::api) fn new(sol: &'iter mut CoreInner, item_uid: UItemId) -> Self {
-        let attr_aids = sol
+    pub(in crate::api) fn new(core: &'iter mut CoreInner, item_uid: UItemId) -> Self {
+        let attr_aids = core
             .u_data
             .items
             .get(item_uid)
@@ -71,7 +71,7 @@ impl<'iter> RawMAttrIter<'iter> {
             .copied()
             .collect();
         Self {
-            sol,
+            core,
             item_uid,
             attr_aids,
             index: 0,

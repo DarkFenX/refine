@@ -11,7 +11,7 @@ use crate::{
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl<'s> Fleet<'s> {
     pub fn remove(self) {
-        self.sol.internal_remove_fleet(self.uid);
+        self.core.internal_remove_fleet(self.uid);
     }
 }
 

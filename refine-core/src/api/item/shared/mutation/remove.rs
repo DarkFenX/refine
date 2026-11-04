@@ -18,13 +18,13 @@ impl<'s> Mutation<'s> {
 
 impl<'s> EffectiveMutation<'s> {
     pub fn remove(self) {
-        self.sol.internal_remove_item_mutation(self.item_uid).unwrap();
+        self.core.internal_remove_item_mutation(self.item_uid).unwrap();
     }
 }
 
 impl<'s> DormantMutation<'s> {
     pub fn remove(self) {
-        self.sol.internal_remove_item_mutation(self.item_uid).unwrap();
+        self.core.internal_remove_item_mutation(self.item_uid).unwrap();
     }
 }
 

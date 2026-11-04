@@ -9,7 +9,7 @@ use crate::{
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl<'s> Rig<'s> {
     pub fn remove(self) {
-        self.sol.internal_remove_rig(self.uid)
+        self.core.internal_remove_rig(self.uid)
     }
 }
 

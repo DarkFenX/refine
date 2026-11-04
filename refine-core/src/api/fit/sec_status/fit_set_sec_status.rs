@@ -9,7 +9,7 @@ use crate::{
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl<'s> Fit<'s> {
     pub fn set_sec_status(&mut self, sec_status: FitSecStatus) {
-        self.sol.internal_set_fit_sec_status(self.uid, sec_status);
+        self.core.internal_set_fit_sec_status(self.uid, sec_status);
     }
 }
 

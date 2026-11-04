@@ -14,7 +14,7 @@ impl<'s> Drone<'s> {
             mutator_type_aid: mutator_type_id.into_aid(),
             attrs: Vec::new(),
         };
-        self.sol.internal_add_drone_mutation(self.uid, mutation)?;
+        self.core.internal_add_drone_mutation(self.uid, mutation)?;
         Ok(self.get_mutation().unwrap())
     }
 }

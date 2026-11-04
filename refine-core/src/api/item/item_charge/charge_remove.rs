@@ -9,7 +9,7 @@ use crate::{
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl<'s> Charge<'s> {
     pub fn remove(self) {
-        self.sol.internal_remove_charge(self.uid)
+        self.core.internal_remove_charge(self.uid)
     }
 }
 

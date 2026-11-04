@@ -12,7 +12,7 @@ impl<'s> Fighter<'s> {
     ///
     /// Solar system's default is used when override is not set.
     pub fn set_rearm_minion_override(&mut self, rearm_minion_override: Option<RearmMinion>) {
-        self.sol
+        self.core
             .internal_set_fighter_rearm_minion_override(self.uid, rearm_minion_override);
     }
 }

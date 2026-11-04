@@ -12,7 +12,7 @@ impl<'s> Fighter<'s> {
     ///
     /// Max supported count is used when override is not set.
     pub fn set_count_override(&mut self, count_override: Option<CountNz>) {
-        self.sol.internal_set_fighter_count_override(self.uid, count_override);
+        self.core.internal_set_fighter_count_override(self.uid, count_override);
     }
 }
 

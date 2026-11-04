@@ -10,7 +10,7 @@ use crate::{
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl<'s> Module<'s> {
     pub fn move_(&mut self, pos_mode: MoveMode) {
-        self.sol.internal_move_module(self.uid, pos_mode)
+        self.core.internal_move_module(self.uid, pos_mode)
     }
 }
 

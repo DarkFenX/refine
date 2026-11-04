@@ -9,7 +9,7 @@ use crate::{
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl<'s> Service<'s> {
     pub fn remove(self) {
-        self.sol.internal_remove_service(self.uid);
+        self.core.internal_remove_service(self.uid);
     }
 }
 

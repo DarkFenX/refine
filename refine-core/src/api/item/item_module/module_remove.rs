@@ -10,7 +10,7 @@ use crate::{
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl<'s> Module<'s> {
     pub fn remove(self, pos_mode: RemoveMode) {
-        self.sol.internal_remove_module(self.uid, pos_mode)
+        self.core.internal_remove_module(self.uid, pos_mode)
     }
 }
 

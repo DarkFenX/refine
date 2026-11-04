@@ -10,8 +10,8 @@ use crate::{
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl<'s> Fit<'s> {
     pub fn add_fw_effect(&mut self, type_id: ItemTypeId) -> FwEffect<'_> {
-        let fw_effect_uid = self.sol.internal_add_fw_effect(self.uid, type_id.into_aid());
-        FwEffect::new(self.sol, fw_effect_uid)
+        let fw_effect_uid = self.core.internal_add_fw_effect(self.uid, type_id.into_aid());
+        FwEffect::new(self.core, fw_effect_uid)
     }
 }
 

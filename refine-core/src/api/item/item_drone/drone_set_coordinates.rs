@@ -11,7 +11,7 @@ use crate::{
 impl<'s> Drone<'s> {
     /// Set drone position in its solar system.
     pub fn set_coordinates(&mut self, coordinates: Coordinates) {
-        self.sol
+        self.core
             .internal_set_drone_coordinates(self.uid, coordinates.into_xyz())
     }
 }

@@ -10,7 +10,7 @@ use crate::{
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 /// Side effect of a booster.
 pub struct SideEffect<'s> {
-    pub(super) sol: &'s mut CoreInner,
+    pub(super) core: &'s mut CoreInner,
     pub(super) item_uid: UItemId,
     pub(super) effect_aid: AEffectId,
     pub(super) chance_attr_aid: AAttrId,
@@ -26,13 +26,13 @@ impl<'s> SideEffect<'s> {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl<'s> SideEffect<'s> {
     pub(in crate::api) fn new(
-        sol: &'s mut CoreInner,
+        core: &'s mut CoreInner,
         item_uid: UItemId,
         effect_aid: AEffectId,
         chance_attr_aid: AAttrId,
     ) -> Self {
         Self {
-            sol,
+            core,
             item_uid,
             effect_aid,
             chance_attr_aid,

@@ -10,8 +10,8 @@ use crate::{
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl<'s> Fit<'s> {
     pub fn add_implant(&mut self, type_id: ItemTypeId) -> Implant<'_> {
-        let implant_uid = self.sol.internal_add_implant(self.uid, type_id.into_aid());
-        Implant::new(self.sol, implant_uid)
+        let implant_uid = self.core.internal_add_implant(self.uid, type_id.into_aid());
+        Implant::new(self.core, implant_uid)
     }
 }
 

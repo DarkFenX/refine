@@ -9,7 +9,7 @@ use crate::{
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl<'s> Ship<'s> {
     pub fn remove(self) {
-        self.sol.internal_remove_ship(self.uid)
+        self.core.internal_remove_ship(self.uid)
     }
 }
 

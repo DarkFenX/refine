@@ -14,13 +14,13 @@ impl<'s> Mutation<'s> {
 
 impl<'s> EffectiveMutation<'s> {
     pub fn get_mutator_type_id(&self) -> ItemTypeId {
-        self.sol.api_get_mutator_type_id(self.item_uid)
+        self.core.api_get_mutator_type_id(self.item_uid)
     }
 }
 
 impl<'s> DormantMutation<'s> {
     pub fn get_mutator_type_id(&self) -> ItemTypeId {
-        self.sol.api_get_mutator_type_id(self.item_uid)
+        self.core.api_get_mutator_type_id(self.item_uid)
     }
 }
 

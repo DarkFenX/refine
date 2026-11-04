@@ -9,7 +9,7 @@ use crate::{
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl<'s> Implant<'s> {
     pub fn remove(self) {
-        self.sol.internal_remove_implant(self.uid);
+        self.core.internal_remove_implant(self.uid);
     }
 }
 

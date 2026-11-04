@@ -60,13 +60,13 @@ pub(crate) struct StatCapSimStaggerInt {
     exception_item_uids: Vec<UItemId>,
 }
 impl StatCapSimStaggerInt {
-    pub(crate) fn from_pub(sol: &CoreInner, pub_opts: &StatCapSimStagger) -> Self {
+    pub(crate) fn from_pub(core: &CoreInner, pub_opts: &StatCapSimStagger) -> Self {
         Self {
             default: pub_opts.default,
             exception_item_uids: pub_opts
                 .exception_item_ids
                 .iter()
-                .filter_map(|fit_id| sol.u_data.items.int_id_by_ext_id(fit_id))
+                .filter_map(|fit_id| core.u_data.items.int_id_by_ext_id(fit_id))
                 .unique()
                 .collect(),
         }

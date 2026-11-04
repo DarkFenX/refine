@@ -7,7 +7,7 @@ use crate::{RangedProj, api::item::shared::proj::iter_projectee_uids, sol::CoreI
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 /// Lending iterator for ranged projections
 pub struct RangedProjIter<'iter> {
-    sol: &'iter mut CoreInner,
+    core: &'iter mut CoreInner,
     item_uid: UItemId,
     projectee_uids: Vec<UItemId>,
     index: usize,
@@ -21,7 +21,7 @@ impl<'iter> Lender for RangedProjIter<'iter> {
     fn next(&mut self) -> Option<RangedProj<'_>> {
         let projectee_uid = *self.projectee_uids.get(self.index)?;
         self.index += 1;
-        Some(RangedProj::new(self.sol, self.item_uid, projectee_uid))
+        Some(RangedProj::new(self.core, self.item_uid, projectee_uid))
     }
 
     fn size_hint(&self) -> (usize, Option<usize>) {
@@ -35,10 +35,10 @@ impl<'iter> ExactSizeLender for RangedProjIter<'iter> {}
 // Private
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl<'iter> RangedProjIter<'iter> {
-    pub(in crate::api) fn new(sol: &'iter mut CoreInner, item_uid: UItemId) -> Self {
-        let projectee_uids = iter_projectee_uids(sol, item_uid).collect();
+    pub(in crate::api) fn new(core: &'iter mut CoreInner, item_uid: UItemId) -> Self {
+        let projectee_uids = iter_projectee_uids(core, item_uid).collect();
         Self {
-            sol,
+            core,
             item_uid,
             projectee_uids,
             index: 0,

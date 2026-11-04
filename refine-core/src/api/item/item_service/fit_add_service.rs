@@ -10,8 +10,8 @@ use crate::{
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl<'s> Fit<'s> {
     pub fn add_service(&mut self, type_id: ItemTypeId, state: ServiceState) -> Service<'_> {
-        let service_uid = self.sol.internal_add_service(self.uid, type_id.into_aid(), state);
-        Service::new(self.sol, service_uid)
+        let service_uid = self.core.internal_add_service(self.uid, type_id.into_aid(), state);
+        Service::new(self.core, service_uid)
     }
 }
 

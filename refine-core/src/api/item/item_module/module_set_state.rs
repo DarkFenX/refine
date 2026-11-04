@@ -9,7 +9,7 @@ use crate::{
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl<'s> Module<'s> {
     pub fn set_state(&mut self, state: ModuleState) {
-        self.sol.internal_set_module_state_inner::<true>(self.uid, state);
+        self.core.internal_set_module_state_inner::<true>(self.uid, state);
     }
 }
 

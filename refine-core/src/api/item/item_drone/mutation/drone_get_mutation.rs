@@ -5,6 +5,6 @@ use crate::{Drone, Mutation};
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl<'s> Drone<'s> {
     pub fn get_mutation(&mut self) -> Option<Mutation<'_>> {
-        self.sol.api_get_item_mutation(self.uid)
+        self.core.api_get_item_mutation(self.uid)
     }
 }

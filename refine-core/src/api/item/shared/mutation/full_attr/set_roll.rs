@@ -12,7 +12,7 @@ impl<'s> FullMAttr<'s> {
             attr_aid: self.attr_aid,
             roll,
         };
-        self.sol
+        self.core
             .internal_change_item_mutation_attr(self.item_uid, attr_mutation)
             .unwrap();
     }

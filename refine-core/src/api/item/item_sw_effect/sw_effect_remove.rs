@@ -9,7 +9,7 @@ use crate::{
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl<'s> SwEffect<'s> {
     pub fn remove(self) {
-        self.sol.internal_remove_sw_effect(self.uid);
+        self.core.internal_remove_sw_effect(self.uid);
     }
 }
 

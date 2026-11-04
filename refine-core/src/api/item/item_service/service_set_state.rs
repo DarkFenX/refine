@@ -9,7 +9,7 @@ use crate::{
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl<'s> Service<'s> {
     pub fn set_state(&mut self, state: ServiceState) {
-        self.sol.internal_set_service_state_inner::<true>(self.uid, state);
+        self.core.internal_set_service_state_inner::<true>(self.uid, state);
     }
 }
 

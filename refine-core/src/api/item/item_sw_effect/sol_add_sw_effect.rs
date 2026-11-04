@@ -10,9 +10,9 @@ use crate::{
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl Sol {
     pub fn add_sw_effect(&mut self, type_id: ItemTypeId) -> SwEffect<'_> {
-        let sol = self.inner_mut();
-        let sw_effect_uid = sol.internal_add_sw_effect(type_id.into_aid());
-        SwEffect::new(sol, sw_effect_uid)
+        let core = self.inner_mut();
+        let sw_effect_uid = core.internal_add_sw_effect(type_id.into_aid());
+        SwEffect::new(core, sw_effect_uid)
     }
 }
 

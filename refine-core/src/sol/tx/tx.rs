@@ -10,36 +10,36 @@ use crate::{Core, Sol, sol::Savepoint};
 /// A guard dropped while panicking neither rolls back nor commits, since rolling back half-done
 /// changes could panic again; the solar system has to be discarded then.
 pub struct SolTx<'a> {
-    sol: &'a mut Core,
+    core: &'a mut Core,
     // Taken on commit and rollback
     savepoint: Option<Savepoint>,
 }
 impl<'a> SolTx<'a> {
-    pub(crate) fn new(sol: &'a mut Core, savepoint: Savepoint) -> Self {
+    pub(crate) fn new(core: &'a mut Core, savepoint: Savepoint) -> Self {
         Self {
-            sol,
+            core,
             savepoint: Some(savepoint),
         }
     }
     pub fn commit(mut self) {
         self.savepoint = None;
-        self.sol.inner_mut().internal_tx_commit();
+        self.core.inner_mut().internal_tx_commit();
     }
     pub fn rollback(mut self) {
         let savepoint = self.savepoint.take().unwrap();
-        self.sol.inner_mut().internal_tx_rollback(savepoint);
+        self.core.inner_mut().internal_tx_rollback(savepoint);
     }
 }
 impl Deref for SolTx<'_> {
     type Target = Sol;
 
     fn deref(&self) -> &Sol {
-        self.sol
+        self.core
     }
 }
 impl DerefMut for SolTx<'_> {
     fn deref_mut(&mut self) -> &mut Sol {
-        self.sol
+        self.core
     }
 }
 impl Drop for SolTx<'_> {
@@ -47,7 +47,7 @@ impl Drop for SolTx<'_> {
         if let Some(savepoint) = self.savepoint.take()
             && !std::thread::panicking()
         {
-            self.sol.inner_mut().internal_tx_rollback(savepoint);
+            self.core.inner_mut().internal_tx_rollback(savepoint);
         }
     }
 }

@@ -54,8 +54,8 @@ impl<'s> ItemCommon for Item<'s> {}
 // Private
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl<'s> Item<'s> {
-    pub(in crate::api) fn new(sol: &'s mut CoreInner, uid: UItemId) -> Self {
-        sol.internal_get_item(uid)
+    pub(in crate::api) fn new(core: &'s mut CoreInner, uid: UItemId) -> Self {
+        core.internal_get_item(uid)
     }
 }
 impl<'s> ItemSealed for Item<'s> {
@@ -80,46 +80,46 @@ impl<'s> ItemSealed for Item<'s> {
             Item::SwEffect(sw_effect) => sw_effect.get_uid(),
         }
     }
-    fn get_sol(&self) -> &CoreInner {
+    fn get_core(&self) -> &CoreInner {
         match self {
-            Item::Autocharge(autocharge) => autocharge.get_sol(),
-            Item::Booster(booster) => booster.get_sol(),
-            Item::Character(character) => character.get_sol(),
-            Item::Charge(charge) => charge.get_sol(),
-            Item::Drone(drone) => drone.get_sol(),
-            Item::Fighter(fighter) => fighter.get_sol(),
-            Item::FwEffect(fw_effect) => fw_effect.get_sol(),
-            Item::Implant(implant) => implant.get_sol(),
-            Item::Module(module) => module.get_sol(),
-            Item::ProjEffect(proj_effect) => proj_effect.get_sol(),
-            Item::Rig(rig) => rig.get_sol(),
-            Item::Service(service) => service.get_sol(),
-            Item::Ship(ship) => ship.get_sol(),
-            Item::Skill(skill) => skill.get_sol(),
-            Item::Stance(stance) => stance.get_sol(),
-            Item::Subsystem(subsystem) => subsystem.get_sol(),
-            Item::SwEffect(sw_effect) => sw_effect.get_sol(),
+            Item::Autocharge(autocharge) => autocharge.get_core(),
+            Item::Booster(booster) => booster.get_core(),
+            Item::Character(character) => character.get_core(),
+            Item::Charge(charge) => charge.get_core(),
+            Item::Drone(drone) => drone.get_core(),
+            Item::Fighter(fighter) => fighter.get_core(),
+            Item::FwEffect(fw_effect) => fw_effect.get_core(),
+            Item::Implant(implant) => implant.get_core(),
+            Item::Module(module) => module.get_core(),
+            Item::ProjEffect(proj_effect) => proj_effect.get_core(),
+            Item::Rig(rig) => rig.get_core(),
+            Item::Service(service) => service.get_core(),
+            Item::Ship(ship) => ship.get_core(),
+            Item::Skill(skill) => skill.get_core(),
+            Item::Stance(stance) => stance.get_core(),
+            Item::Subsystem(subsystem) => subsystem.get_core(),
+            Item::SwEffect(sw_effect) => sw_effect.get_core(),
         }
     }
-    fn get_sol_mut(&mut self) -> &mut CoreInner {
+    fn get_core_mut(&mut self) -> &mut CoreInner {
         match self {
-            Item::Autocharge(autocharge) => autocharge.get_sol_mut(),
-            Item::Booster(booster) => booster.get_sol_mut(),
-            Item::Character(character) => character.get_sol_mut(),
-            Item::Charge(charge) => charge.get_sol_mut(),
-            Item::Drone(drone) => drone.get_sol_mut(),
-            Item::Fighter(fighter) => fighter.get_sol_mut(),
-            Item::FwEffect(fw_effect) => fw_effect.get_sol_mut(),
-            Item::Implant(implant) => implant.get_sol_mut(),
-            Item::Module(module) => module.get_sol_mut(),
-            Item::ProjEffect(proj_effect) => proj_effect.get_sol_mut(),
-            Item::Rig(rig) => rig.get_sol_mut(),
-            Item::Service(service) => service.get_sol_mut(),
-            Item::Ship(ship) => ship.get_sol_mut(),
-            Item::Skill(skill) => skill.get_sol_mut(),
-            Item::Stance(stance) => stance.get_sol_mut(),
-            Item::Subsystem(subsystem) => subsystem.get_sol_mut(),
-            Item::SwEffect(sw_effect) => sw_effect.get_sol_mut(),
+            Item::Autocharge(autocharge) => autocharge.get_core_mut(),
+            Item::Booster(booster) => booster.get_core_mut(),
+            Item::Character(character) => character.get_core_mut(),
+            Item::Charge(charge) => charge.get_core_mut(),
+            Item::Drone(drone) => drone.get_core_mut(),
+            Item::Fighter(fighter) => fighter.get_core_mut(),
+            Item::FwEffect(fw_effect) => fw_effect.get_core_mut(),
+            Item::Implant(implant) => implant.get_core_mut(),
+            Item::Module(module) => module.get_core_mut(),
+            Item::ProjEffect(proj_effect) => proj_effect.get_core_mut(),
+            Item::Rig(rig) => rig.get_core_mut(),
+            Item::Service(service) => service.get_core_mut(),
+            Item::Ship(ship) => ship.get_core_mut(),
+            Item::Skill(skill) => skill.get_core_mut(),
+            Item::Stance(stance) => stance.get_core_mut(),
+            Item::Subsystem(subsystem) => subsystem.get_core_mut(),
+            Item::SwEffect(sw_effect) => sw_effect.get_core_mut(),
         }
     }
 }

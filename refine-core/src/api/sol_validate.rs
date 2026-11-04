@@ -10,14 +10,14 @@ use crate::{
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl Sol {
     pub fn validate_fast(&mut self, options: &ValOptionsSol) -> bool {
-        let sol = self.inner_mut();
-        let int_options = ValOptionsSolInt::from_pub(options, sol);
-        sol.internal_validate_fast(&int_options)
+        let core = self.inner_mut();
+        let int_options = ValOptionsSolInt::from_pub(options, core);
+        core.internal_validate_fast(&int_options)
     }
     pub fn validate_verbose(&mut self, options: &ValOptionsSol) -> ValResultSol {
-        let sol = self.inner_mut();
-        let int_options = ValOptionsSolInt::from_pub(options, sol);
-        sol.internal_validate_verbose(&int_options)
+        let core = self.inner_mut();
+        let int_options = ValOptionsSolInt::from_pub(options, core);
+        core.internal_validate_verbose(&int_options)
     }
 }
 

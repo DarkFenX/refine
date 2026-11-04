@@ -5,7 +5,7 @@ use crate::{EffectiveMutation, ItemTypeId, sol::CoreInner, ud::UItemId};
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl<'s> EffectiveMutation<'s> {
     pub fn get_base_type_id(&self) -> ItemTypeId {
-        self.sol.api_get_base_type_id(self.item_uid)
+        self.core.api_get_base_type_id(self.item_uid)
     }
 }
 

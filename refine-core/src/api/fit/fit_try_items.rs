@@ -16,8 +16,8 @@ use crate::{
 impl<'s> Fit<'s> {
     pub fn try_items(&mut self, type_ids: &[ItemTypeId], val_options: &ValOptions) -> Vec<ItemTypeId> {
         let type_aids = type_ids.iter().map(|v| v.into_aid()).collect_vec();
-        let int_val_options = ValOptionsInt::from_pub(val_options, self.sol);
-        let type_aids = self.sol.internal_fit_try_items(self.uid, &type_aids, &int_val_options);
+        let int_val_options = ValOptionsInt::from_pub(val_options, self.core);
+        let type_aids = self.core.internal_fit_try_items(self.uid, &type_aids, &int_val_options);
         type_aids.into_iter().map(ItemTypeId::from_aid).collect()
     }
 }
@@ -119,7 +119,15 @@ impl CoreInner {
                         fit_uid,
                         val_options,
                         |core| {
-                            core.internal_add_module(fit_uid, ModRack::Mid, AddMode::Equip, *type_aid, state, None, None)
+                            core.internal_add_module(
+                                fit_uid,
+                                ModRack::Mid,
+                                AddMode::Equip,
+                                *type_aid,
+                                state,
+                                None,
+                                None,
+                            )
                         },
                         |core, module_uid| core.internal_remove_module(module_uid, RemoveMode::Free),
                     ) {
@@ -132,7 +140,15 @@ impl CoreInner {
                         fit_uid,
                         val_options,
                         |core| {
-                            core.internal_add_module(fit_uid, ModRack::Low, AddMode::Equip, *type_aid, state, None, None)
+                            core.internal_add_module(
+                                fit_uid,
+                                ModRack::Low,
+                                AddMode::Equip,
+                                *type_aid,
+                                state,
+                                None,
+                                None,
+                            )
                         },
                         |core, module_uid| core.internal_remove_module(module_uid, RemoveMode::Free),
                     ) {

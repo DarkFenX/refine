@@ -8,10 +8,10 @@ use crate::{
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl Sol {
     pub fn get_service(&mut self, item_id: &ItemId) -> Result<Service<'_>, ServiceGetError> {
-        let sol = self.inner_mut();
-        let service_uid = sol.u_data.items.int_id_by_ext_id_err(item_id)?;
-        sol.u_data.items.get(service_uid).dc_service()?;
-        Ok(Service::new(sol, service_uid))
+        let core = self.inner_mut();
+        let service_uid = core.u_data.items.int_id_by_ext_id_err(item_id)?;
+        core.u_data.items.get(service_uid).dc_service()?;
+        Ok(Service::new(core, service_uid))
     }
 }
 

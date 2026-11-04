@@ -13,8 +13,8 @@ use crate::{
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl<'s> Fit<'s> {
     pub fn add_skill(&mut self, type_id: ItemTypeId, level: SkillLevel) -> Result<Skill<'_>, SkillAddError> {
-        let skill_uid = self.sol.internal_add_skill(self.uid, type_id.into_aid(), level)?;
-        Ok(Skill::new(self.sol, skill_uid))
+        let skill_uid = self.core.internal_add_skill(self.uid, type_id.into_aid(), level)?;
+        Ok(Skill::new(self.core, skill_uid))
     }
 }
 

@@ -14,10 +14,10 @@ impl<'s> Fleet<'s> {
         time_options: StatTimeOptions,
         resource_kind: StatMiningResourceKind,
     ) -> StatMining {
-        let u_fleet = self.sol.u_data.fleets.get(self.uid);
-        self.sol.svc.get_stat_fits_mps(
+        let u_fleet = self.core.u_data.fleets.get(self.uid);
+        self.core.svc.get_stat_fits_mps(
             &mut CseqMap::new(),
-            &self.sol.u_data,
+            &self.core.u_data,
             u_fleet.iter_fits(),
             item_kinds,
             time_options,

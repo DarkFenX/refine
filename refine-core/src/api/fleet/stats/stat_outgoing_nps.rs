@@ -9,10 +9,10 @@ use crate::{
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl<'s> Fleet<'s> {
     pub fn get_stat_outgoing_nps(&mut self, item_kinds: StatNeutItemKinds, time_options: StatTimeOptions) -> PValue {
-        let u_fleet = self.sol.u_data.fleets.get(self.uid);
-        self.sol.svc.get_stat_fits_outgoing_nps(
+        let u_fleet = self.core.u_data.fleets.get(self.uid);
+        self.core.svc.get_stat_fits_outgoing_nps(
             &mut CseqMap::new(),
-            &self.sol.u_data,
+            &self.core.u_data,
             u_fleet.iter_fits(),
             item_kinds,
             time_options,
@@ -26,10 +26,10 @@ impl<'s> Fleet<'s> {
         projectee_item_id: &ItemId,
     ) -> Result<PValue, StatFleetAppliedError> {
         let projectee_uid = self.get_stat_applied_projectee_uid(projectee_item_id)?;
-        let u_fleet = self.sol.u_data.fleets.get(self.uid);
-        Ok(self.sol.svc.get_stat_fits_outgoing_nps(
+        let u_fleet = self.core.u_data.fleets.get(self.uid);
+        Ok(self.core.svc.get_stat_fits_outgoing_nps(
             &mut CseqMap::new(),
-            &self.sol.u_data,
+            &self.core.u_data,
             u_fleet.iter_fits(),
             item_kinds,
             time_options,

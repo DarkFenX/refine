@@ -29,11 +29,11 @@ impl<'a> SolClonerInner<'a> {
     }
     pub(in crate::dev) fn take(&mut self) -> Box<rc::Core> {
         match self.allocated.pop() {
-            Some(sol) => sol,
+            Some(core) => core,
             None => Box::new(self.original.clone()),
         }
     }
-    pub(in crate::dev) fn put(&mut self, sol: Box<rc::Core>) {
-        self.allocated.push(sol);
+    pub(in crate::dev) fn put(&mut self, core: Box<rc::Core>) {
+        self.allocated.push(core);
     }
 }

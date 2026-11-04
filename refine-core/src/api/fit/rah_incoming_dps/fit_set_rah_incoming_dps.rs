@@ -9,7 +9,7 @@ use crate::{
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl<'s> Fit<'s> {
     pub fn set_rah_incoming_dps(&mut self, dps_profile: Option<DpsProfile>) {
-        self.sol.internal_set_fit_rah_incoming_dps(self.uid, dps_profile)
+        self.core.internal_set_fit_rah_incoming_dps(self.uid, dps_profile)
     }
 }
 

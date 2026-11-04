@@ -5,7 +5,7 @@ use crate::{Drone, EntityIter, Fit};
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl<'s> Fit<'s> {
     pub fn iter_drones(&mut self) -> EntityIter<'_, Drone<'_>> {
-        let drone_uids = self.sol.u_data.fits.get(self.uid).drones.iter().copied().collect();
-        EntityIter::new(self.sol, drone_uids)
+        let drone_uids = self.core.u_data.fits.get(self.uid).drones.iter().copied().collect();
+        EntityIter::new(self.core, drone_uids)
     }
 }

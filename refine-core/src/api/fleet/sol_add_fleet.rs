@@ -9,9 +9,9 @@ use crate::{
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl Sol {
     pub fn add_fleet(&mut self) -> Fleet<'_> {
-        let sol = self.inner_mut();
-        let fleet_uid = sol.add_fleet_internal();
-        Fleet::new(sol, fleet_uid)
+        let core = self.inner_mut();
+        let fleet_uid = core.add_fleet_internal();
+        Fleet::new(core, fleet_uid)
     }
 }
 

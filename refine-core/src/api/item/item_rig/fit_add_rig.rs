@@ -10,8 +10,8 @@ use crate::{
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl<'s> Fit<'s> {
     pub fn add_rig(&mut self, type_id: ItemTypeId) -> Rig<'_> {
-        let rig_uid = self.sol.internal_add_rig(self.uid, type_id.into_aid());
-        Rig::new(self.sol, rig_uid)
+        let rig_uid = self.core.internal_add_rig(self.uid, type_id.into_aid());
+        Rig::new(self.core, rig_uid)
     }
 }
 

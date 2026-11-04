@@ -14,9 +14,9 @@ use crate::{
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl<'s> Module<'s> {
     pub fn add_proj(&mut self, projectee_item_id: &ItemId) -> Result<RangedProj<'_>, ProjAddError> {
-        let projectee_uid = self.sol.u_data.items.int_id_by_ext_id_err(projectee_item_id)?;
-        self.sol.internal_add_module_proj(self.uid, projectee_uid)?;
-        Ok(RangedProj::new(self.sol, self.uid, projectee_uid))
+        let projectee_uid = self.core.u_data.items.int_id_by_ext_id_err(projectee_item_id)?;
+        self.core.internal_add_module_proj(self.uid, projectee_uid)?;
+        Ok(RangedProj::new(self.core, self.uid, projectee_uid))
     }
 }
 

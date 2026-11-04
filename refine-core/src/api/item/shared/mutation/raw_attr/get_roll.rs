@@ -7,7 +7,7 @@ impl<'s> RawMAttr<'s> {
     /// Return roll quality for the mutated attribute.
     pub fn get_roll(&self) -> UnitInterval {
         let attr_aid = &self.attr_aid;
-        self.sol
+        self.core
             .u_data
             .items
             .get(self.item_uid)

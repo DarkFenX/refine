@@ -8,10 +8,10 @@ use crate::{
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl Sol {
     pub fn get_character(&mut self, item_id: &ItemId) -> Result<Character<'_>, CharacterGetError> {
-        let sol = self.inner_mut();
-        let character_uid = sol.u_data.items.int_id_by_ext_id_err(item_id)?;
-        sol.u_data.items.get(character_uid).dc_character()?;
-        Ok(Character::new(sol, character_uid))
+        let core = self.inner_mut();
+        let character_uid = core.u_data.items.int_id_by_ext_id_err(item_id)?;
+        core.u_data.items.get(character_uid).dc_character()?;
+        Ok(Character::new(core, character_uid))
     }
 }
 

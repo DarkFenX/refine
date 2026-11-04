@@ -10,7 +10,7 @@ impl<'s> RawMAttr<'s> {
             attr_aid: self.attr_aid,
             roll: Some(roll),
         };
-        self.sol
+        self.core
             .internal_change_item_mutation_attr(self.item_uid, attr_mutation)
             .unwrap();
     }

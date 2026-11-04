@@ -12,7 +12,7 @@ impl<'s> Module<'s> {
     ///
     /// Solar system's default is used when override is not set.
     pub fn set_spool_override(&mut self, spool_override: Option<Spool>) {
-        self.sol.internal_set_module_spool_override(self.uid, spool_override);
+        self.core.internal_set_module_spool_override(self.uid, spool_override);
     }
 }
 

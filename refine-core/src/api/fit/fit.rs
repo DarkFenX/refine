@@ -4,12 +4,12 @@ use crate::{FitId, sol::CoreInner, ud::UFitId};
 // Public
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 pub struct Fit<'s> {
-    pub(in crate::api) sol: &'s mut CoreInner,
+    pub(in crate::api) core: &'s mut CoreInner,
     pub(in crate::api) uid: UFitId,
 }
 impl<'s> Fit<'s> {
     pub fn get_fit_id(&self) -> FitId {
-        self.sol.u_data.fits.ext_id_by_int_id(self.uid)
+        self.core.u_data.fits.ext_id_by_int_id(self.uid)
     }
 }
 
@@ -17,7 +17,7 @@ impl<'s> Fit<'s> {
 // Private
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl<'s> Fit<'s> {
-    pub(in crate::api) fn new(sol: &'s mut CoreInner, uid: UFitId) -> Self {
-        Self { sol, uid }
+    pub(in crate::api) fn new(core: &'s mut CoreInner, uid: UFitId) -> Self {
+        Self { core, uid }
     }
 }

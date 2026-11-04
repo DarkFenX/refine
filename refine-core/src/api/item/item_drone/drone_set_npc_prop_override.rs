@@ -12,7 +12,7 @@ impl<'s> Drone<'s> {
     ///
     /// Solar system's default is used when override is not set.
     pub fn set_npc_prop_override(&mut self, npc_prop_override: Option<NpcProp>) {
-        self.sol
+        self.core
             .internal_set_drone_npc_prop_override(self.uid, npc_prop_override);
     }
 }

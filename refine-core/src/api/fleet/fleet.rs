@@ -4,12 +4,12 @@ use crate::{FleetId, sol::CoreInner, ud::UFleetId};
 // Public
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 pub struct Fleet<'s> {
-    pub(in crate::api) sol: &'s mut CoreInner,
+    pub(in crate::api) core: &'s mut CoreInner,
     pub(in crate::api) uid: UFleetId,
 }
 impl<'s> Fleet<'s> {
     pub fn get_fleet_id(&self) -> FleetId {
-        self.sol.u_data.fleets.ext_id_by_int_id(self.uid)
+        self.core.u_data.fleets.ext_id_by_int_id(self.uid)
     }
 }
 
@@ -17,7 +17,7 @@ impl<'s> Fleet<'s> {
 // Private
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl<'s> Fleet<'s> {
-    pub(in crate::api) fn new(sol: &'s mut CoreInner, uid: UFleetId) -> Self {
-        Self { sol, uid }
+    pub(in crate::api) fn new(core: &'s mut CoreInner, uid: UFleetId) -> Self {
+        Self { core, uid }
     }
 }

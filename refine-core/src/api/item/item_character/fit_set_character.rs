@@ -11,8 +11,8 @@ use crate::{
 impl<'s> Fit<'s> {
     /// Set character, replacing current one with a new item.
     pub fn set_character(&mut self, type_id: ItemTypeId) -> Character<'_> {
-        let character_uid = self.sol.internal_set_fit_character(self.uid, type_id.into_aid());
-        Character::new(self.sol, character_uid)
+        let character_uid = self.core.internal_set_fit_character(self.uid, type_id.into_aid());
+        Character::new(self.core, character_uid)
     }
 }
 

@@ -13,10 +13,10 @@ impl<'s> Fleet<'s> {
         item_kinds: StatOutRepItemKinds,
         time_options: StatTimeOptions,
     ) -> StatOutReps {
-        let u_fleet = self.sol.u_data.fleets.get(self.uid);
-        self.sol.svc.get_stat_fits_outgoing_rps(
+        let u_fleet = self.core.u_data.fleets.get(self.uid);
+        self.core.svc.get_stat_fits_outgoing_rps(
             &mut CseqMap::new(),
-            &self.sol.u_data,
+            &self.core.u_data,
             u_fleet.iter_fits(),
             item_kinds,
             time_options,
@@ -30,10 +30,10 @@ impl<'s> Fleet<'s> {
         projectee_item_id: &ItemId,
     ) -> Result<StatOutReps, StatFleetAppliedError> {
         let projectee_uid = self.get_stat_applied_projectee_uid(projectee_item_id)?;
-        let u_fleet = self.sol.u_data.fleets.get(self.uid);
-        Ok(self.sol.svc.get_stat_fits_outgoing_rps(
+        let u_fleet = self.core.u_data.fleets.get(self.uid);
+        Ok(self.core.svc.get_stat_fits_outgoing_rps(
             &mut CseqMap::new(),
-            &self.sol.u_data,
+            &self.core.u_data,
             u_fleet.iter_fits(),
             item_kinds,
             time_options,
@@ -41,10 +41,10 @@ impl<'s> Fleet<'s> {
         ))
     }
     pub fn get_stat_outgoing_cps(&mut self, time_options: StatTimeOptions) -> PValue {
-        let u_fleet = self.sol.u_data.fleets.get(self.uid);
-        self.sol.svc.get_stat_fits_outgoing_cps(
+        let u_fleet = self.core.u_data.fleets.get(self.uid);
+        self.core.svc.get_stat_fits_outgoing_cps(
             &mut CseqMap::new(),
-            &self.sol.u_data,
+            &self.core.u_data,
             u_fleet.iter_fits(),
             time_options,
             None,
@@ -56,10 +56,10 @@ impl<'s> Fleet<'s> {
         projectee_item_id: &ItemId,
     ) -> Result<PValue, StatFleetAppliedError> {
         let projectee_uid = self.get_stat_applied_projectee_uid(projectee_item_id)?;
-        let u_fleet = self.sol.u_data.fleets.get(self.uid);
-        Ok(self.sol.svc.get_stat_fits_outgoing_cps(
+        let u_fleet = self.core.u_data.fleets.get(self.uid);
+        Ok(self.core.svc.get_stat_fits_outgoing_cps(
             &mut CseqMap::new(),
-            &self.sol.u_data,
+            &self.core.u_data,
             u_fleet.iter_fits(),
             time_options,
             Some(projectee_uid),

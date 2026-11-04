@@ -5,8 +5,8 @@ use crate::{EntityIter, Fleet, Sol};
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl Sol {
     pub fn iter_fleets(&mut self) -> EntityIter<'_, Fleet<'_>> {
-        let sol = self.inner_mut();
-        let fleet_uids = sol.u_data.fleets.keys().collect();
-        EntityIter::new(sol, fleet_uids)
+        let core = self.inner_mut();
+        let fleet_uids = core.u_data.fleets.keys().collect();
+        EntityIter::new(core, fleet_uids)
     }
 }

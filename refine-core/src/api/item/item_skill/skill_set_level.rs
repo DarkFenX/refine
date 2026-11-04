@@ -9,7 +9,7 @@ use crate::{
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl<'s> Skill<'s> {
     pub fn set_level(&mut self, level: SkillLevel) {
-        self.sol.internal_set_skill_level(self.uid, level);
+        self.core.internal_set_skill_level(self.uid, level);
     }
 }
 

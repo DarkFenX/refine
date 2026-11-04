@@ -18,9 +18,9 @@ impl<'s> Fit<'s> {
         state: ModuleState,
     ) -> Module<'_> {
         let module_uid = self
-            .sol
+            .core
             .internal_add_module(self.uid, rack, pos_mode, type_id.into_aid(), state, None, None);
-        Module::new(self.sol, module_uid)
+        Module::new(self.core, module_uid)
     }
 }
 

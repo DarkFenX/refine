@@ -9,7 +9,7 @@ use crate::{
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl<'s> ProjEffect<'s> {
     pub fn remove(self) {
-        self.sol.internal_remove_proj_effect(self.uid)
+        self.core.internal_remove_proj_effect(self.uid)
     }
 }
 

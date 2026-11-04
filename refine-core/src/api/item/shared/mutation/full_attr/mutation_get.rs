@@ -7,8 +7,8 @@ impl<'s> EffectiveMutation<'s> {
     /// Get mutation's full mutated attribute for requested attribute ID.
     pub fn get_full_mattr(&mut self, attr_id: AttrId) -> Result<FullMAttr<'_>, FullMAttrGetError> {
         let attr_aid = attr_id.into_aid();
-        let u_item = self.sol.u_data.items.get(self.item_uid);
-        let Some(attr_rid) = self.sol.u_data.r_data.get_attr_rid_by_aid(&attr_aid) else {
+        let u_item = self.core.u_data.items.get(self.item_uid);
+        let Some(attr_rid) = self.core.u_data.r_data.get_attr_rid_by_aid(&attr_aid) else {
             return Err(AttrFoundError {
                 attr_id: AttrId::from_aid(attr_aid),
             }
@@ -17,18 +17,18 @@ impl<'s> EffectiveMutation<'s> {
         let mutation_cache = u_item.get_mutation_data().unwrap().get_cache().unwrap();
         if !mutation_cache.get_r_mutator().attr_mods.contains_key(&attr_rid) {
             return Err(FullMAttrGetError::NotMutable(
-                self.sol.u_data.items.ext_id_by_int_id(self.item_uid),
+                self.core.u_data.items.ext_id_by_int_id(self.item_uid),
                 ItemTypeId::from_aid(mutation_cache.get_r_mutator().id),
                 AttrId::from_aid(attr_aid),
             ));
         };
         if !u_item.get_r_item_flex_data().unwrap().attrs.contains_key(&attr_rid) {
             return Err(FullMAttrGetError::NoValue(
-                self.sol.u_data.items.ext_id_by_int_id(self.item_uid),
+                self.core.u_data.items.ext_id_by_int_id(self.item_uid),
                 AttrId::from_aid(attr_aid),
             ));
         };
-        Ok(FullMAttr::new(self.sol, self.item_uid, attr_aid))
+        Ok(FullMAttr::new(self.core, self.item_uid, attr_aid))
     }
 }
 
