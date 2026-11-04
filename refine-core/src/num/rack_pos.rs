@@ -132,7 +132,7 @@ mod custom_serde {
         where
             D: Deserializer<'de>,
         {
-            deserializer.deserialize_u16(VisitorImpl)
+            deserializer.deserialize_any(VisitorImpl)
         }
     }
 }

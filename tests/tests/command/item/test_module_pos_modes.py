@@ -376,6 +376,40 @@ def test_add_out_of_range(client, consts):
     assert api_module3.update().pos == 0
 
 
+def test_add_float(client, consts):
+    # Floats are rounded, then clamped
+    eve_module_id = client.mk_eve_item()
+    client.create_sources()
+    api_sol = client.create_sol()
+    api_fit = api_sol.create_fit()
+    # Action
+    api_module1 = api_fit.add_module(
+        type_id=eve_module_id,
+        rack=consts.Rack.high,
+        add_mode={consts.ApiModAddMode.insert: 2.4})
+    # Verification
+    assert api_module1.update().pos == 2
+    # Action
+    api_module2 = api_fit.add_module(
+        type_id=eve_module_id,
+        rack=consts.Rack.high,
+        add_mode={consts.ApiModAddMode.replace: 2 ** 64})
+    # Verification
+    assert api_module2.update().pos == 999
+    # Action
+    with api_fit.batch() as api_fit_batch:
+        api_module3 = api_fit_batch.add_module(
+            type_id=eve_module_id,
+            rack=consts.Rack.high,
+            add_mode={consts.ApiModAddMode.replace: 4.6})
+    # Verification
+    assert api_fit.update().modules.high.map(lambda m: m.id) == (
+        [None, None, api_module1.id, None, None, api_module3.id] + [None] * 993 + [api_module2.id])
+    assert api_module1.update().pos == 2
+    assert api_module2.update().pos == 999
+    assert api_module3.update().pos == 5
+
+
 def test_move_swap(client, consts):
     eve_module_id = client.mk_eve_item()
     client.create_sources()
@@ -568,6 +602,41 @@ def test_move_out_of_range(client, consts):
     assert api_module2.update().pos == 0
     # Action
     api_module2.change_module(move={consts.ApiModMvMode.swap: 5000})
+    # Verification
+    assert api_fit.update().modules.high.map(lambda m: m.id) == [api_module1.id] + [None] * 998 + [api_module2.id]
+    assert api_module1.update().pos == 0
+    assert api_module2.update().pos == 999
+
+
+def test_move_float(client, consts):
+    # Floats are rounded, then clamped
+    eve_module_id = client.mk_eve_item()
+    client.create_sources()
+    api_sol = client.create_sol()
+    api_fit = api_sol.create_fit()
+    api_module1 = api_fit.add_module(
+        type_id=eve_module_id,
+        rack=consts.Rack.high,
+        add_mode={consts.ApiModAddMode.replace: 0})
+    api_module2 = api_fit.add_module(
+        type_id=eve_module_id,
+        rack=consts.Rack.high,
+        add_mode={consts.ApiModAddMode.replace: 1})
+    # Action
+    api_module1.change_module(move={consts.ApiModMvMode.shift: 3.4})
+    # Verification
+    assert api_fit.update().modules.high.map(lambda m: m.id) == [api_module2.id, None, None, api_module1.id]
+    assert api_module1.update().pos == 3
+    assert api_module2.update().pos == 0
+    # Action
+    api_module2.change_module(move={consts.ApiModMvMode.swap: 2.6})
+    # Verification
+    assert api_fit.update().modules.high.map(lambda m: m.id) == [api_module1.id, None, None, api_module2.id]
+    assert api_module1.update().pos == 0
+    assert api_module2.update().pos == 3
+    # Action
+    with api_fit.batch() as api_fit_batch:
+        api_fit_batch.change_module(item_id=api_module2.id, move={consts.ApiModMvMode.swap: 1e30})
     # Verification
     assert api_fit.update().modules.high.map(lambda m: m.id) == [api_module1.id] + [None] * 998 + [api_module2.id]
     assert api_module1.update().pos == 0

@@ -203,3 +203,29 @@ def test_level_modification(client, consts):
     assert api_item.attrs[eve_affectee_attr_id].modified == approx(3)
     with check_no_field():
         api_item.mods  # ruff:ignore[useless-expression]
+
+
+def test_level_float(client):
+    # Floats are rounded, then clamped
+    eve_skill_id = client.mk_eve_item()
+    client.create_sources()
+    api_sol = client.create_sol()
+    api_fit = api_sol.create_fit()
+    # Action
+    api_skill = api_fit.add_skill(type_id=eve_skill_id, level=2.4)
+    # Verification
+    assert api_skill.update().level == 2
+    # Action
+    api_skill.change_skill(level=3.6)
+    # Verification
+    assert api_skill.update().level == 4
+    # Action
+    with api_fit.batch() as api_fit_batch:
+        api_fit_batch.change_skill(item_id=api_skill.id, level=7.5)
+    # Verification
+    assert api_skill.update().level == 5
+    # Action
+    with api_sol.batch() as api_sol_batch:
+        api_sol_batch.change_skill(item_id=api_skill.id, level=-1.5)
+    # Verification
+    assert api_skill.update().level == 0

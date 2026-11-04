@@ -70,3 +70,28 @@ def test_rearm_minion_set_not_loaded(client, consts):
     # Verification
     assert api_fighter.update().rearm_minion == consts.ApiRearmMinion.disabled
     assert api_fighter.rearm_minion_override == consts.ApiRearmMinion.disabled
+
+
+def test_count_float(client, consts):
+    # Floats are rounded, then clamped
+    eve_max_count_attr_id = client.mk_eve_attr(id_=consts.EveAttr.ftr_sq_max_size)
+    eve_fighter_id = client.mk_eve_fighter(attrs={eve_max_count_attr_id: 12})
+    client.create_sources()
+    api_sol = client.create_sol()
+    api_fit = api_sol.create_fit()
+    # Action
+    api_fighter = api_fit.add_fighter(type_id=eve_fighter_id, count_override=2.6)
+    # Verification
+    assert api_fighter.update().count == [3, 12]
+    assert api_fighter.count_override == 3
+    # Action
+    api_fighter.change_fighter(count_override=4.2)
+    # Verification
+    assert api_fighter.update().count == [4, 12]
+    assert api_fighter.count_override == 4
+    # Action
+    with api_fit.batch() as api_fit_batch:
+        api_fit_batch.change_fighter(item_id=api_fighter.id, count_override=0.4)
+    # Verification
+    assert api_fighter.update().count == [1, 12]
+    assert api_fighter.count_override == 1
