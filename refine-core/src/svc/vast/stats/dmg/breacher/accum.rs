@@ -22,7 +22,7 @@ use crate::{
     misc::EffectSpec,
     nd::{NEffectBreacherOutputGetter, NEffectOutputGetter},
     rd::{REffect, REffectProjOpcSpec},
-    stats::{StatCritOptions, StatDmgEntryBreacher, StatTime},
+    stats::{StatCritOptions, StatDmgEntryBreacher, StatTime, StatTimeOptions},
     svc::{
         Calc, SvcCtx,
         cycle::{CSeqHardDtFull, CycleDataFull, CycleSeq},
@@ -34,6 +34,37 @@ use crate::{
 const TICKS_LIMIT: Count = Count::from_f64_rounded(StatTime::MAX.into_f64()) * Count::from_u32(SERVER_TICK_HZ as u32);
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
+// Interface for damage stat getters
+////////////////////////////////////////////////////////////////////////////////////////////////////
+pub(in crate::svc::vast::stats::dmg) trait BreacherAccum {
+    // Breacher part of a damage stat entry
+    type Dmg;
+
+    fn add(
+        &mut self,
+        ctx: &SvcCtx,
+        calc: &mut Calc,
+        item_uid: UItemId,
+        effect: &REffect,
+        cseq: &CycleSeq<CycleDataFull, CSeqHardDtFull>,
+        ospec: &REffectProjOpcSpec<NEffectBreacherOutputGetter>,
+    );
+    fn get_dps(&self) -> Self::Dmg;
+    fn get_dps_by_time(&self, time: PValue) -> Self::Dmg;
+    fn get_volley(&self) -> Self::Dmg;
+    fn get_volley_by_time(&self, time: PValue) -> Self::Dmg;
+    fn get_dps_and_volley(&self, time_options: StatTimeOptions) -> (Self::Dmg, Self::Dmg) {
+        match time_options {
+            StatTimeOptions::Burst(..) => (self.get_dps(), self.get_volley()),
+            StatTimeOptions::Sim(sim_options) => match sim_options.time.map(|v| v.into_pvalue()) {
+                Some(time) if time > PValue::ZERO => (self.get_dps_by_time(time), self.get_volley_by_time(time)),
+                _ => (self.get_dps(), self.get_volley()),
+            },
+        }
+    }
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
 // Regular accumulator
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 #[derive(Copy, Clone, Eq, PartialEq, Hash)]
@@ -43,14 +74,44 @@ struct BreacherData {
     ticks: AggrBreacherTicks,
 }
 
-pub(in crate::svc::vast::stats::dmg) struct BreacherAccum {
+pub(in crate::svc::vast::stats::dmg) struct RegularBreacherAccum {
     data: RMap<BreacherData, Count>,
 }
-impl BreacherAccum {
-    pub(in crate::svc::vast) fn new() -> Self {
+impl RegularBreacherAccum {
+    pub(in crate::svc::vast::stats::dmg) fn new() -> Self {
         Self { data: RMap::new() }
     }
-    pub(in crate::svc::vast) fn add(
+    fn get_dmg_for_tick_range(&self, tick_range: TickRange) -> (PValue, PValue) {
+        let mut dmg_abs = PValue::ZERO;
+        let mut dmg_rel = PValue::ZERO;
+        let breachers: Vec<&BreacherData> = self.data.keys().collect();
+        let events = collect_boundary_events(breachers.iter().map(|v| &v.ticks), tick_range);
+        let mut active = ActiveBreachers::new(breachers.len());
+        let mut segment_start_tick = tick_range.start;
+        let mut event_index = 0;
+        while event_index < events.len() {
+            let event_tick = events[event_index].tick;
+            if active.any() {
+                let mut segment_max_abs = PValue::ZERO;
+                let mut segment_max_rel = UnitInterval::ZERO;
+                for breacher in active.iter(&breachers) {
+                    segment_max_abs = segment_max_abs.max(breacher.absolute_max);
+                    segment_max_rel = segment_max_rel.max(breacher.relative_max);
+                }
+                let segment_ticks = (event_tick - segment_start_tick).into_pvalue();
+                dmg_abs += segment_max_abs * segment_ticks;
+                dmg_rel += segment_max_rel.into_pvalue() * segment_ticks;
+            }
+            event_index = active.apply_events(&events, event_index);
+            segment_start_tick = event_tick;
+        }
+        (dmg_abs, dmg_rel)
+    }
+}
+impl BreacherAccum for RegularBreacherAccum {
+    type Dmg = StatDmgEntryBreacher;
+
+    fn add(
         &mut self,
         ctx: &SvcCtx,
         calc: &mut Calc,
@@ -79,7 +140,7 @@ impl BreacherAccum {
             }
         }
     }
-    pub(in crate::svc::vast::stats::dmg) fn get_dps(&self) -> StatDmgEntryBreacher {
+    fn get_dps(&self) -> StatDmgEntryBreacher {
         if self.data.is_empty() {
             return StatDmgEntryBreacher {
                 absolute_max: PValue::ZERO,
@@ -124,7 +185,7 @@ impl BreacherAccum {
             relative_max: loop_dmg_rel / loop_tick_count.into_pvalue() * PValue::SERVER_TICK_HZ,
         }
     }
-    pub(in crate::svc::vast::stats::dmg) fn get_dps_by_time(&self, time: PValue) -> StatDmgEntryBreacher {
+    fn get_dps_by_time(&self, time: PValue) -> StatDmgEntryBreacher {
         let mut dmg = StatDmgEntryBreacher {
             absolute_max: PValue::ZERO,
             relative_max: PValue::ZERO,
@@ -173,33 +234,7 @@ impl BreacherAccum {
             relative_max: dmg.relative_max / time * PValue::SERVER_TICK_HZ,
         }
     }
-    fn get_dmg_for_tick_range(&self, tick_range: TickRange) -> (PValue, PValue) {
-        let mut dmg_abs = PValue::ZERO;
-        let mut dmg_rel = PValue::ZERO;
-        let breachers: Vec<&BreacherData> = self.data.keys().collect();
-        let events = collect_boundary_events(breachers.iter().map(|v| &v.ticks), tick_range);
-        let mut active = ActiveBreachers::new(breachers.len());
-        let mut segment_start_tick = tick_range.start;
-        let mut event_index = 0;
-        while event_index < events.len() {
-            let event_tick = events[event_index].tick;
-            if active.any() {
-                let mut segment_max_abs = PValue::ZERO;
-                let mut segment_max_rel = UnitInterval::ZERO;
-                for breacher in active.iter(&breachers) {
-                    segment_max_abs = segment_max_abs.max(breacher.absolute_max);
-                    segment_max_rel = segment_max_rel.max(breacher.relative_max);
-                }
-                let segment_ticks = (event_tick - segment_start_tick).into_pvalue();
-                dmg_abs += segment_max_abs * segment_ticks;
-                dmg_rel += segment_max_rel.into_pvalue() * segment_ticks;
-            }
-            event_index = active.apply_events(&events, event_index);
-            segment_start_tick = event_tick;
-        }
-        (dmg_abs, dmg_rel)
-    }
-    pub(in crate::svc::vast::stats::dmg) fn get_volley(&self) -> StatDmgEntryBreacher {
+    fn get_volley(&self) -> StatDmgEntryBreacher {
         let mut volley = StatDmgEntryBreacher {
             absolute_max: PValue::ZERO,
             relative_max: PValue::ZERO,
@@ -213,7 +248,7 @@ impl BreacherAccum {
         }
         volley
     }
-    pub(in crate::svc::vast::stats::dmg) fn get_volley_by_time(&self, time: PValue) -> StatDmgEntryBreacher {
+    fn get_volley_by_time(&self, time: PValue) -> StatDmgEntryBreacher {
         let mut volley = StatDmgEntryBreacher {
             absolute_max: PValue::ZERO,
             relative_max: PValue::ZERO,
@@ -243,12 +278,43 @@ struct AppliedBreacherData {
 
 pub(in crate::svc::vast::stats::dmg) struct AppliedBreacherAccum {
     data: RMap<AppliedBreacherData, Count>,
+    crit_options: StatCritOptions,
+    projectee_uid: UItemId,
 }
 impl AppliedBreacherAccum {
-    pub(in crate::svc::vast) fn new() -> Self {
-        Self { data: RMap::new() }
+    pub(in crate::svc::vast::stats::dmg) fn new(crit_options: StatCritOptions, projectee_uid: UItemId) -> Self {
+        Self {
+            data: RMap::new(),
+            crit_options,
+            projectee_uid,
+        }
     }
-    pub(in crate::svc::vast) fn add(
+    fn get_dmg_for_tick_range(&self, tick_range: TickRange) -> PValue {
+        let mut total_dmg = PValue::ZERO;
+        let breachers: Vec<&AppliedBreacherData> = self.data.keys().collect();
+        let events = collect_boundary_events(breachers.iter().map(|v| &v.ticks), tick_range);
+        let mut active = ActiveBreachers::new(breachers.len());
+        let mut segment_start_tick = tick_range.start;
+        let mut event_index = 0;
+        while event_index < events.len() {
+            let event_tick = events[event_index].tick;
+            if active.any() {
+                let mut segment_max_dmg = PValue::ZERO;
+                for breacher in active.iter(&breachers) {
+                    segment_max_dmg = segment_max_dmg.max(breacher.dmg);
+                }
+                total_dmg += segment_max_dmg * (event_tick - segment_start_tick).into_pvalue();
+            }
+            event_index = active.apply_events(&events, event_index);
+            segment_start_tick = event_tick;
+        }
+        total_dmg
+    }
+}
+impl BreacherAccum for AppliedBreacherAccum {
+    type Dmg = PValue;
+
+    fn add(
         &mut self,
         ctx: &SvcCtx,
         calc: &mut Calc,
@@ -256,9 +322,8 @@ impl AppliedBreacherAccum {
         effect: &REffect,
         cseq: &CycleSeq<CycleDataFull, CSeqHardDtFull>,
         ospec: &REffectProjOpcSpec<NEffectBreacherOutputGetter>,
-        crit_options: StatCritOptions,
-        projectee_uid: UItemId,
     ) {
+        let (crit_options, projectee_uid) = (self.crit_options, self.projectee_uid);
         // Base output
         let Some(output) = ospec.base.get(ctx, calc, item_uid, effect, ()) else {
             return;
@@ -319,7 +384,7 @@ impl AppliedBreacherAccum {
             }
         }
     }
-    pub(in crate::svc::vast::stats::dmg) fn get_dps(&self) -> PValue {
+    fn get_dps(&self) -> PValue {
         if self.data.is_empty() {
             return PValue::ZERO;
         };
@@ -348,7 +413,7 @@ impl AppliedBreacherAccum {
         });
         loop_dmg / loop_tick_count.into_pvalue() * PValue::SERVER_TICK_HZ
     }
-    pub(in crate::svc::vast::stats::dmg) fn get_dps_by_time(&self, time: PValue) -> PValue {
+    fn get_dps_by_time(&self, time: PValue) -> PValue {
         let mut total_dmg = PValue::ZERO;
         if self.data.is_empty() {
             return total_dmg;
@@ -386,31 +451,10 @@ impl AppliedBreacherAccum {
         }
         total_dmg / time
     }
-    fn get_dmg_for_tick_range(&self, tick_range: TickRange) -> PValue {
-        let mut total_dmg = PValue::ZERO;
-        let breachers: Vec<&AppliedBreacherData> = self.data.keys().collect();
-        let events = collect_boundary_events(breachers.iter().map(|v| &v.ticks), tick_range);
-        let mut active = ActiveBreachers::new(breachers.len());
-        let mut segment_start_tick = tick_range.start;
-        let mut event_index = 0;
-        while event_index < events.len() {
-            let event_tick = events[event_index].tick;
-            if active.any() {
-                let mut segment_max_dmg = PValue::ZERO;
-                for breacher in active.iter(&breachers) {
-                    segment_max_dmg = segment_max_dmg.max(breacher.dmg);
-                }
-                total_dmg += segment_max_dmg * (event_tick - segment_start_tick).into_pvalue();
-            }
-            event_index = active.apply_events(&events, event_index);
-            segment_start_tick = event_tick;
-        }
-        total_dmg
-    }
-    pub(in crate::svc::vast::stats::dmg) fn get_volley(&self) -> PValue {
+    fn get_volley(&self) -> PValue {
         self.data.keys().map(|v| v.dmg).max().unwrap_or(PValue::ZERO)
     }
-    pub(in crate::svc::vast::stats::dmg) fn get_volley_by_time(&self, time: PValue) -> PValue {
+    fn get_volley_by_time(&self, time: PValue) -> PValue {
         self.data
             .keys()
             .filter_map(|v| match time >= ticks_to_duration(v.ticks.get_initial_delay()) {

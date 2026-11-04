@@ -1,4 +1,9 @@
-use super::breacher::{AppliedBreacherAccum, BreacherAccum};
+use std::iter::once;
+
+use super::{
+    breacher::{AppliedBreacherAccum, BreacherAccum, RegularBreacherAccum},
+    shared::add_normal_dmg,
+};
 use crate::{
     PValue,
     misc::DmgKinds,
@@ -8,10 +13,7 @@ use crate::{
     svc::{
         Calc, SvcCtx, Vast,
         cycle::{CseqMap, CyclingOptions, get_item_cseq_map},
-        vast::{
-            VastFitData,
-            aggr::{SeqAccum, SeqInstanceAccumMax, aggr_proj_burst, aggr_proj_split, aggr_proj_time},
-        },
+        vast::VastFitData,
     },
     ud::{UFitId, UItemId},
 };
@@ -27,43 +29,23 @@ impl Vast {
         time_options: StatTimeOptions,
         crit_options: StatCritOptions,
     ) -> StatDmg {
-        let cycling_options = CyclingOptions::from_time_options(time_options);
         let mut dps_normal = DmgKinds::default();
         let mut volley_normal = DmgKinds::default();
-        let mut breacher_accum = BreacherAccum::new();
-        for fit_uid in fit_uids {
-            let fit_data = self.get_fit_data(fit_uid);
-            fit_data.fill_stat_dmg_normal(
-                reuse_cseq_map,
-                ctx,
-                calc,
-                &mut dps_normal,
-                &mut volley_normal,
-                item_kinds,
-                time_options,
-                crit_options,
-                cycling_options,
-                None,
-            );
-            fit_data.fill_stat_dmg_breacher(
-                reuse_cseq_map,
-                ctx,
-                calc,
-                &mut breacher_accum,
-                item_kinds,
-                cycling_options,
-            );
-        }
-        let (dps_breacher, volley_breacher) = match time_options {
-            StatTimeOptions::Burst(..) => (breacher_accum.get_dps(), breacher_accum.get_volley()),
-            StatTimeOptions::Sim(sim_options) => match sim_options.time.map(|v| v.into_pvalue()) {
-                Some(time) if time > PValue::ZERO => (
-                    breacher_accum.get_dps_by_time(time),
-                    breacher_accum.get_volley_by_time(time),
-                ),
-                _ => (breacher_accum.get_dps(), breacher_accum.get_volley()),
-            },
-        };
+        let mut breacher_accum = RegularBreacherAccum::new();
+        self.fill_stat_fits_dmg(
+            reuse_cseq_map,
+            ctx,
+            calc,
+            &mut dps_normal,
+            &mut volley_normal,
+            &mut breacher_accum,
+            fit_uids,
+            item_kinds,
+            time_options,
+            crit_options,
+            None,
+        );
+        let (dps_breacher, volley_breacher) = breacher_accum.get_dps_and_volley(time_options);
         StatDmg {
             dps: StatDmgEntry::from_dmgs(dps_normal, dps_breacher),
             volley: StatDmgEntry::from_dmgs(volley_normal, volley_breacher),
@@ -80,45 +62,23 @@ impl Vast {
         crit_options: StatCritOptions,
         projectee_uid: UItemId,
     ) -> StatDmgApplied {
-        let cycling_options = CyclingOptions::from_time_options(time_options);
         let mut dps_normal = DmgKinds::default();
         let mut volley_normal = DmgKinds::default();
-        let mut breacher_accum = AppliedBreacherAccum::new();
-        for fit_uid in fit_uids {
-            let fit_data = self.get_fit_data(fit_uid);
-            fit_data.fill_stat_dmg_normal(
-                reuse_cseq_map,
-                ctx,
-                calc,
-                &mut dps_normal,
-                &mut volley_normal,
-                item_kinds,
-                time_options,
-                crit_options,
-                cycling_options,
-                Some(projectee_uid),
-            );
-            fit_data.fill_stat_dmg_breacher_applied(
-                reuse_cseq_map,
-                ctx,
-                calc,
-                &mut breacher_accum,
-                item_kinds,
-                cycling_options,
-                crit_options,
-                projectee_uid,
-            );
-        }
-        let (dps_breacher, volley_breacher) = match time_options {
-            StatTimeOptions::Burst(..) => (breacher_accum.get_dps(), breacher_accum.get_volley()),
-            StatTimeOptions::Sim(sim_options) => match sim_options.time.map(|v| v.into_pvalue()) {
-                Some(time) if time > PValue::ZERO => (
-                    breacher_accum.get_dps_by_time(time),
-                    breacher_accum.get_volley_by_time(time),
-                ),
-                _ => (breacher_accum.get_dps(), breacher_accum.get_volley()),
-            },
-        };
+        let mut breacher_accum = AppliedBreacherAccum::new(crit_options, projectee_uid);
+        self.fill_stat_fits_dmg(
+            reuse_cseq_map,
+            ctx,
+            calc,
+            &mut dps_normal,
+            &mut volley_normal,
+            &mut breacher_accum,
+            fit_uids,
+            item_kinds,
+            time_options,
+            crit_options,
+            Some(projectee_uid),
+        );
+        let (dps_breacher, volley_breacher) = breacher_accum.get_dps_and_volley(time_options);
         StatDmgApplied {
             dps: StatDmgEntryApplied::from_dmgs(dps_normal, dps_breacher),
             volley: StatDmgEntryApplied::from_dmgs(volley_normal, volley_breacher),
@@ -134,45 +94,15 @@ impl Vast {
         time_options: StatTimeOptions,
         crit_options: StatCritOptions,
     ) -> StatDmg {
-        let cycling_options = CyclingOptions::from_time_options(time_options);
-        let mut dps_normal = DmgKinds::default();
-        let mut volley_normal = DmgKinds::default();
-        let mut breacher_accum = BreacherAccum::new();
-        let fit_data = self.get_fit_data(fit_uid);
-        fit_data.fill_stat_dmg_normal(
+        self.get_stat_fits_dmg_raw(
             reuse_cseq_map,
             ctx,
             calc,
-            &mut dps_normal,
-            &mut volley_normal,
+            once(fit_uid),
             item_kinds,
             time_options,
             crit_options,
-            cycling_options,
-            None,
-        );
-        fit_data.fill_stat_dmg_breacher(
-            reuse_cseq_map,
-            ctx,
-            calc,
-            &mut breacher_accum,
-            item_kinds,
-            cycling_options,
-        );
-        let (dps_breacher, volley_breacher) = match time_options {
-            StatTimeOptions::Burst(..) => (breacher_accum.get_dps(), breacher_accum.get_volley()),
-            StatTimeOptions::Sim(sim_options) => match sim_options.time.map(|v| v.into_pvalue()) {
-                Some(time) if time > PValue::ZERO => (
-                    breacher_accum.get_dps_by_time(time),
-                    breacher_accum.get_volley_by_time(time),
-                ),
-                _ => (breacher_accum.get_dps(), breacher_accum.get_volley()),
-            },
-        };
-        StatDmg {
-            dps: StatDmgEntry::from_dmgs(dps_normal, dps_breacher),
-            volley: StatDmgEntry::from_dmgs(volley_normal, volley_breacher),
-        }
+        )
     }
     pub(in crate::svc) fn get_stat_fit_dmg_applied(
         &self,
@@ -185,46 +115,50 @@ impl Vast {
         crit_options: StatCritOptions,
         projectee_uid: UItemId,
     ) -> StatDmgApplied {
-        let cycling_options = CyclingOptions::from_time_options(time_options);
-        let mut dps_normal = DmgKinds::default();
-        let mut volley_normal = DmgKinds::default();
-        let mut breacher_accum = AppliedBreacherAccum::new();
-        let fit_data = self.get_fit_data(fit_uid);
-        fit_data.fill_stat_dmg_normal(
+        self.get_stat_fits_dmg_applied(
             reuse_cseq_map,
             ctx,
             calc,
-            &mut dps_normal,
-            &mut volley_normal,
+            once(fit_uid),
             item_kinds,
             time_options,
             crit_options,
-            cycling_options,
-            Some(projectee_uid),
-        );
-        fit_data.fill_stat_dmg_breacher_applied(
-            reuse_cseq_map,
-            ctx,
-            calc,
-            &mut breacher_accum,
-            item_kinds,
-            cycling_options,
-            crit_options,
             projectee_uid,
-        );
-        let (dps_breacher, volley_breacher) = match time_options {
-            StatTimeOptions::Burst(..) => (breacher_accum.get_dps(), breacher_accum.get_volley()),
-            StatTimeOptions::Sim(sim_options) => match sim_options.time.map(|v| v.into_pvalue()) {
-                Some(time) if time > PValue::ZERO => (
-                    breacher_accum.get_dps_by_time(time),
-                    breacher_accum.get_volley_by_time(time),
-                ),
-                _ => (breacher_accum.get_dps(), breacher_accum.get_volley()),
-            },
-        };
-        StatDmgApplied {
-            dps: StatDmgEntryApplied::from_dmgs(dps_normal, dps_breacher),
-            volley: StatDmgEntryApplied::from_dmgs(volley_normal, volley_breacher),
+        )
+    }
+    fn fill_stat_fits_dmg<I, B>(
+        &self,
+        reuse_cseq_map: &mut CseqMap,
+        ctx: &SvcCtx,
+        calc: &mut Calc,
+        dps_normal: &mut DmgKinds<PValue>,
+        volley_normal: &mut DmgKinds<PValue>,
+        breacher_accum: &mut B,
+        fit_uids: I,
+        item_kinds: StatDmgItemKinds,
+        time_options: StatTimeOptions,
+        crit_options: StatCritOptions,
+        projectee_uid: Option<UItemId>,
+    ) where
+        I: Iterator<Item = UFitId>,
+        B: BreacherAccum,
+    {
+        let cycling_options = CyclingOptions::from_time_options(time_options);
+        for fit_uid in fit_uids {
+            let fit_data = self.get_fit_data(fit_uid);
+            fit_data.fill_stat_dmg_normal(
+                reuse_cseq_map,
+                ctx,
+                calc,
+                dps_normal,
+                volley_normal,
+                item_kinds,
+                time_options,
+                crit_options,
+                cycling_options,
+                projectee_uid,
+            );
+            fit_data.fill_stat_dmg_breacher(reuse_cseq_map, ctx, calc, breacher_accum, item_kinds, cycling_options);
         }
     }
 }
@@ -256,79 +190,33 @@ impl VastFitData {
                 let Some(cseq) = reuse_cseq_map.get(&effect_rid) else {
                     continue;
                 };
-                match time_options {
-                    StatTimeOptions::Burst(burst_opts) => {
-                        if let Some(accum) = aggr_proj_burst(
-                            ctx,
-                            calc,
-                            item_uid,
-                            effect,
-                            cseq,
-                            ospec,
-                            (),
-                            crit_options,
-                            projectee_uid,
-                            burst_opts.spool,
-                            SeqAccum::new_stack_max(),
-                        ) {
-                            *dps_normal += accum.get_per_second();
-                            *volley_normal += accum.instances.max;
-                        }
-                    }
-                    StatTimeOptions::Sim(sim_options) => match sim_options.time.map(|v| v.into_pvalue()) {
-                        Some(time) if time > PValue::ZERO => {
-                            if let Some(accum) = aggr_proj_time(
-                                ctx,
-                                calc,
-                                item_uid,
-                                effect,
-                                cseq,
-                                ospec,
-                                (),
-                                crit_options,
-                                projectee_uid,
-                                SeqAccum::new_stack_max(),
-                                time,
-                            ) {
-                                *dps_normal += accum.get_per_second();
-                                *volley_normal += accum.instances.max;
-                            }
-                        }
-                        _ => {
-                            let accums = aggr_proj_split(
-                                ctx,
-                                calc,
-                                item_uid,
-                                effect,
-                                cseq,
-                                ospec,
-                                (),
-                                crit_options,
-                                projectee_uid,
-                                SeqAccum::new_stack_max(),
-                                SeqInstanceAccumMax::new(),
-                            );
-                            if let Some(accum_dps) = accums.get_per_second() {
-                                *dps_normal += accum_dps;
-                            }
-                            if let Some(aaccum_volley) = accums.get_max() {
-                                *volley_normal += aaccum_volley;
-                            }
-                        }
-                    },
-                }
+                add_normal_dmg(
+                    ctx,
+                    calc,
+                    dps_normal,
+                    volley_normal,
+                    item_uid,
+                    effect,
+                    cseq,
+                    ospec,
+                    time_options,
+                    crit_options,
+                    projectee_uid,
+                );
             }
         }
     }
-    fn fill_stat_dmg_breacher(
+    fn fill_stat_dmg_breacher<B>(
         &self,
         reuse_cseq_map: &mut CseqMap,
         ctx: &SvcCtx,
         calc: &mut Calc,
-        breacher_accum: &mut BreacherAccum,
+        breacher_accum: &mut B,
         item_kinds: StatDmgItemKinds,
         cycling_options: CyclingOptions,
-    ) {
+    ) where
+        B: BreacherAccum,
+    {
         for (&item_uid, item_data) in self.dmg_breacher.iter() {
             if !get_item_cseq_map(reuse_cseq_map, ctx, calc, item_uid, cycling_options) {
                 continue;
@@ -343,34 +231,6 @@ impl VastFitData {
                     continue;
                 };
                 breacher_accum.add(ctx, calc, item_uid, effect, cseq, ospec);
-            }
-        }
-    }
-    fn fill_stat_dmg_breacher_applied(
-        &self,
-        reuse_cseq_map: &mut CseqMap,
-        ctx: &SvcCtx,
-        calc: &mut Calc,
-        breacher_accum: &mut AppliedBreacherAccum,
-        item_kinds: StatDmgItemKinds,
-        cycling_options: CyclingOptions,
-        crit_options: StatCritOptions,
-        projectee_uid: UItemId,
-    ) {
-        for (&item_uid, item_data) in self.dmg_breacher.iter() {
-            if !get_item_cseq_map(reuse_cseq_map, ctx, calc, item_uid, cycling_options) {
-                continue;
-            }
-            let item = ctx.u_data.items.get(item_uid);
-            for (&effect_rid, ospec) in item_data.iter() {
-                let effect = ctx.u_data.r_data.get_effect_by_rid(effect_rid);
-                if !item_kinds.resolve(item, effect) {
-                    continue;
-                }
-                let Some(cseq) = reuse_cseq_map.get(&effect_rid) else {
-                    continue;
-                };
-                breacher_accum.add(ctx, calc, item_uid, effect, cseq, ospec, crit_options, projectee_uid);
             }
         }
     }

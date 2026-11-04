@@ -5,4 +5,5 @@ mod breacher;
 mod getter_fit;
 mod getter_item;
 mod option;
+mod shared;
 mod stat;

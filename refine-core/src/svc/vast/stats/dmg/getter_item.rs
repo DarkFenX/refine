@@ -1,4 +1,7 @@
-use super::breacher::{AppliedBreacherAccum, BreacherAccum};
+use super::{
+    breacher::{AppliedBreacherAccum, BreacherAccum, RegularBreacherAccum},
+    shared::add_normal_dmg,
+};
 use crate::{
     PValue,
     misc::DmgKinds,
@@ -10,10 +13,7 @@ use crate::{
         Calc, SvcCtx, Vast,
         cycle::{CseqMap, CyclingOptions, get_item_cseq_map},
         err::IntStatItemError,
-        vast::{
-            aggr::{SeqAccum, SeqInstanceAccumMax, aggr_proj_burst, aggr_proj_split, aggr_proj_time},
-            stats::item_checks::check_autocharge_charge_drone_fighter_module,
-        },
+        vast::stats::item_checks::check_autocharge_charge_drone_fighter_module,
     },
     ud::UItemId,
 };
@@ -30,7 +30,7 @@ impl Vast {
     ) -> Result<StatDmg, IntStatItemError<!>> {
         let mut dps_normal = DmgKinds::default();
         let mut volley_normal = DmgKinds::default();
-        let mut breacher_accum = BreacherAccum::new();
+        let mut breacher_accum = RegularBreacherAccum::new();
         Self::internal_get_stat_item_dmg_checked(
             reuse_cseq_map,
             ctx,
@@ -42,17 +42,9 @@ impl Vast {
             time_options,
             crit_options,
             charge_options,
+            None,
         )?;
-        let (dps_breacher, volley_breacher) = match time_options {
-            StatTimeOptions::Burst(..) => (breacher_accum.get_dps(), breacher_accum.get_volley()),
-            StatTimeOptions::Sim(sim_options) => match sim_options.time.map(|v| v.into_pvalue()) {
-                Some(time) if time > PValue::ZERO => (
-                    breacher_accum.get_dps_by_time(time),
-                    breacher_accum.get_volley_by_time(time),
-                ),
-                _ => (breacher_accum.get_dps(), breacher_accum.get_volley()),
-            },
-        };
+        let (dps_breacher, volley_breacher) = breacher_accum.get_dps_and_volley(time_options);
         Ok(StatDmg {
             dps: StatDmgEntry::from_dmgs(dps_normal, dps_breacher),
             volley: StatDmgEntry::from_dmgs(volley_normal, volley_breacher),
@@ -70,8 +62,8 @@ impl Vast {
     ) -> Result<StatDmgApplied, IntStatItemError<!>> {
         let mut dps_normal = DmgKinds::default();
         let mut volley_normal = DmgKinds::default();
-        let mut breacher_accum = AppliedBreacherAccum::new();
-        Self::internal_get_stat_item_dmg_applied_checked(
+        let mut breacher_accum = AppliedBreacherAccum::new(crit_options, projectee_uid);
+        Self::internal_get_stat_item_dmg_checked(
             reuse_cseq_map,
             ctx,
             calc,
@@ -82,35 +74,30 @@ impl Vast {
             time_options,
             crit_options,
             charge_options,
-            projectee_uid,
+            Some(projectee_uid),
         )?;
-        let (dps_breacher, volley_breacher) = match time_options {
-            StatTimeOptions::Burst(..) => (breacher_accum.get_dps(), breacher_accum.get_volley()),
-            StatTimeOptions::Sim(sim_options) => match sim_options.time.map(|v| v.into_pvalue()) {
-                Some(time) if time > PValue::ZERO => (
-                    breacher_accum.get_dps_by_time(time),
-                    breacher_accum.get_volley_by_time(time),
-                ),
-                _ => (breacher_accum.get_dps(), breacher_accum.get_volley()),
-            },
-        };
+        let (dps_breacher, volley_breacher) = breacher_accum.get_dps_and_volley(time_options);
         Ok(StatDmgApplied {
             dps: StatDmgEntryApplied::from_dmgs(dps_normal, dps_breacher),
             volley: StatDmgEntryApplied::from_dmgs(volley_normal, volley_breacher),
         })
     }
-    fn internal_get_stat_item_dmg_checked(
+    fn internal_get_stat_item_dmg_checked<B>(
         reuse_cseq_map: &mut CseqMap,
         ctx: &SvcCtx,
         calc: &mut Calc,
         dps_normal: &mut DmgKinds<PValue>,
         volley_normal: &mut DmgKinds<PValue>,
-        breacher_accum: &mut BreacherAccum,
+        breacher_accum: &mut B,
         item_uid: UItemId,
         time_options: StatTimeOptions,
         crit_options: StatCritOptions,
         charge_options: StatItemChargeOptions,
-    ) -> Result<(), IntStatItemError<!>> {
+        projectee_uid: Option<UItemId>,
+    ) -> Result<(), IntStatItemError<!>>
+    where
+        B: BreacherAccum,
+    {
         check_autocharge_charge_drone_fighter_module(ctx.u_data, item_uid)?;
         let cycling_options = CyclingOptions::from_time_options(time_options);
         if !get_item_cseq_map(reuse_cseq_map, ctx, calc, item_uid, cycling_options) {
@@ -119,67 +106,19 @@ impl Vast {
         for (&effect_rid, cseq) in reuse_cseq_map.iter() {
             let effect = ctx.u_data.r_data.get_effect_by_rid(effect_rid);
             if let Some(ospec) = &effect.normal_dmg {
-                match time_options {
-                    StatTimeOptions::Burst(burst_opts) => {
-                        if let Some(accum) = aggr_proj_burst(
-                            ctx,
-                            calc,
-                            item_uid,
-                            effect,
-                            cseq,
-                            ospec,
-                            (),
-                            crit_options,
-                            None,
-                            burst_opts.spool,
-                            SeqAccum::new_stack_max(),
-                        ) {
-                            *dps_normal += accum.get_per_second();
-                            *volley_normal += accum.instances.max;
-                        }
-                    }
-                    StatTimeOptions::Sim(sim_options) => match sim_options.time.map(|v| v.into_pvalue()) {
-                        Some(time) if time > PValue::ZERO => {
-                            if let Some(accum) = aggr_proj_time(
-                                ctx,
-                                calc,
-                                item_uid,
-                                effect,
-                                cseq,
-                                ospec,
-                                (),
-                                crit_options,
-                                None,
-                                SeqAccum::new_stack_max(),
-                                time,
-                            ) {
-                                *dps_normal += accum.get_per_second();
-                                *volley_normal += accum.instances.max;
-                            }
-                        }
-                        _ => {
-                            let accums = aggr_proj_split(
-                                ctx,
-                                calc,
-                                item_uid,
-                                effect,
-                                cseq,
-                                ospec,
-                                (),
-                                crit_options,
-                                None,
-                                SeqAccum::new_stack_max(),
-                                SeqInstanceAccumMax::new(),
-                            );
-                            if let Some(accum_dps) = accums.get_per_second() {
-                                *dps_normal += accum_dps;
-                            }
-                            if let Some(aaccum_volley) = accums.get_max() {
-                                *volley_normal += aaccum_volley;
-                            }
-                        }
-                    },
-                }
+                add_normal_dmg(
+                    ctx,
+                    calc,
+                    dps_normal,
+                    volley_normal,
+                    item_uid,
+                    effect,
+                    cseq,
+                    ospec,
+                    time_options,
+                    crit_options,
+                    projectee_uid,
+                );
             }
             if let Some(ospec) = &effect.breacher_dmg {
                 breacher_accum.add(ctx, calc, item_uid, effect, cseq, ospec);
@@ -188,111 +127,6 @@ impl Vast {
         if charge_options.is_enabled() {
             for charge_uid in ctx.u_data.items.get(item_uid).iter_charges() {
                 let _ = Self::internal_get_stat_item_dmg_checked(
-                    reuse_cseq_map,
-                    ctx,
-                    calc,
-                    dps_normal,
-                    volley_normal,
-                    breacher_accum,
-                    charge_uid,
-                    time_options,
-                    crit_options,
-                    StatItemChargeOptions::Exclude,
-                );
-            }
-        }
-        Ok(())
-    }
-    fn internal_get_stat_item_dmg_applied_checked(
-        reuse_cseq_map: &mut CseqMap,
-        ctx: &SvcCtx,
-        calc: &mut Calc,
-        dps_normal: &mut DmgKinds<PValue>,
-        volley_normal: &mut DmgKinds<PValue>,
-        breacher_accum: &mut AppliedBreacherAccum,
-        item_uid: UItemId,
-        time_options: StatTimeOptions,
-        crit_options: StatCritOptions,
-        charge_options: StatItemChargeOptions,
-        projectee_uid: UItemId,
-    ) -> Result<(), IntStatItemError<!>> {
-        check_autocharge_charge_drone_fighter_module(ctx.u_data, item_uid)?;
-        let cycling_options = CyclingOptions::from_time_options(time_options);
-        if !get_item_cseq_map(reuse_cseq_map, ctx, calc, item_uid, cycling_options) {
-            return Ok(());
-        }
-        for (&effect_rid, cseq) in reuse_cseq_map.iter() {
-            let effect = ctx.u_data.r_data.get_effect_by_rid(effect_rid);
-            if let Some(ospec) = &effect.normal_dmg {
-                match time_options {
-                    StatTimeOptions::Burst(burst_opts) => {
-                        if let Some(accum) = aggr_proj_burst(
-                            ctx,
-                            calc,
-                            item_uid,
-                            effect,
-                            cseq,
-                            ospec,
-                            (),
-                            crit_options,
-                            Some(projectee_uid),
-                            burst_opts.spool,
-                            SeqAccum::new_stack_max(),
-                        ) {
-                            *dps_normal += accum.get_per_second();
-                            *volley_normal += accum.instances.max;
-                        }
-                    }
-                    StatTimeOptions::Sim(sim_options) => match sim_options.time.map(|v| v.into_pvalue()) {
-                        Some(time) if time > PValue::ZERO => {
-                            if let Some(accum) = aggr_proj_time(
-                                ctx,
-                                calc,
-                                item_uid,
-                                effect,
-                                cseq,
-                                ospec,
-                                (),
-                                crit_options,
-                                Some(projectee_uid),
-                                SeqAccum::new_stack_max(),
-                                time,
-                            ) {
-                                *dps_normal += accum.get_per_second();
-                                *volley_normal += accum.instances.max;
-                            }
-                        }
-                        _ => {
-                            let accums = aggr_proj_split(
-                                ctx,
-                                calc,
-                                item_uid,
-                                effect,
-                                cseq,
-                                ospec,
-                                (),
-                                crit_options,
-                                Some(projectee_uid),
-                                SeqAccum::new_stack_max(),
-                                SeqInstanceAccumMax::new(),
-                            );
-                            if let Some(accum_dps) = accums.get_per_second() {
-                                *dps_normal += accum_dps;
-                            }
-                            if let Some(aaccum_volley) = accums.get_max() {
-                                *volley_normal += aaccum_volley;
-                            }
-                        }
-                    },
-                }
-            }
-            if let Some(ospec) = &effect.breacher_dmg {
-                breacher_accum.add(ctx, calc, item_uid, effect, cseq, ospec, crit_options, projectee_uid);
-            }
-        }
-        if charge_options.is_enabled() {
-            for charge_uid in ctx.u_data.items.get(item_uid).iter_charges() {
-                let _ = Self::internal_get_stat_item_dmg_applied_checked(
                     reuse_cseq_map,
                     ctx,
                     calc,
