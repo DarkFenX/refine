@@ -212,7 +212,11 @@ impl Calc {
     where
         F: Fn(&EffectSpec) -> bool,
     {
-        match self.get_item_oattr_rfull_filtered(ctx, item_uid, attr_rid, mod_filter) {
+        // Not cached, recalculated on every request
+        let Some(attr_rid) = attr_rid else {
+            return fallback;
+        };
+        match self.checked_calc_filtered_value_and_postproc(ctx, item_uid, attr_rid, mod_filter) {
             Ok(full) => full.extra,
             Err(..) => fallback,
         }
@@ -307,22 +311,6 @@ impl Calc {
     ) -> Option<CalcAttrVals> {
         self.get_item_attr_rfull_inner::<false>(ctx, item_uid, attr_rid?).ok()
     }
-    /// Gets value with custom filter, but does not use cache (has to recalculate on every request)
-    fn get_item_oattr_rfull_filtered<F>(
-        &mut self,
-        ctx: &SvcCtx,
-        item_uid: UItemId,
-        attr_rid: Option<RAttrId>,
-        mod_filter: F,
-    ) -> Result<CalcAttrVals, GetOAttrError>
-    where
-        F: Fn(&EffectSpec) -> bool,
-    {
-        let Some(attr_rid) = attr_rid else {
-            return Err(GetOAttrError::NoAttr);
-        };
-        Ok(self.checked_calc_filtered_value_and_postproc(ctx, item_uid, attr_rid, mod_filter)?)
-    }
     pub(in crate::svc) fn iter_item_attrs_rfull(
         &mut self,
         ctx: &SvcCtx,
@@ -377,7 +365,6 @@ enum GetOAttrError {
 // Some common methods used in query methods
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl Calc {
-    // The returned value is postprocessed if PP, the cached one never is
     fn unchecked_calc_value_cache<const PP: bool>(
         &mut self,
         ctx: &SvcCtx,
