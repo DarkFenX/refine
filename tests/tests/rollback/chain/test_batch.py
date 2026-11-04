@@ -1,4 +1,5 @@
 from fw import Spool, approx, check_no_field
+from fw.api import ItemStatsOptions, StatsOptionItemOutCps, StatsOptionMass, ValOptions
 
 
 def test_sol_additions_manual(client, consts):
@@ -380,6 +381,181 @@ def test_sol_stats_fail(client, consts):
     with check_no_field():
         api_fit.modules  # ruff:ignore[useless-expression]
     assert api_ship.update().attrs[eve_attr_id].modified == approx(100)
+
+
+def test_sol_try_fit_items(client, consts):
+    eve_group_attr_id = client.mk_eve_attr(id_=consts.EveAttr.charge_group1, unit_id=consts.EveAttrUnit.group_id)
+    eve_capacity_attr_id = client.mk_eve_attr(id_=consts.EveAttr.capacity)
+    eve_affector_attr_id = client.mk_eve_attr()
+    eve_attr_id = client.mk_eve_attr()
+    eve_ship_mod = client.mk_eve_effect_mod(
+        func=consts.EveModFunc.item,
+        loc=consts.EveModLoc.ship,
+        op=consts.EveModOp.post_percent,
+        affector_attr_id=eve_affector_attr_id,
+        affectee_attr_id=eve_attr_id)
+    eve_ship_effect_id = client.mk_eve_effect(mod_info=[eve_ship_mod])
+    eve_grp1_id = client.mk_eve_charge_group()
+    eve_grp2_id = client.mk_eve_charge_group()
+    eve_charge1_id = client.mk_eve_charge(
+        grp_id=eve_grp1_id,
+        attrs={eve_affector_attr_id: 50},
+        eff_ids=[eve_ship_effect_id])
+    eve_charge2_id = client.mk_eve_charge(
+        grp_id=eve_grp1_id,
+        attrs={eve_affector_attr_id: 30},
+        eff_ids=[eve_ship_effect_id])
+    eve_charge3_id = client.mk_eve_charge(
+        grp_id=eve_grp2_id,
+        attrs={eve_affector_attr_id: 20},
+        eff_ids=[eve_ship_effect_id])
+    eve_module1_id = client.mk_eve_module(attrs={eve_group_attr_id: eve_grp1_id, eve_capacity_attr_id: 1})
+    eve_module2_id = client.mk_eve_module(attrs={eve_group_attr_id: eve_grp2_id, eve_capacity_attr_id: 1})
+    eve_ship_id = client.mk_eve_ship(attrs={eve_attr_id: 100})
+    client.create_sources()
+    api_sol = client.create_sol()
+    api_fit = api_sol.create_fit()
+    api_ship = api_fit.set_ship(type_id=eve_ship_id)
+    api_module = api_fit.add_module(
+        type_id=eve_module1_id,
+        add_mode={consts.ApiModAddMode.replace: 1},
+        charge_type_id=eve_charge1_id)
+    api_charge_id = api_module.charge.id
+    api_other_item = api_sol.add_sw_effect(type_id=eve_ship_id)
+    api_other_item.remove()
+    # Verification
+    assert api_ship.update().attrs[eve_attr_id].modified == approx(150)
+    # Action & verification - try-fit rolls back to its savepoints between batch changes, and the
+    # batch fails after it. The new module comes first in the rack and accepts only charge 3, so
+    # charge 1 is tried in the old module too, detaching charges loaded by the batch in both.
+    # Commands after try-fit need the new module and its charge, and the swap moves the old module
+    with api_sol.batch(status_code=400, json_predicate={
+            'code': 'ITM-001',
+            'message': f'failed to remove item: item {api_other_item.id} not found',
+            'cmd_index': 5,
+    }) as api_sol_batch:
+        api_sol_batch.change_module(item_id=api_module.id, charge_type_id=eve_charge2_id)
+        api_new_module = api_sol_batch.add_module(
+            fit_id=api_fit.id,
+            type_id=eve_module2_id,
+            add_mode={consts.ApiModAddMode.replace: 0},
+            charge_type_id=eve_charge3_id)
+        api_sol_batch.try_fit_items(
+            fit_id=api_fit.id,
+            type_ids=[eve_module1_id, eve_charge1_id, eve_charge3_id],
+            val_options=ValOptions(charge_group=True))
+        api_sol_batch.change_charge(item_id=api_new_module.charge.id, state=False)
+        api_sol_batch.change_module(item_id=api_new_module.id, move={consts.ApiModMvMode.swap: 1})
+        api_sol_batch.remove_item(item_id=api_other_item.id)
+    assert api_fit.update().modules.high.map(lambda m: m.id) == [None, api_module.id]
+    api_module.update()
+    assert api_module.charge.id == api_charge_id
+    assert api_module.charge.type_id == eve_charge1_id
+    assert api_ship.update().attrs[eve_attr_id].modified == approx(150)
+
+
+def test_sol_stats_state_switch(client, consts):
+    eve_transfer_amount_attr_id = client.mk_eve_attr(id_=consts.EveAttr.power_transfer_amount)
+    eve_cycle_time_attr_id = client.mk_eve_attr()
+    eve_affector_attr_id = client.mk_eve_attr()
+    eve_attr_id = client.mk_eve_attr()
+    eve_transfer_effect_id = client.mk_eve_effect(
+        id_=consts.EveEffect.ship_mod_remote_capacitor_transmitter,
+        cat_id=consts.EveEffCat.target,
+        duration_attr_id=eve_cycle_time_attr_id)
+    eve_ship_mod = client.mk_eve_effect_mod(
+        func=consts.EveModFunc.item,
+        loc=consts.EveModLoc.ship,
+        op=consts.EveModOp.post_percent,
+        affector_attr_id=eve_affector_attr_id,
+        affectee_attr_id=eve_attr_id)
+    eve_ship_effect_id = client.mk_eve_effect(cat_id=consts.EveEffCat.online, mod_info=[eve_ship_mod])
+    eve_online_effect_id = client.mk_eve_online_effect()
+    eve_module_id = client.mk_eve_item(
+        attrs={eve_transfer_amount_attr_id: 351, eve_cycle_time_attr_id: 5000, eve_affector_attr_id: 20},
+        eff_ids=[eve_transfer_effect_id, eve_ship_effect_id, eve_online_effect_id],
+        defeff_id=eve_transfer_effect_id)
+    eve_ship_id = client.mk_eve_ship(attrs={eve_attr_id: 100})
+    client.create_sources()
+    api_sol = client.create_sol()
+    api_fit = api_sol.create_fit()
+    api_ship = api_fit.set_ship(type_id=eve_ship_id)
+    api_module = api_fit.add_module(type_id=eve_module_id)
+    api_other_item = api_sol.add_sw_effect(type_id=eve_ship_id)
+    api_other_item.remove()
+    # Verification
+    assert api_ship.update().attrs[eve_attr_id].modified == approx(100)
+    # Action & verification - stats request activates the module the batch put online, rolls back to
+    # its savepoint, and the batch fails after it. The swap after it needs the module added right
+    # before the stats request, and moves the old module
+    with api_sol.batch(status_code=400, json_predicate={
+            'code': 'ITM-001',
+            'message': f'failed to remove item: item {api_other_item.id} not found',
+            'cmd_index': 4,
+    }) as api_sol_batch:
+        api_sol_batch.change_module(item_id=api_module.id, state=consts.ApiModuleState.online)
+        api_new_module = api_sol_batch.add_module(
+            fit_id=api_fit.id,
+            type_id=eve_module_id,
+            state=consts.ApiModuleState.online)
+        api_sol_batch.get_item_stats(item_id=api_module.id, item_options=ItemStatsOptions(
+            outgoing_cps=[StatsOptionItemOutCps(state=consts.ApiStatItemState.switch)]))
+        api_sol_batch.change_module(item_id=api_new_module.id, move={consts.ApiModMvMode.swap: 0})
+        api_sol_batch.remove_item(item_id=api_other_item.id)
+    assert api_fit.update().modules.high.map(lambda m: m.id) == [api_module.id]
+    assert api_module.update().state == consts.ApiModuleState.offline
+    assert api_ship.update().attrs[eve_attr_id].modified == approx(100)
+
+
+def test_sol_stats_affector_switch(client, consts):
+    eve_mass_attr_id = client.mk_eve_attr(id_=consts.EveAttr.mass)
+    eve_mod_attr_id = client.mk_eve_attr()
+    eve_mod = client.mk_eve_effect_mod(
+        func=consts.EveModFunc.item,
+        loc=consts.EveModLoc.ship,
+        op=consts.EveModOp.mod_add,
+        affector_attr_id=eve_mod_attr_id,
+        affectee_attr_id=eve_mass_attr_id)
+    eve_online_effect_id = client.mk_eve_online_effect()
+    eve_mod_online_effect_id = client.mk_eve_effect(cat_id=consts.EveEffCat.online, mod_info=[eve_mod])
+    eve_mod_active_effect_id = client.mk_eve_effect(cat_id=consts.EveEffCat.active, mod_info=[eve_mod])
+    eve_online_module_id = client.mk_eve_item(
+        attrs={eve_mod_attr_id: 25},
+        eff_ids=[eve_mod_online_effect_id, eve_online_effect_id])
+    eve_active_module_id = client.mk_eve_item(
+        attrs={eve_mod_attr_id: 25},
+        eff_ids=[eve_mod_active_effect_id],
+        defeff_id=eve_mod_active_effect_id)
+    eve_ship_id = client.mk_eve_ship(attrs={eve_mass_attr_id: 100})
+    client.create_sources()
+    api_sol = client.create_sol()
+    api_fit = api_sol.create_fit()
+    api_ship = api_fit.set_ship(type_id=eve_ship_id)
+    api_module = api_fit.add_module(type_id=eve_online_module_id)
+    api_other_item = api_sol.add_sw_effect(type_id=eve_ship_id)
+    api_other_item.remove()
+    # Verification
+    assert api_ship.update().attrs[eve_mass_attr_id].modified == approx(100)
+    # Action & verification - stats request offlines modules the batch put online and added, rolls
+    # back to its savepoint, and the batch fails after it. The swap after it needs the module added
+    # right before the stats request, and moves the old module
+    with api_sol.batch(status_code=400, json_predicate={
+            'code': 'ITM-001',
+            'message': f'failed to remove item: item {api_other_item.id} not found',
+            'cmd_index': 4,
+    }) as api_sol_batch:
+        api_sol_batch.change_module(item_id=api_module.id, state=consts.ApiModuleState.online)
+        api_new_module = api_sol_batch.add_module(
+            fit_id=api_fit.id,
+            type_id=eve_active_module_id,
+            state=consts.ApiModuleState.active)
+        api_sol_batch.get_item_stats(item_id=api_ship.id, item_options=ItemStatsOptions(
+            mass=[StatsOptionMass(affectors=consts.ApiCtlAffector.offline)]))
+        api_sol_batch.change_module(item_id=api_new_module.id, move={consts.ApiModMvMode.swap: 0})
+        api_sol_batch.remove_item(item_id=api_other_item.id)
+    assert api_fit.update().modules.high.map(lambda m: m.id) == [api_module.id]
+    assert api_module.update().state == consts.ApiModuleState.offline
+    assert api_ship.update().attrs[eve_mass_attr_id].modified == approx(100)
 
 
 def test_fit(client, consts):
