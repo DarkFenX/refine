@@ -21,7 +21,8 @@ pub(crate) struct UndoLog {
     mutations: Vec<ItemMutationData>,
     mutation_attr_singles: Vec<UAttrMutationRequest>,
     mutation_attr_batches: Vec<Vec<UAttrMutationRequest>>,
-    // Side stacks recorded to since last commit; stacks which are not marked are empty
+    // Side stacks of data which needs dropping recorded to since last commit; stacks which are not
+    // marked are empty, other stacks are emptied on every commit
     touched: SideStacks,
 }
 impl UndoLog {
@@ -67,33 +68,38 @@ impl UndoLog {
     /// were unmapped while recording.
     pub(crate) fn commit(&mut self, u_data: &mut UData) {
         self.steps.clear();
+        self.recording = false;
+        // Stacks of plain data are emptied by setting their length
+        self.dps_profiles.clear();
+        self.physics.clear();
+        self.mutation_attr_singles.clear();
+        if u_data.fleets.has_detached()
+            || u_data.fits.has_detached()
+            || u_data.items.has_detached()
+            || !self.touched.is_empty()
+        {
+            self.commit_drop(u_data);
+        }
+    }
+    // Not inlined: with eviction and drops inlined, commit saves and restores all callee-saved
+    // registers on every call
+    #[inline(never)]
+    fn commit_drop(&mut self, u_data: &mut UData) {
         u_data.fleets.evict_detached();
         u_data.fits.evict_detached();
         // Includes sub-items unmapped with their parents, and autocharges replaced by fighter type
         // changes
         u_data.items.evict_detached();
-        if !self.touched.is_empty() {
-            if self.touched.contains(SideStacks::DPS_PROFILES) {
-                self.dps_profiles.clear();
-            }
-            if self.touched.contains(SideStacks::AUTOCHARGES) {
-                self.autocharges.clear();
-            }
-            if self.touched.contains(SideStacks::PHYSICS) {
-                self.physics.clear();
-            }
-            if self.touched.contains(SideStacks::MUTATIONS) {
-                self.mutations.clear();
-            }
-            if self.touched.contains(SideStacks::MUTATION_ATTR_SINGLES) {
-                self.mutation_attr_singles.clear();
-            }
-            if self.touched.contains(SideStacks::MUTATION_ATTR_BATCHES) {
-                self.mutation_attr_batches.clear();
-            }
-            self.touched = SideStacks::empty();
+        if self.touched.contains(SideStacks::AUTOCHARGES) {
+            self.autocharges.clear();
         }
-        self.recording = false;
+        if self.touched.contains(SideStacks::MUTATIONS) {
+            self.mutations.clear();
+        }
+        if self.touched.contains(SideStacks::MUTATION_ATTR_BATCHES) {
+            self.mutation_attr_batches.clear();
+        }
+        self.touched = SideStacks::empty();
     }
     pub(crate) fn is_recording(&self) -> bool {
         self.recording
@@ -135,7 +141,6 @@ impl UndoLog {
     pub(crate) fn record_dps_profile(&mut self, step: UndoStep, dps_profile: Option<DpsProfile>) {
         self.steps.push(step);
         self.dps_profiles.push(dps_profile);
-        self.touched.insert(SideStacks::DPS_PROFILES);
     }
     pub(crate) fn pop_dps_profile(&mut self) -> Option<DpsProfile> {
         self.dps_profiles.pop().unwrap()
@@ -151,7 +156,6 @@ impl UndoLog {
     pub(crate) fn record_physics(&mut self, step: UndoStep, physics: UPhysics) {
         self.steps.push(step);
         self.physics.push(physics);
-        self.touched.insert(SideStacks::PHYSICS);
     }
     pub(crate) fn pop_physics(&mut self) -> UPhysics {
         self.physics.pop().unwrap()
@@ -167,7 +171,6 @@ impl UndoLog {
     pub(crate) fn record_mutation_attr_single(&mut self, step: UndoStep, attr_mutation: UAttrMutationRequest) {
         self.steps.push(step);
         self.mutation_attr_singles.push(attr_mutation);
-        self.touched.insert(SideStacks::MUTATION_ATTR_SINGLES);
     }
     pub(crate) fn pop_mutation_attr_single(&mut self) -> UAttrMutationRequest {
         self.mutation_attr_singles.pop().unwrap()
@@ -185,12 +188,9 @@ impl UndoLog {
 bitflags! {
     #[derive(Clone, Copy)]
     struct SideStacks: u8 {
-        const DPS_PROFILES = 1 << 0;
-        const AUTOCHARGES = 1 << 1;
-        const PHYSICS = 1 << 2;
-        const MUTATIONS = 1 << 3;
-        const MUTATION_ATTR_SINGLES = 1 << 4;
-        const MUTATION_ATTR_BATCHES = 1 << 5;
+        const AUTOCHARGES = 1 << 0;
+        const MUTATIONS = 1 << 1;
+        const MUTATION_ATTR_BATCHES = 1 << 2;
     }
 }
 

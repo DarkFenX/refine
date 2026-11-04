@@ -100,6 +100,9 @@ where
         let pos = self.detached.iter().rposition(|&v| v == int_id).unwrap();
         self.detached.swap_remove(pos);
     }
+    pub(crate) fn has_detached(&self) -> bool {
+        !self.detached.is_empty()
+    }
     /// Removes all detached entities from storage.
     pub(crate) fn evict_detached(&mut self) {
         while let Some(int_id) = self.detached.pop() {
