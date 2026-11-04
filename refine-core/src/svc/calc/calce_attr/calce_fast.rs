@@ -9,7 +9,7 @@ use crate::{
     rd::{RAttr, RAttrId},
     svc::{
         Calc, SvcCtx,
-        calc::{CalcAttrVals, CalcModification, CalcModificationKey, CtxModifier, ModAccumFast},
+        calc::{CalcAttrVals, CalcModification, CalcModificationKey, CalcValueKind, CtxModifier, ModAccumFast},
         err::UItemLoadedError,
     },
     ud::{UItem, UItemId},
@@ -72,28 +72,9 @@ impl Calc {
         attr_rid: Option<RAttrId>,
         fallback: Value,
     ) -> Option<Value> {
-        if let Some(attr_rid) = attr_rid
-            && let Some(cval) = self.get_cached_cval(item_uid, attr_rid)
-        {
-            return Some(cval.extra);
-        }
-        self.get_item_oattr_afb_oextra_slow(ctx, item_uid, attr_rid, fallback)
-    }
-    #[cold]
-    #[inline(never)]
-    fn get_item_oattr_afb_oextra_slow(
-        &mut self,
-        ctx: &SvcCtx,
-        item_uid: UItemId,
-        attr_rid: Option<RAttrId>,
-        fallback: Value,
-    ) -> Option<Value> {
-        match self.get_item_oattr_rfull(ctx, item_uid, attr_rid) {
-            Ok(full) => Some(full.extra),
-            Err(error) => match error {
-                GetOAttrError::ItemNotLoaded(..) => None,
-                GetOAttrError::NoAttr => Some(fallback),
-            },
+        match self.get_cached_oattr_val::<{ CalcValueKind::Extra }>(item_uid, attr_rid) {
+            Some(val) => Some(val),
+            None => self.get_item_oattr_afb_oval_slow::<{ CalcValueKind::Extra }>(ctx, item_uid, attr_rid, fallback),
         }
     }
     /// - Optional attribute
@@ -107,25 +88,9 @@ impl Calc {
         attr_rid: Option<RAttrId>,
         fallback: Value,
     ) -> Value {
-        if let Some(attr_rid) = attr_rid
-            && let Some(cval) = self.get_cached_cval(item_uid, attr_rid)
-        {
-            return cval.dogma;
-        }
-        self.get_item_oattr_ffb_dogma_slow(ctx, item_uid, attr_rid, fallback)
-    }
-    #[cold]
-    #[inline(never)]
-    fn get_item_oattr_ffb_dogma_slow(
-        &mut self,
-        ctx: &SvcCtx,
-        item_uid: UItemId,
-        attr_rid: Option<RAttrId>,
-        fallback: Value,
-    ) -> Value {
-        match self.get_item_oattr_rfull(ctx, item_uid, attr_rid) {
-            Ok(full) => full.dogma,
-            Err(..) => fallback,
+        match self.get_cached_oattr_val::<{ CalcValueKind::Dogma }>(item_uid, attr_rid) {
+            Some(val) => val,
+            None => self.get_item_oattr_ffb_val_slow::<{ CalcValueKind::Dogma }>(ctx, item_uid, attr_rid, fallback),
         }
     }
     /// - Optional attribute
@@ -139,25 +104,9 @@ impl Calc {
         attr_rid: Option<RAttrId>,
         fallback: Value,
     ) -> Value {
-        if let Some(attr_rid) = attr_rid
-            && let Some(cval) = self.get_cached_cval(item_uid, attr_rid)
-        {
-            return cval.extra;
-        }
-        self.get_item_oattr_ffb_extra_slow(ctx, item_uid, attr_rid, fallback)
-    }
-    #[cold]
-    #[inline(never)]
-    fn get_item_oattr_ffb_extra_slow(
-        &mut self,
-        ctx: &SvcCtx,
-        item_uid: UItemId,
-        attr_rid: Option<RAttrId>,
-        fallback: Value,
-    ) -> Value {
-        match self.get_item_oattr_rfull(ctx, item_uid, attr_rid) {
-            Ok(full) => full.extra,
-            Err(..) => fallback,
+        match self.get_cached_oattr_val::<{ CalcValueKind::Extra }>(item_uid, attr_rid) {
+            Some(val) => val,
+            None => self.get_item_oattr_ffb_val_slow::<{ CalcValueKind::Extra }>(ctx, item_uid, attr_rid, fallback),
         }
     }
     /// - Optional item
@@ -173,10 +122,9 @@ impl Calc {
         fallback: Value,
     ) -> Option<Value> {
         if let Some(item_uid) = item_uid
-            && let Some(attr_rid) = attr_rid
-            && let Some(cval) = self.get_cached_cval(item_uid, attr_rid)
+            && let Some(val) = self.get_cached_oattr_val::<{ CalcValueKind::Extra }>(item_uid, attr_rid)
         {
-            return Some(cval.extra);
+            return Some(val);
         }
         self.get_oitem_oattr_afb_oextra_slow(ctx, item_uid, attr_rid, fallback)
     }
@@ -189,13 +137,7 @@ impl Calc {
         attr_rid: Option<RAttrId>,
         fallback: Value,
     ) -> Option<Value> {
-        match self.get_item_oattr_rfull(ctx, item_uid?, attr_rid) {
-            Ok(full) => Some(full.extra),
-            Err(error) => match error {
-                GetOAttrError::ItemNotLoaded(..) => None,
-                GetOAttrError::NoAttr => Some(fallback),
-            },
-        }
+        self.get_item_oattr_afb_oval_slow::<{ CalcValueKind::Extra }>(ctx, item_uid?, attr_rid, fallback)
     }
     /// - Modifiers are filtered
     /// - Optional attribute
@@ -227,15 +169,24 @@ impl Calc {
 // Core query methods
 ////////////////////////////////////////////////////////////////////////////////////////////////
 impl Calc {
-    // Cached value of an attribute which needs no postprocessing. It is inlined into hot callers,
-    // which use regular methods for everything else
     #[inline(always)]
     fn get_cached_cval(&self, item_uid: UItemId, attr_rid: RAttrId) -> Option<CalcAttrVals> {
+        // Cached value of an attribute which needs no postprocessing. It is inlined into hot
+        // callers, which use regular methods for everything else
         let attr_entry = self.attrs.get_item_attr_data(item_uid)?.get(&attr_rid)?;
         match attr_entry.postproc {
             Some(..) => None,
             None => attr_entry.value,
         }
+    }
+    #[inline(always)]
+    fn get_cached_oattr_val<const KIND: CalcValueKind>(
+        &self,
+        item_uid: UItemId,
+        attr_rid: Option<RAttrId>,
+    ) -> Option<Value> {
+        let cval = self.get_cached_cval(item_uid, attr_rid?)?;
+        Some(cval.get_value(KIND))
     }
     #[inline]
     pub(crate) fn get_item_attr_rfull(
@@ -259,7 +210,6 @@ impl Calc {
     ) -> Result<CalcAttrVals, UItemLoadedError> {
         self.get_item_attr_rfull_inner::<true>(ctx, item_uid, attr_rid)
     }
-    // Cached value, or value calculated and cached on a miss; postprocessed if PP
     #[inline(always)]
     fn get_item_attr_rfull_inner<const PP: bool>(
         &mut self,
@@ -267,6 +217,7 @@ impl Calc {
         item_uid: UItemId,
         attr_rid: RAttrId,
     ) -> Result<CalcAttrVals, UItemLoadedError> {
+        // Cached value, or value calculated and cached on a miss; postprocessed if PP
         let item_attr_data = self.get_item_data_with_err(item_uid)?;
         if let Some(attr_entry) = item_attr_data.get(&attr_rid)
             && let Some(cval) = attr_entry.value
@@ -280,28 +231,39 @@ impl Calc {
         std::hint::cold_path(); // Misses are rare compared to hits
         Ok(self.unchecked_calc_value_cache::<PP>(ctx, item_uid, attr_rid))
     }
-    fn get_item_oattr_rfull(
+    #[cold]
+    #[inline(never)]
+    fn get_item_oattr_afb_oval_slow<const KIND: CalcValueKind>(
         &mut self,
         ctx: &SvcCtx,
         item_uid: UItemId,
         attr_rid: Option<RAttrId>,
-    ) -> Result<CalcAttrVals, GetOAttrError> {
-        // Check item load status first, attribute second. Error priority matters for some users
-        let item_attr_data = self.get_item_data_with_err(item_uid)?;
-        let Some(attr_rid) = attr_rid else {
-            return Err(GetOAttrError::NoAttr);
-        };
-        if let Some(attr_entry) = item_attr_data.get(&attr_rid)
-            && let Some(cval) = attr_entry.value
-        {
-            let cval = match attr_entry.postproc {
-                Some(postproc) => postproc.fast(self, ctx, item_uid, cval),
-                None => cval,
-            };
-            return Ok(cval);
+        fallback: Value,
+    ) -> Option<Value> {
+        // Slow paths of fallback getters take the same arguments as their fast paths, so that the
+        // fast paths do not move arguments around to call them
+        match attr_rid {
+            Some(attr_rid) => {
+                let cval = self.get_item_attr_rfull_inner::<true>(ctx, item_uid, attr_rid).ok()?;
+                Some(cval.get_value(KIND))
+            }
+            // Items which are not loaded get no fallback
+            None => self.attrs.get_item_attr_data(item_uid).map(|_| fallback),
         }
-        std::hint::cold_path(); // Misses are rare compared to hits
-        Ok(self.unchecked_calc_value_cache::<true>(ctx, item_uid, attr_rid))
+    }
+    #[cold]
+    #[inline(never)]
+    fn get_item_oattr_ffb_val_slow<const KIND: CalcValueKind>(
+        &mut self,
+        ctx: &SvcCtx,
+        item_uid: UItemId,
+        attr_rid: Option<RAttrId>,
+        fallback: Value,
+    ) -> Value {
+        // Not an unwrap_or on the other slow path in the fast path: callers would keep the fallback
+        // alive across the call
+        self.get_item_oattr_afb_oval_slow::<KIND>(ctx, item_uid, attr_rid, fallback)
+            .unwrap_or(fallback)
     }
     pub(in crate::svc::calc) fn get_item_oattr_ofull_nopp(
         &mut self,
@@ -351,14 +313,6 @@ impl Calc {
         }
         Ok(cval_map.into_iter())
     }
-}
-
-#[derive(Debug, thiserror::Error)]
-enum GetOAttrError {
-    #[error(transparent)]
-    ItemNotLoaded(#[from] UItemLoadedError),
-    #[error("no attribute in request")]
-    NoAttr,
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
