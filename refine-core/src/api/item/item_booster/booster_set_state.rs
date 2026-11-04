@@ -9,11 +9,7 @@ use crate::{
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl<'s> Booster<'s> {
     pub fn set_state(&mut self, state: bool) {
-        let u_booster = self.sol.u_data.items.get(self.uid).dc_booster().unwrap();
-        if state == u_booster.get_booster_state() {
-            return;
-        }
-        self.sol.internal_set_booster_state(self.uid, state)
+        self.sol.internal_set_booster_state_inner::<true>(self.uid, state);
     }
 }
 
@@ -22,7 +18,13 @@ impl<'s> Booster<'s> {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl CoreInner {
     pub(in crate::api) fn internal_set_booster_state(&mut self, booster_uid: UItemId, state: bool) {
+        self.internal_set_booster_state_inner::<false>(booster_uid, state);
+    }
+    fn internal_set_booster_state_inner<const SCREEN: bool>(&mut self, booster_uid: UItemId, state: bool) {
         let u_booster = self.u_data.items.get_mut(booster_uid).dc_booster_mut().unwrap();
+        if SCREEN && state == u_booster.get_booster_state() {
+            return;
+        }
         if self.undo.is_recording() {
             self.undo
                 .record(UndoStep::BoosterState(booster_uid, u_booster.get_booster_state()));

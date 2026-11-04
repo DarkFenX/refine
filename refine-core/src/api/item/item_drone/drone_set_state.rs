@@ -9,11 +9,7 @@ use crate::{
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl<'s> Drone<'s> {
     pub fn set_state(&mut self, state: MinionState) {
-        let u_drone = self.sol.u_data.items.get(self.uid).dc_drone().unwrap();
-        if state == u_drone.get_drone_state() {
-            return;
-        }
-        self.sol.internal_set_drone_state(self.uid, state);
+        self.sol.internal_set_drone_state_inner::<true>(self.uid, state);
     }
 }
 
@@ -22,7 +18,13 @@ impl<'s> Drone<'s> {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl CoreInner {
     pub(in crate::api) fn internal_set_drone_state(&mut self, drone_uid: UItemId, state: MinionState) {
+        self.internal_set_drone_state_inner::<false>(drone_uid, state);
+    }
+    fn internal_set_drone_state_inner<const SCREEN: bool>(&mut self, drone_uid: UItemId, state: MinionState) {
         let u_drone = self.u_data.items.get_mut(drone_uid).dc_drone_mut().unwrap();
+        if SCREEN && state == u_drone.get_drone_state() {
+            return;
+        }
         if self.undo.is_recording() {
             self.undo
                 .record(UndoStep::DroneState(drone_uid, u_drone.get_drone_state()));

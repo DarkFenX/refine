@@ -9,11 +9,7 @@ use crate::{
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl<'s> Charge<'s> {
     pub fn set_state(&mut self, state: bool) {
-        let u_charge = self.sol.u_data.items.get(self.uid).dc_charge().unwrap();
-        if state == !u_charge.get_force_disabled() {
-            return;
-        }
-        self.sol.internal_set_charge_state(self.uid, state);
+        self.sol.internal_set_charge_state_inner::<true>(self.uid, state);
     }
 }
 
@@ -22,7 +18,13 @@ impl<'s> Charge<'s> {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl CoreInner {
     pub(in crate::api) fn internal_set_charge_state(&mut self, charge_uid: UItemId, state: bool) {
+        self.internal_set_charge_state_inner::<false>(charge_uid, state);
+    }
+    fn internal_set_charge_state_inner<const SCREEN: bool>(&mut self, charge_uid: UItemId, state: bool) {
         let u_charge = self.u_data.items.get_mut(charge_uid).dc_charge_mut().unwrap();
+        if SCREEN && state == !u_charge.get_force_disabled() {
+            return;
+        }
         if self.undo.is_recording() {
             self.undo
                 .record(UndoStep::ChargeState(charge_uid, !u_charge.get_force_disabled()));

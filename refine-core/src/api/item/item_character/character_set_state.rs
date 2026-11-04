@@ -9,11 +9,7 @@ use crate::{
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl<'s> Character<'s> {
     pub fn set_state(&mut self, state: bool) {
-        let u_character = self.sol.u_data.items.get(self.uid).dc_character().unwrap();
-        if state == u_character.get_character_state() {
-            return;
-        }
-        self.sol.internal_set_character_state(self.uid, state)
+        self.sol.internal_set_character_state_inner::<true>(self.uid, state);
     }
 }
 
@@ -22,7 +18,13 @@ impl<'s> Character<'s> {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl CoreInner {
     pub(in crate::api) fn internal_set_character_state(&mut self, character_uid: UItemId, state: bool) {
+        self.internal_set_character_state_inner::<false>(character_uid, state);
+    }
+    fn internal_set_character_state_inner<const SCREEN: bool>(&mut self, character_uid: UItemId, state: bool) {
         let u_character = self.u_data.items.get_mut(character_uid).dc_character_mut().unwrap();
+        if SCREEN && state == u_character.get_character_state() {
+            return;
+        }
         if self.undo.is_recording() {
             self.undo.record(UndoStep::CharacterState(
                 character_uid,

@@ -9,11 +9,7 @@ use crate::{
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl<'s> SwEffect<'s> {
     pub fn set_state(&mut self, state: bool) {
-        let u_sw_effect = self.sol.u_data.items.get(self.uid).dc_sw_effect().unwrap();
-        if state == u_sw_effect.get_sw_effect_state() {
-            return;
-        }
-        self.sol.internal_set_sw_effect_state(self.uid, state)
+        self.sol.internal_set_sw_effect_state_inner::<true>(self.uid, state);
     }
 }
 
@@ -22,7 +18,13 @@ impl<'s> SwEffect<'s> {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl CoreInner {
     pub(in crate::api) fn internal_set_sw_effect_state(&mut self, sw_effect_uid: UItemId, state: bool) {
+        self.internal_set_sw_effect_state_inner::<false>(sw_effect_uid, state);
+    }
+    fn internal_set_sw_effect_state_inner<const SCREEN: bool>(&mut self, sw_effect_uid: UItemId, state: bool) {
         let u_sw_effect = self.u_data.items.get_mut(sw_effect_uid).dc_sw_effect_mut().unwrap();
+        if SCREEN && state == u_sw_effect.get_sw_effect_state() {
+            return;
+        }
         if self.undo.is_recording() {
             self.undo.record(UndoStep::SwEffectState(
                 sw_effect_uid,

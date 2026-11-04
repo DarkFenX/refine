@@ -9,11 +9,7 @@ use crate::{
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl<'s> Service<'s> {
     pub fn set_state(&mut self, state: ServiceState) {
-        let u_service = self.sol.u_data.items.get(self.uid).dc_service().unwrap();
-        if state == u_service.get_service_state() {
-            return;
-        }
-        self.sol.internal_set_service_state(self.uid, state)
+        self.sol.internal_set_service_state_inner::<true>(self.uid, state);
     }
 }
 
@@ -22,7 +18,13 @@ impl<'s> Service<'s> {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl CoreInner {
     pub(in crate::api) fn internal_set_service_state(&mut self, service_uid: UItemId, state: ServiceState) {
+        self.internal_set_service_state_inner::<false>(service_uid, state);
+    }
+    fn internal_set_service_state_inner<const SCREEN: bool>(&mut self, service_uid: UItemId, state: ServiceState) {
         let u_service = self.u_data.items.get_mut(service_uid).dc_service_mut().unwrap();
+        if SCREEN && state == u_service.get_service_state() {
+            return;
+        }
         if self.undo.is_recording() {
             self.undo
                 .record(UndoStep::ServiceState(service_uid, u_service.get_service_state()));

@@ -9,11 +9,7 @@ use crate::{
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl<'s> ProjEffect<'s> {
     pub fn set_state(&mut self, state: bool) {
-        let u_proj_effect = self.sol.u_data.items.get(self.uid).dc_proj_effect().unwrap();
-        if state == u_proj_effect.get_proj_effect_state() {
-            return;
-        }
-        self.sol.internal_set_proj_effect_state(self.uid, state)
+        self.sol.internal_set_proj_effect_state_inner::<true>(self.uid, state);
     }
 }
 
@@ -22,7 +18,13 @@ impl<'s> ProjEffect<'s> {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl CoreInner {
     pub(in crate::api) fn internal_set_proj_effect_state(&mut self, proj_effect_uid: UItemId, state: bool) {
+        self.internal_set_proj_effect_state_inner::<false>(proj_effect_uid, state);
+    }
+    fn internal_set_proj_effect_state_inner<const SCREEN: bool>(&mut self, proj_effect_uid: UItemId, state: bool) {
         let u_proj_effect = self.u_data.items.get_mut(proj_effect_uid).dc_proj_effect_mut().unwrap();
+        if SCREEN && state == u_proj_effect.get_proj_effect_state() {
+            return;
+        }
         if self.undo.is_recording() {
             self.undo.record(UndoStep::ProjEffectState(
                 proj_effect_uid,

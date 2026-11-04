@@ -9,11 +9,7 @@ use crate::{
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl<'s> Skill<'s> {
     pub fn set_state(&mut self, state: bool) {
-        let u_skill = self.sol.u_data.items.get(self.uid).dc_skill().unwrap();
-        if state == u_skill.get_skill_state() {
-            return;
-        }
-        self.sol.internal_set_skill_state(self.uid, state)
+        self.sol.internal_set_skill_state_inner::<true>(self.uid, state);
     }
 }
 
@@ -22,7 +18,13 @@ impl<'s> Skill<'s> {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl CoreInner {
     pub(in crate::api) fn internal_set_skill_state(&mut self, skill_uid: UItemId, state: bool) {
+        self.internal_set_skill_state_inner::<false>(skill_uid, state);
+    }
+    fn internal_set_skill_state_inner<const SCREEN: bool>(&mut self, skill_uid: UItemId, state: bool) {
         let u_skill = self.u_data.items.get_mut(skill_uid).dc_skill_mut().unwrap();
+        if SCREEN && state == u_skill.get_skill_state() {
+            return;
+        }
         if self.undo.is_recording() {
             self.undo
                 .record(UndoStep::SkillState(skill_uid, u_skill.get_skill_state()));

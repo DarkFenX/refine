@@ -11,11 +11,7 @@ use crate::{
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl<'s> Fighter<'s> {
     pub fn set_state(&mut self, state: MinionState) {
-        let u_fighter = self.sol.u_data.items.get(self.uid).dc_fighter().unwrap();
-        if state == u_fighter.get_fighter_state() {
-            return;
-        }
-        self.sol.internal_set_fighter_state(self.uid, state);
+        self.sol.internal_set_fighter_state_inner::<true>(self.uid, state);
     }
 }
 
@@ -24,8 +20,14 @@ impl<'s> Fighter<'s> {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl CoreInner {
     pub(in crate::api) fn internal_set_fighter_state(&mut self, fighter_uid: UItemId, state: MinionState) {
+        self.internal_set_fighter_state_inner::<false>(fighter_uid, state);
+    }
+    fn internal_set_fighter_state_inner<const SCREEN: bool>(&mut self, fighter_uid: UItemId, state: MinionState) {
         // Update user data for fighter
         let u_fighter = self.u_data.items.get_mut(fighter_uid).dc_fighter_mut().unwrap();
+        if SCREEN && state == u_fighter.get_fighter_state() {
+            return;
+        }
         if self.undo.is_recording() {
             self.undo
                 .record(UndoStep::FighterState(fighter_uid, u_fighter.get_fighter_state()));

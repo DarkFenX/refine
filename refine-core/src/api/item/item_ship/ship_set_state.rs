@@ -9,11 +9,7 @@ use crate::{
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl<'s> Ship<'s> {
     pub fn set_state(&mut self, state: bool) {
-        let u_ship = self.sol.u_data.items.get(self.uid).dc_ship().unwrap();
-        if state == u_ship.get_ship_state() {
-            return;
-        }
-        self.sol.internal_set_ship_state(self.uid, state)
+        self.sol.internal_set_ship_state_inner::<true>(self.uid, state);
     }
 }
 
@@ -22,7 +18,13 @@ impl<'s> Ship<'s> {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl CoreInner {
     pub(in crate::api) fn internal_set_ship_state(&mut self, ship_uid: UItemId, state: bool) {
+        self.internal_set_ship_state_inner::<false>(ship_uid, state);
+    }
+    fn internal_set_ship_state_inner<const SCREEN: bool>(&mut self, ship_uid: UItemId, state: bool) {
         let u_ship = self.u_data.items.get_mut(ship_uid).dc_ship_mut().unwrap();
+        if SCREEN && state == u_ship.get_ship_state() {
+            return;
+        }
         if self.undo.is_recording() {
             self.undo.record(UndoStep::ShipState(ship_uid, u_ship.get_ship_state()));
         }

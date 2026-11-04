@@ -9,11 +9,7 @@ use crate::{
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl<'s> Autocharge<'s> {
     pub fn set_state(&mut self, state: bool) {
-        let u_autocharge = self.sol.u_data.items.get(self.uid).dc_autocharge().unwrap();
-        if state == !u_autocharge.get_force_disabled() {
-            return;
-        }
-        self.sol.internal_set_autocharge_state(self.uid, state);
+        self.sol.internal_set_autocharge_state_inner::<true>(self.uid, state);
     }
 }
 
@@ -22,7 +18,13 @@ impl<'s> Autocharge<'s> {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl CoreInner {
     pub(in crate::api) fn internal_set_autocharge_state(&mut self, autocharge_uid: UItemId, state: bool) {
+        self.internal_set_autocharge_state_inner::<false>(autocharge_uid, state);
+    }
+    fn internal_set_autocharge_state_inner<const SCREEN: bool>(&mut self, autocharge_uid: UItemId, state: bool) {
         let u_autocharge = self.u_data.items.get_mut(autocharge_uid).dc_autocharge_mut().unwrap();
+        if SCREEN && state == !u_autocharge.get_force_disabled() {
+            return;
+        }
         if self.undo.is_recording() {
             self.undo.record(UndoStep::AutochargeState(
                 autocharge_uid,

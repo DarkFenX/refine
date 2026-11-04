@@ -9,11 +9,7 @@ use crate::{
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl<'s> Module<'s> {
     pub fn set_state(&mut self, state: ModuleState) {
-        let u_module = self.sol.u_data.items.get(self.uid).dc_module().unwrap();
-        if state == u_module.get_module_state() {
-            return;
-        }
-        self.sol.internal_set_module_state(self.uid, state);
+        self.sol.internal_set_module_state_inner::<true>(self.uid, state);
     }
 }
 
@@ -22,8 +18,14 @@ impl<'s> Module<'s> {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl CoreInner {
     pub(in crate::api) fn internal_set_module_state(&mut self, module_uid: UItemId, state: ModuleState) {
+        self.internal_set_module_state_inner::<false>(module_uid, state);
+    }
+    fn internal_set_module_state_inner<const SCREEN: bool>(&mut self, module_uid: UItemId, state: ModuleState) {
         // Update user data for module
         let u_module = self.u_data.items.get_mut(module_uid).dc_module_mut().unwrap();
+        if SCREEN && state == u_module.get_module_state() {
+            return;
+        }
         let charge_uid = u_module.get_charge_uid();
         if self.undo.is_recording() {
             self.undo
