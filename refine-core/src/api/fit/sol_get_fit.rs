@@ -5,9 +5,9 @@ use crate::{Fit, FitId, Sol, err::basic::FitFoundError};
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl Sol {
     pub fn get_fit(&mut self, fit_id: &FitId) -> Result<Fit<'_>, FitGetError> {
-        let core = self.inner_mut();
-        let fit_uid = core.u_data.fits.int_id_by_ext_id_err(fit_id)?;
-        Ok(Fit::new(core, fit_uid))
+        let sol = self.inner_mut();
+        let fit_uid = sol.u_data.fits.int_id_by_ext_id_err(fit_id)?;
+        Ok(Fit::new(sol, fit_uid))
     }
 }
 

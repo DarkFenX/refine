@@ -1,11 +1,11 @@
 use crate::{
     PValue,
-    sol::{CoreInner, RevProjs},
+    sol::{RevProjs, SolCore},
     svc::Svc,
     ud::{UData, UItemId},
 };
 
-impl CoreInner {
+impl SolCore {
     pub(in crate::api) fn util_update_item_radius_in_projs(
         u_data: &mut UData,
         rev_projs: &RevProjs,
@@ -25,7 +25,7 @@ impl CoreInner {
                 && u_proj_data.update_tgt_radius(item_radius)
             {
                 let u_proj_data = Some(*u_proj_data);
-                CoreInner::util_change_item_proj_data(u_data, svc, projector_uid, item_uid, u_proj_data);
+                SolCore::util_change_item_proj_data(u_data, svc, projector_uid, item_uid, u_proj_data);
             }
         }
     }

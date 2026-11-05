@@ -6,6 +6,6 @@ use crate::{Fighter, RangedProjIter};
 impl<'s> Fighter<'s> {
     /// Iterates over fighter's projections.
     pub fn iter_projs(&mut self) -> RangedProjIter<'_> {
-        RangedProjIter::new(self.core, self.uid)
+        RangedProjIter::new(self.sol, self.uid)
     }
 }

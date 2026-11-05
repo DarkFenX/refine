@@ -1,7 +1,7 @@
 use crate::{
     Coordinates, Fighter,
     misc::Xyz,
-    sol::{CoreInner, UndoStep},
+    sol::{SolCore, UndoStep},
     ud::UItemId,
 };
 
@@ -11,7 +11,7 @@ use crate::{
 impl<'s> Fighter<'s> {
     /// Set fighter position in its solar system.
     pub fn set_coordinates(&mut self, coordinates: Coordinates) {
-        self.core
+        self.sol
             .internal_set_fighter_coordinates(self.uid, coordinates.into_xyz())
     }
 }
@@ -19,7 +19,7 @@ impl<'s> Fighter<'s> {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Private
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-impl CoreInner {
+impl SolCore {
     pub(in crate::api) fn internal_set_fighter_coordinates(&mut self, fighter_uid: UItemId, coordinates: Xyz) {
         let u_fighter = self.u_data.items.get_mut(fighter_uid).dc_fighter_mut().unwrap();
         if u_fighter.get_physics().coordinates == coordinates {
@@ -30,6 +30,6 @@ impl CoreInner {
                 .record_physics(UndoStep::FighterPhysics(fighter_uid), *u_fighter.get_physics());
         }
         u_fighter.get_physics_mut().coordinates = coordinates;
-        CoreInner::util_update_fighter_physics(&mut self.u_data, &self.rev_projs, &mut self.svc, fighter_uid);
+        SolCore::util_update_fighter_physics(&mut self.u_data, &self.rev_projs, &mut self.svc, fighter_uid);
     }
 }

@@ -1,7 +1,7 @@
 use crate::{
     Fighter, ItemTypeId,
     ad::AItemId,
-    sol::{CoreInner, UndoStep},
+    sol::{SolCore, UndoStep},
     ud::{UAutocharges, UItemId},
 };
 
@@ -11,14 +11,14 @@ use crate::{
 impl<'s> Fighter<'s> {
     /// Set type ID, replacing currently used EVE item by another, preserving all the user data.
     pub fn set_type_id(&mut self, type_id: ItemTypeId) {
-        self.core.internal_set_fighter_type_aid(self.uid, type_id.into_aid())
+        self.sol.internal_set_fighter_type_aid(self.uid, type_id.into_aid())
     }
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Private
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-impl CoreInner {
+impl SolCore {
     pub(in crate::api) fn internal_set_fighter_type_aid(&mut self, fighter_uid: UItemId, type_aid: AItemId) {
         let u_item = self.u_data.items.get(fighter_uid);
         let old_type_aid = u_item.get_base_type_aid();
@@ -28,7 +28,7 @@ impl CoreInner {
         // Autocharges are defined by fighter type, so they are replaced. Old ones are discarded as
         // fighter's sub-items, and while recording their container goes to the log, so that
         // rollback can put them back with their IDs and states
-        CoreInner::util_detach_item_autocharges(
+        SolCore::util_detach_item_autocharges(
             &mut self.u_data,
             &mut self.svc,
             &mut self.rev_projs,
@@ -40,7 +40,7 @@ impl CoreInner {
         for autocharge_uid in old_autocharges.values() {
             self.internal_discard_subitem(autocharge_uid);
         }
-        CoreInner::util_remove_fighter(&mut self.u_data, &mut self.svc, fighter_uid, &mut self.reuse.eupdates);
+        SolCore::util_remove_fighter(&mut self.u_data, &mut self.svc, fighter_uid, &mut self.reuse.eupdates);
         let u_fighter = self.u_data.items.get_mut(fighter_uid).dc_fighter_mut().unwrap();
         u_fighter.set_type_aid(type_aid, &self.u_data.r_data);
         if self.undo.is_recording() {
@@ -48,8 +48,8 @@ impl CoreInner {
                 .record_autocharges(UndoStep::FighterType(fighter_uid, old_type_aid), old_autocharges);
         }
         // Update just fighter, autocharges will copy updated projection ranges
-        CoreInner::util_update_item_radius_in_projs(&mut self.u_data, &self.rev_projs, &mut self.svc, fighter_uid);
-        CoreInner::util_add_fighter_with_acs(
+        SolCore::util_update_item_radius_in_projs(&mut self.u_data, &self.rev_projs, &mut self.svc, fighter_uid);
+        SolCore::util_add_fighter_with_acs(
             &mut self.u_data,
             &mut self.svc,
             &mut self.rev_projs,
@@ -64,7 +64,7 @@ impl CoreInner {
         type_aid: AItemId,
         autocharges: UAutocharges,
     ) {
-        CoreInner::util_remove_fighter_with_acs(
+        SolCore::util_remove_fighter_with_acs(
             &mut self.u_data,
             &mut self.svc,
             &mut self.rev_projs,
@@ -77,9 +77,9 @@ impl CoreInner {
         let u_fighter = self.u_data.items.get_mut(fighter_uid).dc_fighter_mut().unwrap();
         u_fighter.set_type_aid(type_aid, &self.u_data.r_data);
         u_fighter.set_autocharges(autocharges);
-        CoreInner::util_update_item_radius_in_projs(&mut self.u_data, &self.rev_projs, &mut self.svc, fighter_uid);
-        CoreInner::util_add_fighter(&mut self.u_data, &mut self.svc, fighter_uid, &mut self.reuse.eupdates);
-        CoreInner::util_reattach_item_autocharges(
+        SolCore::util_update_item_radius_in_projs(&mut self.u_data, &self.rev_projs, &mut self.svc, fighter_uid);
+        SolCore::util_add_fighter(&mut self.u_data, &mut self.svc, fighter_uid, &mut self.reuse.eupdates);
+        SolCore::util_reattach_item_autocharges(
             &mut self.u_data,
             &mut self.svc,
             &mut self.rev_projs,

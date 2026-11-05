@@ -1,6 +1,6 @@
 use crate::{
     Service, ServiceState,
-    sol::{CoreInner, UndoStep},
+    sol::{SolCore, UndoStep},
     ud::UItemId,
 };
 
@@ -9,14 +9,14 @@ use crate::{
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl<'s> Service<'s> {
     pub fn set_state(&mut self, state: ServiceState) {
-        self.core.internal_set_service_state_inner::<true>(self.uid, state);
+        self.sol.internal_set_service_state_inner::<true>(self.uid, state);
     }
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Private
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-impl CoreInner {
+impl SolCore {
     pub(in crate::api) fn internal_set_service_state(&mut self, service_uid: UItemId, state: ServiceState) {
         self.internal_set_service_state_inner::<false>(service_uid, state);
     }
@@ -33,7 +33,7 @@ impl CoreInner {
         u_service.set_service_state(state);
         let new_a_state = u_service.get_state();
         u_service.update_reffs(&mut self.reuse.eupdates, &self.u_data.r_data);
-        CoreInner::util_switch_item_state(
+        SolCore::util_switch_item_state(
             &self.u_data,
             &mut self.svc,
             service_uid,

@@ -1,4 +1,4 @@
-use crate::{AttrId, ad::AAttrId, sol::CoreInner, ud::UItemId};
+use crate::{AttrId, ad::AAttrId, sol::SolCore, ud::UItemId};
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Public
@@ -12,7 +12,7 @@ use crate::{AttrId, ad::AAttrId, sol::CoreInner, ud::UItemId};
 /// are the only way to access item attribute mutations which are not available on current data
 /// source.
 pub struct RawMAttr<'s> {
-    pub(super) core: &'s mut CoreInner,
+    pub(super) sol: &'s mut SolCore,
     pub(super) item_uid: UItemId,
     pub(super) attr_aid: AAttrId,
 }
@@ -27,9 +27,9 @@ impl<'s> RawMAttr<'s> {
 // Private
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl<'s> RawMAttr<'s> {
-    pub(in crate::api) fn new(core: &'s mut CoreInner, item_uid: UItemId, attr_aid: AAttrId) -> Self {
+    pub(in crate::api) fn new(sol: &'s mut SolCore, item_uid: UItemId, attr_aid: AAttrId) -> Self {
         Self {
-            core,
+            sol,
             item_uid,
             attr_aid,
         }

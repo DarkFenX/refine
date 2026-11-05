@@ -1,7 +1,7 @@
-use crate::{sol::CoreInner, ud::UItemId};
+use crate::{sol::SolCore, ud::UItemId};
 
 pub(in crate::api) trait ItemSealed: Sized {
     fn get_uid(&self) -> UItemId;
-    fn get_core(&self) -> &CoreInner;
-    fn get_core_mut(&mut self) -> &mut CoreInner;
+    fn get_sol(&self) -> &SolCore;
+    fn get_sol_mut(&mut self) -> &mut SolCore;
 }

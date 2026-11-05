@@ -1,12 +1,12 @@
 use itertools::Itertools;
 
 use crate::{
-    sol::{CoreInner, RevProjs},
+    sol::{RevProjs, SolCore},
     svc::Svc,
     ud::{UData, UItemId, UPhysics},
 };
 
-impl CoreInner {
+impl SolCore {
     // Compiler keeps it out of line with 3 callers; inlined, physics changes are cheaper
     #[inline(always)]
     pub(in crate::api) fn util_update_physics_for_incoming(
@@ -24,7 +24,7 @@ impl CoreInner {
                 if let Some(proj_data) = projector_u_item.get_projs_mut().unwrap().get_proj_data_mut(&item_uid) {
                     proj_data.update_tgt_physics(physics);
                     let proj_data = *proj_data;
-                    CoreInner::util_change_item_proj_data(u_data, svc, projector_uid, item_uid, Some(proj_data));
+                    SolCore::util_change_item_proj_data(u_data, svc, projector_uid, item_uid, Some(proj_data));
                 }
             }
         }

@@ -1,6 +1,6 @@
 use crate::{
     RearmMinion, Sol,
-    sol::{CoreInner, UndoStep},
+    sol::{SolCore, UndoStep},
 };
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -15,7 +15,7 @@ impl Sol {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Private
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-impl CoreInner {
+impl SolCore {
     pub(in crate::api) fn internal_set_default_rearm_minions(&mut self, rearm_minions: RearmMinion) {
         let old_rearm_minions = std::mem::replace(&mut self.u_data.default_rearm_minions, rearm_minions);
         if old_rearm_minions != rearm_minions && self.undo.is_recording() {

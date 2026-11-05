@@ -1,7 +1,7 @@
 use crate::{
     Fighter, Movement, PValue,
     misc::Xyz,
-    sol::{CoreInner, UndoStep},
+    sol::{SolCore, UndoStep},
     ud::UItemId,
 };
 
@@ -11,7 +11,7 @@ use crate::{
 impl<'s> Fighter<'s> {
     /// Set fighter movement.
     pub fn set_movement(&mut self, movement: Movement) {
-        self.core
+        self.sol
             .internal_set_fighter_movement(self.uid, movement.direction.into_xyz(), movement.speed);
     }
 }
@@ -19,7 +19,7 @@ impl<'s> Fighter<'s> {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Private
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-impl CoreInner {
+impl SolCore {
     pub(in crate::api) fn internal_set_fighter_movement(
         &mut self,
         fighter_uid: UItemId,
@@ -37,6 +37,6 @@ impl CoreInner {
         }
         fighter_u_physics.direction = direction;
         fighter_u_physics.speed = speed;
-        CoreInner::util_update_fighter_physics(&mut self.u_data, &self.rev_projs, &mut self.svc, fighter_uid);
+        SolCore::util_update_fighter_physics(&mut self.u_data, &self.rev_projs, &mut self.svc, fighter_uid);
     }
 }

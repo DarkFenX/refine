@@ -2,11 +2,11 @@ use itertools::Itertools;
 
 use crate::{
     err::basic::ProjFoundError,
-    sol::{CoreInner, UndoStep},
+    sol::{SolCore, UndoStep},
     ud::UItemId,
 };
 
-impl CoreInner {
+impl SolCore {
     pub(in crate::api::item) fn internal_remove_fighter_proj(
         &mut self,
         fighter_uid: UItemId,
@@ -23,10 +23,10 @@ impl CoreInner {
         let autocharge_uids = u_fighter.get_autocharges().values().collect_vec();
         // Update services for autocharge
         for &autocharge_uid in autocharge_uids.iter() {
-            CoreInner::util_remove_item_projection(&self.u_data, &mut self.svc, autocharge_uid, projectee_uid);
+            SolCore::util_remove_item_projection(&self.u_data, &mut self.svc, autocharge_uid, projectee_uid);
         }
         // Update services for fighter
-        CoreInner::util_remove_item_projection(&self.u_data, &mut self.svc, fighter_uid, projectee_uid);
+        SolCore::util_remove_item_projection(&self.u_data, &mut self.svc, fighter_uid, projectee_uid);
         // Update user data for autocharges
         for autocharge_uid in autocharge_uids.into_iter() {
             self.rev_projs.unreg_projectee(&autocharge_uid, projectee_uid);

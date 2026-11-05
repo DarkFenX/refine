@@ -1,7 +1,7 @@
 use crate::{
     Fit, ItemTypeId, Subsystem,
     ad::AItemId,
-    sol::{CoreInner, UndoStep},
+    sol::{SolCore, UndoStep},
     ud::{UFitId, UItem, UItemId, USubsystem},
 };
 
@@ -10,15 +10,15 @@ use crate::{
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl<'s> Fit<'s> {
     pub fn add_subsystem(&mut self, type_id: ItemTypeId) -> Subsystem<'_> {
-        let subsystem_uid = self.core.internal_add_subsystem(self.uid, type_id.into_aid());
-        Subsystem::new(self.core, subsystem_uid)
+        let subsystem_uid = self.sol.internal_add_subsystem(self.uid, type_id.into_aid());
+        Subsystem::new(self.sol, subsystem_uid)
     }
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Private
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-impl CoreInner {
+impl SolCore {
     pub(in crate::api) fn internal_add_subsystem(&mut self, fit_uid: UFitId, type_aid: AItemId) -> UItemId {
         let item_id = self.u_data.items.alloc_id();
         let u_subsystem = USubsystem::new(item_id, type_aid, fit_uid, true, &self.u_data.r_data);
@@ -39,6 +39,6 @@ impl CoreInner {
     fn attach_subsystem(&mut self, fit_uid: UFitId, subsystem_uid: UItemId) {
         let u_fit = self.u_data.fits.get_mut(fit_uid);
         u_fit.subsystems.insert(subsystem_uid);
-        CoreInner::util_add_subsystem(&mut self.u_data, &mut self.svc, subsystem_uid, &mut self.reuse.eupdates);
+        SolCore::util_add_subsystem(&mut self.u_data, &mut self.svc, subsystem_uid, &mut self.reuse.eupdates);
     }
 }

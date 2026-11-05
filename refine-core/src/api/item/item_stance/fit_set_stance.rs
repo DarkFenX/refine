@@ -1,7 +1,7 @@
 use crate::{
     Fit, ItemTypeId, Stance,
     ad::AItemId,
-    sol::{CoreInner, UndoStep},
+    sol::{SolCore, UndoStep},
     ud::{UFitId, UItem, UItemId, UStance},
 };
 
@@ -11,15 +11,15 @@ use crate::{
 impl<'s> Fit<'s> {
     /// Set stance, replacing current one with a new item.
     pub fn set_stance(&mut self, type_id: ItemTypeId) -> Stance<'_> {
-        let stance_uid = self.core.internal_set_fit_stance(self.uid, type_id.into_aid());
-        Stance::new(self.core, stance_uid)
+        let stance_uid = self.sol.internal_set_fit_stance(self.uid, type_id.into_aid());
+        Stance::new(self.sol, stance_uid)
     }
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Private
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-impl CoreInner {
+impl SolCore {
     pub(in crate::api) fn internal_set_fit_stance(&mut self, fit_uid: UFitId, type_aid: AItemId) -> UItemId {
         let u_fit = self.u_data.fits.get(fit_uid);
         // Remove old stance, if it was set
@@ -46,6 +46,6 @@ impl CoreInner {
     fn attach_stance(&mut self, fit_uid: UFitId, stance_uid: UItemId) {
         let u_fit = self.u_data.fits.get_mut(fit_uid);
         u_fit.stance = Some(stance_uid);
-        CoreInner::util_add_stance(&mut self.u_data, &mut self.svc, stance_uid, &mut self.reuse.eupdates);
+        SolCore::util_add_stance(&mut self.u_data, &mut self.svc, stance_uid, &mut self.reuse.eupdates);
     }
 }

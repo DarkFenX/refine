@@ -13,12 +13,12 @@ impl<'s> FullMAttr<'s> {
     pub fn set_value(&mut self, absolute_value: Option<Value>) -> Result<(), FullMAttrValueSetError> {
         let roll = match absolute_value {
             Some(absolute_value) => {
-                let u_item = self.core.u_data.items.get(self.item_uid);
+                let u_item = self.sol.u_data.items.get(self.item_uid);
                 let item_mutation = u_item.get_mutation_data().unwrap();
                 let mutator_type_aid = item_mutation.get_mutator_type_aid();
                 let pregen_attrs_rid = item_mutation.get_cache().unwrap().get_pregen_attrs_rid();
                 match resolve_absolute_into_roll(
-                    &self.core.u_data.r_data,
+                    &self.sol.u_data.r_data,
                     pregen_attrs_rid,
                     &mutator_type_aid,
                     &self.attr_aid,
@@ -27,7 +27,7 @@ impl<'s> FullMAttr<'s> {
                     Some(roll) => Some(roll),
                     None => {
                         return Err(FullMAttrValueSetError::ZeroWidthRange(
-                            self.core.u_data.items.ext_id_by_int_id(self.item_uid),
+                            self.sol.u_data.items.ext_id_by_int_id(self.item_uid),
                             AttrId::from_aid(self.attr_aid),
                         ));
                     }
@@ -39,7 +39,7 @@ impl<'s> FullMAttr<'s> {
             attr_aid: self.attr_aid,
             roll,
         };
-        self.core
+        self.sol
             .internal_change_item_mutation_attr(self.item_uid, attr_mutation)
             .unwrap();
         Ok(())

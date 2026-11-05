@@ -1,10 +1,10 @@
 use crate::{
     err::basic::ProjFoundError,
-    sol::{CoreInner, UndoStep},
+    sol::{SolCore, UndoStep},
     ud::UItemId,
 };
 
-impl CoreInner {
+impl SolCore {
     pub(in crate::api::item) fn internal_remove_module_proj(
         &mut self,
         module_uid: UItemId,
@@ -21,10 +21,10 @@ impl CoreInner {
         let charge_uid = u_module.get_charge_uid();
         // Update services for charge
         if let Some(charge_uid) = charge_uid {
-            CoreInner::util_remove_item_projection(&self.u_data, &mut self.svc, charge_uid, projectee_uid);
+            SolCore::util_remove_item_projection(&self.u_data, &mut self.svc, charge_uid, projectee_uid);
         }
         // Update services for module
-        CoreInner::util_remove_item_projection(&self.u_data, &mut self.svc, module_uid, projectee_uid);
+        SolCore::util_remove_item_projection(&self.u_data, &mut self.svc, module_uid, projectee_uid);
         // Update user data for charge
         if let Some(charge_uid) = charge_uid {
             self.rev_projs.unreg_projectee(&charge_uid, projectee_uid);

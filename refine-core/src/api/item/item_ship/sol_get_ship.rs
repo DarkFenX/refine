@@ -8,10 +8,10 @@ use crate::{
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl Sol {
     pub fn get_ship(&mut self, item_id: &ItemId) -> Result<Ship<'_>, ShipGetError> {
-        let core = self.inner_mut();
-        let ship_uid = core.u_data.items.int_id_by_ext_id_err(item_id)?;
-        core.u_data.items.get(ship_uid).dc_ship()?;
-        Ok(Ship::new(core, ship_uid))
+        let sol = self.inner_mut();
+        let ship_uid = sol.u_data.items.int_id_by_ext_id_err(item_id)?;
+        sol.u_data.items.get(ship_uid).dc_ship()?;
+        Ok(Ship::new(sol, ship_uid))
     }
 }
 

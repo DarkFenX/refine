@@ -2,7 +2,7 @@ use itertools::Itertools;
 
 use crate::{
     Fighter, MinionState,
-    sol::{CoreInner, UndoStep},
+    sol::{SolCore, UndoStep},
     ud::UItemId,
 };
 
@@ -11,14 +11,14 @@ use crate::{
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl<'s> Fighter<'s> {
     pub fn set_state(&mut self, state: MinionState) {
-        self.core.internal_set_fighter_state_inner::<true>(self.uid, state);
+        self.sol.internal_set_fighter_state_inner::<true>(self.uid, state);
     }
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Private
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-impl CoreInner {
+impl SolCore {
     pub(in crate::api) fn internal_set_fighter_state(&mut self, fighter_uid: UItemId, state: MinionState) {
         self.internal_set_fighter_state_inner::<false>(fighter_uid, state);
     }
@@ -51,7 +51,7 @@ impl CoreInner {
             })
             .collect_vec();
         // Update services for fighter
-        CoreInner::util_switch_item_state(
+        SolCore::util_switch_item_state(
             &self.u_data,
             &mut self.svc,
             fighter_uid,
@@ -59,7 +59,7 @@ impl CoreInner {
             new_state,
             &self.reuse.eupdates,
         );
-        CoreInner::util_process_autocharge_activations(
+        SolCore::util_process_autocharge_activations(
             &mut self.u_data,
             &mut self.svc,
             ac_activations,

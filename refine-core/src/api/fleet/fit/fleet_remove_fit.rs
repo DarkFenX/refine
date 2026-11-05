@@ -5,15 +5,15 @@ use crate::{FitId, Fleet, FleetId, err::basic::FitFoundError};
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl<'s> Fleet<'s> {
     pub fn remove_fit(&mut self, fit_id: &FitId) -> Result<(), FleetFitRemoveError> {
-        let fit_uid = self.core.u_data.fits.int_id_by_ext_id_err(fit_id)?;
-        let u_fit = self.core.u_data.fits.get(fit_uid);
+        let fit_uid = self.sol.u_data.fits.int_id_by_ext_id_err(fit_id)?;
+        let u_fit = self.sol.u_data.fits.get(fit_uid);
         if u_fit.fleet != Some(self.uid) {
             return Err(FleetFitRemoveError::FitIsNotInThisFleet(
-                self.core.u_data.fleets.ext_id_by_int_id(self.uid),
+                self.sol.u_data.fleets.ext_id_by_int_id(self.uid),
                 u_fit.id,
             ));
         }
-        self.core.internal_set_fit_fleet(fit_uid, None);
+        self.sol.internal_set_fit_fleet(fit_uid, None);
         Ok(())
     }
 }

@@ -16,12 +16,12 @@ pub enum DevBenchmarkCmd {
 // Execution
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl DevBenchmarkCmd {
-    pub(crate) fn execute(self, core: &mut rc::Core) {
+    pub(crate) fn execute(self, core_sol: &mut rc::SolOwned) {
         match self {
-            Self::AttrCalc(cmd) => cmd.execute(core),
-            Self::CapSim(cmd) => cmd.execute(core),
-            Self::Stats(cmd) => cmd.execute(core),
-            Self::TryFitItems(cmd) => cmd.execute(core),
+            Self::AttrCalc(cmd) => cmd.execute(core_sol),
+            Self::CapSim(cmd) => cmd.execute(core_sol),
+            Self::Stats(cmd) => cmd.execute(core_sol),
+            Self::TryFitItems(cmd) => cmd.execute(core_sol),
         }
     }
 }

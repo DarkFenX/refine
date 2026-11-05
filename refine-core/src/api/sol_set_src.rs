@@ -1,40 +1,40 @@
 use std::sync::Arc;
 
 use crate::{
-    Core, PValue, Src,
-    sol::CoreInner,
+    PValue, SolOwned, Src,
+    sol::SolCore,
     ud::{UData, UItem, UItemId, UShipKind},
 };
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Public
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-impl Core {
+impl SolOwned {
     /// Switch to another source, reloading all the items using its data.
     ///
     /// Not possible within a transaction, since switching source can't be rolled back.
     pub fn set_src(&mut self, src: &Src) {
-        let core = self.inner_mut();
-        if Arc::ptr_eq(&core.u_data.r_data, &src.r_data) {
+        let sol = self.inner_mut();
+        if Arc::ptr_eq(&sol.u_data.r_data, &src.r_data) {
             return;
         }
-        let item_uids = ItemUIds::from_u_data(&core.u_data);
-        core.unload_items(&item_uids);
+        let item_uids = ItemUIds::from_u_data(&sol.u_data);
+        sol.unload_items(&item_uids);
         // Set new runtime data
-        core.u_data.r_data = src.r_data.clone();
-        for item in core.u_data.items.values_mut() {
-            item.r_data_changed(&core.u_data.r_data);
+        sol.u_data.r_data = src.r_data.clone();
+        for item in sol.u_data.items.values_mut() {
+            item.r_data_changed(&sol.u_data.r_data);
         }
         // Update fit kind
-        for fit in core.u_data.fits.values_mut() {
+        for fit in sol.u_data.fits.values_mut() {
             fit.ship_kind = match fit.ship {
-                Some(ship_uid) => core.u_data.items.get(ship_uid).dc_ship().unwrap().get_ship_kind(),
+                Some(ship_uid) => sol.u_data.items.get(ship_uid).dc_ship().unwrap().get_ship_kind(),
                 None => UShipKind::Unknown,
             }
         }
         // Update on-projection data due to changed item radii
-        core.update_projections();
-        core.load_items(&item_uids);
+        sol.update_projections();
+        sol.load_items(&item_uids);
     }
 }
 
@@ -104,7 +104,7 @@ impl ItemUIds {
     }
 }
 
-impl CoreInner {
+impl SolCore {
     fn unload_items(&mut self, item_uids: &ItemUIds) {
         let ItemUIds {
             boosters,
@@ -124,16 +124,16 @@ impl CoreInner {
             sw_effects,
         } = item_uids;
         for &booster_uid in boosters.iter() {
-            CoreInner::util_remove_booster(&mut self.u_data, &mut self.svc, booster_uid, &mut self.reuse.eupdates);
+            SolCore::util_remove_booster(&mut self.u_data, &mut self.svc, booster_uid, &mut self.reuse.eupdates);
         }
         for &character_uid in characters.iter() {
-            CoreInner::util_remove_character(&mut self.u_data, &mut self.svc, character_uid, &mut self.reuse.eupdates);
+            SolCore::util_remove_character(&mut self.u_data, &mut self.svc, character_uid, &mut self.reuse.eupdates);
         }
         for &drone_uid in drones.iter() {
-            CoreInner::util_remove_drone(&mut self.u_data, &mut self.svc, drone_uid, &mut self.reuse.eupdates);
+            SolCore::util_remove_drone(&mut self.u_data, &mut self.svc, drone_uid, &mut self.reuse.eupdates);
         }
         for &fighter_uid in fighters.iter() {
-            CoreInner::util_remove_fighter_with_acs(
+            SolCore::util_remove_fighter_with_acs(
                 &mut self.u_data,
                 &mut self.svc,
                 &mut self.rev_projs,
@@ -142,13 +142,13 @@ impl CoreInner {
             );
         }
         for &fw_effect_uid in fw_effects.iter() {
-            CoreInner::util_remove_fw_effect(&mut self.u_data, &mut self.svc, fw_effect_uid, &mut self.reuse.eupdates);
+            SolCore::util_remove_fw_effect(&mut self.u_data, &mut self.svc, fw_effect_uid, &mut self.reuse.eupdates);
         }
         for &implant_uid in implants.iter() {
-            CoreInner::util_remove_implant(&mut self.u_data, &mut self.svc, implant_uid, &mut self.reuse.eupdates);
+            SolCore::util_remove_implant(&mut self.u_data, &mut self.svc, implant_uid, &mut self.reuse.eupdates);
         }
         for &module_uid in modules.iter() {
-            CoreInner::util_remove_module_with_charge(
+            SolCore::util_remove_module_with_charge(
                 &mut self.u_data,
                 &mut self.svc,
                 module_uid,
@@ -156,7 +156,7 @@ impl CoreInner {
             );
         }
         for &proj_effect_uid in proj_effects.iter() {
-            CoreInner::util_remove_proj_effect(
+            SolCore::util_remove_proj_effect(
                 &mut self.u_data,
                 &mut self.svc,
                 proj_effect_uid,
@@ -164,25 +164,25 @@ impl CoreInner {
             );
         }
         for &rig_uid in rigs.iter() {
-            CoreInner::util_remove_rig(&mut self.u_data, &mut self.svc, rig_uid, &mut self.reuse.eupdates);
+            SolCore::util_remove_rig(&mut self.u_data, &mut self.svc, rig_uid, &mut self.reuse.eupdates);
         }
         for &service_uid in services.iter() {
-            CoreInner::util_remove_service(&mut self.u_data, &mut self.svc, service_uid, &mut self.reuse.eupdates);
+            SolCore::util_remove_service(&mut self.u_data, &mut self.svc, service_uid, &mut self.reuse.eupdates);
         }
         for &ship_uid in ships.iter() {
-            CoreInner::util_remove_ship(&mut self.u_data, &mut self.svc, ship_uid, &mut self.reuse.eupdates);
+            SolCore::util_remove_ship(&mut self.u_data, &mut self.svc, ship_uid, &mut self.reuse.eupdates);
         }
         for &skill_uid in skills.iter() {
-            CoreInner::util_remove_skill(&mut self.u_data, &mut self.svc, skill_uid, &mut self.reuse.eupdates);
+            SolCore::util_remove_skill(&mut self.u_data, &mut self.svc, skill_uid, &mut self.reuse.eupdates);
         }
         for &stance_uid in stances.iter() {
-            CoreInner::util_remove_stance(&mut self.u_data, &mut self.svc, stance_uid, &mut self.reuse.eupdates);
+            SolCore::util_remove_stance(&mut self.u_data, &mut self.svc, stance_uid, &mut self.reuse.eupdates);
         }
         for &subsystem_uid in subsystems.iter() {
-            CoreInner::util_remove_subsystem(&mut self.u_data, &mut self.svc, subsystem_uid, &mut self.reuse.eupdates);
+            SolCore::util_remove_subsystem(&mut self.u_data, &mut self.svc, subsystem_uid, &mut self.reuse.eupdates);
         }
         for &sw_effect_uid in sw_effects.iter() {
-            CoreInner::util_remove_sw_effect(&mut self.u_data, &mut self.svc, sw_effect_uid, &mut self.reuse.eupdates);
+            SolCore::util_remove_sw_effect(&mut self.u_data, &mut self.svc, sw_effect_uid, &mut self.reuse.eupdates);
         }
     }
     fn load_items(&mut self, item_uids: &ItemUIds) {
@@ -204,16 +204,16 @@ impl CoreInner {
             sw_effects,
         } = item_uids;
         for &booster_uid in boosters.iter() {
-            CoreInner::util_add_booster(&mut self.u_data, &mut self.svc, booster_uid, &mut self.reuse.eupdates);
+            SolCore::util_add_booster(&mut self.u_data, &mut self.svc, booster_uid, &mut self.reuse.eupdates);
         }
         for &character_uid in characters.iter() {
-            CoreInner::util_add_character(&mut self.u_data, &mut self.svc, character_uid, &mut self.reuse.eupdates);
+            SolCore::util_add_character(&mut self.u_data, &mut self.svc, character_uid, &mut self.reuse.eupdates);
         }
         for &drone_uid in drones.iter() {
-            CoreInner::util_add_drone(&mut self.u_data, &mut self.svc, drone_uid, &mut self.reuse.eupdates);
+            SolCore::util_add_drone(&mut self.u_data, &mut self.svc, drone_uid, &mut self.reuse.eupdates);
         }
         for &fighter_uid in fighters.iter() {
-            CoreInner::util_add_fighter_with_acs(
+            SolCore::util_add_fighter_with_acs(
                 &mut self.u_data,
                 &mut self.svc,
                 &mut self.rev_projs,
@@ -222,21 +222,16 @@ impl CoreInner {
             );
         }
         for &fw_effect_uid in fw_effects.iter() {
-            CoreInner::util_add_fw_effect(&mut self.u_data, &mut self.svc, fw_effect_uid, &mut self.reuse.eupdates);
+            SolCore::util_add_fw_effect(&mut self.u_data, &mut self.svc, fw_effect_uid, &mut self.reuse.eupdates);
         }
         for &implant_uid in implants.iter() {
-            CoreInner::util_add_implant(&mut self.u_data, &mut self.svc, implant_uid, &mut self.reuse.eupdates);
+            SolCore::util_add_implant(&mut self.u_data, &mut self.svc, implant_uid, &mut self.reuse.eupdates);
         }
         for &module_uid in modules.iter() {
-            CoreInner::util_add_module_with_charge(
-                &mut self.u_data,
-                &mut self.svc,
-                module_uid,
-                &mut self.reuse.eupdates,
-            );
+            SolCore::util_add_module_with_charge(&mut self.u_data, &mut self.svc, module_uid, &mut self.reuse.eupdates);
         }
         for &proj_effect_uid in proj_effects.iter() {
-            CoreInner::util_add_proj_effect(
+            SolCore::util_add_proj_effect(
                 &mut self.u_data,
                 &mut self.svc,
                 proj_effect_uid,
@@ -244,25 +239,25 @@ impl CoreInner {
             );
         }
         for &rig_uid in rigs.iter() {
-            CoreInner::util_add_rig(&mut self.u_data, &mut self.svc, rig_uid, &mut self.reuse.eupdates);
+            SolCore::util_add_rig(&mut self.u_data, &mut self.svc, rig_uid, &mut self.reuse.eupdates);
         }
         for &service_uid in services.iter() {
-            CoreInner::util_add_service(&mut self.u_data, &mut self.svc, service_uid, &mut self.reuse.eupdates);
+            SolCore::util_add_service(&mut self.u_data, &mut self.svc, service_uid, &mut self.reuse.eupdates);
         }
         for &ship_uid in ships.iter() {
-            CoreInner::util_add_ship(&mut self.u_data, &mut self.svc, ship_uid, &mut self.reuse.eupdates);
+            SolCore::util_add_ship(&mut self.u_data, &mut self.svc, ship_uid, &mut self.reuse.eupdates);
         }
         for &skill_uid in skills.iter() {
-            CoreInner::util_add_skill(&mut self.u_data, &mut self.svc, skill_uid, &mut self.reuse.eupdates);
+            SolCore::util_add_skill(&mut self.u_data, &mut self.svc, skill_uid, &mut self.reuse.eupdates);
         }
         for &stance_uid in stances.iter() {
-            CoreInner::util_add_stance(&mut self.u_data, &mut self.svc, stance_uid, &mut self.reuse.eupdates);
+            SolCore::util_add_stance(&mut self.u_data, &mut self.svc, stance_uid, &mut self.reuse.eupdates);
         }
         for &subsystem_uid in subsystems.iter() {
-            CoreInner::util_add_subsystem(&mut self.u_data, &mut self.svc, subsystem_uid, &mut self.reuse.eupdates);
+            SolCore::util_add_subsystem(&mut self.u_data, &mut self.svc, subsystem_uid, &mut self.reuse.eupdates);
         }
         for &sw_effect_uid in sw_effects.iter() {
-            CoreInner::util_add_sw_effect(&mut self.u_data, &mut self.svc, sw_effect_uid, &mut self.reuse.eupdates);
+            SolCore::util_add_sw_effect(&mut self.u_data, &mut self.svc, sw_effect_uid, &mut self.reuse.eupdates);
         }
     }
     fn update_projections(&mut self) {

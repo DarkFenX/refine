@@ -1,17 +1,17 @@
-use crate::{ItemId, ProjRange, sol::CoreInner, ud::UItemId};
+use crate::{ItemId, ProjRange, sol::SolCore, ud::UItemId};
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Public
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 /// Projection which allows to set range.
 pub struct RangedProj<'s> {
-    pub(super) core: &'s mut CoreInner,
+    pub(super) sol: &'s mut SolCore,
     pub(super) projector_uid: UItemId,
     pub(super) projectee_uid: UItemId,
 }
 impl<'s> RangedProj<'s> {
     pub fn get_projectee_item_id(&self) -> ItemId {
-        self.core.u_data.items.ext_id_by_int_id(self.projectee_uid)
+        self.sol.u_data.items.ext_id_by_int_id(self.projectee_uid)
     }
     pub fn get_range(&self) -> ProjRange {
         let projectee_uid = &self.projectee_uid;
@@ -20,7 +20,7 @@ impl<'s> RangedProj<'s> {
         // - unwrap #3 - ranged projection should be exposed only for items which have ranged
         //   projection, i.e. put some value into projection container
         let u_proj = self
-            .core
+            .sol
             .u_data
             .items
             .get(self.projector_uid)
@@ -37,9 +37,9 @@ impl<'s> RangedProj<'s> {
 // Private
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl<'s> RangedProj<'s> {
-    pub(in crate::api) fn new(core: &'s mut CoreInner, projector_uid: UItemId, projectee_uid: UItemId) -> Self {
+    pub(in crate::api) fn new(sol: &'s mut SolCore, projector_uid: UItemId, projectee_uid: UItemId) -> Self {
         Self {
-            core,
+            sol,
             projector_uid,
             projectee_uid,
         }

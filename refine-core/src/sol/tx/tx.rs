@@ -1,6 +1,6 @@
 use std::ops::{Deref, DerefMut};
 
-use crate::{Core, Sol, sol::Savepoint};
+use crate::{Sol, SolOwned, sol::Savepoint};
 
 /// Transaction on a solar system.
 ///
@@ -10,36 +10,36 @@ use crate::{Core, Sol, sol::Savepoint};
 /// A guard dropped while panicking neither rolls back nor commits, since rolling back half-done
 /// changes could panic again; the solar system has to be discarded then.
 pub struct SolTx<'a> {
-    core: &'a mut Core,
+    sol: &'a mut SolOwned,
     // Taken on commit and rollback
     savepoint: Option<Savepoint>,
 }
 impl<'a> SolTx<'a> {
-    pub(crate) fn new(core: &'a mut Core, savepoint: Savepoint) -> Self {
+    pub(crate) fn new(sol: &'a mut SolOwned, savepoint: Savepoint) -> Self {
         Self {
-            core,
+            sol,
             savepoint: Some(savepoint),
         }
     }
     pub fn commit(mut self) {
         self.savepoint = None;
-        self.core.inner_mut().internal_tx_commit();
+        self.sol.inner_mut().internal_tx_commit();
     }
     pub fn rollback(mut self) {
         let savepoint = self.savepoint.take().unwrap();
-        self.core.inner_mut().internal_tx_rollback(savepoint);
+        self.sol.inner_mut().internal_tx_rollback(savepoint);
     }
 }
 impl Deref for SolTx<'_> {
     type Target = Sol;
 
     fn deref(&self) -> &Sol {
-        self.core
+        self.sol
     }
 }
 impl DerefMut for SolTx<'_> {
     fn deref_mut(&mut self) -> &mut Sol {
-        self.core
+        self.sol
     }
 }
 impl Drop for SolTx<'_> {
@@ -47,7 +47,7 @@ impl Drop for SolTx<'_> {
         if let Some(savepoint) = self.savepoint.take()
             && !std::thread::panicking()
         {
-            self.core.inner_mut().internal_tx_rollback(savepoint);
+            self.sol.inner_mut().internal_tx_rollback(savepoint);
         }
     }
 }

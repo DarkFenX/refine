@@ -1,6 +1,6 @@
 use crate::{
     Stance,
-    sol::{CoreInner, UndoStep},
+    sol::{SolCore, UndoStep},
     ud::UItemId,
 };
 
@@ -9,16 +9,16 @@ use crate::{
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl<'s> Stance<'s> {
     pub fn remove(self) {
-        self.core.internal_remove_stance(self.uid);
+        self.sol.internal_remove_stance(self.uid);
     }
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Private
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-impl CoreInner {
+impl SolCore {
     pub(in crate::api) fn internal_remove_stance(&mut self, stance_uid: UItemId) {
-        CoreInner::util_remove_stance(&mut self.u_data, &mut self.svc, stance_uid, &mut self.reuse.eupdates);
+        SolCore::util_remove_stance(&mut self.u_data, &mut self.svc, stance_uid, &mut self.reuse.eupdates);
         let u_stance = self.u_data.items.get(stance_uid).dc_stance().unwrap();
         let u_fit = self.u_data.fits.get_mut(u_stance.get_fit_uid());
         u_fit.stance = None;

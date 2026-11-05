@@ -1,6 +1,6 @@
 use crate::{
     Skill, SkillLevel,
-    sol::{CoreInner, UndoStep},
+    sol::{SolCore, UndoStep},
     ud::UItemId,
 };
 
@@ -9,14 +9,14 @@ use crate::{
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl<'s> Skill<'s> {
     pub fn set_level(&mut self, level: SkillLevel) {
-        self.core.internal_set_skill_level(self.uid, level);
+        self.sol.internal_set_skill_level(self.uid, level);
     }
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Private
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-impl CoreInner {
+impl SolCore {
     pub(in crate::api) fn internal_set_skill_level(&mut self, skill_uid: UItemId, level: SkillLevel) {
         let u_skill = self.u_data.items.get_mut(skill_uid).dc_skill_mut().unwrap();
         let old_level = u_skill.get_level();

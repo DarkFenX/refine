@@ -1,5 +1,5 @@
 pub(crate) use rev_projs::RevProjs;
-pub use sol::{Core, CoreInner, Sol};
+pub use sol::{Sol, SolCore, SolOwned};
 pub use tx::SolTx;
 pub(crate) use tx::{Savepoint, UndoLog, UndoStep};
 

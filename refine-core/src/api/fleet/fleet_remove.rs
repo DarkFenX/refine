@@ -2,7 +2,7 @@ use itertools::Itertools;
 
 use crate::{
     Fleet,
-    sol::{CoreInner, UndoStep},
+    sol::{SolCore, UndoStep},
     ud::UFleetId,
 };
 
@@ -11,14 +11,14 @@ use crate::{
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl<'s> Fleet<'s> {
     pub fn remove(self) {
-        self.core.internal_remove_fleet(self.uid);
+        self.sol.internal_remove_fleet(self.uid);
     }
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Private
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-impl CoreInner {
+impl SolCore {
     pub(in crate::api) fn internal_remove_fleet(&mut self, fleet_uid: UFleetId) {
         // Fits leave the fleet one by one, so that rollback can put them back via their own steps
         let fit_uids = self.u_data.fleets.get(fleet_uid).iter_fits().collect_vec();

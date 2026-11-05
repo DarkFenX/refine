@@ -1,4 +1,4 @@
-use crate::{DormantMutation, EffectiveMutation, ItemTypeId, Mutation, sol::CoreInner, ud::UItemId};
+use crate::{DormantMutation, EffectiveMutation, ItemTypeId, Mutation, sol::SolCore, ud::UItemId};
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Public
@@ -14,20 +14,20 @@ impl<'s> Mutation<'s> {
 
 impl<'s> EffectiveMutation<'s> {
     pub fn get_mutator_type_id(&self) -> ItemTypeId {
-        self.core.api_get_mutator_type_id(self.item_uid)
+        self.sol.api_get_mutator_type_id(self.item_uid)
     }
 }
 
 impl<'s> DormantMutation<'s> {
     pub fn get_mutator_type_id(&self) -> ItemTypeId {
-        self.core.api_get_mutator_type_id(self.item_uid)
+        self.sol.api_get_mutator_type_id(self.item_uid)
     }
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Private
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-impl CoreInner {
+impl SolCore {
     fn api_get_mutator_type_id(&self, item_uid: UItemId) -> ItemTypeId {
         ItemTypeId::from_aid(
             self.u_data

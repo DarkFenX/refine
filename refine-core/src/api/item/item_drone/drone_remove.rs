@@ -1,6 +1,6 @@
 use crate::{
     Drone,
-    sol::{CoreInner, UndoStep},
+    sol::{SolCore, UndoStep},
     ud::UItemId,
 };
 
@@ -9,14 +9,14 @@ use crate::{
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl<'s> Drone<'s> {
     pub fn remove(self) {
-        self.core.internal_remove_drone(self.uid);
+        self.sol.internal_remove_drone(self.uid);
     }
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Private
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-impl CoreInner {
+impl SolCore {
     pub(in crate::api) fn internal_remove_drone(&mut self, drone_uid: UItemId) {
         // Remove incoming projections
         self.internal_remove_incoming_projections(drone_uid);
@@ -24,10 +24,10 @@ impl CoreInner {
         let u_drone = self.u_data.items.get(drone_uid).dc_drone().unwrap();
         let fit_uid = u_drone.get_fit_uid();
         if !u_drone.get_projs().is_empty() {
-            CoreInner::util_unreg_item_projs(&self.u_data, &mut self.svc, &mut self.rev_projs, drone_uid);
+            SolCore::util_unreg_item_projs(&self.u_data, &mut self.svc, &mut self.rev_projs, drone_uid);
         }
         // Update services
-        CoreInner::util_remove_drone(&mut self.u_data, &mut self.svc, drone_uid, &mut self.reuse.eupdates);
+        SolCore::util_remove_drone(&mut self.u_data, &mut self.svc, drone_uid, &mut self.reuse.eupdates);
         // Update user data
         let u_fit = self.u_data.fits.get_mut(fit_uid);
         u_fit.drones.remove(&drone_uid);

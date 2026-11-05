@@ -1,6 +1,6 @@
 use crate::{
     DpsProfile, Fit,
-    sol::{CoreInner, UndoStep},
+    sol::{SolCore, UndoStep},
     ud::UFitId,
 };
 
@@ -9,14 +9,14 @@ use crate::{
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl<'s> Fit<'s> {
     pub fn set_rah_incoming_dps(&mut self, dps_profile: Option<DpsProfile>) {
-        self.core.internal_set_fit_rah_incoming_dps(self.uid, dps_profile)
+        self.sol.internal_set_fit_rah_incoming_dps(self.uid, dps_profile)
     }
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Private
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-impl CoreInner {
+impl SolCore {
     pub(in crate::api) fn internal_set_fit_rah_incoming_dps(
         &mut self,
         fit_uid: UFitId,

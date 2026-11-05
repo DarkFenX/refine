@@ -8,10 +8,10 @@ use crate::{
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl Sol {
     pub fn get_stance(&mut self, item_id: &ItemId) -> Result<Stance<'_>, StanceGetError> {
-        let core = self.inner_mut();
-        let stance_uid = core.u_data.items.int_id_by_ext_id_err(item_id)?;
-        core.u_data.items.get(stance_uid).dc_stance()?;
-        Ok(Stance::new(core, stance_uid))
+        let sol = self.inner_mut();
+        let stance_uid = sol.u_data.items.int_id_by_ext_id_err(item_id)?;
+        sol.u_data.items.get(stance_uid).dc_stance()?;
+        Ok(Stance::new(sol, stance_uid))
     }
 }
 

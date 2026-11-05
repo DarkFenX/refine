@@ -14,7 +14,7 @@ use crate::{
 ///
 /// Derefs to [`Sol`], which exposes the interface. Only operations unavailable within a
 /// transaction live here: starting one, switching source and cloning.
-pub type Core = SolGen<[CoreInner; 1]>;
+pub type SolOwned = SolGen<[SolCore; 1]>;
 
 /// Interface to a solar system.
 ///
@@ -22,30 +22,30 @@ pub type Core = SolGen<[CoreInner; 1]>;
 /// returns a short-lived handle borrowing the solar system. Since handles borrow mutably, only one
 /// handle can be held at a time. Unsized, so it can't be moved, replaced or cloned through a
 /// reference, e.g. the one a transaction gives out.
-pub type Sol = SolGen<[CoreInner]>;
+pub type Sol = SolGen<[SolCore]>;
 
-impl Core {
+impl SolOwned {
     pub fn new(src: &Src) -> Self {
         Self {
-            inner: [CoreInner::new(src)],
+            inner: [SolCore::new(src)],
         }
     }
 }
-impl Clone for Core {
+impl Clone for SolOwned {
     fn clone(&self) -> Self {
         Self {
             inner: self.inner.clone(),
         }
     }
 }
-impl Deref for Core {
+impl Deref for SolOwned {
     type Target = Sol;
 
     fn deref(&self) -> &Sol {
         self
     }
 }
-impl DerefMut for Core {
+impl DerefMut for SolOwned {
     fn deref_mut(&mut self) -> &mut Sol {
         self
     }
@@ -62,24 +62,24 @@ pub struct SolGen<T: ?Sized> {
 }
 
 impl Sol {
-    pub(crate) fn inner(&self) -> &CoreInner {
+    pub(crate) fn inner(&self) -> &SolCore {
         &self.inner[0]
     }
-    pub(crate) fn inner_mut(&mut self) -> &mut CoreInner {
+    pub(crate) fn inner_mut(&mut self) -> &mut SolCore {
         &mut self.inner[0]
     }
 }
 
 #[doc(hidden)]
 #[derive(Clone)]
-pub struct CoreInner {
+pub struct SolCore {
     pub(crate) u_data: UData,
     pub(crate) svc: Svc,
     pub(crate) rev_projs: RevProjs,
     pub(crate) reuse: SolReuse,
     pub(crate) undo: UndoLog,
 }
-impl CoreInner {
+impl SolCore {
     fn new(src: &Src) -> Self {
         Self {
             u_data: UData::new(src.r_data.clone()),
@@ -99,7 +99,7 @@ mod debug {
     use super::*;
     use crate::dbg::DebugResult;
 
-    impl CoreInner {
+    impl SolCore {
         pub(crate) fn internal_consistency_check(&self) -> DebugResult {
             // Check solar system structure
             self.u_data.consistency_check()?;

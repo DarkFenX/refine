@@ -6,10 +6,10 @@ impl Fit<'_, '_> {
         // Variables for move
         let fit_id = self.id;
         self.sol
-            .exec_standard_infallible(move |core| {
+            .exec_standard_infallible(move |core_sol| {
                 // Holding mutex on sol - nothing can remove the core fit without consuming the
                 // high-level Fit
-                let mut core_fit = core.get_fit(&fit_id).unwrap();
+                let mut core_fit = core_sol.get_fit(&fit_id).unwrap();
                 info_cmd.execute(&mut core_fit)
             })
             .await

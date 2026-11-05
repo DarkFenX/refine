@@ -6,7 +6,8 @@ use crate::Sol;
 impl Sol<'_> {
     #[tracing::instrument(name = "sol-chk", level = "error", skip_all)]
     pub async fn dev_consistency_check(&mut self, dev_cmd: DecCheckCmd) -> bool {
-        self.exec_standard_infallible(move |core| dev_cmd.execute(core)).await
+        self.exec_standard_infallible(move |core_sol| dev_cmd.execute(core_sol))
+            .await
     }
 }
 

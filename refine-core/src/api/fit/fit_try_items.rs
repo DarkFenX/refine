@@ -4,7 +4,7 @@ use crate::{
     AddMode, Fit, ItemTypeId, MinionState, ModRack, ModuleState, PValue, RemoveMode, ServiceState,
     ad::AItemId,
     rd::RState,
-    sol::CoreInner,
+    sol::SolCore,
     svc::vast::ValOptionsInt,
     ud::{UData, UFitId, UItemId, UPhysics},
     val::{DetectedItemKind, ValOptions},
@@ -16,8 +16,8 @@ use crate::{
 impl<'s> Fit<'s> {
     pub fn try_items(&mut self, type_ids: &[ItemTypeId], val_options: &ValOptions) -> Vec<ItemTypeId> {
         let type_aids = type_ids.iter().map(|v| v.into_aid()).collect_vec();
-        let int_val_options = ValOptionsInt::from_pub(val_options, self.core);
-        let type_aids = self.core.internal_fit_try_items(self.uid, &type_aids, &int_val_options);
+        let int_val_options = ValOptionsInt::from_pub(val_options, self.sol);
+        let type_aids = self.sol.internal_fit_try_items(self.uid, &type_aids, &int_val_options);
         type_aids.into_iter().map(ItemTypeId::from_aid).collect()
     }
 }
@@ -25,7 +25,7 @@ impl<'s> Fit<'s> {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Private - general
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-impl CoreInner {
+impl SolCore {
     pub(in crate::api) fn internal_fit_try_items(
         &mut self,
         fit_uid: UFitId,
@@ -54,8 +54,8 @@ impl CoreInner {
                     if self.try_item(
                         fit_uid,
                         val_options,
-                        |core| Some(core.internal_add_booster(fit_uid, *type_aid)),
-                        CoreInner::internal_remove_booster,
+                        |sol| Some(sol.internal_add_booster(fit_uid, *type_aid)),
+                        SolCore::internal_remove_booster,
                     ) {
                         valid.push(*type_aid)
                     }
@@ -66,8 +66,8 @@ impl CoreInner {
                     if self.try_item(
                         fit_uid,
                         val_options,
-                        |core| Some(core.internal_add_drone(fit_uid, *type_aid, MinionState::InBay, None, u_physics)),
-                        CoreInner::internal_remove_drone,
+                        |sol| Some(sol.internal_add_drone(fit_uid, *type_aid, MinionState::InBay, None, u_physics)),
+                        SolCore::internal_remove_drone,
                     ) {
                         valid.push(*type_aid)
                     }
@@ -76,8 +76,8 @@ impl CoreInner {
                     if self.try_item(
                         fit_uid,
                         val_options,
-                        |core| Some(core.internal_add_fighter(fit_uid, *type_aid, MinionState::InBay, u_physics)),
-                        CoreInner::internal_remove_fighter,
+                        |sol| Some(sol.internal_add_fighter(fit_uid, *type_aid, MinionState::InBay, u_physics)),
+                        SolCore::internal_remove_fighter,
                     ) {
                         valid.push(*type_aid)
                     }
@@ -86,8 +86,8 @@ impl CoreInner {
                     if self.try_item(
                         fit_uid,
                         val_options,
-                        |core| Some(core.internal_add_implant(fit_uid, *type_aid)),
-                        CoreInner::internal_remove_implant,
+                        |sol| Some(sol.internal_add_implant(fit_uid, *type_aid)),
+                        SolCore::internal_remove_implant,
                     ) {
                         valid.push(*type_aid)
                     }
@@ -97,8 +97,8 @@ impl CoreInner {
                     if self.try_item(
                         fit_uid,
                         val_options,
-                        |core| {
-                            core.internal_add_module(
+                        |sol| {
+                            sol.internal_add_module(
                                 fit_uid,
                                 ModRack::High,
                                 AddMode::Equip,
@@ -109,7 +109,7 @@ impl CoreInner {
                             )
                             .ok()
                         },
-                        |core, module_uid| core.internal_remove_module(module_uid, RemoveMode::Free),
+                        |sol, module_uid| sol.internal_remove_module(module_uid, RemoveMode::Free),
                     ) {
                         valid.push(*type_aid)
                     }
@@ -119,19 +119,11 @@ impl CoreInner {
                     if self.try_item(
                         fit_uid,
                         val_options,
-                        |core| {
-                            core.internal_add_module(
-                                fit_uid,
-                                ModRack::Mid,
-                                AddMode::Equip,
-                                *type_aid,
-                                state,
-                                None,
-                                None,
-                            )
-                            .ok()
+                        |sol| {
+                            sol.internal_add_module(fit_uid, ModRack::Mid, AddMode::Equip, *type_aid, state, None, None)
+                                .ok()
                         },
-                        |core, module_uid| core.internal_remove_module(module_uid, RemoveMode::Free),
+                        |sol, module_uid| sol.internal_remove_module(module_uid, RemoveMode::Free),
                     ) {
                         valid.push(*type_aid)
                     }
@@ -141,19 +133,11 @@ impl CoreInner {
                     if self.try_item(
                         fit_uid,
                         val_options,
-                        |core| {
-                            core.internal_add_module(
-                                fit_uid,
-                                ModRack::Low,
-                                AddMode::Equip,
-                                *type_aid,
-                                state,
-                                None,
-                                None,
-                            )
-                            .ok()
+                        |sol| {
+                            sol.internal_add_module(fit_uid, ModRack::Low, AddMode::Equip, *type_aid, state, None, None)
+                                .ok()
                         },
-                        |core, module_uid| core.internal_remove_module(module_uid, RemoveMode::Free),
+                        |sol, module_uid| sol.internal_remove_module(module_uid, RemoveMode::Free),
                     ) {
                         valid.push(*type_aid)
                     }
@@ -162,8 +146,8 @@ impl CoreInner {
                     if self.try_item(
                         fit_uid,
                         val_options,
-                        |core| Some(core.internal_add_rig(fit_uid, *type_aid)),
-                        CoreInner::internal_remove_rig,
+                        |sol| Some(sol.internal_add_rig(fit_uid, *type_aid)),
+                        SolCore::internal_remove_rig,
                     ) {
                         valid.push(*type_aid)
                     }
@@ -172,8 +156,8 @@ impl CoreInner {
                     if self.try_item(
                         fit_uid,
                         val_options,
-                        |core| Some(core.internal_add_service(fit_uid, *type_aid, ServiceState::Online)),
-                        CoreInner::internal_remove_service,
+                        |sol| Some(sol.internal_add_service(fit_uid, *type_aid, ServiceState::Online)),
+                        SolCore::internal_remove_service,
                     ) {
                         valid.push(*type_aid)
                     }
@@ -182,8 +166,8 @@ impl CoreInner {
                     if self.try_item(
                         fit_uid,
                         val_options,
-                        |core| Some(core.internal_add_subsystem(fit_uid, *type_aid)),
-                        CoreInner::internal_remove_subsystem,
+                        |sol| Some(sol.internal_add_subsystem(fit_uid, *type_aid)),
+                        SolCore::internal_remove_subsystem,
                     ) {
                         valid.push(*type_aid)
                     }
@@ -244,7 +228,7 @@ fn conv_state(r_state: RState) -> ModuleState {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Private - charge-specific
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-impl CoreInner {
+impl SolCore {
     fn internal_try_charges(
         &mut self,
         fit_uid: UFitId,

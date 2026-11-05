@@ -1,6 +1,6 @@
 use crate::{
     Implant,
-    sol::{CoreInner, UndoStep},
+    sol::{SolCore, UndoStep},
     ud::UItemId,
 };
 
@@ -9,14 +9,14 @@ use crate::{
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl<'s> Implant<'s> {
     pub fn set_state(&mut self, state: bool) {
-        self.core.internal_set_implant_state_inner::<true>(self.uid, state);
+        self.sol.internal_set_implant_state_inner::<true>(self.uid, state);
     }
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Private
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-impl CoreInner {
+impl SolCore {
     pub(in crate::api) fn internal_set_implant_state(&mut self, implant_uid: UItemId, state: bool) {
         self.internal_set_implant_state_inner::<false>(implant_uid, state);
     }
@@ -33,7 +33,7 @@ impl CoreInner {
         u_implant.set_implant_state(state);
         let new_a_state = u_implant.get_state();
         u_implant.update_reffs(&mut self.reuse.eupdates, &self.u_data.r_data);
-        CoreInner::util_switch_item_state(
+        SolCore::util_switch_item_state(
             &self.u_data,
             &mut self.svc,
             implant_uid,

@@ -13,8 +13,8 @@ use std::{
 use chrono::Utc;
 use itertools::Itertools;
 use rc::{
-    AddMode, Core, ItemCommon, ItemTypeId, Lender, MinionState, ModRack, ModuleState, NpcProp, SecZone,
-    SecZoneCorruption, SkillLevel, Src, VERSION,
+    AddMode, ItemCommon, ItemTypeId, Lender, MinionState, ModRack, ModuleState, NpcProp, SecZone, SecZoneCorruption,
+    SkillLevel, SolOwned, Src, VERSION,
     ad::{AState, AdaptedDataCacher},
     ed::{EItemCatId, EveDataHandler, EveDataHandlerCore},
     src::SrcOrigin,
@@ -53,8 +53,8 @@ fn main() {
 
 fn test_random(edh: &EveDataHandler, adc: &AdaptedDataCacher) {
     let src = Src::new(edh, Some(adc)).unwrap();
-    let mut core = Core::new(&src);
-    let mut fit = core.add_fit();
+    let mut sol = SolOwned::new(&src);
+    let mut fit = sol.add_fit();
     let mut fighter = fit.add_fighter(ItemTypeId::from_i32(40562), MinionState::InBay, None, None);
     let autocharges: Vec<_> = fighter.iter_autocharges().map_into_iter(|v| v.get_item_id()).collect();
     println!("{:?}", autocharges);
@@ -68,8 +68,8 @@ fn test_crusader(edh: &EveDataHandler, adc: &AdaptedDataCacher) {
         SrcOrigin::Cached(..) => tracing::info!("source: loaded from cache"),
         SrcOrigin::Generated(..) => tracing::info!("source: generated"),
     }
-    let mut core = Core::new(&src);
-    let mut fit = core.add_fit();
+    let mut sol = SolOwned::new(&src);
+    let mut fit = sol.add_fit();
     let ship_id = fit.set_ship(ItemTypeId::from_i32(11184), None, None).get_item_id();
     for skill_id in skill_ids.iter() {
         fit.add_skill(
@@ -79,7 +79,7 @@ fn test_crusader(edh: &EveDataHandler, adc: &AdaptedDataCacher) {
     }
     let fit_id = fit.get_fit_id();
     // RAH
-    // core.add_module(
+    // sol.add_module(
     //     fit.id,
     //     ModRack::Low,
     //     AddMode::Equip,
@@ -89,7 +89,7 @@ fn test_crusader(edh: &EveDataHandler, adc: &AdaptedDataCacher) {
     //     None,
     // );
 
-    // for (attr_id, val) in core.iter_item_attrs(&ship.id).unwrap().sorted_by_key(|v| v.0) {
+    // for (attr_id, val) in sol.iter_item_attrs(&ship.id).unwrap().sorted_by_key(|v| v.0) {
     //     println!("{attr_id} {}", val.extra);
     // }
 
@@ -97,7 +97,7 @@ fn test_crusader(edh: &EveDataHandler, adc: &AdaptedDataCacher) {
     tracing::error!("starting crusader test");
     let before = Utc::now();
     for _ in 0..iterations {
-        let anp_id = core
+        let anp_id = sol
             .get_fit(&fit_id)
             .unwrap()
             .add_module(
@@ -108,9 +108,9 @@ fn test_crusader(edh: &EveDataHandler, adc: &AdaptedDataCacher) {
             )
             .unwrap()
             .get_item_id();
-        black_box(core.get_item(&ship_id).unwrap().iter_attrs().unwrap().for_each(drop));
-        core.get_item(&anp_id).unwrap().remove(rc::RemoveMode::Free);
-        black_box(core.get_item(&ship_id).unwrap().iter_attrs().unwrap().for_each(drop));
+        black_box(sol.get_item(&ship_id).unwrap().iter_attrs().unwrap().for_each(drop));
+        sol.get_item(&anp_id).unwrap().remove(rc::RemoveMode::Free);
+        black_box(sol.get_item(&ship_id).unwrap().iter_attrs().unwrap().for_each(drop));
     }
     let after = Utc::now();
     tracing::error!("done with crusader test");
@@ -123,9 +123,9 @@ fn test_nphoon(edh: &EveDataHandler, adc: &AdaptedDataCacher) {
     let skill_ids = get_skill_ids();
     let src = Src::new(edh, Some(adc)).unwrap();
 
-    let mut core = Core::new(&src);
-    core.set_sec_zone(SecZone::HiSec(SecZoneCorruption::None));
-    let mut fit = core.add_fit();
+    let mut sol = SolOwned::new(&src);
+    sol.set_sec_zone(SecZone::HiSec(SecZoneCorruption::None));
+    let mut fit = sol.add_fit();
 
     // Character
     fit.set_character(ItemTypeId::from_i32(1373));
@@ -208,7 +208,7 @@ fn test_nphoon(edh: &EveDataHandler, adc: &AdaptedDataCacher) {
         ModuleState::Active,
     )
     .unwrap(); // T2 scram
-    // core
+    // sol
     //     .add_module(
     //         fit.id,
     //         SolModRack::Mid,
@@ -662,12 +662,12 @@ fn test_nphoon(edh: &EveDataHandler, adc: &AdaptedDataCacher) {
 
     // println!(
     //     "Scram range before: {}",
-    //     core.get_item_attr(&scram.id, &54).unwrap().dogma
+    //     sol.get_item_attr(&scram.id, &54).unwrap().dogma
     // );
-    // core.add_sw_effect(79839, true);
+    // sol.add_sw_effect(79839, true);
     // println!(
     //     "Scram range after: {}",
-    //     core.get_item_attr(&scram.id, &54).unwrap().dogma
+    //     sol.get_item_attr(&scram.id, &54).unwrap().dogma
     // );
 
     let items = items.into_iter().map(ItemTypeId::from_i32).collect_vec();

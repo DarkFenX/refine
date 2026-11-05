@@ -13,10 +13,10 @@ pub(crate) struct SolInnerGuarded {
     src_alias: Arc<parking_lot::Mutex<SrcAlias>>,
 }
 impl SolInnerGuarded {
-    pub(crate) fn new(id: SolId, src_alias: SrcAlias, core: rc::Core) -> Self {
+    pub(crate) fn new(id: SolId, src_alias: SrcAlias, core_sol: rc::SolOwned) -> Self {
         let src_alias = Arc::new(parking_lot::Mutex::new(src_alias));
         Self {
-            inner: Arc::new(tokio::sync::Mutex::new(SolInner::new(id, src_alias.clone(), core))),
+            inner: Arc::new(tokio::sync::Mutex::new(SolInner::new(id, src_alias.clone(), core_sol))),
             src_alias,
         }
     }
@@ -68,16 +68,16 @@ pub(crate) struct SolInner {
     // Set when the solar system is removed from the map, so that requests which were waiting for
     // its lock do not work on it
     closed: bool,
-    pub(super) core: SolCoreGuarded,
+    pub(super) core_sol: SolCoreGuarded,
 }
 impl SolInner {
-    fn new(id: SolId, src_alias: Arc<parking_lot::Mutex<SrcAlias>>, core: rc::Core) -> Self {
+    fn new(id: SolId, src_alias: Arc<parking_lot::Mutex<SrcAlias>>, core_sol: rc::SolOwned) -> Self {
         Self {
             id,
             src_alias,
             last_accessed: Instant::now(),
             closed: false,
-            core: SolCoreGuarded::new(core),
+            core_sol: SolCoreGuarded::new(core_sol),
         }
     }
     pub(crate) fn get_id(&self) -> SolId {
@@ -102,7 +102,7 @@ impl SolInner {
         self.closed
     }
     pub(crate) fn is_poisoned(&self) -> bool {
-        self.core.0.is_poisoned()
+        self.core_sol.0.is_poisoned()
     }
 }
 
@@ -110,12 +110,12 @@ impl SolInner {
 // Core guarded
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 #[derive(Clone)]
-pub(super) struct SolCoreGuarded(Arc<std::sync::Mutex<rc::Core>>);
+pub(super) struct SolCoreGuarded(Arc<std::sync::Mutex<rc::SolOwned>>);
 impl SolCoreGuarded {
-    fn new(core: rc::Core) -> Self {
-        Self(Arc::new(std::sync::Mutex::new(core)))
+    fn new(core_sol: rc::SolOwned) -> Self {
+        Self(Arc::new(std::sync::Mutex::new(core_sol)))
     }
-    pub(super) fn lock(&self) -> std::sync::MutexGuard<'_, rc::Core> {
+    pub(super) fn lock(&self) -> std::sync::MutexGuard<'_, rc::SolOwned> {
         self.0.lock().unwrap()
     }
 }

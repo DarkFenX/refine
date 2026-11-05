@@ -1,7 +1,7 @@
 use crate::{
     Drone, ItemTypeId,
     ad::AItemId,
-    sol::{CoreInner, UndoStep},
+    sol::{SolCore, UndoStep},
     ud::UItemId,
 };
 
@@ -12,14 +12,14 @@ impl<'s> Drone<'s> {
     /// Set type ID, replacing currently used EVE item by another, preserving all the user data. If
     /// item is mutated, base item type ID is updated.
     pub fn set_type_id(&mut self, type_id: ItemTypeId) {
-        self.core.internal_set_drone_type_aid(self.uid, type_id.into_aid())
+        self.sol.internal_set_drone_type_aid(self.uid, type_id.into_aid())
     }
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Private
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-impl CoreInner {
+impl SolCore {
     pub(in crate::api) fn internal_set_drone_type_aid(&mut self, drone_uid: UItemId, type_aid: AItemId) {
         let u_drone = self.u_data.items.get_mut(drone_uid).dc_drone_mut().unwrap();
         let old_type_aid = u_drone.get_base_type_aid();
@@ -41,13 +41,13 @@ impl CoreInner {
             }
             return;
         }
-        CoreInner::util_remove_drone(&mut self.u_data, &mut self.svc, drone_uid, &mut self.reuse.eupdates);
+        SolCore::util_remove_drone(&mut self.u_data, &mut self.svc, drone_uid, &mut self.reuse.eupdates);
         let u_drone = self.u_data.items.get_mut(drone_uid).dc_drone_mut().unwrap();
         u_drone.set_base_type_aid(type_aid, &self.u_data.r_data);
         if self.undo.is_recording() {
             self.undo.record(UndoStep::DroneType(drone_uid, old_type_aid));
         }
-        CoreInner::util_update_item_radius_in_projs(&mut self.u_data, &self.rev_projs, &mut self.svc, drone_uid);
-        CoreInner::util_add_drone(&mut self.u_data, &mut self.svc, drone_uid, &mut self.reuse.eupdates);
+        SolCore::util_update_item_radius_in_projs(&mut self.u_data, &self.rev_projs, &mut self.svc, drone_uid);
+        SolCore::util_add_drone(&mut self.u_data, &mut self.svc, drone_uid, &mut self.reuse.eupdates);
     }
 }

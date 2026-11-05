@@ -8,10 +8,10 @@ use crate::{
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl Sol {
     pub fn get_proj_effect(&mut self, item_id: &ItemId) -> Result<ProjEffect<'_>, ProjEffectGetError> {
-        let core = self.inner_mut();
-        let proj_effect_uid = core.u_data.items.int_id_by_ext_id_err(item_id)?;
-        core.u_data.items.get(proj_effect_uid).dc_proj_effect()?;
-        Ok(ProjEffect::new(core, proj_effect_uid))
+        let sol = self.inner_mut();
+        let proj_effect_uid = sol.u_data.items.int_id_by_ext_id_err(item_id)?;
+        sol.u_data.items.get(proj_effect_uid).dc_proj_effect()?;
+        Ok(ProjEffect::new(sol, proj_effect_uid))
     }
 }
 

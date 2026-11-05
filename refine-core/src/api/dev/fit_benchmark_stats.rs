@@ -16,10 +16,10 @@ use crate::{
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl<'s> Fit<'s> {
     pub fn benchmark_stats(&mut self, projectee_item_id: ItemId, iterations: usize) {
-        let u_fit = self.core.u_data.fits.get(self.uid);
+        let u_fit = self.sol.u_data.fits.get(self.uid);
         let ship_uid = u_fit.ship.unwrap();
         let char_uid = u_fit.character.unwrap();
-        let projectee_item_uid = self.core.u_data.items.int_id_by_ext_id(&projectee_item_id).unwrap();
+        let projectee_item_uid = self.sol.u_data.items.int_id_by_ext_id(&projectee_item_id).unwrap();
         let time_burst = StatTimeOptions::Burst(StatTimeOptionsBurst { spool: None });
         let time_sim_inf = StatTimeOptions::Sim(StatTimeOptionsSim {
             time: None,
@@ -79,51 +79,51 @@ impl<'s> Fit<'s> {
             ////////////////////////////////////////////////////////////////////////////////////////
             // Damage
             ////////////////////////////////////////////////////////////////////////////////////////
-            self.core.svc.get_stat_fit_dmg_raw(
+            self.sol.svc.get_stat_fit_dmg_raw(
                 &mut reuse_cseq_map,
-                &self.core.u_data,
+                &self.sol.u_data,
                 self.uid,
                 dmg_item_kinds,
                 time_burst,
                 StatCritOptions::default(),
             );
-            self.core.svc.get_stat_fit_dmg_raw(
+            self.sol.svc.get_stat_fit_dmg_raw(
                 &mut reuse_cseq_map,
-                &self.core.u_data,
+                &self.sol.u_data,
                 self.uid,
                 dmg_item_kinds,
                 time_sim_inf,
                 StatCritOptions::default(),
             );
-            self.core.svc.get_stat_fit_dmg_raw(
+            self.sol.svc.get_stat_fit_dmg_raw(
                 &mut reuse_cseq_map,
-                &self.core.u_data,
+                &self.sol.u_data,
                 self.uid,
                 dmg_item_kinds,
                 time_sim_1200,
                 StatCritOptions::default(),
             );
-            self.core.svc.get_stat_fit_dmg_applied(
+            self.sol.svc.get_stat_fit_dmg_applied(
                 &mut reuse_cseq_map,
-                &self.core.u_data,
+                &self.sol.u_data,
                 self.uid,
                 dmg_item_kinds,
                 time_burst,
                 StatCritOptions::default(),
                 projectee_item_uid,
             );
-            self.core.svc.get_stat_fit_dmg_applied(
+            self.sol.svc.get_stat_fit_dmg_applied(
                 &mut reuse_cseq_map,
-                &self.core.u_data,
+                &self.sol.u_data,
                 self.uid,
                 dmg_item_kinds,
                 time_sim_inf,
                 StatCritOptions::default(),
                 projectee_item_uid,
             );
-            self.core.svc.get_stat_fit_dmg_applied(
+            self.sol.svc.get_stat_fit_dmg_applied(
                 &mut reuse_cseq_map,
-                &self.core.u_data,
+                &self.sol.u_data,
                 self.uid,
                 dmg_item_kinds,
                 time_sim_1200,
@@ -133,25 +133,25 @@ impl<'s> Fit<'s> {
             ////////////////////////////////////////////////////////////////////////////////////////
             // Mining
             ////////////////////////////////////////////////////////////////////////////////////////
-            self.core.svc.get_stat_fit_mps(
+            self.sol.svc.get_stat_fit_mps(
                 &mut reuse_cseq_map,
-                &self.core.u_data,
+                &self.sol.u_data,
                 self.uid,
                 mining_item_kinds,
                 time_burst,
                 StatMiningResourceKind::default(),
             );
-            self.core.svc.get_stat_fit_mps(
+            self.sol.svc.get_stat_fit_mps(
                 &mut reuse_cseq_map,
-                &self.core.u_data,
+                &self.sol.u_data,
                 self.uid,
                 mining_item_kinds,
                 time_sim_inf,
                 StatMiningResourceKind::default(),
             );
-            self.core.svc.get_stat_fit_mps(
+            self.sol.svc.get_stat_fit_mps(
                 &mut reuse_cseq_map,
-                &self.core.u_data,
+                &self.sol.u_data,
                 self.uid,
                 mining_item_kinds,
                 time_sim_1200,
@@ -160,49 +160,49 @@ impl<'s> Fit<'s> {
             ////////////////////////////////////////////////////////////////////////////////////////
             // Neuts
             ////////////////////////////////////////////////////////////////////////////////////////
-            self.core.svc.get_stat_fit_outgoing_nps(
+            self.sol.svc.get_stat_fit_outgoing_nps(
                 &mut reuse_cseq_map,
-                &self.core.u_data,
+                &self.sol.u_data,
                 self.uid,
                 neut_item_kinds,
                 time_burst,
                 None,
             );
-            self.core.svc.get_stat_fit_outgoing_nps(
+            self.sol.svc.get_stat_fit_outgoing_nps(
                 &mut reuse_cseq_map,
-                &self.core.u_data,
+                &self.sol.u_data,
                 self.uid,
                 neut_item_kinds,
                 time_sim_inf,
                 None,
             );
-            self.core.svc.get_stat_fit_outgoing_nps(
+            self.sol.svc.get_stat_fit_outgoing_nps(
                 &mut reuse_cseq_map,
-                &self.core.u_data,
+                &self.sol.u_data,
                 self.uid,
                 neut_item_kinds,
                 time_sim_1200,
                 None,
             );
-            self.core.svc.get_stat_fit_outgoing_nps(
+            self.sol.svc.get_stat_fit_outgoing_nps(
                 &mut reuse_cseq_map,
-                &self.core.u_data,
+                &self.sol.u_data,
                 self.uid,
                 neut_item_kinds,
                 time_burst,
                 Some(projectee_item_uid),
             );
-            self.core.svc.get_stat_fit_outgoing_nps(
+            self.sol.svc.get_stat_fit_outgoing_nps(
                 &mut reuse_cseq_map,
-                &self.core.u_data,
+                &self.sol.u_data,
                 self.uid,
                 neut_item_kinds,
                 time_sim_inf,
                 Some(projectee_item_uid),
             );
-            self.core.svc.get_stat_fit_outgoing_nps(
+            self.sol.svc.get_stat_fit_outgoing_nps(
                 &mut reuse_cseq_map,
-                &self.core.u_data,
+                &self.sol.u_data,
                 self.uid,
                 neut_item_kinds,
                 time_sim_1200,
@@ -211,49 +211,49 @@ impl<'s> Fit<'s> {
             ////////////////////////////////////////////////////////////////////////////////////////
             // RRs
             ////////////////////////////////////////////////////////////////////////////////////////
-            self.core.svc.get_stat_fit_outgoing_rps(
+            self.sol.svc.get_stat_fit_outgoing_rps(
                 &mut reuse_cseq_map,
-                &self.core.u_data,
+                &self.sol.u_data,
                 self.uid,
                 rr_item_kinds,
                 time_burst,
                 None,
             );
-            self.core.svc.get_stat_fit_outgoing_rps(
+            self.sol.svc.get_stat_fit_outgoing_rps(
                 &mut reuse_cseq_map,
-                &self.core.u_data,
+                &self.sol.u_data,
                 self.uid,
                 rr_item_kinds,
                 time_sim_inf,
                 None,
             );
-            self.core.svc.get_stat_fit_outgoing_rps(
+            self.sol.svc.get_stat_fit_outgoing_rps(
                 &mut reuse_cseq_map,
-                &self.core.u_data,
+                &self.sol.u_data,
                 self.uid,
                 rr_item_kinds,
                 time_sim_1200,
                 None,
             );
-            self.core.svc.get_stat_fit_outgoing_rps(
+            self.sol.svc.get_stat_fit_outgoing_rps(
                 &mut reuse_cseq_map,
-                &self.core.u_data,
+                &self.sol.u_data,
                 self.uid,
                 rr_item_kinds,
                 time_burst,
                 Some(projectee_item_uid),
             );
-            self.core.svc.get_stat_fit_outgoing_rps(
+            self.sol.svc.get_stat_fit_outgoing_rps(
                 &mut reuse_cseq_map,
-                &self.core.u_data,
+                &self.sol.u_data,
                 self.uid,
                 rr_item_kinds,
                 time_sim_inf,
                 Some(projectee_item_uid),
             );
-            self.core.svc.get_stat_fit_outgoing_rps(
+            self.sol.svc.get_stat_fit_outgoing_rps(
                 &mut reuse_cseq_map,
-                &self.core.u_data,
+                &self.sol.u_data,
                 self.uid,
                 rr_item_kinds,
                 time_sim_1200,
@@ -262,40 +262,36 @@ impl<'s> Fit<'s> {
             ////////////////////////////////////////////////////////////////////////////////////////
             // Cap transfers
             ////////////////////////////////////////////////////////////////////////////////////////
-            self.core
+            self.sol
                 .svc
-                .get_stat_fit_outgoing_cps(&mut reuse_cseq_map, &self.core.u_data, self.uid, time_burst, None);
-            self.core.svc.get_stat_fit_outgoing_cps(
+                .get_stat_fit_outgoing_cps(&mut reuse_cseq_map, &self.sol.u_data, self.uid, time_burst, None);
+            self.sol
+                .svc
+                .get_stat_fit_outgoing_cps(&mut reuse_cseq_map, &self.sol.u_data, self.uid, time_sim_inf, None);
+            self.sol.svc.get_stat_fit_outgoing_cps(
                 &mut reuse_cseq_map,
-                &self.core.u_data,
-                self.uid,
-                time_sim_inf,
-                None,
-            );
-            self.core.svc.get_stat_fit_outgoing_cps(
-                &mut reuse_cseq_map,
-                &self.core.u_data,
+                &self.sol.u_data,
                 self.uid,
                 time_sim_1200,
                 None,
             );
-            self.core.svc.get_stat_fit_outgoing_cps(
+            self.sol.svc.get_stat_fit_outgoing_cps(
                 &mut reuse_cseq_map,
-                &self.core.u_data,
+                &self.sol.u_data,
                 self.uid,
                 time_burst,
                 Some(projectee_item_uid),
             );
-            self.core.svc.get_stat_fit_outgoing_cps(
+            self.sol.svc.get_stat_fit_outgoing_cps(
                 &mut reuse_cseq_map,
-                &self.core.u_data,
+                &self.sol.u_data,
                 self.uid,
                 time_sim_inf,
                 Some(projectee_item_uid),
             );
-            self.core.svc.get_stat_fit_outgoing_cps(
+            self.sol.svc.get_stat_fit_outgoing_cps(
                 &mut reuse_cseq_map,
-                &self.core.u_data,
+                &self.sol.u_data,
                 self.uid,
                 time_sim_1200,
                 Some(projectee_item_uid),
@@ -303,301 +299,283 @@ impl<'s> Fit<'s> {
             ////////////////////////////////////////////////////////////////////////////////////////
             // Resources
             ////////////////////////////////////////////////////////////////////////////////////////
-            self.core.svc.get_stat_fit_cpu(&self.core.u_data, self.uid, u_fit);
-            self.core.svc.get_stat_fit_powergrid(&self.core.u_data, self.uid, u_fit);
-            self.core
+            self.sol.svc.get_stat_fit_cpu(&self.sol.u_data, self.uid, u_fit);
+            self.sol.svc.get_stat_fit_powergrid(&self.sol.u_data, self.uid, u_fit);
+            self.sol.svc.get_stat_fit_calibration(&self.sol.u_data, self.uid, u_fit);
+            self.sol
                 .svc
-                .get_stat_fit_calibration(&self.core.u_data, self.uid, u_fit);
-            self.core
+                .get_stat_fit_drone_bay_volume(&self.sol.u_data, self.uid, u_fit);
+            self.sol
                 .svc
-                .get_stat_fit_drone_bay_volume(&self.core.u_data, self.uid, u_fit);
-            self.core
+                .get_stat_fit_drone_bandwidth(&self.sol.u_data, self.uid, u_fit);
+            self.sol
                 .svc
-                .get_stat_fit_drone_bandwidth(&self.core.u_data, self.uid, u_fit);
-            self.core
-                .svc
-                .get_stat_fit_fighter_bay_volume(&self.core.u_data, self.uid, u_fit);
+                .get_stat_fit_fighter_bay_volume(&self.sol.u_data, self.uid, u_fit);
             ////////////////////////////////////////////////////////////////////////////////////////
             // Slots
             ////////////////////////////////////////////////////////////////////////////////////////
-            self.core
+            self.sol.svc.get_stat_fit_high_slots(&self.sol.u_data, self.uid, u_fit);
+            self.sol.svc.get_stat_fit_mid_slots(&self.sol.u_data, self.uid, u_fit);
+            self.sol.svc.get_stat_fit_low_slots(&self.sol.u_data, self.uid, u_fit);
+            self.sol
                 .svc
-                .get_stat_fit_high_slots(&self.core.u_data, self.uid, u_fit);
-            self.core.svc.get_stat_fit_mid_slots(&self.core.u_data, self.uid, u_fit);
-            self.core.svc.get_stat_fit_low_slots(&self.core.u_data, self.uid, u_fit);
-            self.core
+                .get_stat_fit_turret_slots(&self.sol.u_data, self.uid, u_fit);
+            self.sol
                 .svc
-                .get_stat_fit_turret_slots(&self.core.u_data, self.uid, u_fit);
-            self.core
+                .get_stat_fit_launcher_slots(&self.sol.u_data, self.uid, u_fit);
+            self.sol.svc.get_stat_fit_rig_slots(&self.sol.u_data, self.uid, u_fit);
+            self.sol
                 .svc
-                .get_stat_fit_launcher_slots(&self.core.u_data, self.uid, u_fit);
-            self.core.svc.get_stat_fit_rig_slots(&self.core.u_data, self.uid, u_fit);
-            self.core
+                .get_stat_fit_service_slots(&self.sol.u_data, self.uid, u_fit);
+            self.sol
                 .svc
-                .get_stat_fit_service_slots(&self.core.u_data, self.uid, u_fit);
-            self.core
+                .get_stat_fit_subsystem_slots(&self.sol.u_data, self.uid, u_fit);
+            self.sol
                 .svc
-                .get_stat_fit_subsystem_slots(&self.core.u_data, self.uid, u_fit);
-            self.core
+                .get_stat_fit_launched_drones(&self.sol.u_data, self.uid, u_fit);
+            self.sol
                 .svc
-                .get_stat_fit_launched_drones(&self.core.u_data, self.uid, u_fit);
-            self.core
+                .get_stat_fit_launched_fighters(&self.sol.u_data, self.uid, u_fit);
+            self.sol
                 .svc
-                .get_stat_fit_launched_fighters(&self.core.u_data, self.uid, u_fit);
-            self.core
+                .get_stat_fit_launched_light_fighters(&self.sol.u_data, self.uid, u_fit);
+            self.sol
                 .svc
-                .get_stat_fit_launched_light_fighters(&self.core.u_data, self.uid, u_fit);
-            self.core
+                .get_stat_fit_launched_heavy_fighters(&self.sol.u_data, self.uid, u_fit);
+            self.sol
                 .svc
-                .get_stat_fit_launched_heavy_fighters(&self.core.u_data, self.uid, u_fit);
-            self.core
+                .get_stat_fit_launched_support_fighters(&self.sol.u_data, self.uid, u_fit);
+            self.sol
                 .svc
-                .get_stat_fit_launched_support_fighters(&self.core.u_data, self.uid, u_fit);
-            self.core
+                .get_stat_fit_launched_st_light_fighters(&self.sol.u_data, self.uid, u_fit);
+            self.sol
                 .svc
-                .get_stat_fit_launched_st_light_fighters(&self.core.u_data, self.uid, u_fit);
-            self.core
+                .get_stat_fit_launched_st_heavy_fighters(&self.sol.u_data, self.uid, u_fit);
+            self.sol
                 .svc
-                .get_stat_fit_launched_st_heavy_fighters(&self.core.u_data, self.uid, u_fit);
-            self.core
-                .svc
-                .get_stat_fit_launched_st_support_fighters(&self.core.u_data, self.uid, u_fit);
+                .get_stat_fit_launched_st_support_fighters(&self.sol.u_data, self.uid, u_fit);
             ////////////////////////////////////////////////////////////////////////////////////////
             // Tank
             ////////////////////////////////////////////////////////////////////////////////////////
-            self.core
+            self.sol.svc.get_stat_item_resists(&self.sol.u_data, ship_uid).unwrap();
+            self.sol
                 .svc
-                .get_stat_item_resists(&self.core.u_data, ship_uid)
+                .get_stat_item_hp(&mut reuse_cseq_map, &self.sol.u_data, ship_uid)
                 .unwrap();
-            self.core
-                .svc
-                .get_stat_item_hp(&mut reuse_cseq_map, &self.core.u_data, ship_uid)
-                .unwrap();
-            self.core
+            self.sol
                 .svc
                 .get_stat_item_ehp(
                     &mut reuse_cseq_map,
-                    &self.core.u_data,
+                    &self.sol.u_data,
                     ship_uid,
                     Some(dmg_pattern_uniform),
                 )
                 .unwrap();
-            self.core
+            self.sol
                 .svc
-                .get_stat_item_ehp(
-                    &mut reuse_cseq_map,
-                    &self.core.u_data,
-                    ship_uid,
-                    Some(dmg_pattern_laser),
-                )
+                .get_stat_item_ehp(&mut reuse_cseq_map, &self.sol.u_data, ship_uid, Some(dmg_pattern_laser))
                 .unwrap();
-            self.core
+            self.sol
                 .svc
-                .get_stat_item_wc_ehp(&mut reuse_cseq_map, &self.core.u_data, ship_uid)
+                .get_stat_item_wc_ehp(&mut reuse_cseq_map, &self.sol.u_data, ship_uid)
                 .unwrap();
-            self.core
+            self.sol
                 .svc
                 .get_stat_item_rps(
                     &mut reuse_cseq_map,
-                    &self.core.u_data,
+                    &self.sol.u_data,
                     ship_uid,
                     time_burst,
                     shield_perc_peak,
                 )
                 .unwrap();
-            self.core
+            self.sol
                 .svc
                 .get_stat_item_rps(
                     &mut reuse_cseq_map,
-                    &self.core.u_data,
+                    &self.sol.u_data,
                     ship_uid,
                     time_sim_inf,
                     shield_perc_peak,
                 )
                 .unwrap();
-            self.core
+            self.sol
                 .svc
                 .get_stat_item_rps(
                     &mut reuse_cseq_map,
-                    &self.core.u_data,
+                    &self.sol.u_data,
                     ship_uid,
                     time_sim_1200,
                     shield_perc_peak,
                 )
                 .unwrap();
-            self.core
+            self.sol
                 .svc
                 .get_stat_item_erps(
                     &mut reuse_cseq_map,
-                    &self.core.u_data,
+                    &self.sol.u_data,
                     ship_uid,
                     Some(dmg_pattern_uniform),
                     time_burst,
                     shield_perc_peak,
                 )
                 .unwrap();
-            self.core
+            self.sol
                 .svc
                 .get_stat_item_erps(
                     &mut reuse_cseq_map,
-                    &self.core.u_data,
+                    &self.sol.u_data,
                     ship_uid,
                     Some(dmg_pattern_uniform),
                     time_sim_inf,
                     shield_perc_peak,
                 )
                 .unwrap();
-            self.core
+            self.sol
                 .svc
                 .get_stat_item_erps(
                     &mut reuse_cseq_map,
-                    &self.core.u_data,
+                    &self.sol.u_data,
                     ship_uid,
                     Some(dmg_pattern_uniform),
                     time_sim_1200,
                     shield_perc_peak,
                 )
                 .unwrap();
-            self.core
+            self.sol
                 .svc
                 .get_stat_item_erps(
                     &mut reuse_cseq_map,
-                    &self.core.u_data,
+                    &self.sol.u_data,
                     ship_uid,
                     Some(dmg_pattern_laser),
                     time_burst,
                     shield_perc_peak,
                 )
                 .unwrap();
-            self.core
+            self.sol
                 .svc
                 .get_stat_item_erps(
                     &mut reuse_cseq_map,
-                    &self.core.u_data,
+                    &self.sol.u_data,
                     ship_uid,
                     Some(dmg_pattern_laser),
                     time_sim_inf,
                     shield_perc_peak,
                 )
                 .unwrap();
-            self.core
+            self.sol
                 .svc
                 .get_stat_item_erps(
                     &mut reuse_cseq_map,
-                    &self.core.u_data,
+                    &self.sol.u_data,
                     ship_uid,
                     Some(dmg_pattern_laser),
                     time_sim_1200,
                     shield_perc_peak,
                 )
                 .unwrap();
-            self.core
+            self.sol
                 .svc
-                .get_stat_item_breach_resist(&self.core.u_data, ship_uid)
+                .get_stat_item_breach_resist(&self.sol.u_data, ship_uid)
                 .unwrap();
             ////////////////////////////////////////////////////////////////////////////////////////
             // Cap
             ////////////////////////////////////////////////////////////////////////////////////////
-            self.core
+            self.sol
                 .svc
-                .get_stat_item_cap_amount(&self.core.u_data, ship_uid)
+                .get_stat_item_cap_amount(&self.sol.u_data, ship_uid)
                 .unwrap();
-            self.core
+            self.sol
                 .svc
                 .get_stat_item_cap_balance(
                     &mut reuse_cseq_map,
-                    &self.core.u_data,
+                    &self.sol.u_data,
                     ship_uid,
                     cap_src_kinds_all,
                     time_sim_inf,
                 )
                 .unwrap();
-            self.core
+            self.sol
                 .svc
                 .get_stat_item_cap_balance(
                     &mut reuse_cseq_map,
-                    &self.core.u_data,
+                    &self.sol.u_data,
                     ship_uid,
                     cap_src_kinds_positive,
                     time_sim_inf,
                 )
                 .unwrap();
-            self.core
+            self.sol
                 .svc
                 .get_stat_item_cap_balance(
                     &mut reuse_cseq_map,
-                    &self.core.u_data,
+                    &self.sol.u_data,
                     ship_uid,
                     cap_src_kinds_negative,
                     time_sim_inf,
                 )
                 .unwrap();
-            self.core
+            self.sol
                 .svc
-                .get_stat_item_neut_resist(&self.core.u_data, ship_uid)
+                .get_stat_item_neut_resist(&self.sol.u_data, ship_uid)
                 .unwrap();
             ////////////////////////////////////////////////////////////////////////////////////////
             // Sensors
             ////////////////////////////////////////////////////////////////////////////////////////
-            self.core.svc.get_stat_item_locks(&self.core.u_data, ship_uid).unwrap();
-            self.core
+            self.sol.svc.get_stat_item_locks(&self.sol.u_data, ship_uid).unwrap();
+            self.sol
                 .svc
-                .get_stat_item_lock_range(&self.core.u_data, ship_uid)
+                .get_stat_item_lock_range(&self.sol.u_data, ship_uid)
                 .unwrap();
-            self.core
-                .svc
-                .get_stat_item_scan_res(&self.core.u_data, ship_uid)
-                .unwrap();
-            self.core
-                .svc
-                .get_stat_item_sensors(&self.core.u_data, ship_uid)
-                .unwrap();
-            self.core.svc.get_stat_dscan_range(&self.core.u_data, ship_uid).unwrap();
-            match self.core.svc.get_stat_item_probing_size(&self.core.u_data, ship_uid) {
+            self.sol.svc.get_stat_item_scan_res(&self.sol.u_data, ship_uid).unwrap();
+            self.sol.svc.get_stat_item_sensors(&self.sol.u_data, ship_uid).unwrap();
+            self.sol.svc.get_stat_dscan_range(&self.sol.u_data, ship_uid).unwrap();
+            match self.sol.svc.get_stat_item_probing_size(&self.sol.u_data, ship_uid) {
                 Ok(..) | Err(IntStatItemError::StatSpecific(..)) => (),
                 _ => panic!(),
             }
-            self.core
+            self.sol
                 .svc
-                .get_stat_item_incoming_jam(&mut reuse_cseq_map, &self.core.u_data, ship_uid, time_burst)
+                .get_stat_item_incoming_jam(&mut reuse_cseq_map, &self.sol.u_data, ship_uid, time_burst)
                 .unwrap();
-            self.core
+            self.sol
                 .svc
-                .get_stat_item_incoming_jam(&mut reuse_cseq_map, &self.core.u_data, ship_uid, time_sim_inf)
+                .get_stat_item_incoming_jam(&mut reuse_cseq_map, &self.sol.u_data, ship_uid, time_sim_inf)
                 .unwrap();
-            self.core
+            self.sol
                 .svc
-                .get_stat_item_incoming_jam(&mut reuse_cseq_map, &self.core.u_data, ship_uid, time_sim_1200)
+                .get_stat_item_incoming_jam(&mut reuse_cseq_map, &self.sol.u_data, ship_uid, time_sim_1200)
                 .unwrap();
             ////////////////////////////////////////////////////////////////////////////////////////
             // Mobility
             ////////////////////////////////////////////////////////////////////////////////////////
-            self.core.svc.get_stat_item_speed(&self.core.u_data, ship_uid).unwrap();
-            match self.core.svc.get_stat_item_agility(&self.core.u_data, ship_uid) {
+            self.sol.svc.get_stat_item_speed(&self.sol.u_data, ship_uid).unwrap();
+            match self.sol.svc.get_stat_item_agility(&self.sol.u_data, ship_uid) {
                 Ok(..) | Err(IntStatItemError::StatSpecific(..)) => (),
                 _ => panic!(),
             };
-            match self.core.svc.get_stat_item_align_time(&self.core.u_data, ship_uid) {
+            match self.sol.svc.get_stat_item_align_time(&self.sol.u_data, ship_uid) {
                 Ok(..) | Err(IntStatItemError::StatSpecific(..)) => (),
                 _ => panic!(),
             };
-            self.core
+            self.sol
                 .svc
-                .get_stat_item_sig_radius(&self.core.u_data, ship_uid)
+                .get_stat_item_sig_radius(&self.sol.u_data, ship_uid)
                 .unwrap();
-            self.core.svc.get_stat_item_mass(&self.core.u_data, ship_uid).unwrap();
-            match self.core.svc.get_stat_item_warp_speed(&self.core.u_data, ship_uid) {
+            self.sol.svc.get_stat_item_mass(&self.sol.u_data, ship_uid).unwrap();
+            match self.sol.svc.get_stat_item_warp_speed(&self.sol.u_data, ship_uid) {
                 Ok(..) | Err(IntStatItemError::StatSpecific(..)) => (),
                 _ => panic!(),
             };
-            match self.core.svc.get_stat_item_max_warp_range(&self.core.u_data, ship_uid) {
+            match self.sol.svc.get_stat_item_max_warp_range(&self.sol.u_data, ship_uid) {
                 Ok(..) | Err(IntStatItemError::StatSpecific(..)) => (),
                 _ => panic!(),
             };
             match self
-                .core
+                .sol
                 .svc
-                .get_stat_item_jump(&self.core.u_data, ship_uid, jump_range, &jump_passengers)
+                .get_stat_item_jump(&self.sol.u_data, ship_uid, jump_range, &jump_passengers)
             {
                 Ok(..) | Err(IntStatItemError::StatSpecific(..)) => (),
                 _ => panic!(),
@@ -605,37 +583,34 @@ impl<'s> Fit<'s> {
             ////////////////////////////////////////////////////////////////////////////////////////
             // Misc
             ////////////////////////////////////////////////////////////////////////////////////////
-            self.core
+            self.sol
                 .svc
-                .get_stat_item_drone_control_range(&self.core.u_data, char_uid)
+                .get_stat_item_drone_control_range(&self.sol.u_data, char_uid)
                 .unwrap();
-            self.core
+            self.sol.svc.get_stat_item_can_warp(&self.sol.u_data, ship_uid).unwrap();
+            self.sol
                 .svc
-                .get_stat_item_can_warp(&self.core.u_data, ship_uid)
+                .get_stat_item_can_jump_gate(&self.sol.u_data, ship_uid)
                 .unwrap();
-            self.core
+            self.sol
                 .svc
-                .get_stat_item_can_jump_gate(&self.core.u_data, ship_uid)
+                .get_stat_item_can_jump_wormhole(&self.sol.u_data, ship_uid)
                 .unwrap();
-            self.core
+            self.sol
                 .svc
-                .get_stat_item_can_jump_wormhole(&self.core.u_data, ship_uid)
+                .get_stat_item_can_jump_drive(&self.sol.u_data, ship_uid)
                 .unwrap();
-            self.core
+            self.sol
                 .svc
-                .get_stat_item_can_jump_drive(&self.core.u_data, ship_uid)
+                .get_stat_item_can_dock_station(&self.sol.u_data, ship_uid)
                 .unwrap();
-            self.core
+            self.sol
                 .svc
-                .get_stat_item_can_dock_station(&self.core.u_data, ship_uid)
+                .get_stat_item_can_dock_citadel(&self.sol.u_data, ship_uid)
                 .unwrap();
-            self.core
+            self.sol
                 .svc
-                .get_stat_item_can_dock_citadel(&self.core.u_data, ship_uid)
-                .unwrap();
-            self.core
-                .svc
-                .get_stat_item_can_tether(&self.core.u_data, ship_uid)
+                .get_stat_item_can_tether(&self.sol.u_data, ship_uid)
                 .unwrap();
         }
     }

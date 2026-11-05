@@ -1,13 +1,13 @@
 use crate::{
     ad::AItemId,
-    sol::{CoreInner, UndoStep},
+    sol::{SolCore, UndoStep},
     ud::{
         UItemId,
         err::{ItemMutatedError, MutatorInplaceError},
     },
 };
 
-impl CoreInner {
+impl SolCore {
     pub(in crate::api) fn internal_set_module_mutator_aid(
         &mut self,
         module_uid: UItemId,
@@ -38,7 +38,7 @@ impl CoreInner {
             Err(MutatorInplaceError::NotMutated(_)) => unreachable!("item is checked to be mutated"),
             Err(MutatorInplaceError::MutatedTypeChange) => (),
         }
-        CoreInner::util_remove_module_with_charge_act(
+        SolCore::util_remove_module_with_charge_act(
             &mut self.u_data,
             &mut self.svc,
             module_uid,
@@ -52,12 +52,7 @@ impl CoreInner {
             self.undo
                 .record(UndoStep::ModuleMutator(module_uid, old_mutator_type_aid));
         }
-        CoreInner::util_add_module_with_charge_act(
-            &mut self.u_data,
-            &mut self.svc,
-            module_uid,
-            &mut self.reuse.eupdates,
-        );
+        SolCore::util_add_module_with_charge_act(&mut self.u_data, &mut self.svc, module_uid, &mut self.reuse.eupdates);
         Ok(())
     }
 }

@@ -1,14 +1,14 @@
 use crate::{
-    sol::{CoreInner, RevProjs},
+    sol::{RevProjs, SolCore},
     svc::Svc,
     ud::{UData, UItemId, UPhysics},
 };
 
-impl CoreInner {
+impl SolCore {
     pub(in crate::api) fn internal_restore_ship_physics(&mut self, ship_uid: UItemId, physics: UPhysics) {
         let u_ship = self.u_data.items.get_mut(ship_uid).dc_ship_mut().unwrap();
         *u_ship.get_physics_mut() = physics;
-        CoreInner::util_update_ship_physics(&mut self.u_data, &self.rev_projs, &mut self.svc, ship_uid);
+        SolCore::util_update_ship_physics(&mut self.u_data, &self.rev_projs, &mut self.svc, ship_uid);
     }
     // Compiler keeps it out of line with 3 callers; inlined, ship physics changes are cheaper
     #[inline(always)]
@@ -32,9 +32,9 @@ impl CoreInner {
             }
         }
         for (projector_uid, projectee_uid, proj_data) in projections_to_update {
-            CoreInner::util_change_item_proj_data(u_data, svc, projector_uid, projectee_uid, Some(proj_data));
+            SolCore::util_change_item_proj_data(u_data, svc, projector_uid, projectee_uid, Some(proj_data));
         }
         // Handle incoming projections
-        CoreInner::util_update_physics_for_incoming(u_data, rev_projs, svc, ship_uid, u_ship_physics);
+        SolCore::util_update_physics_for_incoming(u_data, rev_projs, svc, ship_uid, u_ship_physics);
     }
 }

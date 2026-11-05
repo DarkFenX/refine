@@ -1,6 +1,6 @@
 use crate::{
     DormantMutation, EffectiveMutation, Mutation,
-    sol::CoreInner,
+    sol::SolCore,
     ud::{UItem, UItemId, err::ItemMutatedError},
 };
 
@@ -18,20 +18,20 @@ impl<'s> Mutation<'s> {
 
 impl<'s> EffectiveMutation<'s> {
     pub fn remove(self) {
-        self.core.internal_remove_item_mutation(self.item_uid).unwrap();
+        self.sol.internal_remove_item_mutation(self.item_uid).unwrap();
     }
 }
 
 impl<'s> DormantMutation<'s> {
     pub fn remove(self) {
-        self.core.internal_remove_item_mutation(self.item_uid).unwrap();
+        self.sol.internal_remove_item_mutation(self.item_uid).unwrap();
     }
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Private
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-impl CoreInner {
+impl SolCore {
     pub(in crate::api) fn internal_remove_item_mutation(&mut self, item_uid: UItemId) -> Result<(), ItemMutatedError> {
         match self.u_data.items.get(item_uid) {
             UItem::Drone(..) => self.internal_remove_drone_mutation(item_uid),

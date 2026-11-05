@@ -6,10 +6,10 @@ impl Item<'_, '_> {
         // Variables for move
         let item_id = self.id;
         self.sol
-            .exec_standard_infallible(move |core| {
+            .exec_standard_infallible(move |core_sol| {
                 // Holding mutex on sol - nothing can remove the core item without consuming the
                 // high-level Item
-                let core_item = core.get_item(&item_id).unwrap();
+                let core_item = core_sol.get_item(&item_id).unwrap();
                 ctl_cmd.execute(core_item)
             })
             .await?;

@@ -3,8 +3,11 @@ use crate::{Fleet, FleetId, Sol};
 impl<'r, 's> Sol<'r> {
     #[tracing::instrument(name = "flt-get", level = "error", skip_all)]
     pub async fn get_fleet(&'s mut self, fleet_id: FleetId) -> Result<Fleet<'r, 's>, FleetGetError> {
-        let fleet_id =
-            self.exec_inplace(|core| core.get_fleet(&fleet_id).map(|core_fleet| core_fleet.get_fleet_id()))?;
+        let fleet_id = self.exec_inplace(|core_sol| {
+            core_sol
+                .get_fleet(&fleet_id)
+                .map(|core_fleet| core_fleet.get_fleet_id())
+        })?;
         let fleet = Fleet::new(self, fleet_id);
         Ok(fleet)
     }

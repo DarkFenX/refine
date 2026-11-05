@@ -1,10 +1,10 @@
 use crate::{
-    sol::CoreInner,
+    sol::SolCore,
     svc::Svc,
     ud::{UData, UEffectUpdates, UItemId},
 };
 
-impl CoreInner {
+impl SolCore {
     pub(in crate::api::item) fn util_process_autocharge_activations(
         u_data: &mut UData,
         svc: &mut Svc,
@@ -17,7 +17,7 @@ impl CoreInner {
             u_autocharge.set_activated(ac_activated);
             let new_a_state = u_autocharge.get_state();
             u_autocharge.update_reffs(reuse_eupdates, &u_data.r_data);
-            CoreInner::util_switch_item_state(u_data, svc, ac_uid, old_a_state, new_a_state, reuse_eupdates);
+            SolCore::util_switch_item_state(u_data, svc, ac_uid, old_a_state, new_a_state, reuse_eupdates);
         }
     }
 }

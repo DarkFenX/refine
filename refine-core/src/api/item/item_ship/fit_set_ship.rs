@@ -1,7 +1,7 @@
 use crate::{
     Coordinates, Fit, ItemTypeId, Movement, Ship,
     ad::AItemId,
-    sol::{CoreInner, UndoStep},
+    sol::{SolCore, UndoStep},
     ud::{UFitId, UItem, UItemId, UPhysics, UShip},
 };
 
@@ -24,15 +24,15 @@ impl<'s> Fit<'s> {
             u_physics.direction = movement.direction.into_xyz();
             u_physics.speed = movement.speed;
         }
-        let ship_uid = self.core.internal_set_fit_ship(self.uid, type_id.into_aid(), u_physics);
-        Ship::new(self.core, ship_uid)
+        let ship_uid = self.sol.internal_set_fit_ship(self.uid, type_id.into_aid(), u_physics);
+        Ship::new(self.sol, ship_uid)
     }
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Private
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-impl CoreInner {
+impl SolCore {
     pub(in crate::api) fn internal_set_fit_ship(
         &mut self,
         fit_uid: UFitId,
@@ -68,8 +68,8 @@ impl CoreInner {
         let u_fit = self.u_data.fits.get_mut(fit_uid);
         u_fit.ship = Some(ship_uid);
         u_fit.ship_kind = ship_kind;
-        CoreInner::util_add_ship(&mut self.u_data, &mut self.svc, ship_uid, &mut self.reuse.eupdates);
+        SolCore::util_add_ship(&mut self.u_data, &mut self.svc, ship_uid, &mut self.reuse.eupdates);
         // Update projections outgoing from on-ship items
-        CoreInner::util_update_ship_radius_for_outgoing_projs(&mut self.u_data, &mut self.svc, fit_uid, ship_radius);
+        SolCore::util_update_ship_radius_for_outgoing_projs(&mut self.u_data, &mut self.svc, fit_uid, ship_radius);
     }
 }

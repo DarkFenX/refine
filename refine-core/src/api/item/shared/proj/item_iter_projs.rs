@@ -1,8 +1,8 @@
-use crate::{sol::CoreInner, ud::UItemId};
+use crate::{sol::SolCore, ud::UItemId};
 
 pub(super) fn iter_projectee_uids(
-    core: &CoreInner,
+    sol: &SolCore,
     item_uid: UItemId,
 ) -> impl ExactSizeIterator<Item = UItemId> + use<'_> {
-    core.u_data.items.get(item_uid).iter_projectees().unwrap()
+    sol.u_data.items.get(item_uid).iter_projectees().unwrap()
 }

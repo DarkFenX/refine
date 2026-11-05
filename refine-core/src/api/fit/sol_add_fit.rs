@@ -1,6 +1,6 @@
 use crate::{
     Fit, Sol,
-    sol::{CoreInner, UndoStep},
+    sol::{SolCore, UndoStep},
     ud::{UFit, UFitId},
 };
 
@@ -9,16 +9,16 @@ use crate::{
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl Sol {
     pub fn add_fit(&mut self) -> Fit<'_> {
-        let core = self.inner_mut();
-        let fit_uid = core.add_fit_internal();
-        Fit::new(core, fit_uid)
+        let sol = self.inner_mut();
+        let fit_uid = sol.add_fit_internal();
+        Fit::new(sol, fit_uid)
     }
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Private
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-impl CoreInner {
+impl SolCore {
     pub(in crate::api) fn add_fit_internal(&mut self) -> UFitId {
         let fit_id = self.u_data.fits.alloc_id();
         let u_fit = UFit::new(fit_id);

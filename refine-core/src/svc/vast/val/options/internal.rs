@@ -2,7 +2,7 @@ use itertools::Itertools;
 
 use crate::{
     OptionExt,
-    sol::CoreInner,
+    sol::SolCore,
     svc::vast::val::ValKind,
     ud::{UFitId, UItemId},
     util::RSet,
@@ -15,13 +15,13 @@ pub(crate) struct ValOptionsSolInt {
     pub(in crate::svc::vast::val) fit_uids: Vec<UFitId>,
 }
 impl ValOptionsSolInt {
-    pub(crate) fn from_pub(pub_sol_opts: &ValOptionsSol, core: &CoreInner) -> Self {
+    pub(crate) fn from_pub(pub_sol_opts: &ValOptionsSol, sol: &SolCore) -> Self {
         Self {
-            options: ValOptionsInt::from_pub(&pub_sol_opts.options, core),
+            options: ValOptionsInt::from_pub(&pub_sol_opts.options, sol),
             fit_uids: pub_sol_opts
                 .fit_ids
                 .iter()
-                .filter_map(|fit_id| core.u_data.fits.int_id_by_ext_id(fit_id))
+                .filter_map(|fit_id| sol.u_data.fits.int_id_by_ext_id(fit_id))
                 .unique()
                 .collect(),
         }
@@ -30,14 +30,14 @@ impl ValOptionsSolInt {
 
 pub(crate) struct ValOptionsInt([ValOptionInt; std::mem::variant_count::<ValKind>()]);
 impl ValOptionsInt {
-    pub(crate) fn from_pub(pub_opts: &ValOptions, core: &CoreInner) -> Self {
+    pub(crate) fn from_pub(pub_opts: &ValOptions, sol: &SolCore) -> Self {
         let default = match pub_opts.default {
             true => ValOptionInt::Enabled(ValOptionEnabledInt { kfs: RSet::new() }),
             false => ValOptionInt::Disabled,
         };
         let mut int_opts = Self(std::array::from_fn(|_| default.clone()));
         for (opt_kind, opt_value) in pub_opts.overrides.iter() {
-            int_opts.0[*opt_kind as usize] = ValOptionInt::from_pub(opt_value, core);
+            int_opts.0[*opt_kind as usize] = ValOptionInt::from_pub(opt_value, sol);
         }
         int_opts
     }
@@ -52,7 +52,7 @@ pub(in crate::svc::vast::val) enum ValOptionInt {
     Disabled,
 }
 impl ValOptionInt {
-    fn from_pub(pub_opt: &OptionExt<ValEnabled>, core: &CoreInner) -> Self {
+    fn from_pub(pub_opt: &OptionExt<ValEnabled>, sol: &SolCore) -> Self {
         match pub_opt {
             OptionExt::Disabled => Self::Disabled,
             OptionExt::Enabled => Self::Enabled(ValOptionEnabledInt { kfs: RSet::new() }),
@@ -60,7 +60,7 @@ impl ValOptionInt {
                 kfs: pub_opt_enabled
                     .kfs
                     .iter()
-                    .filter_map(|item_id| core.u_data.items.int_id_by_ext_id(item_id))
+                    .filter_map(|item_id| sol.u_data.items.int_id_by_ext_id(item_id))
                     .collect(),
             }),
         }

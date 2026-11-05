@@ -1,7 +1,7 @@
 use crate::{
     Charge, ItemTypeId, Module,
     ad::AItemId,
-    sol::{CoreInner, UndoStep},
+    sol::{SolCore, UndoStep},
     ud::{UCharge, UItem, UItemId},
 };
 
@@ -11,17 +11,15 @@ use crate::{
 impl<'s> Module<'s> {
     /// Set charge, replacing current one with a new item.
     pub fn set_charge_type_id(&mut self, charge_type_id: ItemTypeId) -> Charge<'_> {
-        let charge_uid = self
-            .core
-            .internal_set_module_charge(self.uid, charge_type_id.into_aid());
-        Charge::new(self.core, charge_uid)
+        let charge_uid = self.sol.internal_set_module_charge(self.uid, charge_type_id.into_aid());
+        Charge::new(self.sol, charge_uid)
     }
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Private
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-impl CoreInner {
+impl SolCore {
     pub(in crate::api) fn internal_set_module_charge(
         &mut self,
         module_uid: UItemId,
@@ -67,7 +65,7 @@ impl CoreInner {
         let charge_uid = self.u_data.items.add(charge_u_item);
         self.attach_charge(module_uid, charge_uid);
         if has_projs {
-            CoreInner::util_reg_item_projs(&self.u_data, &mut self.svc, &mut self.rev_projs, charge_uid);
+            SolCore::util_reg_item_projs(&self.u_data, &mut self.svc, &mut self.rev_projs, charge_uid);
         }
         if self.undo.is_recording() {
             self.undo.record(UndoStep::ChargeAdded(charge_uid));
@@ -81,13 +79,13 @@ impl CoreInner {
         let has_projs = !u_charge.get_projs().is_empty();
         self.attach_charge(module_uid, charge_uid);
         if has_projs {
-            CoreInner::util_reg_item_projs(&self.u_data, &mut self.svc, &mut self.rev_projs, charge_uid);
+            SolCore::util_reg_item_projs(&self.u_data, &mut self.svc, &mut self.rev_projs, charge_uid);
         }
     }
     fn attach_charge(&mut self, module_uid: UItemId, charge_uid: UItemId) {
         let u_module = self.u_data.items.get_mut(module_uid).dc_module_mut().unwrap();
         u_module.set_charge_uid(Some(charge_uid));
         // Update services
-        CoreInner::util_add_charge(&mut self.u_data, &mut self.svc, charge_uid, &mut self.reuse.eupdates);
+        SolCore::util_add_charge(&mut self.u_data, &mut self.svc, charge_uid, &mut self.reuse.eupdates);
     }
 }

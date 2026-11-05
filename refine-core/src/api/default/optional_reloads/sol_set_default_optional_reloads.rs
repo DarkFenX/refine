@@ -1,6 +1,6 @@
 use crate::{
     OptionalReload, Sol,
-    sol::{CoreInner, UndoStep},
+    sol::{SolCore, UndoStep},
 };
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -15,7 +15,7 @@ impl Sol {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Private
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-impl CoreInner {
+impl SolCore {
     pub(in crate::api) fn internal_set_default_optional_reloads(&mut self, optional_reloads: OptionalReload) {
         let old_optional_reloads = std::mem::replace(&mut self.u_data.default_optional_reloads, optional_reloads);
         if old_optional_reloads != optional_reloads && self.undo.is_recording() {

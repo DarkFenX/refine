@@ -1,7 +1,7 @@
 use crate::{
     Coordinates, Drone, Fit, ItemTypeId, MinionState, Movement,
     ad::AItemId,
-    sol::{CoreInner, UndoStep},
+    sol::{SolCore, UndoStep},
     ud::{UDrone, UFitId, UItem, UItemId, UItemMutationRequest, UPhysics},
 };
 
@@ -25,16 +25,16 @@ impl<'s> Fit<'s> {
             u_physics.speed = movement.speed;
         }
         let drone_uid = self
-            .core
+            .sol
             .internal_add_drone(self.uid, type_id.into_aid(), state, None, u_physics);
-        Drone::new(self.core, drone_uid)
+        Drone::new(self.sol, drone_uid)
     }
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Private
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-impl CoreInner {
+impl SolCore {
     pub(in crate::api) fn internal_add_drone(
         &mut self,
         fit_uid: UFitId,
@@ -69,12 +69,12 @@ impl CoreInner {
         self.attach_drone(fit_uid, drone_uid);
         // Only reattached drones can have projections
         if has_projs {
-            CoreInner::util_reg_item_projs(&self.u_data, &mut self.svc, &mut self.rev_projs, drone_uid);
+            SolCore::util_reg_item_projs(&self.u_data, &mut self.svc, &mut self.rev_projs, drone_uid);
         }
     }
     fn attach_drone(&mut self, fit_uid: UFitId, drone_uid: UItemId) {
         let u_fit = self.u_data.fits.get_mut(fit_uid);
         u_fit.drones.insert(drone_uid);
-        CoreInner::util_add_drone(&mut self.u_data, &mut self.svc, drone_uid, &mut self.reuse.eupdates);
+        SolCore::util_add_drone(&mut self.u_data, &mut self.svc, drone_uid, &mut self.reuse.eupdates);
     }
 }

@@ -2,7 +2,7 @@ use itertools::Itertools;
 
 use crate::{
     rd::REffectId,
-    sol::{CoreInner, RevProjs},
+    sol::{RevProjs, SolCore},
     svc::Svc,
     ud::{UAutocharge, UData, UEffectUpdates, UItem, UItemId},
 };
@@ -12,7 +12,7 @@ struct AutochargeData {
     autocharge_uid: UItemId,
 }
 
-impl CoreInner {
+impl SolCore {
     pub(in crate::api::item) fn util_add_item_autocharges(
         u_data: &mut UData,
         svc: &mut Svc,
@@ -85,7 +85,7 @@ impl CoreInner {
         for ac_data in ac_datas.iter() {
             let autocharge_u_item = u_data.items.get_mut(ac_data.autocharge_uid);
             autocharge_u_item.update_reffs(reuse_eupdates, &u_data.r_data);
-            CoreInner::util_add_item(u_data, svc, ac_data.autocharge_uid, reuse_eupdates);
+            SolCore::util_add_item(u_data, svc, ac_data.autocharge_uid, reuse_eupdates);
             if !projections.is_empty() {
                 let u_autocharge = u_data
                     .items
@@ -95,7 +95,7 @@ impl CoreInner {
                 for (projectee_uid, range) in projections.iter() {
                     u_autocharge.get_projs_mut().add(*projectee_uid, *range);
                 }
-                CoreInner::util_reg_item_projs(u_data, svc, rev_projs, ac_data.autocharge_uid);
+                SolCore::util_reg_item_projs(u_data, svc, rev_projs, ac_data.autocharge_uid);
             }
         }
         // Update autocharge info on parent item
@@ -112,7 +112,7 @@ impl CoreInner {
         item_uid: UItemId,
         reuse_eupdates: &mut UEffectUpdates,
     ) {
-        let autocharge_uids = CoreInner::util_detach_item_autocharges(u_data, svc, rev_projs, item_uid, reuse_eupdates);
+        let autocharge_uids = SolCore::util_detach_item_autocharges(u_data, svc, rev_projs, item_uid, reuse_eupdates);
         // Update items
         let cont_u_item = u_data.items.get_mut(item_uid);
         let Some(cont_acs) = cont_u_item.get_autocharges_mut() else {
@@ -144,11 +144,11 @@ impl CoreInner {
                 .get_projs()
                 .is_empty()
             {
-                CoreInner::util_unreg_item_projs(u_data, svc, rev_projs, autocharge_uid);
+                SolCore::util_unreg_item_projs(u_data, svc, rev_projs, autocharge_uid);
             }
             let autocharge_u_item = u_data.items.get_mut(autocharge_uid);
             autocharge_u_item.stop_all_reffs(reuse_eupdates, &u_data.r_data);
-            CoreInner::util_remove_item(u_data, svc, autocharge_uid, reuse_eupdates);
+            SolCore::util_remove_item(u_data, svc, autocharge_uid, reuse_eupdates);
         }
         autocharge_uids
     }
@@ -167,7 +167,7 @@ impl CoreInner {
         for autocharge_uid in autocharge_uids.into_iter() {
             let autocharge_u_item = u_data.items.get_mut(autocharge_uid);
             autocharge_u_item.update_reffs(reuse_eupdates, &u_data.r_data);
-            CoreInner::util_add_item(u_data, svc, autocharge_uid, reuse_eupdates);
+            SolCore::util_add_item(u_data, svc, autocharge_uid, reuse_eupdates);
             if !u_data
                 .items
                 .get(autocharge_uid)
@@ -176,7 +176,7 @@ impl CoreInner {
                 .get_projs()
                 .is_empty()
             {
-                CoreInner::util_reg_item_projs(u_data, svc, rev_projs, autocharge_uid);
+                SolCore::util_reg_item_projs(u_data, svc, rev_projs, autocharge_uid);
             }
         }
     }

@@ -5,7 +5,7 @@ use crate::{EntityIter, Fighter, Fit};
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl<'s> Fit<'s> {
     pub fn iter_fighters(&mut self) -> EntityIter<'_, Fighter<'_>> {
-        let fighter_uids = self.core.u_data.fits.get(self.uid).fighters.iter().copied().collect();
-        EntityIter::new(self.core, fighter_uids)
+        let fighter_uids = self.sol.u_data.fits.get(self.uid).fighters.iter().copied().collect();
+        EntityIter::new(self.sol, fighter_uids)
     }
 }

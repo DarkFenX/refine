@@ -1,18 +1,18 @@
 use crate::{
     rd::RState,
-    sol::CoreInner,
+    sol::SolCore,
     svc::Svc,
     ud::{UData, UEffectUpdates, UItemId},
 };
 
-impl CoreInner {
+impl SolCore {
     pub(in crate::api) fn util_add_item(u_data: &UData, svc: &mut Svc, item_uid: UItemId, eupdates: &UEffectUpdates) {
         let u_item = u_data.items.get(item_uid);
         svc.notify_item_added(u_data, item_uid, u_item);
         if u_item.is_loaded() {
             svc.notify_item_loaded(u_data, item_uid, u_item);
         }
-        CoreInner::util_internal_switch_item_state(
+        SolCore::util_internal_switch_item_state(
             u_data,
             svc,
             item_uid,
@@ -29,7 +29,7 @@ impl CoreInner {
         reuse_eupdates: &mut UEffectUpdates,
     ) {
         let u_item = u_data.items.get(item_uid);
-        CoreInner::util_internal_switch_item_state(
+        SolCore::util_internal_switch_item_state(
             u_data,
             svc,
             item_uid,

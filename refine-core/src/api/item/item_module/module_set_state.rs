@@ -1,6 +1,6 @@
 use crate::{
     Module, ModuleState,
-    sol::{CoreInner, UndoStep},
+    sol::{SolCore, UndoStep},
     ud::UItemId,
 };
 
@@ -9,14 +9,14 @@ use crate::{
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl<'s> Module<'s> {
     pub fn set_state(&mut self, state: ModuleState) {
-        self.core.internal_set_module_state_inner::<true>(self.uid, state);
+        self.sol.internal_set_module_state_inner::<true>(self.uid, state);
     }
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Private
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-impl CoreInner {
+impl SolCore {
     pub(in crate::api) fn internal_set_module_state(&mut self, module_uid: UItemId, state: ModuleState) {
         self.internal_set_module_state_inner::<false>(module_uid, state);
     }
@@ -36,7 +36,7 @@ impl CoreInner {
         let new_a_state = u_module.get_state();
         u_module.update_reffs(&mut self.reuse.eupdates, &self.u_data.r_data);
         // Update services for module
-        CoreInner::util_switch_item_state(
+        SolCore::util_switch_item_state(
             &self.u_data,
             &mut self.svc,
             module_uid,
@@ -47,7 +47,7 @@ impl CoreInner {
         if let Some(charge_activated) = self.reuse.eupdates.charge
             && let Some(charge_uid) = charge_uid
         {
-            CoreInner::util_process_charge_activation(
+            SolCore::util_process_charge_activation(
                 &mut self.u_data,
                 &mut self.svc,
                 charge_uid,

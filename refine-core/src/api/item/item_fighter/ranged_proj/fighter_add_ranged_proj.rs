@@ -6,7 +6,7 @@ use crate::{
         ProjAddError,
         basic::{ItemReceiveProjError, ProjNotFoundError},
     },
-    sol::{CoreInner, UndoStep},
+    sol::{SolCore, UndoStep},
     ud::{UItemId, UProjData},
 };
 
@@ -15,16 +15,16 @@ use crate::{
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl<'s> Fighter<'s> {
     pub fn add_proj(&mut self, projectee_item_id: &ItemId) -> Result<Proj<'_>, ProjAddError> {
-        let projectee_uid = self.core.u_data.items.int_id_by_ext_id_err(projectee_item_id)?;
-        self.core.internal_add_fighter_proj(self.uid, projectee_uid)?;
-        Ok(Proj::new(self.core, self.uid, projectee_uid))
+        let projectee_uid = self.sol.u_data.items.int_id_by_ext_id_err(projectee_item_id)?;
+        self.sol.internal_add_fighter_proj(self.uid, projectee_uid)?;
+        Ok(Proj::new(self.sol, self.uid, projectee_uid))
     }
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Private
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-impl CoreInner {
+impl SolCore {
     pub(in crate::api) fn internal_add_fighter_proj(
         &mut self,
         fighter_uid: UItemId,
@@ -62,20 +62,14 @@ impl CoreInner {
         u_fighter.get_projs_mut().add(projectee_uid, u_proj_data);
         self.rev_projs.reg_projectee(fighter_uid, projectee_uid);
         // Update services for fighte
-        CoreInner::util_add_item_projection(&self.u_data, &mut self.svc, fighter_uid, projectee_uid, u_proj_data);
+        SolCore::util_add_item_projection(&self.u_data, &mut self.svc, fighter_uid, projectee_uid, u_proj_data);
         for autocharge_uid in autocharge_uids {
             // Update user data for autocharge
             let u_autocharge = self.u_data.items.get_mut(autocharge_uid).dc_autocharge_mut().unwrap();
             u_autocharge.get_projs_mut().add(projectee_uid, u_proj_data);
             self.rev_projs.reg_projectee(autocharge_uid, projectee_uid);
             // Update services for autocharge
-            CoreInner::util_add_item_projection(
-                &self.u_data,
-                &mut self.svc,
-                autocharge_uid,
-                projectee_uid,
-                u_proj_data,
-            );
+            SolCore::util_add_item_projection(&self.u_data, &mut self.svc, autocharge_uid, projectee_uid, u_proj_data);
         }
         if self.undo.is_recording() {
             self.undo.record(UndoStep::ProjAdded(fighter_uid, projectee_uid));

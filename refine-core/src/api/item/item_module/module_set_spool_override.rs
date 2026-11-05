@@ -1,6 +1,6 @@
 use crate::{
     Module, Spool,
-    sol::{CoreInner, UndoStep},
+    sol::{SolCore, UndoStep},
     ud::UItemId,
 };
 
@@ -12,14 +12,14 @@ impl<'s> Module<'s> {
     ///
     /// Solar system's default is used when override is not set.
     pub fn set_spool_override(&mut self, spool_override: Option<Spool>) {
-        self.core.internal_set_module_spool_override(self.uid, spool_override);
+        self.sol.internal_set_module_spool_override(self.uid, spool_override);
     }
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Private
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-impl CoreInner {
+impl SolCore {
     pub(in crate::api) fn internal_set_module_spool_override(
         &mut self,
         module_uid: UItemId,

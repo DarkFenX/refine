@@ -1,15 +1,15 @@
-use crate::{ItemCommon, api::ItemSealed, sol::CoreInner, ud::UItemId};
+use crate::{ItemCommon, api::ItemSealed, sol::SolCore, ud::UItemId};
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Public
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 pub struct ProjEffect<'s> {
-    pub(super) core: &'s mut CoreInner,
+    pub(super) sol: &'s mut SolCore,
     pub(super) uid: UItemId,
 }
 impl<'s> ProjEffect<'s> {
     pub fn get_state(&self) -> bool {
-        self.core
+        self.sol
             .u_data
             .items
             .get(self.uid)
@@ -24,18 +24,18 @@ impl<'s> ItemCommon for ProjEffect<'s> {}
 // Private
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl<'s> ProjEffect<'s> {
-    pub(in crate::api) fn new(core: &'s mut CoreInner, uid: UItemId) -> Self {
-        Self { core, uid }
+    pub(in crate::api) fn new(sol: &'s mut SolCore, uid: UItemId) -> Self {
+        Self { sol, uid }
     }
 }
 impl<'s> ItemSealed for ProjEffect<'s> {
     fn get_uid(&self) -> UItemId {
         self.uid
     }
-    fn get_core(&self) -> &CoreInner {
-        self.core
+    fn get_sol(&self) -> &SolCore {
+        self.sol
     }
-    fn get_core_mut(&mut self) -> &mut CoreInner {
-        self.core
+    fn get_sol_mut(&mut self) -> &mut SolCore {
+        self.sol
     }
 }

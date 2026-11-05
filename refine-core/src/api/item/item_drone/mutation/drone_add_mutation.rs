@@ -1,7 +1,7 @@
 use crate::{
     Drone, ItemTypeId, Mutation,
     err::{MutationAddError, basic::ItemNotMutatedError},
-    sol::{CoreInner, UndoStep},
+    sol::{SolCore, UndoStep},
     ud::{UItemId, UItemMutationRequest},
 };
 
@@ -14,7 +14,7 @@ impl<'s> Drone<'s> {
             mutator_type_aid: mutator_type_id.into_aid(),
             attrs: Vec::new(),
         };
-        self.core.internal_add_drone_mutation(self.uid, mutation)?;
+        self.sol.internal_add_drone_mutation(self.uid, mutation)?;
         Ok(self.get_mutation().unwrap())
     }
 }
@@ -22,7 +22,7 @@ impl<'s> Drone<'s> {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Private
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-impl CoreInner {
+impl SolCore {
     pub(in crate::api) fn internal_add_drone_mutation(
         &mut self,
         drone_uid: UItemId,
@@ -35,14 +35,14 @@ impl CoreInner {
                 item_id: u_drone.get_item_id(),
             });
         }
-        CoreInner::util_remove_drone(&mut self.u_data, &mut self.svc, drone_uid, &mut self.reuse.eupdates);
+        SolCore::util_remove_drone(&mut self.u_data, &mut self.svc, drone_uid, &mut self.reuse.eupdates);
         let u_drone = self.u_data.items.get_mut(drone_uid).dc_drone_mut().unwrap();
         u_drone.mutate(mutation, &self.u_data.r_data).unwrap();
         if self.undo.is_recording() {
             self.undo.record(UndoStep::DroneMutationAdded(drone_uid));
         }
-        CoreInner::util_update_item_radius_in_projs(&mut self.u_data, &self.rev_projs, &mut self.svc, drone_uid);
-        CoreInner::util_add_drone(&mut self.u_data, &mut self.svc, drone_uid, &mut self.reuse.eupdates);
+        SolCore::util_update_item_radius_in_projs(&mut self.u_data, &self.rev_projs, &mut self.svc, drone_uid);
+        SolCore::util_add_drone(&mut self.u_data, &mut self.svc, drone_uid, &mut self.reuse.eupdates);
         Ok(())
     }
 }

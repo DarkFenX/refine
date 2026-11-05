@@ -23,7 +23,7 @@ impl<'s> SideEffect<'s> {
     /// Returns something only if all the side effect modifiers use the same operator and attribute
     /// ID to apply modification.
     pub fn get_strength(&mut self) -> Option<SideEffectStr> {
-        let r_data = &self.core.u_data.r_data;
+        let r_data = &self.sol.u_data.r_data;
         let effect_rid = r_data.get_effect_rid_by_aid(&self.effect_aid).unwrap();
         let mut se_strs = r_data
             .get_effect_by_rid(effect_rid)
@@ -35,7 +35,7 @@ impl<'s> SideEffect<'s> {
             return None;
         }
         let strength = match strength {
-            REffectModStrength::Attr(attr_rid) => match self.core.internal_get_item_attr(self.item_uid, attr_rid) {
+            REffectModStrength::Attr(attr_rid) => match self.sol.internal_get_item_attr(self.item_uid, attr_rid) {
                 Ok(calc_val) => calc_val.extra,
                 Err(..) => return None,
             },

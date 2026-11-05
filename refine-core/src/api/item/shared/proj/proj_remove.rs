@@ -1,10 +1,10 @@
 use crate::{
     err::basic::ProjFoundError,
-    sol::CoreInner,
+    sol::SolCore,
     ud::{UItem, UItemId},
 };
 
-impl CoreInner {
+impl SolCore {
     pub(in crate::api) fn internal_remove_projection(
         &mut self,
         projector_uid: UItemId,

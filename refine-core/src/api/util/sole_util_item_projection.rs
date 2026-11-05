@@ -1,11 +1,11 @@
 use super::is_effect_projectable;
 use crate::{
-    sol::{CoreInner, RevProjs},
+    sol::{RevProjs, SolCore},
     svc::Svc,
     ud::{UData, UItemId, UProjData},
 };
 
-impl CoreInner {
+impl SolCore {
     /// Register projections stored on the item.
     pub(in crate::api) fn util_reg_item_projs(
         u_data: &UData,
@@ -16,7 +16,7 @@ impl CoreInner {
         if let Some(projs) = u_data.items.get(item_uid).get_projs() {
             for (projectee_uid, proj_data) in projs.iter() {
                 rev_projs.reg_projectee(item_uid, projectee_uid);
-                CoreInner::util_add_item_projection(u_data, svc, item_uid, projectee_uid, proj_data);
+                SolCore::util_add_item_projection(u_data, svc, item_uid, projectee_uid, proj_data);
             }
         }
     }
@@ -29,7 +29,7 @@ impl CoreInner {
     ) {
         if let Some(projs) = u_data.items.get(item_uid).get_projs() {
             for projectee_uid in projs.iter_projectees() {
-                CoreInner::util_remove_item_projection(u_data, svc, item_uid, projectee_uid);
+                SolCore::util_remove_item_projection(u_data, svc, item_uid, projectee_uid);
                 rev_projs.unreg_projectee(&item_uid, projectee_uid);
             }
         }

@@ -8,10 +8,10 @@ use crate::{
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl Sol {
     pub fn get_sw_effect(&mut self, item_id: &ItemId) -> Result<SwEffect<'_>, SwEffectGetError> {
-        let core = self.inner_mut();
-        let sw_effect_uid = core.u_data.items.int_id_by_ext_id_err(item_id)?;
-        core.u_data.items.get(sw_effect_uid).dc_sw_effect()?;
-        Ok(SwEffect::new(core, sw_effect_uid))
+        let sol = self.inner_mut();
+        let sw_effect_uid = sol.u_data.items.int_id_by_ext_id_err(item_id)?;
+        sol.u_data.items.get(sw_effect_uid).dc_sw_effect()?;
+        Ok(SwEffect::new(sol, sw_effect_uid))
     }
 }
 

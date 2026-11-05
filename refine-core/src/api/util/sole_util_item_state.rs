@@ -1,11 +1,11 @@
 use crate::{
     rd::RState,
-    sol::CoreInner,
+    sol::SolCore,
     svc::Svc,
     ud::{UData, UEffectUpdates, UItem, UItemId},
 };
 
-impl CoreInner {
+impl SolCore {
     pub(in crate::api) fn util_switch_item_state(
         u_data: &UData,
         svc: &mut Svc,
@@ -16,7 +16,7 @@ impl CoreInner {
     ) {
         if new_state != old_state {
             let u_item = u_data.items.get(item_uid);
-            CoreInner::util_internal_switch_item_state(u_data, svc, item_uid, u_item, old_state, new_state, eupdates);
+            SolCore::util_internal_switch_item_state(u_data, svc, item_uid, u_item, old_state, new_state, eupdates);
         }
     }
     pub(in crate::api::util) fn util_internal_switch_item_state(
@@ -29,7 +29,7 @@ impl CoreInner {
         eupdates: &UEffectUpdates,
     ) {
         switch_item_state(svc, item_uid, u_item, old_state, new_state);
-        CoreInner::util_internal_process_effect_updates(u_data, svc, item_uid, u_item, eupdates);
+        SolCore::util_internal_process_effect_updates(u_data, svc, item_uid, u_item, eupdates);
     }
 }
 

@@ -5,7 +5,8 @@ use crate::{Item, ItemId, Sol};
 impl<'r, 's> Sol<'r> {
     #[tracing::instrument(name = "itm-get", level = "error", skip_all)]
     pub async fn get_item(&'s mut self, item_id: ItemId) -> Result<Item<'r, 's>, ItemGetError> {
-        let item_id = self.exec_inplace(|core| core.get_item(&item_id).map(|core_item| core_item.get_item_id()))?;
+        let item_id =
+            self.exec_inplace(|core_sol| core_sol.get_item(&item_id).map(|core_item| core_item.get_item_id()))?;
         let item = Item::new(self, item_id);
         Ok(item)
     }

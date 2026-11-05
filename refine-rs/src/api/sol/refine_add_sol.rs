@@ -6,9 +6,9 @@ impl Refine {
         let inner_src = self.internal_get_src(src_alias)?;
         // Variables for move
         let core_src = inner_src.get_core().clone();
-        let core = self.tpool.exec_standard(move || ctl_cmd.execute(&core_src)).await;
+        let core_sol = self.tpool.exec_standard(move || ctl_cmd.execute(&core_src)).await;
         let src_alias = inner_src.get_alias();
-        let inner_sol = self.id_sol_map.add(src_alias, core);
+        let inner_sol = self.id_sol_map.add(src_alias, core_sol);
         let sol = Sol::new(self, inner_sol, true).await;
         Ok(sol)
     }
@@ -23,15 +23,15 @@ impl Refine {
         // Variables for move
         let core_src = inner_src.get_core().clone();
         let src_alias = inner_src.get_alias();
-        let (core, info_ext) = self
+        let (core_sol, info_ext) = self
             .tpool
             .exec_standard(move || {
-                let mut core = ctl_cmd.execute(&core_src);
-                let info_ext = info_cmd.execute_into_info_ext(src_alias, &mut core);
-                (core, info_ext)
+                let mut core_sol = ctl_cmd.execute(&core_src);
+                let info_ext = info_cmd.execute_into_info_ext(src_alias, &mut core_sol);
+                (core_sol, info_ext)
             })
             .await;
-        let inner_sol = self.id_sol_map.add(src_alias, core);
+        let inner_sol = self.id_sol_map.add(src_alias, core_sol);
         let sol = Sol::new(self, inner_sol, true).await;
         let info = SolInfo::from_id_and_ext(sol.get_id(), info_ext);
         Ok((sol, info))

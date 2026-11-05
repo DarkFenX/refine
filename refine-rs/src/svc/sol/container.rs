@@ -28,13 +28,13 @@ impl SolMapGuarded {
             .map(|(id, inner_sol)| (*id, inner_sol.clone()))
             .collect()
     }
-    pub(crate) fn add(&self, src_alias: SrcAlias, core: rc::Core) -> SolInnerGuarded {
+    pub(crate) fn add(&self, src_alias: SrcAlias, core_sol: rc::SolOwned) -> SolInnerGuarded {
         let mut id = SolId::new();
         let mut map = self.inner.write();
         loop {
             match map.entry(id) {
                 Entry::Vacant(entry) => {
-                    let inner_sol = SolInnerGuarded::new(id, src_alias, core);
+                    let inner_sol = SolInnerGuarded::new(id, src_alias, core_sol);
                     entry.insert(inner_sol.clone());
                     return inner_sol;
                 }

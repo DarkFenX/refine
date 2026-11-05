@@ -8,7 +8,7 @@ impl Sol<'_> {
     pub(crate) async fn internal_get_info(&mut self, info_cmd: SolInfoCmd) -> SolInfo {
         // Variables for move
         let ctx = self.get_ctx();
-        self.exec_standard_infallible(move |core| info_cmd.execute(ctx.sol_id, ctx.src_alias, core))
+        self.exec_standard_infallible(move |core_sol| info_cmd.execute(ctx.sol_id, ctx.src_alias, core_sol))
             .await
     }
 }

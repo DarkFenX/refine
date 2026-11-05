@@ -1,6 +1,6 @@
 use crate::{
     Fit, FitSecStatus,
-    sol::{CoreInner, UndoStep},
+    sol::{SolCore, UndoStep},
     ud::UFitId,
 };
 
@@ -9,14 +9,14 @@ use crate::{
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl<'s> Fit<'s> {
     pub fn set_sec_status(&mut self, sec_status: FitSecStatus) {
-        self.core.internal_set_fit_sec_status(self.uid, sec_status);
+        self.sol.internal_set_fit_sec_status(self.uid, sec_status);
     }
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Private
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-impl CoreInner {
+impl SolCore {
     pub(in crate::api) fn internal_set_fit_sec_status(&mut self, fit_uid: UFitId, sec_status: FitSecStatus) {
         let u_fit = self.u_data.fits.get_mut(fit_uid);
         let old_sec_status = u_fit.sec_status;

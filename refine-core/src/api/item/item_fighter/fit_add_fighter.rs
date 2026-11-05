@@ -3,7 +3,7 @@ use itertools::Itertools;
 use crate::{
     Coordinates, Fighter, Fit, ItemTypeId, MinionState, Movement,
     ad::AItemId,
-    sol::{CoreInner, UndoStep},
+    sol::{SolCore, UndoStep},
     ud::{UFighter, UFitId, UItem, UItemId, UPhysics},
 };
 
@@ -27,16 +27,16 @@ impl<'s> Fit<'s> {
             u_physics.speed = movement.speed;
         }
         let fighter_uid = self
-            .core
+            .sol
             .internal_add_fighter(self.uid, type_id.into_aid(), state, u_physics);
-        Fighter::new(self.core, fighter_uid)
+        Fighter::new(self.sol, fighter_uid)
     }
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Private
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-impl CoreInner {
+impl SolCore {
     pub(in crate::api) fn internal_add_fighter(
         &mut self,
         fit_uid: UFitId,
@@ -51,7 +51,7 @@ impl CoreInner {
         let fighter_uid = self.u_data.items.add(u_item);
         u_fit.fighters.insert(fighter_uid);
         // Add fighter and autocharges to services
-        CoreInner::util_add_fighter_with_acs(
+        SolCore::util_add_fighter_with_acs(
             &mut self.u_data,
             &mut self.svc,
             &mut self.rev_projs,
@@ -75,11 +75,11 @@ impl CoreInner {
         let u_fit = self.u_data.fits.get_mut(fit_uid);
         u_fit.fighters.insert(fighter_uid);
         // Add fighter and its existing autocharges to services
-        CoreInner::util_add_fighter(&mut self.u_data, &mut self.svc, fighter_uid, &mut self.reuse.eupdates);
+        SolCore::util_add_fighter(&mut self.u_data, &mut self.svc, fighter_uid, &mut self.reuse.eupdates);
         if has_projs {
-            CoreInner::util_reg_item_projs(&self.u_data, &mut self.svc, &mut self.rev_projs, fighter_uid);
+            SolCore::util_reg_item_projs(&self.u_data, &mut self.svc, &mut self.rev_projs, fighter_uid);
         }
-        CoreInner::util_reattach_item_autocharges(
+        SolCore::util_reattach_item_autocharges(
             &mut self.u_data,
             &mut self.svc,
             &mut self.rev_projs,

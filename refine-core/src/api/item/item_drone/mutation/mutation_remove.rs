@@ -1,9 +1,9 @@
 use crate::{
-    sol::{CoreInner, UndoStep},
+    sol::{SolCore, UndoStep},
     ud::{ItemMutationData, UItemId, err::ItemMutatedError},
 };
 
-impl CoreInner {
+impl SolCore {
     pub(in crate::api) fn internal_remove_drone_mutation(
         &mut self,
         drone_uid: UItemId,
@@ -13,15 +13,15 @@ impl CoreInner {
         if u_drone.get_mutator_type_aid().is_none() {
             return Err(ItemMutatedError);
         }
-        CoreInner::util_remove_drone(&mut self.u_data, &mut self.svc, drone_uid, &mut self.reuse.eupdates);
+        SolCore::util_remove_drone(&mut self.u_data, &mut self.svc, drone_uid, &mut self.reuse.eupdates);
         let u_drone = self.u_data.items.get_mut(drone_uid).dc_drone_mut().unwrap();
         let item_mutation_data = u_drone.unmutate(&self.u_data.r_data).unwrap();
         if self.undo.is_recording() {
             self.undo
                 .record_mutation(UndoStep::DroneMutationRemoved(drone_uid), item_mutation_data);
         }
-        CoreInner::util_update_item_radius_in_projs(&mut self.u_data, &self.rev_projs, &mut self.svc, drone_uid);
-        CoreInner::util_add_drone(&mut self.u_data, &mut self.svc, drone_uid, &mut self.reuse.eupdates);
+        SolCore::util_update_item_radius_in_projs(&mut self.u_data, &self.rev_projs, &mut self.svc, drone_uid);
+        SolCore::util_add_drone(&mut self.u_data, &mut self.svc, drone_uid, &mut self.reuse.eupdates);
         Ok(())
     }
     pub(in crate::api) fn internal_restore_drone_mutation(
@@ -29,10 +29,10 @@ impl CoreInner {
         drone_uid: UItemId,
         item_mutation_data: ItemMutationData,
     ) {
-        CoreInner::util_remove_drone(&mut self.u_data, &mut self.svc, drone_uid, &mut self.reuse.eupdates);
+        SolCore::util_remove_drone(&mut self.u_data, &mut self.svc, drone_uid, &mut self.reuse.eupdates);
         let u_drone = self.u_data.items.get_mut(drone_uid).dc_drone_mut().unwrap();
         u_drone.restore_mutation(item_mutation_data, &self.u_data.r_data);
-        CoreInner::util_update_item_radius_in_projs(&mut self.u_data, &self.rev_projs, &mut self.svc, drone_uid);
-        CoreInner::util_add_drone(&mut self.u_data, &mut self.svc, drone_uid, &mut self.reuse.eupdates);
+        SolCore::util_update_item_radius_in_projs(&mut self.u_data, &self.rev_projs, &mut self.svc, drone_uid);
+        SolCore::util_add_drone(&mut self.u_data, &mut self.svc, drone_uid, &mut self.reuse.eupdates);
     }
 }

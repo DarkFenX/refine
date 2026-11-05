@@ -129,19 +129,19 @@ where
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl<'s> Fit<'s> {
     pub(super) fn get_character_for_stats(&mut self) -> Result<Character<'_>, FitHasCharacterError> {
-        let Some(char_uid) = self.core.u_data.fits.get(self.uid).character else {
+        let Some(char_uid) = self.sol.u_data.fits.get(self.uid).character else {
             return Err(FitHasCharacterError {
-                fit_id: self.core.u_data.fits.ext_id_by_int_id(self.uid),
+                fit_id: self.sol.u_data.fits.ext_id_by_int_id(self.uid),
             });
         };
-        Ok(Character::new(self.core, char_uid))
+        Ok(Character::new(self.sol, char_uid))
     }
     pub(super) fn get_ship_for_stats(&mut self) -> Result<Ship<'_>, FitHasShipError> {
-        let Some(ship_uid) = self.core.u_data.fits.get(self.uid).ship else {
+        let Some(ship_uid) = self.sol.u_data.fits.get(self.uid).ship else {
             return Err(FitHasShipError {
-                fit_id: self.core.u_data.fits.ext_id_by_int_id(self.uid),
+                fit_id: self.sol.u_data.fits.ext_id_by_int_id(self.uid),
             });
         };
-        Ok(Ship::new(self.core, ship_uid))
+        Ok(Ship::new(self.sol, ship_uid))
     }
 }

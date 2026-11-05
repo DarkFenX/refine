@@ -1,7 +1,7 @@
 use crate::{
     Booster, Fit, ItemTypeId,
     ad::AItemId,
-    sol::{CoreInner, UndoStep},
+    sol::{SolCore, UndoStep},
     ud::{UBooster, UFitId, UItem, UItemId},
 };
 
@@ -10,15 +10,15 @@ use crate::{
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl<'s> Fit<'s> {
     pub fn add_booster(&mut self, type_id: ItemTypeId) -> Booster<'_> {
-        let booster_uid = self.core.internal_add_booster(self.uid, type_id.into_aid());
-        Booster::new(self.core, booster_uid)
+        let booster_uid = self.sol.internal_add_booster(self.uid, type_id.into_aid());
+        Booster::new(self.sol, booster_uid)
     }
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Private
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-impl CoreInner {
+impl SolCore {
     pub(in crate::api) fn internal_add_booster(&mut self, fit_uid: UFitId, type_aid: AItemId) -> UItemId {
         let item_id = self.u_data.items.alloc_id();
         let u_booster = UBooster::new(item_id, type_aid, fit_uid, true, &self.u_data.r_data);
@@ -39,6 +39,6 @@ impl CoreInner {
     fn attach_booster(&mut self, fit_uid: UFitId, booster_uid: UItemId) {
         let u_fit = self.u_data.fits.get_mut(fit_uid);
         u_fit.boosters.insert(booster_uid);
-        CoreInner::util_add_booster(&mut self.u_data, &mut self.svc, booster_uid, &mut self.reuse.eupdates);
+        SolCore::util_add_booster(&mut self.u_data, &mut self.svc, booster_uid, &mut self.reuse.eupdates);
     }
 }

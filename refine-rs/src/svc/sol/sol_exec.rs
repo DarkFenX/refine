@@ -17,12 +17,12 @@ impl<'r> Sol<'r> {
         T: Send + 'static,
         E: Send + 'static,
     {
-        let core_guarded = self.inner.core.clone();
+        let core_sol_guarded = self.inner.core_sol.clone();
         self.refine
             .tpool
             .exec_standard(move || {
-                let mut core = core_guarded.lock();
-                let mut tx = core.begin_tx();
+                let mut core_sol = core_sol_guarded.lock();
+                let mut tx = core_sol.begin_tx();
                 let result = func(&mut tx);
                 match result {
                     Ok(..) => tx.commit(),
@@ -34,33 +34,33 @@ impl<'r> Sol<'r> {
     }
     pub(crate) async fn exec_standard_infallible<F, R>(&mut self, func: F) -> R
     where
-        F: FnOnce(&mut rc::Core) -> R + Send + 'static,
+        F: FnOnce(&mut rc::SolOwned) -> R + Send + 'static,
         R: Send + 'static,
     {
-        let core_guarded = self.inner.core.clone();
+        let core_sol_guarded = self.inner.core_sol.clone();
         self.refine
             .tpool
-            .exec_standard(move || func(&mut core_guarded.lock()))
+            .exec_standard(move || func(&mut core_sol_guarded.lock()))
             .await
     }
     #[cfg(feature = "dev")]
     pub(crate) async fn exec_heavy_infallible<F, R>(&mut self, func: F) -> R
     where
-        F: FnOnce(&mut rc::Core) -> R + Send + 'static,
+        F: FnOnce(&mut rc::SolOwned) -> R + Send + 'static,
         R: Send + 'static,
     {
-        let core_guarded = self.inner.core.clone();
+        let core_sol_guarded = self.inner.core_sol.clone();
         self.refine
             .tpool
-            .exec_heavy(move || func(&mut core_guarded.lock()))
+            .exec_heavy(move || func(&mut core_sol_guarded.lock()))
             .await
     }
     /// Executes in current thread.
     pub(crate) fn exec_inplace<F, R>(&mut self, func: F) -> R
     where
-        F: FnOnce(&mut rc::Core) -> R,
+        F: FnOnce(&mut rc::SolOwned) -> R,
     {
-        func(&mut self.inner.core.lock())
+        func(&mut self.inner.core_sol.lock())
     }
 }
 

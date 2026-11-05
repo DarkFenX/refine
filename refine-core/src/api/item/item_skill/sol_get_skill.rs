@@ -8,10 +8,10 @@ use crate::{
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl Sol {
     pub fn get_skill(&mut self, item_id: &ItemId) -> Result<Skill<'_>, SkillGetError> {
-        let core = self.inner_mut();
-        let skill_uid = core.u_data.items.int_id_by_ext_id_err(item_id)?;
-        core.u_data.items.get(skill_uid).dc_skill()?;
-        Ok(Skill::new(core, skill_uid))
+        let sol = self.inner_mut();
+        let skill_uid = sol.u_data.items.int_id_by_ext_id_err(item_id)?;
+        sol.u_data.items.get(skill_uid).dc_skill()?;
+        Ok(Skill::new(sol, skill_uid))
     }
 }
 

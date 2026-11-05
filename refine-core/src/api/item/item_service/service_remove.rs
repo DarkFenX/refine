@@ -1,6 +1,6 @@
 use crate::{
     Service,
-    sol::{CoreInner, UndoStep},
+    sol::{SolCore, UndoStep},
     ud::UItemId,
 };
 
@@ -9,16 +9,16 @@ use crate::{
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl<'s> Service<'s> {
     pub fn remove(self) {
-        self.core.internal_remove_service(self.uid);
+        self.sol.internal_remove_service(self.uid);
     }
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Private
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-impl CoreInner {
+impl SolCore {
     pub(in crate::api) fn internal_remove_service(&mut self, service_uid: UItemId) {
-        CoreInner::util_remove_service(&mut self.u_data, &mut self.svc, service_uid, &mut self.reuse.eupdates);
+        SolCore::util_remove_service(&mut self.u_data, &mut self.svc, service_uid, &mut self.reuse.eupdates);
         let u_service = self.u_data.items.get(service_uid).dc_service().unwrap();
         let u_fit = self.u_data.fits.get_mut(u_service.get_fit_uid());
         u_fit.services.remove(&service_uid);

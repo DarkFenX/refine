@@ -1,11 +1,11 @@
 use super::is_effect_projectable;
 use crate::{
-    sol::CoreInner,
+    sol::SolCore,
     svc::Svc,
     ud::{UData, UEffectUpdates, UItem, UItemId},
 };
 
-impl CoreInner {
+impl SolCore {
     pub(in crate::api) fn util_process_effect_updates(
         u_data: &UData,
         svc: &mut Svc,

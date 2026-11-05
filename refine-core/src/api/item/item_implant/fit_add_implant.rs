@@ -1,7 +1,7 @@
 use crate::{
     Fit, Implant, ItemTypeId,
     ad::AItemId,
-    sol::{CoreInner, UndoStep},
+    sol::{SolCore, UndoStep},
     ud::{UFitId, UImplant, UItem, UItemId},
 };
 
@@ -10,15 +10,15 @@ use crate::{
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl<'s> Fit<'s> {
     pub fn add_implant(&mut self, type_id: ItemTypeId) -> Implant<'_> {
-        let implant_uid = self.core.internal_add_implant(self.uid, type_id.into_aid());
-        Implant::new(self.core, implant_uid)
+        let implant_uid = self.sol.internal_add_implant(self.uid, type_id.into_aid());
+        Implant::new(self.sol, implant_uid)
     }
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Private
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-impl CoreInner {
+impl SolCore {
     pub(in crate::api) fn internal_add_implant(&mut self, fit_uid: UFitId, type_aid: AItemId) -> UItemId {
         let item_id = self.u_data.items.alloc_id();
         let u_implant = UImplant::new(item_id, type_aid, fit_uid, true, &self.u_data.r_data);
@@ -39,6 +39,6 @@ impl CoreInner {
     fn attach_implant(&mut self, fit_uid: UFitId, implant_uid: UItemId) {
         let u_fit = self.u_data.fits.get_mut(fit_uid);
         u_fit.implants.insert(implant_uid);
-        CoreInner::util_add_implant(&mut self.u_data, &mut self.svc, implant_uid, &mut self.reuse.eupdates);
+        SolCore::util_add_implant(&mut self.u_data, &mut self.svc, implant_uid, &mut self.reuse.eupdates);
     }
 }

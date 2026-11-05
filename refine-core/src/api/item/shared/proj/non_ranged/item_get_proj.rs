@@ -1,11 +1,11 @@
 use crate::{
     ItemId, Proj,
     err::{ProjGetError, basic::ProjFoundError},
-    sol::CoreInner,
+    sol::SolCore,
     ud::UItemId,
 };
 
-impl CoreInner {
+impl SolCore {
     pub(in crate::api::item) fn internal_get_proj(
         &mut self,
         projector_uid: UItemId,

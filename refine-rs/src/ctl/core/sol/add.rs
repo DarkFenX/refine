@@ -48,7 +48,7 @@ impl SolAddCmd {
 // Execution
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl SolAddCmd {
-    pub(crate) fn execute(self, core_src: &rc::Src) -> rc::Core {
+    pub(crate) fn execute(self, core_src: &rc::Src) -> rc::SolOwned {
         let Self {
             sec_zone,
             default_incoming_dps,
@@ -57,25 +57,25 @@ impl SolAddCmd {
             default_optional_reloads,
             default_rearm_minions,
         } = self;
-        let mut core = rc::Core::new(core_src);
+        let mut core_sol = rc::SolOwned::new(core_src);
         if let Some(sec_zone) = sec_zone {
-            core.set_sec_zone(sec_zone);
+            core_sol.set_sec_zone(sec_zone);
         }
         if let Some(incoming_dps) = default_incoming_dps {
-            core.set_default_incoming_dps(incoming_dps);
+            core_sol.set_default_incoming_dps(incoming_dps);
         }
         if let Some(spool) = default_spool {
-            core.set_default_spool(spool);
+            core_sol.set_default_spool(spool);
         }
         if let Some(npc_prop) = default_npc_prop {
-            core.set_default_npc_prop(npc_prop);
+            core_sol.set_default_npc_prop(npc_prop);
         }
         if let Some(optional_reloads) = default_optional_reloads {
-            core.set_default_optional_reloads(optional_reloads);
+            core_sol.set_default_optional_reloads(optional_reloads);
         }
         if let Some(rearm_minions) = default_rearm_minions {
-            core.set_default_rearm_minions(rearm_minions);
+            core_sol.set_default_rearm_minions(rearm_minions);
         }
-        core
+        core_sol
     }
 }

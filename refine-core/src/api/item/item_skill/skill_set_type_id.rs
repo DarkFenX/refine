@@ -2,7 +2,7 @@ use crate::{
     ItemTypeId, Skill,
     ad::AItemId,
     err::basic::SkillEveTypeError,
-    sol::{CoreInner, UndoStep},
+    sol::{SolCore, UndoStep},
     ud::UItemId,
     util::LibGetId,
 };
@@ -13,7 +13,7 @@ use crate::{
 impl<'s> Skill<'s> {
     /// Set type ID, replacing currently used EVE item by another, preserving all the user data.
     pub fn set_type_id(&mut self, type_id: ItemTypeId) -> Result<(), SkillTypeIdSetError> {
-        self.core.internal_set_skill_type_aid(self.uid, type_id.into_aid())?;
+        self.sol.internal_set_skill_type_aid(self.uid, type_id.into_aid())?;
         Ok(())
     }
 }
@@ -27,7 +27,7 @@ pub enum SkillTypeIdSetError {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Private
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-impl CoreInner {
+impl SolCore {
     pub(in crate::api) fn internal_set_skill_type_aid(
         &mut self,
         skill_uid: UItemId,
@@ -49,7 +49,7 @@ impl CoreInner {
             });
         }
         // Unload skill
-        CoreInner::util_remove_skill(&mut self.u_data, &mut self.svc, skill_uid, &mut self.reuse.eupdates);
+        SolCore::util_remove_skill(&mut self.u_data, &mut self.svc, skill_uid, &mut self.reuse.eupdates);
         // Update type ID and reload adapted data
         let u_skill = self.u_data.items.get_mut(skill_uid).dc_skill_mut().unwrap();
         u_skill.set_type_aid(type_aid, &self.u_data.r_data);
@@ -61,7 +61,7 @@ impl CoreInner {
         let fit_skill = u_fit.skills.remove(&old_type_aid).unwrap();
         u_fit.skills.insert(type_aid, fit_skill);
         // Load skill
-        CoreInner::util_add_skill(&mut self.u_data, &mut self.svc, skill_uid, &mut self.reuse.eupdates);
+        SolCore::util_add_skill(&mut self.u_data, &mut self.svc, skill_uid, &mut self.reuse.eupdates);
         Ok(())
     }
 }

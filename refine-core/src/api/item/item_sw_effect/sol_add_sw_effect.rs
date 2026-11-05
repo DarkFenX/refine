@@ -1,7 +1,7 @@
 use crate::{
     ItemTypeId, Sol, SwEffect,
     ad::AItemId,
-    sol::{CoreInner, UndoStep},
+    sol::{SolCore, UndoStep},
     ud::{UItem, UItemId, USwEffect},
 };
 
@@ -10,16 +10,16 @@ use crate::{
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl Sol {
     pub fn add_sw_effect(&mut self, type_id: ItemTypeId) -> SwEffect<'_> {
-        let core = self.inner_mut();
-        let sw_effect_uid = core.internal_add_sw_effect(type_id.into_aid());
-        SwEffect::new(core, sw_effect_uid)
+        let sol = self.inner_mut();
+        let sw_effect_uid = sol.internal_add_sw_effect(type_id.into_aid());
+        SwEffect::new(sol, sw_effect_uid)
     }
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Private
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-impl CoreInner {
+impl SolCore {
     pub(in crate::api) fn internal_add_sw_effect(&mut self, type_aid: AItemId) -> UItemId {
         let item_id = self.u_data.items.alloc_id();
         let u_sw_effect = USwEffect::new(item_id, type_aid, true, &self.u_data.r_data);
@@ -37,6 +37,6 @@ impl CoreInner {
     }
     fn attach_sw_effect(&mut self, sw_effect_uid: UItemId) {
         self.u_data.sw_effects.insert(sw_effect_uid);
-        CoreInner::util_add_sw_effect(&mut self.u_data, &mut self.svc, sw_effect_uid, &mut self.reuse.eupdates);
+        SolCore::util_add_sw_effect(&mut self.u_data, &mut self.svc, sw_effect_uid, &mut self.reuse.eupdates);
     }
 }

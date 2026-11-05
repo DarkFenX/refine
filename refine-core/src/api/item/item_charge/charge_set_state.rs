@@ -1,6 +1,6 @@
 use crate::{
     Charge,
-    sol::{CoreInner, UndoStep},
+    sol::{SolCore, UndoStep},
     ud::UItemId,
 };
 
@@ -9,14 +9,14 @@ use crate::{
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl<'s> Charge<'s> {
     pub fn set_state(&mut self, state: bool) {
-        self.core.internal_set_charge_state_inner::<true>(self.uid, state);
+        self.sol.internal_set_charge_state_inner::<true>(self.uid, state);
     }
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Private
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-impl CoreInner {
+impl SolCore {
     pub(in crate::api) fn internal_set_charge_state(&mut self, charge_uid: UItemId, state: bool) {
         self.internal_set_charge_state_inner::<false>(charge_uid, state);
     }
@@ -33,7 +33,7 @@ impl CoreInner {
         u_charge.set_force_disabled(!state);
         let new_a_state = u_charge.get_state();
         u_charge.update_reffs(&mut self.reuse.eupdates, &self.u_data.r_data);
-        CoreInner::util_switch_item_state(
+        SolCore::util_switch_item_state(
             &self.u_data,
             &mut self.svc,
             charge_uid,

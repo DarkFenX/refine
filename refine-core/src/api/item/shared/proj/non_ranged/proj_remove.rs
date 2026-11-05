@@ -5,7 +5,7 @@ use crate::Proj;
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl<'s> Proj<'s> {
     pub fn remove(self) {
-        self.core
+        self.sol
             .internal_remove_projection(self.projector_uid, self.projectee_uid)
             .unwrap()
     }

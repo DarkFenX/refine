@@ -1,7 +1,7 @@
 use crate::{
     Fit, ItemTypeId, Service, ServiceState,
     ad::AItemId,
-    sol::{CoreInner, UndoStep},
+    sol::{SolCore, UndoStep},
     ud::{UFitId, UItem, UItemId, UService},
 };
 
@@ -10,15 +10,15 @@ use crate::{
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl<'s> Fit<'s> {
     pub fn add_service(&mut self, type_id: ItemTypeId, state: ServiceState) -> Service<'_> {
-        let service_uid = self.core.internal_add_service(self.uid, type_id.into_aid(), state);
-        Service::new(self.core, service_uid)
+        let service_uid = self.sol.internal_add_service(self.uid, type_id.into_aid(), state);
+        Service::new(self.sol, service_uid)
     }
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Private
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-impl CoreInner {
+impl SolCore {
     pub(in crate::api) fn internal_add_service(
         &mut self,
         fit_uid: UFitId,
@@ -44,6 +44,6 @@ impl CoreInner {
     fn attach_service(&mut self, fit_uid: UFitId, service_uid: UItemId) {
         let u_fit = self.u_data.fits.get_mut(fit_uid);
         u_fit.services.insert(service_uid);
-        CoreInner::util_add_service(&mut self.u_data, &mut self.svc, service_uid, &mut self.reuse.eupdates);
+        SolCore::util_add_service(&mut self.u_data, &mut self.svc, service_uid, &mut self.reuse.eupdates);
     }
 }

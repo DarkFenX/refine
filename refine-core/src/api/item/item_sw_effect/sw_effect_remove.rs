@@ -1,6 +1,6 @@
 use crate::{
     SwEffect,
-    sol::{CoreInner, UndoStep},
+    sol::{SolCore, UndoStep},
     ud::UItemId,
 };
 
@@ -9,16 +9,16 @@ use crate::{
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl<'s> SwEffect<'s> {
     pub fn remove(self) {
-        self.core.internal_remove_sw_effect(self.uid);
+        self.sol.internal_remove_sw_effect(self.uid);
     }
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Private
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-impl CoreInner {
+impl SolCore {
     pub(in crate::api) fn internal_remove_sw_effect(&mut self, sw_effect_uid: UItemId) {
-        CoreInner::util_remove_sw_effect(&mut self.u_data, &mut self.svc, sw_effect_uid, &mut self.reuse.eupdates);
+        SolCore::util_remove_sw_effect(&mut self.u_data, &mut self.svc, sw_effect_uid, &mut self.reuse.eupdates);
         self.u_data.sw_effects.remove(&sw_effect_uid);
         self.internal_discard_item(sw_effect_uid, UndoStep::SwEffectRemoved);
     }

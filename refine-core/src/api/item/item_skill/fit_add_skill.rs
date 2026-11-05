@@ -4,7 +4,7 @@ use crate::{
     Fit, ItemTypeId, Skill, SkillLevel,
     ad::AItemId,
     err::basic::SkillEveTypeError,
-    sol::{CoreInner, UndoStep},
+    sol::{SolCore, UndoStep},
     ud::{UFitId, UFitSkill, UItem, UItemId, USkill},
 };
 
@@ -13,8 +13,8 @@ use crate::{
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl<'s> Fit<'s> {
     pub fn add_skill(&mut self, type_id: ItemTypeId, level: SkillLevel) -> Result<Skill<'_>, SkillAddError> {
-        let skill_uid = self.core.internal_add_skill(self.uid, type_id.into_aid(), level)?;
-        Ok(Skill::new(self.core, skill_uid))
+        let skill_uid = self.sol.internal_add_skill(self.uid, type_id.into_aid(), level)?;
+        Ok(Skill::new(self.sol, skill_uid))
     }
 }
 
@@ -27,7 +27,7 @@ pub enum SkillAddError {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Private
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-impl CoreInner {
+impl SolCore {
     pub(in crate::api) fn internal_add_skill(
         &mut self,
         fit_uid: UFitId,
@@ -42,7 +42,7 @@ impl CoreInner {
                 let item = UItem::Skill(skill);
                 let skill_uid = self.u_data.items.add(item);
                 entry.insert(UFitSkill { skill_uid, level });
-                CoreInner::util_add_skill(&mut self.u_data, &mut self.svc, skill_uid, &mut self.reuse.eupdates);
+                SolCore::util_add_skill(&mut self.u_data, &mut self.svc, skill_uid, &mut self.reuse.eupdates);
                 if self.undo.is_recording() {
                     self.undo.record(UndoStep::SkillAdded(skill_uid));
                 }
@@ -66,6 +66,6 @@ impl CoreInner {
                 level: u_skill.get_level(),
             },
         );
-        CoreInner::util_add_skill(&mut self.u_data, &mut self.svc, skill_uid, &mut self.reuse.eupdates);
+        SolCore::util_add_skill(&mut self.u_data, &mut self.svc, skill_uid, &mut self.reuse.eupdates);
     }
 }

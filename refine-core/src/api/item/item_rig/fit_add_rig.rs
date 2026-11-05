@@ -1,7 +1,7 @@
 use crate::{
     Fit, ItemTypeId, Rig,
     ad::AItemId,
-    sol::{CoreInner, UndoStep},
+    sol::{SolCore, UndoStep},
     ud::{UFitId, UItem, UItemId, URig},
 };
 
@@ -10,15 +10,15 @@ use crate::{
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl<'s> Fit<'s> {
     pub fn add_rig(&mut self, type_id: ItemTypeId) -> Rig<'_> {
-        let rig_uid = self.core.internal_add_rig(self.uid, type_id.into_aid());
-        Rig::new(self.core, rig_uid)
+        let rig_uid = self.sol.internal_add_rig(self.uid, type_id.into_aid());
+        Rig::new(self.sol, rig_uid)
     }
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Private
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-impl CoreInner {
+impl SolCore {
     pub(in crate::api) fn internal_add_rig(&mut self, fit_uid: UFitId, type_aid: AItemId) -> UItemId {
         let item_id = self.u_data.items.alloc_id();
         let u_rig = URig::new(item_id, type_aid, fit_uid, true, &self.u_data.r_data);
@@ -39,6 +39,6 @@ impl CoreInner {
     fn attach_rig(&mut self, fit_uid: UFitId, rig_uid: UItemId) {
         let u_fit = self.u_data.fits.get_mut(fit_uid);
         u_fit.rigs.insert(rig_uid);
-        CoreInner::util_add_rig(&mut self.u_data, &mut self.svc, rig_uid, &mut self.reuse.eupdates);
+        SolCore::util_add_rig(&mut self.u_data, &mut self.svc, rig_uid, &mut self.reuse.eupdates);
     }
 }

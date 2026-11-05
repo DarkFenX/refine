@@ -3,7 +3,7 @@ use crate::{
     ad::AItemId,
     err::basic::RackPosLimitError,
     rd::RState,
-    sol::CoreInner,
+    sol::SolCore,
     ud::{UFitId, UItemId, UPhysics},
     val::DetectedItemKind,
 };
@@ -14,9 +14,9 @@ use crate::{
 impl<'s> Fit<'s> {
     pub fn autodetect_add_item(&mut self, type_id: ItemTypeId) -> Result<Item<'_>, FitItemAutodetectAddError> {
         let item_uid = self
-            .core
+            .sol
             .internal_fit_autodetect_add_item(self.uid, type_id.into_aid())?;
-        Ok(Item::new(self.core, item_uid))
+        Ok(Item::new(self.sol, item_uid))
     }
 }
 
@@ -35,7 +35,7 @@ pub enum FitItemAutodetectAddError {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Private
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-impl CoreInner {
+impl SolCore {
     pub(in crate::api) fn internal_fit_autodetect_add_item(
         &mut self,
         fit_uid: UFitId,

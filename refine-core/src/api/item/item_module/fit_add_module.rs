@@ -3,7 +3,7 @@ use crate::{
     AddMode, Fit, ItemTypeId, ModRack, Module, ModuleState, RemoveMode,
     ad::AItemId,
     err::basic::RackPosLimitError,
-    sol::{CoreInner, UndoStep},
+    sol::{SolCore, UndoStep},
     ud::{UCharge, UFitId, UItem, UItemId, UItemMutationRequest, UModule},
 };
 
@@ -19,9 +19,9 @@ impl<'s> Fit<'s> {
         state: ModuleState,
     ) -> Result<Module<'_>, ModuleAddError> {
         let module_uid =
-            self.core
+            self.sol
                 .internal_add_module(self.uid, rack, pos_mode, type_id.into_aid(), state, None, None)?;
-        Ok(Module::new(self.core, module_uid))
+        Ok(Module::new(self.sol, module_uid))
     }
 }
 
@@ -34,7 +34,7 @@ pub enum ModuleAddError {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Private
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-impl CoreInner {
+impl SolCore {
     pub(in crate::api) fn internal_add_module(
         &mut self,
         fit_uid: UFitId,
@@ -157,22 +157,22 @@ impl CoreInner {
         // Only reattached modules and charges can have projections. Charge projects whatever its
         // module projects
         if has_projs {
-            CoreInner::util_reg_item_projs(&self.u_data, &mut self.svc, &mut self.rev_projs, module_uid);
+            SolCore::util_reg_item_projs(&self.u_data, &mut self.svc, &mut self.rev_projs, module_uid);
             if let Some(charge_uid) = charge_uid {
-                CoreInner::util_reg_item_projs(&self.u_data, &mut self.svc, &mut self.rev_projs, charge_uid);
+                SolCore::util_reg_item_projs(&self.u_data, &mut self.svc, &mut self.rev_projs, charge_uid);
             }
         }
     }
     fn attach_module(&mut self, module_uid: UItemId, charge_uid: Option<UItemId>) {
         // Add module to services. While adding module, effect updates structure records if charge
         // needs to be activated
-        CoreInner::util_add_module(&mut self.u_data, &mut self.svc, module_uid, &mut self.reuse.eupdates);
+        SolCore::util_add_module(&mut self.u_data, &mut self.svc, module_uid, &mut self.reuse.eupdates);
         if let Some(charge_uid) = charge_uid {
             if self.reuse.eupdates.charge.unwrap_or(false) {
                 let u_charge = self.u_data.items.get_mut(charge_uid).dc_charge_mut().unwrap();
                 u_charge.set_activated(true);
             }
-            CoreInner::util_add_charge(&mut self.u_data, &mut self.svc, charge_uid, &mut self.reuse.eupdates);
+            SolCore::util_add_charge(&mut self.u_data, &mut self.svc, charge_uid, &mut self.reuse.eupdates);
         }
     }
 }

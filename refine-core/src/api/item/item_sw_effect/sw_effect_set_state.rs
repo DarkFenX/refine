@@ -1,6 +1,6 @@
 use crate::{
     SwEffect,
-    sol::{CoreInner, UndoStep},
+    sol::{SolCore, UndoStep},
     ud::UItemId,
 };
 
@@ -9,14 +9,14 @@ use crate::{
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl<'s> SwEffect<'s> {
     pub fn set_state(&mut self, state: bool) {
-        self.core.internal_set_sw_effect_state_inner::<true>(self.uid, state);
+        self.sol.internal_set_sw_effect_state_inner::<true>(self.uid, state);
     }
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Private
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-impl CoreInner {
+impl SolCore {
     pub(in crate::api) fn internal_set_sw_effect_state(&mut self, sw_effect_uid: UItemId, state: bool) {
         self.internal_set_sw_effect_state_inner::<false>(sw_effect_uid, state);
     }
@@ -35,7 +35,7 @@ impl CoreInner {
         u_sw_effect.set_sw_effect_state(state);
         let new_a_state = u_sw_effect.get_state();
         u_sw_effect.update_reffs(&mut self.reuse.eupdates, &self.u_data.r_data);
-        CoreInner::util_switch_item_state(
+        SolCore::util_switch_item_state(
             &self.u_data,
             &mut self.svc,
             sw_effect_uid,

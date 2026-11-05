@@ -1,7 +1,7 @@
 use crate::{
     ItemTypeId, Module, Mutation,
     err::{MutationAddError, basic::ItemNotMutatedError},
-    sol::{CoreInner, UndoStep},
+    sol::{SolCore, UndoStep},
     ud::{UItemId, UItemMutationRequest},
 };
 
@@ -14,7 +14,7 @@ impl<'s> Module<'s> {
             mutator_type_aid: mutator_type_id.into_aid(),
             attrs: Vec::new(),
         };
-        self.core.internal_add_module_mutation(self.uid, mutation)?;
+        self.sol.internal_add_module_mutation(self.uid, mutation)?;
         Ok(self.get_mutation().unwrap())
     }
 }
@@ -22,7 +22,7 @@ impl<'s> Module<'s> {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Private
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-impl CoreInner {
+impl SolCore {
     pub(in crate::api) fn internal_add_module_mutation(
         &mut self,
         module_uid: UItemId,
@@ -35,7 +35,7 @@ impl CoreInner {
                 item_id: u_module.get_item_id(),
             });
         }
-        CoreInner::util_remove_module_with_charge_act(
+        SolCore::util_remove_module_with_charge_act(
             &mut self.u_data,
             &mut self.svc,
             module_uid,
@@ -46,12 +46,7 @@ impl CoreInner {
         if self.undo.is_recording() {
             self.undo.record(UndoStep::ModuleMutationAdded(module_uid));
         }
-        CoreInner::util_add_module_with_charge_act(
-            &mut self.u_data,
-            &mut self.svc,
-            module_uid,
-            &mut self.reuse.eupdates,
-        );
+        SolCore::util_add_module_with_charge_act(&mut self.u_data, &mut self.svc, module_uid, &mut self.reuse.eupdates);
         Ok(())
     }
 }

@@ -11,12 +11,12 @@ impl<'s> FullMAttr<'s> {
     /// is not set, and there is an error with EVE data (e.g. min mult = max mult for the mutation).
     pub fn get_roll(&self) -> Option<UnitInterval> {
         let attr_aid = &self.attr_aid;
-        let u_item = self.core.u_data.items.get(self.item_uid);
+        let u_item = self.sol.u_data.items.get(self.item_uid);
         if let Some(&roll) = u_item.get_mutation_data().unwrap().get_attr_rolls().get(attr_aid) {
             return Some(roll);
         }
         // If roll data was not available, calculate it using unmutated attribute value
-        let attr_rid = self.core.u_data.r_data.get_attr_rid_by_aid(attr_aid).unwrap();
+        let attr_rid = self.sol.u_data.r_data.get_attr_rid_by_aid(attr_aid).unwrap();
         let a_mutation_range = u_item
             .get_mutation_data()
             .unwrap()

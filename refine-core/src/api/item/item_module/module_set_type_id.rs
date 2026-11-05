@@ -1,7 +1,7 @@
 use crate::{
     ItemTypeId, Module,
     ad::AItemId,
-    sol::{CoreInner, UndoStep},
+    sol::{SolCore, UndoStep},
     ud::UItemId,
 };
 
@@ -12,14 +12,14 @@ impl<'s> Module<'s> {
     /// Set type ID, replacing currently used EVE item by another, preserving all the user data. If
     /// item is mutated, base item type ID is updated.
     pub fn set_type_id(&mut self, type_id: ItemTypeId) {
-        self.core.internal_set_module_type_aid(self.uid, type_id.into_aid())
+        self.sol.internal_set_module_type_aid(self.uid, type_id.into_aid())
     }
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Private
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-impl CoreInner {
+impl SolCore {
     pub(in crate::api) fn internal_set_module_type_aid(&mut self, module_uid: UItemId, type_aid: AItemId) {
         let u_module = self.u_data.items.get_mut(module_uid).dc_module_mut().unwrap();
         let old_type_aid = u_module.get_base_type_aid();
@@ -41,7 +41,7 @@ impl CoreInner {
             }
             return;
         }
-        CoreInner::util_remove_module_with_charge_act(
+        SolCore::util_remove_module_with_charge_act(
             &mut self.u_data,
             &mut self.svc,
             module_uid,
@@ -52,11 +52,6 @@ impl CoreInner {
         if self.undo.is_recording() {
             self.undo.record(UndoStep::ModuleType(module_uid, old_type_aid));
         }
-        CoreInner::util_add_module_with_charge_act(
-            &mut self.u_data,
-            &mut self.svc,
-            module_uid,
-            &mut self.reuse.eupdates,
-        );
+        SolCore::util_add_module_with_charge_act(&mut self.u_data, &mut self.svc, module_uid, &mut self.reuse.eupdates);
     }
 }

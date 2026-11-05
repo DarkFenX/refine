@@ -1,6 +1,6 @@
 use crate::{
     Fighter,
-    sol::{CoreInner, UndoStep},
+    sol::{SolCore, UndoStep},
     ud::UItemId,
 };
 
@@ -9,19 +9,19 @@ use crate::{
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl<'s> Fighter<'s> {
     pub fn remove(self) {
-        self.core.internal_remove_fighter(self.uid);
+        self.sol.internal_remove_fighter(self.uid);
     }
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Private
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-impl CoreInner {
+impl SolCore {
     pub(in crate::api) fn internal_remove_fighter(&mut self, fighter_uid: UItemId) {
         // Remove incoming projections
         self.internal_remove_incoming_projections(fighter_uid);
         // Remove autocharges from services; they are discarded along with the fighter
-        let autocharge_uids = CoreInner::util_detach_item_autocharges(
+        let autocharge_uids = SolCore::util_detach_item_autocharges(
             &mut self.u_data,
             &mut self.svc,
             &mut self.rev_projs,
@@ -31,10 +31,10 @@ impl CoreInner {
         // Remove outgoing projections; fighter keeps them, in case it gets reattached
         let u_fighter = self.u_data.items.get(fighter_uid).dc_fighter().unwrap();
         if !u_fighter.get_projs().is_empty() {
-            CoreInner::util_unreg_item_projs(&self.u_data, &mut self.svc, &mut self.rev_projs, fighter_uid);
+            SolCore::util_unreg_item_projs(&self.u_data, &mut self.svc, &mut self.rev_projs, fighter_uid);
         }
         // Update services
-        CoreInner::util_remove_fighter(&mut self.u_data, &mut self.svc, fighter_uid, &mut self.reuse.eupdates);
+        SolCore::util_remove_fighter(&mut self.u_data, &mut self.svc, fighter_uid, &mut self.reuse.eupdates);
         // Update user data
         let u_fighter = self.u_data.items.get(fighter_uid).dc_fighter().unwrap();
         let u_fit = self.u_data.fits.get_mut(u_fighter.get_fit_uid());

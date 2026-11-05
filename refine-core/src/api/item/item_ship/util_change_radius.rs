@@ -1,11 +1,11 @@
 use crate::{
     PValue,
-    sol::CoreInner,
+    sol::SolCore,
     svc::Svc,
     ud::{UData, UFitId},
 };
 
-impl CoreInner {
+impl SolCore {
     pub(super) fn util_update_ship_radius_for_outgoing_projs(
         u_data: &mut UData,
         svc: &mut Svc,
@@ -30,7 +30,7 @@ impl CoreInner {
             }
         }
         for (projector_uid, projectee_uid, proj_data) in projections_to_update {
-            CoreInner::util_change_item_proj_data(u_data, svc, projector_uid, projectee_uid, Some(proj_data));
+            SolCore::util_change_item_proj_data(u_data, svc, projector_uid, projectee_uid, Some(proj_data));
         }
     }
 }

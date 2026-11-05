@@ -1,13 +1,13 @@
 use lender::{ExactSizeLender, Lender, Lending, check_covariance};
 
-use crate::{Ability, Fighter, ad::AAbilId, sol::CoreInner, ud::UItemId};
+use crate::{Ability, Fighter, ad::AAbilId, sol::SolCore, ud::UItemId};
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Public
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 /// Lending iterator for fighter abilities
 pub struct AbilityIter<'iter> {
-    core: &'iter mut CoreInner,
+    sol: &'iter mut SolCore,
     fighter_uid: UItemId,
     abil_aids: Vec<AAbilId>,
     index: usize,
@@ -21,7 +21,7 @@ impl<'iter> Lender for AbilityIter<'iter> {
     fn next(&mut self) -> Option<Ability<'_>> {
         let abil_aid = *self.abil_aids.get(self.index)?;
         self.index += 1;
-        Some(Ability::new(self.core, self.fighter_uid, abil_aid))
+        Some(Ability::new(self.sol, self.fighter_uid, abil_aid))
     }
 
     fn size_hint(&self) -> (usize, Option<usize>) {
@@ -35,7 +35,7 @@ impl<'s> Fighter<'s> {
     /// Iterates over fighter's abilities.
     pub fn iter_abilities(&mut self) -> AbilityIter<'_> {
         let abil_aids = match self
-            .core
+            .sol
             .u_data
             .items
             .get(self.uid)
@@ -46,7 +46,7 @@ impl<'s> Fighter<'s> {
             Some(rib) => rib.abil_ids.clone(),
             None => Vec::new(),
         };
-        AbilityIter::new(self.core, self.uid, abil_aids)
+        AbilityIter::new(self.sol, self.uid, abil_aids)
     }
 }
 
@@ -54,9 +54,9 @@ impl<'s> Fighter<'s> {
 // Private
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl<'iter> AbilityIter<'iter> {
-    fn new(core: &'iter mut CoreInner, fighter_uid: UItemId, abil_aids: Vec<AAbilId>) -> Self {
+    fn new(sol: &'iter mut SolCore, fighter_uid: UItemId, abil_aids: Vec<AAbilId>) -> Self {
         Self {
-            core,
+            sol,
             fighter_uid,
             abil_aids,
             index: 0,

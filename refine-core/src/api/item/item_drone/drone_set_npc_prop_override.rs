@@ -1,6 +1,6 @@
 use crate::{
     Drone, NpcProp,
-    sol::{CoreInner, UndoStep},
+    sol::{SolCore, UndoStep},
     ud::UItemId,
 };
 
@@ -12,7 +12,7 @@ impl<'s> Drone<'s> {
     ///
     /// Solar system's default is used when override is not set.
     pub fn set_npc_prop_override(&mut self, npc_prop_override: Option<NpcProp>) {
-        self.core
+        self.sol
             .internal_set_drone_npc_prop_override(self.uid, npc_prop_override);
     }
 }
@@ -20,7 +20,7 @@ impl<'s> Drone<'s> {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Private
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-impl CoreInner {
+impl SolCore {
     pub(in crate::api) fn internal_set_drone_npc_prop_override(
         &mut self,
         drone_uid: UItemId,

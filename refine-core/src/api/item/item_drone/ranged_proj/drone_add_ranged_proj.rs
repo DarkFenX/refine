@@ -4,7 +4,7 @@ use crate::{
         ProjAddError,
         basic::{ItemReceiveProjError, ProjNotFoundError},
     },
-    sol::{CoreInner, UndoStep},
+    sol::{SolCore, UndoStep},
     ud::{UItemId, UProjData},
 };
 
@@ -13,16 +13,16 @@ use crate::{
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl<'s> Drone<'s> {
     pub fn add_proj(&mut self, projectee_item_id: &ItemId) -> Result<RangedProj<'_>, ProjAddError> {
-        let projectee_uid = self.core.u_data.items.int_id_by_ext_id_err(projectee_item_id)?;
-        self.core.internal_add_drone_proj(self.uid, projectee_uid)?;
-        Ok(RangedProj::new(self.core, self.uid, projectee_uid))
+        let projectee_uid = self.sol.u_data.items.int_id_by_ext_id_err(projectee_item_id)?;
+        self.sol.internal_add_drone_proj(self.uid, projectee_uid)?;
+        Ok(RangedProj::new(self.sol, self.uid, projectee_uid))
     }
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Private
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-impl CoreInner {
+impl SolCore {
     pub(in crate::api) fn internal_add_drone_proj(
         &mut self,
         drone_uid: UItemId,
@@ -59,7 +59,7 @@ impl CoreInner {
         u_drone.get_projs_mut().add(projectee_uid, u_proj_data);
         self.rev_projs.reg_projectee(drone_uid, projectee_uid);
         // Update services
-        CoreInner::util_add_item_projection(&self.u_data, &mut self.svc, drone_uid, projectee_uid, u_proj_data);
+        SolCore::util_add_item_projection(&self.u_data, &mut self.svc, drone_uid, projectee_uid, u_proj_data);
         if self.undo.is_recording() {
             self.undo.record(UndoStep::ProjAdded(drone_uid, projectee_uid));
         }

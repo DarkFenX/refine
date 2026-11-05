@@ -1,6 +1,6 @@
 use crate::{
     Character,
-    sol::{CoreInner, UndoStep},
+    sol::{SolCore, UndoStep},
     ud::UItemId,
 };
 
@@ -9,14 +9,14 @@ use crate::{
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl<'s> Character<'s> {
     pub fn set_state(&mut self, state: bool) {
-        self.core.internal_set_character_state_inner::<true>(self.uid, state);
+        self.sol.internal_set_character_state_inner::<true>(self.uid, state);
     }
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Private
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-impl CoreInner {
+impl SolCore {
     pub(in crate::api) fn internal_set_character_state(&mut self, character_uid: UItemId, state: bool) {
         self.internal_set_character_state_inner::<false>(character_uid, state);
     }
@@ -35,7 +35,7 @@ impl CoreInner {
         u_character.set_character_state(state);
         let new_a_state = u_character.get_state();
         u_character.update_reffs(&mut self.reuse.eupdates, &self.u_data.r_data);
-        CoreInner::util_switch_item_state(
+        SolCore::util_switch_item_state(
             &self.u_data,
             &mut self.svc,
             character_uid,

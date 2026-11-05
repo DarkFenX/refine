@@ -1,7 +1,7 @@
 use crate::{
     ItemTypeId, ProjEffect, Sol,
     ad::AItemId,
-    sol::{CoreInner, UndoStep},
+    sol::{SolCore, UndoStep},
     ud::{UItem, UItemId, UProjEffect},
 };
 
@@ -10,16 +10,16 @@ use crate::{
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl Sol {
     pub fn add_proj_effect(&mut self, type_id: ItemTypeId) -> ProjEffect<'_> {
-        let core = self.inner_mut();
-        let proj_effect_uid = core.internal_add_proj_effect(type_id.into_aid());
-        ProjEffect::new(core, proj_effect_uid)
+        let sol = self.inner_mut();
+        let proj_effect_uid = sol.internal_add_proj_effect(type_id.into_aid());
+        ProjEffect::new(sol, proj_effect_uid)
     }
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Private
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-impl CoreInner {
+impl SolCore {
     pub(in crate::api) fn internal_add_proj_effect(&mut self, type_aid: AItemId) -> UItemId {
         let item_id = self.u_data.items.alloc_id();
         let u_proj_effect = UProjEffect::new(item_id, type_aid, true, &self.u_data.r_data);
@@ -37,12 +37,12 @@ impl CoreInner {
         // Only reattached effects can have projections
         let u_proj_effect = self.u_data.items.get(proj_effect_uid).dc_proj_effect().unwrap();
         if !u_proj_effect.get_projs().is_empty() {
-            CoreInner::util_reg_item_projs(&self.u_data, &mut self.svc, &mut self.rev_projs, proj_effect_uid);
+            SolCore::util_reg_item_projs(&self.u_data, &mut self.svc, &mut self.rev_projs, proj_effect_uid);
         }
     }
     fn attach_proj_effect(&mut self, proj_effect_uid: UItemId) {
         self.u_data.proj_effects.insert(proj_effect_uid);
-        CoreInner::util_add_proj_effect(
+        SolCore::util_add_proj_effect(
             &mut self.u_data,
             &mut self.svc,
             proj_effect_uid,

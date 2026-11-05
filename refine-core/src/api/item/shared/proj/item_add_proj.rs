@@ -1,6 +1,6 @@
 use crate::{
     err::basic::{ItemFoundError, ItemReceiveProjError, ProjNotFoundError},
-    sol::CoreInner,
+    sol::SolCore,
     ud::{UItem, UItemId},
 };
 
@@ -20,7 +20,7 @@ pub enum ProjAddError {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Private
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-impl CoreInner {
+impl SolCore {
     pub(in crate::api) fn internal_add_projection(
         &mut self,
         projector_uid: UItemId,

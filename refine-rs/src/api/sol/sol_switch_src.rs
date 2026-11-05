@@ -8,7 +8,8 @@ impl Sol<'_> {
         // Variables for move
         let core_src = inner_src.get_core().clone();
         // Source is switched outside of transactions
-        self.exec_standard_infallible(move |core| core.set_src(&core_src)).await;
+        self.exec_standard_infallible(move |core_sol| core_sol.set_src(&core_src))
+            .await;
         Ok(())
     }
     #[tracing::instrument(name = "sol-swt-src-inf", level = "error", skip_all)]
@@ -24,9 +25,9 @@ impl Sol<'_> {
         let sol_id = self.get_id();
         let src_alias = inner_src.get_alias();
         let sol_info = self
-            .exec_standard_infallible(move |core| {
-                core.set_src(&core_src);
-                info_cmd.execute(sol_id, src_alias, core)
+            .exec_standard_infallible(move |core_sol| {
+                core_sol.set_src(&core_src);
+                info_cmd.execute(sol_id, src_alias, core_sol)
             })
             .await;
         Ok(sol_info)

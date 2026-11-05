@@ -18,9 +18,9 @@ impl<'s> Fit<'s> {
         time_options: StatTimeOptions,
         crit_options: StatCritOptions,
     ) -> StatDmg {
-        self.core.svc.get_stat_fit_dmg_raw(
+        self.sol.svc.get_stat_fit_dmg_raw(
             &mut CseqMap::new(),
-            &self.core.u_data,
+            &self.sol.u_data,
             self.uid,
             item_kinds,
             time_options,
@@ -34,10 +34,10 @@ impl<'s> Fit<'s> {
         crit_options: StatCritOptions,
         projectee_item_id: &ItemId,
     ) -> Result<StatDmgApplied, StatFitAppliedError> {
-        let projectee_uid = self.core.u_data.get_projectee_uid(projectee_item_id)?;
-        Ok(self.core.svc.get_stat_fit_dmg_applied(
+        let projectee_uid = self.sol.u_data.get_projectee_uid(projectee_item_id)?;
+        Ok(self.sol.svc.get_stat_fit_dmg_applied(
             &mut CseqMap::new(),
-            &self.core.u_data,
+            &self.sol.u_data,
             self.uid,
             item_kinds,
             time_options,
@@ -51,9 +51,9 @@ impl<'s> Fit<'s> {
         time_options: StatTimeOptions,
         resource_kind: StatMiningResourceKind,
     ) -> StatMining {
-        self.core.svc.get_stat_fit_mps(
+        self.sol.svc.get_stat_fit_mps(
             &mut CseqMap::new(),
-            &self.core.u_data,
+            &self.sol.u_data,
             self.uid,
             item_kinds,
             time_options,
@@ -65,9 +65,9 @@ impl<'s> Fit<'s> {
         item_kinds: StatOutRepItemKinds,
         time_options: StatTimeOptions,
     ) -> StatOutReps {
-        self.core.svc.get_stat_fit_outgoing_rps(
+        self.sol.svc.get_stat_fit_outgoing_rps(
             &mut CseqMap::new(),
-            &self.core.u_data,
+            &self.sol.u_data,
             self.uid,
             item_kinds,
             time_options,
@@ -80,10 +80,10 @@ impl<'s> Fit<'s> {
         time_options: StatTimeOptions,
         projectee_item_id: &ItemId,
     ) -> Result<StatOutReps, StatFitAppliedError> {
-        let projectee_uid = self.core.u_data.get_projectee_uid(projectee_item_id)?;
-        Ok(self.core.svc.get_stat_fit_outgoing_rps(
+        let projectee_uid = self.sol.u_data.get_projectee_uid(projectee_item_id)?;
+        Ok(self.sol.svc.get_stat_fit_outgoing_rps(
             &mut CseqMap::new(),
-            &self.core.u_data,
+            &self.sol.u_data,
             self.uid,
             item_kinds,
             time_options,
@@ -91,28 +91,28 @@ impl<'s> Fit<'s> {
         ))
     }
     pub fn get_stat_outgoing_cps(&mut self, time_options: StatTimeOptions) -> PValue {
-        self.core
+        self.sol
             .svc
-            .get_stat_fit_outgoing_cps(&mut CseqMap::new(), &self.core.u_data, self.uid, time_options, None)
+            .get_stat_fit_outgoing_cps(&mut CseqMap::new(), &self.sol.u_data, self.uid, time_options, None)
     }
     pub fn get_stat_outgoing_cps_applied(
         &mut self,
         time_options: StatTimeOptions,
         projectee_item_id: &ItemId,
     ) -> Result<PValue, StatFitAppliedError> {
-        let projectee_uid = self.core.u_data.get_projectee_uid(projectee_item_id)?;
-        Ok(self.core.svc.get_stat_fit_outgoing_cps(
+        let projectee_uid = self.sol.u_data.get_projectee_uid(projectee_item_id)?;
+        Ok(self.sol.svc.get_stat_fit_outgoing_cps(
             &mut CseqMap::new(),
-            &self.core.u_data,
+            &self.sol.u_data,
             self.uid,
             time_options,
             Some(projectee_uid),
         ))
     }
     pub fn get_stat_outgoing_nps(&mut self, item_kinds: StatNeutItemKinds, time_options: StatTimeOptions) -> PValue {
-        self.core.svc.get_stat_fit_outgoing_nps(
+        self.sol.svc.get_stat_fit_outgoing_nps(
             &mut CseqMap::new(),
-            &self.core.u_data,
+            &self.sol.u_data,
             self.uid,
             item_kinds,
             time_options,
@@ -125,10 +125,10 @@ impl<'s> Fit<'s> {
         time_options: StatTimeOptions,
         projectee_item_id: &ItemId,
     ) -> Result<PValue, StatFitAppliedError> {
-        let projectee_uid = self.core.u_data.get_projectee_uid(projectee_item_id)?;
-        Ok(self.core.svc.get_stat_fit_outgoing_nps(
+        let projectee_uid = self.sol.u_data.get_projectee_uid(projectee_item_id)?;
+        Ok(self.sol.svc.get_stat_fit_outgoing_nps(
             &mut CseqMap::new(),
-            &self.core.u_data,
+            &self.sol.u_data,
             self.uid,
             item_kinds,
             time_options,

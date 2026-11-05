@@ -1,7 +1,7 @@
 use crate::{
     ItemTypeId, Ship,
     ad::AItemId,
-    sol::{CoreInner, UndoStep},
+    sol::{SolCore, UndoStep},
     ud::UItemId,
 };
 
@@ -11,21 +11,21 @@ use crate::{
 impl<'s> Ship<'s> {
     /// Set type ID, replacing currently used EVE item by another, preserving all the user data.
     pub fn set_type_id(&mut self, type_id: ItemTypeId) {
-        self.core.internal_set_ship_type_aid(self.uid, type_id.into_aid())
+        self.sol.internal_set_ship_type_aid(self.uid, type_id.into_aid())
     }
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Private
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-impl CoreInner {
+impl SolCore {
     pub(in crate::api) fn internal_set_ship_type_aid(&mut self, ship_uid: UItemId, type_aid: AItemId) {
         let u_item = self.u_data.items.get(ship_uid);
         let old_type_aid = u_item.get_base_type_aid();
         if old_type_aid == type_aid {
             return;
         }
-        CoreInner::util_remove_ship(&mut self.u_data, &mut self.svc, ship_uid, &mut self.reuse.eupdates);
+        SolCore::util_remove_ship(&mut self.u_data, &mut self.svc, ship_uid, &mut self.reuse.eupdates);
         let u_ship = self.u_data.items.get_mut(ship_uid).dc_ship_mut().unwrap();
         let fit_uid = u_ship.get_fit_uid();
         u_ship.set_type_aid(type_aid, &self.u_data.r_data);
@@ -38,7 +38,7 @@ impl CoreInner {
         u_fit.ship_kind = ship_kind;
         // Update outgoing projections for all on-ship items
         let ship_radius = self.u_data.get_fit_ship_radius(fit_uid);
-        CoreInner::util_update_ship_radius_for_outgoing_projs(&mut self.u_data, &mut self.svc, fit_uid, ship_radius);
+        SolCore::util_update_ship_radius_for_outgoing_projs(&mut self.u_data, &mut self.svc, fit_uid, ship_radius);
         // Update incoming projections
         for projector_uid in self.rev_projs.iter_projectors(&ship_uid) {
             let projector_u_item = self.u_data.items.get_mut(projector_uid);
@@ -46,15 +46,9 @@ impl CoreInner {
                 && u_proj_data.update_tgt_radius(ship_radius)
             {
                 let u_proj_data = Some(*u_proj_data);
-                CoreInner::util_change_item_proj_data(
-                    &self.u_data,
-                    &mut self.svc,
-                    projector_uid,
-                    ship_uid,
-                    u_proj_data,
-                );
+                SolCore::util_change_item_proj_data(&self.u_data, &mut self.svc, projector_uid, ship_uid, u_proj_data);
             }
         }
-        CoreInner::util_add_ship(&mut self.u_data, &mut self.svc, ship_uid, &mut self.reuse.eupdates);
+        SolCore::util_add_ship(&mut self.u_data, &mut self.svc, ship_uid, &mut self.reuse.eupdates);
     }
 }

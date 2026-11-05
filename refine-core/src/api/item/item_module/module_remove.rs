@@ -1,7 +1,7 @@
 use super::shared::get_fit_rack_mut;
 use crate::{
     Module, RemoveMode,
-    sol::{CoreInner, UndoStep},
+    sol::{SolCore, UndoStep},
     ud::UItemId,
 };
 
@@ -10,14 +10,14 @@ use crate::{
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl<'s> Module<'s> {
     pub fn remove(self, pos_mode: RemoveMode) {
-        self.core.internal_remove_module(self.uid, pos_mode)
+        self.sol.internal_remove_module(self.uid, pos_mode)
     }
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Private
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-impl CoreInner {
+impl SolCore {
     pub(in crate::api) fn internal_remove_module(&mut self, module_uid: UItemId, pos_mode: RemoveMode) {
         let u_module = self.u_data.items.get(module_uid).dc_module().unwrap();
         let fit_uid = u_module.get_fit_uid();
@@ -27,17 +27,17 @@ impl CoreInner {
         // Remove outgoing projections for both module and charge; they keep them, in case they get
         // reattached. Charge projects whatever its module projects
         if !u_module.get_projs().is_empty() {
-            CoreInner::util_unreg_item_projs(&self.u_data, &mut self.svc, &mut self.rev_projs, module_uid);
+            SolCore::util_unreg_item_projs(&self.u_data, &mut self.svc, &mut self.rev_projs, module_uid);
             if let Some(charge_uid) = charge_uid {
-                CoreInner::util_unreg_item_projs(&self.u_data, &mut self.svc, &mut self.rev_projs, charge_uid);
+                SolCore::util_unreg_item_projs(&self.u_data, &mut self.svc, &mut self.rev_projs, charge_uid);
             }
         }
         // Remove charge from services
         if let Some(charge_uid) = charge_uid {
-            CoreInner::util_remove_charge(&mut self.u_data, &mut self.svc, charge_uid, &mut self.reuse.eupdates);
+            SolCore::util_remove_charge(&mut self.u_data, &mut self.svc, charge_uid, &mut self.reuse.eupdates);
         }
         // Remove module from services
-        CoreInner::util_remove_module(&mut self.u_data, &mut self.svc, module_uid, &mut self.reuse.eupdates);
+        SolCore::util_remove_module(&mut self.u_data, &mut self.svc, module_uid, &mut self.reuse.eupdates);
         // Update user data - not updating module<->charge references because both are discarded
         // together
         let u_fit_rack = get_fit_rack_mut(&mut self.u_data.fits, fit_uid, rack);

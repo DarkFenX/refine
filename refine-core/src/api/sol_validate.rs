@@ -1,6 +1,6 @@
 use crate::{
     Sol,
-    sol::CoreInner,
+    sol::SolCore,
     svc::vast::ValOptionsSolInt,
     val::{ValOptionsSol, ValResultSol},
 };
@@ -10,21 +10,21 @@ use crate::{
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl Sol {
     pub fn validate_fast(&mut self, options: &ValOptionsSol) -> bool {
-        let core = self.inner_mut();
-        let int_options = ValOptionsSolInt::from_pub(options, core);
-        core.internal_validate_fast(&int_options)
+        let sol = self.inner_mut();
+        let int_options = ValOptionsSolInt::from_pub(options, sol);
+        sol.internal_validate_fast(&int_options)
     }
     pub fn validate_verbose(&mut self, options: &ValOptionsSol) -> ValResultSol {
-        let core = self.inner_mut();
-        let int_options = ValOptionsSolInt::from_pub(options, core);
-        core.internal_validate_verbose(&int_options)
+        let sol = self.inner_mut();
+        let int_options = ValOptionsSolInt::from_pub(options, sol);
+        sol.internal_validate_verbose(&int_options)
     }
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Private
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-impl CoreInner {
+impl SolCore {
     pub(in crate::api) fn internal_validate_fast(&mut self, options: &ValOptionsSolInt) -> bool {
         self.svc.validate_sol_fast(&self.u_data, options)
     }

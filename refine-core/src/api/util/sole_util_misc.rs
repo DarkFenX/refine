@@ -2,12 +2,12 @@ use itertools::Itertools;
 
 use crate::{
     rd::RAttrId,
-    sol::CoreInner,
+    sol::SolCore,
     svc::{calc::CalcAttrVals, err::UItemLoadedError},
     ud::{UItem, UItemId},
 };
 
-impl CoreInner {
+impl SolCore {
     pub(in crate::api) fn internal_get_item_attr(
         &mut self,
         item_uid: UItemId,

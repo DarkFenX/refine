@@ -1,7 +1,7 @@
 use crate::{
     Fit, FleetId,
     err::basic::FleetFoundError,
-    sol::{CoreInner, UndoStep},
+    sol::{SolCore, UndoStep},
     ud::{UFitId, UFleetId},
 };
 
@@ -12,10 +12,10 @@ impl<'s> Fit<'s> {
     /// Set fleet, moving fit out of its current one.
     pub fn set_fleet(&mut self, fleet_id: Option<&FleetId>) -> Result<(), FitFleetSetError> {
         let fleet_uid = match fleet_id {
-            Some(fleet_id) => Some(self.core.u_data.fleets.int_id_by_ext_id_err(fleet_id)?),
+            Some(fleet_id) => Some(self.sol.u_data.fleets.int_id_by_ext_id_err(fleet_id)?),
             None => None,
         };
-        self.core.internal_set_fit_fleet(self.uid, fleet_uid);
+        self.sol.internal_set_fit_fleet(self.uid, fleet_uid);
         Ok(())
     }
 }
@@ -29,7 +29,7 @@ pub enum FitFleetSetError {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Private
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-impl CoreInner {
+impl SolCore {
     // Compiler keeps it out of line with 6 callers; inlined, fleet changes are cheaper
     #[inline(always)]
     pub(in crate::api) fn internal_set_fit_fleet(&mut self, fit_uid: UFitId, fleet_uid: Option<UFleetId>) {
