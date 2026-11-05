@@ -53,31 +53,33 @@ def test_known_failures(client, consts):
     eve_effect_id = client.mk_eve_effect(id_=consts.UtilEffect.activates_charge, cat_id=consts.EveEffCat.active)
     eve_charge1_id = client.mk_eve_charge(attrs={eve_ban_empire_attr_id: 1})
     eve_charge2_id = client.mk_eve_charge(attrs={eve_ban_hazard_attr_id: 1})
-    eve_module_id = client.mk_eve_item(
+    eve_module1_id = client.mk_eve_item(
         attrs={eve_capacity_attr_id: 1},
         eff_ids=[eve_effect_id],
         defeff_id=eve_effect_id)
+    eve_module2_id = client.mk_eve_item(eff_ids=[eve_effect_id], defeff_id=eve_effect_id)
     client.create_sources()
     api_sol = client.create_sol(sec_zone=consts.ApiSecZone.hisec)
     api_fit = api_sol.create_fit()
-    api_fit.add_module(type_id=eve_module_id, state=consts.ApiModuleState.active)
+    api_fit.add_module(type_id=eve_module1_id, state=consts.ApiModuleState.active)
     api_module1 = api_fit.add_module(
-        type_id=eve_module_id,
+        type_id=eve_module2_id,
         state=consts.ApiModuleState.active,
         charge_type_id=eve_charge1_id)
     api_module2 = api_fit.add_module(
-        type_id=eve_module_id,
+        type_id=eve_module2_id,
         state=consts.ApiModuleState.active,
         charge_type_id=eve_charge1_id)
     api_module3 = api_fit.add_module(
-        type_id=eve_module_id,
+        type_id=eve_module2_id,
         state=consts.ApiModuleState.active,
         charge_type_id=eve_charge2_id)
     api_module4 = api_fit.add_module(
-        type_id=eve_module_id,
+        type_id=eve_module2_id,
         state=consts.ApiModuleState.active,
         charge_type_id=eve_charge2_id)
-    # Verification - charges are tried in the module without charge
+    # Verification - charges are tried only in modules with capacity, so they can't replace the
+    # failing charges
     api_fit.check_try_fit_items(
         val_options=ValOptions(sec_zone_active=[api_module1.charge.id]),
         passing=[],

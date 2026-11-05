@@ -72,14 +72,16 @@ def test_known_failures(client, consts):
     eve_capacity_attr_id = client.mk_eve_attr(id_=consts.EveAttr.capacity)
     eve_charge1_id = client.mk_eve_charge(grp_id=eve_grp1_id)
     eve_charge2_id = client.mk_eve_charge(grp_id=eve_grp2_id)
-    eve_module_id = client.mk_eve_item(attrs={eve_group_attr_id: eve_grp1_id, eve_capacity_attr_id: 1})
+    eve_module1_id = client.mk_eve_item(attrs={eve_group_attr_id: eve_grp1_id, eve_capacity_attr_id: 1})
+    eve_module2_id = client.mk_eve_item(attrs={eve_group_attr_id: eve_grp1_id})
     client.create_sources()
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
-    api_fit.add_module(type_id=eve_module_id, charge_type_id=eve_charge1_id)
-    api_module2 = api_fit.add_module(type_id=eve_module_id, charge_type_id=eve_charge2_id)
-    api_module3 = api_fit.add_module(type_id=eve_module_id, charge_type_id=eve_charge2_id)
-    # Verification
+    api_fit.add_module(type_id=eve_module1_id, charge_type_id=eve_charge1_id)
+    api_module2 = api_fit.add_module(type_id=eve_module2_id, charge_type_id=eve_charge2_id)
+    api_module3 = api_fit.add_module(type_id=eve_module2_id, charge_type_id=eve_charge2_id)
+    # Verification - charges are tried only in modules with capacity, so they can't replace the
+    # failing charges
     api_fit.check_try_fit_items(
         val_options=ValOptions(charge_group=[api_module2.charge.id]),
         passing=[],

@@ -616,10 +616,11 @@ def test_known_failures(client, consts):
         cat_id=consts.EveEffCat.target,
         is_assistance=True,
         is_offensive=False)
-    eve_launcher_id = client.mk_eve_item(
+    eve_launcher1_id = client.mk_eve_item(
         attrs={eve_capacity_attr_id: 1},
         eff_ids=[eve_launcher_effect_id],
         defeff_id=eve_launcher_effect_id)
+    eve_launcher2_id = client.mk_eve_item(eff_ids=[eve_launcher_effect_id], defeff_id=eve_launcher_effect_id)
     eve_src_offense_charge_id = client.mk_eve_charge(
         eff_ids=[eve_src_offense_effect_id],
         defeff_id=eve_src_offense_effect_id)
@@ -634,18 +635,22 @@ def test_known_failures(client, consts):
     api_tgt_fit = api_sol.create_fit()
     api_tgt_item = api_tgt_fit.set_ship(type_id=eve_tgt_item_id)
     api_src_fit = api_sol.create_fit()
-    api_src_fit.add_module(type_id=eve_launcher_id, state=consts.ApiModuleState.active, proj_item_ids=[api_tgt_item.id])
+    api_src_fit.add_module(
+        type_id=eve_launcher1_id,
+        state=consts.ApiModuleState.active,
+        proj_item_ids=[api_tgt_item.id])
     api_src_offense = api_src_fit.add_module(
-        type_id=eve_launcher_id,
+        type_id=eve_launcher2_id,
         state=consts.ApiModuleState.active,
         charge_type_id=eve_src_offense_charge_id,
         proj_item_ids=[api_tgt_item.id])
     api_src_assist = api_src_fit.add_module(
-        type_id=eve_launcher_id,
+        type_id=eve_launcher2_id,
         state=consts.ApiModuleState.active,
         charge_type_id=eve_src_assist_charge_id,
         proj_item_ids=[api_tgt_item.id])
-    # Verification - charges are tried in the module without charge
+    # Verification - charges are tried only in modules with capacity, so they can't replace the
+    # failing charges
     api_src_fit.check_try_fit_items(
         val_options=ValOptions(offense_immunity=[api_src_offense.charge.id]),
         passing=[],

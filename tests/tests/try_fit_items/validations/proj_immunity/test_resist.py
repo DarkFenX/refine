@@ -380,10 +380,11 @@ def test_known_failures(client, consts):
         id_=consts.UtilEffect.activates_charge,
         cat_id=consts.EveEffCat.active)
     eve_src_effect_id = client.mk_eve_effect(cat_id=consts.EveEffCat.target, resist_attr_id=eve_resist_attr_id)
-    eve_launcher_id = client.mk_eve_item(
+    eve_launcher1_id = client.mk_eve_item(
         attrs={eve_capacity_attr_id: 1},
         eff_ids=[eve_launcher_effect_id],
         defeff_id=eve_launcher_effect_id)
+    eve_launcher2_id = client.mk_eve_item(eff_ids=[eve_launcher_effect_id], defeff_id=eve_launcher_effect_id)
     eve_src_charge_id = client.mk_eve_charge(eff_ids=[eve_src_effect_id], defeff_id=eve_src_effect_id)
     eve_other_charge_id = client.mk_eve_charge()
     eve_tgt_item_id = client.mk_eve_ship(attrs={eve_resist_attr_id: 0})
@@ -392,18 +393,22 @@ def test_known_failures(client, consts):
     api_tgt_fit = api_sol.create_fit()
     api_tgt_item = api_tgt_fit.set_ship(type_id=eve_tgt_item_id)
     api_src_fit = api_sol.create_fit()
-    api_src_fit.add_module(type_id=eve_launcher_id, state=consts.ApiModuleState.active, proj_item_ids=[api_tgt_item.id])
+    api_src_fit.add_module(
+        type_id=eve_launcher1_id,
+        state=consts.ApiModuleState.active,
+        proj_item_ids=[api_tgt_item.id])
     api_src_launcher1 = api_src_fit.add_module(
-        type_id=eve_launcher_id,
+        type_id=eve_launcher2_id,
         state=consts.ApiModuleState.active,
         charge_type_id=eve_src_charge_id,
         proj_item_ids=[api_tgt_item.id])
     api_src_launcher2 = api_src_fit.add_module(
-        type_id=eve_launcher_id,
+        type_id=eve_launcher2_id,
         state=consts.ApiModuleState.active,
         charge_type_id=eve_src_charge_id,
         proj_item_ids=[api_tgt_item.id])
-    # Verification - charges are tried in the module without charge
+    # Verification - charges are tried only in modules with capacity, so they can't replace the
+    # failing charges
     api_src_fit.check_try_fit_items(
         val_options=ValOptions(resist_immunity=[api_src_launcher1.charge.id]),
         passing=[],
