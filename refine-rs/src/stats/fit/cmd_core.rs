@@ -116,16 +116,17 @@ impl FitStatsCmd {
     pub(crate) fn execute(self, core_fit: &mut rc::Fit) -> FitStatsResp {
         let item_options: OvrdMapHeavy<_, ItemStatsOptionsResolved> =
             OvrdMapHeavy::from_compact_with_conversion(self.item_options);
+        let mut core_fit_stats = core_fit.stats();
         let items = match item_options.get_default().is_any_stat_requested() {
             true => {
                 let mut stats = Vec::new();
-                extend_stats_for_passed_items(core_fit.iter_items(), &item_options, &mut stats);
+                extend_stats_for_passed_items(core_fit_stats.iter_items(), &item_options, &mut stats);
                 stats
             }
-            false => get_stats_for_items_in_overrides(core_fit, &item_options),
+            false => get_stats_for_items_in_overrides(&mut core_fit_stats, &item_options),
         };
         FitStatsResp {
-            fit: self.fit_options.stat_resolve().execute(&mut core_fit.stats()),
+            fit: self.fit_options.stat_resolve().execute(&mut core_fit_stats),
             items,
         }
     }

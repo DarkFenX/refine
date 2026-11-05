@@ -111,23 +111,24 @@ impl SolStatsCmd {
             OvrdMapHeavy::from_compact_with_conversion(self.fit_options);
         let item_options: OvrdMapHeavy<_, ItemStatsOptionsResolved> =
             OvrdMapHeavy::from_compact_with_conversion(self.item_options);
+        let mut core_sol_stats = core_sol.stats();
         // Everything in a solar system belongs to it, so overridden entities need no membership
         // check - unlike with fit and fleet commands
         let fleets = match fleet_options.get_default().is_any_stat_requested() {
-            true => get_stats_for_passed_fleets(core_sol.iter_fleets(), &fleet_options),
-            false => get_stats_for_fleets_in_overrides(core_sol, &fleet_options),
+            true => get_stats_for_passed_fleets(core_sol_stats.iter_fleets(), &fleet_options),
+            false => get_stats_for_fleets_in_overrides(&mut core_sol_stats, &fleet_options),
         };
         let fits = match fit_options.get_default().is_any_stat_requested() {
-            true => get_stats_for_passed_fits(core_sol.iter_fits(), &fit_options),
-            false => get_stats_for_fits_in_overrides(core_sol, &fit_options),
+            true => get_stats_for_passed_fits(core_sol_stats.iter_fits(), &fit_options),
+            false => get_stats_for_fits_in_overrides(&mut core_sol_stats, &fit_options),
         };
         let items = match item_options.get_default().is_any_stat_requested() {
             true => {
                 let mut stats = Vec::new();
-                extend_stats_for_passed_items(core_sol.iter_items(), &item_options, &mut stats);
+                extend_stats_for_passed_items(core_sol_stats.iter_items(), &item_options, &mut stats);
                 stats
             }
-            false => get_stats_for_items_in_overrides(core_sol, &item_options),
+            false => get_stats_for_items_in_overrides(&mut core_sol_stats, &item_options),
         };
         SolStatsResp { fleets, fits, items }
     }

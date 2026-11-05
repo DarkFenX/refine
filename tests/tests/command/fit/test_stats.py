@@ -1,4 +1,4 @@
-from fw import check_no_field
+from fw import approx, check_no_field
 from fw.api import FitStatsOptions, ItemStatsOptions
 
 
@@ -20,6 +20,35 @@ def test_fit_fit(client, consts):
     with check_no_field():
         api_fit_stats2.fit.mass  # ruff:ignore[useless-expression]
     assert api_fit_stats2.fit.speed.one() == 500
+
+
+def test_fit_fit_after_change(client, consts):
+    # Cycle sequences are reused only within one stats command, so later ones see changes
+    eve_rep_amount_attr_id = client.mk_eve_attr(id_=consts.EveAttr.armor_dmg_amount)
+    eve_cycle_time_attr_id = client.mk_eve_attr()
+    eve_effect_id = client.mk_eve_effect(
+        id_=consts.EveEffect.ship_mod_remote_armor_repairer,
+        cat_id=consts.EveEffCat.target,
+        duration_attr_id=eve_cycle_time_attr_id)
+    eve_module1_id = client.mk_eve_item(
+        attrs={eve_rep_amount_attr_id: 376, eve_cycle_time_attr_id: 6000},
+        eff_ids=[eve_effect_id],
+        defeff_id=eve_effect_id)
+    eve_module2_id = client.mk_eve_item(
+        attrs={eve_rep_amount_attr_id: 376, eve_cycle_time_attr_id: 3000},
+        eff_ids=[eve_effect_id],
+        defeff_id=eve_effect_id)
+    client.create_sources()
+    api_sol = client.create_sol()
+    api_fit = api_sol.create_fit()
+    api_module = api_fit.add_module(type_id=eve_module1_id, state=consts.ApiModuleState.active)
+    with api_fit.batch() as api_fit_batch:
+        api_fit_stats1 = api_fit_batch.get_fit_stats(fit_options=FitStatsOptions(outgoing_rps=True))
+        api_fit_batch.change_module(item_id=api_module.id, type_id=eve_module2_id)
+        api_fit_stats2 = api_fit_batch.get_fit_stats(fit_options=FitStatsOptions(outgoing_rps=True))
+    # Verification
+    assert api_fit_stats1.fit.outgoing_rps.one().armor == approx(62.666667)
+    assert api_fit_stats2.fit.outgoing_rps.one().armor == approx(125.333333)
 
 
 def test_fit_item_override(client, consts):
@@ -107,6 +136,39 @@ def test_item_item(client, consts):
     with check_no_field():
         api_item_stats2.item.mass  # ruff:ignore[useless-expression]
     assert api_item_stats2.item.speed.one() == 500
+
+
+def test_item_item_after_change(client, consts):
+    # Cycle sequences are reused only within one stats command, so later ones see changes
+    eve_rep_amount_attr_id = client.mk_eve_attr(id_=consts.EveAttr.armor_dmg_amount)
+    eve_cycle_time_attr_id = client.mk_eve_attr()
+    eve_effect_id = client.mk_eve_effect(
+        id_=consts.EveEffect.ship_mod_remote_armor_repairer,
+        cat_id=consts.EveEffCat.target,
+        duration_attr_id=eve_cycle_time_attr_id)
+    eve_module1_id = client.mk_eve_item(
+        attrs={eve_rep_amount_attr_id: 376, eve_cycle_time_attr_id: 6000},
+        eff_ids=[eve_effect_id],
+        defeff_id=eve_effect_id)
+    eve_module2_id = client.mk_eve_item(
+        attrs={eve_rep_amount_attr_id: 376, eve_cycle_time_attr_id: 3000},
+        eff_ids=[eve_effect_id],
+        defeff_id=eve_effect_id)
+    client.create_sources()
+    api_sol = client.create_sol()
+    api_fit = api_sol.create_fit()
+    api_module = api_fit.add_module(type_id=eve_module1_id, state=consts.ApiModuleState.active)
+    with api_fit.batch() as api_fit_batch:
+        api_item_stats1 = api_fit_batch.get_item_stats(
+            item_id=api_module.id,
+            item_options=ItemStatsOptions(outgoing_rps=True))
+        api_fit_batch.change_module(item_id=api_module.id, type_id=eve_module2_id)
+        api_item_stats2 = api_fit_batch.get_item_stats(
+            item_id=api_module.id,
+            item_options=ItemStatsOptions(outgoing_rps=True))
+    # Verification
+    assert api_item_stats1.item.outgoing_rps.one().armor == approx(62.666667)
+    assert api_item_stats2.item.outgoing_rps.one().armor == approx(125.333333)
 
 
 def test_item_item_backref(client, consts):

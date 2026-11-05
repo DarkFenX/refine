@@ -140,23 +140,24 @@ impl FleetStatsCmd {
             OvrdMapHeavy::from_compact_with_conversion(self.fit_options);
         let item_options: OvrdMapHeavy<_, ItemStatsOptionsResolved> =
             OvrdMapHeavy::from_compact_with_conversion(self.item_options);
+        let mut core_fleet_stats = core_fleet.stats();
         let fits = match fit_options.get_default().is_any_stat_requested() {
-            true => get_stats_for_passed_fits(core_fleet.iter_fits(), &fit_options),
-            false => get_stats_for_fits_in_overrides(core_fleet, &fit_options),
+            true => get_stats_for_passed_fits(core_fleet_stats.iter_fits(), &fit_options),
+            false => get_stats_for_fits_in_overrides(&mut core_fleet_stats, &fit_options),
         };
         let items = match item_options.get_default().is_any_stat_requested() {
             true => {
                 let mut stats = Vec::new();
-                let mut core_fits = core_fleet.iter_fits();
-                while let Some(mut core_fit) = core_fits.next() {
-                    extend_stats_for_passed_items(core_fit.iter_items(), &item_options, &mut stats);
+                let mut core_fits_stats = core_fleet_stats.iter_fits();
+                while let Some(mut core_fit_stats) = core_fits_stats.next() {
+                    extend_stats_for_passed_items(core_fit_stats.iter_items(), &item_options, &mut stats);
                 }
                 stats
             }
-            false => get_stats_for_items_in_overrides(core_fleet, &item_options),
+            false => get_stats_for_items_in_overrides(&mut core_fleet_stats, &item_options),
         };
         FleetStatsResp {
-            fleet: self.fleet_options.stat_resolve().execute(&mut core_fleet.stats()),
+            fleet: self.fleet_options.stat_resolve().execute(&mut core_fleet_stats),
             fits,
             items,
         }
