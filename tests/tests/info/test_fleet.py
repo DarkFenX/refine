@@ -17,6 +17,40 @@ def test_error_params_malformed(client):
         json_predicate={'code': 'PRM-001', 'message': 're:.+'})
 
 
+def test_mode_id(client, consts):
+    client.create_sources()
+    api_sol = client.create_sol()
+    api_fit1 = api_sol.create_fit()
+    api_fit2 = api_sol.create_fit()
+    # Action
+    api_fleet = api_sol.create_fleet(fit_ids=[api_fit1.id], fleet_info_mode=consts.ApiFleetInfoMode.id)
+    # Verification
+    with check_no_field():
+        api_fleet.fits  # ruff:ignore[useless-expression]
+    # Action
+    api_fleet.change(add_fit_ids=[api_fit2.id])
+    api_fleet.update(fleet_info_mode=consts.ApiFleetInfoMode.id)
+    # Verification
+    with check_no_field():
+        api_fleet.fits  # ruff:ignore[useless-expression]
+
+
+def test_mode_full(client, consts):
+    client.create_sources()
+    api_sol = client.create_sol()
+    api_fit1 = api_sol.create_fit()
+    api_fit2 = api_sol.create_fit()
+    # Action
+    api_fleet = api_sol.create_fleet(fit_ids=[api_fit1.id], fleet_info_mode=consts.ApiFleetInfoMode.full)
+    # Verification
+    assert api_fleet.fits.keys() == {api_fit1.id}
+    # Action
+    api_fleet.change(add_fit_ids=[api_fit2.id])
+    api_fleet.update(fleet_info_mode=consts.ApiFleetInfoMode.full)
+    # Verification
+    assert api_fleet.fits.keys() == {api_fit1.id, api_fit2.id}
+
+
 def test_fit(client):
     client.create_sources()
     api_sol = client.create_sol()

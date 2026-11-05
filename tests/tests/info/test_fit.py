@@ -18,6 +18,63 @@ def test_error_params_malformed(client):
     api_fit.update(item_info_mode='random', status_code=400, json_predicate={'code': 'PRM-001', 'message': 're:.+'})
 
 
+def test_mode_id(client, consts):
+    eve_ship_id = client.mk_eve_ship()
+    client.create_sources()
+    api_sol = client.create_sol()
+    api_fleet = api_sol.create_fleet()
+    # Action
+    api_fit = api_sol.create_fit(
+        fleet_id=api_fleet.id,
+        sec_status=2.5,
+        rah_incoming_dps=(0, 0, 1, 1),
+        fit_info_mode=consts.ApiFitInfoMode.id)
+    # Verification
+    with check_no_field():
+        api_fit.fleet_id  # ruff:ignore[useless-expression]
+    with check_no_field():
+        api_fit.sec_status  # ruff:ignore[useless-expression]
+    with check_no_field():
+        api_fit.rah_incoming_dps  # ruff:ignore[useless-expression]
+    # Action
+    api_fit.set_ship(type_id=eve_ship_id)
+    api_fit.update(fit_info_mode=consts.ApiFitInfoMode.id)
+    # Verification
+    with check_no_field():
+        api_fit.fleet_id  # ruff:ignore[useless-expression]
+    with check_no_field():
+        api_fit.ship  # ruff:ignore[useless-expression]
+    with check_no_field():
+        api_fit.sec_status  # ruff:ignore[useless-expression]
+    with check_no_field():
+        api_fit.rah_incoming_dps  # ruff:ignore[useless-expression]
+
+
+def test_mode_full(client, consts):
+    eve_ship_id = client.mk_eve_ship()
+    client.create_sources()
+    api_sol = client.create_sol()
+    api_fleet = api_sol.create_fleet()
+    # Action
+    api_fit = api_sol.create_fit(
+        fleet_id=api_fleet.id,
+        sec_status=2.5,
+        rah_incoming_dps=(0, 0, 1, 1),
+        fit_info_mode=consts.ApiFitInfoMode.full)
+    # Verification
+    assert api_fit.fleet_id == api_fleet.id
+    assert api_fit.sec_status == 2.5
+    assert api_fit.rah_incoming_dps == (0, 0, 1, 1)
+    # Action
+    api_ship = api_fit.set_ship(type_id=eve_ship_id)
+    api_fit.update(fit_info_mode=consts.ApiFitInfoMode.full)
+    # Verification
+    assert api_fit.fleet_id == api_fleet.id
+    assert api_fit.ship.id == api_ship.id
+    assert api_fit.sec_status == 2.5
+    assert api_fit.rah_incoming_dps == (0, 0, 1, 1)
+
+
 def test_fleet(client):
     client.create_sources()
     api_sol = client.create_sol()
@@ -33,7 +90,24 @@ def test_fleet(client):
         api_fit.fleet_id  # ruff:ignore[useless-expression]
 
 
-def test_char(client):
+def test_item_booster(client):
+    eve_item_id = client.mk_eve_item()
+    client.create_sources()
+    api_sol = client.create_sol()
+    api_fit = api_sol.create_fit()
+    api_item = api_fit.add_booster(type_id=eve_item_id)
+    # Verification
+    api_fit.update()
+    assert len(api_fit.boosters) == 1
+    assert api_item.id in api_fit.boosters
+    api_item.remove()
+    # Verification
+    api_fit.update()
+    with check_no_field():
+        api_fit.boosters  # ruff:ignore[useless-expression]
+
+
+def test_item_char(client):
     eve_item_id = client.mk_eve_item()
     client.create_sources()
     api_sol = client.create_sol()
@@ -49,25 +123,61 @@ def test_char(client):
         api_fit.character  # ruff:ignore[useless-expression]
 
 
-def test_skill(client):
-    eve_item_id = client.mk_eve_item()
+def test_item_drone(client):
+    eve_drone_id = client.mk_eve_drone()
     client.create_sources()
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
-    api_item = api_fit.add_skill(type_id=eve_item_id, level=1)
+    api_item = api_fit.add_drone(type_id=eve_drone_id)
     # Verification
     api_fit.update()
-    assert len(api_fit.skills) == 1
-    assert api_item.id in api_fit.skills
+    assert len(api_fit.drones) == 1
+    assert api_item.id in api_fit.drones
     # Action
     api_item.remove()
     # Verification
     api_fit.update()
     with check_no_field():
-        api_fit.skills  # ruff:ignore[useless-expression]
+        api_fit.drones  # ruff:ignore[useless-expression]
 
 
-def test_implant(client):
+def test_item_fighter(client):
+    eve_fighter_id = client.mk_eve_fighter()
+    client.create_sources()
+    api_sol = client.create_sol()
+    api_fit = api_sol.create_fit()
+    api_item = api_fit.add_fighter(type_id=eve_fighter_id)
+    # Verification
+    api_fit.update()
+    assert len(api_fit.fighters) == 1
+    assert api_item.id in api_fit.fighters
+    # Action
+    api_item.remove()
+    # Verification
+    api_fit.update()
+    with check_no_field():
+        api_fit.fighters  # ruff:ignore[useless-expression]
+
+
+def test_item_fw_effect(client):
+    eve_item_id = client.mk_eve_item()
+    client.create_sources()
+    api_sol = client.create_sol()
+    api_fit = api_sol.create_fit()
+    api_item = api_fit.add_fw_effect(type_id=eve_item_id)
+    # Verification
+    api_fit.update()
+    assert len(api_fit.fw_effects) == 1
+    assert api_item.id in api_fit.fw_effects
+    # Action
+    api_item.remove()
+    # Verification
+    api_fit.update()
+    with check_no_field():
+        api_fit.fw_effects  # ruff:ignore[useless-expression]
+
+
+def test_item_implant(client):
     eve_item_id = client.mk_eve_item()
     client.create_sources()
     api_sol = client.create_sol()
@@ -85,74 +195,7 @@ def test_implant(client):
         api_fit.implants  # ruff:ignore[useless-expression]
 
 
-def test_booster(client):
-    eve_item_id = client.mk_eve_item()
-    client.create_sources()
-    api_sol = client.create_sol()
-    api_fit = api_sol.create_fit()
-    api_item = api_fit.add_booster(type_id=eve_item_id)
-    # Verification
-    api_fit.update()
-    assert len(api_fit.boosters) == 1
-    assert api_item.id in api_fit.boosters
-    api_item.remove()
-    # Verification
-    api_fit.update()
-    with check_no_field():
-        api_fit.boosters  # ruff:ignore[useless-expression]
-
-
-def test_ship(client):
-    eve_ship_id = client.mk_eve_ship()
-    client.create_sources()
-    api_sol = client.create_sol()
-    api_fit = api_sol.create_fit()
-    api_item = api_fit.set_ship(type_id=eve_ship_id)
-    # Verification
-    assert api_fit.update().ship.id == api_item.id
-    # Action
-    api_item.remove()
-    # Verification
-    api_fit.update()
-    with check_no_field():
-        api_fit.ship  # ruff:ignore[useless-expression]
-
-
-def test_stance(client):
-    eve_item_id = client.mk_eve_item()
-    client.create_sources()
-    api_sol = client.create_sol()
-    api_fit = api_sol.create_fit()
-    api_item = api_fit.set_stance(type_id=eve_item_id)
-    # Verification
-    assert api_fit.update().stance.id == api_item.id
-    # Action
-    api_item.remove()
-    # Verification
-    api_fit.update()
-    with check_no_field():
-        api_fit.stance  # ruff:ignore[useless-expression]
-
-
-def test_subsystem(client):
-    eve_item_id = client.mk_eve_item()
-    client.create_sources()
-    api_sol = client.create_sol()
-    api_fit = api_sol.create_fit()
-    api_item = api_fit.add_subsystem(type_id=eve_item_id)
-    # Verification
-    api_fit.update()
-    assert len(api_fit.subsystems) == 1
-    assert api_item.id in api_fit.subsystems
-    # Action
-    api_item.remove()
-    # Verification
-    api_fit.update()
-    with check_no_field():
-        api_fit.subsystems  # ruff:ignore[useless-expression]
-
-
-def test_mod_high(client, consts):
+def test_item_mod_high(client, consts):
     eve_item_id = client.mk_eve_item()
     client.create_sources()
     api_sol = client.create_sol()
@@ -171,7 +214,7 @@ def test_mod_high(client, consts):
         api_fit.modules  # ruff:ignore[useless-expression]
 
 
-def test_mod_mid(client, consts):
+def test_item_mod_mid(client, consts):
     eve_item_id = client.mk_eve_item()
     client.create_sources()
     api_sol = client.create_sol()
@@ -190,7 +233,7 @@ def test_mod_mid(client, consts):
         api_fit.modules  # ruff:ignore[useless-expression]
 
 
-def test_mod_low(client, consts):
+def test_item_mod_low(client, consts):
     eve_item_id = client.mk_eve_item()
     client.create_sources()
     api_sol = client.create_sol()
@@ -209,7 +252,7 @@ def test_mod_low(client, consts):
         api_fit.modules  # ruff:ignore[useless-expression]
 
 
-def test_rig(client):
+def test_item_rig(client):
     eve_item_id = client.mk_eve_item()
     client.create_sources()
     api_sol = client.create_sol()
@@ -227,58 +270,72 @@ def test_rig(client):
         api_fit.rigs  # ruff:ignore[useless-expression]
 
 
-def test_drone(client):
-    eve_drone_id = client.mk_eve_drone()
+def test_item_ship(client):
+    eve_ship_id = client.mk_eve_ship()
     client.create_sources()
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
-    api_item = api_fit.add_drone(type_id=eve_drone_id)
+    api_item = api_fit.set_ship(type_id=eve_ship_id)
     # Verification
-    api_fit.update()
-    assert len(api_fit.drones) == 1
-    assert api_item.id in api_fit.drones
+    assert api_fit.update().ship.id == api_item.id
     # Action
     api_item.remove()
     # Verification
     api_fit.update()
     with check_no_field():
-        api_fit.drones  # ruff:ignore[useless-expression]
+        api_fit.ship  # ruff:ignore[useless-expression]
 
 
-def test_fighter(client):
-    eve_fighter_id = client.mk_eve_fighter()
-    client.create_sources()
-    api_sol = client.create_sol()
-    api_fit = api_sol.create_fit()
-    api_item = api_fit.add_fighter(type_id=eve_fighter_id)
-    # Verification
-    api_fit.update()
-    assert len(api_fit.fighters) == 1
-    assert api_item.id in api_fit.fighters
-    # Action
-    api_item.remove()
-    # Verification
-    api_fit.update()
-    with check_no_field():
-        api_fit.fighters  # ruff:ignore[useless-expression]
-
-
-def test_fw_effect(client):
+def test_item_skill(client):
     eve_item_id = client.mk_eve_item()
     client.create_sources()
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
-    api_item = api_fit.add_fw_effect(type_id=eve_item_id)
+    api_item = api_fit.add_skill(type_id=eve_item_id, level=1)
     # Verification
     api_fit.update()
-    assert len(api_fit.fw_effects) == 1
-    assert api_item.id in api_fit.fw_effects
+    assert len(api_fit.skills) == 1
+    assert api_item.id in api_fit.skills
     # Action
     api_item.remove()
     # Verification
     api_fit.update()
     with check_no_field():
-        api_fit.fw_effects  # ruff:ignore[useless-expression]
+        api_fit.skills  # ruff:ignore[useless-expression]
+
+
+def test_item_stance(client):
+    eve_item_id = client.mk_eve_item()
+    client.create_sources()
+    api_sol = client.create_sol()
+    api_fit = api_sol.create_fit()
+    api_item = api_fit.set_stance(type_id=eve_item_id)
+    # Verification
+    assert api_fit.update().stance.id == api_item.id
+    # Action
+    api_item.remove()
+    # Verification
+    api_fit.update()
+    with check_no_field():
+        api_fit.stance  # ruff:ignore[useless-expression]
+
+
+def test_item_subsystem(client):
+    eve_item_id = client.mk_eve_item()
+    client.create_sources()
+    api_sol = client.create_sol()
+    api_fit = api_sol.create_fit()
+    api_item = api_fit.add_subsystem(type_id=eve_item_id)
+    # Verification
+    api_fit.update()
+    assert len(api_fit.subsystems) == 1
+    assert api_item.id in api_fit.subsystems
+    # Action
+    api_item.remove()
+    # Verification
+    api_fit.update()
+    with check_no_field():
+        api_fit.subsystems  # ruff:ignore[useless-expression]
 
 
 def test_error_no_fit_full(client, consts):
