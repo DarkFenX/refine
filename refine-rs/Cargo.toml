@@ -12,6 +12,7 @@ rc = { package = "refine-core", path = "../refine-core" }
 # Non-local
 derive_more = { version = ">=2.1.1", features = ["display"] }
 fixedstr = { version = ">=0.5.11", features = ["fstr"] }
+futures-util = { version = ">=0.3.34", default-features = false, features = ["alloc"] }
 parking_lot = { version = ">=0.13.0", features = ["nightly"] }
 rustc-hash = ">=2.1.3"
 serde = { version = ">=1.0.229", features = ["derive"], optional = true }

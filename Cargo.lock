@@ -1688,6 +1688,7 @@ version = "0.1.0"
 dependencies = [
  "derive_more",
  "fixedstr",
+ "futures-util",
  "parking_lot",
  "refine-core",
  "rustc-hash",

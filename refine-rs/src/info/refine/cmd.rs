@@ -1,3 +1,5 @@
+use futures_util::StreamExt;
+
 use crate::{
     FitInfoMode, FleetInfoMode, ItemInfoMode, Refine, RefineInfo, SolInfo, SolInfoCmd, SolInfoExt, SolInfoMode,
     src::{SrcInfo, SrcInfoMode},
@@ -93,15 +95,21 @@ impl RefineInfoCmd {
                     .with_fleet_default(self.fleet_mode)
                     .with_fit_default(self.fit_mode)
                     .with_item_default(self.item_mode);
-                let mut sol_infos = Vec::with_capacity(guarded_inner_sols.len());
-                for (_, guarded_inner_sol) in guarded_inner_sols {
-                    // Solar systems are not touched, so that requesting refine info (which is not
-                    // directly related to involved sols) does not keep them alive
-                    if let Some(mut sol) = refine.internal_lock_sol(guarded_inner_sol, false).await {
-                        sol_infos.push(sol.get_info(sol_info_cmd.clone()).await);
+                // Solar systems are not touched, so that requesting refine info (which is not
+                // directly related to involved sols) does not keep them alive
+                let sol_info_futures = guarded_inner_sols.into_iter().map(|(_, guarded_inner_sol)| {
+                    let sol_info_cmd = sol_info_cmd.clone();
+                    async move {
+                        let mut sol = refine.internal_lock_sol(guarded_inner_sol, false).await?;
+                        Some(sol.internal_get_info(sol_info_cmd).await)
                     }
-                }
-                sol_infos
+                });
+                // At most as many sols are locked as there are threads to build their infos
+                futures_util::stream::iter(sol_info_futures)
+                    .buffer_unordered(refine.tpool.get_threads_standard())
+                    .filter_map(std::future::ready)
+                    .collect()
+                    .await
             }
         }
     }
