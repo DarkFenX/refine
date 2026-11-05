@@ -1,15 +1,15 @@
 import typing
 
 from fw import eve
+from fw.api.types import Src
 from fw.consts import ApiSrcInfoMode
 from fw.request import Request
-from fw.util import Default, conditional_insert
+from fw.util import Absent, Default, conditional_insert
 from .base import ApiClientBase
 
 if typing.TYPE_CHECKING:
     from fw.aliases import JsonPredicate
     from fw.eve.aliases import DataPrimHook, DataStrHook
-    from fw.util import Absent
 
 
 class ApiClientSrc(ApiClientBase, eve.EveDataManager, eve.EveDataServer):
@@ -21,10 +21,16 @@ class ApiClientSrc(ApiClientBase, eve.EveDataManager, eve.EveDataServer):
     def create_source_request(
             self, *,
             data: eve.EveObjects | type[Default],
+            make_default: bool | type[Absent],
             src_info_mode: ApiSrcInfoMode | type[Absent],
     ) -> Request:
         if data is Default:
             data = self._get_default_eve_data()
+        body = {
+            'data_version': '1',
+            'data_format': 'phb',
+            'data_base_url': f'{self._eve_data_server_base_url}/{data.alias}/'}
+        conditional_insert(container=body, path=['make_default'], value=make_default)
         params = {}
         conditional_insert(container=params, path=['src'], value=src_info_mode)
         return Request(
@@ -32,21 +38,19 @@ class ApiClientSrc(ApiClientBase, eve.EveDataManager, eve.EveDataServer):
             method='POST',
             url=f'{self._base_url}/src/{data.alias}',
             params=params,
-            json={
-                'data_version': '1',
-                'data_format': 'phb',
-                'data_base_url': f'{self._eve_data_server_base_url}/{data.alias}/'})
+            json=body)
 
     def create_source(
             self, *,
             data: eve.EveObjects | type[Default] = Default,
+            make_default: bool | type[Absent] = Absent,
             src_info_mode: ApiSrcInfoMode | type[Absent] = ApiSrcInfoMode.full,
             status_code: int = 201,
             cleanup_check: bool = True,
             json_predicate: JsonPredicate = None,
             hook_data_prim: DataPrimHook | None = None,
             hook_data_str: DataStrHook | None = None,
-    ) -> None:
+    ) -> Src | None:
         if data is Default:
             data = self._get_default_eve_data()
         self._setup_eve_data_server(
@@ -55,12 +59,28 @@ class ApiClientSrc(ApiClientBase, eve.EveDataManager, eve.EveDataServer):
             hook_data_str=hook_data_str)
         resp = self.create_source_request(
             data=data,
+            make_default=make_default,
             src_info_mode=src_info_mode).send()
         resp.check(status_code=status_code, json_predicate=json_predicate)
         if status_code == 201:
             if cleanup_check:
                 assert len(resp.json().get('warnings', {}).get('adg_cleanup', ())) == 0
             self.__created_data_aliases.add(data.alias)
+            return Src(client=self, data=resp.json())
+        return None
+
+    def get_source_request(
+            self, *,
+            src_alias: str,
+            src_info_mode: ApiSrcInfoMode | type[Absent],
+    ) -> Request:
+        params = {}
+        conditional_insert(container=params, path=['src'], value=src_info_mode)
+        return Request(
+            client=self,
+            method='GET',
+            url=f'{self._base_url}/src/{src_alias}',
+            params=params)
 
     def remove_source_request(self, *, src_alias: str) -> Request:
         return Request(

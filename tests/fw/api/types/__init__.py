@@ -1,4 +1,5 @@
 from .sol import Sol
+from .src import Src
 from .stats import (
     FitStatsOptions,
     FleetStatsOptions,

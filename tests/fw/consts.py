@@ -835,6 +835,7 @@ class ApiStatItemState(StrEnum):
 
 @unique
 class ApiSrcInfoMode(StrEnum):
+    alias = 'alias'
     partial = 'partial'
     full = 'full'
 

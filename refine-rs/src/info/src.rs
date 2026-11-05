@@ -1,12 +1,14 @@
 use crate::{
     SrcAlias,
     src::{SrcOrigin, SrcWarnings},
+    svc::SrcInnerGuarded,
 };
 
 #[cfg_attr(feature = "serde", derive(serde::Deserialize), serde(rename_all = "snake_case"))]
 #[derive(Copy, Clone, Default)]
 pub enum SrcInfoMode {
     #[default]
+    Alias,
     Partial,
     Full,
 }
@@ -15,10 +17,6 @@ pub enum SrcInfoMode {
 #[derive(Clone)]
 pub struct SrcInfo {
     pub alias: SrcAlias,
-    /// Time when the request to create the source was received, not when it has been completed.
-    #[cfg_attr(feature = "serde", serde(serialize_with = "custom_serde::format_time"))]
-    pub time_created: time::UtcDateTime,
-    pub origin: SrcOrigin,
     #[cfg_attr(feature = "serde", serde(flatten, skip_serializing_if = "Option::is_none"))]
     pub extended: Option<SrcInfoExt>,
 }
@@ -26,6 +24,11 @@ pub struct SrcInfo {
 #[cfg_attr(feature = "serde", derive(serde::Serialize))]
 #[derive(Clone)]
 pub struct SrcInfoExt {
+    /// Time when the request to create the source was received, not when it has been completed.
+    #[cfg_attr(feature = "serde", serde(serialize_with = "custom_serde::format_time"))]
+    pub time_created: time::UtcDateTime,
+    pub origin: SrcOrigin,
+    pub default: bool,
     #[cfg_attr(feature = "serde", serde(skip_serializing_if = "SrcWarnings::is_empty"))]
     pub warnings: SrcWarnings,
 }
@@ -34,21 +37,23 @@ pub struct SrcInfoExt {
 // Conversions
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl SrcInfo {
-    pub(crate) fn from_alias_and_core(
-        alias: SrcAlias,
-        time_created: time::UtcDateTime,
-        core_info: &rc::src::SrcInfo,
-        src_info_mode: SrcInfoMode,
-    ) -> Self {
+    pub(crate) fn from_inner(inner_src: &SrcInnerGuarded, is_default: bool, src_info_mode: SrcInfoMode) -> Self {
         Self {
-            alias,
-            time_created,
-            origin: core_info.origin.clone(),
+            alias: inner_src.get_alias(),
             extended: match src_info_mode {
-                SrcInfoMode::Partial => None,
-                SrcInfoMode::Full => Some(SrcInfoExt {
-                    warnings: core_info.warnings.clone(),
-                }),
+                SrcInfoMode::Alias => None,
+                SrcInfoMode::Partial | SrcInfoMode::Full => {
+                    let core_info = inner_src.get_core().get_info();
+                    Some(SrcInfoExt {
+                        time_created: inner_src.get_time_created(),
+                        origin: core_info.origin.clone(),
+                        default: is_default,
+                        warnings: match src_info_mode {
+                            SrcInfoMode::Alias | SrcInfoMode::Partial => SrcWarnings::default(),
+                            SrcInfoMode::Full => core_info.warnings.clone(),
+                        },
+                    })
+                }
             },
         }
     }

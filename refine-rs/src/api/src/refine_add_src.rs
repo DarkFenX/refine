@@ -35,12 +35,8 @@ impl Refine {
         let inner_src = self
             .internal_add_src(alias, make_default, ed_handler, ad_cacher)
             .await?;
-        let src_info = SrcInfo::from_alias_and_core(
-            inner_src.get_alias(),
-            inner_src.get_time_created(),
-            inner_src.get_core().get_info(),
-            info_mode,
-        );
+        let is_default = self.src_alias_data.read().is_default(&inner_src);
+        let src_info = SrcInfo::from_inner(&inner_src, is_default, info_mode);
         Ok((Src::new(self, inner_src), src_info))
     }
     async fn internal_add_src(

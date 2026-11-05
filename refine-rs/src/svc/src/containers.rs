@@ -35,6 +35,11 @@ impl SrcAliasData {
             default: None,
         }
     }
+    pub(crate) fn is_default(&self, inner_src: &SrcInnerGuarded) -> bool {
+        self.default
+            .as_ref()
+            .is_some_and(|default_inner_src| default_inner_src.ptr_eq(inner_src))
+    }
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////

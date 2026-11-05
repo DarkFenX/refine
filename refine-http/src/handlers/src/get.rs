@@ -1,4 +1,5 @@
 use axum::{
+    Json,
     extract::{Path, Query, State},
     http::StatusCode,
     response::IntoResponse,
@@ -14,7 +15,7 @@ pub(crate) async fn get_source(
     WithRejection(Query(params), _): WithRejection<Query<SrcParams>, ApiError>,
 ) -> impl IntoResponse {
     match internal_get_source(state, src_alias, params).await {
-        Ok(..) => StatusCode::OK.into_response(),
+        Ok(src_info) => (StatusCode::OK, Json(src_info)).into_response(),
         Err(err) => err.into_response(),
     }
 }

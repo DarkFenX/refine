@@ -6,11 +6,7 @@ use crate::{
 impl Src<'_> {
     #[tracing::instrument(name = "src-inf", level = "error", skip_all)]
     pub async fn get_info(&self, info_mode: SrcInfoMode) -> SrcInfo {
-        SrcInfo::from_alias_and_core(
-            self.inner.get_alias(),
-            self.inner.get_time_created(),
-            self.inner.get_core().get_info(),
-            info_mode,
-        )
+        let is_default = self.refine.src_alias_data.read().is_default(&self.inner);
+        SrcInfo::from_inner(&self.inner, is_default, info_mode)
     }
 }

@@ -9,11 +9,9 @@ impl Refine {
             Some(inner_sol) => inner_sol,
             None => return Err(SrcRemoveError::SrcNotFound(*alias)),
         };
-        if let Some(default_inner_sol) = alias_data.default.as_ref()
-            && extracted_inner_sol.ptr_eq(default_inner_sol)
-        {
+        if alias_data.is_default(&extracted_inner_sol) {
             alias_data.default = None;
-        };
+        }
         Ok(())
     }
 }
