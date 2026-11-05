@@ -6,28 +6,44 @@ use crate::{SolId, SrcAlias};
 // Inner guarded
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 #[derive(Clone)]
-pub(crate) struct SolInnerGuarded(Arc<tokio::sync::Mutex<SolInner>>);
+pub(crate) struct SolInnerGuarded {
+    inner: Arc<tokio::sync::Mutex<SolInner>>,
+    // Source alias is shared with inner sol, and is available without waiting for requests which
+    // hold the inner sol lock
+    src_alias: Arc<parking_lot::Mutex<SrcAlias>>,
+}
 impl SolInnerGuarded {
     pub(crate) fn new(id: SolId, src_alias: SrcAlias, core: rc::Core) -> Self {
-        Self(Arc::new(tokio::sync::Mutex::new(SolInner::new(id, src_alias, core))))
+        let src_alias = Arc::new(parking_lot::Mutex::new(src_alias));
+        Self {
+            inner: Arc::new(tokio::sync::Mutex::new(SolInner::new(id, src_alias.clone(), core))),
+            src_alias,
+        }
+    }
+    pub(crate) fn get_src_alias(&self) -> SrcAlias {
+        *self.src_alias.lock()
     }
     pub(in crate::svc) fn try_lock(&self) -> Result<tokio::sync::MutexGuard<'_, SolInner>, tokio::sync::TryLockError> {
-        self.0.try_lock()
+        self.inner.try_lock()
     }
-    /// Like regular lock, but updates timestamp on inner sol during drop
-    pub(crate) async fn into_lock_touch_owned(self) -> SolOwnedMutexGuard {
+    /// Like regular lock, but updates timestamp on inner sol during drop if requested
+    pub(crate) async fn into_lock_owned(self, touch: bool) -> SolOwnedMutexGuard {
         SolOwnedMutexGuard {
-            guard: self.0.lock_owned().await,
+            guard: self.inner.lock_owned().await,
+            touch,
         }
     }
 }
 
 pub(crate) struct SolOwnedMutexGuard {
     guard: tokio::sync::OwnedMutexGuard<SolInner>,
+    touch: bool,
 }
 impl Drop for SolOwnedMutexGuard {
     fn drop(&mut self) {
-        self.guard.touch();
+        if self.touch {
+            self.guard.touch();
+        }
     }
 }
 impl std::ops::Deref for SolOwnedMutexGuard {
@@ -47,7 +63,7 @@ impl std::ops::DerefMut for SolOwnedMutexGuard {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 pub(crate) struct SolInner {
     id: SolId,
-    src_alias: SrcAlias,
+    src_alias: Arc<parking_lot::Mutex<SrcAlias>>,
     last_accessed: Instant,
     // Set when the solar system is removed from the map, so that requests which were waiting for
     // its lock do not work on it
@@ -55,7 +71,7 @@ pub(crate) struct SolInner {
     pub(super) core: SolCoreGuarded,
 }
 impl SolInner {
-    fn new(id: SolId, src_alias: SrcAlias, core: rc::Core) -> Self {
+    fn new(id: SolId, src_alias: Arc<parking_lot::Mutex<SrcAlias>>, core: rc::Core) -> Self {
         Self {
             id,
             src_alias,
@@ -68,10 +84,10 @@ impl SolInner {
         self.id
     }
     pub(crate) fn get_src_alias(&self) -> SrcAlias {
-        self.src_alias
+        *self.src_alias.lock()
     }
     pub(crate) fn set_src_alias(&mut self, src_alias: SrcAlias) {
-        self.src_alias = src_alias
+        *self.src_alias.lock() = src_alias
     }
     fn touch(&mut self) {
         self.last_accessed = Instant::now();

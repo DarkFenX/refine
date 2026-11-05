@@ -1,4 +1,4 @@
-use crate::{Refine, Sol, SolId};
+use crate::{Refine, Sol, SolId, svc::SolInnerGuarded};
 
 impl Refine {
     #[tracing::instrument(name = "sol-get", level = "error", skip_all)]
@@ -7,17 +7,27 @@ impl Refine {
             Some(sol) => sol,
             None => return Err(SolGetError::SolNotFound(id)),
         };
-        let mut sol = Sol::new(self, guarded_inner_sol).await;
+        match self.internal_lock_sol(guarded_inner_sol, true).await {
+            Some(sol) => Ok(sol),
+            None => Err(SolGetError::SolNotFound(id)),
+        }
+    }
+    pub(in crate::api) async fn internal_lock_sol(
+        &self,
+        guarded_inner_sol: SolInnerGuarded,
+        touch: bool,
+    ) -> Option<Sol<'_>> {
+        let mut sol = Sol::new(self, guarded_inner_sol, touch).await;
         // Solar system could be removed while the request was waiting for its lock
         if sol.inner.is_closed() {
-            return Err(SolGetError::SolNotFound(id));
+            return None;
         }
         if sol.inner.is_poisoned() {
             tracing::error!("discarding solar system poisoned by a panic");
             self.id_sol_map.remove(&mut sol.inner);
-            return Err(SolGetError::SolNotFound(id));
+            return None;
         }
-        Ok(sol)
+        Some(sol)
     }
 }
 

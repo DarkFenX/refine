@@ -17,10 +17,10 @@ impl<'r> Sol<'r> {
 }
 // Private part
 impl<'r> Sol<'r> {
-    pub(super) async fn new(refine: &'r Refine, inner: SolInnerGuarded) -> Self {
+    pub(super) async fn new(refine: &'r Refine, inner: SolInnerGuarded, touch: bool) -> Self {
         Self {
             refine,
-            inner: inner.into_lock_touch_owned().await,
+            inner: inner.into_lock_owned(touch).await,
         }
     }
 }

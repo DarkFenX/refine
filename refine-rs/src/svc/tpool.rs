@@ -17,6 +17,18 @@ impl ThreadPool {
                 .unwrap(),
         }
     }
+    pub(crate) fn get_threads_standard(&self) -> usize {
+        self.standard.current_num_threads()
+    }
+    pub(crate) fn get_threads_heavy(&self) -> usize {
+        self.heavy.current_num_threads()
+    }
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Execution
+////////////////////////////////////////////////////////////////////////////////////////////////////
+impl ThreadPool {
     pub(crate) async fn exec_standard<F, R>(&self, func: F) -> R
     where
         F: FnOnce() -> R + Send + 'static,

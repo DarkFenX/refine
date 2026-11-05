@@ -67,6 +67,18 @@ impl SolInfo {
 }
 
 impl SolInfoExt {
+    pub(crate) fn from_src_alias(src_alias: SrcAlias) -> Self {
+        Self {
+            src_alias,
+            fleets: Vec::new(),
+            fits: Vec::new(),
+            sw_effects: Vec::new(),
+            proj_effects: Vec::new(),
+            sec_zone: None,
+            default_spool: None,
+            default_incoming_dps: None,
+        }
+    }
     pub(in crate::info) fn try_from_core(
         src_alias: SrcAlias,
         core_sol: &mut rc::Sol,
@@ -77,16 +89,7 @@ impl SolInfoExt {
     ) -> Option<Self> {
         match sol_info_mode {
             SolInfoMode::Id => None,
-            SolInfoMode::Partial => Some(Self {
-                src_alias,
-                fleets: Vec::new(),
-                fits: Vec::new(),
-                sw_effects: Vec::new(),
-                proj_effects: Vec::new(),
-                sec_zone: None,
-                default_spool: None,
-                default_incoming_dps: None,
-            }),
+            SolInfoMode::Partial => Some(Self::from_src_alias(src_alias)),
             SolInfoMode::Full => Some(Self {
                 src_alias,
                 // Force fits in fleets to use ID mode regardless of passed preference. The

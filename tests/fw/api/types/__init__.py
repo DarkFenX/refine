@@ -1,3 +1,4 @@
+from .refine import RefineInfo
 from .sol import Sol
 from .src import Src
 from .stats import (

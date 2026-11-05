@@ -26,9 +26,9 @@ pub use info::{
     FitInfoCmd, FitInfoCmdBr, FitInfoEnumCmdBr, FitInfoExt, FitInfoMode, FleetInfo, FleetInfoCmd, FleetInfoCmdBr,
     FleetInfoExt, FleetInfoMode, FwEffectInfo, FwEffectInfoExt, ImplantInfo, ImplantInfoExt, ItemInfo, ItemInfoCmd,
     ItemInfoCmdBr, ItemInfoMode, ItemMutationDormantInfo, ItemMutationEffectiveInfo, ItemMutationInfo, ModuleInfo,
-    ModuleInfoExt, ModuleRacks, ProjEffectInfo, ProjEffectInfoExt, ProjInfo, RangedProjInfo, RigInfo, RigInfoExt,
-    ServiceInfo, ServiceInfoExt, ShipInfo, ShipInfoExt, SideEffectInfo, SideEffectMod, SideEffectOp, SkillInfo,
-    SkillInfoExt, SolInfo, SolInfoCmd, SolInfoCmdBr, SolInfoEnumCmdBr, SolInfoExt, SolInfoMode, StanceInfo,
+    ModuleInfoExt, ModuleRacks, ProjEffectInfo, ProjEffectInfoExt, ProjInfo, RangedProjInfo, RefineInfo, RigInfo,
+    RigInfoExt, ServiceInfo, ServiceInfoExt, ShipInfo, ShipInfoExt, SideEffectInfo, SideEffectMod, SideEffectOp,
+    SkillInfo, SkillInfoExt, SolInfo, SolInfoCmd, SolInfoCmdBr, SolInfoEnumCmdBr, SolInfoExt, SolInfoMode, StanceInfo,
     StanceInfoExt, SubsystemInfo, SubsystemInfoExt, SwEffectInfo, SwEffectInfoExt,
 };
 pub use rc::{

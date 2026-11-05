@@ -21,6 +21,13 @@ impl SolMapGuarded {
     pub(crate) fn get(&self, id: &SolId) -> Option<SolInnerGuarded> {
         self.inner.read().get(id).cloned()
     }
+    pub(crate) fn get_all(&self) -> Vec<(SolId, SolInnerGuarded)> {
+        self.inner
+            .read()
+            .iter()
+            .map(|(id, inner_sol)| (*id, inner_sol.clone()))
+            .collect()
+    }
     pub(crate) fn add(&self, src_alias: SrcAlias, core: rc::Core) -> SolInnerGuarded {
         let mut id = SolId::new();
         let mut map = self.inner.write();

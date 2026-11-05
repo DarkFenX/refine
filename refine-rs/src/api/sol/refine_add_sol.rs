@@ -9,7 +9,7 @@ impl Refine {
         let core = self.tpool.exec_standard(move || ctl_cmd.execute(&core_src)).await;
         let src_alias = inner_src.get_alias();
         let inner_sol = self.id_sol_map.add(src_alias, core);
-        let sol = Sol::new(self, inner_sol).await;
+        let sol = Sol::new(self, inner_sol, true).await;
         Ok(sol)
     }
     #[tracing::instrument(name = "sol-add-inf", level = "error", skip_all)]
@@ -32,7 +32,7 @@ impl Refine {
             })
             .await;
         let inner_sol = self.id_sol_map.add(src_alias, core);
-        let sol = Sol::new(self, inner_sol).await;
+        let sol = Sol::new(self, inner_sol, true).await;
         let info = SolInfo::from_id_and_ext(sol.get_id(), info_ext);
         Ok((sol, info))
     }
