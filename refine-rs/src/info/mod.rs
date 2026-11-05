@@ -23,7 +23,7 @@ pub use item::{
     RigInfoExt, ServiceInfo, ServiceInfoExt, ShipInfo, ShipInfoExt, SideEffectInfo, SideEffectMod, SideEffectOp,
     SkillInfo, SkillInfoExt, StanceInfo, StanceInfoExt, SubsystemInfo, SubsystemInfoExt, SwEffectInfo, SwEffectInfoExt,
 };
-pub use refine::RefineInfo;
+pub use refine::{RefineInfo, RefineInfoCmd};
 pub(crate) use sol::SolInfoEnumCmd;
 pub use sol::{SolInfo, SolInfoCmd, SolInfoCmdBr, SolInfoEnumCmdBr, SolInfoEnumError, SolInfoExt, SolInfoMode};
 pub use src::{SrcInfo, SrcInfoExt, SrcInfoMode};

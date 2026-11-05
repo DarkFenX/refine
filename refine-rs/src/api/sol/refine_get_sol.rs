@@ -12,11 +12,7 @@ impl Refine {
             None => Err(SolGetError::SolNotFound(id)),
         }
     }
-    pub(in crate::api) async fn internal_lock_sol(
-        &self,
-        guarded_inner_sol: SolInnerGuarded,
-        touch: bool,
-    ) -> Option<Sol<'_>> {
+    pub(crate) async fn internal_lock_sol(&self, guarded_inner_sol: SolInnerGuarded, touch: bool) -> Option<Sol<'_>> {
         let mut sol = Sol::new(self, guarded_inner_sol, touch).await;
         // Solar system could be removed while the request was waiting for its lock
         if sol.inner.is_closed() {

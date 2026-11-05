@@ -22,6 +22,16 @@ pub(crate) struct RootParams {
     #[serde(default)]
     item: rs::ItemInfoMode,
 }
+impl RootParams {
+    fn into_cmd(self) -> rs::RefineInfoCmd {
+        rs::RefineInfoCmd::new()
+            .with_src(self.src)
+            .with_sol(self.sol)
+            .with_fleet(self.fleet)
+            .with_fit(self.fit)
+            .with_item(self.item)
+    }
+}
 
 #[derive(Serialize)]
 struct RootInfo {
@@ -36,12 +46,7 @@ pub(crate) async fn root(
     State(state): State<AppState>,
     WithRejection(Query(params), _): WithRejection<Query<RootParams>, ApiError>,
 ) -> impl IntoResponse {
-    let sol_info_cmd = rs::SolInfoCmd::new()
-        .with_sol(params.sol)
-        .with_fleet_default(params.fleet)
-        .with_fit_default(params.fit)
-        .with_item_default(params.item);
-    let refine_info = state.get_refine().get_info(params.src, sol_info_cmd).await;
+    let refine_info = state.get_refine().get_info(params.into_cmd()).await;
     let root_info = RootInfo {
         threads_async: tokio::runtime::Handle::current().metrics().num_workers(),
         threads_sync_standard: refine_info.threads_standard,

@@ -125,9 +125,6 @@ impl SolInfoCmdBr {
 // Execution
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl SolInfoCmd {
-    pub(crate) fn get_sol_mode(&self) -> SolInfoMode {
-        self.shared.sol_mode
-    }
     pub(crate) fn execute(self, sol_id: SolId, src_alias: SrcAlias, core_sol: &mut rc::Sol) -> SolInfo {
         SolInfo::from_ids_and_core(
             sol_id,
