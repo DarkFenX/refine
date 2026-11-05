@@ -3,5 +3,6 @@
 pub enum SolInfoMode {
     #[default]
     Id,
+    Partial,
     Full,
 }

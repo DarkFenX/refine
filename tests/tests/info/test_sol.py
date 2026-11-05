@@ -1,7 +1,7 @@
 """
 Here we check availability of info of various items via solar system info endpoint.
 """
-from fw import check_no_field
+from fw import Spool, check_no_field
 from fw.util import Absent
 
 
@@ -18,14 +18,98 @@ def test_error_params_malformed(client):
     api_sol.update(item_info_mode='random', status_code=400, json_predicate={'code': 'PRM-001', 'message': 're:.+'})
 
 
-def test_src_alias(client, consts):
+def test_mode_id(client, consts):
     eve_data = client.mk_eve_data()
     client.create_sources()
-    api_sol = client.create_sol(data=eve_data)
+    # Action
+    api_sol = client.create_sol(
+        data=eve_data,
+        sec_zone=consts.ApiSecZone.nullsec,
+        default_incoming_dps=(0, 0, 1, 1),
+        default_spool=Spool.cycles_to_api(count=1),
+        sol_info_mode=consts.ApiSolInfoMode.id)
+    # Verification
+    with check_no_field():
+        api_sol.src_alias  # ruff:ignore[useless-expression]
+    with check_no_field():
+        api_sol.sec_zone  # ruff:ignore[useless-expression]
+    with check_no_field():
+        api_sol.default_incoming_dps  # ruff:ignore[useless-expression]
+    with check_no_field():
+        api_sol.default_spool  # ruff:ignore[useless-expression]
+    # Action
+    api_sol.create_fit()
+    api_sol.update(sol_info_mode=consts.ApiSolInfoMode.id)
+    # Verification
+    with check_no_field():
+        api_sol.src_alias  # ruff:ignore[useless-expression]
+    with check_no_field():
+        api_sol.fits  # ruff:ignore[useless-expression]
+    with check_no_field():
+        api_sol.sec_zone  # ruff:ignore[useless-expression]
+    with check_no_field():
+        api_sol.default_incoming_dps  # ruff:ignore[useless-expression]
+    with check_no_field():
+        api_sol.default_spool  # ruff:ignore[useless-expression]
+
+
+def test_mode_partial(client, consts):
+    eve_data = client.mk_eve_data()
+    client.create_sources()
+    # Action
+    api_sol = client.create_sol(
+        data=eve_data,
+        sec_zone=consts.ApiSecZone.nullsec,
+        default_incoming_dps=(0, 0, 1, 1),
+        default_spool=Spool.cycles_to_api(count=1),
+        sol_info_mode=consts.ApiSolInfoMode.partial)
     # Verification
     assert api_sol.src_alias == eve_data.alias
-    assert api_sol.update(sol_info_mode=consts.ApiSolInfoMode.id).src_alias == eve_data.alias
-    assert api_sol.update(sol_info_mode=consts.ApiSolInfoMode.full).src_alias == eve_data.alias
+    with check_no_field():
+        api_sol.sec_zone  # ruff:ignore[useless-expression]
+    with check_no_field():
+        api_sol.default_incoming_dps  # ruff:ignore[useless-expression]
+    with check_no_field():
+        api_sol.default_spool  # ruff:ignore[useless-expression]
+    # Action
+    api_sol.create_fit()
+    api_sol.update(sol_info_mode=consts.ApiSolInfoMode.partial)
+    # Verification
+    assert api_sol.src_alias == eve_data.alias
+    with check_no_field():
+        api_sol.fits  # ruff:ignore[useless-expression]
+    with check_no_field():
+        api_sol.sec_zone  # ruff:ignore[useless-expression]
+    with check_no_field():
+        api_sol.default_incoming_dps  # ruff:ignore[useless-expression]
+    with check_no_field():
+        api_sol.default_spool  # ruff:ignore[useless-expression]
+
+
+def test_mode_full(client, consts):
+    eve_data = client.mk_eve_data()
+    client.create_sources()
+    # Action
+    api_sol = client.create_sol(
+        data=eve_data,
+        sec_zone=consts.ApiSecZone.nullsec,
+        default_incoming_dps=(0, 0, 1, 1),
+        default_spool=Spool.cycles_to_api(count=1),
+        sol_info_mode=consts.ApiSolInfoMode.full)
+    # Verification
+    assert api_sol.src_alias == eve_data.alias
+    assert api_sol.sec_zone == consts.ApiSecZone.nullsec
+    assert api_sol.default_incoming_dps == (0, 0, 1, 1)
+    assert api_sol.default_spool == Spool.cycles_to_api(count=1)
+    # Action
+    api_fit = api_sol.create_fit()
+    api_sol.update(sol_info_mode=consts.ApiSolInfoMode.full)
+    # Verification
+    assert api_sol.src_alias == eve_data.alias
+    assert api_sol.fits.keys() == {api_fit.id}
+    assert api_sol.sec_zone == consts.ApiSecZone.nullsec
+    assert api_sol.default_incoming_dps == (0, 0, 1, 1)
+    assert api_sol.default_spool == Spool.cycles_to_api(count=1)
 
 
 def test_fleet(client, consts):

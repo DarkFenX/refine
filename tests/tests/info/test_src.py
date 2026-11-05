@@ -9,6 +9,12 @@ if typing.TYPE_CHECKING:
     from fw.eve.containers import EvePrimitives
 
 
+def test_error_params_malformed(client):
+    api_src = client.create_source()
+    # Action & verification
+    api_src.update(src_info_mode='random', status_code=400, json_predicate={'code': 'PRM-001', 'message': 're:.+'})
+
+
 def test_mode_alias(client, consts):
     eve_data = client.mk_eve_data()
     # Action
@@ -120,9 +126,3 @@ def test_default(client, consts):
     assert api_src2.update().default is False
     assert api_src3.update().default is True
     assert api_src3.update(src_info_mode=consts.ApiSrcInfoMode.partial).default is True
-
-
-def test_error_params_malformed(client):
-    api_src = client.create_source()
-    # Action & verification
-    api_src.update(src_info_mode='random', status_code=400, json_predicate={'code': 'PRM-001', 'message': 're:.+'})

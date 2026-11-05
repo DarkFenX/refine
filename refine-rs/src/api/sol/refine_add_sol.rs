@@ -22,18 +22,18 @@ impl Refine {
         let inner_src = self.internal_get_src(src_alias)?;
         // Variables for move
         let core_src = inner_src.get_core().clone();
+        let src_alias = inner_src.get_alias();
         let (core, info_ext) = self
             .tpool
             .exec_standard(move || {
                 let mut core = ctl_cmd.execute(&core_src);
-                let info_ext = info_cmd.execute_into_info_ext(&mut core);
+                let info_ext = info_cmd.execute_into_info_ext(src_alias, &mut core);
                 (core, info_ext)
             })
             .await;
-        let src_alias = inner_src.get_alias();
         let inner_sol = self.id_sol_map.add(src_alias, core);
         let sol = Sol::new(self, inner_sol).await;
-        let info = SolInfo::from_ids_and_ext(sol.get_id(), sol.get_src_alias(), info_ext);
+        let info = SolInfo::from_id_and_ext(sol.get_id(), info_ext);
         Ok((sol, info))
     }
 }

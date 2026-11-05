@@ -136,8 +136,9 @@ impl SolInfoCmd {
             &self.item_mode,
         )
     }
-    pub(crate) fn execute_into_info_ext(self, core_sol: &mut rc::Sol) -> Option<SolInfoExt> {
+    pub(crate) fn execute_into_info_ext(self, src_alias: SrcAlias, core_sol: &mut rc::Sol) -> Option<SolInfoExt> {
         SolInfoExt::try_from_core(
+            src_alias,
             core_sol,
             self.shared.sol_mode,
             &self.fleet_mode,

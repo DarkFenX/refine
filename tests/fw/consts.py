@@ -843,6 +843,7 @@ class ApiSrcInfoMode(StrEnum):
 @unique
 class ApiSolInfoMode(StrEnum):
     id = 'id'
+    partial = 'partial'
     full = 'full'
 
 
