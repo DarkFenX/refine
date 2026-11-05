@@ -3,7 +3,7 @@ use crate::{
     misc::InfCount,
     svc::{
         Svc, SvcCtx,
-        cycle::{CseqMap, CycleOptionsSim, CyclingOptions, get_item_cseq_map},
+        cycle::{CseqCache, CycleOptionsSim, CyclingOptions, get_item_cseq_map},
         spool::ResolvedSpool,
     },
     ud::{UData, UItemId},
@@ -17,14 +17,14 @@ const CYCLE_COUNT_OPTIONS: CyclingOptions = CyclingOptions::Sim(CycleOptionsSim 
 impl Svc {
     pub(crate) fn get_item_charged_cycle_count(
         &mut self,
-        reuse_cseq_map: &mut CseqMap,
+        cseq_cache: &mut CseqCache,
         u_data: &UData,
         item_uid: UItemId,
     ) -> Option<InfCount> {
         let u_item = u_data.items.get(item_uid);
         let defeff_rid = u_item.get_r_item_base()?.defeff_rid?;
         if !get_item_cseq_map(
-            reuse_cseq_map,
+            cseq_cache,
             &SvcCtx::new(u_data, &self.eff_projs),
             &mut self.calc,
             item_uid,
@@ -33,7 +33,7 @@ impl Svc {
             return None;
         }
         let mut charged_cycles = Count::ZERO;
-        let cseq = reuse_cseq_map.get(&defeff_rid)?;
+        let cseq = cseq_cache.get(&defeff_rid)?;
         let cycle_parts = cseq.get_parts();
         for cycle_part in cycle_parts.iter() {
             // Current part uncharged means item is empty by this point

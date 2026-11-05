@@ -1,7 +1,6 @@
 use crate::{
     Fleet, ItemId,
     stats::{StatCritOptions, StatDmg, StatDmgApplied, StatDmgItemKinds, StatTimeOptions, err::StatFleetAppliedError},
-    svc::cycle::CseqMap,
 };
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -15,8 +14,9 @@ impl<'s> Fleet<'s> {
         crit_options: StatCritOptions,
     ) -> StatDmg {
         let u_fleet = self.sol.u_data.fleets.get(self.uid);
+        self.sol.reuse.cseq_cache.clear();
         self.sol.svc.get_stat_fits_dmg_raw(
-            &mut CseqMap::new(),
+            &mut self.sol.reuse.cseq_cache,
             &self.sol.u_data,
             u_fleet.iter_fits(),
             item_kinds,
@@ -33,8 +33,9 @@ impl<'s> Fleet<'s> {
     ) -> Result<StatDmgApplied, StatFleetAppliedError> {
         let projectee_uid = self.get_stat_applied_projectee_uid(projectee_item_id)?;
         let u_fleet = self.sol.u_data.fleets.get(self.uid);
+        self.sol.reuse.cseq_cache.clear();
         Ok(self.sol.svc.get_stat_fits_dmg_applied(
-            &mut CseqMap::new(),
+            &mut self.sol.reuse.cseq_cache,
             &self.sol.u_data,
             u_fleet.iter_fits(),
             item_kinds,

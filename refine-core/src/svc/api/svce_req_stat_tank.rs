@@ -1,19 +1,19 @@
 use crate::{
     DpsProfile, UnitInterval,
     stats::{StatEhp, StatErps, StatHp, StatResists, StatRps, StatTimeOptions},
-    svc::{Svc, SvcCtx, cycle::CseqMap, err::IntStatItemError, vast::Vast},
+    svc::{Svc, SvcCtx, cycle::CseqCache, err::IntStatItemError, vast::Vast},
     ud::{UData, UItemId},
 };
 
 impl Svc {
     pub(crate) fn get_stat_item_hp(
         &mut self,
-        reuse_cseq_map: &mut CseqMap,
+        cseq_cache: &mut CseqCache,
         u_data: &UData,
         item_uid: UItemId,
     ) -> Result<StatHp, IntStatItemError<!>> {
         self.vast.get_stat_item_hp(
-            reuse_cseq_map,
+            cseq_cache,
             &SvcCtx::new(u_data, &self.eff_projs),
             &mut self.calc,
             item_uid,
@@ -21,13 +21,13 @@ impl Svc {
     }
     pub(crate) fn get_stat_item_ehp(
         &mut self,
-        reuse_cseq_map: &mut CseqMap,
+        cseq_cache: &mut CseqCache,
         u_data: &UData,
         item_uid: UItemId,
         incoming_dps: Option<DpsProfile>,
     ) -> Result<StatEhp, IntStatItemError<!>> {
         self.vast.get_stat_item_ehp(
-            reuse_cseq_map,
+            cseq_cache,
             &SvcCtx::new(u_data, &self.eff_projs),
             &mut self.calc,
             item_uid,
@@ -36,12 +36,12 @@ impl Svc {
     }
     pub(crate) fn get_stat_item_wc_ehp(
         &mut self,
-        reuse_cseq_map: &mut CseqMap,
+        cseq_cache: &mut CseqCache,
         u_data: &UData,
         item_uid: UItemId,
     ) -> Result<StatEhp, IntStatItemError<!>> {
         self.vast.get_stat_item_wc_ehp(
-            reuse_cseq_map,
+            cseq_cache,
             &SvcCtx::new(u_data, &self.eff_projs),
             &mut self.calc,
             item_uid,
@@ -49,14 +49,14 @@ impl Svc {
     }
     pub(crate) fn get_stat_item_rps(
         &mut self,
-        reuse_cseq_map: &mut CseqMap,
+        cseq_cache: &mut CseqCache,
         u_data: &UData,
         item_uid: UItemId,
         time_options: StatTimeOptions,
         shield_perc: UnitInterval,
     ) -> Result<StatRps, IntStatItemError<!>> {
         self.vast.get_stat_item_rps(
-            reuse_cseq_map,
+            cseq_cache,
             &SvcCtx::new(u_data, &self.eff_projs),
             &mut self.calc,
             item_uid,
@@ -66,7 +66,7 @@ impl Svc {
     }
     pub(crate) fn get_stat_item_erps(
         &mut self,
-        reuse_cseq_map: &mut CseqMap,
+        cseq_cache: &mut CseqCache,
         u_data: &UData,
         item_uid: UItemId,
         incoming_dps: Option<DpsProfile>,
@@ -74,7 +74,7 @@ impl Svc {
         shield_perc: UnitInterval,
     ) -> Result<StatErps, IntStatItemError<!>> {
         self.vast.get_stat_item_erps(
-            reuse_cseq_map,
+            cseq_cache,
             &SvcCtx::new(u_data, &self.eff_projs),
             &mut self.calc,
             item_uid,

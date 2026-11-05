@@ -4,7 +4,6 @@ use crate::{
     misc::InfCount,
     sol::SolCore,
     stats::{StatItemChargeOptions, StatItemStateOptions},
-    svc::cycle::CseqMap,
     ud::{UItemId, UModule},
 };
 
@@ -51,14 +50,16 @@ impl<'s> Module<'s> {
     }
     pub fn get_charged_cycle_count(&mut self) -> Option<Count> {
         let savepoint = active_stat_prepare(self, StatItemChargeOptions::Exclude, StatItemStateOptions::Switch);
-        let result = match self
-            .sol
-            .svc
-            .get_item_charged_cycle_count(&mut CseqMap::new(), &self.sol.u_data, self.uid)
-        {
-            Some(InfCount::Count(count)) => Some(count),
-            _ => None,
-        };
+        self.sol.reuse.cseq_cache.clear();
+        let result =
+            match self
+                .sol
+                .svc
+                .get_item_charged_cycle_count(&mut self.sol.reuse.cseq_cache, &self.sol.u_data, self.uid)
+            {
+                Some(InfCount::Count(count)) => Some(count),
+                _ => None,
+            };
         self.sol.internal_tx_rollback(savepoint);
         result
     }

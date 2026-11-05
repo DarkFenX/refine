@@ -1,7 +1,6 @@
 use crate::{
     Fleet,
     stats::{StatMining, StatMiningItemKinds, StatMiningResourceKind, StatTimeOptions},
-    svc::cycle::CseqMap,
 };
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -15,8 +14,9 @@ impl<'s> Fleet<'s> {
         resource_kind: StatMiningResourceKind,
     ) -> StatMining {
         let u_fleet = self.sol.u_data.fleets.get(self.uid);
+        self.sol.reuse.cseq_cache.clear();
         self.sol.svc.get_stat_fits_mps(
-            &mut CseqMap::new(),
+            &mut self.sol.reuse.cseq_cache,
             &self.sol.u_data,
             u_fleet.iter_fits(),
             item_kinds,

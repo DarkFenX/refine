@@ -5,7 +5,6 @@ use crate::{
         StatMiningResourceKind, StatNeutItemKinds, StatOutRepItemKinds, StatOutReps, StatTimeOptions,
         err::StatFitAppliedError,
     },
-    svc::cycle::CseqMap,
 };
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -18,8 +17,9 @@ impl<'s> Fit<'s> {
         time_options: StatTimeOptions,
         crit_options: StatCritOptions,
     ) -> StatDmg {
+        self.sol.reuse.cseq_cache.clear();
         self.sol.svc.get_stat_fit_dmg_raw(
-            &mut CseqMap::new(),
+            &mut self.sol.reuse.cseq_cache,
             &self.sol.u_data,
             self.uid,
             item_kinds,
@@ -35,8 +35,9 @@ impl<'s> Fit<'s> {
         projectee_item_id: &ItemId,
     ) -> Result<StatDmgApplied, StatFitAppliedError> {
         let projectee_uid = self.sol.u_data.get_projectee_uid(projectee_item_id)?;
+        self.sol.reuse.cseq_cache.clear();
         Ok(self.sol.svc.get_stat_fit_dmg_applied(
-            &mut CseqMap::new(),
+            &mut self.sol.reuse.cseq_cache,
             &self.sol.u_data,
             self.uid,
             item_kinds,
@@ -51,8 +52,9 @@ impl<'s> Fit<'s> {
         time_options: StatTimeOptions,
         resource_kind: StatMiningResourceKind,
     ) -> StatMining {
+        self.sol.reuse.cseq_cache.clear();
         self.sol.svc.get_stat_fit_mps(
-            &mut CseqMap::new(),
+            &mut self.sol.reuse.cseq_cache,
             &self.sol.u_data,
             self.uid,
             item_kinds,
@@ -65,8 +67,9 @@ impl<'s> Fit<'s> {
         item_kinds: StatOutRepItemKinds,
         time_options: StatTimeOptions,
     ) -> StatOutReps {
+        self.sol.reuse.cseq_cache.clear();
         self.sol.svc.get_stat_fit_outgoing_rps(
-            &mut CseqMap::new(),
+            &mut self.sol.reuse.cseq_cache,
             &self.sol.u_data,
             self.uid,
             item_kinds,
@@ -81,8 +84,9 @@ impl<'s> Fit<'s> {
         projectee_item_id: &ItemId,
     ) -> Result<StatOutReps, StatFitAppliedError> {
         let projectee_uid = self.sol.u_data.get_projectee_uid(projectee_item_id)?;
+        self.sol.reuse.cseq_cache.clear();
         Ok(self.sol.svc.get_stat_fit_outgoing_rps(
-            &mut CseqMap::new(),
+            &mut self.sol.reuse.cseq_cache,
             &self.sol.u_data,
             self.uid,
             item_kinds,
@@ -91,9 +95,14 @@ impl<'s> Fit<'s> {
         ))
     }
     pub fn get_stat_outgoing_cps(&mut self, time_options: StatTimeOptions) -> PValue {
-        self.sol
-            .svc
-            .get_stat_fit_outgoing_cps(&mut CseqMap::new(), &self.sol.u_data, self.uid, time_options, None)
+        self.sol.reuse.cseq_cache.clear();
+        self.sol.svc.get_stat_fit_outgoing_cps(
+            &mut self.sol.reuse.cseq_cache,
+            &self.sol.u_data,
+            self.uid,
+            time_options,
+            None,
+        )
     }
     pub fn get_stat_outgoing_cps_applied(
         &mut self,
@@ -101,8 +110,9 @@ impl<'s> Fit<'s> {
         projectee_item_id: &ItemId,
     ) -> Result<PValue, StatFitAppliedError> {
         let projectee_uid = self.sol.u_data.get_projectee_uid(projectee_item_id)?;
+        self.sol.reuse.cseq_cache.clear();
         Ok(self.sol.svc.get_stat_fit_outgoing_cps(
-            &mut CseqMap::new(),
+            &mut self.sol.reuse.cseq_cache,
             &self.sol.u_data,
             self.uid,
             time_options,
@@ -110,8 +120,9 @@ impl<'s> Fit<'s> {
         ))
     }
     pub fn get_stat_outgoing_nps(&mut self, item_kinds: StatNeutItemKinds, time_options: StatTimeOptions) -> PValue {
+        self.sol.reuse.cseq_cache.clear();
         self.sol.svc.get_stat_fit_outgoing_nps(
-            &mut CseqMap::new(),
+            &mut self.sol.reuse.cseq_cache,
             &self.sol.u_data,
             self.uid,
             item_kinds,
@@ -126,8 +137,9 @@ impl<'s> Fit<'s> {
         projectee_item_id: &ItemId,
     ) -> Result<PValue, StatFitAppliedError> {
         let projectee_uid = self.sol.u_data.get_projectee_uid(projectee_item_id)?;
+        self.sol.reuse.cseq_cache.clear();
         Ok(self.sol.svc.get_stat_fit_outgoing_nps(
-            &mut CseqMap::new(),
+            &mut self.sol.reuse.cseq_cache,
             &self.sol.u_data,
             self.uid,
             item_kinds,

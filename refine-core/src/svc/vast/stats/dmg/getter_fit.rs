@@ -12,7 +12,7 @@ use crate::{
     },
     svc::{
         Calc, SvcCtx, Vast,
-        cycle::{CseqMap, CyclingOptions, get_item_cseq_map},
+        cycle::{CseqCache, CyclingOptions, get_item_cseq_map},
         vast::VastFitData,
     },
     ud::{UFitId, UItemId},
@@ -21,7 +21,7 @@ use crate::{
 impl Vast {
     pub(in crate::svc) fn get_stat_fits_dmg_raw(
         &self,
-        reuse_cseq_map: &mut CseqMap,
+        cseq_cache: &mut CseqCache,
         ctx: &SvcCtx,
         calc: &mut Calc,
         fit_uids: impl Iterator<Item = UFitId>,
@@ -33,7 +33,7 @@ impl Vast {
         let mut volley_normal = DmgKinds::default();
         let mut breacher_accum = RegularBreacherAccum::new();
         self.fill_stat_fits_dmg(
-            reuse_cseq_map,
+            cseq_cache,
             ctx,
             calc,
             &mut dps_normal,
@@ -53,7 +53,7 @@ impl Vast {
     }
     pub(in crate::svc) fn get_stat_fits_dmg_applied(
         &self,
-        reuse_cseq_map: &mut CseqMap,
+        cseq_cache: &mut CseqCache,
         ctx: &SvcCtx,
         calc: &mut Calc,
         fit_uids: impl Iterator<Item = UFitId>,
@@ -66,7 +66,7 @@ impl Vast {
         let mut volley_normal = DmgKinds::default();
         let mut breacher_accum = AppliedBreacherAccum::new(crit_options, projectee_uid);
         self.fill_stat_fits_dmg(
-            reuse_cseq_map,
+            cseq_cache,
             ctx,
             calc,
             &mut dps_normal,
@@ -86,7 +86,7 @@ impl Vast {
     }
     pub(in crate::svc) fn get_stat_fit_dmg_raw(
         &self,
-        reuse_cseq_map: &mut CseqMap,
+        cseq_cache: &mut CseqCache,
         ctx: &SvcCtx,
         calc: &mut Calc,
         fit_uid: UFitId,
@@ -95,7 +95,7 @@ impl Vast {
         crit_options: StatCritOptions,
     ) -> StatDmg {
         self.get_stat_fits_dmg_raw(
-            reuse_cseq_map,
+            cseq_cache,
             ctx,
             calc,
             once(fit_uid),
@@ -106,7 +106,7 @@ impl Vast {
     }
     pub(in crate::svc) fn get_stat_fit_dmg_applied(
         &self,
-        reuse_cseq_map: &mut CseqMap,
+        cseq_cache: &mut CseqCache,
         ctx: &SvcCtx,
         calc: &mut Calc,
         fit_uid: UFitId,
@@ -116,7 +116,7 @@ impl Vast {
         projectee_uid: UItemId,
     ) -> StatDmgApplied {
         self.get_stat_fits_dmg_applied(
-            reuse_cseq_map,
+            cseq_cache,
             ctx,
             calc,
             once(fit_uid),
@@ -128,7 +128,7 @@ impl Vast {
     }
     fn fill_stat_fits_dmg<I, B>(
         &self,
-        reuse_cseq_map: &mut CseqMap,
+        cseq_cache: &mut CseqCache,
         ctx: &SvcCtx,
         calc: &mut Calc,
         dps_normal: &mut DmgKinds<PValue>,
@@ -147,7 +147,7 @@ impl Vast {
         for fit_uid in fit_uids {
             let fit_data = self.get_fit_data(fit_uid);
             fit_data.fill_stat_dmg_normal(
-                reuse_cseq_map,
+                cseq_cache,
                 ctx,
                 calc,
                 dps_normal,
@@ -158,7 +158,7 @@ impl Vast {
                 cycling_options,
                 projectee_uid,
             );
-            fit_data.fill_stat_dmg_breacher(reuse_cseq_map, ctx, calc, breacher_accum, item_kinds, cycling_options);
+            fit_data.fill_stat_dmg_breacher(cseq_cache, ctx, calc, breacher_accum, item_kinds, cycling_options);
         }
     }
 }
@@ -166,7 +166,7 @@ impl Vast {
 impl VastFitData {
     fn fill_stat_dmg_normal(
         &self,
-        reuse_cseq_map: &mut CseqMap,
+        cseq_cache: &mut CseqCache,
         ctx: &SvcCtx,
         calc: &mut Calc,
         dps_normal: &mut DmgKinds<PValue>,
@@ -178,7 +178,7 @@ impl VastFitData {
         projectee_uid: Option<UItemId>,
     ) {
         for (&item_uid, item_data) in self.dmg_normal.iter() {
-            if !get_item_cseq_map(reuse_cseq_map, ctx, calc, item_uid, cycling_options) {
+            if !get_item_cseq_map(cseq_cache, ctx, calc, item_uid, cycling_options) {
                 continue;
             }
             let item = ctx.u_data.items.get(item_uid);
@@ -187,7 +187,7 @@ impl VastFitData {
                 if !item_kinds.resolve(item, effect) {
                     continue;
                 }
-                let Some(cseq) = reuse_cseq_map.get(&effect_rid) else {
+                let Some(cseq) = cseq_cache.get(&effect_rid) else {
                     continue;
                 };
                 add_normal_dmg(
@@ -208,7 +208,7 @@ impl VastFitData {
     }
     fn fill_stat_dmg_breacher<B>(
         &self,
-        reuse_cseq_map: &mut CseqMap,
+        cseq_cache: &mut CseqCache,
         ctx: &SvcCtx,
         calc: &mut Calc,
         breacher_accum: &mut B,
@@ -218,7 +218,7 @@ impl VastFitData {
         B: BreacherAccum,
     {
         for (&item_uid, item_data) in self.dmg_breacher.iter() {
-            if !get_item_cseq_map(reuse_cseq_map, ctx, calc, item_uid, cycling_options) {
+            if !get_item_cseq_map(cseq_cache, ctx, calc, item_uid, cycling_options) {
                 continue;
             };
             let item = ctx.u_data.items.get(item_uid);
@@ -227,7 +227,7 @@ impl VastFitData {
                 if !item_kinds.resolve(item, effect) {
                     continue;
                 }
-                let Some(cseq) = reuse_cseq_map.get(&effect_rid) else {
+                let Some(cseq) = cseq_cache.get(&effect_rid) else {
                     continue;
                 };
                 breacher_accum.add(ctx, calc, item_uid, effect, cseq, ospec);

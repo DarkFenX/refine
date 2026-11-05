@@ -2,7 +2,7 @@ use crate::{
     OptionalReload, PValue, UnitInterval, Value,
     svc::{
         Calc, SvcCtx, Vast,
-        cycle::CseqMap,
+        cycle::CseqCache,
         err::IntStatItemError,
         vast::stats::{
             cap::sim::{
@@ -18,7 +18,7 @@ use crate::{
 impl Vast {
     pub(in crate::svc) fn get_stat_item_cap_sim(
         &self,
-        reuse_cseq_map: &mut CseqMap,
+        cseq_cache: &mut CseqCache,
         ctx: &SvcCtx,
         calc: &mut Calc,
         item_uid: UItemId,
@@ -37,7 +37,7 @@ impl Vast {
         let start_cap = max_cap * cap_perc.into_pvalue();
         let fit_data = self.get_fit_data(ship.get_fit_uid());
         let (events, injector_events) = prepare_events(
-            reuse_cseq_map,
+            cseq_cache,
             ctx,
             calc,
             self,

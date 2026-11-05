@@ -1,14 +1,14 @@
 use crate::{
     PValue,
     stats::{StatOutRepItemKinds, StatOutReps, StatTimeOptions},
-    svc::{Svc, SvcCtx, cycle::CseqMap, err::IntStatItemError, vast::Vast},
+    svc::{Svc, SvcCtx, cycle::CseqCache, err::IntStatItemError, vast::Vast},
     ud::{UData, UFitId, UItemId},
 };
 
 impl Svc {
     pub(crate) fn get_stat_fits_outgoing_rps(
         &mut self,
-        reuse_cseq_map: &mut CseqMap,
+        cseq_cache: &mut CseqCache,
         u_data: &UData,
         fit_uids: impl Iterator<Item = UFitId>,
         item_kinds: StatOutRepItemKinds,
@@ -16,7 +16,7 @@ impl Svc {
         projectee_uid: Option<UItemId>,
     ) -> StatOutReps {
         self.vast.get_stat_fits_outgoing_rps(
-            reuse_cseq_map,
+            cseq_cache,
             &SvcCtx::new(u_data, &self.eff_projs),
             &mut self.calc,
             fit_uids,
@@ -27,7 +27,7 @@ impl Svc {
     }
     pub(crate) fn get_stat_fit_outgoing_rps(
         &mut self,
-        reuse_cseq_map: &mut CseqMap,
+        cseq_cache: &mut CseqCache,
         u_data: &UData,
         fit_uid: UFitId,
         item_kinds: StatOutRepItemKinds,
@@ -35,7 +35,7 @@ impl Svc {
         projectee_uid: Option<UItemId>,
     ) -> StatOutReps {
         self.vast.get_stat_fit_outgoing_rps(
-            reuse_cseq_map,
+            cseq_cache,
             &SvcCtx::new(u_data, &self.eff_projs),
             &mut self.calc,
             fit_uid,
@@ -46,14 +46,14 @@ impl Svc {
     }
     pub(crate) fn get_stat_item_outgoing_rps(
         &mut self,
-        reuse_cseq_map: &mut CseqMap,
+        cseq_cache: &mut CseqCache,
         u_data: &UData,
         item_uid: UItemId,
         time_options: StatTimeOptions,
         projectee_uid: Option<UItemId>,
     ) -> Result<StatOutReps, IntStatItemError<!>> {
         Vast::get_stat_item_outgoing_rps(
-            reuse_cseq_map,
+            cseq_cache,
             &SvcCtx::new(u_data, &self.eff_projs),
             &mut self.calc,
             item_uid,
@@ -63,14 +63,14 @@ impl Svc {
     }
     pub(crate) fn get_stat_fits_outgoing_cps(
         &mut self,
-        reuse_cseq_map: &mut CseqMap,
+        cseq_cache: &mut CseqCache,
         u_data: &UData,
         fit_uids: impl Iterator<Item = UFitId>,
         time_options: StatTimeOptions,
         projectee_uid: Option<UItemId>,
     ) -> PValue {
         self.vast.get_stat_fits_outgoing_cps(
-            reuse_cseq_map,
+            cseq_cache,
             &SvcCtx::new(u_data, &self.eff_projs),
             &mut self.calc,
             fit_uids,
@@ -80,14 +80,14 @@ impl Svc {
     }
     pub(crate) fn get_stat_fit_outgoing_cps(
         &mut self,
-        reuse_cseq_map: &mut CseqMap,
+        cseq_cache: &mut CseqCache,
         u_data: &UData,
         fit_uid: UFitId,
         time_options: StatTimeOptions,
         projectee_uid: Option<UItemId>,
     ) -> PValue {
         self.vast.get_stat_fit_outgoing_cps(
-            reuse_cseq_map,
+            cseq_cache,
             &SvcCtx::new(u_data, &self.eff_projs),
             &mut self.calc,
             fit_uid,
@@ -97,14 +97,14 @@ impl Svc {
     }
     pub(crate) fn get_stat_item_outgoing_cps(
         &mut self,
-        reuse_cseq_map: &mut CseqMap,
+        cseq_cache: &mut CseqCache,
         u_data: &UData,
         item_uid: UItemId,
         time_options: StatTimeOptions,
         projectee_uid: Option<UItemId>,
     ) -> Result<PValue, IntStatItemError<!>> {
         Vast::get_stat_item_outgoing_cps(
-            reuse_cseq_map,
+            cseq_cache,
             &SvcCtx::new(u_data, &self.eff_projs),
             &mut self.calc,
             item_uid,

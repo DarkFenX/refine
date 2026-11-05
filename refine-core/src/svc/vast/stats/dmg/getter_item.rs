@@ -11,7 +11,7 @@ use crate::{
     },
     svc::{
         Calc, SvcCtx, Vast,
-        cycle::{CseqMap, CyclingOptions, get_item_cseq_map},
+        cycle::{CseqCache, CyclingOptions, get_item_cseq_map},
         err::IntStatItemError,
         vast::stats::item_checks::check_autocharge_charge_drone_fighter_module,
     },
@@ -20,7 +20,7 @@ use crate::{
 
 impl Vast {
     pub(in crate::svc) fn get_stat_item_dmg_raw(
-        reuse_cseq_map: &mut CseqMap,
+        cseq_cache: &mut CseqCache,
         ctx: &SvcCtx,
         calc: &mut Calc,
         item_uid: UItemId,
@@ -32,7 +32,7 @@ impl Vast {
         let mut volley_normal = DmgKinds::default();
         let mut breacher_accum = RegularBreacherAccum::new();
         Self::internal_get_stat_item_dmg_checked(
-            reuse_cseq_map,
+            cseq_cache,
             ctx,
             calc,
             &mut dps_normal,
@@ -51,7 +51,7 @@ impl Vast {
         })
     }
     pub(in crate::svc) fn get_stat_item_dmg_applied(
-        reuse_cseq_map: &mut CseqMap,
+        cseq_cache: &mut CseqCache,
         ctx: &SvcCtx,
         calc: &mut Calc,
         item_uid: UItemId,
@@ -64,7 +64,7 @@ impl Vast {
         let mut volley_normal = DmgKinds::default();
         let mut breacher_accum = AppliedBreacherAccum::new(crit_options, projectee_uid);
         Self::internal_get_stat_item_dmg_checked(
-            reuse_cseq_map,
+            cseq_cache,
             ctx,
             calc,
             &mut dps_normal,
@@ -83,7 +83,7 @@ impl Vast {
         })
     }
     fn internal_get_stat_item_dmg_checked<B>(
-        reuse_cseq_map: &mut CseqMap,
+        cseq_cache: &mut CseqCache,
         ctx: &SvcCtx,
         calc: &mut Calc,
         dps_normal: &mut DmgKinds<PValue>,
@@ -100,10 +100,10 @@ impl Vast {
     {
         check_autocharge_charge_drone_fighter_module(ctx.u_data, item_uid)?;
         let cycling_options = CyclingOptions::from_time_options(time_options);
-        if !get_item_cseq_map(reuse_cseq_map, ctx, calc, item_uid, cycling_options) {
+        if !get_item_cseq_map(cseq_cache, ctx, calc, item_uid, cycling_options) {
             return Ok(());
         }
-        for (&effect_rid, cseq) in reuse_cseq_map.iter() {
+        for (&effect_rid, cseq) in cseq_cache.iter() {
             let effect = ctx.u_data.r_data.get_effect_by_rid(effect_rid);
             if let Some(ospec) = &effect.normal_dmg {
                 add_normal_dmg(
@@ -127,7 +127,7 @@ impl Vast {
         if charge_options.is_enabled() {
             for charge_uid in ctx.u_data.items.get(item_uid).iter_charges() {
                 let _ = Self::internal_get_stat_item_dmg_checked(
-                    reuse_cseq_map,
+                    cseq_cache,
                     ctx,
                     calc,
                     dps_normal,

@@ -5,7 +5,7 @@ use crate::{
     stats::{StatCritOptions, StatOutRepItemKinds, StatTimeOptions},
     svc::{
         Calc, SvcCtx, Vast,
-        cycle::{CseqMap, CyclingOptions, get_item_cseq_map},
+        cycle::{CseqCache, CyclingOptions, get_item_cseq_map},
         vast::aggr::{SeqAccum, aggr_proj_burst, aggr_proj_looped, aggr_proj_time},
     },
     ud::{UFitId, UItemId},
@@ -15,7 +15,7 @@ use crate::{
 impl Vast {
     pub(in crate::svc) fn get_stat_fits_outgoing_cps(
         &self,
-        reuse_cseq_map: &mut CseqMap,
+        cseq_cache: &mut CseqCache,
         ctx: &SvcCtx,
         calc: &mut Calc,
         fit_uids: impl Iterator<Item = UFitId>,
@@ -25,7 +25,7 @@ impl Vast {
         fit_uids
             .map(|fit_uid| {
                 get_ocps(
-                    reuse_cseq_map,
+                    cseq_cache,
                     ctx,
                     calc,
                     StatOutRepItemKinds::new(true),
@@ -38,7 +38,7 @@ impl Vast {
     }
     pub(in crate::svc) fn get_stat_fit_outgoing_cps(
         &self,
-        reuse_cseq_map: &mut CseqMap,
+        cseq_cache: &mut CseqCache,
         ctx: &SvcCtx,
         calc: &mut Calc,
         fit_uid: UFitId,
@@ -47,7 +47,7 @@ impl Vast {
     ) -> PValue {
         let fit_data = self.get_fit_data(fit_uid);
         get_ocps(
-            reuse_cseq_map,
+            cseq_cache,
             ctx,
             calc,
             StatOutRepItemKinds::new(true),
@@ -59,7 +59,7 @@ impl Vast {
 }
 
 fn get_ocps(
-    reuse_cseq_map: &mut CseqMap,
+    cseq_cache: &mut CseqCache,
     ctx: &SvcCtx,
     calc: &mut Calc,
     item_kinds: StatOutRepItemKinds,
@@ -70,7 +70,7 @@ fn get_ocps(
     let mut orps = PValue::ZERO;
     let cycling_options = CyclingOptions::from_time_options(time_options);
     for (&item_uid, item_data) in fit_data.iter() {
-        if !get_item_cseq_map(reuse_cseq_map, ctx, calc, item_uid, cycling_options) {
+        if !get_item_cseq_map(cseq_cache, ctx, calc, item_uid, cycling_options) {
             continue;
         }
         let u_item = ctx.u_data.items.get(item_uid);
@@ -78,7 +78,7 @@ fn get_ocps(
             continue;
         }
         for (&effect_rid, ospec) in item_data.iter() {
-            let Some(cseq) = reuse_cseq_map.get(&effect_rid) else {
+            let Some(cseq) = cseq_cache.get(&effect_rid) else {
                 continue;
             };
             let effect = ctx.u_data.r_data.get_effect_by_rid(effect_rid);

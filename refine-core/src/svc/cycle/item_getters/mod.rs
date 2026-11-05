@@ -1,12 +1,12 @@
+pub(crate) use cache::CseqCache;
 pub(in crate::svc) use item::get_item_cseq_map;
-pub(crate) use map::CseqMap;
 pub(in crate::svc) use shared::{CycleOptionsSim, CyclingOptions};
 
+mod cache;
 mod item;
 mod item_autocharge;
 mod item_charge;
 mod item_drone;
 mod item_fighter;
 mod item_module;
-mod map;
 mod shared;

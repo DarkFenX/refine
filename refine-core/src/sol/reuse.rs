@@ -1,4 +1,4 @@
-use crate::ud::UEffectUpdates;
+use crate::{svc::cycle::CseqCache, ud::UEffectUpdates};
 
 /// Containers reused across operations on a solar system, to avoid reallocating them.
 pub(crate) struct SolReuse {
@@ -12,12 +12,15 @@ pub(crate) struct SolReuse {
     /// Secondary effect updates container, for updates which have to be processed while the primary
     /// one still holds data which is going to be read.
     pub(crate) eupdates_secondary: UEffectUpdates,
+    /// Keeps calculated cycle sequences, since they are reusable for some getters (mostly stats)
+    pub(crate) cseq_cache: CseqCache,
 }
 impl SolReuse {
     pub(crate) fn new() -> Self {
         Self {
             eupdates: UEffectUpdates::new(),
             eupdates_secondary: UEffectUpdates::new(),
+            cseq_cache: CseqCache::new(),
         }
     }
 }

@@ -9,7 +9,7 @@ use crate::{
     stats::StatCritOptions,
     svc::{
         Calc, SvcCtx, Vast,
-        cycle::{CseqMap, CycleOptionsSim, CyclingOptions, get_item_cseq_map},
+        cycle::{CseqCache, CycleOptionsSim, CyclingOptions, get_item_cseq_map},
         vast::{
             VastFitData,
             aggr::{aggr_local_iter, aggr_proj_iter},
@@ -24,7 +24,7 @@ use crate::{
 };
 
 pub(in crate::svc::vast::stats::cap::sim) fn prepare_events(
-    reuse_cseq_map: &mut CseqMap,
+    cseq_cache: &mut CseqCache,
     ctx: &SvcCtx,
     calc: &mut Calc,
     vast: &Vast,
@@ -36,17 +36,9 @@ pub(in crate::svc::vast::stats::cap::sim) fn prepare_events(
 ) -> (QuaternaryHeap<CapSimEvent>, Vec<CapSimEvent>) {
     let cycling_options = CyclingOptions::Sim(CycleOptionsSim { optional_reloads, .. });
     let mut merger = Merger::new();
-    fill_consumers(
-        reuse_cseq_map,
-        ctx,
-        calc,
-        &mut merger,
-        cycling_options,
-        stagger,
-        fit_data,
-    );
+    fill_consumers(cseq_cache, ctx, calc, &mut merger, cycling_options, stagger, fit_data);
     fill_nosfs(
-        reuse_cseq_map,
+        cseq_cache,
         ctx,
         calc,
         &mut merger,
@@ -56,7 +48,7 @@ pub(in crate::svc::vast::stats::cap::sim) fn prepare_events(
         fit_data,
     );
     fill_incoming_neuts(
-        reuse_cseq_map,
+        cseq_cache,
         ctx,
         calc,
         &mut merger,
@@ -66,7 +58,7 @@ pub(in crate::svc::vast::stats::cap::sim) fn prepare_events(
         cap_item_uid,
     );
     fill_incoming_transfers(
-        reuse_cseq_map,
+        cseq_cache,
         ctx,
         calc,
         &mut merger,
@@ -78,19 +70,12 @@ pub(in crate::svc::vast::stats::cap::sim) fn prepare_events(
     let mut events = QuaternaryHeap::new();
     merger.into_sim_events(&mut events);
     let mut injector_events = Vec::new();
-    fill_injectors(
-        reuse_cseq_map,
-        ctx,
-        calc,
-        &mut injector_events,
-        cycling_options,
-        fit_data,
-    );
+    fill_injectors(cseq_cache, ctx, calc, &mut injector_events, cycling_options, fit_data);
     (events, injector_events)
 }
 
 fn fill_consumers(
-    reuse_cseq_map: &mut CseqMap,
+    cseq_cache: &mut CseqCache,
     ctx: &SvcCtx,
     calc: &mut Calc,
     merger: &mut Merger,
@@ -101,11 +86,11 @@ fn fill_consumers(
     let direction = Direction::Loss;
     let mut stagger_map = RMapVec::new();
     for (&item_uid, item_data) in fit_data.cap_consumers.iter() {
-        if !get_item_cseq_map(reuse_cseq_map, ctx, calc, item_uid, cycling_options) {
+        if !get_item_cseq_map(cseq_cache, ctx, calc, item_uid, cycling_options) {
             continue;
         }
         for (&effect_rid, ospec) in item_data.iter() {
-            let Some(cseq) = reuse_cseq_map.get(&effect_rid) else {
+            let Some(cseq) = cseq_cache.get(&effect_rid) else {
                 continue;
             };
             let effect = ctx.u_data.r_data.get_effect_by_rid(effect_rid);
@@ -122,7 +107,7 @@ fn fill_consumers(
 }
 
 fn fill_nosfs(
-    reuse_cseq_map: &mut CseqMap,
+    cseq_cache: &mut CseqCache,
     ctx: &SvcCtx,
     calc: &mut Calc,
     merger: &mut Merger,
@@ -134,11 +119,11 @@ fn fill_nosfs(
     let direction = Direction::Gain;
     let mut stagger_map = RMapVec::new();
     for (&nosf_item_uid, item_data) in fit_data.cap_nosfs.iter() {
-        if !get_item_cseq_map(reuse_cseq_map, ctx, calc, nosf_item_uid, cycling_options) {
+        if !get_item_cseq_map(cseq_cache, ctx, calc, nosf_item_uid, cycling_options) {
             continue;
         }
         for (&effect_rid, ospec) in item_data.iter() {
-            let Some(cseq) = reuse_cseq_map.get(&effect_rid) else {
+            let Some(cseq) = cseq_cache.get(&effect_rid) else {
                 continue;
             };
             let effect = ctx.u_data.r_data.get_effect_by_rid(effect_rid);
@@ -165,7 +150,7 @@ fn fill_nosfs(
 }
 
 fn fill_incoming_neuts(
-    reuse_cseq_map: &mut CseqMap,
+    cseq_cache: &mut CseqCache,
     ctx: &SvcCtx,
     calc: &mut Calc,
     merger: &mut Merger,
@@ -180,11 +165,11 @@ fn fill_incoming_neuts(
     let direction = Direction::Loss;
     let mut stagger_map = RMapVec::new();
     for (&neut_item_uid, item_data) in neut_data.iter() {
-        if !get_item_cseq_map(reuse_cseq_map, ctx, calc, neut_item_uid, cycling_options) {
+        if !get_item_cseq_map(cseq_cache, ctx, calc, neut_item_uid, cycling_options) {
             continue;
         }
         for (&effect_rid, ospec) in item_data.iter() {
-            let Some(cseq) = reuse_cseq_map.get(&effect_rid) else {
+            let Some(cseq) = cseq_cache.get(&effect_rid) else {
                 continue;
             };
             let effect = ctx.u_data.r_data.get_effect_by_rid(effect_rid);
@@ -211,7 +196,7 @@ fn fill_incoming_neuts(
 }
 
 fn fill_incoming_transfers(
-    reuse_cseq_map: &mut CseqMap,
+    cseq_cache: &mut CseqCache,
     ctx: &SvcCtx,
     calc: &mut Calc,
     merger: &mut Merger,
@@ -226,11 +211,11 @@ fn fill_incoming_transfers(
     let direction = Direction::Gain;
     let mut stagger_map = RMapVec::new();
     for (&transfer_item_uid, item_data) in transfer_data.iter() {
-        if !get_item_cseq_map(reuse_cseq_map, ctx, calc, transfer_item_uid, cycling_options) {
+        if !get_item_cseq_map(cseq_cache, ctx, calc, transfer_item_uid, cycling_options) {
             continue;
         }
         for (&effect_rid, ospec) in item_data.iter() {
-            let Some(cseq) = reuse_cseq_map.get(&effect_rid) else {
+            let Some(cseq) = cseq_cache.get(&effect_rid) else {
                 continue;
             };
             let effect = ctx.u_data.r_data.get_effect_by_rid(effect_rid);
@@ -257,7 +242,7 @@ fn fill_incoming_transfers(
 }
 
 fn fill_injectors(
-    reuse_cseq_map: &mut CseqMap,
+    cseq_cache: &mut CseqCache,
     ctx: &SvcCtx,
     calc: &mut Calc,
     injector_events: &mut Vec<CapSimEvent>,
@@ -265,11 +250,11 @@ fn fill_injectors(
     fit_data: &VastFitData,
 ) {
     for (&item_uid, item_data) in fit_data.cap_injects.iter() {
-        if !get_item_cseq_map(reuse_cseq_map, ctx, calc, item_uid, cycling_options) {
+        if !get_item_cseq_map(cseq_cache, ctx, calc, item_uid, cycling_options) {
             continue;
         };
         for (&effect_rid, ospec) in item_data.iter() {
-            let Some(cseq) = reuse_cseq_map.get(&effect_rid) else {
+            let Some(cseq) = cseq_cache.get(&effect_rid) else {
                 continue;
             };
             let effect = ctx.u_data.r_data.get_effect_by_rid(effect_rid);

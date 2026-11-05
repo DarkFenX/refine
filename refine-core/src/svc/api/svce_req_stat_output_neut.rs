@@ -1,14 +1,14 @@
 use crate::{
     PValue,
     stats::{StatItemChargeOptions, StatNeutItemKinds, StatTimeOptions},
-    svc::{Svc, SvcCtx, Vast, cycle::CseqMap, err::IntStatItemError},
+    svc::{Svc, SvcCtx, Vast, cycle::CseqCache, err::IntStatItemError},
     ud::{UData, UFitId, UItemId},
 };
 
 impl Svc {
     pub(crate) fn get_stat_fits_outgoing_nps(
         &mut self,
-        reuse_cseq_map: &mut CseqMap,
+        cseq_cache: &mut CseqCache,
         u_data: &UData,
         fit_uids: impl Iterator<Item = UFitId>,
         item_kinds: StatNeutItemKinds,
@@ -16,7 +16,7 @@ impl Svc {
         projectee_uid: Option<UItemId>,
     ) -> PValue {
         self.vast.get_stat_fits_outgoing_nps(
-            reuse_cseq_map,
+            cseq_cache,
             &SvcCtx::new(u_data, &self.eff_projs),
             &mut self.calc,
             fit_uids,
@@ -27,7 +27,7 @@ impl Svc {
     }
     pub(crate) fn get_stat_fit_outgoing_nps(
         &mut self,
-        reuse_cseq_map: &mut CseqMap,
+        cseq_cache: &mut CseqCache,
         u_data: &UData,
         fit_uid: UFitId,
         item_kinds: StatNeutItemKinds,
@@ -35,7 +35,7 @@ impl Svc {
         projectee_uid: Option<UItemId>,
     ) -> PValue {
         self.vast.get_stat_fit_outgoing_nps(
-            reuse_cseq_map,
+            cseq_cache,
             &SvcCtx::new(u_data, &self.eff_projs),
             &mut self.calc,
             fit_uid,
@@ -46,7 +46,7 @@ impl Svc {
     }
     pub(crate) fn get_stat_item_outgoing_nps(
         &mut self,
-        reuse_cseq_map: &mut CseqMap,
+        cseq_cache: &mut CseqCache,
         u_data: &UData,
         item_uid: UItemId,
         time_options: StatTimeOptions,
@@ -54,7 +54,7 @@ impl Svc {
         projectee_uid: Option<UItemId>,
     ) -> Result<PValue, IntStatItemError<!>> {
         Vast::get_stat_item_outgoing_nps(
-            reuse_cseq_map,
+            cseq_cache,
             &SvcCtx::new(u_data, &self.eff_projs),
             &mut self.calc,
             item_uid,

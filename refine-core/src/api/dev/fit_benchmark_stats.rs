@@ -5,7 +5,6 @@ use crate::{
         StatNeutItemKinds, StatOutRepItemKinds, StatTime, StatTimeOptions, StatTimeOptionsBurst, StatTimeOptionsSim,
     },
     svc::{
-        cycle::CseqMap,
         err::IntStatItemError,
         vast::{StatCapBlcNosfsOptionsInt, StatCapBlcSrcKindsInt},
     },
@@ -74,13 +73,14 @@ impl<'s> Fit<'s> {
         };
         let jump_range = StatJumpRange::Max;
         let jump_passengers = Vec::new();
-        let mut reuse_cseq_map = CseqMap::new();
         for _ in 0..iterations {
+            // Cache is cleared per iteration, since that's how stats requests are normally used
+            self.sol.reuse.cseq_cache.clear();
             ////////////////////////////////////////////////////////////////////////////////////////
             // Damage
             ////////////////////////////////////////////////////////////////////////////////////////
             self.sol.svc.get_stat_fit_dmg_raw(
-                &mut reuse_cseq_map,
+                &mut self.sol.reuse.cseq_cache,
                 &self.sol.u_data,
                 self.uid,
                 dmg_item_kinds,
@@ -88,7 +88,7 @@ impl<'s> Fit<'s> {
                 StatCritOptions::default(),
             );
             self.sol.svc.get_stat_fit_dmg_raw(
-                &mut reuse_cseq_map,
+                &mut self.sol.reuse.cseq_cache,
                 &self.sol.u_data,
                 self.uid,
                 dmg_item_kinds,
@@ -96,7 +96,7 @@ impl<'s> Fit<'s> {
                 StatCritOptions::default(),
             );
             self.sol.svc.get_stat_fit_dmg_raw(
-                &mut reuse_cseq_map,
+                &mut self.sol.reuse.cseq_cache,
                 &self.sol.u_data,
                 self.uid,
                 dmg_item_kinds,
@@ -104,7 +104,7 @@ impl<'s> Fit<'s> {
                 StatCritOptions::default(),
             );
             self.sol.svc.get_stat_fit_dmg_applied(
-                &mut reuse_cseq_map,
+                &mut self.sol.reuse.cseq_cache,
                 &self.sol.u_data,
                 self.uid,
                 dmg_item_kinds,
@@ -113,7 +113,7 @@ impl<'s> Fit<'s> {
                 projectee_item_uid,
             );
             self.sol.svc.get_stat_fit_dmg_applied(
-                &mut reuse_cseq_map,
+                &mut self.sol.reuse.cseq_cache,
                 &self.sol.u_data,
                 self.uid,
                 dmg_item_kinds,
@@ -122,7 +122,7 @@ impl<'s> Fit<'s> {
                 projectee_item_uid,
             );
             self.sol.svc.get_stat_fit_dmg_applied(
-                &mut reuse_cseq_map,
+                &mut self.sol.reuse.cseq_cache,
                 &self.sol.u_data,
                 self.uid,
                 dmg_item_kinds,
@@ -134,7 +134,7 @@ impl<'s> Fit<'s> {
             // Mining
             ////////////////////////////////////////////////////////////////////////////////////////
             self.sol.svc.get_stat_fit_mps(
-                &mut reuse_cseq_map,
+                &mut self.sol.reuse.cseq_cache,
                 &self.sol.u_data,
                 self.uid,
                 mining_item_kinds,
@@ -142,7 +142,7 @@ impl<'s> Fit<'s> {
                 StatMiningResourceKind::default(),
             );
             self.sol.svc.get_stat_fit_mps(
-                &mut reuse_cseq_map,
+                &mut self.sol.reuse.cseq_cache,
                 &self.sol.u_data,
                 self.uid,
                 mining_item_kinds,
@@ -150,7 +150,7 @@ impl<'s> Fit<'s> {
                 StatMiningResourceKind::default(),
             );
             self.sol.svc.get_stat_fit_mps(
-                &mut reuse_cseq_map,
+                &mut self.sol.reuse.cseq_cache,
                 &self.sol.u_data,
                 self.uid,
                 mining_item_kinds,
@@ -161,7 +161,7 @@ impl<'s> Fit<'s> {
             // Neuts
             ////////////////////////////////////////////////////////////////////////////////////////
             self.sol.svc.get_stat_fit_outgoing_nps(
-                &mut reuse_cseq_map,
+                &mut self.sol.reuse.cseq_cache,
                 &self.sol.u_data,
                 self.uid,
                 neut_item_kinds,
@@ -169,7 +169,7 @@ impl<'s> Fit<'s> {
                 None,
             );
             self.sol.svc.get_stat_fit_outgoing_nps(
-                &mut reuse_cseq_map,
+                &mut self.sol.reuse.cseq_cache,
                 &self.sol.u_data,
                 self.uid,
                 neut_item_kinds,
@@ -177,7 +177,7 @@ impl<'s> Fit<'s> {
                 None,
             );
             self.sol.svc.get_stat_fit_outgoing_nps(
-                &mut reuse_cseq_map,
+                &mut self.sol.reuse.cseq_cache,
                 &self.sol.u_data,
                 self.uid,
                 neut_item_kinds,
@@ -185,7 +185,7 @@ impl<'s> Fit<'s> {
                 None,
             );
             self.sol.svc.get_stat_fit_outgoing_nps(
-                &mut reuse_cseq_map,
+                &mut self.sol.reuse.cseq_cache,
                 &self.sol.u_data,
                 self.uid,
                 neut_item_kinds,
@@ -193,7 +193,7 @@ impl<'s> Fit<'s> {
                 Some(projectee_item_uid),
             );
             self.sol.svc.get_stat_fit_outgoing_nps(
-                &mut reuse_cseq_map,
+                &mut self.sol.reuse.cseq_cache,
                 &self.sol.u_data,
                 self.uid,
                 neut_item_kinds,
@@ -201,7 +201,7 @@ impl<'s> Fit<'s> {
                 Some(projectee_item_uid),
             );
             self.sol.svc.get_stat_fit_outgoing_nps(
-                &mut reuse_cseq_map,
+                &mut self.sol.reuse.cseq_cache,
                 &self.sol.u_data,
                 self.uid,
                 neut_item_kinds,
@@ -212,7 +212,7 @@ impl<'s> Fit<'s> {
             // RRs
             ////////////////////////////////////////////////////////////////////////////////////////
             self.sol.svc.get_stat_fit_outgoing_rps(
-                &mut reuse_cseq_map,
+                &mut self.sol.reuse.cseq_cache,
                 &self.sol.u_data,
                 self.uid,
                 rr_item_kinds,
@@ -220,7 +220,7 @@ impl<'s> Fit<'s> {
                 None,
             );
             self.sol.svc.get_stat_fit_outgoing_rps(
-                &mut reuse_cseq_map,
+                &mut self.sol.reuse.cseq_cache,
                 &self.sol.u_data,
                 self.uid,
                 rr_item_kinds,
@@ -228,7 +228,7 @@ impl<'s> Fit<'s> {
                 None,
             );
             self.sol.svc.get_stat_fit_outgoing_rps(
-                &mut reuse_cseq_map,
+                &mut self.sol.reuse.cseq_cache,
                 &self.sol.u_data,
                 self.uid,
                 rr_item_kinds,
@@ -236,7 +236,7 @@ impl<'s> Fit<'s> {
                 None,
             );
             self.sol.svc.get_stat_fit_outgoing_rps(
-                &mut reuse_cseq_map,
+                &mut self.sol.reuse.cseq_cache,
                 &self.sol.u_data,
                 self.uid,
                 rr_item_kinds,
@@ -244,7 +244,7 @@ impl<'s> Fit<'s> {
                 Some(projectee_item_uid),
             );
             self.sol.svc.get_stat_fit_outgoing_rps(
-                &mut reuse_cseq_map,
+                &mut self.sol.reuse.cseq_cache,
                 &self.sol.u_data,
                 self.uid,
                 rr_item_kinds,
@@ -252,7 +252,7 @@ impl<'s> Fit<'s> {
                 Some(projectee_item_uid),
             );
             self.sol.svc.get_stat_fit_outgoing_rps(
-                &mut reuse_cseq_map,
+                &mut self.sol.reuse.cseq_cache,
                 &self.sol.u_data,
                 self.uid,
                 rr_item_kinds,
@@ -262,35 +262,43 @@ impl<'s> Fit<'s> {
             ////////////////////////////////////////////////////////////////////////////////////////
             // Cap transfers
             ////////////////////////////////////////////////////////////////////////////////////////
-            self.sol
-                .svc
-                .get_stat_fit_outgoing_cps(&mut reuse_cseq_map, &self.sol.u_data, self.uid, time_burst, None);
-            self.sol
-                .svc
-                .get_stat_fit_outgoing_cps(&mut reuse_cseq_map, &self.sol.u_data, self.uid, time_sim_inf, None);
             self.sol.svc.get_stat_fit_outgoing_cps(
-                &mut reuse_cseq_map,
+                &mut self.sol.reuse.cseq_cache,
+                &self.sol.u_data,
+                self.uid,
+                time_burst,
+                None,
+            );
+            self.sol.svc.get_stat_fit_outgoing_cps(
+                &mut self.sol.reuse.cseq_cache,
+                &self.sol.u_data,
+                self.uid,
+                time_sim_inf,
+                None,
+            );
+            self.sol.svc.get_stat_fit_outgoing_cps(
+                &mut self.sol.reuse.cseq_cache,
                 &self.sol.u_data,
                 self.uid,
                 time_sim_1200,
                 None,
             );
             self.sol.svc.get_stat_fit_outgoing_cps(
-                &mut reuse_cseq_map,
+                &mut self.sol.reuse.cseq_cache,
                 &self.sol.u_data,
                 self.uid,
                 time_burst,
                 Some(projectee_item_uid),
             );
             self.sol.svc.get_stat_fit_outgoing_cps(
-                &mut reuse_cseq_map,
+                &mut self.sol.reuse.cseq_cache,
                 &self.sol.u_data,
                 self.uid,
                 time_sim_inf,
                 Some(projectee_item_uid),
             );
             self.sol.svc.get_stat_fit_outgoing_cps(
-                &mut reuse_cseq_map,
+                &mut self.sol.reuse.cseq_cache,
                 &self.sol.u_data,
                 self.uid,
                 time_sim_1200,
@@ -360,12 +368,12 @@ impl<'s> Fit<'s> {
             self.sol.svc.get_stat_item_resists(&self.sol.u_data, ship_uid).unwrap();
             self.sol
                 .svc
-                .get_stat_item_hp(&mut reuse_cseq_map, &self.sol.u_data, ship_uid)
+                .get_stat_item_hp(&mut self.sol.reuse.cseq_cache, &self.sol.u_data, ship_uid)
                 .unwrap();
             self.sol
                 .svc
                 .get_stat_item_ehp(
-                    &mut reuse_cseq_map,
+                    &mut self.sol.reuse.cseq_cache,
                     &self.sol.u_data,
                     ship_uid,
                     Some(dmg_pattern_uniform),
@@ -373,16 +381,21 @@ impl<'s> Fit<'s> {
                 .unwrap();
             self.sol
                 .svc
-                .get_stat_item_ehp(&mut reuse_cseq_map, &self.sol.u_data, ship_uid, Some(dmg_pattern_laser))
+                .get_stat_item_ehp(
+                    &mut self.sol.reuse.cseq_cache,
+                    &self.sol.u_data,
+                    ship_uid,
+                    Some(dmg_pattern_laser),
+                )
                 .unwrap();
             self.sol
                 .svc
-                .get_stat_item_wc_ehp(&mut reuse_cseq_map, &self.sol.u_data, ship_uid)
+                .get_stat_item_wc_ehp(&mut self.sol.reuse.cseq_cache, &self.sol.u_data, ship_uid)
                 .unwrap();
             self.sol
                 .svc
                 .get_stat_item_rps(
-                    &mut reuse_cseq_map,
+                    &mut self.sol.reuse.cseq_cache,
                     &self.sol.u_data,
                     ship_uid,
                     time_burst,
@@ -392,7 +405,7 @@ impl<'s> Fit<'s> {
             self.sol
                 .svc
                 .get_stat_item_rps(
-                    &mut reuse_cseq_map,
+                    &mut self.sol.reuse.cseq_cache,
                     &self.sol.u_data,
                     ship_uid,
                     time_sim_inf,
@@ -402,7 +415,7 @@ impl<'s> Fit<'s> {
             self.sol
                 .svc
                 .get_stat_item_rps(
-                    &mut reuse_cseq_map,
+                    &mut self.sol.reuse.cseq_cache,
                     &self.sol.u_data,
                     ship_uid,
                     time_sim_1200,
@@ -412,7 +425,7 @@ impl<'s> Fit<'s> {
             self.sol
                 .svc
                 .get_stat_item_erps(
-                    &mut reuse_cseq_map,
+                    &mut self.sol.reuse.cseq_cache,
                     &self.sol.u_data,
                     ship_uid,
                     Some(dmg_pattern_uniform),
@@ -423,7 +436,7 @@ impl<'s> Fit<'s> {
             self.sol
                 .svc
                 .get_stat_item_erps(
-                    &mut reuse_cseq_map,
+                    &mut self.sol.reuse.cseq_cache,
                     &self.sol.u_data,
                     ship_uid,
                     Some(dmg_pattern_uniform),
@@ -434,7 +447,7 @@ impl<'s> Fit<'s> {
             self.sol
                 .svc
                 .get_stat_item_erps(
-                    &mut reuse_cseq_map,
+                    &mut self.sol.reuse.cseq_cache,
                     &self.sol.u_data,
                     ship_uid,
                     Some(dmg_pattern_uniform),
@@ -445,7 +458,7 @@ impl<'s> Fit<'s> {
             self.sol
                 .svc
                 .get_stat_item_erps(
-                    &mut reuse_cseq_map,
+                    &mut self.sol.reuse.cseq_cache,
                     &self.sol.u_data,
                     ship_uid,
                     Some(dmg_pattern_laser),
@@ -456,7 +469,7 @@ impl<'s> Fit<'s> {
             self.sol
                 .svc
                 .get_stat_item_erps(
-                    &mut reuse_cseq_map,
+                    &mut self.sol.reuse.cseq_cache,
                     &self.sol.u_data,
                     ship_uid,
                     Some(dmg_pattern_laser),
@@ -467,7 +480,7 @@ impl<'s> Fit<'s> {
             self.sol
                 .svc
                 .get_stat_item_erps(
-                    &mut reuse_cseq_map,
+                    &mut self.sol.reuse.cseq_cache,
                     &self.sol.u_data,
                     ship_uid,
                     Some(dmg_pattern_laser),
@@ -489,7 +502,7 @@ impl<'s> Fit<'s> {
             self.sol
                 .svc
                 .get_stat_item_cap_balance(
-                    &mut reuse_cseq_map,
+                    &mut self.sol.reuse.cseq_cache,
                     &self.sol.u_data,
                     ship_uid,
                     cap_src_kinds_all,
@@ -499,7 +512,7 @@ impl<'s> Fit<'s> {
             self.sol
                 .svc
                 .get_stat_item_cap_balance(
-                    &mut reuse_cseq_map,
+                    &mut self.sol.reuse.cseq_cache,
                     &self.sol.u_data,
                     ship_uid,
                     cap_src_kinds_positive,
@@ -509,7 +522,7 @@ impl<'s> Fit<'s> {
             self.sol
                 .svc
                 .get_stat_item_cap_balance(
-                    &mut reuse_cseq_map,
+                    &mut self.sol.reuse.cseq_cache,
                     &self.sol.u_data,
                     ship_uid,
                     cap_src_kinds_negative,
@@ -537,15 +550,20 @@ impl<'s> Fit<'s> {
             }
             self.sol
                 .svc
-                .get_stat_item_incoming_jam(&mut reuse_cseq_map, &self.sol.u_data, ship_uid, time_burst)
+                .get_stat_item_incoming_jam(&mut self.sol.reuse.cseq_cache, &self.sol.u_data, ship_uid, time_burst)
                 .unwrap();
             self.sol
                 .svc
-                .get_stat_item_incoming_jam(&mut reuse_cseq_map, &self.sol.u_data, ship_uid, time_sim_inf)
+                .get_stat_item_incoming_jam(&mut self.sol.reuse.cseq_cache, &self.sol.u_data, ship_uid, time_sim_inf)
                 .unwrap();
             self.sol
                 .svc
-                .get_stat_item_incoming_jam(&mut reuse_cseq_map, &self.sol.u_data, ship_uid, time_sim_1200)
+                .get_stat_item_incoming_jam(
+                    &mut self.sol.reuse.cseq_cache,
+                    &self.sol.u_data,
+                    ship_uid,
+                    time_sim_1200,
+                )
                 .unwrap();
             ////////////////////////////////////////////////////////////////////////////////////////
             // Mobility

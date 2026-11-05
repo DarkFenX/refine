@@ -1,4 +1,4 @@
-use super::{item::get_item_cseq_map, map::CseqMap, shared::CyclingOptions};
+use super::{cache::CseqCache, item::get_item_cseq_map, shared::CyclingOptions};
 use crate::{
     svc::{SvcCtx, calc::Calc},
     ud::UCharge,
@@ -6,7 +6,7 @@ use crate::{
 
 #[must_use]
 pub(super) fn get_charge_cseq_map(
-    reuse_cseq_map: &mut CseqMap,
+    cseq_cache: &mut CseqCache,
     ctx: &SvcCtx,
     calc: &mut Calc,
     charge: &UCharge,
@@ -22,20 +22,19 @@ pub(super) fn get_charge_cseq_map(
         _ => return false,
     };
     // If cycle info for parent item is not available, charge is not cycling
-    if !get_item_cseq_map(reuse_cseq_map, ctx, calc, charge.get_cont_item_uid(), options) {
+    if !get_item_cseq_map(cseq_cache, ctx, calc, charge.get_cont_item_uid(), options) {
         return false;
     }
     // If controlling effect is not cycling, charge is not cycling either
-    let Some(cont_effect_cycle) = reuse_cseq_map.remove(&cont_effect_rid) else {
+    let Some(&cont_effect_cycle) = cseq_cache.get(&cont_effect_rid) else {
         return false;
     };
-    reuse_cseq_map.clear();
     let effect_rids = charge.get_reffs().unwrap().iter();
-    reuse_cseq_map.reserve(effect_rids.len());
+    cseq_cache.reserve(effect_rids.len());
     for &effect_rid in effect_rids {
         let effect = ctx.u_data.r_data.get_effect_by_rid(effect_rid);
         if effect.is_active() {
-            reuse_cseq_map.insert(effect_rid, cont_effect_cycle);
+            cseq_cache.insert(effect_rid, cont_effect_cycle);
         }
     }
     true

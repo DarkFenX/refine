@@ -1,10 +1,6 @@
 use itertools::Itertools;
 
-use crate::{
-    Fit, UnitInterval,
-    stats::StatCapSimStagger,
-    svc::{cycle::CseqMap, vast::StatCapSimStaggerInt},
-};
+use crate::{Fit, UnitInterval, stats::StatCapSimStagger, svc::vast::StatCapSimStaggerInt};
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Public
@@ -19,13 +15,14 @@ impl<'s> Fit<'s> {
                 .map(|stagger| StatCapSimStaggerInt::from_pub(self.sol, stagger))
                 .collect_vec(),
         };
-        let mut reuse_cseq_map = CseqMap::new();
         for _ in 0..iterations {
+            // Cache is cleared per iteration, since that's how stats requests are normally used
+            self.sol.reuse.cseq_cache.clear();
             for stagger in staggers.iter() {
                 self.sol
                     .svc
                     .get_stat_item_cap_sim(
-                        &mut reuse_cseq_map,
+                        &mut self.sol.reuse.cseq_cache,
                         &self.sol.u_data,
                         ship_uid,
                         UnitInterval::ONE,

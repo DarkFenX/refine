@@ -1,4 +1,4 @@
-use super::map::CseqMap;
+use super::cache::CseqCache;
 use crate::{
     svc::{
         SvcCtx,
@@ -11,7 +11,7 @@ use crate::{
 
 #[must_use]
 pub(super) fn get_drone_cseq_map(
-    reuse_cseq_map: &mut CseqMap,
+    cseq_cache: &mut CseqCache,
     ctx: &SvcCtx,
     calc: &mut Calc,
     item_uid: UItemId,
@@ -20,7 +20,6 @@ pub(super) fn get_drone_cseq_map(
     if !drone.is_loaded() {
         return false;
     };
-    reuse_cseq_map.clear();
     for &effect_rid in drone.get_reffs().unwrap().iter() {
         let effect = ctx.u_data.r_data.get_effect_by_rid(effect_rid);
         if !effect.is_active_with_duration {
@@ -31,7 +30,7 @@ pub(super) fn get_drone_cseq_map(
         };
         // Assume all drone effects just repeat themselves - ignoring all settings, self-destruction
         // flags, limited charges & reloads
-        reuse_cseq_map.insert(
+        cseq_cache.insert(
             effect_rid,
             CycleSeq::LoopSin(CSeqLoopSin {
                 data: CycleDataFull {

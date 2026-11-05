@@ -5,7 +5,7 @@ use crate::{
     stats::{StatCritOptions, StatOutReps, StatTimeOptions},
     svc::{
         Calc, SvcCtx, Vast,
-        cycle::{CseqMap, CyclingOptions, get_item_cseq_map},
+        cycle::{CseqCache, CyclingOptions, get_item_cseq_map},
         err::IntStatItemError,
         vast::{
             aggr::{SeqAccum, aggr_proj_burst, aggr_proj_looped, aggr_proj_time},
@@ -17,7 +17,7 @@ use crate::{
 
 impl Vast {
     pub(in crate::svc) fn get_stat_item_outgoing_rps(
-        reuse_cseq_map: &mut CseqMap,
+        cseq_cache: &mut CseqCache,
         ctx: &SvcCtx,
         calc: &mut Calc,
         item_uid: UItemId,
@@ -27,7 +27,7 @@ impl Vast {
         check_drone_fighter_module(ctx.u_data, item_uid)?;
         let orps = StatOutReps {
             shield: get_orps(
-                reuse_cseq_map,
+                cseq_cache,
                 ctx,
                 calc,
                 item_uid,
@@ -36,7 +36,7 @@ impl Vast {
                 get_getter_shield,
             ),
             armor: get_orps(
-                reuse_cseq_map,
+                cseq_cache,
                 ctx,
                 calc,
                 item_uid,
@@ -45,7 +45,7 @@ impl Vast {
                 get_getter_armor,
             ),
             hull: get_orps(
-                reuse_cseq_map,
+                cseq_cache,
                 ctx,
                 calc,
                 item_uid,
@@ -59,7 +59,7 @@ impl Vast {
 }
 
 fn get_orps<F>(
-    reuse_cseq_map: &mut CseqMap,
+    cseq_cache: &mut CseqCache,
     ctx: &SvcCtx,
     calc: &mut Calc,
     item_uid: UItemId,
@@ -72,10 +72,10 @@ where
 {
     let mut orps = PValue::ZERO;
     let cycling_options = CyclingOptions::from_time_options(time_options);
-    if !get_item_cseq_map(reuse_cseq_map, ctx, calc, item_uid, cycling_options) {
+    if !get_item_cseq_map(cseq_cache, ctx, calc, item_uid, cycling_options) {
         return orps;
     }
-    for (&effect_rid, cseq) in reuse_cseq_map.iter() {
+    for (&effect_rid, cseq) in cseq_cache.iter() {
         let effect = ctx.u_data.r_data.get_effect_by_rid(effect_rid);
         let Some(ospec) = rep_ospec_getter(effect) else {
             continue;

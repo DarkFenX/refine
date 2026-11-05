@@ -7,7 +7,7 @@ use crate::{
     },
     svc::{
         Calc, SvcCtx, Vast,
-        cycle::{CseqMap, CyclingOptions, get_item_cseq_map},
+        cycle::{CseqCache, CyclingOptions, get_item_cseq_map},
         vast::aggr::{SeqAccum, aggr_proj_burst, aggr_proj_looped, aggr_proj_time},
     },
     ud::{UFitId, UItemId},
@@ -17,7 +17,7 @@ use crate::{
 impl Vast {
     pub(in crate::svc) fn get_stat_fits_mps(
         &self,
-        reuse_cseq_map: &mut CseqMap,
+        cseq_cache: &mut CseqCache,
         ctx: &SvcCtx,
         calc: &mut Calc,
         fit_uids: impl Iterator<Item = UFitId>,
@@ -32,7 +32,7 @@ impl Vast {
         for fit_uid in fit_uids {
             let fit_data = self.get_fit_data(fit_uid);
             ore += get_mps(
-                reuse_cseq_map,
+                cseq_cache,
                 ctx,
                 calc,
                 item_kinds,
@@ -41,7 +41,7 @@ impl Vast {
                 &fit_data.mining_ore,
             );
             ice += get_mps(
-                reuse_cseq_map,
+                cseq_cache,
                 ctx,
                 calc,
                 item_kinds,
@@ -50,7 +50,7 @@ impl Vast {
                 &fit_data.mining_ice,
             );
             gas += get_mps(
-                reuse_cseq_map,
+                cseq_cache,
                 ctx,
                 calc,
                 item_kinds,
@@ -67,7 +67,7 @@ impl Vast {
     }
     pub(in crate::svc) fn get_stat_fit_mps(
         &self,
-        reuse_cseq_map: &mut CseqMap,
+        cseq_cache: &mut CseqCache,
         ctx: &SvcCtx,
         calc: &mut Calc,
         fit_uid: UFitId,
@@ -79,7 +79,7 @@ impl Vast {
         let base_xargs = NEffectMiningXargs { resource_kind };
         StatMining {
             ore: StatMiningEntry::from_effect_amount(get_mps(
-                reuse_cseq_map,
+                cseq_cache,
                 ctx,
                 calc,
                 item_kinds,
@@ -88,7 +88,7 @@ impl Vast {
                 &fit_data.mining_ore,
             )),
             ice: StatMiningEntry::from_effect_amount(get_mps(
-                reuse_cseq_map,
+                cseq_cache,
                 ctx,
                 calc,
                 item_kinds,
@@ -97,7 +97,7 @@ impl Vast {
                 &fit_data.mining_ice,
             )),
             gas: StatMiningEntry::from_effect_amount(get_mps(
-                reuse_cseq_map,
+                cseq_cache,
                 ctx,
                 calc,
                 item_kinds,
@@ -110,7 +110,7 @@ impl Vast {
 }
 
 fn get_mps(
-    reuse_cseq_map: &mut CseqMap,
+    cseq_cache: &mut CseqCache,
     ctx: &SvcCtx,
     calc: &mut Calc,
     item_kinds: StatMiningItemKinds,
@@ -121,7 +121,7 @@ fn get_mps(
     let mut mps = NEffectMiningAmount::new();
     let cycling_options = CyclingOptions::from_time_options(time_options);
     for (&item_uid, item_data) in fit_data.iter() {
-        if !get_item_cseq_map(reuse_cseq_map, ctx, calc, item_uid, cycling_options) {
+        if !get_item_cseq_map(cseq_cache, ctx, calc, item_uid, cycling_options) {
             continue;
         }
         let u_item = ctx.u_data.items.get(item_uid);
@@ -129,7 +129,7 @@ fn get_mps(
             continue;
         }
         for (&effect_rid, ospec) in item_data.iter() {
-            let Some(cseq) = reuse_cseq_map.get(&effect_rid) else {
+            let Some(cseq) = cseq_cache.get(&effect_rid) else {
                 continue;
             };
             let effect = ctx.u_data.r_data.get_effect_by_rid(effect_rid);

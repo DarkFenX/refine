@@ -5,7 +5,7 @@ use crate::{
     stats::{StatCritOptions, StatMining, StatMiningEntry, StatMiningResourceKind, StatTimeOptions},
     svc::{
         Calc, SvcCtx, Vast,
-        cycle::{CseqMap, CyclingOptions, get_item_cseq_map},
+        cycle::{CseqCache, CyclingOptions, get_item_cseq_map},
         err::IntStatItemError,
         vast::{
             aggr::{SeqAccum, aggr_proj_burst, aggr_proj_looped, aggr_proj_time},
@@ -17,7 +17,7 @@ use crate::{
 
 impl Vast {
     pub(in crate::svc) fn get_stat_item_mps(
-        reuse_cseq_map: &mut CseqMap,
+        cseq_cache: &mut CseqCache,
         ctx: &SvcCtx,
         calc: &mut Calc,
         item_uid: UItemId,
@@ -28,7 +28,7 @@ impl Vast {
         let base_xargs = NEffectMiningXargs { resource_kind };
         let mps = StatMining {
             ore: get_mps_item_uid(
-                reuse_cseq_map,
+                cseq_cache,
                 ctx,
                 calc,
                 item_uid,
@@ -37,7 +37,7 @@ impl Vast {
                 get_effect_mining_ore,
             ),
             ice: get_mps_item_uid(
-                reuse_cseq_map,
+                cseq_cache,
                 ctx,
                 calc,
                 item_uid,
@@ -46,7 +46,7 @@ impl Vast {
                 get_effect_mining_ice,
             ),
             gas: get_mps_item_uid(
-                reuse_cseq_map,
+                cseq_cache,
                 ctx,
                 calc,
                 item_uid,
@@ -60,7 +60,7 @@ impl Vast {
 }
 
 fn get_mps_item_uid<F>(
-    reuse_cseq_map: &mut CseqMap,
+    cseq_cache: &mut CseqCache,
     ctx: &SvcCtx,
     calc: &mut Calc,
     item_uid: UItemId,
@@ -73,11 +73,11 @@ where
 {
     let mut mps = NEffectMiningAmount::new();
     let cycling_options = CyclingOptions::from_time_options(time_options);
-    if !get_item_cseq_map(reuse_cseq_map, ctx, calc, item_uid, cycling_options) {
+    if !get_item_cseq_map(cseq_cache, ctx, calc, item_uid, cycling_options) {
         return StatMiningEntry::from_effect_amount(mps);
     }
     let item = ctx.u_data.items.get(item_uid);
-    for (&effect_rid, cseq) in reuse_cseq_map.iter() {
+    for (&effect_rid, cseq) in cseq_cache.iter() {
         let effect = ctx.u_data.r_data.get_effect_by_rid(effect_rid);
         let ospec = match mining_ospec_getter(effect) {
             Some(effect_mining) if effect_mining.check(item) => &effect_mining.ospec,

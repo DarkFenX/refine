@@ -3,7 +3,7 @@ use crate::{
     stats::{StatCritOptions, StatItemChargeOptions, StatTimeOptions},
     svc::{
         Calc, SvcCtx, Vast,
-        cycle::{CseqMap, CyclingOptions, get_item_cseq_map},
+        cycle::{CseqCache, CyclingOptions, get_item_cseq_map},
         err::IntStatItemError,
         vast::{
             aggr::{SeqAccum, aggr_proj_burst, aggr_proj_looped, aggr_proj_time},
@@ -15,7 +15,7 @@ use crate::{
 
 impl Vast {
     pub(in crate::svc) fn get_stat_item_outgoing_nps(
-        reuse_cseq_map: &mut CseqMap,
+        cseq_cache: &mut CseqCache,
         ctx: &SvcCtx,
         calc: &mut Calc,
         item_uid: UItemId,
@@ -26,11 +26,11 @@ impl Vast {
         check_charge_drone_fighter_module(ctx.u_data, item_uid)?;
         let mut nps = PValue::ZERO;
         let cycling_options = CyclingOptions::from_time_options(time_options);
-        if !get_item_cseq_map(reuse_cseq_map, ctx, calc, item_uid, cycling_options) {
+        if !get_item_cseq_map(cseq_cache, ctx, calc, item_uid, cycling_options) {
             return Ok(nps);
         }
         let u_item = ctx.u_data.items.get(item_uid);
-        for (&effect_rid, cseq) in reuse_cseq_map.iter() {
+        for (&effect_rid, cseq) in cseq_cache.iter() {
             let effect = ctx.u_data.r_data.get_effect_by_rid(effect_rid);
             let ospec = match &effect.neut {
                 Some(neut) if neut.check(u_item, ctx.ac()) => neut.ospec,
@@ -84,7 +84,7 @@ impl Vast {
         if charge_options.is_enabled() {
             for charge_uid in u_item.iter_charges() {
                 if let Ok(charge_nps) = Self::get_stat_item_outgoing_nps(
-                    reuse_cseq_map,
+                    cseq_cache,
                     ctx,
                     calc,
                     charge_uid,

@@ -5,7 +5,7 @@ use crate::{
     stats::{StatCritOptions, StatHp, StatHpLayer},
     svc::{
         Calc, SvcCtx, Vast,
-        cycle::{CseqMap, CycleOptionsSim, CyclingOptions, get_item_cseq_map},
+        cycle::{CseqCache, CycleOptionsSim, CyclingOptions, get_item_cseq_map},
         err::IntStatItemError,
         vast::{
             aggr::{SeqAccum, aggr_local_clip, aggr_proj_clip},
@@ -19,17 +19,17 @@ use crate::{
 impl Vast {
     pub(in crate::svc) fn get_stat_item_hp(
         &self,
-        reuse_cseq_map: &mut CseqMap,
+        cseq_cache: &mut CseqCache,
         ctx: &SvcCtx,
         calc: &mut Calc,
         item_uid: UItemId,
     ) -> Result<StatHp, IntStatItemError<!>> {
         let item = check_drone_fighter_ship(ctx.u_data, item_uid)?;
-        Ok(self.get_stat_item_hp_unchecked(reuse_cseq_map, ctx, calc, item_uid, item))
+        Ok(self.get_stat_item_hp_unchecked(cseq_cache, ctx, calc, item_uid, item))
     }
     pub(in crate::svc::vast::stats::tank) fn get_stat_item_hp_unchecked(
         &self,
-        reuse_cseq_map: &mut CseqMap,
+        cseq_cache: &mut CseqCache,
         ctx: &SvcCtx,
         calc: &mut Calc,
         item_uid: UItemId,
@@ -59,15 +59,15 @@ impl Vast {
         let (local_asb, local_aar) = match item {
             UItem::Ship(u_ship) => {
                 let fit_data = self.get_fit_data(u_ship.get_fit_uid());
-                let local_asb = get_local_ancil_hp(reuse_cseq_map, ctx, calc, &fit_data.lr_shield_limitable);
-                let local_aar = get_local_ancil_hp(reuse_cseq_map, ctx, calc, &fit_data.lr_armor_limitable);
+                let local_asb = get_local_ancil_hp(cseq_cache, ctx, calc, &fit_data.lr_shield_limitable);
+                let local_aar = get_local_ancil_hp(cseq_cache, ctx, calc, &fit_data.lr_armor_limitable);
                 (local_asb, local_aar)
             }
             _ => (PValue::ZERO, PValue::ZERO),
         };
         // Incoming remote ancillary repairs
-        let remote_asb = get_remote_ancil_hp(reuse_cseq_map, ctx, calc, item_uid, &self.irr_shield_limitable);
-        let remote_aar = get_remote_ancil_hp(reuse_cseq_map, ctx, calc, item_uid, &self.irr_armor_limitable);
+        let remote_asb = get_remote_ancil_hp(cseq_cache, ctx, calc, item_uid, &self.irr_shield_limitable);
+        let remote_aar = get_remote_ancil_hp(cseq_cache, ctx, calc, item_uid, &self.irr_armor_limitable);
         StatHp {
             shield: StatHpLayer {
                 buffer: shield_buffer,
@@ -94,18 +94,18 @@ const ANCIL_CYCLE_OPTIONS: CyclingOptions = CyclingOptions::Sim(CycleOptionsSim 
 });
 
 fn get_local_ancil_hp(
-    reuse_cseq_map: &mut CseqMap,
+    cseq_cache: &mut CseqCache,
     ctx: &SvcCtx,
     calc: &mut Calc,
     ancil_data: &RMapRMap<UItemId, REffectId, REffectLocalOpcSpec<NEffectGeneralOutputGetter>>,
 ) -> PValue {
     let mut total_ancil_hp = PValue::ZERO;
     for (&item_uid, item_data) in ancil_data.iter() {
-        if !get_item_cseq_map(reuse_cseq_map, ctx, calc, item_uid, ANCIL_CYCLE_OPTIONS) {
+        if !get_item_cseq_map(cseq_cache, ctx, calc, item_uid, ANCIL_CYCLE_OPTIONS) {
             continue;
         }
         for (&effect_rid, ospec) in item_data.iter() {
-            let Some(cseq) = reuse_cseq_map.get(&effect_rid) else {
+            let Some(cseq) = cseq_cache.get(&effect_rid) else {
                 continue;
             };
             let effect = ctx.u_data.r_data.get_effect_by_rid(effect_rid);
@@ -118,7 +118,7 @@ fn get_local_ancil_hp(
 }
 
 fn get_remote_ancil_hp(
-    reuse_cseq_map: &mut CseqMap,
+    cseq_cache: &mut CseqCache,
     ctx: &SvcCtx,
     calc: &mut Calc,
     projectee_item_uid: UItemId,
@@ -129,11 +129,11 @@ fn get_remote_ancil_hp(
         return total_ancil_hp;
     };
     for (&projector_item_uid, projector_data) in incoming_ancils.iter() {
-        if !get_item_cseq_map(reuse_cseq_map, ctx, calc, projector_item_uid, ANCIL_CYCLE_OPTIONS) {
+        if !get_item_cseq_map(cseq_cache, ctx, calc, projector_item_uid, ANCIL_CYCLE_OPTIONS) {
             continue;
         }
         for (&effect_rid, ospec) in projector_data.iter() {
-            let Some(cseq) = reuse_cseq_map.get(&effect_rid) else {
+            let Some(cseq) = cseq_cache.get(&effect_rid) else {
                 continue;
             };
             let effect = ctx.u_data.r_data.get_effect_by_rid(effect_rid);
