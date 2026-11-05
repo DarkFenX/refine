@@ -45,7 +45,7 @@ impl<'s> Booster<'s> {
             .get_r_item_base()
             .into_iter()
             .flat_map(|rib| {
-                rib.effects.keys().filter_map(|&effect_rid| {
+                rib.effect_rids.iter().filter_map(|&effect_rid| {
                     let effect_id = self.core.u_data.r_data.get_effect_by_rid(effect_rid).aid;
                     get_se_chance_attr_aid_by_effect_rid(&self.core.u_data.r_data, effect_rid)
                         .map(|chance_attr_id| (effect_id, chance_attr_id))

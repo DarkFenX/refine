@@ -114,7 +114,7 @@ fn update_running_effects(
             .to_start
             .push(r_data.get_online_effect().unwrap().clone());
     }
-    for &effect_rid in item.base.effects.keys() {
+    for &effect_rid in item.base.effect_rids.iter() {
         // Online effect has already been handled
         if Some(effect_rid) == r_data.get_effect_consts().online {
             continue;

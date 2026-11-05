@@ -6,7 +6,7 @@ use crate::{
 };
 
 /// Item-specific attribute-independent effect data
-#[derive(Copy, Clone, Default)]
+#[derive(Copy, Clone)]
 pub(crate) struct RItemBaseEffectData {
     pub(crate) ability_cooldown: Option<PValue>,
     pub(crate) ability_charge_count: Option<Count>,
@@ -19,6 +19,20 @@ pub(crate) struct RItemBaseEffectData {
 // Conversions
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl RItemBaseEffectData {
+    pub(crate) const DEFAULT: Self = Self {
+        ability_cooldown: None,
+        ability_charge_count: None,
+        ability_charge_reload_duration: PValue::ZERO,
+        autocharge_aid: None,
+        projectee_filter_rid: None,
+    };
+    pub(super) fn is_default(&self) -> bool {
+        self.ability_cooldown.is_none()
+            && self.ability_charge_count.is_none()
+            && self.ability_charge_reload_duration == PValue::ZERO
+            && self.autocharge_aid.is_none()
+            && self.projectee_filter_rid.is_none()
+    }
     pub(super) fn fill_from_a_effect_data(
         &mut self,
         r_effect: &REffect,

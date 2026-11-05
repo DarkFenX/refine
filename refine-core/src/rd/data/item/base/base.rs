@@ -28,7 +28,7 @@ use crate::{
         RAttrConsts, RAttrId, REffectConsts, REffectId, RItemBaseEffectData, RItemCapConsumer, RItemChargeLimit,
         RItemContLimit, RItemListId, RItemShipLimit, RShipDroneLimit, RShipKind, RState, RcEffect,
     },
-    util::{PSlab, RMap},
+    util::{PSlab, RMap, RSet},
     val::DetectedItemKind,
 };
 
@@ -42,7 +42,9 @@ pub(crate) struct RItemBase {
     pub(crate) aid: AItemId,
     pub(crate) grp_id: AItemGrpId,
     pub(crate) cat_id: AItemCatId,
-    pub(crate) effects: RMap<REffectId, RItemBaseEffectData>,
+    pub(crate) effect_rids: RSet<REffectId>,
+    // Item-specific effect data, only stored if differs to default
+    pub(crate) effect_datas: RMap<REffectId, RItemBaseEffectData>,
     pub(crate) defeff_rid: Option<REffectId>,
     pub(crate) abil_ids: Vec<AAbilId>,
     pub(crate) srqs: RMap<AItemId, SkillLevel>,
@@ -121,6 +123,14 @@ pub(crate) struct RItemBase {
     pub(crate) item_ship_kind: Option<RShipKind>,
 }
 
+impl RItemBase {
+    pub(crate) fn get_effect_data(&self, effect_rid: &REffectId) -> &RItemBaseEffectData {
+        self.effect_datas
+            .get(effect_rid)
+            .unwrap_or(&RItemBaseEffectData::DEFAULT)
+    }
+}
+
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Conversions
 ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -166,7 +176,8 @@ impl RItemBase {
             max_state: RState::from_a_state(max_state),
             disallowed_in_wspace: *disallowed_in_wspace,
             // Fields which depend on data not available on adapted item
-            effects: Default::default(),
+            effect_rids: Default::default(),
+            effect_datas: Default::default(),
             defeff_rid: Default::default(),
             has_online_effect: Default::default(),
             takes_turret_hardpoint: Default::default(),
@@ -222,16 +233,15 @@ impl RItemBase {
             let Some(&effect_rid) = effect_aid_rid_map.get(&a_item_effect.id) else {
                 continue;
             };
-            // Put defaults on this pass; the effect-specific data will be filled later. Nothing in
-            // this method depends on it
-            self.effects.insert(effect_rid, RItemBaseEffectData::default());
+            // Effect-specific data will be filled later, nothing in this method depends on it
+            self.effect_rids.insert(effect_rid);
         }
         self.defeff_rid = a_item
             .defeff_id
             .and_then(|defeff_aid| effect_aid_rid_map.get(&defeff_aid).copied());
-        self.has_online_effect = has_online_effect(&self.effects, effect_aid_rid_map);
-        self.takes_turret_hardpoint = has_turret_effect(&self.effects, effect_aid_rid_map);
-        self.takes_launcher_hardpoint = has_launcher_effect(&self.effects, effect_aid_rid_map);
+        self.has_online_effect = has_online_effect(&self.effect_rids, effect_aid_rid_map);
+        self.takes_turret_hardpoint = has_turret_effect(&self.effect_rids, effect_aid_rid_map);
+        self.takes_launcher_hardpoint = has_launcher_effect(&self.effect_rids, effect_aid_rid_map);
         self.proj_buff_item_list_rids.extend(
             a_item
                 .proj_buff_item_list_ids
@@ -244,7 +254,7 @@ impl RItemBase {
                 .iter()
                 .filter_map(|item_list_aid| item_list_aid_rid_map.get(item_list_aid).copied()),
         );
-        for &effect_rid in self.effects.keys() {
+        for &effect_rid in self.effect_rids.iter() {
             let r_effect = r_effects.get(effect_rid).unwrap();
             if let Some(opc_spec) = r_effect.cap_consume {
                 self.cap_consumers.push(RItemCapConsumer { effect_rid, opc_spec })
@@ -263,10 +273,11 @@ impl RItemBase {
         effect_consts: &REffectConsts,
     ) {
         // Item-specific effect data
-        for (&effect_rid, r_effect_data) in self.effects.iter_mut() {
+        for &effect_rid in self.effect_rids.iter() {
             let r_effect = r_effects.get(effect_rid).unwrap();
             let a_item = a_items.get(&self.aid).unwrap();
             let a_item_effect = a_item.effects.get(&r_effect.aid).unwrap();
+            let mut r_effect_data = RItemBaseEffectData::DEFAULT;
             r_effect_data.fill_from_a_effect_data(
                 r_effect,
                 &a_item_effect.data,
@@ -274,6 +285,9 @@ impl RItemBase {
                 attr_aid_rid_map,
                 item_list_aid_rid_map,
             );
+            if !r_effect_data.is_default() {
+                self.effect_datas.insert(effect_rid, r_effect_data);
+            }
         }
         // Base item attribute values
         self.volume = get_volume(r_item_attrs, attr_consts);
@@ -318,7 +332,7 @@ impl RItemBase {
             self.grp_id,
             self.cat_id,
             r_item_attrs,
-            &self.effects,
+            &self.effect_rids,
             attr_consts,
             effect_consts,
         );

@@ -79,7 +79,7 @@ fn get_effect_info(
     }
     // No appropriate duration - effect does not cycle
     let active_duration = funcs::get_effect_duration_s(ctx, calc, item_uid, effect)?;
-    let effect_data = fighter.get_r_item_base().unwrap().effects.get(&effect_rid).unwrap();
+    let effect_data = fighter.get_r_item_base().unwrap().get_effect_data(&effect_rid);
     // Completely skip effects which can't cycle
     if effect_data.ability_charge_count == Some(Count::ZERO) {
         return None;

@@ -652,7 +652,7 @@ mod debug {
             // over from previous data
             if reffs
                 .iter()
-                .any(|effect_rid| !item_rib.effects.contains_key(effect_rid))
+                .any(|effect_rid| !item_rib.effect_rids.contains(effect_rid))
             {
                 return Err(Default::default());
             }

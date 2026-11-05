@@ -1,8 +1,8 @@
 use crate::{
     Value,
     ad::{AItemCatId, AItemGrpId},
-    rd::{RAttrConsts, RAttrId, REffectConsts, REffectId, RItemBaseEffectData},
-    util::RMap,
+    rd::{RAttrConsts, RAttrId, REffectConsts, REffectId},
+    util::{RMap, RSet},
     val::DetectedItemKind,
 };
 
@@ -10,7 +10,7 @@ pub(in crate::rd::data::item::base) fn detect_item_kind(
     item_grp_id: AItemGrpId,
     item_cat_id: AItemCatId,
     item_attrs: &RMap<RAttrId, Value>,
-    item_effects: &RMap<REffectId, RItemBaseEffectData>,
+    item_effects: &RSet<REffectId>,
     attr_consts: &RAttrConsts,
     effect_consts: &REffectConsts,
 ) -> Option<DetectedItemKind> {
@@ -19,27 +19,27 @@ pub(in crate::rd::data::item::base) fn detect_item_kind(
         // Ship & structure modules
         AItemCatId::MODULE | AItemCatId::STRUCTURE_MODULE => {
             if let Some(effect_rid) = effect_consts.hi_power
-                && item_effects.contains_key(&effect_rid)
+                && item_effects.contains(&effect_rid)
             {
                 store.push(DetectedItemKind::ModuleHigh)?;
             }
             if let Some(effect_rid) = effect_consts.med_power
-                && item_effects.contains_key(&effect_rid)
+                && item_effects.contains(&effect_rid)
             {
                 store.push(DetectedItemKind::ModuleMid)?;
             }
             if let Some(effect_rid) = effect_consts.lo_power
-                && item_effects.contains_key(&effect_rid)
+                && item_effects.contains(&effect_rid)
             {
                 store.push(DetectedItemKind::ModuleLow)?;
             }
             if let Some(effect_rid) = effect_consts.rig_slot
-                && item_effects.contains_key(&effect_rid)
+                && item_effects.contains(&effect_rid)
             {
                 store.push(DetectedItemKind::Rig)?;
             }
             if let Some(effect_rid) = effect_consts.service_slot
-                && item_effects.contains_key(&effect_rid)
+                && item_effects.contains(&effect_rid)
             {
                 store.push(DetectedItemKind::Service)?;
             }

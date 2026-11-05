@@ -187,8 +187,8 @@ mod debug {
                 .get(*cont_item_uid)
                 .get_r_item_base()
                 .unwrap()
-                .effects
-                .contains_key(cont_effect_rid)
+                .effect_rids
+                .contains(cont_effect_rid)
             {
                 return Err(Default::default());
             }
