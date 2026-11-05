@@ -17,29 +17,25 @@ def test_only_invalid_outer_char(client):
             'message': '"_..-" cannot be used as a source alias: alias is empty after pruning'})
 
 
-def test_capital_letters(client, consts):
+def test_capital_letters(client):
     eve_data = client.mk_eve_data(alias='TranQuilitY-53')
-    client.create_sources()
-    api_sol = client.create_sol(data=eve_data, sol_info_mode=consts.ApiSolInfoMode.partial)
-    assert api_sol.src_alias == 'tranquility-53'
+    api_src = client.create_source(data=eve_data)
+    assert api_src.alias == 'tranquility-53'
 
 
-def test_strip_leading(client, consts):
+def test_strip_leading(client):
     eve_data = client.mk_eve_data(alias='__.tranquility.22')
-    client.create_sources()
-    api_sol = client.create_sol(data=eve_data, sol_info_mode=consts.ApiSolInfoMode.partial)
-    assert api_sol.src_alias == 'tranquility.22'
+    api_src = client.create_source(data=eve_data)
+    assert api_src.alias == 'tranquility.22'
 
 
-def test_strip_trailing(client, consts):
+def test_strip_trailing(client):
     eve_data = client.mk_eve_data(alias='test-tranquility._-_')
-    client.create_sources()
-    api_sol = client.create_sol(data=eve_data, sol_info_mode=consts.ApiSolInfoMode.partial)
-    assert api_sol.src_alias == 'test-tranquility'
+    api_src = client.create_source(data=eve_data)
+    assert api_src.alias == 'test-tranquility'
 
 
-def test_length_limit(client, consts):
+def test_length_limit(client):
     eve_data = client.mk_eve_data(alias='a' * 150)
-    client.create_sources()
-    api_sol = client.create_sol(data=eve_data, sol_info_mode=consts.ApiSolInfoMode.partial)
-    assert api_sol.src_alias == 'a' * 100
+    api_src = client.create_source(data=eve_data)
+    assert api_src.alias == 'a' * 100
