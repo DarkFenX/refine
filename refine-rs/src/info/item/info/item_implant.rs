@@ -1,11 +1,9 @@
 use rc::ItemCommon;
 
-use super::shared::{get_attrs, get_effect_mode_overrides, get_effects, get_mods};
 #[cfg(feature = "serde")]
 use crate::ItemKind;
 use crate::{
-    AttrId, EffectId, EffectMode, FitId, ItemAttrValues, ItemEffectInfo, ItemId, ItemInfoMode, ItemTypeId,
-    Modification, SlotIndex, shared::OvrdMapLight,
+    EffectId, EffectMode, FitId, ItemId, ItemInfoFull, ItemInfoMode, ItemTypeId, SlotIndex, shared::OvrdMapLight,
 };
 
 #[cfg_attr(feature = "serde", derive(serde::Serialize))]
@@ -32,24 +30,8 @@ pub struct ImplantInfoExt {
         serde(skip_serializing_if = "Vec::is_empty")
     )]
     pub effect_mode_overrides: Vec<(EffectId, EffectMode)>,
-    #[cfg_attr(
-        feature = "serde",
-        serde_as(as = "serde_with::Map<_, _>"),
-        serde(skip_serializing_if = "Vec::is_empty")
-    )]
-    pub attrs: Vec<(AttrId, ItemAttrValues)>,
-    #[cfg_attr(
-        feature = "serde",
-        serde_as(as = "serde_with::Map<_, _>"),
-        serde(skip_serializing_if = "Vec::is_empty")
-    )]
-    pub effects: Vec<(EffectId, ItemEffectInfo)>,
-    #[cfg_attr(
-        feature = "serde",
-        serde_as(as = "serde_with::Map<_, _>"),
-        serde(skip_serializing_if = "Vec::is_empty")
-    )]
-    pub mods: Vec<(AttrId, Vec<Modification>)>,
+    #[cfg_attr(feature = "serde", serde(flatten, skip_serializing_if = "Option::is_none"))]
+    pub full: Option<ItemInfoFull>,
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -73,10 +55,8 @@ impl ImplantInfo {
                     fit_id: core_implant.get_fit_id(),
                     slot: core_implant.get_slot(),
                     state: core_implant.get_state(),
-                    effect_mode_overrides: get_effect_mode_overrides(core_implant, implant_info_mode),
-                    attrs: get_attrs(core_implant, implant_info_mode),
-                    effects: get_effects(core_implant, implant_info_mode),
-                    mods: get_mods(core_implant, implant_info_mode),
+                    effect_mode_overrides: core_implant.iter_effect_mode_overrides().collect(),
+                    full: ItemInfoFull::try_from_core(core_implant, implant_info_mode),
                 }),
             },
         }

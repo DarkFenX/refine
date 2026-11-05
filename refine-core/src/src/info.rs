@@ -38,7 +38,7 @@ pub enum SrcOriginGeneratedReason {
 
 /// Non-fatal problems encountered while building a data source.
 #[cfg_attr(feature = "serde", derive(serde::Serialize))]
-#[derive(Clone, Default)]
+#[derive(Clone)]
 pub struct SrcWarnings {
     /// Warnings recorded by EVE data handler.
     #[cfg_attr(feature = "serde", serde(skip_serializing_if = "Vec::is_empty"))]

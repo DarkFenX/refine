@@ -18,15 +18,18 @@ pub use item::{
     AbilityInfo, AttrMutationInfo, AutochargeInfo, AutochargeInfoExt, BoosterInfo, BoosterInfoExt, CharacterInfo,
     CharacterInfoExt, ChargeInfo, ChargeInfoExt, DroneInfo, DroneInfoExt, FighterInfo, FighterInfoExt,
     FitItemGetItemInfoError, FwEffectInfo, FwEffectInfoExt, ImplantInfo, ImplantInfoExt, ItemGetItemInfoError,
-    ItemInfo, ItemInfoCmd, ItemInfoCmdBr, ItemInfoMode, ItemMutationDormantInfo, ItemMutationEffectiveInfo,
-    ItemMutationInfo, ModuleInfo, ModuleInfoExt, ProjEffectInfo, ProjEffectInfoExt, ProjInfo, RangedProjInfo, RigInfo,
-    RigInfoExt, ServiceInfo, ServiceInfoExt, ShipInfo, ShipInfoExt, SideEffectInfo, SideEffectMod, SideEffectOp,
-    SkillInfo, SkillInfoExt, StanceInfo, StanceInfoExt, SubsystemInfo, SubsystemInfoExt, SwEffectInfo, SwEffectInfoExt,
+    ItemInfo, ItemInfoCmd, ItemInfoCmdBr, ItemInfoFull, ItemInfoMode, ItemMutationDormantInfo,
+    ItemMutationEffectiveInfo, ItemMutationInfo, ModuleInfo, ModuleInfoExt, ProjEffectInfo, ProjEffectInfoExt,
+    ProjInfo, RangedProjInfo, RigInfo, RigInfoExt, ServiceInfo, ServiceInfoExt, ShipInfo, ShipInfoExt, SideEffectInfo,
+    SideEffectMod, SideEffectOp, SkillInfo, SkillInfoExt, StanceInfo, StanceInfoExt, SubsystemInfo, SubsystemInfoExt,
+    SwEffectInfo, SwEffectInfoExt,
 };
 pub use refine::{RefineInfo, RefineInfoCmd};
 pub(crate) use sol::SolInfoEnumCmd;
-pub use sol::{SolInfo, SolInfoCmd, SolInfoCmdBr, SolInfoEnumCmdBr, SolInfoEnumError, SolInfoExt, SolInfoMode};
-pub use src::{SrcInfo, SrcInfoExt, SrcInfoMode};
+pub use sol::{
+    SolInfo, SolInfoCmd, SolInfoCmdBr, SolInfoEnumCmdBr, SolInfoEnumError, SolInfoExt, SolInfoFull, SolInfoMode,
+};
+pub use src::{SrcInfo, SrcInfoExt, SrcInfoFull, SrcInfoMode};
 
 mod fit;
 mod fleet;

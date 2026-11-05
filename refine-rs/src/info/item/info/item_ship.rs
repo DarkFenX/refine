@@ -1,11 +1,10 @@
 use rc::ItemCommon;
 
-use super::shared::{get_attrs, get_effect_mode_overrides, get_effects, get_mods};
 #[cfg(feature = "serde")]
 use crate::ItemKind;
 use crate::{
-    AttrId, Coordinates, EffectId, EffectMode, FitId, ItemAttrValues, ItemEffectInfo, ItemId, ItemInfoMode, ItemTypeId,
-    Modification, Movement, shared::OvrdMapLight,
+    Coordinates, EffectId, EffectMode, FitId, ItemId, ItemInfoFull, ItemInfoMode, ItemTypeId, Movement,
+    shared::OvrdMapLight,
 };
 
 #[cfg_attr(feature = "serde", derive(serde::Serialize))]
@@ -32,24 +31,8 @@ pub struct ShipInfoExt {
         serde(skip_serializing_if = "Vec::is_empty")
     )]
     pub effect_mode_overrides: Vec<(EffectId, EffectMode)>,
-    #[cfg_attr(
-        feature = "serde",
-        serde_as(as = "serde_with::Map<_, _>"),
-        serde(skip_serializing_if = "Vec::is_empty")
-    )]
-    pub attrs: Vec<(AttrId, ItemAttrValues)>,
-    #[cfg_attr(
-        feature = "serde",
-        serde_as(as = "serde_with::Map<_, _>"),
-        serde(skip_serializing_if = "Vec::is_empty")
-    )]
-    pub effects: Vec<(EffectId, ItemEffectInfo)>,
-    #[cfg_attr(
-        feature = "serde",
-        serde_as(as = "serde_with::Map<_, _>"),
-        serde(skip_serializing_if = "Vec::is_empty")
-    )]
-    pub mods: Vec<(AttrId, Vec<Modification>)>,
+    #[cfg_attr(feature = "serde", serde(flatten, skip_serializing_if = "Option::is_none"))]
+    pub full: Option<ItemInfoFull>,
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -74,10 +57,8 @@ impl ShipInfo {
                     state: core_ship.get_state(),
                     coordinates: core_ship.get_coordinates(),
                     movement: core_ship.get_movement(),
-                    effect_mode_overrides: get_effect_mode_overrides(core_ship, ship_info_mode),
-                    attrs: get_attrs(core_ship, ship_info_mode),
-                    effects: get_effects(core_ship, ship_info_mode),
-                    mods: get_mods(core_ship, ship_info_mode),
+                    effect_mode_overrides: core_ship.iter_effect_mode_overrides().collect(),
+                    full: ItemInfoFull::try_from_core(core_ship, ship_info_mode),
                 }),
             },
         }

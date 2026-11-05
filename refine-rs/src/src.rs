@@ -2,7 +2,7 @@ pub use rc::src::{SrcOrigin, SrcOriginGeneratedReason, SrcWarnings};
 
 pub use crate::{
     api::{Src, SrcAlias},
-    info::{SrcInfo, SrcInfoExt, SrcInfoMode},
+    info::{SrcInfo, SrcInfoExt, SrcInfoFull, SrcInfoMode},
 };
 
 pub mod err {

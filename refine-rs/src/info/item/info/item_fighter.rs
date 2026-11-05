@@ -1,12 +1,11 @@
 use rc::{ItemCommon, Lender};
 
-use super::shared::{get_attrs, get_effect_mode_overrides, get_effects, get_mods};
 #[cfg(feature = "serde")]
 use crate::ItemKind;
 use crate::{
-    AbilityId, AbilityInfo, AttrId, AutochargeInfo, Coordinates, CountNz, EffectId, EffectMode, FighterCountInfo,
-    FitId, ItemAttrValues, ItemEffectInfo, ItemId, ItemInfoMode, ItemTypeId, MinionState, Modification, Movement,
-    RangedProjInfo, RearmMinion, shared::OvrdMapLight,
+    AbilityId, AbilityInfo, AutochargeInfo, Coordinates, CountNz, EffectId, EffectMode, FighterCountInfo, FitId,
+    ItemId, ItemInfoFull, ItemInfoMode, ItemTypeId, MinionState, Movement, RangedProjInfo, RearmMinion,
+    shared::OvrdMapLight,
 };
 
 #[cfg_attr(feature = "serde", cfg_eval, serde_with::serde_as, derive(serde::Serialize))]
@@ -54,24 +53,8 @@ pub struct FighterInfoExt {
         serde(skip_serializing_if = "Vec::is_empty")
     )]
     pub effect_mode_overrides: Vec<(EffectId, EffectMode)>,
-    #[cfg_attr(
-        feature = "serde",
-        serde_as(as = "serde_with::Map<_, _>"),
-        serde(skip_serializing_if = "Vec::is_empty")
-    )]
-    pub attrs: Vec<(AttrId, ItemAttrValues)>,
-    #[cfg_attr(
-        feature = "serde",
-        serde_as(as = "serde_with::Map<_, _>"),
-        serde(skip_serializing_if = "Vec::is_empty")
-    )]
-    pub effects: Vec<(EffectId, ItemEffectInfo)>,
-    #[cfg_attr(
-        feature = "serde",
-        serde_as(as = "serde_with::Map<_, _>"),
-        serde(skip_serializing_if = "Vec::is_empty")
-    )]
-    pub mods: Vec<(AttrId, Vec<Modification>)>,
+    #[cfg_attr(feature = "serde", serde(flatten, skip_serializing_if = "Option::is_none"))]
+    pub full: Option<ItemInfoFull>,
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -117,10 +100,8 @@ impl FighterInfo {
                         .iter_projs()
                         .map_into_iter(RangedProjInfo::from_core)
                         .collect(),
-                    effect_mode_overrides: get_effect_mode_overrides(core_fighter, fighter_info_mode),
-                    attrs: get_attrs(core_fighter, fighter_info_mode),
-                    effects: get_effects(core_fighter, fighter_info_mode),
-                    mods: get_mods(core_fighter, fighter_info_mode),
+                    effect_mode_overrides: core_fighter.iter_effect_mode_overrides().collect(),
+                    full: ItemInfoFull::try_from_core(core_fighter, fighter_info_mode),
                 }),
             },
         }

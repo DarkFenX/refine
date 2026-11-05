@@ -4,10 +4,11 @@ pub use cmd_core::{
 pub use info::{
     AbilityInfo, AttrMutationInfo, AutochargeInfo, AutochargeInfoExt, BoosterInfo, BoosterInfoExt, CharacterInfo,
     CharacterInfoExt, ChargeInfo, ChargeInfoExt, DroneInfo, DroneInfoExt, FighterInfo, FighterInfoExt, FwEffectInfo,
-    FwEffectInfoExt, ImplantInfo, ImplantInfoExt, ItemInfo, ItemMutationDormantInfo, ItemMutationEffectiveInfo,
-    ItemMutationInfo, ModuleInfo, ModuleInfoExt, ProjEffectInfo, ProjEffectInfoExt, ProjInfo, RangedProjInfo, RigInfo,
-    RigInfoExt, ServiceInfo, ServiceInfoExt, ShipInfo, ShipInfoExt, SideEffectInfo, SideEffectMod, SideEffectOp,
-    SkillInfo, SkillInfoExt, StanceInfo, StanceInfoExt, SubsystemInfo, SubsystemInfoExt, SwEffectInfo, SwEffectInfoExt,
+    FwEffectInfoExt, ImplantInfo, ImplantInfoExt, ItemInfo, ItemInfoFull, ItemMutationDormantInfo,
+    ItemMutationEffectiveInfo, ItemMutationInfo, ModuleInfo, ModuleInfoExt, ProjEffectInfo, ProjEffectInfoExt,
+    ProjInfo, RangedProjInfo, RigInfo, RigInfoExt, ServiceInfo, ServiceInfoExt, ShipInfo, ShipInfoExt, SideEffectInfo,
+    SideEffectMod, SideEffectOp, SkillInfo, SkillInfoExt, StanceInfo, StanceInfoExt, SubsystemInfo, SubsystemInfoExt,
+    SwEffectInfo, SwEffectInfoExt,
 };
 pub use mode::ItemInfoMode;
 

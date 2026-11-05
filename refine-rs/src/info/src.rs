@@ -29,6 +29,13 @@ pub struct SrcInfoExt {
     pub time_created: time::UtcDateTime,
     pub origin: SrcOrigin,
     pub default: bool,
+    #[cfg_attr(feature = "serde", serde(flatten, skip_serializing_if = "Option::is_none"))]
+    pub full: Option<SrcInfoFull>,
+}
+
+#[cfg_attr(feature = "serde", derive(serde::Serialize))]
+#[derive(Clone)]
+pub struct SrcInfoFull {
     #[cfg_attr(feature = "serde", serde(skip_serializing_if = "SrcWarnings::is_empty"))]
     pub warnings: SrcWarnings,
 }
@@ -48,9 +55,11 @@ impl SrcInfo {
                         time_created: inner_src.get_time_created(),
                         origin: core_info.origin.clone(),
                         default: is_default,
-                        warnings: match src_info_mode {
-                            SrcInfoMode::Alias | SrcInfoMode::Partial => SrcWarnings::default(),
-                            SrcInfoMode::Full => core_info.warnings.clone(),
+                        full: match src_info_mode {
+                            SrcInfoMode::Alias | SrcInfoMode::Partial => None,
+                            SrcInfoMode::Full => Some(SrcInfoFull {
+                                warnings: core_info.warnings.clone(),
+                            }),
                         },
                     })
                 }

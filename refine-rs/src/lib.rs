@@ -25,11 +25,12 @@ pub use info::{
     CharacterInfoExt, ChargeInfo, ChargeInfoExt, DroneInfo, DroneInfoExt, FighterInfo, FighterInfoExt, FitInfo,
     FitInfoCmd, FitInfoCmdBr, FitInfoEnumCmdBr, FitInfoExt, FitInfoMode, FleetInfo, FleetInfoCmd, FleetInfoCmdBr,
     FleetInfoExt, FleetInfoMode, FwEffectInfo, FwEffectInfoExt, ImplantInfo, ImplantInfoExt, ItemInfo, ItemInfoCmd,
-    ItemInfoCmdBr, ItemInfoMode, ItemMutationDormantInfo, ItemMutationEffectiveInfo, ItemMutationInfo, ModuleInfo,
-    ModuleInfoExt, ModuleRacks, ProjEffectInfo, ProjEffectInfoExt, ProjInfo, RangedProjInfo, RefineInfo, RefineInfoCmd,
-    RigInfo, RigInfoExt, ServiceInfo, ServiceInfoExt, ShipInfo, ShipInfoExt, SideEffectInfo, SideEffectMod,
-    SideEffectOp, SkillInfo, SkillInfoExt, SolInfo, SolInfoCmd, SolInfoCmdBr, SolInfoEnumCmdBr, SolInfoExt,
-    SolInfoMode, StanceInfo, StanceInfoExt, SubsystemInfo, SubsystemInfoExt, SwEffectInfo, SwEffectInfoExt,
+    ItemInfoCmdBr, ItemInfoFull, ItemInfoMode, ItemMutationDormantInfo, ItemMutationEffectiveInfo, ItemMutationInfo,
+    ModuleInfo, ModuleInfoExt, ModuleRacks, ProjEffectInfo, ProjEffectInfoExt, ProjInfo, RangedProjInfo, RefineInfo,
+    RefineInfoCmd, RigInfo, RigInfoExt, ServiceInfo, ServiceInfoExt, ShipInfo, ShipInfoExt, SideEffectInfo,
+    SideEffectMod, SideEffectOp, SkillInfo, SkillInfoExt, SolInfo, SolInfoCmd, SolInfoCmdBr, SolInfoEnumCmdBr,
+    SolInfoExt, SolInfoFull, SolInfoMode, StanceInfo, StanceInfoExt, SubsystemInfo, SubsystemInfoExt, SwEffectInfo,
+    SwEffectInfoExt,
 };
 pub use rc::{
     AbilityId, AddMode, Affector, AttrId, BreacherProfile, Coordinates, Count, CountNz, CustomAttrId, CustomEffectId,

@@ -1,12 +1,11 @@
 use rc::{ItemCommon, Lender};
 
-use super::shared::{get_attrs, get_effect_mode_overrides, get_effects, get_mods};
 #[cfg(feature = "serde")]
 use crate::ItemKind;
 use crate::{
-    AttrId, ChargeInfo, Count, EffectId, EffectMode, FitId, ItemAttrValues, ItemEffectInfo, ItemId, ItemInfoMode,
-    ItemMutationInfo, ItemSpoolInfo, ItemTypeId, ModRack, Modification, ModuleState, OptionalReload, RackPos,
-    RangedProjInfo, Spool, TriStateField, shared::OvrdMapLight,
+    ChargeInfo, Count, EffectId, EffectMode, FitId, ItemId, ItemInfoFull, ItemInfoMode, ItemMutationInfo,
+    ItemSpoolInfo, ItemTypeId, ModRack, ModuleState, OptionalReload, RackPos, RangedProjInfo, Spool, TriStateField,
+    shared::OvrdMapLight,
 };
 
 #[cfg_attr(feature = "serde", derive(serde::Serialize))]
@@ -50,24 +49,8 @@ pub struct ModuleInfoExt {
         serde(skip_serializing_if = "Vec::is_empty")
     )]
     pub effect_mode_overrides: Vec<(EffectId, EffectMode)>,
-    #[cfg_attr(
-        feature = "serde",
-        serde_as(as = "serde_with::Map<_, _>"),
-        serde(skip_serializing_if = "Vec::is_empty")
-    )]
-    pub attrs: Vec<(AttrId, ItemAttrValues)>,
-    #[cfg_attr(
-        feature = "serde",
-        serde_as(as = "serde_with::Map<_, _>"),
-        serde(skip_serializing_if = "Vec::is_empty")
-    )]
-    pub effects: Vec<(EffectId, ItemEffectInfo)>,
-    #[cfg_attr(
-        feature = "serde",
-        serde_as(as = "serde_with::Map<_, _>"),
-        serde(skip_serializing_if = "Vec::is_empty")
-    )]
-    pub mods: Vec<(AttrId, Vec<Modification>)>,
+    #[cfg_attr(feature = "serde", serde(flatten, skip_serializing_if = "Option::is_none"))]
+    pub full: Option<ItemInfoFull>,
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -123,10 +106,8 @@ impl ModuleInfo {
                             .iter_projs()
                             .map_into_iter(RangedProjInfo::from_core)
                             .collect(),
-                        effect_mode_overrides: get_effect_mode_overrides(core_module, module_info_mode),
-                        attrs: get_attrs(core_module, module_info_mode),
-                        effects: get_effects(core_module, module_info_mode),
-                        mods: get_mods(core_module, module_info_mode),
+                        effect_mode_overrides: core_module.iter_effect_mode_overrides().collect(),
+                        full: ItemInfoFull::try_from_core(core_module, module_info_mode),
                     })
                 }
             },

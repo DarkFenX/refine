@@ -1,12 +1,8 @@
 use rc::{ItemCommon, Lender};
 
-use super::shared::{get_attrs, get_effect_mode_overrides, get_effects, get_mods};
 #[cfg(feature = "serde")]
 use crate::ItemKind;
-use crate::{
-    AttrId, EffectId, EffectMode, ItemAttrValues, ItemEffectInfo, ItemId, ItemInfoMode, ItemTypeId, Modification,
-    ProjInfo, shared::OvrdMapLight,
-};
+use crate::{EffectId, EffectMode, ItemId, ItemInfoFull, ItemInfoMode, ItemTypeId, ProjInfo, shared::OvrdMapLight};
 
 #[cfg_attr(feature = "serde", derive(serde::Serialize))]
 #[derive(Clone)]
@@ -34,24 +30,8 @@ pub struct ProjEffectInfoExt {
         serde(skip_serializing_if = "Vec::is_empty")
     )]
     pub effect_mode_overrides: Vec<(EffectId, EffectMode)>,
-    #[cfg_attr(
-        feature = "serde",
-        serde_as(as = "serde_with::Map<_, _>"),
-        serde(skip_serializing_if = "Vec::is_empty")
-    )]
-    pub attrs: Vec<(AttrId, ItemAttrValues)>,
-    #[cfg_attr(
-        feature = "serde",
-        serde_as(as = "serde_with::Map<_, _>"),
-        serde(skip_serializing_if = "Vec::is_empty")
-    )]
-    pub effects: Vec<(EffectId, ItemEffectInfo)>,
-    #[cfg_attr(
-        feature = "serde",
-        serde_as(as = "serde_with::Map<_, _>"),
-        serde(skip_serializing_if = "Vec::is_empty")
-    )]
-    pub mods: Vec<(AttrId, Vec<Modification>)>,
+    #[cfg_attr(feature = "serde", serde(flatten, skip_serializing_if = "Option::is_none"))]
+    pub full: Option<ItemInfoFull>,
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -77,10 +57,8 @@ impl ProjEffectInfo {
                         .iter_projs()
                         .map_into_iter(ProjInfo::from_core)
                         .collect(),
-                    effect_mode_overrides: get_effect_mode_overrides(core_proj_effect, proj_effect_info_mode),
-                    attrs: get_attrs(core_proj_effect, proj_effect_info_mode),
-                    effects: get_effects(core_proj_effect, proj_effect_info_mode),
-                    mods: get_mods(core_proj_effect, proj_effect_info_mode),
+                    effect_mode_overrides: core_proj_effect.iter_effect_mode_overrides().collect(),
+                    full: ItemInfoFull::try_from_core(core_proj_effect, proj_effect_info_mode),
                 }),
             },
         }

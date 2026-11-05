@@ -17,6 +17,13 @@ pub struct SolInfo {
 #[derive(Clone)]
 pub struct SolInfoExt {
     pub src_alias: SrcAlias,
+    #[cfg_attr(feature = "serde", serde(flatten, skip_serializing_if = "Option::is_none"))]
+    pub full: Option<SolInfoFull>,
+}
+
+#[cfg_attr(feature = "serde", derive(serde::Serialize))]
+#[derive(Clone)]
+pub struct SolInfoFull {
     #[cfg_attr(feature = "serde", serde(skip_serializing_if = "Vec::is_empty"))]
     pub fleets: Vec<FleetInfo>,
     #[cfg_attr(feature = "serde", serde(skip_serializing_if = "Vec::is_empty"))]
@@ -25,12 +32,9 @@ pub struct SolInfoExt {
     pub sw_effects: Vec<SwEffectInfo>,
     #[cfg_attr(feature = "serde", serde(skip_serializing_if = "Vec::is_empty"))]
     pub proj_effects: Vec<ProjEffectInfo>,
-    #[cfg_attr(feature = "serde", serde(skip_serializing_if = "Option::is_none"))]
-    pub sec_zone: Option<SecZone>,
-    #[cfg_attr(feature = "serde", serde(skip_serializing_if = "Option::is_none"))]
-    pub default_spool: Option<Spool>,
-    #[cfg_attr(feature = "serde", serde(skip_serializing_if = "Option::is_none"))]
-    pub default_incoming_dps: Option<DpsProfile>,
+    pub sec_zone: SecZone,
+    pub default_spool: Spool,
+    pub default_incoming_dps: DpsProfile,
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -68,16 +72,7 @@ impl SolInfo {
 
 impl SolInfoExt {
     pub(crate) fn from_src_alias(src_alias: SrcAlias) -> Self {
-        Self {
-            src_alias,
-            fleets: Vec::new(),
-            fits: Vec::new(),
-            sw_effects: Vec::new(),
-            proj_effects: Vec::new(),
-            sec_zone: None,
-            default_spool: None,
-            default_incoming_dps: None,
-        }
+        Self { src_alias, full: None }
     }
     pub(in crate::info) fn try_from_core(
         src_alias: SrcAlias,
@@ -89,9 +84,31 @@ impl SolInfoExt {
     ) -> Option<Self> {
         match sol_info_mode {
             SolInfoMode::Id => None,
-            SolInfoMode::Partial => Some(Self::from_src_alias(src_alias)),
-            SolInfoMode::Full => Some(Self {
+            SolInfoMode::Partial | SolInfoMode::Full => Some(Self {
                 src_alias,
+                full: SolInfoFull::try_from_core(
+                    core_sol,
+                    sol_info_mode,
+                    fleet_info_modes,
+                    fit_info_modes,
+                    item_info_modes,
+                ),
+            }),
+        }
+    }
+}
+
+impl SolInfoFull {
+    fn try_from_core(
+        core_sol: &mut rc::Sol,
+        sol_info_mode: SolInfoMode,
+        fleet_info_modes: &OvrdMapLight<FleetId, FleetInfoMode>,
+        fit_info_modes: &OvrdMapLight<FitId, FitInfoMode>,
+        item_info_modes: &OvrdMapLight<ItemId, ItemInfoMode>,
+    ) -> Option<Self> {
+        match sol_info_mode {
+            SolInfoMode::Id | SolInfoMode::Partial => None,
+            SolInfoMode::Full => Some(Self {
                 // Force fits in fleets to use ID mode regardless of passed preference. The
                 // preference will be used for fits themselves
                 fleets: core_sol
@@ -117,9 +134,9 @@ impl SolInfoExt {
                     .iter_proj_effects()
                     .map_into_iter(|mut proj_effect| ProjEffectInfo::from_core(&mut proj_effect, item_info_modes))
                     .collect(),
-                sec_zone: Some(core_sol.get_sec_zone()),
-                default_spool: Some(core_sol.get_default_spool()),
-                default_incoming_dps: Some(core_sol.get_default_incoming_dps()),
+                sec_zone: core_sol.get_sec_zone(),
+                default_spool: core_sol.get_default_spool(),
+                default_incoming_dps: core_sol.get_default_incoming_dps(),
             }),
         }
     }
