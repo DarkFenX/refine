@@ -21,7 +21,8 @@ pub use shared::{
     FullMAttrValueSetError, Mutation, MutationAddError, Proj, ProjAddError, ProjGetError, ProjIter, RangedProj,
     RangedProjIter, RawMAttr, RawMAttrGetError, RawMAttrIter,
 };
-pub(in crate::api) use shared::{active_stat_prepare, get_ship_rib};
+pub(in crate::api) use shared::{active_stat_cseq_cache, active_stat_prepare, get_ship_rib};
+pub use stats::ItemStats;
 pub(in crate::api) use traits::ItemSealed;
 pub use traits::{
     ItemAttrGetError, ItemAttrsIterError, ItemCommon, ItemEffectsIterError, ItemModifiersIterError,
@@ -47,4 +48,5 @@ mod item_stance;
 mod item_subsystem;
 mod item_sw_effect;
 mod shared;
+mod stats;
 mod traits;

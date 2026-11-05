@@ -1,4 +1,4 @@
-use crate::{EntityIter, Fleet, Sol};
+use crate::{EntityIter, Fleet, Sol, sol::SolCore, ud::UFleetId};
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Public
@@ -6,7 +6,16 @@ use crate::{EntityIter, Fleet, Sol};
 impl Sol {
     pub fn iter_fleets(&mut self) -> EntityIter<'_, Fleet<'_>> {
         let sol = self.inner_mut();
-        let fleet_uids = sol.u_data.fleets.keys().collect();
+        let fleet_uids = sol.internal_get_sol_fleets_uid();
         EntityIter::new(sol, fleet_uids)
+    }
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Private
+////////////////////////////////////////////////////////////////////////////////////////////////////
+impl SolCore {
+    pub(in crate::api) fn internal_get_sol_fleets_uid(&self) -> Vec<UFleetId> {
+        self.u_data.fleets.keys().collect()
     }
 }

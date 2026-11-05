@@ -1,6 +1,12 @@
+pub use fit_stats::FitStats;
 pub use shared::{StatFitAppliedError, StatFitCharacterError, StatFitShipAppliedError, StatFitShipError};
 
+mod fit_stats;
+mod fleet_get_fit;
+mod fleet_iter_fits;
 mod shared;
+mod sol_get_fit;
+mod sol_iter_fits;
 mod stat_char;
 mod stat_output;
 mod stat_resource;

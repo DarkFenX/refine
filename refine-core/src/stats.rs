@@ -1,6 +1,6 @@
 //! Stats-related exports
 pub use crate::{
-    api::StatItemStateOptions,
+    api::{FitStats, FleetStats, ItemStats, SolStats, StatItemStateOptions},
     svc::vast::{
         StatCapBlcNosfs, StatCapBlcRegen, StatCapBlcSrcKinds, StatCapSim, StatCapSimStagger, StatCritOptions, StatDmg,
         StatDmgApplied, StatDmgEntry, StatDmgEntryApplied, StatDmgEntryBreacher, StatDmgItemKinds, StatEhp,

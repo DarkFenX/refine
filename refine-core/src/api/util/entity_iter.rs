@@ -13,6 +13,7 @@ use crate::{
     Autocharge, Booster, Drone, Fighter, Fit, Fleet, FwEffect, Implant, Item, Module, ProjEffect, Rig, Service, Skill,
     Subsystem, SwEffect,
     sol::SolCore,
+    stats::{FitStats, FleetStats, ItemStats},
     ud::{UFitId, UFleetId, UItemId},
 };
 
@@ -341,6 +342,55 @@ impl FromUid for SwEffect<'_> {
     fn from_uid(sol: &mut SolCore, uid: Self::UId) -> Self::Handle<'_> {
         SwEffect::__check_covariance(CovariantProof::new());
         SwEffect::new(sol, uid)
+    }
+}
+// Implementations for stats
+impl EntityFamily for FleetStats<'_> {
+    type Handle<'s> = FleetStats<'s>;
+    #[inline(always)]
+    fn __check_covariance<'long: 'short, 'short>(
+        proof: CovariantProof<Self::Handle<'long>>,
+    ) -> CovariantProof<Self::Handle<'short>> {
+        proof
+    }
+}
+impl FromUid for FleetStats<'_> {
+    type UId = UFleetId;
+    fn from_uid(sol: &mut SolCore, uid: Self::UId) -> Self::Handle<'_> {
+        FleetStats::__check_covariance(CovariantProof::new());
+        FleetStats::new(sol, uid)
+    }
+}
+impl EntityFamily for FitStats<'_> {
+    type Handle<'s> = FitStats<'s>;
+    #[inline(always)]
+    fn __check_covariance<'long: 'short, 'short>(
+        proof: CovariantProof<Self::Handle<'long>>,
+    ) -> CovariantProof<Self::Handle<'short>> {
+        proof
+    }
+}
+impl FromUid for FitStats<'_> {
+    type UId = UFitId;
+    fn from_uid(sol: &mut SolCore, uid: Self::UId) -> Self::Handle<'_> {
+        FitStats::__check_covariance(CovariantProof::new());
+        FitStats::new(sol, uid)
+    }
+}
+impl EntityFamily for ItemStats<'_> {
+    type Handle<'s> = ItemStats<'s>;
+    #[inline(always)]
+    fn __check_covariance<'long: 'short, 'short>(
+        proof: CovariantProof<Self::Handle<'long>>,
+    ) -> CovariantProof<Self::Handle<'short>> {
+        proof
+    }
+}
+impl FromUid for ItemStats<'_> {
+    type UId = UItemId;
+    fn from_uid(sol: &mut SolCore, uid: Self::UId) -> Self::Handle<'_> {
+        ItemStats::__check_covariance(CovariantProof::new());
+        ItemStats::new(sol, uid)
     }
 }
 

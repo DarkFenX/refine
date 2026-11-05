@@ -1,7 +1,7 @@
 use crate::{
-    CtlAffectors, Fit, FitId, ItemCommon, PValue,
+    CtlAffectors, FitId, PValue,
     stats::{
-        StatJump, StatJumpRange,
+        FitStats, StatJump, StatJumpRange,
         err::{StatAgilityError, StatFitShipError, StatJumpError, StatMaxWarpRangeError, StatWarpSpeedError},
     },
 };
@@ -9,7 +9,7 @@ use crate::{
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Public
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-impl<'s> Fit<'s> {
+impl<'s> FitStats<'s> {
     pub fn get_stat_speed(&mut self) -> Result<PValue, StatFitShipError<!>> {
         Ok(self.get_ship_for_stats()?.get_stat_speed()?)
     }

@@ -1,9 +1,9 @@
-use crate::{CtlAffectors, Fleet, PValue, api::AffectionDir};
+use crate::{CtlAffectors, PValue, api::AffectionDir, stats::FleetStats};
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Public
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-impl<'s> Fleet<'s> {
+impl<'s> FleetStats<'s> {
     pub fn get_stat_mass(&mut self, ctl_affectors: CtlAffectors) -> PValue {
         let mut fleet_mass = PValue::ZERO;
         let savepoint = self.sol.internal_tx_savepoint();

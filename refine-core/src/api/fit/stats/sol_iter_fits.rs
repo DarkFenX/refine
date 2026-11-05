@@ -1,0 +1,14 @@
+use crate::{
+    EntityIter,
+    stats::{FitStats, SolStats},
+};
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Public
+////////////////////////////////////////////////////////////////////////////////////////////////////
+impl<'s> SolStats<'s> {
+    pub fn iter_fits(&mut self) -> EntityIter<'_, FitStats<'_>> {
+        let fit_uids = self.sol.internal_get_sol_fits_uid();
+        EntityIter::new(self.sol, fit_uids)
+    }
+}

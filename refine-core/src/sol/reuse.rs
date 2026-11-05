@@ -14,6 +14,8 @@ pub(crate) struct SolReuse {
     pub(crate) eupdates_secondary: UEffectUpdates,
     /// Keeps calculated cycle sequences, since they are reusable for some getters (mostly stats)
     pub(crate) cseq_cache: CseqCache,
+    /// Cycle sequences of stats which switch item states, valid only while they are switched.
+    pub(crate) cseq_cache_switched: CseqCache,
 }
 impl SolReuse {
     pub(crate) fn new() -> Self {
@@ -21,6 +23,7 @@ impl SolReuse {
             eupdates: UEffectUpdates::new(),
             eupdates_secondary: UEffectUpdates::new(),
             cseq_cache: CseqCache::new(),
+            cseq_cache_switched: CseqCache::new(),
         }
     }
 }

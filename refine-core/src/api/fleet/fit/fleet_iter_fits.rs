@@ -1,11 +1,24 @@
-use crate::{EntityIter, Fit, Fleet};
+use crate::{
+    EntityIter, Fit, Fleet,
+    sol::SolCore,
+    ud::{UFitId, UFleetId},
+};
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Public
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl<'s> Fleet<'s> {
     pub fn iter_fits(&mut self) -> EntityIter<'_, Fit<'_>> {
-        let fit_uids = self.sol.u_data.fleets.get(self.uid).iter_fits().collect();
+        let fit_uids = self.sol.internal_get_fleet_fits_uid(self.uid);
         EntityIter::new(self.sol, fit_uids)
+    }
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Private
+////////////////////////////////////////////////////////////////////////////////////////////////////
+impl SolCore {
+    pub(in crate::api) fn internal_get_fleet_fits_uid(&self, fleet_uid: UFleetId) -> Vec<UFitId> {
+        self.u_data.fleets.get(fleet_uid).iter_fits().collect()
     }
 }

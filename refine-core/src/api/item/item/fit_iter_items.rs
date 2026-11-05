@@ -1,4 +1,8 @@
-use crate::{EntityIter, Fit, Item};
+use crate::{
+    EntityIter, Fit, Item,
+    sol::SolCore,
+    ud::{UFitId, UItemId},
+};
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Public
@@ -6,7 +10,16 @@ use crate::{EntityIter, Fit, Item};
 impl<'s> Fit<'s> {
     /// Iterates over items stored directly on the fit (e.g. modules, but not their charges).
     pub fn iter_items(&mut self) -> EntityIter<'_, Item<'_>> {
-        let item_uids = self.sol.u_data.fits.get(self.uid).iter_direct_items().collect();
+        let item_uids = self.sol.internal_get_fit_items_uid(self.uid);
         EntityIter::new(self.sol, item_uids)
+    }
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Private
+////////////////////////////////////////////////////////////////////////////////////////////////////
+impl SolCore {
+    pub(in crate::api) fn internal_get_fit_items_uid(&self, fit_uid: UFitId) -> Vec<UItemId> {
+        self.u_data.fits.get(fit_uid).iter_direct_items().collect()
     }
 }

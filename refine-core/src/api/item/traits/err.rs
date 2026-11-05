@@ -99,7 +99,7 @@ impl<SS> StatItemAppliedError<SS>
 where
     SS: std::error::Error,
 {
-    pub(super) fn from_svc_err(svc_err: IntStatItemError<SS>, u_items: &UItems) -> Self {
+    pub(in crate::api::item) fn from_svc_err(svc_err: IntStatItemError<SS>, u_items: &UItems) -> Self {
         match svc_err {
             IntStatItemError::ItemNotLoaded(svc_err) => ItemLoadedError::from_svc_err(svc_err, u_items).into(),
             IntStatItemError::UnsupportedStat(svc_err) => SupportedStatError::from_svc_err(svc_err, u_items).into(),

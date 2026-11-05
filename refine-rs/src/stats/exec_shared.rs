@@ -20,7 +20,7 @@ pub(in crate::stats) fn get_stats_for_passed_fleets(
     core_fleets
         .map_into_iter(|mut core_fleet| {
             let fleet_id = core_fleet.get_fleet_id();
-            let fleet_stats = fleet_options.get(&fleet_id).execute(&mut core_fleet);
+            let fleet_stats = fleet_options.get(&fleet_id).execute(&mut core_fleet.stats());
             (fleet_id, fleet_stats)
         })
         .collect()
@@ -37,7 +37,7 @@ pub(in crate::stats) fn get_stats_for_fleets_in_overrides(
         let Ok(mut core_fleet) = core_sol.get_fleet(&fleet_id) else {
             continue;
         };
-        stats.push((fleet_id, options.execute(&mut core_fleet)));
+        stats.push((fleet_id, options.execute(&mut core_fleet.stats())));
     }
     stats
 }
@@ -52,7 +52,7 @@ pub(in crate::stats) fn get_stats_for_passed_fits(
     core_fits
         .map_into_iter(|mut core_fit| {
             let fit_id = core_fit.get_fit_id();
-            let fit_stats = fit_options.get(&fit_id).execute(&mut core_fit);
+            let fit_stats = fit_options.get(&fit_id).execute(&mut core_fit.stats());
             (fit_id, fit_stats)
         })
         .collect()
@@ -73,7 +73,7 @@ where
         let Some(mut core_fit) = core_fit_src.get_core_fit(&fit_id) else {
             continue;
         };
-        stats.push((fit_id, options.execute(&mut core_fit)));
+        stats.push((fit_id, options.execute(&mut core_fit.stats())));
     }
     stats
 }
@@ -102,7 +102,7 @@ fn push_item_stats(
     stats: &mut Vec<(ItemId, ItemStats)>,
 ) {
     let item_id = core_item.get_item_id();
-    let item_stats = item_options.get(&item_id).execute(core_item);
+    let item_stats = item_options.get(&item_id).execute(&mut core_item.stats());
     stats.push((item_id, item_stats));
 }
 
@@ -121,7 +121,7 @@ where
         let Some(mut core_item) = core_item_src.get_core_item(&item_id) else {
             continue;
         };
-        stats.push((item_id, options.execute(&mut core_item)));
+        stats.push((item_id, options.execute(&mut core_item.stats())));
     }
     stats
 }

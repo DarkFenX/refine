@@ -1,3 +1,5 @@
+use rc::ItemCommon;
+
 use crate::{
     CmdResps, FitId, FitIdBr, ItemId, ItemIdBr,
     err::BrResolveError,
@@ -95,7 +97,7 @@ impl ItemStatsCmdCtxItemBr {
 impl ItemStatsCmd {
     pub(crate) fn execute(self, core_item: &mut rc::Item) -> ItemStatsResp {
         ItemStatsResp {
-            item: self.item_options.stat_resolve().execute(core_item),
+            item: self.item_options.stat_resolve().execute(&mut core_item.stats()),
         }
     }
 }

@@ -1,4 +1,4 @@
-use crate::{EntityIter, Fit, Sol};
+use crate::{EntityIter, Fit, Sol, sol::SolCore, ud::UFitId};
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Public
@@ -6,7 +6,16 @@ use crate::{EntityIter, Fit, Sol};
 impl Sol {
     pub fn iter_fits(&mut self) -> EntityIter<'_, Fit<'_>> {
         let sol = self.inner_mut();
-        let fit_uids = sol.u_data.fits.keys().collect();
+        let fit_uids = sol.internal_get_sol_fits_uid();
         EntityIter::new(sol, fit_uids)
+    }
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Private
+////////////////////////////////////////////////////////////////////////////////////////////////////
+impl SolCore {
+    pub(in crate::api) fn internal_get_sol_fits_uid(&self) -> Vec<UFitId> {
+        self.u_data.fits.keys().collect()
     }
 }

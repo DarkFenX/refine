@@ -2,7 +2,7 @@ use std::ops::{Deref, DerefMut};
 
 use crate::{
     Src,
-    sol::{UndoLog, reuse::SolReuse, rev_projs::RevProjs},
+    sol::{SolReuse, UndoLog, rev_projs::RevProjs},
     svc::Svc,
     ud::UData,
 };

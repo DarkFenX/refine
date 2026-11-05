@@ -1,4 +1,4 @@
-use crate::{Fleet, FleetId, Sol, err::basic::FleetFoundError};
+use crate::{Fleet, FleetId, Sol, err::basic::FleetFoundError, sol::SolCore, ud::UFleetId};
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Public
@@ -6,7 +6,7 @@ use crate::{Fleet, FleetId, Sol, err::basic::FleetFoundError};
 impl Sol {
     pub fn get_fleet(&mut self, fleet_id: &FleetId) -> Result<Fleet<'_>, FleetGetError> {
         let sol = self.inner_mut();
-        let fleet_uid = sol.u_data.fleets.int_id_by_ext_id_err(fleet_id)?;
+        let fleet_uid = sol.internal_get_sol_fleet_uid(fleet_id)?;
         Ok(Fleet::new(sol, fleet_uid))
     }
 }
@@ -15,4 +15,13 @@ impl Sol {
 pub enum FleetGetError {
     #[error(transparent)]
     FleetNotFound(#[from] FleetFoundError),
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Private
+////////////////////////////////////////////////////////////////////////////////////////////////////
+impl SolCore {
+    pub(in crate::api) fn internal_get_sol_fleet_uid(&self, fleet_id: &FleetId) -> Result<UFleetId, FleetGetError> {
+        Ok(self.u_data.fleets.int_id_by_ext_id_err(fleet_id)?)
+    }
 }

@@ -1,10 +1,12 @@
 use crate::{
-    Character, Fit, Ship,
     err::basic::{
         FitHasCharacterError, FitHasShipError, ItemFoundError, ItemLoadedError, ItemReceiveProjError,
         SupportedStatError,
     },
-    stats::err::{StatItemAppliedError, StatItemError},
+    stats::{
+        FitStats, ItemStats,
+        err::{StatItemAppliedError, StatItemError},
+    },
     ud::ProjecteeUidError,
 };
 
@@ -127,21 +129,21 @@ where
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Private
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-impl<'s> Fit<'s> {
-    pub(super) fn get_character_for_stats(&mut self) -> Result<Character<'_>, FitHasCharacterError> {
+impl<'s> FitStats<'s> {
+    pub(super) fn get_character_for_stats(&mut self) -> Result<ItemStats<'_>, FitHasCharacterError> {
         let Some(char_uid) = self.sol.u_data.fits.get(self.uid).character else {
             return Err(FitHasCharacterError {
                 fit_id: self.sol.u_data.fits.ext_id_by_int_id(self.uid),
             });
         };
-        Ok(Character::new(self.sol, char_uid))
+        Ok(ItemStats::new(self.sol, char_uid))
     }
-    pub(super) fn get_ship_for_stats(&mut self) -> Result<Ship<'_>, FitHasShipError> {
+    pub(super) fn get_ship_for_stats(&mut self) -> Result<ItemStats<'_>, FitHasShipError> {
         let Some(ship_uid) = self.sol.u_data.fits.get(self.uid).ship else {
             return Err(FitHasShipError {
                 fit_id: self.sol.u_data.fits.ext_id_by_int_id(self.uid),
             });
         };
-        Ok(Ship::new(self.sol, ship_uid))
+        Ok(ItemStats::new(self.sol, ship_uid))
     }
 }

@@ -12,7 +12,7 @@ use crate::{
 impl Sol {
     pub fn get_item(&mut self, item_id: &ItemId) -> Result<Item<'_>, ItemGetError> {
         let sol = self.inner_mut();
-        let item_uid = sol.u_data.items.int_id_by_ext_id_err(item_id)?;
+        let item_uid = sol.internal_get_sol_item_uid(item_id)?;
         Ok(sol.internal_get_item(item_uid))
     }
 }
@@ -27,6 +27,9 @@ pub enum ItemGetError {
 // Private
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl SolCore {
+    pub(in crate::api) fn internal_get_sol_item_uid(&self, item_id: &ItemId) -> Result<UItemId, ItemGetError> {
+        Ok(self.u_data.items.int_id_by_ext_id_err(item_id)?)
+    }
     pub(in crate::api::item::item) fn internal_get_item(&mut self, item_uid: UItemId) -> Item<'_> {
         let u_item = self.u_data.items.get(item_uid);
         match u_item {

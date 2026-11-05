@@ -1,12 +1,9 @@
-use crate::{
-    Fleet,
-    stats::{StatMining, StatMiningItemKinds, StatMiningResourceKind, StatTimeOptions},
-};
+use crate::stats::{FleetStats, StatMining, StatMiningItemKinds, StatMiningResourceKind, StatTimeOptions};
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Public
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-impl<'s> Fleet<'s> {
+impl<'s> FleetStats<'s> {
     pub fn get_stat_mps(
         &mut self,
         item_kinds: StatMiningItemKinds,
@@ -14,7 +11,6 @@ impl<'s> Fleet<'s> {
         resource_kind: StatMiningResourceKind,
     ) -> StatMining {
         let u_fleet = self.sol.u_data.fleets.get(self.uid);
-        self.sol.reuse.cseq_cache.clear();
         self.sol.svc.get_stat_fits_mps(
             &mut self.sol.reuse.cseq_cache,
             &self.sol.u_data,

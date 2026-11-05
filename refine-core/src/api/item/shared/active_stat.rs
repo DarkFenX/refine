@@ -1,25 +1,22 @@
 use smallvec::SmallVec;
 
 use crate::{
-    ItemCommon, MinionState, ModuleState,
+    MinionState, ModuleState,
     rd::RState,
-    sol::{Savepoint, SolCore},
+    sol::{Savepoint, SolCore, SolReuse, UndoLog},
     stats::{StatItemChargeOptions, StatItemStateOptions},
+    svc::cycle::CseqCache,
     ud::{UItem, UItemId},
 };
 
 /// If some stat requested state to be ignored, this method checks their state, and if it's not
 /// high enough, enables/activates them, returning savepoint to roll the changes back to
-pub(in crate::api) fn active_stat_prepare<T>(
-    item: &mut T,
+pub(in crate::api) fn active_stat_prepare(
+    sol: &mut SolCore,
+    item_uid: UItemId,
     charge_options: StatItemChargeOptions,
     state_options: StatItemStateOptions,
-) -> Savepoint
-where
-    T: ItemCommon,
-{
-    let item_uid = item.get_uid();
-    let sol = item.get_sol_mut();
+) -> Savepoint {
     let savepoint = sol.internal_tx_savepoint();
     if matches!(state_options, StatItemStateOptions::Retain) {
         return savepoint;
@@ -100,6 +97,21 @@ where
         _ => (),
     }
     savepoint
+}
+
+/// Get cycle sequence cache for a stat which can manipulate item states.
+pub(in crate::api) fn active_stat_cseq_cache<'a>(
+    reuse: &'a mut SolReuse,
+    undo: &UndoLog,
+    savepoint: &Savepoint,
+) -> &'a mut CseqCache {
+    match undo.is_changed_since(savepoint) {
+        true => {
+            reuse.cseq_cache_switched.clear();
+            &mut reuse.cseq_cache_switched
+        }
+        false => &mut reuse.cseq_cache,
+    }
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////

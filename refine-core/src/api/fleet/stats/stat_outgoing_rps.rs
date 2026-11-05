@@ -1,19 +1,18 @@
 use crate::{
-    Fleet, ItemId, PValue,
-    stats::{StatOutRepItemKinds, StatOutReps, StatTimeOptions, err::StatFleetAppliedError},
+    ItemId, PValue,
+    stats::{FleetStats, StatOutRepItemKinds, StatOutReps, StatTimeOptions, err::StatFleetAppliedError},
 };
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Public
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-impl<'s> Fleet<'s> {
+impl<'s> FleetStats<'s> {
     pub fn get_stat_outgoing_rps(
         &mut self,
         item_kinds: StatOutRepItemKinds,
         time_options: StatTimeOptions,
     ) -> StatOutReps {
         let u_fleet = self.sol.u_data.fleets.get(self.uid);
-        self.sol.reuse.cseq_cache.clear();
         self.sol.svc.get_stat_fits_outgoing_rps(
             &mut self.sol.reuse.cseq_cache,
             &self.sol.u_data,
@@ -31,7 +30,6 @@ impl<'s> Fleet<'s> {
     ) -> Result<StatOutReps, StatFleetAppliedError> {
         let projectee_uid = self.get_stat_applied_projectee_uid(projectee_item_id)?;
         let u_fleet = self.sol.u_data.fleets.get(self.uid);
-        self.sol.reuse.cseq_cache.clear();
         Ok(self.sol.svc.get_stat_fits_outgoing_rps(
             &mut self.sol.reuse.cseq_cache,
             &self.sol.u_data,
@@ -43,7 +41,6 @@ impl<'s> Fleet<'s> {
     }
     pub fn get_stat_outgoing_cps(&mut self, time_options: StatTimeOptions) -> PValue {
         let u_fleet = self.sol.u_data.fleets.get(self.uid);
-        self.sol.reuse.cseq_cache.clear();
         self.sol.svc.get_stat_fits_outgoing_cps(
             &mut self.sol.reuse.cseq_cache,
             &self.sol.u_data,
@@ -59,7 +56,6 @@ impl<'s> Fleet<'s> {
     ) -> Result<PValue, StatFleetAppliedError> {
         let projectee_uid = self.get_stat_applied_projectee_uid(projectee_item_id)?;
         let u_fleet = self.sol.u_data.fleets.get(self.uid);
-        self.sol.reuse.cseq_cache.clear();
         Ok(self.sol.svc.get_stat_fits_outgoing_cps(
             &mut self.sol.reuse.cseq_cache,
             &self.sol.u_data,

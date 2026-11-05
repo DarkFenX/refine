@@ -1,5 +1,3 @@
-use rc::ItemCommon;
-
 use crate::{
     PValue, Value,
     err::BrResolveError,
@@ -15,7 +13,7 @@ use crate::{
 };
 
 impl ItemStatsOptionsResolved {
-    pub(in crate::stats) fn execute(&self, core_item: &mut rc::Item) -> ItemStats {
+    pub(in crate::stats) fn execute(&self, core_item_stats: &mut rc::stats::ItemStats) -> ItemStats {
         let Self {
             dmg,
             mps,
@@ -60,126 +58,126 @@ impl ItemStatsOptionsResolved {
         let mut stats = ItemStats { .. };
         // Output
         if let Some(options) = dmg {
-            stats.dmg = get_dmg_stats(core_item, options);
+            stats.dmg = get_dmg_stats(core_item_stats, options);
         }
         if let Some(options) = mps {
-            stats.mps = get_mps_stats(core_item, options);
+            stats.mps = get_mps_stats(core_item_stats, options);
         }
         if let Some(options) = outgoing_nps {
-            stats.outgoing_nps = get_outgoing_nps_stats(core_item, options);
+            stats.outgoing_nps = get_outgoing_nps_stats(core_item_stats, options);
         }
         if let Some(options) = outgoing_cps {
-            stats.outgoing_cps = get_outgoing_cps_stats(core_item, options);
+            stats.outgoing_cps = get_outgoing_cps_stats(core_item_stats, options);
         }
         if let Some(options) = outgoing_rps {
-            stats.outgoing_rps = get_outgoing_rps_stats(core_item, options);
+            stats.outgoing_rps = get_outgoing_rps_stats(core_item_stats, options);
         }
         // Tank
         if *resists {
-            stats.resists = StatResult::from_result_outer(core_item.get_stat_resists());
+            stats.resists = StatResult::from_result_outer(core_item_stats.get_stat_resists());
         }
         if *hp {
-            stats.hp = StatResult::from_result_outer(core_item.get_stat_hp());
+            stats.hp = StatResult::from_result_outer(core_item_stats.get_stat_hp());
         }
         if let Some(options) = ehp {
-            stats.ehp = get_ehp_stats(core_item, options);
+            stats.ehp = get_ehp_stats(core_item_stats, options);
         }
         if *wc_ehp {
-            stats.wc_ehp = StatResult::from_result_outer(core_item.get_stat_wc_ehp());
+            stats.wc_ehp = StatResult::from_result_outer(core_item_stats.get_stat_wc_ehp());
         }
         if let Some(options) = rps {
-            stats.rps = get_rps_stats(core_item, options);
+            stats.rps = get_rps_stats(core_item_stats, options);
         }
         if let Some(options) = erps {
-            stats.erps = get_erps_stats(core_item, options);
+            stats.erps = get_erps_stats(core_item_stats, options);
         }
         if *breach_resist {
-            stats.breach_resist = StatResult::from_result_outer(core_item.get_stat_breach_resist());
+            stats.breach_resist = StatResult::from_result_outer(core_item_stats.get_stat_breach_resist());
         }
         // Cap
         if *cap_amount {
-            stats.cap_amount = StatResult::from_result_outer(core_item.get_stat_cap_amount());
+            stats.cap_amount = StatResult::from_result_outer(core_item_stats.get_stat_cap_amount());
         }
         if let Some(options) = cap_balance {
-            stats.cap_balance = get_cap_balance_stats(core_item, options);
+            stats.cap_balance = get_cap_balance_stats(core_item_stats, options);
         }
         if let Some(options) = cap_sim {
-            stats.cap_sim = get_cap_sim_stats(core_item, options);
+            stats.cap_sim = get_cap_sim_stats(core_item_stats, options);
         }
         if *neut_resist {
-            stats.neut_resist = StatResult::from_result_outer(core_item.get_stat_neut_resist());
+            stats.neut_resist = StatResult::from_result_outer(core_item_stats.get_stat_neut_resist());
         }
         // Sensors
         if *locks {
-            stats.locks = StatResult::from_result_outer(core_item.get_stat_locks());
+            stats.locks = StatResult::from_result_outer(core_item_stats.get_stat_locks());
         }
         if *lock_range {
-            stats.lock_range = StatResult::from_result_outer(core_item.get_stat_lock_range());
+            stats.lock_range = StatResult::from_result_outer(core_item_stats.get_stat_lock_range());
         }
         if *scan_res {
-            stats.scan_res = StatResult::from_result_outer(core_item.get_stat_scan_res());
+            stats.scan_res = StatResult::from_result_outer(core_item_stats.get_stat_scan_res());
         }
         if *sensors {
-            stats.sensors = StatResult::from_result_outer(core_item.get_stat_sensors());
+            stats.sensors = StatResult::from_result_outer(core_item_stats.get_stat_sensors());
         }
         if *dscan_range {
-            stats.dscan_range = StatResult::from_result_outer(core_item.get_stat_dscan_range());
+            stats.dscan_range = StatResult::from_result_outer(core_item_stats.get_stat_dscan_range());
         }
         if *probing_size {
-            stats.probing_size = StatResult::from_result_outer(core_item.get_stat_probing_size());
+            stats.probing_size = StatResult::from_result_outer(core_item_stats.get_stat_probing_size());
         }
         if let Some(options) = incoming_jam {
-            stats.incoming_jam = get_incoming_jam_stats(core_item, options);
+            stats.incoming_jam = get_incoming_jam_stats(core_item_stats, options);
         }
         // Mobility
         if *speed {
-            stats.speed = StatResult::from_result_outer(core_item.get_stat_speed());
+            stats.speed = StatResult::from_result_outer(core_item_stats.get_stat_speed());
         }
         if *agility {
-            stats.agility = StatResult::from_result_outer(core_item.get_stat_agility());
+            stats.agility = StatResult::from_result_outer(core_item_stats.get_stat_agility());
         }
         if *align_time {
-            stats.align_time = StatResult::from_result_outer(core_item.get_stat_align_time());
+            stats.align_time = StatResult::from_result_outer(core_item_stats.get_stat_align_time());
         }
         if *sig_radius {
-            stats.sig_radius = StatResult::from_result_outer(core_item.get_stat_sig_radius());
+            stats.sig_radius = StatResult::from_result_outer(core_item_stats.get_stat_sig_radius());
         }
         if let Some(options) = mass {
-            stats.mass = get_mass_stats(core_item, options);
+            stats.mass = get_mass_stats(core_item_stats, options);
         }
         if *warp_speed {
-            stats.warp_speed = StatResult::from_result_outer(core_item.get_stat_warp_speed());
+            stats.warp_speed = StatResult::from_result_outer(core_item_stats.get_stat_warp_speed());
         }
         if *max_warp_range {
-            stats.max_warp_range = StatResult::from_result_outer(core_item.get_stat_max_warp_range());
+            stats.max_warp_range = StatResult::from_result_outer(core_item_stats.get_stat_max_warp_range());
         }
         if let Some(options) = jump {
-            stats.jump = get_jump_stats(core_item, options);
+            stats.jump = get_jump_stats(core_item_stats, options);
         }
         // Misc
         if *drone_control_range {
-            stats.drone_control_range = StatResult::from_result_outer(core_item.get_stat_drone_control_range());
+            stats.drone_control_range = StatResult::from_result_outer(core_item_stats.get_stat_drone_control_range());
         }
         if *can_warp {
-            stats.can_warp = StatResult::from_result_outer(core_item.get_stat_can_warp());
+            stats.can_warp = StatResult::from_result_outer(core_item_stats.get_stat_can_warp());
         }
         if *can_jump_gate {
-            stats.can_jump_gate = StatResult::from_result_outer(core_item.get_stat_can_jump_gate());
+            stats.can_jump_gate = StatResult::from_result_outer(core_item_stats.get_stat_can_jump_gate());
         }
         if *can_jump_wormhole {
-            stats.can_jump_wormhole = StatResult::from_result_outer(core_item.get_stat_can_jump_wormhole());
+            stats.can_jump_wormhole = StatResult::from_result_outer(core_item_stats.get_stat_can_jump_wormhole());
         }
         if *can_jump_drive {
-            stats.can_jump_drive = StatResult::from_result_outer(core_item.get_stat_can_jump_drive());
+            stats.can_jump_drive = StatResult::from_result_outer(core_item_stats.get_stat_can_jump_drive());
         }
         if *can_dock_station {
-            stats.can_dock_station = StatResult::from_result_outer(core_item.get_stat_can_dock_station());
+            stats.can_dock_station = StatResult::from_result_outer(core_item_stats.get_stat_can_dock_station());
         }
         if *can_dock_citadel {
-            stats.can_dock_citadel = StatResult::from_result_outer(core_item.get_stat_can_dock_citadel());
+            stats.can_dock_citadel = StatResult::from_result_outer(core_item_stats.get_stat_can_dock_citadel());
         }
         if *can_tether {
-            stats.can_tether = StatResult::from_result_outer(core_item.get_stat_can_tether());
+            stats.can_tether = StatResult::from_result_outer(core_item_stats.get_stat_can_tether());
         }
         stats
     }
@@ -189,11 +187,11 @@ impl ItemStatsOptionsResolved {
 // Output
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 fn get_dmg_stats(
-    core_item: &mut rc::Item,
+    core_item_stats: &mut rc::stats::ItemStats,
     options: &[Result<StatOptionItemDmg, BrResolveError>],
 ) -> StatResult<StatDmg, StatItemAppliedError<!>, StatBrFallibleError<StatItemAppliedError<!>>> {
     collect_stats_err_both_br(options, |option| match option.projectee_item_id {
-        Some(projectee_item_id) => core_item
+        Some(projectee_item_id) => core_item_stats
             .get_stat_dmg_applied(
                 option.time,
                 option.crits,
@@ -202,55 +200,55 @@ fn get_dmg_stats(
                 &projectee_item_id,
             )
             .map(StatDmg::from_core_applied),
-        None => core_item
+        None => core_item_stats
             .get_stat_dmg(option.time, option.crits, option.charges, option.state)
             .map(StatDmg::from_core)
             .map_err(conv_err_item),
     })
 }
 fn get_mps_stats(
-    core_item: &mut rc::Item,
+    core_item_stats: &mut rc::stats::ItemStats,
     options: &[StatOptionItemMining],
 ) -> StatResult<StatMining, StatItemError<!>, !> {
     collect_stats_err_inner(options, |option| {
-        core_item.get_stat_mps(option.time, option.resource_kind, option.state)
+        core_item_stats.get_stat_mps(option.time, option.resource_kind, option.state)
     })
 }
 fn get_outgoing_nps_stats(
-    core_item: &mut rc::Item,
+    core_item_stats: &mut rc::stats::ItemStats,
     options: &[Result<StatOptionItemOutNps, BrResolveError>],
 ) -> StatResult<PValue, StatItemAppliedError<!>, StatBrFallibleError<StatItemAppliedError<!>>> {
     collect_stats_err_both_br(options, |option| match option.projectee_item_id {
         Some(projectee_item_id) => {
-            core_item.get_stat_outgoing_nps_applied(option.time, option.charges, option.state, &projectee_item_id)
+            core_item_stats.get_stat_outgoing_nps_applied(option.time, option.charges, option.state, &projectee_item_id)
         }
-        None => core_item
+        None => core_item_stats
             .get_stat_outgoing_nps(option.time, option.charges, option.state)
             .map_err(conv_err_item),
     })
 }
 fn get_outgoing_rps_stats(
-    core_item: &mut rc::Item,
+    core_item_stats: &mut rc::stats::ItemStats,
     options: &[Result<StatOptionItemOutRps, BrResolveError>],
 ) -> StatResult<StatOutReps, StatItemAppliedError<!>, StatBrFallibleError<StatItemAppliedError<!>>> {
     collect_stats_err_both_br(options, |option| match option.projectee_item_id {
         Some(projectee_item_id) => {
-            core_item.get_stat_outgoing_rps_applied(option.time, option.state, &projectee_item_id)
+            core_item_stats.get_stat_outgoing_rps_applied(option.time, option.state, &projectee_item_id)
         }
-        None => core_item
+        None => core_item_stats
             .get_stat_outgoing_rps(option.time, option.state)
             .map_err(conv_err_item),
     })
 }
 fn get_outgoing_cps_stats(
-    core_item: &mut rc::Item,
+    core_item_stats: &mut rc::stats::ItemStats,
     options: &[Result<StatOptionItemOutCps, BrResolveError>],
 ) -> StatResult<PValue, StatItemAppliedError<!>, StatBrFallibleError<StatItemAppliedError<!>>> {
     collect_stats_err_both_br(options, |option| match option.projectee_item_id {
         Some(projectee_item_id) => {
-            core_item.get_stat_outgoing_cps_applied(option.time, option.state, &projectee_item_id)
+            core_item_stats.get_stat_outgoing_cps_applied(option.time, option.state, &projectee_item_id)
         }
-        None => core_item
+        None => core_item_stats
             .get_stat_outgoing_cps(option.time, option.state)
             .map_err(conv_err_item),
     })
@@ -259,17 +257,26 @@ fn get_outgoing_cps_stats(
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Tank
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-fn get_ehp_stats(core_item: &mut rc::Item, options: &[StatOptionEhp]) -> StatResult<StatEhp, StatItemError<!>, !> {
-    collect_stats_err_inner(options, |option| core_item.get_stat_ehp(option.incoming_dps))
+fn get_ehp_stats(
+    core_item_stats: &mut rc::stats::ItemStats,
+    options: &[StatOptionEhp],
+) -> StatResult<StatEhp, StatItemError<!>, !> {
+    collect_stats_err_inner(options, |option| core_item_stats.get_stat_ehp(option.incoming_dps))
 }
-fn get_rps_stats(core_item: &mut rc::Item, options: &[StatOptionRps]) -> StatResult<StatRps, StatItemError<!>, !> {
+fn get_rps_stats(
+    core_item_stats: &mut rc::stats::ItemStats,
+    options: &[StatOptionRps],
+) -> StatResult<StatRps, StatItemError<!>, !> {
     collect_stats_err_inner(options, |option| {
-        core_item.get_stat_rps(option.time, option.shield_perc)
+        core_item_stats.get_stat_rps(option.time, option.shield_perc)
     })
 }
-fn get_erps_stats(core_item: &mut rc::Item, options: &[StatOptionErps]) -> StatResult<StatErps, StatItemError<!>, !> {
+fn get_erps_stats(
+    core_item_stats: &mut rc::stats::ItemStats,
+    options: &[StatOptionErps],
+) -> StatResult<StatErps, StatItemError<!>, !> {
     collect_stats_err_inner(options, |option| {
-        core_item.get_stat_erps(option.incoming_dps, option.time, option.shield_perc)
+        core_item_stats.get_stat_erps(option.incoming_dps, option.time, option.shield_perc)
     })
 }
 
@@ -277,19 +284,19 @@ fn get_erps_stats(core_item: &mut rc::Item, options: &[StatOptionErps]) -> StatR
 // Cap
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 fn get_cap_balance_stats(
-    core_item: &mut rc::Item,
+    core_item_stats: &mut rc::stats::ItemStats,
     options: &[Result<StatOptionCapBlc, BrResolveError>],
 ) -> StatResult<Value, StatItemAppliedError<!>, StatBrFallibleError<StatItemAppliedError<!>>> {
     collect_stats_err_both_br(options, |option| {
-        core_item.get_stat_cap_balance(option.src_kinds, option.time)
+        core_item_stats.get_stat_cap_balance(option.src_kinds, option.time)
     })
 }
 fn get_cap_sim_stats(
-    core_item: &mut rc::Item,
+    core_item_stats: &mut rc::stats::ItemStats,
     options: &[Result<StatOptionCapSim, BrResolveError>],
 ) -> StatResult<StatCapSim, StatItemAppliedError<!>, StatBrFallibleError<StatItemAppliedError<!>>> {
     collect_stats_err_both_br(options, |option| {
-        core_item.get_stat_cap_sim(
+        core_item_stats.get_stat_cap_sim(
             option.cap_perc,
             option.optional_reloads,
             &option.stagger,
@@ -302,24 +309,27 @@ fn get_cap_sim_stats(
 // Sensors
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 fn get_incoming_jam_stats(
-    core_item: &mut rc::Item,
+    core_item_stats: &mut rc::stats::ItemStats,
     options: &[StatOptionIncomingJam],
 ) -> StatResult<StatInJam, StatItemError<!>, !> {
-    collect_stats_err_inner(options, |option| core_item.get_stat_incoming_jam(option.time))
+    collect_stats_err_inner(options, |option| core_item_stats.get_stat_incoming_jam(option.time))
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Execution getters - mobility
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-fn get_mass_stats(core_item: &mut rc::Item, options: &[StatOptionMass]) -> StatResult<PValue, StatItemError<!>, !> {
-    collect_stats_err_inner(options, |option| core_item.get_stat_mass(option.affectors))
+fn get_mass_stats(
+    core_item_stats: &mut rc::stats::ItemStats,
+    options: &[StatOptionMass],
+) -> StatResult<PValue, StatItemError<!>, !> {
+    collect_stats_err_inner(options, |option| core_item_stats.get_stat_mass(option.affectors))
 }
 fn get_jump_stats(
-    core_item: &mut rc::Item,
+    core_item_stats: &mut rc::stats::ItemStats,
     options: &[StatOptionJump],
 ) -> StatResult<StatJump, StatItemError<StatJumpError>, !> {
     collect_stats_err_inner(options, |option| {
-        core_item.get_stat_jump(option.range, &option.passenger_fit_ids, option.passenger_fuel_affectors)
+        core_item_stats.get_stat_jump(option.range, &option.passenger_fit_ids, option.passenger_fuel_affectors)
     })
 }
 

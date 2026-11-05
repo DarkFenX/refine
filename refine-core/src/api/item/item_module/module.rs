@@ -49,7 +49,12 @@ impl<'s> Module<'s> {
         get_u_module(self.sol, self.uid).get_optional_reload_override()
     }
     pub fn get_charged_cycle_count(&mut self) -> Option<Count> {
-        let savepoint = active_stat_prepare(self, StatItemChargeOptions::Exclude, StatItemStateOptions::Switch);
+        let savepoint = active_stat_prepare(
+            self.sol,
+            self.uid,
+            StatItemChargeOptions::Exclude,
+            StatItemStateOptions::Switch,
+        );
         self.sol.reuse.cseq_cache.clear();
         let result =
             match self

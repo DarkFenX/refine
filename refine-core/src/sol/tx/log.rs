@@ -128,6 +128,9 @@ impl UndoLog {
             }
         }
     }
+    pub(crate) fn is_changed_since(&self, savepoint: &Savepoint) -> bool {
+        self.steps.len() > savepoint.len
+    }
     // Record-pop pairs
     pub(crate) fn record(&mut self, step: UndoStep) {
         self.steps.push(step);

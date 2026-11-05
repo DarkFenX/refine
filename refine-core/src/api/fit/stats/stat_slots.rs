@@ -1,9 +1,9 @@
-use crate::{Fit, stats::StatSlot};
+use crate::stats::{FitStats, StatSlot};
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Public
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-impl<'s> Fit<'s> {
+impl<'s> FitStats<'s> {
     pub fn get_stat_high_slots(&mut self) -> StatSlot {
         let fit = self.sol.u_data.fits.get(self.uid);
         self.sol.svc.get_stat_fit_high_slots(&self.sol.u_data, self.uid, fit)

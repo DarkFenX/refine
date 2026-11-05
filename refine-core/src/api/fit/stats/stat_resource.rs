@@ -1,9 +1,9 @@
-use crate::{Fit, stats::StatResource};
+use crate::stats::{FitStats, StatResource};
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Public
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-impl<'s> Fit<'s> {
+impl<'s> FitStats<'s> {
     pub fn get_stat_cpu(&mut self) -> StatResource {
         let fit = self.sol.u_data.fits.get(self.uid);
         self.sol.svc.get_stat_fit_cpu(&self.sol.u_data, self.uid, fit)

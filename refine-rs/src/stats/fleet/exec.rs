@@ -11,7 +11,7 @@ use crate::{
 };
 
 impl FleetStatsOptionsResolved {
-    pub(in crate::stats) fn execute(&self, core_fleet: &mut rc::Fleet) -> FleetStats {
+    pub(in crate::stats) fn execute(&self, core_fleet_stats: &mut rc::stats::FleetStats) -> FleetStats {
         let Self {
             dmg,
             mps,
@@ -22,78 +22,84 @@ impl FleetStatsOptionsResolved {
         } = self;
         let mut stats = FleetStats { .. };
         if let Some(options) = dmg {
-            stats.dmg = get_dmg_stats(core_fleet, options);
+            stats.dmg = get_dmg_stats(core_fleet_stats, options);
         }
         if let Some(options) = mps {
-            stats.mps = get_mps_stats(core_fleet, options);
+            stats.mps = get_mps_stats(core_fleet_stats, options);
         }
         if let Some(options) = outgoing_nps {
-            stats.outgoing_nps = get_outgoing_nps_stats(core_fleet, options);
+            stats.outgoing_nps = get_outgoing_nps_stats(core_fleet_stats, options);
         }
         if let Some(options) = outgoing_cps {
-            stats.outgoing_cps = get_outgoing_cps_stats(core_fleet, options);
+            stats.outgoing_cps = get_outgoing_cps_stats(core_fleet_stats, options);
         }
         if let Some(options) = outgoing_rps {
-            stats.outgoing_rps = get_outgoing_rps_stats(core_fleet, options);
+            stats.outgoing_rps = get_outgoing_rps_stats(core_fleet_stats, options);
         }
         if let Some(options) = mass {
-            stats.mass = get_mass_stats(core_fleet, options);
+            stats.mass = get_mass_stats(core_fleet_stats, options);
         }
         stats
     }
 }
 
 fn get_dmg_stats(
-    core_fleet: &mut rc::Fleet,
+    core_fleet_stats: &mut rc::stats::FleetStats,
     options: &[Result<StatOptionFitDmg, BrResolveError>],
 ) -> StatResult<StatDmg, !, StatBrFallibleError<StatFleetAppliedError>> {
     collect_stats_err_outer_br(options, |option| match option.projectee_item_id {
-        Some(projectee_item_id) => core_fleet
+        Some(projectee_item_id) => core_fleet_stats
             .get_stat_dmg_applied(option.item_kinds, option.time, option.crits, &projectee_item_id)
             .map(StatDmg::from_core_applied),
-        None => Ok(StatDmg::from_core(core_fleet.get_stat_dmg(
+        None => Ok(StatDmg::from_core(core_fleet_stats.get_stat_dmg(
             option.item_kinds,
             option.time,
             option.crits,
         ))),
     })
 }
-fn get_mps_stats(core_fleet: &mut rc::Fleet, options: &[StatOptionFitMining]) -> StatResult<StatMining, !, !> {
+fn get_mps_stats(
+    core_fleet_stats: &mut rc::stats::FleetStats,
+    options: &[StatOptionFitMining],
+) -> StatResult<StatMining, !, !> {
     collect_stats_err_inner(options, |option| {
-        Ok(core_fleet.get_stat_mps(option.item_kinds, option.time, option.resource_kind))
+        Ok(core_fleet_stats.get_stat_mps(option.item_kinds, option.time, option.resource_kind))
     })
 }
 fn get_outgoing_nps_stats(
-    core_fleet: &mut rc::Fleet,
+    core_fleet_stats: &mut rc::stats::FleetStats,
     options: &[Result<StatOptionFitOutNps, BrResolveError>],
 ) -> StatResult<PValue, !, StatBrFallibleError<StatFleetAppliedError>> {
     collect_stats_err_outer_br(options, |option| match option.projectee_item_id {
         Some(projectee_item_id) => {
-            core_fleet.get_stat_outgoing_nps_applied(option.item_kinds, option.time, &projectee_item_id)
+            core_fleet_stats.get_stat_outgoing_nps_applied(option.item_kinds, option.time, &projectee_item_id)
         }
-        None => Ok(core_fleet.get_stat_outgoing_nps(option.item_kinds, option.time)),
+        None => Ok(core_fleet_stats.get_stat_outgoing_nps(option.item_kinds, option.time)),
     })
 }
 fn get_outgoing_rps_stats(
-    core_fleet: &mut rc::Fleet,
+    core_fleet_stats: &mut rc::stats::FleetStats,
     options: &[Result<StatOptionFitOutRps, BrResolveError>],
 ) -> StatResult<StatOutReps, !, StatBrFallibleError<StatFleetAppliedError>> {
     collect_stats_err_outer_br(options, |option| match option.projectee_item_id {
         Some(projectee_item_id) => {
-            core_fleet.get_stat_outgoing_rps_applied(option.item_kinds, option.time, &projectee_item_id)
+            core_fleet_stats.get_stat_outgoing_rps_applied(option.item_kinds, option.time, &projectee_item_id)
         }
-        None => Ok(core_fleet.get_stat_outgoing_rps(option.item_kinds, option.time)),
+        None => Ok(core_fleet_stats.get_stat_outgoing_rps(option.item_kinds, option.time)),
     })
 }
 fn get_outgoing_cps_stats(
-    core_fleet: &mut rc::Fleet,
+    core_fleet_stats: &mut rc::stats::FleetStats,
     options: &[Result<StatOptionFitOutCps, BrResolveError>],
 ) -> StatResult<PValue, !, StatBrFallibleError<StatFleetAppliedError>> {
     collect_stats_err_outer_br(options, |option| match option.projectee_item_id {
-        Some(projectee_item_id) => core_fleet.get_stat_outgoing_cps_applied(option.time, &projectee_item_id),
-        None => Ok(core_fleet.get_stat_outgoing_cps(option.time)),
+        Some(projectee_item_id) => core_fleet_stats.get_stat_outgoing_cps_applied(option.time, &projectee_item_id),
+        None => Ok(core_fleet_stats.get_stat_outgoing_cps(option.time)),
     })
 }
-fn get_mass_stats(core_fleet: &mut rc::Fleet, options: &[StatOptionMass]) -> StatResult<PValue, !, !> {
-    collect_stats_err_inner(options, |option| Ok(core_fleet.get_stat_mass(option.affectors)))
+fn get_mass_stats(
+    core_fleet_stats: &mut rc::stats::FleetStats,
+    options: &[StatOptionMass],
+) -> StatResult<PValue, !, !> {
+    collect_stats_err_inner(options, |option| Ok(core_fleet_stats.get_stat_mass(option.affectors)))
 }

@@ -125,7 +125,7 @@ impl FitStatsCmd {
             false => get_stats_for_items_in_overrides(core_fit, &item_options),
         };
         FitStatsResp {
-            fit: self.fit_options.stat_resolve().execute(core_fit),
+            fit: self.fit_options.stat_resolve().execute(&mut core_fit.stats()),
             items,
         }
     }

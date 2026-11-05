@@ -1,7 +1,7 @@
 use crate::{
-    Fit, ItemCommon, ItemId, OptionalReload, PValue, UnitInterval, Value,
+    ItemId, OptionalReload, PValue, UnitInterval, Value,
     stats::{
-        StatCapBlcSrcKinds, StatCapSim, StatCapSimStagger, StatTimeOptions,
+        FitStats, StatCapBlcSrcKinds, StatCapSim, StatCapSimStagger, StatTimeOptions,
         err::{StatFitShipAppliedError, StatFitShipError},
     },
 };
@@ -9,7 +9,7 @@ use crate::{
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Public
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-impl<'s> Fit<'s> {
+impl<'s> FitStats<'s> {
     pub fn get_stat_cap_amount(&mut self) -> Result<PValue, StatFitShipError<!>> {
         Ok(self.get_ship_for_stats()?.get_stat_cap_amount()?)
     }

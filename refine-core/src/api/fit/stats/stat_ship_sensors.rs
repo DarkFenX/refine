@@ -1,7 +1,7 @@
 use crate::{
-    Count, Fit, ItemCommon, PValue,
+    Count, PValue,
     stats::{
-        StatInJam, StatSensors, StatTimeOptions,
+        FitStats, StatInJam, StatSensors, StatTimeOptions,
         err::{StatFitShipError, StatProbingSizeError},
     },
 };
@@ -9,7 +9,7 @@ use crate::{
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Public
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-impl<'s> Fit<'s> {
+impl<'s> FitStats<'s> {
     pub fn get_stat_locks(&mut self) -> Result<Count, StatFitShipError<!>> {
         Ok(self.get_ship_for_stats()?.get_stat_locks()?)
     }

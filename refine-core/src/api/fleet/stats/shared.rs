@@ -1,6 +1,7 @@
 use crate::{
-    Fleet, ItemId,
+    ItemId,
     err::basic::{ItemFoundError, ItemReceiveProjError},
+    stats::FleetStats,
     ud::UItemId,
 };
 
@@ -18,7 +19,7 @@ pub enum StatFleetAppliedError {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Private
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-impl<'s> Fleet<'s> {
+impl<'s> FleetStats<'s> {
     pub(super) fn get_stat_applied_projectee_uid(
         &self,
         projectee_item_id: &ItemId,

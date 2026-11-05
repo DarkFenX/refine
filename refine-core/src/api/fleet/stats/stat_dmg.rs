@@ -1,12 +1,15 @@
 use crate::{
-    Fleet, ItemId,
-    stats::{StatCritOptions, StatDmg, StatDmgApplied, StatDmgItemKinds, StatTimeOptions, err::StatFleetAppliedError},
+    ItemId,
+    stats::{
+        FleetStats, StatCritOptions, StatDmg, StatDmgApplied, StatDmgItemKinds, StatTimeOptions,
+        err::StatFleetAppliedError,
+    },
 };
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Public
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-impl<'s> Fleet<'s> {
+impl<'s> FleetStats<'s> {
     pub fn get_stat_dmg(
         &mut self,
         item_kinds: StatDmgItemKinds,
@@ -14,7 +17,6 @@ impl<'s> Fleet<'s> {
         crit_options: StatCritOptions,
     ) -> StatDmg {
         let u_fleet = self.sol.u_data.fleets.get(self.uid);
-        self.sol.reuse.cseq_cache.clear();
         self.sol.svc.get_stat_fits_dmg_raw(
             &mut self.sol.reuse.cseq_cache,
             &self.sol.u_data,
@@ -33,7 +35,6 @@ impl<'s> Fleet<'s> {
     ) -> Result<StatDmgApplied, StatFleetAppliedError> {
         let projectee_uid = self.get_stat_applied_projectee_uid(projectee_item_id)?;
         let u_fleet = self.sol.u_data.fleets.get(self.uid);
-        self.sol.reuse.cseq_cache.clear();
         Ok(self.sol.svc.get_stat_fits_dmg_applied(
             &mut self.sol.reuse.cseq_cache,
             &self.sol.u_data,

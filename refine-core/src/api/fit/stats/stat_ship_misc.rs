@@ -1,9 +1,9 @@
-use crate::{Fit, ItemCommon, stats::err::StatFitShipError};
+use crate::stats::{FitStats, err::StatFitShipError};
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Public
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-impl<'s> Fit<'s> {
+impl<'s> FitStats<'s> {
     pub fn get_stat_can_warp(&mut self) -> Result<bool, StatFitShipError<!>> {
         Ok(self.get_ship_for_stats()?.get_stat_can_warp()?)
     }

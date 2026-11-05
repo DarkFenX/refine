@@ -156,7 +156,7 @@ impl FleetStatsCmd {
             false => get_stats_for_items_in_overrides(core_fleet, &item_options),
         };
         FleetStatsResp {
-            fleet: self.fleet_options.stat_resolve().execute(core_fleet),
+            fleet: self.fleet_options.stat_resolve().execute(&mut core_fleet.stats()),
             fits,
             items,
         }
