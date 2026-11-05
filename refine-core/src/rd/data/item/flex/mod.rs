@@ -1,4 +1,4 @@
-pub(crate) use attr::RItemFlexData;
+pub(crate) use flex::RItemFlexData;
 
-mod attr;
+mod flex;
 mod getters;
