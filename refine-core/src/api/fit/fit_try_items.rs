@@ -284,36 +284,16 @@ impl CoreInner {
     }
 }
 
-struct ChargeableModule {
-    type_aid: AItemId,
-    module_uid: UItemId,
-    charged: bool,
-}
-
+// Every module is tried, even if there is another one with the same type ID, since a charge also
+// depends on the state and projections of its module
 fn get_chargeable_modules(u_data: &UData, fit_uid: UFitId) -> Vec<UItemId> {
-    let mut chargeable_modules: Vec<ChargeableModule> = Vec::new();
-    for module_uid in u_data.fits.get(fit_uid).iter_module_uids() {
-        let u_item = u_data.items.get(module_uid);
-        let Some(item_rib) = u_item.get_r_item_base() else {
-            continue;
-        };
-        if item_rib.capacity <= PValue::ZERO {
-            continue;
-        }
-        let module = ChargeableModule {
-            type_aid: u_item.get_rendered_type_aid(),
-            module_uid,
-            charged: u_item.get_charge_uid().is_some(),
-        };
-        match chargeable_modules.iter_mut().find(|v| v.type_aid == module.type_aid) {
-            Some(seen_module) => {
-                // Modules without a charge are preferred
-                if seen_module.charged && !module.charged {
-                    *seen_module = module;
-                }
-            }
-            None => chargeable_modules.push(module),
-        }
-    }
-    chargeable_modules.into_iter().map(|v| v.module_uid).collect()
+    u_data
+        .fits
+        .get(fit_uid)
+        .iter_module_uids()
+        .filter(|&module_uid| match u_data.items.get(module_uid).get_r_item_base() {
+            Some(item_rib) => item_rib.capacity > PValue::ZERO,
+            None => false,
+        })
+        .collect()
 }
