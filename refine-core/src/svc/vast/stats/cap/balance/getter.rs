@@ -81,11 +81,11 @@ fn get_cap_injects(
     let mut cps = PValue::ZERO;
     let cycling_options = CyclingOptions::from_time_options(time_options);
     for (&item_uid, item_data) in fit_data.cap_injects.iter() {
-        if !get_item_cseq_map(cseq_cache, ctx, calc, item_uid, cycling_options) {
+        let Some(cseq_map) = get_item_cseq_map(cseq_cache, ctx, calc, item_uid, cycling_options) else {
             continue;
         };
         for (&effect_rid, ospec) in item_data.iter() {
-            let Some(cseq) = cseq_cache.get(&effect_rid) else {
+            let Some(cseq) = cseq_map.get(&effect_rid) else {
                 continue;
             };
             let effect = ctx.u_data.r_data.get_effect_by_rid(effect_rid);
@@ -125,11 +125,11 @@ fn get_cap_consumed(
     let mut cps = Value::ZERO;
     let cycling_options = CyclingOptions::from_time_options(time_options);
     for (&item_uid, item_data) in fit_data.cap_consumers.iter() {
-        if !get_item_cseq_map(cseq_cache, ctx, calc, item_uid, cycling_options) {
+        let Some(cseq_map) = get_item_cseq_map(cseq_cache, ctx, calc, item_uid, cycling_options) else {
             continue;
         };
         for (&effect_rid, ospec) in item_data.iter() {
-            let Some(cseq) = cseq_cache.get(&effect_rid) else {
+            let Some(cseq) = cseq_map.get(&effect_rid) else {
                 continue;
             };
             let effect = ctx.u_data.r_data.get_effect_by_rid(effect_rid);
@@ -170,11 +170,11 @@ fn get_nosfs(
     let mut cps = Value::ZERO;
     let cycling_options = CyclingOptions::from_time_options(time_options);
     for (&nosf_item_uid, item_data) in fit_data.cap_nosfs.iter() {
-        if !get_item_cseq_map(cseq_cache, ctx, calc, nosf_item_uid, cycling_options) {
+        let Some(cseq_map) = get_item_cseq_map(cseq_cache, ctx, calc, nosf_item_uid, cycling_options) else {
             continue;
         };
         for (&effect_rid, ospec) in item_data.iter() {
-            let Some(cseq) = cseq_cache.get(&effect_rid) else {
+            let Some(cseq) = cseq_map.get(&effect_rid) else {
                 continue;
             };
             let effect = ctx.u_data.r_data.get_effect_by_rid(effect_rid);
@@ -241,11 +241,11 @@ fn get_incoming_cap_transfers(
         return cps;
     };
     for (&transfer_item_uid, item_data) in transfer_data.iter() {
-        if !get_item_cseq_map(cseq_cache, ctx, calc, transfer_item_uid, cycling_options) {
+        let Some(cseq_map) = get_item_cseq_map(cseq_cache, ctx, calc, transfer_item_uid, cycling_options) else {
             continue;
-        }
+        };
         for (&effect_rid, ospec) in item_data.iter() {
-            let Some(cseq) = cseq_cache.get(&effect_rid) else {
+            let Some(cseq) = cseq_map.get(&effect_rid) else {
                 continue;
             };
             let effect = ctx.u_data.r_data.get_effect_by_rid(effect_rid);
@@ -312,11 +312,11 @@ fn get_incoming_neuts(
         return nps;
     };
     for (&neut_item_uid, item_data) in neut_data.iter() {
-        if !get_item_cseq_map(cseq_cache, ctx, calc, neut_item_uid, cycling_options) {
+        let Some(cseq_map) = get_item_cseq_map(cseq_cache, ctx, calc, neut_item_uid, cycling_options) else {
             continue;
-        }
+        };
         for (&effect_rid, ospec) in item_data.iter() {
-            let Some(cseq) = cseq_cache.get(&effect_rid) else {
+            let Some(cseq) = cseq_map.get(&effect_rid) else {
                 continue;
             };
             let effect = ctx.u_data.r_data.get_effect_by_rid(effect_rid);

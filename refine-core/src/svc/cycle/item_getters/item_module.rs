@@ -1,6 +1,7 @@
 use super::{
-    cache::CseqCache,
-    shared::{ModuleCyclingOptions, SelfKillerEffectInfo, SelfKillerItemInfo},
+    cache::{CseqCache, CseqMap},
+    cycling_options::ModuleCyclingOptions,
+    self_killers::{SelfKillerEffectInfo, SelfKillerItemInfo},
 };
 use crate::{
     Count, OptionalReload, PValue, UnitInterval, Value,
@@ -27,15 +28,15 @@ use crate::{
 };
 
 #[must_use]
-pub(super) fn get_module_cseq_map(
-    cseq_cache: &mut CseqCache,
+pub(super) fn get_module_cseq_map<'c>(
+    cseq_cache: &'c mut CseqCache,
     ctx: &SvcCtx,
     calc: &mut Calc,
     item_uid: UItemId,
     item: &UItem,
     module: &UModule,
     module_co: ModuleCyclingOptions,
-) -> bool {
+) -> Option<&'c CseqMap> {
     cseq_cache.get_or_build(item_uid, module_co, |cseq_cache, module_co| {
         build_module_cseq_map(cseq_cache, ctx, calc, item_uid, item, module, module_co)
     })

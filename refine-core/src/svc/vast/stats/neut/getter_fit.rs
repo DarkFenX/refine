@@ -72,15 +72,15 @@ fn get_nps(
     let mut nps = PValue::ZERO;
     let cycling_options = CyclingOptions::from_time_options(time_options);
     for (&item_uid, item_data) in fit_data.iter() {
-        if !get_item_cseq_map(cseq_cache, ctx, calc, item_uid, cycling_options) {
+        let Some(cseq_map) = get_item_cseq_map(cseq_cache, ctx, calc, item_uid, cycling_options) else {
             continue;
-        }
+        };
         for (&effect_rid, ospec) in item_data.iter() {
             let effect = ctx.u_data.r_data.get_effect_by_rid(effect_rid);
             if !item_kinds.resolve(effect) {
                 continue;
             }
-            let Some(cseq) = cseq_cache.get(&effect_rid) else {
+            let Some(cseq) = cseq_map.get(&effect_rid) else {
                 continue;
             };
             if let Some(accum) = match time_options {

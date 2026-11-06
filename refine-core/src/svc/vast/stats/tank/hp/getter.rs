@@ -101,11 +101,11 @@ fn get_local_ancil_hp(
 ) -> PValue {
     let mut total_ancil_hp = PValue::ZERO;
     for (&item_uid, item_data) in ancil_data.iter() {
-        if !get_item_cseq_map(cseq_cache, ctx, calc, item_uid, ANCIL_CYCLE_OPTIONS) {
+        let Some(cseq_map) = get_item_cseq_map(cseq_cache, ctx, calc, item_uid, ANCIL_CYCLE_OPTIONS) else {
             continue;
-        }
+        };
         for (&effect_rid, ospec) in item_data.iter() {
-            let Some(cseq) = cseq_cache.get(&effect_rid) else {
+            let Some(cseq) = cseq_map.get(&effect_rid) else {
                 continue;
             };
             let effect = ctx.u_data.r_data.get_effect_by_rid(effect_rid);
@@ -129,11 +129,11 @@ fn get_remote_ancil_hp(
         return total_ancil_hp;
     };
     for (&projector_item_uid, projector_data) in incoming_ancils.iter() {
-        if !get_item_cseq_map(cseq_cache, ctx, calc, projector_item_uid, ANCIL_CYCLE_OPTIONS) {
+        let Some(cseq_map) = get_item_cseq_map(cseq_cache, ctx, calc, projector_item_uid, ANCIL_CYCLE_OPTIONS) else {
             continue;
-        }
+        };
         for (&effect_rid, ospec) in projector_data.iter() {
-            let Some(cseq) = cseq_cache.get(&effect_rid) else {
+            let Some(cseq) = cseq_map.get(&effect_rid) else {
                 continue;
             };
             let effect = ctx.u_data.r_data.get_effect_by_rid(effect_rid);

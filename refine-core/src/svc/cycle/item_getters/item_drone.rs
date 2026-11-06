@@ -1,4 +1,4 @@
-use super::{cache::CseqCache, shared::DroneCyclingOptions};
+use super::{cache::CseqCache, cycling_options::DroneCyclingOptions};
 use crate::{
     svc::{
         SvcCtx,

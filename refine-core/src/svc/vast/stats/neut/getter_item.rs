@@ -26,11 +26,11 @@ impl Vast {
         check_charge_drone_fighter_module(ctx.u_data, item_uid)?;
         let mut nps = PValue::ZERO;
         let cycling_options = CyclingOptions::from_time_options(time_options);
-        if !get_item_cseq_map(cseq_cache, ctx, calc, item_uid, cycling_options) {
+        let Some(cseq_map) = get_item_cseq_map(cseq_cache, ctx, calc, item_uid, cycling_options) else {
             return Ok(nps);
-        }
+        };
         let u_item = ctx.u_data.items.get(item_uid);
-        for (&effect_rid, cseq) in cseq_cache.iter() {
+        for (&effect_rid, cseq) in cseq_map.iter() {
             let effect = ctx.u_data.r_data.get_effect_by_rid(effect_rid);
             let ospec = match &effect.neut {
                 Some(neut) if neut.check(u_item, ctx.ac()) => neut.ospec,

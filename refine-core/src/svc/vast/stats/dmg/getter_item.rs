@@ -100,10 +100,10 @@ impl Vast {
     {
         check_autocharge_charge_drone_fighter_module(ctx.u_data, item_uid)?;
         let cycling_options = CyclingOptions::from_time_options(time_options);
-        if !get_item_cseq_map(cseq_cache, ctx, calc, item_uid, cycling_options) {
+        let Some(cseq_map) = get_item_cseq_map(cseq_cache, ctx, calc, item_uid, cycling_options) else {
             return Ok(());
-        }
-        for (&effect_rid, cseq) in cseq_cache.iter() {
+        };
+        for (&effect_rid, cseq) in cseq_map.iter() {
             let effect = ctx.u_data.r_data.get_effect_by_rid(effect_rid);
             if let Some(ospec) = &effect.normal_dmg {
                 add_normal_dmg(

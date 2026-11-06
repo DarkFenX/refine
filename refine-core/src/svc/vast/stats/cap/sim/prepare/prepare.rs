@@ -86,11 +86,11 @@ fn fill_consumers(
     let direction = Direction::Loss;
     let mut stagger_map = RMapVec::new();
     for (&item_uid, item_data) in fit_data.cap_consumers.iter() {
-        if !get_item_cseq_map(cseq_cache, ctx, calc, item_uid, cycling_options) {
+        let Some(cseq_map) = get_item_cseq_map(cseq_cache, ctx, calc, item_uid, cycling_options) else {
             continue;
-        }
+        };
         for (&effect_rid, ospec) in item_data.iter() {
-            let Some(cseq) = cseq_cache.get(&effect_rid) else {
+            let Some(cseq) = cseq_map.get(&effect_rid) else {
                 continue;
             };
             let effect = ctx.u_data.r_data.get_effect_by_rid(effect_rid);
@@ -119,11 +119,11 @@ fn fill_nosfs(
     let direction = Direction::Gain;
     let mut stagger_map = RMapVec::new();
     for (&nosf_item_uid, item_data) in fit_data.cap_nosfs.iter() {
-        if !get_item_cseq_map(cseq_cache, ctx, calc, nosf_item_uid, cycling_options) {
+        let Some(cseq_map) = get_item_cseq_map(cseq_cache, ctx, calc, nosf_item_uid, cycling_options) else {
             continue;
-        }
+        };
         for (&effect_rid, ospec) in item_data.iter() {
-            let Some(cseq) = cseq_cache.get(&effect_rid) else {
+            let Some(cseq) = cseq_map.get(&effect_rid) else {
                 continue;
             };
             let effect = ctx.u_data.r_data.get_effect_by_rid(effect_rid);
@@ -165,11 +165,11 @@ fn fill_incoming_neuts(
     let direction = Direction::Loss;
     let mut stagger_map = RMapVec::new();
     for (&neut_item_uid, item_data) in neut_data.iter() {
-        if !get_item_cseq_map(cseq_cache, ctx, calc, neut_item_uid, cycling_options) {
+        let Some(cseq_map) = get_item_cseq_map(cseq_cache, ctx, calc, neut_item_uid, cycling_options) else {
             continue;
-        }
+        };
         for (&effect_rid, ospec) in item_data.iter() {
-            let Some(cseq) = cseq_cache.get(&effect_rid) else {
+            let Some(cseq) = cseq_map.get(&effect_rid) else {
                 continue;
             };
             let effect = ctx.u_data.r_data.get_effect_by_rid(effect_rid);
@@ -211,11 +211,11 @@ fn fill_incoming_transfers(
     let direction = Direction::Gain;
     let mut stagger_map = RMapVec::new();
     for (&transfer_item_uid, item_data) in transfer_data.iter() {
-        if !get_item_cseq_map(cseq_cache, ctx, calc, transfer_item_uid, cycling_options) {
+        let Some(cseq_map) = get_item_cseq_map(cseq_cache, ctx, calc, transfer_item_uid, cycling_options) else {
             continue;
-        }
+        };
         for (&effect_rid, ospec) in item_data.iter() {
-            let Some(cseq) = cseq_cache.get(&effect_rid) else {
+            let Some(cseq) = cseq_map.get(&effect_rid) else {
                 continue;
             };
             let effect = ctx.u_data.r_data.get_effect_by_rid(effect_rid);
@@ -250,11 +250,11 @@ fn fill_injectors(
     fit_data: &VastFitData,
 ) {
     for (&item_uid, item_data) in fit_data.cap_injects.iter() {
-        if !get_item_cseq_map(cseq_cache, ctx, calc, item_uid, cycling_options) {
+        let Some(cseq_map) = get_item_cseq_map(cseq_cache, ctx, calc, item_uid, cycling_options) else {
             continue;
         };
         for (&effect_rid, ospec) in item_data.iter() {
-            let Some(cseq) = cseq_cache.get(&effect_rid) else {
+            let Some(cseq) = cseq_map.get(&effect_rid) else {
                 continue;
             };
             let effect = ctx.u_data.r_data.get_effect_by_rid(effect_rid);

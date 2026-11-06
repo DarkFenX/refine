@@ -1,6 +1,7 @@
 use super::{
-    cache::CseqCache,
-    shared::{FighterCyclingOptions, SelfKillerEffectInfo, SelfKillerItemInfo},
+    cache::{CseqCache, CseqMap},
+    cycling_options::FighterCyclingOptions,
+    self_killers::{SelfKillerEffectInfo, SelfKillerItemInfo},
 };
 use crate::{
     Count, PValue, RearmMinion, UnitInterval,
@@ -19,14 +20,14 @@ use crate::{
 };
 
 #[must_use]
-pub(super) fn get_fighter_cseq_map(
-    cseq_cache: &mut CseqCache,
+pub(super) fn get_fighter_cseq_map<'c>(
+    cseq_cache: &'c mut CseqCache,
     ctx: &SvcCtx,
     calc: &mut Calc,
     item_uid: UItemId,
     fighter: &UFighter,
     fighter_co: FighterCyclingOptions,
-) -> bool {
+) -> Option<&'c CseqMap> {
     cseq_cache.get_or_build(item_uid, fighter_co, |cseq_cache, fighter_co| {
         build_fighter_cseq_map(cseq_cache, ctx, calc, item_uid, fighter, fighter_co)
     })

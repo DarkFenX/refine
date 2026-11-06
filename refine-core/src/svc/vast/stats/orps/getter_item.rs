@@ -72,10 +72,10 @@ where
 {
     let mut orps = PValue::ZERO;
     let cycling_options = CyclingOptions::from_time_options(time_options);
-    if !get_item_cseq_map(cseq_cache, ctx, calc, item_uid, cycling_options) {
+    let Some(cseq_map) = get_item_cseq_map(cseq_cache, ctx, calc, item_uid, cycling_options) else {
         return orps;
-    }
-    for (&effect_rid, cseq) in cseq_cache.iter() {
+    };
+    for (&effect_rid, cseq) in cseq_map.iter() {
         let effect = ctx.u_data.r_data.get_effect_by_rid(effect_rid);
         let Some(ospec) = rep_ospec_getter(effect) else {
             continue;

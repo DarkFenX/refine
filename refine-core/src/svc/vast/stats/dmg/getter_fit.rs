@@ -178,16 +178,16 @@ impl VastFitData {
         projectee_uid: Option<UItemId>,
     ) {
         for (&item_uid, item_data) in self.dmg_normal.iter() {
-            if !get_item_cseq_map(cseq_cache, ctx, calc, item_uid, cycling_options) {
+            let Some(cseq_map) = get_item_cseq_map(cseq_cache, ctx, calc, item_uid, cycling_options) else {
                 continue;
-            }
+            };
             let item = ctx.u_data.items.get(item_uid);
             for (&effect_rid, ospec) in item_data.iter() {
                 let effect = ctx.u_data.r_data.get_effect_by_rid(effect_rid);
                 if !item_kinds.resolve(item, effect) {
                     continue;
                 }
-                let Some(cseq) = cseq_cache.get(&effect_rid) else {
+                let Some(cseq) = cseq_map.get(&effect_rid) else {
                     continue;
                 };
                 add_normal_dmg(
@@ -218,7 +218,7 @@ impl VastFitData {
         B: BreacherAccum,
     {
         for (&item_uid, item_data) in self.dmg_breacher.iter() {
-            if !get_item_cseq_map(cseq_cache, ctx, calc, item_uid, cycling_options) {
+            let Some(cseq_map) = get_item_cseq_map(cseq_cache, ctx, calc, item_uid, cycling_options) else {
                 continue;
             };
             let item = ctx.u_data.items.get(item_uid);
@@ -227,7 +227,7 @@ impl VastFitData {
                 if !item_kinds.resolve(item, effect) {
                     continue;
                 }
-                let Some(cseq) = cseq_cache.get(&effect_rid) else {
+                let Some(cseq) = cseq_map.get(&effect_rid) else {
                     continue;
                 };
                 breacher_accum.add(ctx, calc, item_uid, effect, cseq, ospec);

@@ -1,9 +1,11 @@
 use crate::{
-    OptionalReload, PValue, RearmMinion,
-    rd::REffectId,
+    OptionalReload, RearmMinion,
     stats::{StatTimeOptions, StatTimeOptionsSim},
 };
 
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// "Public"
+////////////////////////////////////////////////////////////////////////////////////////////////////
 #[derive(Copy, Clone)]
 pub(in crate::svc) enum CyclingOptions {
     Burst,
@@ -19,6 +21,9 @@ pub(in crate::svc) struct CycleOptionsSim {
     pub(in crate::svc) rearm_minions: Option<RearmMinion> = None,
 }
 
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Item-kind-specific
+////////////////////////////////////////////////////////////////////////////////////////////////////
 /// Cycling options module and charge cycle builders read.
 #[derive(Copy, Clone)]
 pub(super) enum ModuleCyclingOptions {
@@ -36,33 +41,6 @@ pub(super) enum FighterCyclingOptions {
 /// Cycling options drone cycle builders read: none.
 #[derive(Copy, Clone)]
 pub(super) struct DroneCyclingOptions;
-
-pub(super) struct SelfKillerEffectInfo {
-    pub(super) effect_rid: REffectId,
-    pub(super) active_duration: PValue,
-}
-
-pub(super) struct SelfKillerItemInfo {
-    effect: Option<SelfKillerEffectInfo>,
-}
-impl SelfKillerItemInfo {
-    pub(super) fn new() -> Self {
-        Self { effect: None }
-    }
-    pub(super) fn push(&mut self, effect: SelfKillerEffectInfo) {
-        match &self.effect {
-            Some(stored) => {
-                if effect.active_duration < stored.active_duration {
-                    self.effect = Some(effect);
-                }
-            }
-            None => self.effect = Some(effect),
-        }
-    }
-    pub(super) fn get_effect_rid(&self) -> Option<REffectId> {
-        self.effect.as_ref().map(|v| v.effect_rid)
-    }
-}
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Conversions

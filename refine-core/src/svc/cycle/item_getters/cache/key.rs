@@ -1,7 +1,7 @@
 use super::item_co_code::ItemCyclingOptionsCode;
 use crate::{
     OptionalReload, RearmMinion,
-    svc::cycle::item_getters::shared::{DroneCyclingOptions, FighterCyclingOptions, ModuleCyclingOptions},
+    svc::cycle::item_getters::cycling_options::{DroneCyclingOptions, FighterCyclingOptions, ModuleCyclingOptions},
     ud::UItemId,
 };
 

@@ -1,4 +1,4 @@
-use super::{cache::CseqCache, item_module::get_module_cseq_map, shared::ModuleCyclingOptions};
+use super::{cache::CseqCache, cycling_options::ModuleCyclingOptions, item_module::get_module_cseq_map};
 use crate::{
     svc::{SvcCtx, calc::Calc},
     ud::{UCharge, UItem},
@@ -28,11 +28,13 @@ pub(super) fn build_charge_cseq_map(
         _ => return false,
     };
     // If cycle info for parent item is not available, charge is not cycling
-    if !get_module_cseq_map(cseq_cache, ctx, calc, cont_item_uid, cont_item, cont_module, module_co) {
+    let Some(cont_cseq_map) =
+        get_module_cseq_map(cseq_cache, ctx, calc, cont_item_uid, cont_item, cont_module, module_co)
+    else {
         return false;
-    }
+    };
     // If controlling effect is not cycling, charge is not cycling either
-    let Some(&cont_effect_cycle) = cseq_cache.get(&cont_effect_rid) else {
+    let Some(&cont_effect_cycle) = cont_cseq_map.get(&cont_effect_rid) else {
         return false;
     };
     let effect_rids = charge.get_reffs().unwrap().iter();

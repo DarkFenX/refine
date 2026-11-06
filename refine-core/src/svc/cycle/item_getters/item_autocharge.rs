@@ -1,4 +1,4 @@
-use super::{cache::CseqCache, item_fighter::get_fighter_cseq_map, shared::FighterCyclingOptions};
+use super::{cache::CseqCache, cycling_options::FighterCyclingOptions, item_fighter::get_fighter_cseq_map};
 use crate::{
     svc::{SvcCtx, calc::Calc},
     ud::{UAutocharge, UItem},
@@ -21,11 +21,12 @@ pub(super) fn build_autocharge_cseq_map(
         return false;
     };
     // Autocharge cycles rely on parent item cycles
-    if !get_fighter_cseq_map(cseq_cache, ctx, calc, cont_item_uid, cont_fighter, fighter_co) {
+    let Some(cont_cseq_map) = get_fighter_cseq_map(cseq_cache, ctx, calc, cont_item_uid, cont_fighter, fighter_co)
+    else {
         return false;
-    }
+    };
     // If effect controlling the autocharge doesn't cycle, autocharge doesn't cycle either
-    let Some(&cont_effect_cycle) = cseq_cache.get(&autocharge.get_cont_effect_rid()) else {
+    let Some(&cont_effect_cycle) = cont_cseq_map.get(&autocharge.get_cont_effect_rid()) else {
         return false;
     };
     let effect_rids = autocharge.get_reffs().unwrap().iter();
