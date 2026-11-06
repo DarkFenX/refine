@@ -1,4 +1,4 @@
-use super::cache::CseqCache;
+use super::{cache::CseqCache, shared::DroneCyclingOptions};
 use crate::{
     svc::{
         SvcCtx,
@@ -10,13 +10,16 @@ use crate::{
 };
 
 #[must_use]
-pub(super) fn get_drone_cseq_map(
+pub(super) fn build_drone_cseq_map(
     cseq_cache: &mut CseqCache,
     ctx: &SvcCtx,
     calc: &mut Calc,
     item_uid: UItemId,
     drone: &UDrone,
+    drone_co: DroneCyclingOptions,
 ) -> bool {
+    // Drones read no cycling options
+    let DroneCyclingOptions = drone_co;
     if !drone.is_loaded() {
         return false;
     };

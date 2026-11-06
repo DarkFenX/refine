@@ -1,28 +1,34 @@
-use super::{cache::CseqCache, item::get_item_cseq_map, shared::CyclingOptions};
+use super::{cache::CseqCache, item_module::get_module_cseq_map, shared::ModuleCyclingOptions};
 use crate::{
     svc::{SvcCtx, calc::Calc},
-    ud::UCharge,
+    ud::{UCharge, UItem},
 };
 
 #[must_use]
-pub(super) fn get_charge_cseq_map(
+pub(super) fn build_charge_cseq_map(
     cseq_cache: &mut CseqCache,
     ctx: &SvcCtx,
     calc: &mut Calc,
     charge: &UCharge,
-    options: CyclingOptions,
+    module_co: ModuleCyclingOptions,
 ) -> bool {
     if !charge.is_loaded() {
         return false;
     };
+    let cont_item_uid = charge.get_cont_item_uid();
+    let cont_item = ctx.u_data.items.get(cont_item_uid);
+    // Charges are loaded only into modules
+    let UItem::Module(cont_module) = cont_item else {
+        return false;
+    };
     // Default effect of parent item is assumed to control the charge. If there is none, charge is
     // not cycling
-    let cont_effect_rid = match ctx.u_data.items.get(charge.get_cont_item_uid()).get_r_item_base() {
+    let cont_effect_rid = match cont_item.get_r_item_base() {
         Some(cont_rib) if let Some(cont_effect_rid) = cont_rib.defeff_rid => cont_effect_rid,
         _ => return false,
     };
     // If cycle info for parent item is not available, charge is not cycling
-    if !get_item_cseq_map(cseq_cache, ctx, calc, charge.get_cont_item_uid(), options) {
+    if !get_module_cseq_map(cseq_cache, ctx, calc, cont_item_uid, cont_item, cont_module, module_co) {
         return false;
     }
     // If controlling effect is not cycling, charge is not cycling either

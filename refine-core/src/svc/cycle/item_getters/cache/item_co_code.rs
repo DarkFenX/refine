@@ -1,7 +1,7 @@
 /// Item's cycling options encoded as an item-type-specific code.
 #[derive(Copy, Clone)]
-pub(in crate::svc::cycle::item_getters) struct ItemCoCode(u8);
-impl ItemCoCode {
+pub(in crate::svc::cycle::item_getters) struct ItemCyclingOptionsCode(u8);
+impl ItemCyclingOptionsCode {
     pub(super) const fn from_u8(code: u8) -> Self {
         Self(code)
     }
@@ -13,7 +13,7 @@ impl ItemCoCode {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Constants
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-impl ItemCoCode {
+impl ItemCyclingOptionsCode {
     // Count of distinct values codes take
     pub(super) const COUNT: usize = 4;
 }

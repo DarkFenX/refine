@@ -1,7 +1,13 @@
-use super::{cseq_slot_position::CseqSlotPosition, generation::Generation, item_co_code::ItemCoCode, key::CacheKey};
+use super::{
+    cseq_slot_position::CseqSlotPosition,
+    generation::Generation,
+    item_co_code::ItemCyclingOptionsCode,
+    key::{CacheKey, ItemCyclingOptions},
+};
 use crate::{
     rd::REffectId,
     svc::cycle::{CSeqHardDtFull, CycleDataFull, CycleSeq},
+    ud::UItemId,
     util::{DenseId, RMap},
 };
 
@@ -49,6 +55,26 @@ impl CseqCache {
         }
     }
     // Selection
+    pub(in crate::svc::cycle::item_getters) fn get_or_build<C, F>(
+        &mut self,
+        item_uid: UItemId,
+        item_co: C,
+        builder: F,
+    ) -> bool
+    where
+        C: ItemCyclingOptions,
+        F: FnOnce(&mut Self, C) -> bool,
+    {
+        let build = match self.select_or_start_build(item_co.cache_key(item_uid)) {
+            CseqLookup::Built(cycles) => return cycles,
+            CseqLookup::Started(build) => build,
+        };
+        // The builder gets the cycling options the key was made of, and nothing else
+        let cycles = builder(self, item_co);
+        self.finish_build(build, cycles);
+        cycles
+    }
+    #[inline(always)]
     pub(in crate::svc::cycle::item_getters) fn select_or_start_build(&mut self, key: CacheKey) -> CseqLookup {
         let (item_uid, item_co_code) = key;
         // Reserve enough space to store references for requested item
@@ -115,14 +141,14 @@ impl CseqCache {
 #[derive(Copy, Clone)]
 struct ItemCell {
     generation: Generation,
-    slot_positions: [CseqSlotPosition; ItemCoCode::COUNT],
+    slot_positions: [CseqSlotPosition; ItemCyclingOptionsCode::COUNT],
 }
 impl ItemCell {
     const DEFAULT_EMPTY: Self = Self::make_empty(Generation::default());
     const fn make_empty(generation: Generation) -> Self {
         Self {
             generation,
-            slot_positions: [CseqSlotPosition::NONE; ItemCoCode::COUNT],
+            slot_positions: [CseqSlotPosition::NONE; ItemCyclingOptionsCode::COUNT],
         }
     }
 }

@@ -1,6 +1,6 @@
 use super::{
     cache::CseqCache,
-    shared::{CyclingOptions, SelfKillerEffectInfo, SelfKillerItemInfo},
+    shared::{ModuleCyclingOptions, SelfKillerEffectInfo, SelfKillerItemInfo},
 };
 use crate::{
     Count, OptionalReload, PValue, UnitInterval, Value,
@@ -34,7 +34,22 @@ pub(super) fn get_module_cseq_map(
     item_uid: UItemId,
     item: &UItem,
     module: &UModule,
-    options: CyclingOptions,
+    module_co: ModuleCyclingOptions,
+) -> bool {
+    cseq_cache.get_or_build(item_uid, module_co, |cseq_cache, module_co| {
+        build_module_cseq_map(cseq_cache, ctx, calc, item_uid, item, module, module_co)
+    })
+}
+
+#[must_use]
+pub(super) fn build_module_cseq_map(
+    cseq_cache: &mut CseqCache,
+    ctx: &SvcCtx,
+    calc: &mut Calc,
+    item_uid: UItemId,
+    item: &UItem,
+    module: &UModule,
+    module_co: ModuleCyclingOptions,
 ) -> bool {
     if !module.is_loaded() {
         return false;
@@ -50,7 +65,7 @@ pub(super) fn get_module_cseq_map(
             item,
             module,
             effect_rid,
-            options,
+            module_co,
         );
     }
     // If there are any self-killer effects, the fastest one is used, and other effects are
@@ -70,7 +85,7 @@ fn fill_module_effect_info(
     item: &UItem,
     module: &UModule,
     effect_rid: REffectId,
-    options: CyclingOptions,
+    module_co: ModuleCyclingOptions,
 ) {
     let effect = ctx.u_data.r_data.get_effect_by_rid(effect_rid);
     if !effect.is_active_with_duration {
@@ -127,11 +142,11 @@ fn fill_module_effect_info(
         );
         return;
     }
-    let sim_options = match options {
-        CyclingOptions::Sim(sim_options) => sim_options,
+    let optional_reloads = match module_co {
+        ModuleCyclingOptions::Sim { optional_reloads } => optional_reloads,
         // If burst cycle mode was requested, just assume first cycle is the "most charged", and
         // infinitely repeat it
-        CyclingOptions::Burst => {
+        ModuleCyclingOptions::Burst => {
             cseq_cache.insert(
                 effect_rid,
                 CycleSeq::LoopSin(CSeqLoopSin {
@@ -188,10 +203,7 @@ fn fill_module_effect_info(
         // Only partially charged, has to reload every cycle
         (false, true, false) => part_r(ctx, calc, item_uid, module, active_duration, charge_info.part_charged),
         // Only partially charged cycle, but can cycle without charges
-        (false, true, true) => match ctx
-            .u_data
-            .get_item_optional_reload(item_uid, sim_options.optional_reloads)
-        {
+        (false, true, true) => match ctx.u_data.get_item_optional_reload(item_uid, optional_reloads) {
             OptionalReload::OnEmpty => part_r(ctx, calc, item_uid, module, active_duration, charge_info.part_charged),
             OptionalReload::Disabled => {
                 let soft_dt = CycleSoftDtFull::try_new_for_module_regular(ctx, calc, item_uid, module);
@@ -217,10 +229,7 @@ fn fill_module_effect_info(
         // Only fully charged, has to reload after charges are out
         (true, false, false) => full_r(ctx, calc, item_uid, module, active_duration, full_count),
         // Only fully charged, but can cycle without charges
-        (true, false, true) => match ctx
-            .u_data
-            .get_item_optional_reload(item_uid, sim_options.optional_reloads)
-        {
+        (true, false, true) => match ctx.u_data.get_item_optional_reload(item_uid, optional_reloads) {
             OptionalReload::OnEmpty => full_r(ctx, calc, item_uid, module, active_duration, full_count),
             OptionalReload::Disabled => {
                 let soft_dt = CycleSoftDtFull::try_new_for_module_regular(ctx, calc, item_uid, module);
@@ -254,49 +263,44 @@ fn fill_module_effect_info(
             charge_info.part_charged,
         ),
         // Fully charged + partially charged + can cycle uncharged
-        (true, true, true) => {
-            match ctx
-                .u_data
-                .get_item_optional_reload(item_uid, sim_options.optional_reloads)
-            {
-                OptionalReload::OnEmpty => both_r(
-                    ctx,
-                    calc,
-                    item_uid,
-                    module,
-                    active_duration,
-                    full_count,
-                    charge_info.part_charged,
-                ),
-                OptionalReload::Disabled => {
-                    let soft_dt = CycleSoftDtFull::try_new_for_module_regular(ctx, calc, item_uid, module);
-                    CycleSeq::LimSinInf(CSeqLimSinInf {
-                        p1_data: CycleDataFull {
-                            active: CycleActive {
-                                duration: active_duration,
-                                chargedness: Some(UnitInterval::ONE),
-                            },
-                            soft_dt,
+        (true, true, true) => match ctx.u_data.get_item_optional_reload(item_uid, optional_reloads) {
+            OptionalReload::OnEmpty => both_r(
+                ctx,
+                calc,
+                item_uid,
+                module,
+                active_duration,
+                full_count,
+                charge_info.part_charged,
+            ),
+            OptionalReload::Disabled => {
+                let soft_dt = CycleSoftDtFull::try_new_for_module_regular(ctx, calc, item_uid, module);
+                CycleSeq::LimSinInf(CSeqLimSinInf {
+                    p1_data: CycleDataFull {
+                        active: CycleActive {
+                            duration: active_duration,
+                            chargedness: Some(UnitInterval::ONE),
                         },
-                        p1_repeat_count: full_count,
-                        p2_data: CycleDataFull {
-                            active: CycleActive {
-                                duration: active_duration,
-                                chargedness: charge_info.part_charged,
-                            },
-                            soft_dt,
+                        soft_dt,
+                    },
+                    p1_repeat_count: full_count,
+                    p2_data: CycleDataFull {
+                        active: CycleActive {
+                            duration: active_duration,
+                            chargedness: charge_info.part_charged,
                         },
-                        p3_data: CycleDataFull {
-                            active: CycleActive {
-                                duration: active_duration,
-                                chargedness: None,
-                            },
-                            soft_dt,
+                        soft_dt,
+                    },
+                    p3_data: CycleDataFull {
+                        active: CycleActive {
+                            duration: active_duration,
+                            chargedness: None,
                         },
-                    })
-                }
+                        soft_dt,
+                    },
+                })
             }
-        }
+        },
     };
     cseq_cache.insert(effect_rid, cseq);
 }

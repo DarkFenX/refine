@@ -1,6 +1,6 @@
 use super::{
     cache::CseqCache,
-    shared::{CyclingOptions, SelfKillerEffectInfo, SelfKillerItemInfo},
+    shared::{FighterCyclingOptions, SelfKillerEffectInfo, SelfKillerItemInfo},
 };
 use crate::{
     Count, PValue, RearmMinion, UnitInterval,
@@ -25,16 +25,30 @@ pub(super) fn get_fighter_cseq_map(
     calc: &mut Calc,
     item_uid: UItemId,
     fighter: &UFighter,
-    options: CyclingOptions,
+    fighter_co: FighterCyclingOptions,
+) -> bool {
+    cseq_cache.get_or_build(item_uid, fighter_co, |cseq_cache, fighter_co| {
+        build_fighter_cseq_map(cseq_cache, ctx, calc, item_uid, fighter, fighter_co)
+    })
+}
+
+#[must_use]
+pub(super) fn build_fighter_cseq_map(
+    cseq_cache: &mut CseqCache,
+    ctx: &SvcCtx,
+    calc: &mut Calc,
+    item_uid: UItemId,
+    fighter: &UFighter,
+    fighter_co: FighterCyclingOptions,
 ) -> bool {
     if !fighter.is_loaded() {
         return false;
     };
     let effect_rids = fighter.get_reffs().unwrap().iter().copied();
-    match options {
-        CyclingOptions::Burst => burst_fill_cseqs(ctx, calc, item_uid, fighter, effect_rids, cseq_cache),
-        CyclingOptions::Sim(sim_options) => {
-            let rearm_minions = ctx.u_data.get_item_rearm_minion(item_uid, sim_options.rearm_minions);
+    match fighter_co {
+        FighterCyclingOptions::Burst => burst_fill_cseqs(ctx, calc, item_uid, fighter, effect_rids, cseq_cache),
+        FighterCyclingOptions::Sim { rearm_minions } => {
+            let rearm_minions = ctx.u_data.get_item_rearm_minion(item_uid, rearm_minions);
             match rearm_minions {
                 RearmMinion::Disabled => sim_no_rearm_fill_cseqs(ctx, calc, item_uid, fighter, effect_rids, cseq_cache),
                 RearmMinion::OnFirstEmpty => {

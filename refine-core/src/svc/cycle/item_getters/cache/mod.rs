@@ -1,5 +1,6 @@
 pub(crate) use cache::CseqCache;
 pub(in crate::svc::cycle::item_getters) use cache::CseqLookup;
+pub(in crate::svc::cycle::item_getters) use key::{ItemCyclingOptions, burst_cache_key};
 
 mod cache;
 mod cseq_slot_position;

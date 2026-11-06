@@ -1,22 +1,27 @@
-use super::{cache::CseqCache, item::get_item_cseq_map, shared::CyclingOptions};
+use super::{cache::CseqCache, item_fighter::get_fighter_cseq_map, shared::FighterCyclingOptions};
 use crate::{
     svc::{SvcCtx, calc::Calc},
-    ud::UAutocharge,
+    ud::{UAutocharge, UItem},
 };
 
 #[must_use]
-pub(super) fn get_autocharge_cseq_map(
+pub(super) fn build_autocharge_cseq_map(
     cseq_cache: &mut CseqCache,
     ctx: &SvcCtx,
     calc: &mut Calc,
     autocharge: &UAutocharge,
-    options: CyclingOptions,
+    fighter_co: FighterCyclingOptions,
 ) -> bool {
     if !autocharge.is_loaded() {
         return false;
     };
+    let cont_item_uid = autocharge.get_cont_item_uid();
+    // Only fighters carry autocharges
+    let UItem::Fighter(cont_fighter) = ctx.u_data.items.get(cont_item_uid) else {
+        return false;
+    };
     // Autocharge cycles rely on parent item cycles
-    if !get_item_cseq_map(cseq_cache, ctx, calc, autocharge.get_cont_item_uid(), options) {
+    if !get_fighter_cseq_map(cseq_cache, ctx, calc, cont_item_uid, cont_fighter, fighter_co) {
         return false;
     }
     // If effect controlling the autocharge doesn't cycle, autocharge doesn't cycle either

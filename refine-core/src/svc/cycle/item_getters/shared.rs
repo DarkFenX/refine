@@ -19,6 +19,24 @@ pub(in crate::svc) struct CycleOptionsSim {
     pub(in crate::svc) rearm_minions: Option<RearmMinion> = None,
 }
 
+/// Cycling options module and charge cycle builders read.
+#[derive(Copy, Clone)]
+pub(super) enum ModuleCyclingOptions {
+    Burst,
+    Sim { optional_reloads: Option<OptionalReload> },
+}
+
+/// Cycling options fighter and autocharge cycle builders read.
+#[derive(Copy, Clone)]
+pub(super) enum FighterCyclingOptions {
+    Burst,
+    Sim { rearm_minions: Option<RearmMinion> },
+}
+
+/// Cycling options drone cycle builders read: none.
+#[derive(Copy, Clone)]
+pub(super) struct DroneCyclingOptions;
+
 pub(super) struct SelfKillerEffectInfo {
     pub(super) effect_rid: REffectId,
     pub(super) active_duration: PValue,
@@ -63,6 +81,42 @@ impl CycleOptionsSim {
         Self {
             optional_reloads: time_options_sim.optional_reloads,
             rearm_minions: time_options_sim.rearm_minions,
+        }
+    }
+}
+
+impl ModuleCyclingOptions {
+    pub(super) fn from_cycling_options(options: CyclingOptions) -> Self {
+        match options {
+            CyclingOptions::Burst => Self::Burst,
+            CyclingOptions::Sim(CycleOptionsSim {
+                optional_reloads,
+                rearm_minions: _,
+            }) => Self::Sim { optional_reloads },
+        }
+    }
+}
+
+impl FighterCyclingOptions {
+    pub(super) fn from_cycling_options(options: CyclingOptions) -> Self {
+        match options {
+            CyclingOptions::Burst => Self::Burst,
+            CyclingOptions::Sim(CycleOptionsSim {
+                optional_reloads: _,
+                rearm_minions,
+            }) => Self::Sim { rearm_minions },
+        }
+    }
+}
+
+impl DroneCyclingOptions {
+    pub(super) fn from_cycling_options(options: CyclingOptions) -> Self {
+        match options {
+            CyclingOptions::Burst
+            | CyclingOptions::Sim(CycleOptionsSim {
+                optional_reloads: _,
+                rearm_minions: _,
+            }) => Self,
         }
     }
 }
