@@ -20,11 +20,11 @@ pub(in crate::svc) fn get_item_cseq_map(
     item_uid: UItemId,
     options: CyclingOptions,
 ) -> bool {
-    let build = match cseq_cache.select_or_start_build((item_uid, options.cache_key())) {
+    let item = ctx.u_data.items.get(item_uid);
+    let build = match cseq_cache.select_or_start_build((item_uid, options.cache_key(item))) {
         CseqLookup::Built(cycles) => return cycles,
         CseqLookup::Started(build) => build,
     };
-    let item = ctx.u_data.items.get(item_uid);
     let cycles = match item {
         UItem::Autocharge(autocharge) => get_autocharge_cseq_map(cseq_cache, ctx, calc, autocharge, options),
         UItem::Charge(charge) => get_charge_cseq_map(cseq_cache, ctx, calc, charge, options),
