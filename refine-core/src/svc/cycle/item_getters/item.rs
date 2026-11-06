@@ -21,7 +21,7 @@ pub(in crate::svc) fn get_item_cseq_map(
     options: CyclingOptions,
 ) -> bool {
     let item = ctx.u_data.items.get(item_uid);
-    let build = match cseq_cache.select_or_start_build((item_uid, options.cache_key(item))) {
+    let build = match cseq_cache.select_or_start_build(options.cache_key(item_uid, item)) {
         CseqLookup::Built(cycles) => return cycles,
         CseqLookup::Started(build) => build,
     };

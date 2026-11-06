@@ -1,8 +1,4 @@
-use super::{
-    generation::Generation,
-    key::{CACHE_KEY_COUNT, CacheKey},
-    short_index::ShortIndex,
-};
+use super::{cseq_slot_position::CseqSlotPosition, generation::Generation, item_co_code::ItemCoCode, key::CacheKey};
 use crate::{
     rd::REffectId,
     svc::cycle::{CSeqHardDtFull, CycleDataFull, CycleSeq},
@@ -19,7 +15,7 @@ pub(crate) struct CseqCache {
     // Current generation of cache. Item cells with generation mismatch are considered stale
     generation: Generation,
     // Holds data for every item, reusing its dense ID as index here. The data contains one or more
-    // references to cseq slots, which are picked according to cycling options
+    // references to cseq slots, which are picked by item cycling options code
     item_cells: Vec<ItemCell>,
     // Actual cseq map of an item + cycling option combination. Slots past the used ones are
     // emptied, and kept to avoid allocations
@@ -54,7 +50,7 @@ impl CseqCache {
     }
     // Selection
     pub(in crate::svc::cycle::item_getters) fn select_or_start_build(&mut self, key: CacheKey) -> CseqLookup {
-        let (item_uid, code) = key;
+        let (item_uid, item_co_code) = key;
         // Reserve enough space to store references for requested item
         let item_index = item_uid.index();
         if item_index >= self.item_cells.len() {
@@ -65,15 +61,15 @@ impl CseqCache {
         if item_cell.generation != self.generation {
             *item_cell = ItemCell::make_empty(self.generation);
         }
-        let slot_position = item_cell.slot_positions[code as usize];
+        let slot_position = item_cell.slot_positions[item_co_code.into_usize()];
         // If generation matches and data is there already, return it
-        if slot_position != ShortIndex::NO_SLOT {
+        if slot_position != CseqSlotPosition::NONE {
             self.cseq_slot_current = slot_position.into_usize();
             return CseqLookup::Built(self.cseq_slots[self.cseq_slot_current].cycles);
         }
         // Start calculating cseq - add new empty cseq slot, and reference it
         let slot_position = self.cseq_slots_used;
-        item_cell.slot_positions[code as usize] = ShortIndex::from_usize(slot_position);
+        item_cell.slot_positions[item_co_code.into_usize()] = CseqSlotPosition::from_usize(slot_position);
         self.cseq_slots_used += 1;
         if slot_position == self.cseq_slots.len() {
             self.cseq_slots.push(CseqSlot::new());
@@ -81,16 +77,18 @@ impl CseqCache {
         // Builds can nest (e.g. charges build their containers), so the build in progress is
         // resumed once this one finishes
         let parent = std::mem::replace(&mut self.cseq_slot_building, slot_position);
-        CseqLookup::Started(CseqBuild { slot_position, parent })
+        CseqLookup::Started(CseqBuild { parent })
     }
     pub(in crate::svc::cycle::item_getters) fn finish_build(&mut self, build: CseqBuild, cycles: bool) {
-        let slot = &mut self.cseq_slots[build.slot_position];
-        slot.cycles = cycles;
+        // Builds nested into this one have restored the building cursor already, so it points at
+        // this build's slot
+        let slot_position = std::mem::replace(&mut self.cseq_slot_building, build.parent);
+        let cseq_slot = &mut self.cseq_slots[slot_position];
+        cseq_slot.cycles = cycles;
         if !cycles {
-            slot.seqs.clear();
+            cseq_slot.seqs.clear();
         }
-        self.cseq_slot_building = build.parent;
-        self.cseq_slot_current = build.slot_position;
+        self.cseq_slot_current = slot_position;
     }
     // Building
     pub(in crate::svc) fn reserve(&mut self, additional: usize) {
@@ -111,17 +109,20 @@ impl CseqCache {
     }
 }
 
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Helper data entities
+////////////////////////////////////////////////////////////////////////////////////////////////////
 #[derive(Copy, Clone)]
 struct ItemCell {
     generation: Generation,
-    slot_positions: [ShortIndex; CACHE_KEY_COUNT],
+    slot_positions: [CseqSlotPosition; ItemCoCode::COUNT],
 }
 impl ItemCell {
     const DEFAULT_EMPTY: Self = Self::make_empty(Generation::default());
     const fn make_empty(generation: Generation) -> Self {
         Self {
             generation,
-            slot_positions: [ShortIndex::NO_SLOT; CACHE_KEY_COUNT],
+            slot_positions: [CseqSlotPosition::NONE; ItemCoCode::COUNT],
         }
     }
 }
@@ -144,7 +145,8 @@ pub(in crate::svc::cycle::item_getters) enum CseqLookup {
     Started(CseqBuild),
 }
 
+/// Cseq build in progress, holding the building cursor to restore once it finishes (slot position
+/// of the build it nested into, if any).
 pub(in crate::svc::cycle::item_getters) struct CseqBuild {
-    slot_position: usize,
     parent: usize,
 }
