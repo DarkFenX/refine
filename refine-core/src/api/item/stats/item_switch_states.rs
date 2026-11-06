@@ -1,0 +1,11 @@
+use crate::stats::{ItemStats, SwitchedItemStats};
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Public
+////////////////////////////////////////////////////////////////////////////////////////////////////
+impl<'s> ItemStats<'s> {
+    /// Switches states up for the item to apply its effects, until the returned guard is dropped.
+    pub fn switch_states(&mut self) -> SwitchedItemStats<'_> {
+        SwitchedItemStats::new(self.sol, self.uid)
+    }
+}

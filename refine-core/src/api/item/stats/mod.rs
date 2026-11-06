@@ -1,6 +1,5 @@
-pub use item_stats::ItemStats;
+pub use item_stats::{ItemStats, SwitchedItemStats};
 pub use stat_output::ItemOutputStats;
-pub use switched_item_stats::SwitchedItemStats;
 
 mod fit_get_item;
 mod fit_iter_items;
@@ -16,4 +15,3 @@ mod stat_mobility;
 mod stat_output;
 mod stat_sensors;
 mod stat_tank;
-mod switched_item_stats;
