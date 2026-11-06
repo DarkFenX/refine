@@ -1,4 +1,4 @@
-use rc::stats::ItemOutputStats;
+use rc::stats::ItemStatsCommon;
 
 use crate::{
     PValue, Value,
@@ -235,7 +235,7 @@ impl ItemStatsOptionsResolved {
 // Output stats are available on both item stats and item stats with switched states
 fn get_dmg_stat<S>(core_item_stats: &mut S, option: &StatOptionItemDmg) -> Result<StatDmg, StatItemAppliedError<!>>
 where
-    S: ItemOutputStats,
+    S: ItemStatsCommon,
 {
     match option.projectee_item_id {
         Some(projectee_item_id) => core_item_stats
@@ -249,7 +249,7 @@ where
 }
 fn get_mps_stat<S>(core_item_stats: &mut S, option: &StatOptionItemMining) -> Result<StatMining, StatItemError<!>>
 where
-    S: ItemOutputStats,
+    S: ItemStatsCommon,
 {
     core_item_stats.get_stat_mps(option.time, option.resource_kind)
 }
@@ -258,7 +258,7 @@ fn get_outgoing_nps_stat<S>(
     option: &StatOptionItemOutNps,
 ) -> Result<PValue, StatItemAppliedError<!>>
 where
-    S: ItemOutputStats,
+    S: ItemStatsCommon,
 {
     match option.projectee_item_id {
         Some(projectee_item_id) => {
@@ -274,7 +274,7 @@ fn get_outgoing_rps_stat<S>(
     option: &StatOptionItemOutRps,
 ) -> Result<StatOutReps, StatItemAppliedError<!>>
 where
-    S: ItemOutputStats,
+    S: ItemStatsCommon,
 {
     match option.projectee_item_id {
         Some(projectee_item_id) => core_item_stats.get_stat_outgoing_rps_applied(option.time, &projectee_item_id),
@@ -288,7 +288,7 @@ fn get_outgoing_cps_stat<S>(
     option: &StatOptionItemOutCps,
 ) -> Result<PValue, StatItemAppliedError<!>>
 where
-    S: ItemOutputStats,
+    S: ItemStatsCommon,
 {
     match option.projectee_item_id {
         Some(projectee_item_id) => core_item_stats.get_stat_outgoing_cps_applied(option.time, &projectee_item_id),

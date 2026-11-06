@@ -22,7 +22,7 @@ pub use shared::{
     FullMAttrValueSetError, Mutation, MutationAddError, Proj, ProjAddError, ProjGetError, ProjIter, RangedProj,
     RangedProjIter, RawMAttr, RawMAttrGetError, RawMAttrIter,
 };
-pub use stats::{ItemOutputStats, ItemStats, SwitchedItemStats};
+pub use stats::{ItemStats, ItemStatsCommon, SwitchedItemStats};
 pub(in crate::api) use traits::ItemSealed;
 pub use traits::{
     ItemAttrGetError, ItemAttrsIterError, ItemCommon, ItemEffectsIterError, ItemModifiersIterError,

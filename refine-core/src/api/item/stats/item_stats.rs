@@ -1,5 +1,4 @@
 use crate::{
-    ItemId,
     sol::{Savepoint, SolCore},
     ud::UItemId,
 };
@@ -12,12 +11,6 @@ pub struct ItemStats<'s> {
     pub(in crate::api) sol: &'s mut SolCore,
     pub(in crate::api) uid: UItemId,
 }
-impl<'s> ItemStats<'s> {
-    pub fn get_item_id(&self) -> ItemId {
-        self.sol.u_data.items.ext_id_by_int_id(self.uid)
-    }
-}
-
 /// Stats of an item, with states of the item and items related to it switched up for the item to
 /// apply its effects, e.g. modules are enabled, fighters are engaged.
 ///

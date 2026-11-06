@@ -11,7 +11,7 @@ pub use item::{
     EffectiveMutation, Fighter, FighterGetError, FitItemAutodetectAddError, FitItemGetError, FleetItemGetError,
     FullMAttr, FullMAttrGetError, FullMAttrIter, FullMAttrValueSetError, FwEffect, FwEffectGetError, Implant,
     ImplantGetError, Item, ItemAttrGetError, ItemAttrsIterError, ItemCommon, ItemEffectsIterError, ItemGetError,
-    ItemModifiersIterError, ItemOutputStats, ItemRemoveError, ItemStats, Module, ModuleAddError, ModuleGetError,
+    ItemModifiersIterError, ItemRemoveError, ItemStats, ItemStatsCommon, Module, ModuleAddError, ModuleGetError,
     Mutation, MutationAddError, Proj, ProjAddError, ProjEffect, ProjEffectGetError, ProjGetError, ProjIter, RangedProj,
     RangedProjIter, RawMAttr, RawMAttrGetError, RawMAttrIter, Rig, RigGetError, Service, ServiceGetError, Ship,
     ShipGetError, SideEffect, SideEffectGetError, SideEffectIter, SideEffectStr, Skill, SkillAddError, SkillGetError,

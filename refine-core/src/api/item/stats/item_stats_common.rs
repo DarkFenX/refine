@@ -12,10 +12,12 @@ use crate::{
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Public
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-/// Item stats which are available with item states switched up as well, see
-/// [`ItemStats::switch_states`].
+/// Methods shared by regular and state-switched item stats.
 #[expect(private_bounds)]
-pub trait ItemOutputStats: ItemOutputStatsSealed {
+pub trait ItemStatsCommon: ItemStatsSealed {
+    fn get_item_id(&self) -> ItemId {
+        self.get_sol().u_data.items.ext_id_by_int_id(self.get_uid())
+    }
     fn get_stat_dmg(
         &mut self,
         time_options: StatTimeOptions,
@@ -183,21 +185,25 @@ pub trait ItemOutputStats: ItemOutputStatsSealed {
             .map_err(|e| StatItemAppliedError::from_svc_err(e, &sol.u_data.items))
     }
 }
-impl ItemOutputStats for ItemStats<'_> {}
-impl ItemOutputStats for SwitchedItemStats<'_> {}
+impl ItemStatsCommon for ItemStats<'_> {}
+impl ItemStatsCommon for SwitchedItemStats<'_> {}
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Private
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-pub(in crate::api) trait ItemOutputStatsSealed {
+pub(in crate::api) trait ItemStatsSealed {
     fn get_uid(&self) -> UItemId;
+    fn get_sol(&self) -> &SolCore;
     fn get_sol_mut(&mut self) -> &mut SolCore;
     // Switched item states need their own cycle cache
     fn is_switched(&self) -> bool;
 }
-impl ItemOutputStatsSealed for ItemStats<'_> {
+impl ItemStatsSealed for ItemStats<'_> {
     fn get_uid(&self) -> UItemId {
         self.uid
+    }
+    fn get_sol(&self) -> &SolCore {
+        self.sol
     }
     fn get_sol_mut(&mut self) -> &mut SolCore {
         self.sol
@@ -206,9 +212,12 @@ impl ItemOutputStatsSealed for ItemStats<'_> {
         false
     }
 }
-impl ItemOutputStatsSealed for SwitchedItemStats<'_> {
+impl ItemStatsSealed for SwitchedItemStats<'_> {
     fn get_uid(&self) -> UItemId {
         self.uid
+    }
+    fn get_sol(&self) -> &SolCore {
+        self.sol
     }
     fn get_sol_mut(&mut self) -> &mut SolCore {
         self.sol

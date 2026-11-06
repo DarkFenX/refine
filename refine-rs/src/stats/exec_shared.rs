@@ -1,4 +1,4 @@
-use rc::{ExactSizeLender, Lender};
+use rc::{ExactSizeLender, Lender, stats::ItemStatsCommon};
 
 use crate::{
     FitId, FleetId, ItemId,
