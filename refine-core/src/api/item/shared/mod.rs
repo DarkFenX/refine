@@ -1,4 +1,3 @@
-pub(in crate::api) use active_stat::{active_stat_cseq_cache, active_stat_prepare};
 pub use mutation::{
     AttrMutateRawError, DormantMutation, EffectiveMutation, FullMAttr, FullMAttrGetError, FullMAttrIter,
     FullMAttrValueSetError, Mutation, MutationAddError, RawMAttr, RawMAttrGetError, RawMAttrIter,

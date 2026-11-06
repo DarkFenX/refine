@@ -33,8 +33,8 @@ pub(crate) use item::ItemStatsOptionsGen;
 pub use item::{ItemStats, ItemStatsCmd, ItemStatsCmdBr, ItemStatsOptions, ItemStatsOptionsBr, ItemStatsResp};
 pub(in crate::stats) use option::StatOptionInt;
 pub use option::{
-    StatOptionCapBlc, StatOptionCapBlcBr, StatOptionCapSim, StatOptionCapSimBr, StatOptionEhp, StatOptionErps,
-    StatOptionExt, StatOptionFitDmg, StatOptionFitDmgBr, StatOptionFitMining, StatOptionFitOutCps,
+    StatItemStateOptions, StatOptionCapBlc, StatOptionCapBlcBr, StatOptionCapSim, StatOptionCapSimBr, StatOptionEhp,
+    StatOptionErps, StatOptionExt, StatOptionFitDmg, StatOptionFitDmgBr, StatOptionFitMining, StatOptionFitOutCps,
     StatOptionFitOutCpsBr, StatOptionFitOutNps, StatOptionFitOutNpsBr, StatOptionFitOutRps, StatOptionFitOutRpsBr,
     StatOptionIncomingJam, StatOptionItemDmg, StatOptionItemDmgBr, StatOptionItemMining, StatOptionItemOutCps,
     StatOptionItemOutCpsBr, StatOptionItemOutNps, StatOptionItemOutNpsBr, StatOptionItemOutRps, StatOptionItemOutRpsBr,
@@ -49,11 +49,11 @@ pub use rc::{
     CtlAffectors as StatAffectors,
     stats::{
         StatCapBlcSrcKinds, StatCapSim, StatCapSimStagger, StatCritOptions, StatDmgItemKinds, StatEhp, StatEhpLayer,
-        StatErps, StatErpsLayer, StatErpsLayerRegen, StatHp, StatHpLayer, StatInJam, StatItemChargeOptions,
-        StatItemStateOptions, StatJump, StatJumpConduit, StatJumpPortal, StatJumpRange, StatJumpSelf, StatMining,
-        StatMiningEntry, StatMiningItemKinds, StatMiningResourceKind, StatNeutItemKinds, StatOutRepItemKinds,
-        StatOutReps, StatResists, StatResistsLayer, StatResource, StatRps, StatRpsLayer, StatRpsLayerRegen,
-        StatSensors, StatSensorsKind, StatSlot, StatTime, StatTimeOptions, StatTimeOptionsBurst, StatTimeOptionsSim,
+        StatErps, StatErpsLayer, StatErpsLayerRegen, StatHp, StatHpLayer, StatInJam, StatItemChargeOptions, StatJump,
+        StatJumpConduit, StatJumpPortal, StatJumpRange, StatJumpSelf, StatMining, StatMiningEntry, StatMiningItemKinds,
+        StatMiningResourceKind, StatNeutItemKinds, StatOutRepItemKinds, StatOutReps, StatResists, StatResistsLayer,
+        StatResource, StatRps, StatRpsLayer, StatRpsLayerRegen, StatSensors, StatSensorsKind, StatSlot, StatTime,
+        StatTimeOptions, StatTimeOptionsBurst, StatTimeOptionsSim,
     },
 };
 pub use result_details::{

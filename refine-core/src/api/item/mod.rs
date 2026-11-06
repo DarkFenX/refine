@@ -16,17 +16,17 @@ pub use item_skill::{Skill, SkillAddError, SkillGetError, SkillTypeIdSetError};
 pub use item_stance::{Stance, StanceGetError};
 pub use item_subsystem::{Subsystem, SubsystemGetError};
 pub use item_sw_effect::{SwEffect, SwEffectGetError};
+pub(in crate::api) use shared::get_ship_rib;
 pub use shared::{
     AttrMutateRawError, DormantMutation, EffectiveMutation, FullMAttr, FullMAttrGetError, FullMAttrIter,
     FullMAttrValueSetError, Mutation, MutationAddError, Proj, ProjAddError, ProjGetError, ProjIter, RangedProj,
     RangedProjIter, RawMAttr, RawMAttrGetError, RawMAttrIter,
 };
-pub(in crate::api) use shared::{active_stat_cseq_cache, active_stat_prepare, get_ship_rib};
-pub use stats::ItemStats;
+pub use stats::{ItemOutputStats, ItemStats, SwitchedItemStats};
 pub(in crate::api) use traits::ItemSealed;
 pub use traits::{
     ItemAttrGetError, ItemAttrsIterError, ItemCommon, ItemEffectsIterError, ItemModifiersIterError,
-    StatItemAppliedError, StatItemError, StatItemStateOptions,
+    StatItemAppliedError, StatItemError,
 };
 
 mod item;

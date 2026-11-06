@@ -1,11 +1,13 @@
+use rc::stats::ItemOutputStats;
+
 use crate::{
     PValue, Value,
     err::BrResolveError,
     stats::{
-        ItemStats, StatBrFallibleError, StatCapSim, StatDmg, StatEhp, StatErps, StatInJam, StatJump, StatMining,
-        StatOptionCapBlc, StatOptionCapSim, StatOptionEhp, StatOptionErps, StatOptionIncomingJam, StatOptionItemDmg,
-        StatOptionItemMining, StatOptionItemOutCps, StatOptionItemOutNps, StatOptionItemOutRps, StatOptionJump,
-        StatOptionMass, StatOptionRps, StatOutReps, StatResult, StatRps,
+        ItemStats, StatBrFallibleError, StatCapSim, StatDmg, StatEhp, StatErps, StatInJam, StatItemStateOptions,
+        StatJump, StatMining, StatOptionCapBlc, StatOptionCapSim, StatOptionEhp, StatOptionErps, StatOptionIncomingJam,
+        StatOptionItemDmg, StatOptionItemMining, StatOptionItemOutCps, StatOptionItemOutNps, StatOptionItemOutRps,
+        StatOptionJump, StatOptionMass, StatOptionRps, StatOutReps, StatResult, StatRps,
         err::{StatItemAppliedError, StatItemError, StatJumpError},
         exec_shared::{collect_stats_err_both_br, collect_stats_err_inner},
         item::ItemStatsOptionsResolved,
@@ -56,21 +58,65 @@ impl ItemStatsOptionsResolved {
             can_tether,
         } = self;
         let mut stats = ItemStats { .. };
-        // Output
+        // Output stats can switch item states. Options which switch go first, all under one switch;
+        // the rest is computed in order below, along with results of switched ones
+        let mut dmg_switched = SwitchedResults::new(dmg.iter().flatten().flatten());
+        let mut mps_switched = SwitchedResults::new(mps.iter().flatten());
+        let mut outgoing_nps_switched = SwitchedResults::new(outgoing_nps.iter().flatten().flatten());
+        let mut outgoing_cps_switched = SwitchedResults::new(outgoing_cps.iter().flatten().flatten());
+        let mut outgoing_rps_switched = SwitchedResults::new(outgoing_rps.iter().flatten().flatten());
+        if dmg_switched.is_switching()
+            || mps_switched.is_switching()
+            || outgoing_nps_switched.is_switching()
+            || outgoing_cps_switched.is_switching()
+            || outgoing_rps_switched.is_switching()
+        {
+            let mut core_switched_stats = core_item_stats.switch_states();
+            dmg_switched.fill(dmg.iter().flatten().flatten(), |option| {
+                get_dmg_stat(&mut core_switched_stats, option)
+            });
+            mps_switched.fill(mps.iter().flatten(), |option| {
+                get_mps_stat(&mut core_switched_stats, option)
+            });
+            outgoing_nps_switched.fill(outgoing_nps.iter().flatten().flatten(), |option| {
+                get_outgoing_nps_stat(&mut core_switched_stats, option)
+            });
+            outgoing_cps_switched.fill(outgoing_cps.iter().flatten().flatten(), |option| {
+                get_outgoing_cps_stat(&mut core_switched_stats, option)
+            });
+            outgoing_rps_switched.fill(outgoing_rps.iter().flatten().flatten(), |option| {
+                get_outgoing_rps_stat(&mut core_switched_stats, option)
+            });
+        }
         if let Some(options) = dmg {
-            stats.dmg = get_dmg_stats(core_item_stats, options);
+            stats.dmg = collect_stats_err_both_br(
+                options,
+                dmg_switched.or_get(|option| get_dmg_stat(core_item_stats, option)),
+            );
         }
         if let Some(options) = mps {
-            stats.mps = get_mps_stats(core_item_stats, options);
+            stats.mps = collect_stats_err_inner(
+                options,
+                mps_switched.or_get(|option| get_mps_stat(core_item_stats, option)),
+            );
         }
         if let Some(options) = outgoing_nps {
-            stats.outgoing_nps = get_outgoing_nps_stats(core_item_stats, options);
+            stats.outgoing_nps = collect_stats_err_both_br(
+                options,
+                outgoing_nps_switched.or_get(|option| get_outgoing_nps_stat(core_item_stats, option)),
+            );
         }
         if let Some(options) = outgoing_cps {
-            stats.outgoing_cps = get_outgoing_cps_stats(core_item_stats, options);
+            stats.outgoing_cps = collect_stats_err_both_br(
+                options,
+                outgoing_cps_switched.or_get(|option| get_outgoing_cps_stat(core_item_stats, option)),
+            );
         }
         if let Some(options) = outgoing_rps {
-            stats.outgoing_rps = get_outgoing_rps_stats(core_item_stats, options);
+            stats.outgoing_rps = collect_stats_err_both_br(
+                options,
+                outgoing_rps_switched.or_get(|option| get_outgoing_rps_stat(core_item_stats, option)),
+            );
         }
         // Tank
         if *resists {
@@ -186,72 +232,70 @@ impl ItemStatsOptionsResolved {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Output
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-fn get_dmg_stats(
-    core_item_stats: &mut rc::stats::ItemStats,
-    options: &[Result<StatOptionItemDmg, BrResolveError>],
-) -> StatResult<StatDmg, StatItemAppliedError<!>, StatBrFallibleError<StatItemAppliedError<!>>> {
-    collect_stats_err_both_br(options, |option| match option.projectee_item_id {
+// Output stats are available on both item stats and item stats with switched states
+fn get_dmg_stat<S>(core_item_stats: &mut S, option: &StatOptionItemDmg) -> Result<StatDmg, StatItemAppliedError<!>>
+where
+    S: ItemOutputStats,
+{
+    match option.projectee_item_id {
         Some(projectee_item_id) => core_item_stats
-            .get_stat_dmg_applied(
-                option.time,
-                option.crits,
-                option.charges,
-                option.state,
-                &projectee_item_id,
-            )
+            .get_stat_dmg_applied(option.time, option.crits, option.charges, &projectee_item_id)
             .map(StatDmg::from_core_applied),
         None => core_item_stats
-            .get_stat_dmg(option.time, option.crits, option.charges, option.state)
+            .get_stat_dmg(option.time, option.crits, option.charges)
             .map(StatDmg::from_core)
             .map_err(conv_err_item),
-    })
+    }
 }
-fn get_mps_stats(
-    core_item_stats: &mut rc::stats::ItemStats,
-    options: &[StatOptionItemMining],
-) -> StatResult<StatMining, StatItemError<!>, !> {
-    collect_stats_err_inner(options, |option| {
-        core_item_stats.get_stat_mps(option.time, option.resource_kind, option.state)
-    })
+fn get_mps_stat<S>(core_item_stats: &mut S, option: &StatOptionItemMining) -> Result<StatMining, StatItemError<!>>
+where
+    S: ItemOutputStats,
+{
+    core_item_stats.get_stat_mps(option.time, option.resource_kind)
 }
-fn get_outgoing_nps_stats(
-    core_item_stats: &mut rc::stats::ItemStats,
-    options: &[Result<StatOptionItemOutNps, BrResolveError>],
-) -> StatResult<PValue, StatItemAppliedError<!>, StatBrFallibleError<StatItemAppliedError<!>>> {
-    collect_stats_err_both_br(options, |option| match option.projectee_item_id {
+fn get_outgoing_nps_stat<S>(
+    core_item_stats: &mut S,
+    option: &StatOptionItemOutNps,
+) -> Result<PValue, StatItemAppliedError<!>>
+where
+    S: ItemOutputStats,
+{
+    match option.projectee_item_id {
         Some(projectee_item_id) => {
-            core_item_stats.get_stat_outgoing_nps_applied(option.time, option.charges, option.state, &projectee_item_id)
+            core_item_stats.get_stat_outgoing_nps_applied(option.time, option.charges, &projectee_item_id)
         }
         None => core_item_stats
-            .get_stat_outgoing_nps(option.time, option.charges, option.state)
+            .get_stat_outgoing_nps(option.time, option.charges)
             .map_err(conv_err_item),
-    })
+    }
 }
-fn get_outgoing_rps_stats(
-    core_item_stats: &mut rc::stats::ItemStats,
-    options: &[Result<StatOptionItemOutRps, BrResolveError>],
-) -> StatResult<StatOutReps, StatItemAppliedError<!>, StatBrFallibleError<StatItemAppliedError<!>>> {
-    collect_stats_err_both_br(options, |option| match option.projectee_item_id {
-        Some(projectee_item_id) => {
-            core_item_stats.get_stat_outgoing_rps_applied(option.time, option.state, &projectee_item_id)
-        }
+fn get_outgoing_rps_stat<S>(
+    core_item_stats: &mut S,
+    option: &StatOptionItemOutRps,
+) -> Result<StatOutReps, StatItemAppliedError<!>>
+where
+    S: ItemOutputStats,
+{
+    match option.projectee_item_id {
+        Some(projectee_item_id) => core_item_stats.get_stat_outgoing_rps_applied(option.time, &projectee_item_id),
         None => core_item_stats
-            .get_stat_outgoing_rps(option.time, option.state)
+            .get_stat_outgoing_rps(option.time)
             .map_err(conv_err_item),
-    })
+    }
 }
-fn get_outgoing_cps_stats(
-    core_item_stats: &mut rc::stats::ItemStats,
-    options: &[Result<StatOptionItemOutCps, BrResolveError>],
-) -> StatResult<PValue, StatItemAppliedError<!>, StatBrFallibleError<StatItemAppliedError<!>>> {
-    collect_stats_err_both_br(options, |option| match option.projectee_item_id {
-        Some(projectee_item_id) => {
-            core_item_stats.get_stat_outgoing_cps_applied(option.time, option.state, &projectee_item_id)
-        }
+fn get_outgoing_cps_stat<S>(
+    core_item_stats: &mut S,
+    option: &StatOptionItemOutCps,
+) -> Result<PValue, StatItemAppliedError<!>>
+where
+    S: ItemOutputStats,
+{
+    match option.projectee_item_id {
+        Some(projectee_item_id) => core_item_stats.get_stat_outgoing_cps_applied(option.time, &projectee_item_id),
         None => core_item_stats
-            .get_stat_outgoing_cps(option.time, option.state)
+            .get_stat_outgoing_cps(option.time)
             .map_err(conv_err_item),
-    })
+    }
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -344,5 +388,84 @@ where
         StatItemError::ItemNotLoaded(err) => StatItemAppliedError::ItemNotLoaded(err),
         StatItemError::UnsupportedStat(err) => StatItemAppliedError::UnsupportedStat(err),
         StatItemError::StatSpecific(err) => StatItemAppliedError::StatSpecific(err),
+    }
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Switched options
+////////////////////////////////////////////////////////////////////////////////////////////////////
+trait SwitchingOption {
+    fn is_switching(&self) -> bool;
+}
+impl SwitchingOption for StatOptionItemDmg {
+    fn is_switching(&self) -> bool {
+        matches!(self.state, StatItemStateOptions::Switch)
+    }
+}
+impl SwitchingOption for StatOptionItemOutNps {
+    fn is_switching(&self) -> bool {
+        matches!(self.state, StatItemStateOptions::Switch)
+    }
+}
+impl SwitchingOption for StatOptionItemMining {
+    fn is_switching(&self) -> bool {
+        matches!(self.state, StatItemStateOptions::Switch)
+    }
+}
+impl SwitchingOption for StatOptionItemOutCps {
+    fn is_switching(&self) -> bool {
+        matches!(self.state, StatItemStateOptions::Switch)
+    }
+}
+impl SwitchingOption for StatOptionItemOutRps {
+    fn is_switching(&self) -> bool {
+        matches!(self.state, StatItemStateOptions::Switch)
+    }
+}
+
+// Results of switching options, in the order options are passed to a stat getter
+struct SwitchedResults<T, E> {
+    results: Vec<Option<Result<T, E>>>,
+    switching: bool,
+}
+impl<T, E> SwitchedResults<T, E> {
+    fn new<'a, O, I>(options: I) -> Self
+    where
+        O: SwitchingOption + 'a,
+        I: Iterator<Item = &'a O>,
+    {
+        let mut switching = false;
+        let results = options
+            .map(|option| {
+                switching |= option.is_switching();
+                None
+            })
+            .collect();
+        Self { results, switching }
+    }
+    fn is_switching(&self) -> bool {
+        self.switching
+    }
+    fn fill<'a, O, I, F>(&mut self, options: I, mut getter: F)
+    where
+        O: SwitchingOption + 'a,
+        I: Iterator<Item = &'a O>,
+        F: FnMut(&O) -> Result<T, E>,
+    {
+        for (result, option) in self.results.iter_mut().zip(options) {
+            if option.is_switching() {
+                *result = Some(getter(option));
+            }
+        }
+    }
+    fn or_get<O, F>(&mut self, mut getter: F) -> impl FnMut(&O) -> Result<T, E>
+    where
+        F: FnMut(&O) -> Result<T, E>,
+    {
+        let mut results = std::mem::take(&mut self.results).into_iter();
+        move |option| match results.next().flatten() {
+            Some(result) => result,
+            None => getter(option),
+        }
     }
 }

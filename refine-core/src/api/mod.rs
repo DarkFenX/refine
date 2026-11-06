@@ -11,14 +11,14 @@ pub use item::{
     EffectiveMutation, Fighter, FighterGetError, FitItemAutodetectAddError, FitItemGetError, FleetItemGetError,
     FullMAttr, FullMAttrGetError, FullMAttrIter, FullMAttrValueSetError, FwEffect, FwEffectGetError, Implant,
     ImplantGetError, Item, ItemAttrGetError, ItemAttrsIterError, ItemCommon, ItemEffectsIterError, ItemGetError,
-    ItemModifiersIterError, ItemRemoveError, ItemStats, Module, ModuleAddError, ModuleGetError, Mutation,
-    MutationAddError, Proj, ProjAddError, ProjEffect, ProjEffectGetError, ProjGetError, ProjIter, RangedProj,
+    ItemModifiersIterError, ItemOutputStats, ItemRemoveError, ItemStats, Module, ModuleAddError, ModuleGetError,
+    Mutation, MutationAddError, Proj, ProjAddError, ProjEffect, ProjEffectGetError, ProjGetError, ProjIter, RangedProj,
     RangedProjIter, RawMAttr, RawMAttrGetError, RawMAttrIter, Rig, RigGetError, Service, ServiceGetError, Ship,
     ShipGetError, SideEffect, SideEffectGetError, SideEffectIter, SideEffectStr, Skill, SkillAddError, SkillGetError,
-    SkillTypeIdSetError, Stance, StanceGetError, StatItemAppliedError, StatItemError, StatItemStateOptions, Subsystem,
-    SubsystemGetError, SwEffect, SwEffectGetError,
+    SkillTypeIdSetError, Stance, StanceGetError, StatItemAppliedError, StatItemError, Subsystem, SubsystemGetError,
+    SwEffect, SwEffectGetError, SwitchedItemStats,
 };
-use item::{ItemSealed, active_stat_cseq_cache, active_stat_prepare, get_ship_rib};
+use item::{ItemSealed, get_ship_rib};
 pub use misc::{
     AbilityId, AddMode, Affector, AttrId, AttrIdParseError, Coordinates, CustomAttrId, CustomEffectId, Direction,
     DogmaEffectId, EffectId, EffectIdParseError, EveAttrId, ItemAttrValues, ItemEffectInfo, ItemGrpId, ItemTypeId,

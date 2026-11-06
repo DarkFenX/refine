@@ -134,6 +134,35 @@ def test_state(client, consts):
     assert api_charge_dmg_stats.volley == [approx(2450), 0, 0, 0]
 
 
+def test_state_subitem(client, consts):
+    # A module stays switched between its switched stats, which is undone before stats of its charge
+    # are fetched, so a charge stat which retains states sees the module online
+    eve_basic_info = setup_dmg_basics(client=client, consts=consts)
+    eve_module_id = make_eve_launcher(
+        client=client, basic_info=eve_basic_info, capacity=2, cycle_time=7900, reload_time=10000)
+    eve_charge_id = make_eve_missile(client=client, basic_info=eve_basic_info, dmgs=(2450, 0, 0, 0), volume=0.05)
+    client.create_sources()
+    api_sol = client.create_sol()
+    api_fit = api_sol.create_fit()
+    api_module = api_fit.add_module(
+        type_id=eve_module_id,
+        state=consts.ApiModuleState.online,
+        charge_type_id=eve_charge_id)
+    with api_fit.batch() as api_fit_batch:
+        api_fit_stats = api_fit_batch.get_fit_stats(item_options=(
+            ItemStatsOptions(dmg=[StatsOptionItemDmg()]),
+            [(ItemStatsOptions(dmg=[StatsOptionItemDmg(
+                charges=consts.ApiStatItemCharges.include,
+                state=consts.ApiStatItemState.switch)]), [api_module.id])]))
+    # Verification
+    api_module_dmg_stats = api_fit_stats.items[api_module.id].dmg.one()
+    assert api_module_dmg_stats.dps == [approx(310.126582), 0, 0, 0]
+    assert api_module_dmg_stats.volley == [approx(2450), 0, 0, 0]
+    api_charge_dmg_stats = api_fit_stats.items[api_module.charge.id].dmg.one()
+    assert api_charge_dmg_stats.dps == [0, 0, 0, 0]
+    assert api_charge_dmg_stats.volley == [0, 0, 0, 0]
+
+
 def test_stacking(client, consts):
     eve_basic_info = setup_dmg_basics(client=client, consts=consts)
     eve_module_id = make_eve_launcher(

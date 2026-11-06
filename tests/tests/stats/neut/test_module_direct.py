@@ -75,6 +75,47 @@ def test_state(client, consts):
     assert api_module_struct_stats.outgoing_nps.one() == approx(120)
 
 
+def test_state_charges(client, consts):
+    # Switching states enables a force-disabled charge regardless of charge options (here the charge
+    # has no neut effect, but doubles neut amount of its module)
+    eve_neut_amount_attr_id = client.mk_eve_attr(id_=consts.EveAttr.energy_neut_amount)
+    eve_cycle_time_attr_id = client.mk_eve_attr()
+    eve_mult_attr_id = client.mk_eve_attr()
+    eve_effect_id = client.mk_eve_effect(
+        id_=consts.EveEffect.energy_neut_falloff,
+        cat_id=consts.EveEffCat.target,
+        duration_attr_id=eve_cycle_time_attr_id)
+    eve_mod = client.mk_eve_effect_mod(
+        func=consts.EveModFunc.item,
+        loc=consts.EveModLoc.other,
+        op=consts.EveModOp.post_mul,
+        affector_attr_id=eve_mult_attr_id,
+        affectee_attr_id=eve_neut_amount_attr_id)
+    eve_charge_effect_id = client.mk_eve_effect(mod_info=[eve_mod])
+    eve_module_id = client.mk_eve_item(
+        attrs={eve_neut_amount_attr_id: 600, eve_cycle_time_attr_id: 24000},
+        eff_ids=[eve_effect_id],
+        defeff_id=eve_effect_id)
+    eve_charge_id = client.mk_eve_item(attrs={eve_mult_attr_id: 2}, eff_ids=[eve_charge_effect_id])
+    client.create_sources()
+    api_sol = client.create_sol()
+    api_fit = api_sol.create_fit()
+    api_module = api_fit.add_module(
+        type_id=eve_module_id,
+        state=consts.ApiModuleState.online,
+        charge_type_id=eve_charge_id)
+    api_module.charge.change_charge(state=False)
+    # Verification
+    api_module_stats = api_module.get_stats(options=ItemStatsOptions(outgoing_nps=[
+        StatsOptionItemOutNps(charges=consts.ApiStatItemCharges.exclude, state=consts.ApiStatItemState.switch),
+        StatsOptionItemOutNps(charges=consts.ApiStatItemCharges.include, state=consts.ApiStatItemState.switch),
+        StatsOptionItemOutNps(charges=consts.ApiStatItemCharges.include, state=consts.ApiStatItemState.retain)]))
+    assert api_module_stats.outgoing_nps == [approx(50), approx(50), 0]
+    api_module = api_module.update()
+    assert api_module.state == consts.ApiModuleState.online
+    assert api_module.charge.state is False
+
+
 def test_time(client, consts):
     eve_neut_amount_attr_id = client.mk_eve_attr(id_=consts.EveAttr.energy_neut_amount)
     eve_cycle_time_attr_id = client.mk_eve_attr()
