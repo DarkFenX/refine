@@ -1,4 +1,4 @@
-use super::{cache::CseqCache, cycling_options::DroneCyclingOptions};
+use super::{cache::CseqBuild, cycling_options::DroneCyclingOptions};
 use crate::{
     svc::{
         SvcCtx,
@@ -11,7 +11,7 @@ use crate::{
 
 #[must_use]
 pub(super) fn build_drone_cseq_map(
-    cseq_cache: &mut CseqCache,
+    cseq_build: &mut CseqBuild,
     ctx: &SvcCtx,
     calc: &mut Calc,
     item_uid: UItemId,
@@ -33,7 +33,7 @@ pub(super) fn build_drone_cseq_map(
         };
         // Assume all drone effects just repeat themselves - ignoring all settings, self-destruction
         // flags, limited charges & reloads
-        cseq_cache.insert(
+        cseq_build.insert(
             effect_rid,
             CycleSeq::LoopSin(CSeqLoopSin {
                 data: CycleDataFull {

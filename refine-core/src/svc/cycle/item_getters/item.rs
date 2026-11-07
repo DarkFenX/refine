@@ -37,32 +37,32 @@ pub(in crate::svc) fn get_item_cseq_map<'c>(
             _ => return None,
         },
     };
-    let build = match cseq_cache.select_or_start_build(key) {
-        CseqLookup::Built(slot_position) => return cseq_cache.get_cseq_map(slot_position),
-        CseqLookup::Started(build) => build,
+    let mut cseq_build = match cseq_cache.select_or_start_build(key) {
+        CseqLookup::Built(cseq_map) => return cseq_map,
+        CseqLookup::Started(cseq_build) => cseq_build,
     };
     let cycles = match item {
         UItem::Autocharge(autocharge) => {
             let fighter_co = FighterCyclingOptions::from_cycling_options(options);
-            build_autocharge_cseq_map(cseq_cache, ctx, calc, autocharge, fighter_co)
+            build_autocharge_cseq_map(&mut cseq_build, ctx, calc, autocharge, fighter_co)
         }
         UItem::Charge(charge) => {
             let module_co = ModuleCyclingOptions::from_cycling_options(options);
-            build_charge_cseq_map(cseq_cache, ctx, calc, charge, module_co)
+            build_charge_cseq_map(&mut cseq_build, ctx, calc, charge, module_co)
         }
         UItem::Drone(drone) => {
             let drone_co = DroneCyclingOptions::from_cycling_options(options);
-            build_drone_cseq_map(cseq_cache, ctx, calc, item_uid, drone, drone_co)
+            build_drone_cseq_map(&mut cseq_build, ctx, calc, item_uid, drone, drone_co)
         }
         UItem::Fighter(fighter) => {
             let fighter_co = FighterCyclingOptions::from_cycling_options(options);
-            build_fighter_cseq_map(cseq_cache, ctx, calc, item_uid, fighter, fighter_co)
+            build_fighter_cseq_map(&mut cseq_build, ctx, calc, item_uid, fighter, fighter_co)
         }
         UItem::Module(module) => {
             let module_co = ModuleCyclingOptions::from_cycling_options(options);
-            build_module_cseq_map(cseq_cache, ctx, calc, item_uid, item, module, module_co)
+            build_module_cseq_map(&mut cseq_build, ctx, calc, item_uid, item, module, module_co)
         }
         _ => false,
     };
-    cseq_cache.finish_build(build, cycles)
+    cseq_build.finish(cycles)
 }

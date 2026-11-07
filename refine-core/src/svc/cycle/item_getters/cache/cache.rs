@@ -29,8 +29,6 @@ pub(crate) struct CseqCache {
     // emptied, and kept to avoid allocations
     cseq_slots: Vec<CseqSlot>,
     cseq_slots_used: usize,
-    // Slot of the build in progress, which builders write to
-    cseq_slot_building: usize,
 }
 impl CseqCache {
     pub(crate) fn new() -> Self {
@@ -39,7 +37,6 @@ impl CseqCache {
             item_cells: Vec::new(),
             cseq_slots: Vec::new(),
             cseq_slots_used: 0,
-            cseq_slot_building: 0,
         }
     }
     pub(crate) fn clear(&mut self) {
@@ -63,18 +60,18 @@ impl CseqCache {
     ) -> Option<&CseqMap>
     where
         C: ItemCyclingOptions,
-        F: FnOnce(&mut Self, C) -> bool,
+        F: FnOnce(&mut CseqBuild, C) -> bool,
     {
-        let build = match self.select_or_start_build(item_co.cache_key(item_uid)) {
-            CseqLookup::Built(slot_position) => return self.get_cseq_map(slot_position),
-            CseqLookup::Started(build) => build,
+        let mut cseq_build = match self.select_or_start_build(item_co.cache_key(item_uid)) {
+            CseqLookup::Built(cseq_map) => return cseq_map,
+            CseqLookup::Started(cseq_build) => cseq_build,
         };
         // The builder gets the cycling options the key was made of, and nothing else
-        let cycles = builder(self, item_co);
-        self.finish_build(build, cycles)
+        let cycles = builder(&mut cseq_build, item_co);
+        cseq_build.finish(cycles)
     }
     #[inline(always)]
-    pub(in crate::svc::cycle::item_getters) fn select_or_start_build(&mut self, key: CacheKey) -> CseqLookup {
+    pub(in crate::svc::cycle::item_getters) fn select_or_start_build(&mut self, key: CacheKey) -> CseqLookup<'_> {
         let (item_uid, item_co_code) = key;
         // Reserve enough space to store references for requested item
         let item_index = item_uid.index();
@@ -89,7 +86,7 @@ impl CseqCache {
         let slot_position = item_cell.slot_positions[item_co_code.into_usize()];
         // If generation matches and data is there already, return it
         if slot_position != CseqSlotPosition::NONE {
-            return CseqLookup::Built(slot_position.into_usize());
+            return CseqLookup::Built(self.get_cseq_map(slot_position.into_usize()));
         }
         // Start calculating cseq - add new empty cseq slot, and reference it
         let slot_position = self.cseq_slots_used;
@@ -98,43 +95,17 @@ impl CseqCache {
         if slot_position == self.cseq_slots.len() {
             self.cseq_slots.push(CseqSlot::new());
         }
-        // Builds can nest (e.g. charges build their containers), so the build in progress is
-        // resumed once this one finishes
-        let parent = std::mem::replace(&mut self.cseq_slot_building, slot_position);
-        CseqLookup::Started(CseqBuild { parent })
+        CseqLookup::Started(CseqBuild {
+            cache: self,
+            slot_position,
+        })
     }
-    pub(in crate::svc::cycle::item_getters) fn finish_build(
-        &mut self,
-        build: CseqBuild,
-        cycles: bool,
-    ) -> Option<&CseqMap> {
-        // Builds nested into this one have restored the building cursor already, so it points at
-        // this build's slot
-        let slot_position = std::mem::replace(&mut self.cseq_slot_building, build.parent);
-        let cseq_slot = &mut self.cseq_slots[slot_position];
-        cseq_slot.cycles = cycles;
-        if !cycles {
-            cseq_slot.seqs.clear();
-            return None;
-        }
-        Some(&cseq_slot.seqs)
-    }
-    pub(in crate::svc::cycle::item_getters) fn get_cseq_map(&self, slot_position: usize) -> Option<&CseqMap> {
+    fn get_cseq_map(&self, slot_position: usize) -> Option<&CseqMap> {
         let cseq_slot = &self.cseq_slots[slot_position];
         match cseq_slot.cycles {
             true => Some(&cseq_slot.seqs),
             false => None,
         }
-    }
-    // Building
-    pub(in crate::svc) fn reserve(&mut self, additional: usize) {
-        self.cseq_slots[self.cseq_slot_building].seqs.reserve(additional)
-    }
-    pub(in crate::svc) fn insert(&mut self, key: REffectId, value: CseqFull) -> Option<CseqFull> {
-        self.cseq_slots[self.cseq_slot_building].seqs.insert(key, value)
-    }
-    pub(in crate::svc) fn retain(&mut self, func: impl FnMut(&REffectId, &mut CseqFull) -> bool) {
-        self.cseq_slots[self.cseq_slot_building].seqs.retain(func)
     }
 }
 
@@ -169,13 +140,40 @@ impl CseqSlot {
     }
 }
 
-pub(in crate::svc::cycle::item_getters) enum CseqLookup {
-    Built(usize),
-    Started(CseqBuild),
+pub(in crate::svc::cycle::item_getters) enum CseqLookup<'c> {
+    Built(Option<&'c CseqMap>),
+    Started(CseqBuild<'c>),
 }
 
-/// Cseq build in progress, holding the building cursor to restore once it finishes (slot position
-/// of the build it nested into, if any).
-pub(in crate::svc::cycle::item_getters) struct CseqBuild {
-    parent: usize,
+/// Cseq build in progress, the only way to write to its slot.
+///
+/// Builds can nest (e.g. charges build their containers), so a builder reaches other items'
+/// sequences through the cache it holds. The slot is kept as a position, since nested builds can
+/// reallocate slots.
+pub(in crate::svc::cycle::item_getters) struct CseqBuild<'c> {
+    cache: &'c mut CseqCache,
+    slot_position: usize,
+}
+impl<'c> CseqBuild<'c> {
+    pub(in crate::svc::cycle::item_getters) fn cache(&mut self) -> &mut CseqCache {
+        self.cache
+    }
+    pub(in crate::svc::cycle::item_getters) fn reserve(&mut self, additional: usize) {
+        self.cache.cseq_slots[self.slot_position].seqs.reserve(additional)
+    }
+    pub(in crate::svc::cycle::item_getters) fn insert(&mut self, key: REffectId, value: CseqFull) -> Option<CseqFull> {
+        self.cache.cseq_slots[self.slot_position].seqs.insert(key, value)
+    }
+    pub(in crate::svc::cycle::item_getters) fn retain(&mut self, func: impl FnMut(&REffectId, &mut CseqFull) -> bool) {
+        self.cache.cseq_slots[self.slot_position].seqs.retain(func)
+    }
+    pub(in crate::svc::cycle::item_getters) fn finish(self, cycles: bool) -> Option<&'c CseqMap> {
+        let cseq_slot = &mut self.cache.cseq_slots[self.slot_position];
+        cseq_slot.cycles = cycles;
+        if !cycles {
+            cseq_slot.seqs.clear();
+            return None;
+        }
+        Some(&cseq_slot.seqs)
+    }
 }

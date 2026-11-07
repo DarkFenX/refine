@@ -1,4 +1,4 @@
-use super::{cache::CseqCache, cycling_options::FighterCyclingOptions, item_fighter::get_fighter_cseq_map};
+use super::{cache::CseqBuild, cycling_options::FighterCyclingOptions, item_fighter::get_fighter_cseq_map};
 use crate::{
     svc::{SvcCtx, calc::Calc},
     ud::{UAutocharge, UItem},
@@ -6,7 +6,7 @@ use crate::{
 
 #[must_use]
 pub(super) fn build_autocharge_cseq_map(
-    cseq_cache: &mut CseqCache,
+    cseq_build: &mut CseqBuild,
     ctx: &SvcCtx,
     calc: &mut Calc,
     autocharge: &UAutocharge,
@@ -21,7 +21,8 @@ pub(super) fn build_autocharge_cseq_map(
         return false;
     };
     // Autocharge cycles rely on parent item cycles
-    let Some(cont_cseq_map) = get_fighter_cseq_map(cseq_cache, ctx, calc, cont_item_uid, cont_fighter, fighter_co)
+    let Some(cont_cseq_map) =
+        get_fighter_cseq_map(cseq_build.cache(), ctx, calc, cont_item_uid, cont_fighter, fighter_co)
     else {
         return false;
     };
@@ -30,11 +31,11 @@ pub(super) fn build_autocharge_cseq_map(
         return false;
     };
     let effect_rids = autocharge.get_reffs().unwrap().iter();
-    cseq_cache.reserve(effect_rids.len());
+    cseq_build.reserve(effect_rids.len());
     for &effect_rid in effect_rids {
         let effect = ctx.u_data.r_data.get_effect_by_rid(effect_rid);
         if effect.is_active() {
-            cseq_cache.insert(effect_rid, cont_effect_cycle);
+            cseq_build.insert(effect_rid, cont_effect_cycle);
         }
     }
     true
