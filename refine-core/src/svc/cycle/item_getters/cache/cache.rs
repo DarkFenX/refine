@@ -25,9 +25,9 @@ pub(crate) struct CseqCache {
     // Holds data for every item, reusing its dense ID as index here. The data contains one or more
     // references to cseq slots, which are picked by item cycling options code
     item_cells: Vec<ItemCell>,
-    // Actual cseq map of an item + cycling option combination. Slots past the used ones are
-    // emptied, and kept to avoid allocations
-    cseq_slots: Vec<CseqSlot>,
+    // Actual cseq map of an item + cycling option combination, only for items which cycle. Slots
+    // past the used ones are emptied, and kept to avoid allocations
+    cseq_slots: Vec<CseqMap>,
     cseq_slots_used: usize,
 }
 impl CseqCache {
@@ -42,7 +42,7 @@ impl CseqCache {
     pub(crate) fn clear(&mut self) {
         // Always clear calculated cseqs
         for cseq_slot in &mut self.cseq_slots[..self.cseq_slots_used] {
-            cseq_slot.seqs.clear();
+            cseq_slot.clear();
         }
         self.cseq_slots_used = 0;
         // Increment generation; if it wrapped, clear cells as well, to make sure false matches do
@@ -83,29 +83,27 @@ impl CseqCache {
         if item_cell.generation != self.generation {
             *item_cell = ItemCell::make_empty(self.generation);
         }
-        let slot_position = item_cell.slot_positions[item_co_code.into_usize()];
         // If generation matches and data is there already, return it
-        if slot_position != CseqSlotPosition::NONE {
-            return CseqLookup::Built(self.get_cseq_map(slot_position.into_usize()));
+        let slot_position = item_cell.slot_positions[item_co_code.into_usize()];
+        if slot_position.is_slot() {
+            return CseqLookup::Built(Some(&self.cseq_slots[slot_position.into_usize()]));
+        }
+        if slot_position == CseqSlotPosition::NOT_CYCLING {
+            return CseqLookup::Built(None);
         }
         // Start calculating cseq - add new empty cseq slot, and reference it
         let slot_position = self.cseq_slots_used;
         item_cell.slot_positions[item_co_code.into_usize()] = CseqSlotPosition::from_usize(slot_position);
         self.cseq_slots_used += 1;
         if slot_position == self.cseq_slots.len() {
-            self.cseq_slots.push(CseqSlot::new());
+            self.cseq_slots.push(CseqMap::new());
         }
         CseqLookup::Started(CseqBuild {
             cache: self,
+            item_index,
+            item_co_code,
             slot_position,
         })
-    }
-    fn get_cseq_map(&self, slot_position: usize) -> Option<&CseqMap> {
-        let cseq_slot = &self.cseq_slots[slot_position];
-        match cseq_slot.cycles {
-            true => Some(&cseq_slot.seqs),
-            false => None,
-        }
     }
 }
 
@@ -127,19 +125,6 @@ impl ItemCell {
     }
 }
 
-struct CseqSlot {
-    cycles: bool,
-    seqs: CseqMap,
-}
-impl CseqSlot {
-    fn new() -> Self {
-        Self {
-            cycles: false,
-            seqs: RMap::new(),
-        }
-    }
-}
-
 pub(in crate::svc::cycle::item_getters) enum CseqLookup<'c> {
     Built(Option<&'c CseqMap>),
     Started(CseqBuild<'c>),
@@ -148,10 +133,12 @@ pub(in crate::svc::cycle::item_getters) enum CseqLookup<'c> {
 /// Cseq build in progress, the only way to write to its slot.
 ///
 /// Builds can nest (e.g. charges build their containers), so a builder reaches other items'
-/// sequences through the cache it holds. The slot is kept as a position, since nested builds can
-/// reallocate slots.
+/// sequences through the cache it holds. The slot and the item cell are kept as positions, since
+/// nested builds can reallocate both.
 pub(in crate::svc::cycle::item_getters) struct CseqBuild<'c> {
     cache: &'c mut CseqCache,
+    item_index: usize,
+    item_co_code: ItemCyclingOptionsCode,
     slot_position: usize,
 }
 impl<'c> CseqBuild<'c> {
@@ -159,21 +146,33 @@ impl<'c> CseqBuild<'c> {
         self.cache
     }
     pub(in crate::svc::cycle::item_getters) fn reserve(&mut self, additional: usize) {
-        self.cache.cseq_slots[self.slot_position].seqs.reserve(additional)
+        self.cache.cseq_slots[self.slot_position].reserve(additional)
     }
     pub(in crate::svc::cycle::item_getters) fn insert(&mut self, key: REffectId, value: CseqFull) -> Option<CseqFull> {
-        self.cache.cseq_slots[self.slot_position].seqs.insert(key, value)
+        self.cache.cseq_slots[self.slot_position].insert(key, value)
     }
     pub(in crate::svc::cycle::item_getters) fn retain(&mut self, func: impl FnMut(&REffectId, &mut CseqFull) -> bool) {
-        self.cache.cseq_slots[self.slot_position].seqs.retain(func)
+        self.cache.cseq_slots[self.slot_position].retain(func)
     }
-    pub(in crate::svc::cycle::item_getters) fn finish(self, cycles: bool) -> Option<&'c CseqMap> {
-        let cseq_slot = &mut self.cache.cseq_slots[self.slot_position];
-        cseq_slot.cycles = cycles;
+    pub(in crate::svc::cycle::item_getters) fn finish(mut self, cycles: bool) -> Option<&'c CseqMap> {
         if !cycles {
-            cseq_slot.seqs.clear();
+            self.finish_not_cycling();
             return None;
         }
-        Some(&cseq_slot.seqs)
+        Some(&self.cache.cseq_slots[self.slot_position])
+    }
+    // Items which don't cycle are marked in their cell, and give the slot back, unless builds
+    // nested into this one took slots after it
+    // Kept out of line, so that finishing a build of an item which cycles stays small enough to be
+    // inlined
+    #[cold]
+    #[inline(never)]
+    fn finish_not_cycling(&mut self) {
+        self.cache.item_cells[self.item_index].slot_positions[self.item_co_code.into_usize()] =
+            CseqSlotPosition::NOT_CYCLING;
+        self.cache.cseq_slots[self.slot_position].clear();
+        if self.slot_position + 1 == self.cache.cseq_slots_used {
+            self.cache.cseq_slots_used = self.slot_position;
+        }
     }
 }
