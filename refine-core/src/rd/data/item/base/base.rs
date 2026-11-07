@@ -25,9 +25,9 @@ use crate::{
     Count, CountNz, PValue, SkillLevel, SlotIndex, Value,
     ad::{AAbilId, AAttrId, AEffectId, AItem, AItemCatId, AItemGrpId, AItemId, AItemListId},
     rd::{
-        RAttrConsts, RAttrId, REffectConsts, REffectId, RItemBaseEffectData, RItemCapConsumer, RItemChargeLimit,
-        RItemContLimit, RItemEffectOptions, RItemEffectsPregenId, RItemListId, RItemShipLimit, RShipDroneLimit,
-        RShipKind, RState, RcEffect,
+        RAttrConsts, RAttrId, REffect, REffectConsts, REffectId, RItemBaseEffectData, RItemCapConsumer,
+        RItemChargeLimit, RItemContLimit, RItemEffectOptions, RItemEffectsPregenId, RItemListId, RItemShipLimit,
+        RShipDroneLimit, RShipKind, RState,
     },
     util::{PDense, RMap},
     val::DetectedItemKind,
@@ -234,7 +234,7 @@ impl RItemBase {
         a_items: &RMap<AItemId, AItem>,
         item_list_aid_rid_map: &RMap<AItemListId, RItemListId>,
         effect_aid_rid_map: &RMap<AEffectId, REffectId>,
-        r_effects: &PDense<REffectId, RcEffect>,
+        r_effects: &PDense<REffectId, REffect>,
     ) {
         let a_item = a_items.get(&self.aid).unwrap();
         let mut effect_rids = Vec::with_capacity(a_item.effects.iter().len());
@@ -284,7 +284,7 @@ impl RItemBase {
         item_list_aid_rid_map: &RMap<AItemListId, RItemListId>,
         attr_aid_rid_map: &RMap<AAttrId, RAttrId>,
         r_item_attrs: &RMap<RAttrId, Value>,
-        r_effects: &PDense<REffectId, RcEffect>,
+        r_effects: &PDense<REffectId, REffect>,
         attr_consts: &RAttrConsts,
         effect_consts: &REffectConsts,
     ) {

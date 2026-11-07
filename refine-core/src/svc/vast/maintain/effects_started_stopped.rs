@@ -1,6 +1,6 @@
 use crate::{
     misc::EffectSpec,
-    rd::{RAttrConsts, REffect, REffectDisallows, RcEffect},
+    rd::{RAttrConsts, RData, REffect, REffectDisallows, REffectId},
     svc::{Vast, vast::val::EffectSecZoneInfo},
     ud::{UFitId, UItem, UItemId},
 };
@@ -8,11 +8,15 @@ use crate::{
 impl Vast {
     pub(in crate::svc) fn effects_started(
         &mut self,
-        attr_consts: &RAttrConsts,
+        r_data: &RData,
         item_uid: UItemId,
         item: &UItem,
-        effects: &[RcEffect],
+        effect_rids: &[REffectId],
     ) {
+        let attr_consts = r_data.get_attr_consts();
+        let effects = effect_rids
+            .iter()
+            .map(|&effect_rid| r_data.get_effect_by_rid(effect_rid));
         match item {
             UItem::Autocharge(autocharge) => {
                 for effect in effects {
@@ -143,11 +147,15 @@ impl Vast {
     }
     pub(in crate::svc) fn effects_stopped(
         &mut self,
-        attr_consts: &RAttrConsts,
+        r_data: &RData,
         item_uid: UItemId,
         item: &UItem,
-        effects: &[RcEffect],
+        effect_rids: &[REffectId],
     ) {
+        let attr_consts = r_data.get_attr_consts();
+        let effects = effect_rids
+            .iter()
+            .map(|&effect_rid| r_data.get_effect_by_rid(effect_rid));
         match item {
             UItem::Autocharge(autocharge) => {
                 for effect in effects {
@@ -185,11 +193,9 @@ impl Vast {
                         self.handle_orrs_stop(effect, item_uid, fighter.get_fit_uid());
                         self.handle_neut_stop(attr_consts, effect, item_uid, item, fighter.get_fit_uid());
                     }
-                    for effect in effects {
-                        if effect.banned_in_hisec || effect.banned_in_lowsec {
-                            let fit_data = self.get_fit_data_mut(fighter.get_fit_uid());
-                            fit_data.sec_zone_effect.remove_l2(item_uid, &effect.rid);
-                        }
+                    if effect.banned_in_hisec || effect.banned_in_lowsec {
+                        let fit_data = self.get_fit_data_mut(fighter.get_fit_uid());
+                        fit_data.sec_zone_effect.remove_l2(item_uid, &effect.rid);
                     }
                 }
             }

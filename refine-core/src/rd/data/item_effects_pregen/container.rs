@@ -3,7 +3,7 @@ use std::sync::Arc;
 use crate::{
     ad::AItemId,
     rd::{
-        REffectConsts, REffectId, RItemEffectOptions, RItemEffectsPregenEntry, RItemEffectsPregenId, RcEffect, RcItem,
+        REffect, REffectConsts, REffectId, RItemEffectOptions, RItemEffectsPregenEntry, RItemEffectsPregenId, RcItem,
     },
     util::{DenseId, PDense, RMap},
 };
@@ -27,7 +27,7 @@ impl RItemsEffectsPregen {
     /// results on item types.
     pub(in crate::rd::data) fn new(
         items: &mut RMap<AItemId, RcItem>,
-        effects: &PDense<REffectId, RcEffect>,
+        effects: &PDense<REffectId, REffect>,
         effect_consts: &REffectConsts,
     ) -> Self {
         // Equal results are stored once

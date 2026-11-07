@@ -1,6 +1,6 @@
 use crate::{
     EffectMode,
-    rd::{REffectConsts, REffectId, RItemBase, RItemEffectOptions, RItemEffectsResolver, RState, RcEffect},
+    rd::{REffect, REffectConsts, REffectId, RItemBase, RItemEffectOptions, RItemEffectsResolver, RState},
     util::PDense,
 };
 
@@ -25,7 +25,7 @@ impl RItemEffectsPregenEntry {
     pub(super) fn new(
         reuse_state_effects: &mut Vec<(RState, REffectId)>,
         item_base: &RItemBase,
-        effects: &PDense<REffectId, RcEffect>,
+        effects: &PDense<REffectId, REffect>,
         effect_consts: &REffectConsts,
         effect_options: RItemEffectOptions,
     ) -> Self {

@@ -1,7 +1,7 @@
 pub(crate) use abil::RAbil;
 pub(crate) use attr::{RAttr, RAttrConsts, RAttrId};
 pub(crate) use buff::{RBuff, RBuffId, RBuffModifier};
-pub(crate) use data::{RData, RcData, RcEffect, RcItem, RcMuta};
+pub(crate) use data::{RData, RcData, RcItem, RcMuta};
 pub(crate) use effect::{
     REffect, REffectBuff, REffectBuffScope, REffectCharge, REffectChargeLoc, REffectConsts, REffectDisallows,
     REffectEcm, REffectId, REffectLocalOpcSpec, REffectMining, REffectModStrength, REffectModifier, REffectNeut,

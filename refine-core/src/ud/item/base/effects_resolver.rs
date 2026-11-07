@@ -2,7 +2,7 @@ use std::cmp::Ordering;
 
 use crate::{
     ad::AEffectId,
-    rd::{RData, REffectId, RItem, RItemEffectOptions, RItemEffectsResolver, RState, RcEffect},
+    rd::{RData, REffectId, RItem, RItemEffectOptions, RItemEffectsResolver, RState},
     ud::item::{REffs, misc::UEffectModes},
 };
 
@@ -49,7 +49,7 @@ impl UItemEffectsResolver {
         // happens before e.g. item removal)
         reuse_eupdates.to_stop.reserve(reffs.len());
         for effect_rid in reffs.drain() {
-            let effect = r_data.get_effect_by_rid(effect_rid).clone();
+            let effect = r_data.get_effect_by_rid(effect_rid);
             if effect.activates_charge_for_item(item) {
                 reuse_eupdates.charge = Some(false);
             }
@@ -59,7 +59,7 @@ impl UItemEffectsResolver {
                     active: false,
                 });
             }
-            reuse_eupdates.to_stop.push(effect);
+            reuse_eupdates.to_stop.push(effect_rid);
         }
     }
     fn update_running_effects_pregen(
@@ -81,7 +81,7 @@ impl UItemEffectsResolver {
                 let effect_rids = pregen_entry.get_above_up_to(reffs_pregen_up_to, item_state);
                 reuse_eupdates.to_start.reserve(effect_rids.len());
                 for &effect_rid in effect_rids {
-                    let effect = r_data.get_effect_by_rid(effect_rid).clone();
+                    let effect = r_data.get_effect_by_rid(effect_rid);
                     if effect.activates_charge_for_item(item) {
                         reuse_eupdates.charge = Some(true);
                     }
@@ -91,7 +91,7 @@ impl UItemEffectsResolver {
                             active: true,
                         });
                     }
-                    reuse_eupdates.to_start.push(effect);
+                    reuse_eupdates.to_start.push(effect_rid);
                 }
                 reffs.extend(effect_rids.iter().copied());
             }
@@ -99,7 +99,7 @@ impl UItemEffectsResolver {
                 let effect_rids = pregen_entry.get_above_up_to(item_state, reffs_pregen_up_to);
                 reuse_eupdates.to_stop.reserve(effect_rids.len());
                 for &effect_rid in effect_rids {
-                    let effect = r_data.get_effect_by_rid(effect_rid).clone();
+                    let effect = r_data.get_effect_by_rid(effect_rid);
                     if effect.activates_charge_for_item(item) {
                         reuse_eupdates.charge = Some(false);
                     }
@@ -109,7 +109,7 @@ impl UItemEffectsResolver {
                             active: false,
                         });
                     }
-                    reuse_eupdates.to_stop.push(effect);
+                    reuse_eupdates.to_stop.push(effect_rid);
                     reffs.remove(&effect_rid);
                 }
             }
@@ -130,22 +130,21 @@ impl UItemEffectsResolver {
             item_effect_modes.get_by_aid(&AEffectId::ONLINE),
             item_state,
         );
-        let online_running = match r_data.get_effect_consts().online {
+        let online_effect_rid = r_data.get_effect_consts().online;
+        let online_running = match online_effect_rid {
             Some(online_effect_rid) => reffs.contains(&online_effect_rid),
             None => false,
         };
         // Whenever online effect status changes, it should be guaranteed that online effect is
         // available on the source level, so can just unwrap here
         if online_running && !online_should_run {
-            reuse_eupdates.to_stop.push(r_data.get_online_effect().unwrap().clone());
+            reuse_eupdates.to_stop.push(online_effect_rid.unwrap());
         } else if !online_running && online_should_run {
-            reuse_eupdates
-                .to_start
-                .push(r_data.get_online_effect().unwrap().clone());
+            reuse_eupdates.to_start.push(online_effect_rid.unwrap());
         }
         for &effect_rid in item.base.effect_rids.iter() {
             // Online effect has already been handled
-            if Some(effect_rid) == r_data.get_effect_consts().online {
+            if Some(effect_rid) == online_effect_rid {
                 continue;
             }
             let effect = r_data.get_effect_by_rid(effect_rid);
@@ -159,7 +158,7 @@ impl UItemEffectsResolver {
             );
             let running = reffs.contains(&effect_rid);
             if running && !should_run {
-                reuse_eupdates.to_stop.push(effect.clone());
+                reuse_eupdates.to_stop.push(effect_rid);
                 if effect.activates_charge_for_item(item) {
                     reuse_eupdates.charge = Some(false);
                 }
@@ -170,7 +169,7 @@ impl UItemEffectsResolver {
                     });
                 }
             } else if !running && should_run {
-                reuse_eupdates.to_start.push(effect.clone());
+                reuse_eupdates.to_start.push(effect_rid);
                 if effect.activates_charge_for_item(item) {
                     reuse_eupdates.charge = Some(true);
                 }
@@ -182,9 +181,9 @@ impl UItemEffectsResolver {
                 }
             };
         }
-        reffs.extend(reuse_eupdates.to_start.iter().map(|effect| effect.rid));
-        for effect in reuse_eupdates.to_stop.iter() {
-            reffs.remove(&effect.rid);
+        reffs.extend(reuse_eupdates.to_start.iter().copied());
+        for effect_rid in reuse_eupdates.to_stop.iter() {
+            reffs.remove(effect_rid);
         }
     }
 }
@@ -198,8 +197,8 @@ pub(crate) struct UAutochargeActivation {
 }
 
 pub(crate) struct UEffectUpdates {
-    pub(crate) to_start: Vec<RcEffect>,
-    pub(crate) to_stop: Vec<RcEffect>,
+    pub(crate) to_start: Vec<REffectId>,
+    pub(crate) to_stop: Vec<REffectId>,
     // Fields which contain info about (auto)charge activation/deactivation
     pub(crate) charge: Option<bool>,
     pub(crate) autocharges: Vec<UAutochargeActivation>,

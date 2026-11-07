@@ -1,6 +1,6 @@
 use crate::{
     misc::{AttrSpec, EffectSpec},
-    rd::{RAttrId, REffectId, RState, RcEffect},
+    rd::{RAttrId, REffect, REffectId, RState},
     svc::{Svc, SvcCtx},
     ud::{UData, UFighter, UFitId, UFleet, UItem, UItemId, UProjData, USkill},
 };
@@ -68,31 +68,29 @@ impl Svc {
         u_data: &UData,
         item_uid: UItemId,
         item: &UItem,
-        effects: &[RcEffect],
+        effect_rids: &[REffectId],
     ) {
         let svc_ctx = &SvcCtx::new(u_data, &self.eff_projs);
-        self.calc.effects_started(svc_ctx, item_uid, item, effects);
-        self.vast
-            .effects_started(u_data.r_data.get_attr_consts(), item_uid, item, effects);
+        self.calc.effects_started(svc_ctx, item_uid, item, effect_rids);
+        self.vast.effects_started(&u_data.r_data, item_uid, item, effect_rids);
     }
     pub(crate) fn notify_effects_stopped(
         &mut self,
         u_data: &UData,
         item_uid: UItemId,
         item: &UItem,
-        effects: &[RcEffect],
+        effect_rids: &[REffectId],
     ) {
         let svc_ctx = &SvcCtx::new(u_data, &self.eff_projs);
-        self.calc.effects_stopped(svc_ctx, item_uid, item, effects);
-        self.vast
-            .effects_stopped(u_data.r_data.get_attr_consts(), item_uid, item, effects);
+        self.calc.effects_stopped(svc_ctx, item_uid, item, effect_rids);
+        self.vast.effects_stopped(&u_data.r_data, item_uid, item, effect_rids);
     }
     pub(crate) fn notify_effect_projected(
         &mut self,
         u_data: &UData,
         projector_uid: UItemId,
         projector_item: &UItem,
-        effect: &RcEffect,
+        effect: &REffect,
         projectee_uid: UItemId,
         projectee_item: &UItem,
         proj_data: Option<UProjData>,
@@ -101,7 +99,7 @@ impl Svc {
         self.eff_projs.add_proj_data(projector_espec, projectee_uid, proj_data);
         let svc_ctx = &SvcCtx::new(u_data, &self.eff_projs);
         self.calc
-            .effect_projected(svc_ctx, projector_espec, projectee_uid, projectee_item);
+            .effect_projected(svc_ctx, projector_espec, effect, projectee_uid, projectee_item);
         self.vast.effect_projected(
             u_data,
             projector_uid,
@@ -116,14 +114,14 @@ impl Svc {
         u_data: &UData,
         projector_uid: UItemId,
         projector_item: &UItem,
-        effect: &RcEffect,
+        effect: &REffect,
         projectee_uid: UItemId,
         projectee_item: &UItem,
     ) {
         let projector_espec = EffectSpec::new(projector_uid, effect.rid);
         let svc_ctx = &SvcCtx::new(u_data, &self.eff_projs);
         self.calc
-            .effect_unprojected(svc_ctx, projector_espec, projectee_uid, projectee_item);
+            .effect_unprojected(svc_ctx, projector_espec, effect, projectee_uid, projectee_item);
         self.vast.effect_unprojected(
             u_data,
             projector_uid,

@@ -15,7 +15,6 @@ use crate::{
 
 pub(crate) type RcData = Arc<RData>;
 pub(crate) type RcItem = Arc<RItem>;
-pub(crate) type RcEffect = Arc<REffect>;
 pub(crate) type RcMuta = Arc<RMuta>;
 
 pub(crate) struct RData {
@@ -25,7 +24,7 @@ pub(crate) struct RData {
     attrs: PDense<RAttrId, RAttr>,
     attr_aid_rid_map: RMap<AAttrId, RAttrId>,
     attr_consts: RAttrConsts,
-    effects: PDense<REffectId, RcEffect>,
+    effects: PDense<REffectId, REffect>,
     effect_aid_rid_map: RMap<AEffectId, REffectId>,
     effect_consts: REffectConsts,
     buffs: PDense<RBuffId, RBuff>,
@@ -34,7 +33,6 @@ pub(crate) struct RData {
     muta_pregen: RMutasPregen,
     abils: RMap<AAbilId, RAbil>,
     // Extra data stored directly on RData for ease of access / optimization purposes
-    online_effect: Option<RcEffect>,
     rah_duration_attr_rid: Option<RAttrId>,
 }
 impl RData {
@@ -63,7 +61,7 @@ impl RData {
         &self.attr_consts
     }
     // Attr methods
-    pub(crate) fn get_effect_by_rid(&self, effect_rid: REffectId) -> &RcEffect {
+    pub(crate) fn get_effect_by_rid(&self, effect_rid: REffectId) -> &REffect {
         self.effects.get(effect_rid).unwrap()
     }
     pub(crate) fn get_effect_rid_by_aid(&self, effect_aid: &AEffectId) -> Option<REffectId> {
@@ -89,9 +87,6 @@ impl RData {
         self.abils.get(ability_aid)
     }
     // Misc getters
-    pub(crate) fn get_online_effect(&self) -> Option<&RcEffect> {
-        self.online_effect.as_ref()
-    }
     pub(crate) fn get_rah_duration_attr_rid(&self) -> Option<RAttrId> {
         self.rah_duration_attr_rid
     }
@@ -146,9 +141,6 @@ impl RData {
         let rah_duration_attr_rid = effect_consts
             .adaptive_armor_hardener
             .and_then(|effect_rid| effects.get(effect_rid).unwrap().duration_attr_rid);
-        let online_effect = effect_consts
-            .online
-            .map(|effect_rid| effects.get(effect_rid).unwrap().clone());
         let muta_pregen = RMutasPregen::new(&items, &mutas, &attr_aid_rid_map, &attr_consts);
         Self {
             items,
@@ -166,7 +158,6 @@ impl RData {
             muta_pregen,
             abils,
             rah_duration_attr_rid,
-            online_effect,
         }
     }
 }
@@ -224,12 +215,12 @@ fn make_attrs(a_attrs: &AAttrs) -> (PDense<RAttrId, RAttr>, RMap<AAttrId, RAttrI
     (attrs, attr_aid_rid_map)
 }
 
-fn make_effects(a_effects: &AEffects) -> (PDense<REffectId, RcEffect>, RMap<AEffectId, REffectId>) {
+fn make_effects(a_effects: &AEffects) -> (PDense<REffectId, REffect>, RMap<AEffectId, REffectId>) {
     let mut effect_aid_rid_map = RMap::with_capacity(a_effects.data.len());
     let mut effects = PDense::with_capacity(a_effects.data.len());
     for a_effect in a_effects.iter() {
         let effect_rid = effects.next_id();
-        effects.push(Arc::new(REffect::from_a_effect(effect_rid, a_effect)));
+        effects.push(REffect::from_a_effect(effect_rid, a_effect));
         effect_aid_rid_map.insert(a_effect.id, effect_rid);
     }
     (effects, effect_aid_rid_map)
@@ -247,7 +238,7 @@ fn make_buffs(a_buffs: &ABuffs) -> (PDense<RBuffId, RBuff>, RMap<ABuffId, RBuffI
 
 // Runtime data filling
 fn fill_effects(
-    effects: &mut PDense<REffectId, RcEffect>,
+    effects: &mut PDense<REffectId, REffect>,
     a_effects: &AEffects,
     item_list_aid_rid_map: &RMap<AItemListId, RItemListId>,
     attr_aid_rid_map: &RMap<AAttrId, RAttrId>,
@@ -255,7 +246,7 @@ fn fill_effects(
     buff_aid_rid_map: &RMap<ABuffId, RBuffId>,
 ) {
     for r_effect in effects.values_mut() {
-        Arc::get_mut(r_effect).unwrap().fill_runtime(
+        r_effect.fill_runtime(
             &a_effects.data,
             item_list_aid_rid_map,
             attr_aid_rid_map,
@@ -273,7 +264,7 @@ fn fill_items(
     effect_aid_rid_map: &RMap<AEffectId, REffectId>,
     attr_consts: &RAttrConsts,
     effect_consts: &REffectConsts,
-    effects: &PDense<REffectId, RcEffect>,
+    effects: &PDense<REffectId, REffect>,
 ) {
     for r_item in items.values_mut() {
         Arc::get_mut(r_item).unwrap().fill_runtime(

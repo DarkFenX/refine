@@ -2,7 +2,7 @@ use itertools::Itertools;
 
 use crate::{
     misc::{AttrSpec, EffectSpec},
-    rd::{RAttrId, RcEffect},
+    rd::{RAttrId, RData, REffect, REffectId},
     svc::{
         SvcCtx,
         calc::{Calc, CtxModifier, ModifierKind, RawModId, RawModifier},
@@ -125,14 +125,18 @@ impl Calc {
         ctx: &SvcCtx,
         item_uid: UItemId,
         item: &UItem,
-        effects: &[RcEffect],
+        effect_rids: &[REffectId],
     ) {
+        let r_data: &RData = &ctx.u_data.r_data;
+        let effects = effect_rids
+            .iter()
+            .map(|&effect_rid| r_data.get_effect_by_rid(effect_rid));
         // Notify core calc services
         let mut reuse_rmod_ids = self.reuse.rmod_ids.take();
         let mut reuse_rmods = self.reuse.rmods.take();
         let mut reuse_items = self.reuse.items.take();
         let mut reuse_cmods = self.reuse.cmods.take();
-        for effect in effects.iter() {
+        for effect in effects.clone() {
             self.generate_mods_for_effect(&mut reuse_rmods, ctx.u_data, item_uid, item, effect);
             self.reg_raw_mods(
                 &mut reuse_rmod_ids,
@@ -146,7 +150,7 @@ impl Calc {
         }
         // Buffs which rely on on-item attributes are generated after all other modifiers of started
         // effects are registered, since those modifiers can change applied buff ID
-        for effect in effects.iter() {
+        for effect in effects.clone() {
             if let Some(effect_buff) = &effect.buff
                 && effect_buff.attr_merge.is_some()
             {
@@ -165,7 +169,7 @@ impl Calc {
         // Buff maintenance - add info about effects which use default buff attributes. Done after
         // all modifiers are registered, so that buff modifiers of started effects are not generated
         // again while starting them
-        for effect in effects.iter() {
+        for effect in effects {
             self.buffs.reg_effect(item_uid, effect);
         }
         self.reuse.rmod_ids.put(reuse_rmod_ids);
@@ -173,29 +177,30 @@ impl Calc {
         self.reuse.items.put(reuse_items);
         self.reuse.cmods.put(reuse_cmods);
         // Notify RAH sim
-        self.rah_effects_started(ctx, item_uid, item, effects);
+        self.rah_effects_started(ctx, item_uid, item, effect_rids);
     }
     pub(in crate::svc) fn effects_stopped(
         &mut self,
         ctx: &SvcCtx,
         item_uid: UItemId,
         item: &UItem,
-        effects: &[RcEffect],
+        effect_rids: &[REffectId],
     ) {
         // Notify RAH sim
-        self.rah_effects_stopped(ctx, item_uid, item, effects);
+        self.rah_effects_stopped(ctx, item_uid, item, effect_rids);
         // Notify core calc services
         // Buff maintenance - remove info about effects which use default buff attributes before
         // removing any modifiers. Removal can change buff attribute values, and buff modifiers
         // would be re-generated for effects which are still registered
-        for effect in effects.iter() {
-            self.buffs.unreg_effect(item_uid, effect);
+        for &effect_rid in effect_rids {
+            self.buffs
+                .unreg_effect(item_uid, ctx.u_data.r_data.get_effect_by_rid(effect_rid));
         }
         let mut reuse_rmod_ids = self.reuse.rmod_ids.take();
         let mut reuse_items = self.reuse.items.take();
         let mut reuse_cmods = self.reuse.cmods.take();
-        for effect in effects.iter() {
-            let espec = EffectSpec::new(item_uid, effect.rid);
+        for &effect_rid in effect_rids {
+            let espec = EffectSpec::new(item_uid, effect_rid);
             self.rmods.remove_by_espec_p1(&mut reuse_rmod_ids, &espec);
             for &rmod_id in reuse_rmod_ids.iter() {
                 // Attribute changes caused by unregistering a modifier can remove other modifiers
@@ -219,12 +224,12 @@ impl Calc {
         &mut self,
         ctx: &SvcCtx,
         projector_espec: EffectSpec,
+        effect: &REffect,
         projectee_uid: UItemId,
         projectee_item: &UItem,
     ) {
         // Buff maintenance - record projection before projecting, so that buff modifiers
         // re-generated during recalculations get projected too
-        let effect = ctx.u_data.r_data.get_effect_by_rid(projector_espec.effect_rid);
         self.buffs.reg_projection(projector_espec, effect, projectee_uid);
         let mut reuse_cmods = self.reuse.cmods.take();
         self.std.project_effect(
@@ -267,12 +272,12 @@ impl Calc {
         &mut self,
         ctx: &SvcCtx,
         projector_espec: EffectSpec,
+        effect: &REffect,
         projectee_uid: UItemId,
         projectee_item: &UItem,
     ) {
         // Buff maintenance - remove projection info before unprojecting, so that buff modifiers
         // re-generated during recalculations do not get projected
-        let effect = ctx.u_data.r_data.get_effect_by_rid(projector_espec.effect_rid);
         self.buffs.unreg_projection(projector_espec, effect, projectee_uid);
         let mut reuse_cmods = self.reuse.cmods.take();
         self.std.unproject_effect(

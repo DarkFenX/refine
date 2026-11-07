@@ -1,6 +1,6 @@
 use crate::{
     ad::{AAttrId, AEffectId, AItem, AItemId, AItemListId},
-    rd::{RAttrConsts, RAttrId, REffectConsts, REffectId, RItemBase, RItemFlexData, RItemListId, RcEffect},
+    rd::{RAttrConsts, RAttrId, REffect, REffectConsts, REffectId, RItemBase, RItemFlexData, RItemListId},
     util::{PDense, RMap},
 };
 
@@ -31,7 +31,7 @@ impl RItem {
         effect_aid_rid_map: &RMap<AEffectId, REffectId>,
         attr_consts: &RAttrConsts,
         effect_consts: &REffectConsts,
-        r_effects: &PDense<REffectId, RcEffect>,
+        r_effects: &PDense<REffectId, REffect>,
     ) {
         self.base
             .fill_runtime_basic(a_items, item_list_aid_rid_map, effect_aid_rid_map, r_effects);

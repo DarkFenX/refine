@@ -3,7 +3,7 @@ use itertools::Itertools;
 use crate::{
     ad::AAttrId,
     misc::AttrSpec,
-    rd::RcEffect,
+    rd::REffectId,
     svc::{
         SvcCtx,
         calc::{Calc, ItemAttrPostproc},
@@ -33,14 +33,14 @@ impl Calc {
         ctx: &SvcCtx,
         item_uid: UItemId,
         item: &UItem,
-        effects: &[RcEffect],
+        effect_rids: &[REffectId],
     ) {
         if self.rah.sim_running {
             return;
         }
         if let UItem::Module(module) = item
             && let Some(rah_effect_rid) = ctx.ec().adaptive_armor_hardener
-            && effects.iter().any(|v| v.rid == rah_effect_rid)
+            && effect_rids.contains(&rah_effect_rid)
         {
             let fit_uid = module.get_fit_uid();
             // Clear sim data for other RAHs on the same fit
@@ -70,14 +70,14 @@ impl Calc {
         ctx: &SvcCtx,
         item_uid: UItemId,
         item: &UItem,
-        effects: &[RcEffect],
+        effect_rids: &[REffectId],
     ) {
         if self.rah.sim_running {
             return;
         }
         if let UItem::Module(module) = item
             && let Some(rah_effect_rid) = ctx.ec().adaptive_armor_hardener
-            && effects.iter().any(|v| v.rid == rah_effect_rid)
+            && effect_rids.contains(&rah_effect_rid)
         {
             let fit_uid = module.get_fit_uid();
             // Remove postprocessors

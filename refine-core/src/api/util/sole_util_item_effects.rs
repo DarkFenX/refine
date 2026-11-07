@@ -32,7 +32,8 @@ fn process_effect_updates(u_data: &UData, svc: &mut Svc, item_uid: UItemId, u_it
         if let Some(projs) = u_item.iter_projs() {
             for (projectee_uid, proj_data) in projs {
                 let projectee_item = u_data.items.get(projectee_uid);
-                for r_effect in eupdates.to_start.iter() {
+                for &effect_rid in eupdates.to_start.iter() {
+                    let r_effect = u_data.r_data.get_effect_by_rid(effect_rid);
                     if is_effect_projectable(u_item, r_effect) {
                         svc.notify_effect_projected(
                             u_data,
@@ -52,7 +53,8 @@ fn process_effect_updates(u_data: &UData, svc: &mut Svc, item_uid: UItemId, u_it
         if let Some(projectee_uids) = u_item.iter_projectees() {
             for projectee_uid in projectee_uids {
                 let projectee_item = u_data.items.get(projectee_uid);
-                for r_effect in eupdates.to_stop.iter() {
+                for &effect_rid in eupdates.to_stop.iter() {
+                    let r_effect = u_data.r_data.get_effect_by_rid(effect_rid);
                     if is_effect_projectable(u_item, r_effect) {
                         svc.notify_effect_unprojected(
                             u_data,
