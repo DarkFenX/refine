@@ -1,4 +1,4 @@
-use tokio_rayon::rayon::prelude::*;
+use rayon::prelude::*;
 
 use crate::{
     FitId, ItemTypeId,
@@ -41,7 +41,7 @@ impl DevBenchmarkTryFitItemsCmd {
         let cloner = SolCloner::new(core_sol);
         let chunk_size = usize::max(
             100,
-            (self.type_ids.len() as f64 / tokio_rayon::rayon::current_num_threads() as f64 / 16.0).ceil() as usize,
+            (self.type_ids.len() as f64 / rayon::current_num_threads() as f64 / 16.0).ceil() as usize,
         );
         // with_max_len() ensures each chunk goes to a separate rayon worker
         self.type_ids.par_chunks(chunk_size).with_max_len(1).for_each(|chunk| {

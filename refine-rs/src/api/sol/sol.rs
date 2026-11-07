@@ -8,8 +8,9 @@ use crate::{
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 /// Locked solar system.
 ///
-/// A command whose future is dropped before it completes keeps the solar system locked until its
-/// work is done. Neither this handle nor handles taken from it can be used after that, or after a
+/// A command whose future is dropped before it completes runs only if its work has already
+/// started; either way, the solar system stays locked until the command's job is reached and done
+/// or skipped. Neither this handle nor handles taken from it can be used after that, or after a
 /// command panicked.
 pub struct Sol<'r> {
     pub(crate) refine: &'r Refine,

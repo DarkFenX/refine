@@ -9,8 +9,9 @@ impl<'r> Sol<'r> {
     /// - fallible methods run commands in a transaction, which is committed if they succeed, and
     ///   rolled back if they fail.
     ///
-    /// The solar system lock moves into the threadpool job and comes back with its result, so a
-    /// command whose future is dropped keeps the solar system locked until its job completes.
+    /// The solar system lock moves into the threadpool job and comes back with its result. A
+    /// command whose future is dropped doesn't run if its job hasn't started yet, and keeps the
+    /// solar system locked until a pool thread reaches the job; a started job completes.
     ///
     /// A panic in any of them leaves the solar system poisoned; it is discarded when it is
     /// requested next.

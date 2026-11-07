@@ -1,17 +1,17 @@
-use tokio_rayon::AsyncThreadPool;
+use std::panic::{AssertUnwindSafe, catch_unwind, resume_unwind};
 
 pub(crate) struct ThreadPool {
-    standard: tokio_rayon::rayon::ThreadPool,
-    heavy: tokio_rayon::rayon::ThreadPool,
+    standard: rayon::ThreadPool,
+    heavy: rayon::ThreadPool,
 }
 impl ThreadPool {
     pub(crate) fn new(standard_threads: usize, heavy_threads: usize) -> Self {
         Self {
-            standard: tokio_rayon::rayon::ThreadPoolBuilder::new()
+            standard: rayon::ThreadPoolBuilder::new()
                 .num_threads(standard_threads)
                 .build()
                 .unwrap(),
-            heavy: tokio_rayon::rayon::ThreadPoolBuilder::new()
+            heavy: rayon::ThreadPoolBuilder::new()
                 .num_threads(heavy_threads)
                 .build()
                 .unwrap(),
@@ -34,25 +34,37 @@ impl ThreadPool {
         F: FnOnce() -> R + Send + 'static,
         R: Send + 'static,
     {
-        let sync_span = tracing::error_span!("sync");
-        self.standard
-            .spawn_fifo_async(move || {
-                let _sg = sync_span.enter();
-                func()
-            })
-            .await
+        exec(&self.standard, func).await
     }
     pub(crate) async fn exec_heavy<F, R>(&self, func: F) -> R
     where
         F: FnOnce() -> R + Send + 'static,
         R: Send + 'static,
     {
-        let sync_span = tracing::error_span!("sync");
-        self.heavy
-            .spawn_fifo_async(move || {
-                let _sg = sync_span.enter();
-                func()
-            })
-            .await
+        exec(&self.heavy, func).await
+    }
+}
+
+/// A job whose future is dropped before the job starts is skipped. Once started, a job runs to
+/// completion.
+async fn exec<F, R>(pool: &rayon::ThreadPool, func: F) -> R
+where
+    F: FnOnce() -> R + Send + 'static,
+    R: Send + 'static,
+{
+    let sync_span = tracing::error_span!("sync");
+    let (result_tx, result_rx) = tokio::sync::oneshot::channel();
+    pool.spawn_fifo(move || {
+        let _sg = sync_span.enter();
+        // The future was dropped while the job was queued, so nothing waits for its result
+        if result_tx.is_closed() {
+            tracing::debug!("skipping job of a cancelled request");
+            return;
+        }
+        let _ = result_tx.send(catch_unwind(AssertUnwindSafe(func)));
+    });
+    match result_rx.await.expect("threadpool job dropped without running") {
+        Ok(result) => result,
+        Err(panic) => resume_unwind(panic),
     }
 }

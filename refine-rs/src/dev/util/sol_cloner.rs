@@ -24,7 +24,7 @@ impl<'a> SolClonerInner<'a> {
     fn new(original: &'a rc::SolOwned) -> Self {
         Self {
             original,
-            allocated: Vec::with_capacity(tokio_rayon::rayon::current_num_threads()),
+            allocated: Vec::with_capacity(rayon::current_num_threads()),
         }
     }
     pub(in crate::dev) fn take(&mut self) -> Box<rc::SolOwned> {
