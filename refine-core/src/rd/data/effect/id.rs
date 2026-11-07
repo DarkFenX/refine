@@ -1,14 +1,14 @@
 use crate::util::DenseId;
 
 #[derive(Copy, Clone, Eq, PartialEq, Hash, Default)]
-pub(crate) struct REffectId(usize);
+pub(crate) struct REffectId(u32);
 
 impl DenseId for REffectId {
     fn new(index: usize) -> Self {
-        Self(index)
+        Self(index.try_into().unwrap())
     }
     fn index(self) -> usize {
-        self.0
+        self.0 as usize
     }
 }
 
