@@ -5,7 +5,7 @@ use crate::{ed::EItemId, util::round_f64_to_i32};
     derive(serde::Serialize, serde::Deserialize),
     serde(transparent)
 )]
-#[derive(Copy, Clone, Eq, PartialEq, Hash, Debug, derive_more::Display)]
+#[derive(Copy, Clone, Eq, PartialEq, Ord, PartialOrd, Hash, Debug, derive_more::Display)]
 pub struct AItemId(i32);
 impl AItemId {
     pub const fn from_i32(id: i32) -> Self {

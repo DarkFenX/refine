@@ -29,7 +29,7 @@ use crate::{
         RItemContLimit, RItemEffectOptions, RItemEffectsPregenId, RItemListId, RItemShipLimit, RShipDroneLimit,
         RShipKind, RState, RcEffect,
     },
-    util::{PSlab, RMap, RSet},
+    util::{PSlab, RMap},
     val::DetectedItemKind,
 };
 
@@ -43,7 +43,7 @@ pub(crate) struct RItemBase {
     pub(crate) aid: AItemId,
     pub(crate) grp_id: AItemGrpId,
     pub(crate) cat_id: AItemCatId,
-    pub(crate) effect_rids: RSet<REffectId>,
+    pub(crate) effect_rids: Box<[REffectId]>,
     // Item-specific effect data, only stored if differs to default
     pub(crate) effect_datas: RMap<REffectId, RItemBaseEffectData>,
     pub(crate) defeff_rid: Option<REffectId>,
@@ -237,13 +237,18 @@ impl RItemBase {
         r_effects: &PSlab<REffectId, RcEffect>,
     ) {
         let a_item = a_items.get(&self.aid).unwrap();
+        let mut effect_rids = Vec::with_capacity(a_item.effects.iter().len());
         for a_item_effect in a_item.effects.iter() {
             let Some(&effect_rid) = effect_aid_rid_map.get(&a_item_effect.id) else {
                 continue;
             };
             // Effect-specific data will be filled later, nothing in this method depends on it
-            self.effect_rids.insert(effect_rid);
+            effect_rids.push(effect_rid);
         }
+        // Effects are resolved in this order; sorting by adapted effect ID keeps it independent of
+        // hashing, i.e. the same across data loads
+        effect_rids.sort_unstable_by_key(|&effect_rid| r_effects.get(effect_rid).unwrap().aid);
+        self.effect_rids = effect_rids.into_boxed_slice();
         self.defeff_rid = a_item
             .defeff_id
             .and_then(|defeff_aid| effect_aid_rid_map.get(&defeff_aid).copied());

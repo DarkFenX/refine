@@ -3,7 +3,7 @@ use crate::{
     ed::{EEffectId, EItemId},
 };
 
-#[derive(Copy, Clone, Eq, PartialEq, Hash, Debug)]
+#[derive(Copy, Clone, Eq, PartialEq, Ord, PartialOrd, Hash, Debug)]
 pub enum AEffectId {
     /// ID of a general EVE effect
     Dogma(ADogmaEffectId),
@@ -26,7 +26,7 @@ pub enum AEffectId {
     derive(serde::Serialize, serde::Deserialize),
     serde(transparent)
 )]
-#[derive(Copy, Clone, Eq, PartialEq, Hash, Debug, derive_more::Display)]
+#[derive(Copy, Clone, Eq, PartialEq, Ord, PartialOrd, Hash, Debug, derive_more::Display)]
 pub struct ADogmaEffectId(i32);
 impl ADogmaEffectId {
     pub const fn from_i32(id: i32) -> Self {
@@ -42,7 +42,7 @@ impl ADogmaEffectId {
     derive(serde::Serialize, serde::Deserialize),
     serde(transparent)
 )]
-#[derive(Copy, Clone, Eq, PartialEq, Hash, Debug, derive_more::Display)]
+#[derive(Copy, Clone, Eq, PartialEq, Ord, PartialOrd, Hash, Debug, derive_more::Display)]
 pub struct ACustomEffectId(i32);
 impl ACustomEffectId {
     pub const fn from_i32(id: i32) -> Self {
