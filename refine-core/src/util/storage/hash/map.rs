@@ -149,17 +149,11 @@ where
     pub(crate) fn remove(&mut self, key: &K) -> Option<V> {
         self.data.remove(key)
     }
-    pub(crate) fn retain(&mut self, func: impl FnMut(&K, &mut V) -> bool) {
-        self.data.retain(func)
-    }
     pub(crate) fn drain(&mut self) -> impl ExactSizeIterator<Item = (K, V)> {
         self.data.drain()
     }
     pub(crate) fn clear(&mut self) {
         self.data.clear()
-    }
-    pub(crate) fn reserve(&mut self, additional: usize) {
-        self.data.reserve(additional)
     }
     pub(crate) fn shrink_to_fit(&mut self) {
         self.data.shrink_to_fit()

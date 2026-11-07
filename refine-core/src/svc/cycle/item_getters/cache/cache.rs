@@ -1,19 +1,11 @@
 use super::{
+    cseq_map::{CseqFull, CseqMap},
     cseq_slot_position::CseqSlotPosition,
     generation::Generation,
     item_co_code::ItemCyclingOptionsCode,
     key::{CacheKey, ItemCyclingOptions},
 };
-use crate::{
-    rd::REffectId,
-    svc::cycle::{CSeqHardDtFull, CycleDataFull, CycleSeq},
-    ud::UItemId,
-    util::{DenseId, RMap},
-};
-
-type CseqFull = CycleSeq<CycleDataFull, CSeqHardDtFull>;
-/// Cycle sequences of an item's effects.
-pub(in crate::svc) type CseqMap = RMap<REffectId, CseqFull>;
+use crate::{rd::REffectId, ud::UItemId, util::DenseId};
 
 /// Cycle sequences of items, built once per item and cycling options.
 ///
@@ -148,8 +140,8 @@ impl<'c> CseqBuild<'c> {
     pub(in crate::svc::cycle::item_getters) fn reserve(&mut self, additional: usize) {
         self.cache.cseq_slots[self.slot_position].reserve(additional)
     }
-    pub(in crate::svc::cycle::item_getters) fn insert(&mut self, key: REffectId, value: CseqFull) -> Option<CseqFull> {
-        self.cache.cseq_slots[self.slot_position].insert(key, value)
+    pub(in crate::svc::cycle::item_getters) fn insert(&mut self, effect_rid: REffectId, cseq: CseqFull) {
+        self.cache.cseq_slots[self.slot_position].insert(effect_rid, cseq)
     }
     pub(in crate::svc::cycle::item_getters) fn retain(&mut self, func: impl FnMut(&REffectId, &mut CseqFull) -> bool) {
         self.cache.cseq_slots[self.slot_position].retain(func)
