@@ -10,7 +10,7 @@ use crate::{
         RItemEffectsPregenEntry, RItemEffectsPregenId, RItemList, RItemListId, RMuta, RMutasPregen,
         data::item_effects_pregen::RItemsEffectsPregen,
     },
-    util::{PDenseSlab, RMap},
+    util::{PDense, RMap},
 };
 
 pub(crate) type RcData = Arc<RData>;
@@ -21,14 +21,14 @@ pub(crate) type RcMuta = Arc<RMuta>;
 pub(crate) struct RData {
     items: RMap<AItemId, RcItem>,
     item_effects_pregen: RItemsEffectsPregen,
-    item_lists: PDenseSlab<RItemListId, RItemList>,
-    attrs: PDenseSlab<RAttrId, RAttr>,
+    item_lists: PDense<RItemListId, RItemList>,
+    attrs: PDense<RAttrId, RAttr>,
     attr_aid_rid_map: RMap<AAttrId, RAttrId>,
     attr_consts: RAttrConsts,
-    effects: PDenseSlab<REffectId, RcEffect>,
+    effects: PDense<REffectId, RcEffect>,
     effect_aid_rid_map: RMap<AEffectId, REffectId>,
     effect_consts: REffectConsts,
-    buffs: PDenseSlab<RBuffId, RBuff>,
+    buffs: PDense<RBuffId, RBuff>,
     buff_aid_rid_map: RMap<ABuffId, RBuffId>,
     mutas: RMap<AItemId, RcMuta>,
     muta_pregen: RMutasPregen,
@@ -196,22 +196,19 @@ fn make_abils(a_abils: &AAbils) -> RMap<AAbilId, RAbil> {
         .collect()
 }
 
-fn make_item_lists(a_item_lists: &AItemLists) -> (PDenseSlab<RItemListId, RItemList>, RMap<AItemListId, RItemListId>) {
+fn make_item_lists(a_item_lists: &AItemLists) -> (PDense<RItemListId, RItemList>, RMap<AItemListId, RItemListId>) {
     let mut item_list_aid_rid_map = RMap::with_capacity(a_item_lists.data.len());
-    let mut item_lists = PDenseSlab::with_capacity(a_item_lists.data.len());
+    let mut item_lists = PDense::with_capacity(a_item_lists.data.len());
     for a_item_list in a_item_lists.iter() {
-        let entry = item_lists.vacant_entry();
-        let item_list_rid = entry.id();
-        let r_item_list = RItemList::from_a_item_list(a_item_list);
-        entry.insert(r_item_list);
+        let item_list_rid = item_lists.push(RItemList::from_a_item_list(a_item_list));
         item_list_aid_rid_map.insert(a_item_list.id, item_list_rid);
     }
     (item_lists, item_list_aid_rid_map)
 }
 
-fn make_attrs(a_attrs: &AAttrs) -> (PDenseSlab<RAttrId, RAttr>, RMap<AAttrId, RAttrId>) {
+fn make_attrs(a_attrs: &AAttrs) -> (PDense<RAttrId, RAttr>, RMap<AAttrId, RAttrId>) {
     let mut attr_aid_rid_map = RMap::with_capacity(a_attrs.data.len());
-    let mut attrs = PDenseSlab::with_capacity(a_attrs.data.len());
+    let mut attrs = PDense::with_capacity(a_attrs.data.len());
     // Densely stored attrs go first
     let dense_a_attrs = AAttrId::DENSE_ATTRS
         .iter()
@@ -220,36 +217,29 @@ fn make_attrs(a_attrs: &AAttrs) -> (PDenseSlab<RAttrId, RAttr>, RMap<AAttrId, RA
         .iter()
         .filter(|a_attr| !AAttrId::DENSE_ATTRS.contains(&a_attr.id));
     for a_attr in dense_a_attrs.chain(sparse_a_attrs) {
-        let entry = attrs.vacant_entry();
-        let attr_rid = entry.id();
-        let r_attr = RAttr::from_a_attr(attr_rid, a_attr);
-        entry.insert(r_attr);
+        let attr_rid = attrs.next_id();
+        attrs.push(RAttr::from_a_attr(attr_rid, a_attr));
         attr_aid_rid_map.insert(a_attr.id, attr_rid);
     }
     (attrs, attr_aid_rid_map)
 }
 
-fn make_effects(a_effects: &AEffects) -> (PDenseSlab<REffectId, RcEffect>, RMap<AEffectId, REffectId>) {
+fn make_effects(a_effects: &AEffects) -> (PDense<REffectId, RcEffect>, RMap<AEffectId, REffectId>) {
     let mut effect_aid_rid_map = RMap::with_capacity(a_effects.data.len());
-    let mut effects = PDenseSlab::with_capacity(a_effects.data.len());
+    let mut effects = PDense::with_capacity(a_effects.data.len());
     for a_effect in a_effects.iter() {
-        let entry = effects.vacant_entry();
-        let effect_rid = entry.id();
-        let r_effect = REffect::from_a_effect(effect_rid, a_effect);
-        entry.insert(Arc::new(r_effect));
+        let effect_rid = effects.next_id();
+        effects.push(Arc::new(REffect::from_a_effect(effect_rid, a_effect)));
         effect_aid_rid_map.insert(a_effect.id, effect_rid);
     }
     (effects, effect_aid_rid_map)
 }
 
-fn make_buffs(a_buffs: &ABuffs) -> (PDenseSlab<RBuffId, RBuff>, RMap<ABuffId, RBuffId>) {
+fn make_buffs(a_buffs: &ABuffs) -> (PDense<RBuffId, RBuff>, RMap<ABuffId, RBuffId>) {
     let mut buff_aid_rid_map = RMap::with_capacity(a_buffs.data.len());
-    let mut buffs = PDenseSlab::with_capacity(a_buffs.data.len());
+    let mut buffs = PDense::with_capacity(a_buffs.data.len());
     for a_buff in a_buffs.iter() {
-        let entry = buffs.vacant_entry();
-        let buff_rid = entry.id();
-        let r_buff = RBuff::from_a_buff(a_buff);
-        entry.insert(r_buff);
+        let buff_rid = buffs.push(RBuff::from_a_buff(a_buff));
         buff_aid_rid_map.insert(a_buff.id, buff_rid);
     }
     (buffs, buff_aid_rid_map)
@@ -257,7 +247,7 @@ fn make_buffs(a_buffs: &ABuffs) -> (PDenseSlab<RBuffId, RBuff>, RMap<ABuffId, RB
 
 // Runtime data filling
 fn fill_effects(
-    effects: &mut PDenseSlab<REffectId, RcEffect>,
+    effects: &mut PDense<REffectId, RcEffect>,
     a_effects: &AEffects,
     item_list_aid_rid_map: &RMap<AItemListId, RItemListId>,
     attr_aid_rid_map: &RMap<AAttrId, RAttrId>,
@@ -283,7 +273,7 @@ fn fill_items(
     effect_aid_rid_map: &RMap<AEffectId, REffectId>,
     attr_consts: &RAttrConsts,
     effect_consts: &REffectConsts,
-    effects: &PDenseSlab<REffectId, RcEffect>,
+    effects: &PDense<REffectId, RcEffect>,
 ) {
     for r_item in items.values_mut() {
         Arc::get_mut(r_item).unwrap().fill_runtime(
@@ -299,7 +289,7 @@ fn fill_items(
 }
 
 fn fill_attrs(
-    attrs: &mut PDenseSlab<RAttrId, RAttr>,
+    attrs: &mut PDense<RAttrId, RAttr>,
     a_attrs: &AAttrs,
     attr_aid_rid_map: &RMap<AAttrId, RAttrId>,
     attr_consts: &RAttrConsts,
@@ -336,7 +326,7 @@ fn fill_attrs(
     }
 }
 
-fn fill_buffs(buffs: &mut PDenseSlab<RBuffId, RBuff>, a_buffs: &ABuffs, attr_aid_rid_map: &RMap<AAttrId, RAttrId>) {
+fn fill_buffs(buffs: &mut PDense<RBuffId, RBuff>, a_buffs: &ABuffs, attr_aid_rid_map: &RMap<AAttrId, RAttrId>) {
     for r_buff in buffs.values_mut() {
         r_buff.fill_runtime(&a_buffs.data, attr_aid_rid_map);
     }

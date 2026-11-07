@@ -1,5 +1,7 @@
-pub(crate) use primary_slab::PDenseSlab;
-pub(crate) use secondary::{SDense, SSlabUnchecked};
+pub(crate) use primary::PDense;
+pub(crate) use primary_rm::PDenseRm;
+pub(crate) use secondary::{SDense, SDenseUnchecked};
 
-mod primary_slab;
+mod primary;
+mod primary_rm;
 mod secondary;

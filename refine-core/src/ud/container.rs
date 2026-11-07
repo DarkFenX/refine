@@ -1,10 +1,10 @@
 use std::hash::Hash;
 
-use crate::util::{DenseId, LibDefault, LibGetId, LibIncrement, LibNamed, PDenseSlab, RMap};
+use crate::util::{DenseId, LibDefault, LibGetId, LibIncrement, LibNamed, PDenseRm, RMap};
 
 pub(crate) struct UEntityContainer<T, ExtId, IntId, Err> {
     counter: ExtId,
-    data: PDenseSlab<IntId, T>,
+    data: PDenseRm<IntId, T>,
     ext_id_to_int_id: RMap<ExtId, IntId>,
     // Entities which are kept in storage while unmapped
     detached: Vec<IntId>,
@@ -20,7 +20,7 @@ where
     pub(in crate::ud) fn new(capacity: usize) -> Self {
         Self {
             counter: ExtId::lib_default(),
-            data: PDenseSlab::with_capacity(capacity),
+            data: PDenseRm::with_capacity(capacity),
             ext_id_to_int_id: RMap::with_capacity(capacity),
             detached: Vec::new(),
             phantom: std::marker::PhantomData,

@@ -12,14 +12,14 @@ use crate::{
         ValSrqSkillStored,
     },
     ud::{UFitId, UItemId},
-    util::{RMap, RMapRMap, RMapRMapRMap, RMapRSet, RSet, SSlabUnchecked},
+    util::{RMap, RMapRMap, RMapRMapRMap, RMapRSet, RSet, SDenseUnchecked},
     val::ValShipKind,
 };
 
 /// Vast stands for VAlidation and STats.
 #[derive(Clone)]
 pub(in crate::svc) struct Vast {
-    pub(super) fit_datas: SSlabUnchecked<UFitId, VastFitData>,
+    pub(super) fit_datas: SDenseUnchecked<UFitId, VastFitData>,
     pub(in crate::svc::vast) not_loaded: RSet<UItemId>,
     // Stats-related - incoming remote reps
     pub(in crate::svc::vast) irr_shield:
@@ -44,7 +44,7 @@ pub(in crate::svc) struct Vast {
 impl Vast {
     pub(in crate::svc) fn new() -> Self {
         Self {
-            fit_datas: SSlabUnchecked::new(),
+            fit_datas: SDenseUnchecked::new(),
             not_loaded: RSet::new(),
             irr_shield: RMapRMapRMap::new(),
             irr_shield_limitable: RMapRMapRMap::new(),

@@ -5,8 +5,8 @@ use crate::util::storage::{DenseId, RSet, SDense, Set};
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Regular rustc hasher
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-pub(crate) type SSLabRSet<K, V> = SSLabSet<K, V, rustc_hash::FxBuildHasher>;
-impl<I, V> Default for SSLabRSet<I, V>
+pub(crate) type SDenseRSet<K, V> = SDenseSet<K, V, rustc_hash::FxBuildHasher>;
+impl<I, V> Default for SDenseRSet<I, V>
 where
     I: DenseId,
     V: Clone,
@@ -18,7 +18,7 @@ where
         }
     }
 }
-impl<I, V> SSLabRSet<I, V>
+impl<I, V> SDenseRSet<I, V>
 where
     I: DenseId,
     V: Clone,
@@ -27,7 +27,7 @@ where
         Self::default()
     }
 }
-impl<I, V> SSLabRSet<I, V>
+impl<I, V> SDenseRSet<I, V>
 where
     I: DenseId,
     V: Eq + Hash + Clone,
@@ -50,7 +50,7 @@ where
 // Generic
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 #[derive(Clone)]
-pub(crate) struct SSLabSet<I, V, H>
+pub(crate) struct SDenseSet<I, V, H>
 where
     I: DenseId,
     V: Clone,
@@ -59,7 +59,7 @@ where
     data: SDense<I, Set<V, H>>,
     empty: Set<V, H>,
 }
-impl<I, V, H> SSLabSet<I, V, H>
+impl<I, V, H> SDenseSet<I, V, H>
 where
     I: DenseId,
     V: Eq + Hash + Clone,

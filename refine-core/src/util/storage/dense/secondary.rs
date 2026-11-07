@@ -51,14 +51,14 @@ where
 // should be upheld by code using it
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 #[derive(Clone)]
-pub(crate) struct SSlabUnchecked<I, V>
+pub(crate) struct SDenseUnchecked<I, V>
 where
     I: DenseId,
     V: Clone,
 {
     inner: SDense<I, V>,
 }
-impl<I, V> SSlabUnchecked<I, V>
+impl<I, V> SDenseUnchecked<I, V>
 where
     I: DenseId,
     V: Clone,

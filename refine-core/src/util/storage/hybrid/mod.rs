@@ -1,5 +1,5 @@
+pub(crate) use sdense_set::SDenseRSet;
 pub(crate) use small_set::SmallRSet;
-pub(crate) use sslab_set::SSLabRSet;
 
+mod sdense_set;
 mod small_set;
-mod sslab_set;

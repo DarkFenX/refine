@@ -1,19 +1,19 @@
 use crate::{
     misc::EffectSpec,
     svc::calc::{CtxModKey, CtxModifier, RawModId, RawModifier},
-    util::{PDenseSlab, RMapRSet},
+    util::{PDenseRm, RMapRSet},
 };
 
 /// General storage of raw modifiers.
 #[derive(Clone)]
 pub(in crate::svc::calc) struct RawModStorage {
-    data: PDenseSlab<RawModId, RawModifier>,
+    data: PDenseRm<RawModId, RawModifier>,
     by_espec: RMapRSet<EffectSpec, RawModId>,
 }
 impl RawModStorage {
     pub(in crate::svc::calc) fn new() -> Self {
         Self {
-            data: PDenseSlab::with_capacity(0),
+            data: PDenseRm::with_capacity(0),
             by_espec: RMapRSet::new(),
         }
     }
