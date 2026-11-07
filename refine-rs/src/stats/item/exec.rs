@@ -423,25 +423,22 @@ impl SwitchingOption for StatOptionItemOutRps {
     }
 }
 
-// Results of switching options, in the order options are passed to a stat getter
+// Results of switching options, in the order options are passed to a stat getter. Results are
+// collected only when some option switches; when none does, the getter computes every option
 struct SwitchedResults<T, E> {
     results: Vec<Option<Result<T, E>>>,
     switching: bool,
 }
 impl<T, E> SwitchedResults<T, E> {
-    fn new<'a, O, I>(options: I) -> Self
+    fn new<'a, O, I>(mut options: I) -> Self
     where
         O: SwitchingOption + 'a,
         I: Iterator<Item = &'a O>,
     {
-        let mut switching = false;
-        let results = options
-            .map(|option| {
-                switching |= option.is_switching();
-                None
-            })
-            .collect();
-        Self { results, switching }
+        Self {
+            results: Vec::new(),
+            switching: options.any(|option| option.is_switching()),
+        }
     }
     fn is_switching(&self) -> bool {
         self.switching
@@ -452,11 +449,12 @@ impl<T, E> SwitchedResults<T, E> {
         I: Iterator<Item = &'a O>,
         F: FnMut(&O) -> Result<T, E>,
     {
-        for (result, option) in self.results.iter_mut().zip(options) {
-            if option.is_switching() {
-                *result = Some(getter(option));
-            }
+        if !self.switching {
+            return;
         }
+        self.results = options
+            .map(|option| option.is_switching().then(|| getter(option)))
+            .collect();
     }
     fn or_get<O, F>(&mut self, mut getter: F) -> impl FnMut(&O) -> Result<T, E>
     where
