@@ -1,5 +1,8 @@
 use crate::{CmdResps, Item, ItemAddEnumCmd, ItemInfo, ItemInfoCmdBr, Sol, err::ItemAddEnumError};
 
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Public
+////////////////////////////////////////////////////////////////////////////////////////////////////
 impl<'r, 's> Sol<'r> {
     #[tracing::instrument(name = "itm-add", level = "error", skip_all)]
     pub async fn add_item(&'s mut self, ctl_cmd: ItemAddEnumCmd) -> Result<Item<'r, 's>, ItemAddEnumError> {

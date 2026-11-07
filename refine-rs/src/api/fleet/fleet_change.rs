@@ -1,5 +1,8 @@
 use crate::{Fleet, FleetChangeCmd, FleetInfo, FleetInfoCmd, err::FleetChangeError};
 
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Public
+////////////////////////////////////////////////////////////////////////////////////////////////////
 impl Fleet<'_, '_> {
     #[tracing::instrument(name = "flt-chg", level = "error", skip_all)]
     pub async fn change(&mut self, ctl_cmd: FleetChangeCmd) -> Result<(), FleetChangeError> {

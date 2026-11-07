@@ -2,6 +2,9 @@ use crate::{
     ChangedItemIdsResp, CmdResp, CmdResps, Item, ItemChangeEnumCmd, ItemInfo, ItemInfoCmdBr, err::ItemChangeEnumError,
 };
 
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Public
+////////////////////////////////////////////////////////////////////////////////////////////////////
 impl Item<'_, '_> {
     #[tracing::instrument(name = "itm-chg", level = "error", skip_all)]
     pub async fn change(&mut self, ctl_cmd: ItemChangeEnumCmd) -> Result<ChangedItemIdsResp, ItemChangeEnumError> {

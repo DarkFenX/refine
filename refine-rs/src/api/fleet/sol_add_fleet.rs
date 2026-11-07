@@ -1,5 +1,8 @@
 use crate::{Fleet, FleetAddCmd, FleetInfo, FleetInfoCmd, Sol, err::FleetAddError};
 
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Public
+////////////////////////////////////////////////////////////////////////////////////////////////////
 impl<'r, 's> Sol<'r> {
     #[tracing::instrument(name = "flt-add", level = "error", skip_all)]
     pub async fn add_fleet(&'s mut self, ctl_cmd: FleetAddCmd) -> Result<Fleet<'r, 's>, FleetAddError> {

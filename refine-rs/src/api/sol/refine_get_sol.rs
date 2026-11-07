@@ -1,5 +1,8 @@
 use crate::{Refine, Sol, SolId, svc::SolInnerGuarded};
 
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Public
+////////////////////////////////////////////////////////////////////////////////////////////////////
 impl Refine {
     #[tracing::instrument(name = "sol-get", level = "error", skip_all)]
     pub async fn get_sol(&self, id: SolId) -> Result<Sol<'_>, SolGetError> {
@@ -12,6 +15,18 @@ impl Refine {
             None => Err(SolGetError::SolNotFound(id)),
         }
     }
+}
+
+#[derive(thiserror::Error, Debug)]
+pub enum SolGetError {
+    #[error("solar system {0} not found")]
+    SolNotFound(SolId),
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Private
+////////////////////////////////////////////////////////////////////////////////////////////////////
+impl Refine {
     pub(crate) async fn internal_lock_sol(&self, guarded_inner_sol: SolInnerGuarded, touch: bool) -> Option<Sol<'_>> {
         let mut sol = Sol::new(self, guarded_inner_sol, touch).await;
         // Solar system could be removed while the request was waiting for its lock
@@ -25,10 +40,4 @@ impl Refine {
         }
         Some(sol)
     }
-}
-
-#[derive(thiserror::Error, Debug)]
-pub enum SolGetError {
-    #[error("solar system {0} not found")]
-    SolNotFound(SolId),
 }

@@ -1,5 +1,8 @@
 use std::sync::Arc;
 
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Public
+////////////////////////////////////////////////////////////////////////////////////////////////////
 use crate::{
     Refine, Src, SrcAlias,
     src::{SrcInfo, SrcInfoMode},
@@ -39,6 +42,20 @@ impl Refine {
         let src_info = SrcInfo::from_inner(&inner_src, is_default, info_mode);
         Ok((Src::new(self, inner_src), src_info))
     }
+}
+
+#[derive(thiserror::Error, Debug)]
+pub enum SrcAddError {
+    #[error("alias \"{0}\" already exists")]
+    SrcAliasNotAvailable(SrcAlias),
+    #[error("source initialization failed")]
+    SrcInit(#[from] rc::src::err::SrcInitError),
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Private - general
+////////////////////////////////////////////////////////////////////////////////////////////////////
+impl Refine {
     async fn internal_add_src(
         &self,
         alias: SrcAlias,
@@ -75,16 +92,8 @@ impl Refine {
     }
 }
 
-#[derive(thiserror::Error, Debug)]
-pub enum SrcAddError {
-    #[error("alias \"{0}\" already exists")]
-    SrcAliasNotAvailable(SrcAlias),
-    #[error("source initialization failed")]
-    SrcInit(#[from] rc::src::err::SrcInitError),
-}
-
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-// Sync processing
+// Private - sync processing
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 fn create_core_src(
     ed_handler: rc::ed::EveDataHandler,

@@ -1,5 +1,23 @@
 use crate::{Refine, Src, SrcAlias};
 
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Public
+////////////////////////////////////////////////////////////////////////////////////////////////////
+impl Src<'_> {
+    pub async fn remove(self) -> Result<(), SrcRemoveError> {
+        self.refine.remove_src(&self.inner.get_alias())
+    }
+}
+
+#[derive(thiserror::Error, Debug)]
+pub enum SrcRemoveError {
+    #[error("alias \"{0}\" not found")]
+    SrcNotFound(SrcAlias),
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Private
+////////////////////////////////////////////////////////////////////////////////////////////////////
 impl Refine {
     #[tracing::instrument(name = "src-rmv", level = "error", skip_all)]
     fn remove_src(&self, alias: &SrcAlias) -> Result<(), SrcRemoveError> {
@@ -14,16 +32,4 @@ impl Refine {
         }
         Ok(())
     }
-}
-
-impl Src<'_> {
-    pub async fn remove(self) -> Result<(), SrcRemoveError> {
-        self.refine.remove_src(&self.inner.get_alias())
-    }
-}
-
-#[derive(thiserror::Error, Debug)]
-pub enum SrcRemoveError {
-    #[error("alias \"{0}\" not found")]
-    SrcNotFound(SrcAlias),
 }

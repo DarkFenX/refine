@@ -1,5 +1,8 @@
 use crate::{Refine, Sol, SolAddCmd, SolInfo, SolInfoCmd, SrcAlias, src::err::SrcGetError};
 
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Public
+////////////////////////////////////////////////////////////////////////////////////////////////////
 impl Refine {
     #[tracing::instrument(name = "sol-add", level = "error", skip_all)]
     pub async fn add_sol(&self, src_alias: Option<SrcAlias>, ctl_cmd: SolAddCmd) -> Result<Sol<'_>, SolAddError> {

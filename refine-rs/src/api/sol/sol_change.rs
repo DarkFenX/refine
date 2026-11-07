@@ -1,5 +1,8 @@
 use crate::{CmdResp, CmdResps, Sol, SolChangeEnumCmd, SolInfo, SolInfoCmdBr, err::SolChangeEnumError};
 
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Public
+////////////////////////////////////////////////////////////////////////////////////////////////////
 impl Sol<'_> {
     #[tracing::instrument(name = "sol-chg", level = "error", skip_all)]
     pub async fn change(&mut self, ctl_cmd: SolChangeEnumCmd) -> Result<CmdResp, SolChangeEnumError> {

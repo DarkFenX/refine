@@ -1,5 +1,8 @@
 use crate::{CmdResp, CmdResps, Fit, FitChangeEnumCmd, FitInfo, FitInfoCmdBr, err::FitChangeEnumError};
 
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Public
+////////////////////////////////////////////////////////////////////////////////////////////////////
 impl Fit<'_, '_> {
     #[tracing::instrument(name = "fit-chg", level = "error", skip_all)]
     pub async fn change(&mut self, ctl_cmd: FitChangeEnumCmd) -> Result<CmdResp, FitChangeEnumError> {
