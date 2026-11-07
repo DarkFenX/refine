@@ -1,14 +1,17 @@
+use std::num::NonZeroU32;
+
 use crate::util::DenseId;
 
+/// Imitates non-max u32, since pattern types are not really usable even in nightly.
 #[derive(Copy, Clone, Eq, PartialEq, Hash)]
-pub(crate) struct RAttrId(u32);
+pub(crate) struct RAttrId(NonZeroU32);
 
 impl DenseId for RAttrId {
     fn new(index: usize) -> Self {
-        Self(index.try_into().unwrap())
+        Self(NonZeroU32::MIN.checked_add(index.try_into().unwrap()).unwrap())
     }
     fn index(self) -> usize {
-        self.0 as usize
+        (self.0.get() - 1) as usize
     }
 }
 

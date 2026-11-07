@@ -1,14 +1,24 @@
+use std::num::NonZeroU32;
+
 use crate::util::DenseId;
 
-#[derive(Copy, Clone, Eq, PartialEq, Hash, Default)]
-pub(crate) struct REffectId(u32);
+/// Imitates non-max u32, since pattern types are not really usable even in nightly.
+#[derive(Copy, Clone, Eq, PartialEq, Hash)]
+pub(crate) struct REffectId(NonZeroU32);
+
+// Placeholder for inline storage of small sets
+impl Default for REffectId {
+    fn default() -> Self {
+        Self(NonZeroU32::MIN)
+    }
+}
 
 impl DenseId for REffectId {
     fn new(index: usize) -> Self {
-        Self(index.try_into().unwrap())
+        Self(NonZeroU32::MIN.checked_add(index.try_into().unwrap()).unwrap())
     }
     fn index(self) -> usize {
-        self.0 as usize
+        (self.0.get() - 1) as usize
     }
 }
 
