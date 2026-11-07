@@ -90,8 +90,8 @@ impl SolInner {
     pub(crate) fn get_src_alias(&self) -> SrcAlias {
         *self.src_alias.lock()
     }
-    pub(crate) fn set_src_alias(&mut self, src_alias: SrcAlias) {
-        *self.src_alias.lock() = src_alias
+    pub(crate) fn get_guarded_src_alias(&self) -> Arc<parking_lot::Mutex<SrcAlias>> {
+        self.src_alias.clone()
     }
     fn touch(&mut self) {
         self.last_accessed = Instant::now();
