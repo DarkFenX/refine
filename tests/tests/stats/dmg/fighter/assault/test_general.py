@@ -384,6 +384,45 @@ def test_time(client, consts):
     assert api_fighter_dmg_rearm.volley == [approx(4710.234375), 0, 0, 0]
 
 
+def test_time_mixed(client, consts):
+    # Time options of one request share built cycles; each option still has to get its own
+    eve_basic_info = setup_dmg_basics(client=client, consts=consts)
+    eve_fighter_id = make_eve_fighter_assault(
+        client=client, basic_info=eve_basic_info,
+        prm_dmgs=(108, 0, 0, 0), prm_dmg_mult=2.578125, prm_cycle_time=5000,
+        sec_dmgs=(196.5, 0, 0, 0), sec_dmg_mult=2.578125, sec_cycle_time=14000,
+        sec_charge_count=18, sec_charge_rearm_time=4,
+        refuel_duration=5000, sq_size=6)
+    client.create_sources()
+    api_sol = client.create_sol()
+    api_fit = api_sol.create_fit()
+    api_fighter = api_fit.add_fighter(
+        type_id=eve_fighter_id,
+        state=consts.ApiMinionState.engaging,
+        abilities={eve_basic_info.missiles_abil_id: True})
+    # Verification - burst, sim without override (sol default doesn't rearm), and sim with both
+    # overrides
+    api_fit_stats = api_fit.get_stats(options=FitStatsOptions(dmg=[
+        StatsOptionFitDmg(time=StatTimeBurst()),
+        StatsOptionFitDmg(time=StatTimeSim()),
+        StatsOptionFitDmg(time=StatTimeSim(rearm_minions=consts.ApiRearmMinion.disabled)),
+        StatsOptionFitDmg(time=StatTimeSim(rearm_minions=consts.ApiRearmMinion.on_first_empty))]))
+    assert api_fit_stats.dmg.map(lambda i: i.dps) == [
+        [approx(551.239955), 0, 0, 0],
+        [approx(334.125), 0, 0, 0],
+        [approx(334.125), 0, 0, 0],
+        [approx(422.703455), 0, 0, 0]]
+    # Action
+    api_fighter.change_fighter(rearm_minion_override=consts.ApiRearmMinion.on_first_empty)
+    # Verification - sim without override now follows the fighter setting
+    api_fit_stats = api_fit.get_stats(options=FitStatsOptions(dmg=[
+        StatsOptionFitDmg(time=StatTimeSim()),
+        StatsOptionFitDmg(time=StatTimeSim(rearm_minions=consts.ApiRearmMinion.disabled))]))
+    assert api_fit_stats.dmg.map(lambda i: i.dps) == [
+        [approx(422.703455), 0, 0, 0],
+        [approx(334.125), 0, 0, 0]]
+
+
 def test_count_override(client, consts):
     eve_basic_info = setup_dmg_basics(client=client, consts=consts)
     eve_fighter_id = make_eve_fighter_assault(

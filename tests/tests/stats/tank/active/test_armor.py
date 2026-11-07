@@ -371,6 +371,45 @@ def test_time(client, consts):
         [approx(57.864078), approx(243.818641), ANY_VALUE]]
 
 
+def test_time_mixed(client, consts):
+    # Time options of one request share built cycles; each option still has to get its own
+    eve_basic_info = setup_tank_basics(client=client, consts=consts)
+    eve_ship_id = make_eve_tankable(client=client, basic_info=eve_basic_info, hps=(3000, 1000, 1000))
+    eve_module_id = make_eve_local_aar(
+        client=client, basic_info=eve_basic_info,
+        rep_amount=207, cycle_time=12000, capacity=0.32, charge_rate=4, reload_time=60000)
+    eve_paste_id = client.mk_eve_item(
+        id_=consts.EveItem.nanite_repair_paste,
+        attrs={eve_basic_info.volume_attr_id: 0.01})
+    client.create_sources()
+    api_sol = client.create_sol()
+    api_fit = api_sol.create_fit()
+    api_fit.set_ship(type_id=eve_ship_id)
+    api_module = api_fit.add_module(
+        type_id=eve_module_id, state=consts.ApiModuleState.active, charge_type_id=eve_paste_id)
+    # Verification - burst, sim without override (sol default reloads on empty), and sim with both
+    # overrides
+    api_fit_stats = api_fit.get_stats(options=FitStatsOptions(rps=[
+        StatsOptionRps(time=StatTimeBurst()),
+        StatsOptionRps(time=StatTimeSim()),
+        StatsOptionRps(time=StatTimeSim(optional_reloads=consts.ApiOptionalReload.disabled)),
+        StatsOptionRps(time=StatTimeSim(optional_reloads=consts.ApiOptionalReload.on_empty))]))
+    assert api_fit_stats.rps.map(lambda i: i.armor) == [
+        [approx(51.75), 0, ANY_VALUE],
+        [approx(31.846154), 0, ANY_VALUE],
+        [approx(17.25), 0, ANY_VALUE],
+        [approx(31.846154), 0, ANY_VALUE]]
+    # Action
+    api_module.change_module(optional_reload_override=consts.ApiOptionalReload.disabled)
+    # Verification - sim without override now follows the module setting
+    api_fit_stats = api_fit.get_stats(options=FitStatsOptions(rps=[
+        StatsOptionRps(time=StatTimeSim()),
+        StatsOptionRps(time=StatTimeSim(optional_reloads=consts.ApiOptionalReload.on_empty))]))
+    assert api_fit_stats.rps.map(lambda i: i.armor) == [
+        [approx(17.25), 0, ANY_VALUE],
+        [approx(31.846154), 0, ANY_VALUE]]
+
+
 def test_zero_cycle_time(client, consts):
     eve_basic_info = setup_tank_basics(client=client, consts=consts)
     eve_ship_id = make_eve_tankable(client=client, basic_info=eve_basic_info, hps=(3000, 1000, 1000))
