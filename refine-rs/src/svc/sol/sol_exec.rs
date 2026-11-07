@@ -9,7 +9,10 @@ impl<'r> Sol<'r> {
     /// - fallible methods run commands in a transaction, which is committed if they succeed, and
     ///   rolled back if they fail.
     ///
-    /// A panic in any of them poisons the core sol lock; the solar system is discarded when it is
+    /// The solar system lock moves into the threadpool job and comes back with its result, so a
+    /// command whose future is dropped keeps the solar system locked until its job completes.
+    ///
+    /// A panic in any of them leaves the solar system poisoned; it is discarded when it is
     /// requested next.
     pub(crate) async fn exec_standard<F, T, E>(&mut self, func: F) -> Result<T, E>
     where
@@ -17,31 +20,42 @@ impl<'r> Sol<'r> {
         T: Send + 'static,
         E: Send + 'static,
     {
-        let core_sol_guarded = self.inner.core_sol.clone();
-        self.refine
+        let mut inner = self.take_inner();
+        let (inner, result) = self
+            .refine
             .tpool
             .exec_standard(move || {
-                let mut core_sol = core_sol_guarded.lock();
-                let mut tx = core_sol.begin_tx();
-                let result = func(&mut tx);
-                match result {
-                    Ok(..) => tx.commit(),
-                    Err(..) => tx.rollback(),
-                }
-                result
+                let result = inner.exec(|core_sol| {
+                    let mut tx = core_sol.begin_tx();
+                    let result = func(&mut tx);
+                    match result {
+                        Ok(..) => tx.commit(),
+                        Err(..) => tx.rollback(),
+                    }
+                    result
+                });
+                (inner, result)
             })
-            .await
+            .await;
+        self.put_inner(inner);
+        result
     }
     pub(crate) async fn exec_standard_infallible<F, R>(&mut self, func: F) -> R
     where
         F: FnOnce(&mut rc::SolOwned) -> R + Send + 'static,
         R: Send + 'static,
     {
-        let core_sol_guarded = self.inner.core_sol.clone();
-        self.refine
+        let mut inner = self.take_inner();
+        let (inner, result) = self
+            .refine
             .tpool
-            .exec_standard(move || func(&mut core_sol_guarded.lock()))
-            .await
+            .exec_standard(move || {
+                let result = inner.exec(func);
+                (inner, result)
+            })
+            .await;
+        self.put_inner(inner);
+        result
     }
     #[cfg(feature = "dev")]
     pub(crate) async fn exec_heavy_infallible<F, R>(&mut self, func: F) -> R
@@ -49,18 +63,24 @@ impl<'r> Sol<'r> {
         F: FnOnce(&mut rc::SolOwned) -> R + Send + 'static,
         R: Send + 'static,
     {
-        let core_sol_guarded = self.inner.core_sol.clone();
-        self.refine
+        let mut inner = self.take_inner();
+        let (inner, result) = self
+            .refine
             .tpool
-            .exec_heavy(move || func(&mut core_sol_guarded.lock()))
-            .await
+            .exec_heavy(move || {
+                let result = inner.exec(func);
+                (inner, result)
+            })
+            .await;
+        self.put_inner(inner);
+        result
     }
     /// Executes in current thread.
     pub(crate) fn exec_inplace<F, R>(&mut self, func: F) -> R
     where
         F: FnOnce(&mut rc::SolOwned) -> R,
     {
-        func(&mut self.inner.core_sol.lock())
+        self.inner_mut().exec(func)
     }
 }
 

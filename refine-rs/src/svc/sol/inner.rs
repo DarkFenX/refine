@@ -68,7 +68,10 @@ pub(crate) struct SolInner {
     // Set when the solar system is removed from the map, so that requests which were waiting for
     // its lock do not work on it
     closed: bool,
-    pub(super) core_sol: SolCoreGuarded,
+    // Set while a command runs on the core solar system, and left set if it panics, since its
+    // changes can be partially applied
+    poisoned: bool,
+    core_sol: rc::SolOwned,
 }
 impl SolInner {
     fn new(id: SolId, src_alias: Arc<parking_lot::Mutex<SrcAlias>>, core_sol: rc::SolOwned) -> Self {
@@ -77,7 +80,8 @@ impl SolInner {
             src_alias,
             last_accessed: Instant::now(),
             closed: false,
-            core_sol: SolCoreGuarded::new(core_sol),
+            poisoned: false,
+            core_sol,
         }
     }
     pub(crate) fn get_id(&self) -> SolId {
@@ -102,20 +106,14 @@ impl SolInner {
         self.closed
     }
     pub(crate) fn is_poisoned(&self) -> bool {
-        self.core_sol.0.is_poisoned()
+        self.poisoned
     }
-}
-
-////////////////////////////////////////////////////////////////////////////////////////////////////
-// Core guarded
-////////////////////////////////////////////////////////////////////////////////////////////////////
-#[derive(Clone)]
-pub(super) struct SolCoreGuarded(Arc<std::sync::Mutex<rc::SolOwned>>);
-impl SolCoreGuarded {
-    fn new(core_sol: rc::SolOwned) -> Self {
-        Self(Arc::new(std::sync::Mutex::new(core_sol)))
-    }
-    pub(super) fn lock(&self) -> std::sync::MutexGuard<'_, rc::SolOwned> {
-        self.0.lock().unwrap()
+    pub(super) fn exec<R>(&mut self, func: impl FnOnce(&mut rc::SolOwned) -> R) -> R {
+        // Reachable only by a caller which caught the panic and kept its handle
+        assert!(!self.poisoned, "solar system poisoned by a panic");
+        self.poisoned = true;
+        let result = func(&mut self.core_sol);
+        self.poisoned = false;
+        result
     }
 }

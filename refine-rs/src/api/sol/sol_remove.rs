@@ -3,7 +3,7 @@ use crate::{Sol, SolId};
 impl Sol<'_> {
     #[tracing::instrument(name = "sol-rmv", level = "error", skip_all)]
     pub async fn remove(mut self) -> Result<(), SolRemoveError> {
-        match self.refine.id_sol_map.remove(&mut self.inner) {
+        match self.refine.id_sol_map.remove(self.inner_mut()) {
             true => Ok(()),
             false => Err(SolRemoveError::SolNotFound(self.get_id())),
         }

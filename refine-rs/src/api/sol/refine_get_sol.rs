@@ -15,12 +15,12 @@ impl Refine {
     pub(crate) async fn internal_lock_sol(&self, guarded_inner_sol: SolInnerGuarded, touch: bool) -> Option<Sol<'_>> {
         let mut sol = Sol::new(self, guarded_inner_sol, touch).await;
         // Solar system could be removed while the request was waiting for its lock
-        if sol.inner.is_closed() {
+        if sol.inner().is_closed() {
             return None;
         }
-        if sol.inner.is_poisoned() {
+        if sol.inner().is_poisoned() {
             tracing::error!("discarding solar system poisoned by a panic");
-            self.id_sol_map.remove(&mut sol.inner);
+            self.id_sol_map.remove(sol.inner_mut());
             return None;
         }
         Some(sol)

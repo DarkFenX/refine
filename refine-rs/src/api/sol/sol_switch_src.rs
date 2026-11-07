@@ -4,7 +4,7 @@ impl Sol<'_> {
     #[tracing::instrument(name = "sol-swt-src", level = "error", skip_all)]
     pub async fn switch_src(&mut self, src_alias: Option<SrcAlias>) -> Result<(), SolSwitchSrcError> {
         let inner_src = self.refine.internal_get_src(src_alias)?;
-        self.inner.set_src_alias(inner_src.get_alias());
+        self.inner_mut().set_src_alias(inner_src.get_alias());
         // Variables for move
         let core_src = inner_src.get_core().clone();
         // Source is switched outside of transactions
@@ -20,7 +20,7 @@ impl Sol<'_> {
     ) -> Result<SolInfo, SolSwitchSrcError> {
         let inner_src = self.refine.internal_get_src(src_alias)?;
         let core_src = inner_src.get_core().clone();
-        self.inner.set_src_alias(inner_src.get_alias());
+        self.inner_mut().set_src_alias(inner_src.get_alias());
         // Variables for move
         let sol_id = self.get_id();
         let src_alias = inner_src.get_alias();
