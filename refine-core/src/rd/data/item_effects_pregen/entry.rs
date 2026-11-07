@@ -1,7 +1,7 @@
 use crate::{
     EffectMode,
     rd::{REffectConsts, REffectId, RItemBase, RItemEffectOptions, RItemEffectsResolver, RState, RcEffect},
-    util::PSlab,
+    util::PDenseSlab,
 };
 
 /// Effects an item type runs without effect mode overrides, ordered by the item state they start
@@ -25,7 +25,7 @@ impl RItemEffectsPregenEntry {
     pub(super) fn new(
         reuse_state_effects: &mut Vec<(RState, REffectId)>,
         item_base: &RItemBase,
-        effects: &PSlab<REffectId, RcEffect>,
+        effects: &PDenseSlab<REffectId, RcEffect>,
         effect_consts: &REffectConsts,
         effect_options: RItemEffectOptions,
     ) -> Self {

@@ -29,7 +29,7 @@ use crate::{
         RItemContLimit, RItemEffectOptions, RItemEffectsPregenId, RItemListId, RItemShipLimit, RShipDroneLimit,
         RShipKind, RState, RcEffect,
     },
-    util::{PSlab, RMap},
+    util::{PDenseSlab, RMap},
     val::DetectedItemKind,
 };
 
@@ -234,7 +234,7 @@ impl RItemBase {
         a_items: &RMap<AItemId, AItem>,
         item_list_aid_rid_map: &RMap<AItemListId, RItemListId>,
         effect_aid_rid_map: &RMap<AEffectId, REffectId>,
-        r_effects: &PSlab<REffectId, RcEffect>,
+        r_effects: &PDenseSlab<REffectId, RcEffect>,
     ) {
         let a_item = a_items.get(&self.aid).unwrap();
         let mut effect_rids = Vec::with_capacity(a_item.effects.iter().len());
@@ -284,7 +284,7 @@ impl RItemBase {
         item_list_aid_rid_map: &RMap<AItemListId, RItemListId>,
         attr_aid_rid_map: &RMap<AAttrId, RAttrId>,
         r_item_attrs: &RMap<RAttrId, Value>,
-        r_effects: &PSlab<REffectId, RcEffect>,
+        r_effects: &PDenseSlab<REffectId, RcEffect>,
         attr_consts: &RAttrConsts,
         effect_consts: &REffectConsts,
     ) {

@@ -1,7 +1,7 @@
 use crate::{
     ad::{AAttrId, AEffectId, AItem, AItemId, AItemListId},
     rd::{RAttrConsts, RAttrId, REffectConsts, REffectId, RItemBase, RItemFlexData, RItemListId, RcEffect},
-    util::{PSlab, RMap},
+    util::{PDenseSlab, RMap},
 };
 
 /// Represents an item (or item type, according to EVE terminology).
@@ -31,7 +31,7 @@ impl RItem {
         effect_aid_rid_map: &RMap<AEffectId, REffectId>,
         attr_consts: &RAttrConsts,
         effect_consts: &REffectConsts,
-        r_effects: &PSlab<REffectId, RcEffect>,
+        r_effects: &PDenseSlab<REffectId, RcEffect>,
     ) {
         self.base
             .fill_runtime_basic(a_items, item_list_aid_rid_map, effect_aid_rid_map, r_effects);

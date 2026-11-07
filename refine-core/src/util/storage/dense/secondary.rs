@@ -6,14 +6,14 @@ use crate::util::storage::DenseId;
 // Regular version
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 #[derive(Clone)]
-pub(crate) struct SSlab<I, V>
+pub(crate) struct SDense<I, V>
 where
     I: DenseId,
     V: Clone,
 {
     data: SecondaryMap<I, Option<V>>,
 }
-impl<I, V> SSlab<I, V>
+impl<I, V> SDense<I, V>
 where
     I: DenseId,
     V: Clone,
@@ -56,7 +56,7 @@ where
     I: DenseId,
     V: Clone,
 {
-    inner: SSlab<I, V>,
+    inner: SDense<I, V>,
 }
 impl<I, V> SSlabUnchecked<I, V>
 where
@@ -64,7 +64,7 @@ where
     V: Clone,
 {
     pub(crate) fn new() -> Self {
-        Self { inner: SSlab::new() }
+        Self { inner: SDense::new() }
     }
     pub(crate) fn get(&self, id: I) -> &V {
         self.inner.get(id).unwrap()

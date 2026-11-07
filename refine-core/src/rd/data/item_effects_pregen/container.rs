@@ -5,7 +5,7 @@ use crate::{
     rd::{
         REffectConsts, REffectId, RItemEffectOptions, RItemEffectsPregenEntry, RItemEffectsPregenId, RcEffect, RcItem,
     },
-    util::{DenseId, PSlab, RMap},
+    util::{DenseId, PDenseSlab, RMap},
 };
 
 /// Effects every item type runs without effect mode overrides, per effect resolution options.
@@ -27,7 +27,7 @@ impl RItemsEffectsPregen {
     /// results on item types.
     pub(in crate::rd::data) fn new(
         items: &mut RMap<AItemId, RcItem>,
-        effects: &PSlab<REffectId, RcEffect>,
+        effects: &PDenseSlab<REffectId, RcEffect>,
         effect_consts: &REffectConsts,
     ) -> Self {
         // Equal results are stored once

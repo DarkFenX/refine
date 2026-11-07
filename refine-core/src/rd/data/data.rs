@@ -10,7 +10,7 @@ use crate::{
         RItemEffectsPregenEntry, RItemEffectsPregenId, RItemList, RItemListId, RMuta, RMutasPregen,
         data::item_effects_pregen::RItemsEffectsPregen,
     },
-    util::{PSlab, RMap},
+    util::{PDenseSlab, RMap},
 };
 
 pub(crate) type RcData = Arc<RData>;
@@ -21,14 +21,14 @@ pub(crate) type RcMuta = Arc<RMuta>;
 pub(crate) struct RData {
     items: RMap<AItemId, RcItem>,
     item_effects_pregen: RItemsEffectsPregen,
-    item_lists: PSlab<RItemListId, RItemList>,
-    attrs: PSlab<RAttrId, RAttr>,
+    item_lists: PDenseSlab<RItemListId, RItemList>,
+    attrs: PDenseSlab<RAttrId, RAttr>,
     attr_aid_rid_map: RMap<AAttrId, RAttrId>,
     attr_consts: RAttrConsts,
-    effects: PSlab<REffectId, RcEffect>,
+    effects: PDenseSlab<REffectId, RcEffect>,
     effect_aid_rid_map: RMap<AEffectId, REffectId>,
     effect_consts: REffectConsts,
-    buffs: PSlab<RBuffId, RBuff>,
+    buffs: PDenseSlab<RBuffId, RBuff>,
     buff_aid_rid_map: RMap<ABuffId, RBuffId>,
     mutas: RMap<AItemId, RcMuta>,
     muta_pregen: RMutasPregen,
@@ -115,7 +115,8 @@ impl RData {
         // Create runtime "constants"
         let attr_consts = RAttrConsts::from_id_map(&attr_aid_rid_map);
         let effect_consts = REffectConsts::from_id_map(&effect_aid_rid_map);
-        // Fill in data which wasn't filled during instantiation (e.g. depends on slab keys)
+        // Fill in data which wasn't filled during instantiation (e.g. depends on dense storage
+        // keys)
         fill_effects(
             &mut effects,
             &a_data.effects,
@@ -195,9 +196,9 @@ fn make_abils(a_abils: &AAbils) -> RMap<AAbilId, RAbil> {
         .collect()
 }
 
-fn make_item_lists(a_item_lists: &AItemLists) -> (PSlab<RItemListId, RItemList>, RMap<AItemListId, RItemListId>) {
+fn make_item_lists(a_item_lists: &AItemLists) -> (PDenseSlab<RItemListId, RItemList>, RMap<AItemListId, RItemListId>) {
     let mut item_list_aid_rid_map = RMap::with_capacity(a_item_lists.data.len());
-    let mut item_lists = PSlab::with_capacity(a_item_lists.data.len());
+    let mut item_lists = PDenseSlab::with_capacity(a_item_lists.data.len());
     for a_item_list in a_item_lists.iter() {
         let entry = item_lists.vacant_entry();
         let item_list_rid = entry.id();
@@ -208,9 +209,9 @@ fn make_item_lists(a_item_lists: &AItemLists) -> (PSlab<RItemListId, RItemList>,
     (item_lists, item_list_aid_rid_map)
 }
 
-fn make_attrs(a_attrs: &AAttrs) -> (PSlab<RAttrId, RAttr>, RMap<AAttrId, RAttrId>) {
+fn make_attrs(a_attrs: &AAttrs) -> (PDenseSlab<RAttrId, RAttr>, RMap<AAttrId, RAttrId>) {
     let mut attr_aid_rid_map = RMap::with_capacity(a_attrs.data.len());
-    let mut attrs = PSlab::with_capacity(a_attrs.data.len());
+    let mut attrs = PDenseSlab::with_capacity(a_attrs.data.len());
     // Densely stored attrs go first
     let dense_a_attrs = AAttrId::DENSE_ATTRS
         .iter()
@@ -228,9 +229,9 @@ fn make_attrs(a_attrs: &AAttrs) -> (PSlab<RAttrId, RAttr>, RMap<AAttrId, RAttrId
     (attrs, attr_aid_rid_map)
 }
 
-fn make_effects(a_effects: &AEffects) -> (PSlab<REffectId, RcEffect>, RMap<AEffectId, REffectId>) {
+fn make_effects(a_effects: &AEffects) -> (PDenseSlab<REffectId, RcEffect>, RMap<AEffectId, REffectId>) {
     let mut effect_aid_rid_map = RMap::with_capacity(a_effects.data.len());
-    let mut effects = PSlab::with_capacity(a_effects.data.len());
+    let mut effects = PDenseSlab::with_capacity(a_effects.data.len());
     for a_effect in a_effects.iter() {
         let entry = effects.vacant_entry();
         let effect_rid = entry.id();
@@ -241,9 +242,9 @@ fn make_effects(a_effects: &AEffects) -> (PSlab<REffectId, RcEffect>, RMap<AEffe
     (effects, effect_aid_rid_map)
 }
 
-fn make_buffs(a_buffs: &ABuffs) -> (PSlab<RBuffId, RBuff>, RMap<ABuffId, RBuffId>) {
+fn make_buffs(a_buffs: &ABuffs) -> (PDenseSlab<RBuffId, RBuff>, RMap<ABuffId, RBuffId>) {
     let mut buff_aid_rid_map = RMap::with_capacity(a_buffs.data.len());
-    let mut buffs = PSlab::with_capacity(a_buffs.data.len());
+    let mut buffs = PDenseSlab::with_capacity(a_buffs.data.len());
     for a_buff in a_buffs.iter() {
         let entry = buffs.vacant_entry();
         let buff_rid = entry.id();
@@ -256,7 +257,7 @@ fn make_buffs(a_buffs: &ABuffs) -> (PSlab<RBuffId, RBuff>, RMap<ABuffId, RBuffId
 
 // Runtime data filling
 fn fill_effects(
-    effects: &mut PSlab<REffectId, RcEffect>,
+    effects: &mut PDenseSlab<REffectId, RcEffect>,
     a_effects: &AEffects,
     item_list_aid_rid_map: &RMap<AItemListId, RItemListId>,
     attr_aid_rid_map: &RMap<AAttrId, RAttrId>,
@@ -282,7 +283,7 @@ fn fill_items(
     effect_aid_rid_map: &RMap<AEffectId, REffectId>,
     attr_consts: &RAttrConsts,
     effect_consts: &REffectConsts,
-    effects: &PSlab<REffectId, RcEffect>,
+    effects: &PDenseSlab<REffectId, RcEffect>,
 ) {
     for r_item in items.values_mut() {
         Arc::get_mut(r_item).unwrap().fill_runtime(
@@ -298,7 +299,7 @@ fn fill_items(
 }
 
 fn fill_attrs(
-    attrs: &mut PSlab<RAttrId, RAttr>,
+    attrs: &mut PDenseSlab<RAttrId, RAttr>,
     a_attrs: &AAttrs,
     attr_aid_rid_map: &RMap<AAttrId, RAttrId>,
     attr_consts: &RAttrConsts,
@@ -335,7 +336,7 @@ fn fill_attrs(
     }
 }
 
-fn fill_buffs(buffs: &mut PSlab<RBuffId, RBuff>, a_buffs: &ABuffs, attr_aid_rid_map: &RMap<AAttrId, RAttrId>) {
+fn fill_buffs(buffs: &mut PDenseSlab<RBuffId, RBuff>, a_buffs: &ABuffs, attr_aid_rid_map: &RMap<AAttrId, RAttrId>) {
     for r_buff in buffs.values_mut() {
         r_buff.fill_runtime(&a_buffs.data, attr_aid_rid_map);
     }

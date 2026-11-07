@@ -1,6 +1,6 @@
 use std::hash::{BuildHasher, Hash};
 
-use crate::util::storage::{DenseId, RSet, SSlab, Set};
+use crate::util::storage::{DenseId, RSet, SDense, Set};
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Regular rustc hasher
@@ -13,7 +13,7 @@ where
 {
     fn default() -> Self {
         Self {
-            data: SSlab::new(),
+            data: SDense::new(),
             empty: RSet::new(),
         }
     }
@@ -56,7 +56,7 @@ where
     V: Clone,
     H: Clone,
 {
-    data: SSlab<I, Set<V, H>>,
+    data: SDense<I, Set<V, H>>,
     empty: Set<V, H>,
 }
 impl<I, V, H> SSLabSet<I, V, H>

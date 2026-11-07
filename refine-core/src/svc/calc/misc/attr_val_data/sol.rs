@@ -3,12 +3,12 @@ use crate::{
     rd::RAttrId,
     svc::calc::{ItemAttrPostproc, misc::Reuse},
     ud::{UData, UItem, UItemId},
-    util::{RMap, SSlab},
+    util::{RMap, SDense},
 };
 
 #[derive(Clone)]
 pub(in crate::svc::calc) struct AttrValData {
-    data: SSlab<UItemId, ItemAttrData>,
+    data: SDense<UItemId, ItemAttrData>,
     // Stores unused containers from unloaded items, to be used later for loaded items
     spare_dense: Reuse<Vec<(RAttrId, AttrEntry)>>,
     spare_sparse: Reuse<RMap<RAttrId, AttrEntry>>,
@@ -16,7 +16,7 @@ pub(in crate::svc::calc) struct AttrValData {
 impl AttrValData {
     pub(in crate::svc::calc) fn new() -> Self {
         Self {
-            data: SSlab::new(),
+            data: SDense::new(),
             spare_dense: Reuse::default(),
             spare_sparse: Reuse::default(),
         }

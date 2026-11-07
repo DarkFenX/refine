@@ -8,8 +8,8 @@ pub(crate) use func::vec_push_opt;
 pub(crate) use iter_peek_prefetch::PrefetchPeekable;
 pub(crate) use state::{State3, State4, State5};
 pub(crate) use storage::{
-    CMap, DenseId, PSlab, RIMapDeduperLinear, RIndirectMap, RMap, RMapRMap, RMapRMapRMap, RMapRSet, RMapVec, ROrdSet,
-    RSet, SSLabRSet, SSlab, SSlabUnchecked, SmallRSet,
+    CMap, DenseId, PDenseSlab, RIMapDeduperLinear, RIndirectMap, RMap, RMapRMap, RMapRMapRMap, RMapRSet, RMapVec, ROrdSet,
+    RSet, SSLabRSet, SDense, SSlabUnchecked, SmallRSet,
 };
 pub(crate) use traits::{LibConverter, LibDefault, LibGetId, LibIncrement, LibMax, LibNamed};
 

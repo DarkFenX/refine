@@ -3,11 +3,11 @@ use slab::Slab;
 use crate::util::storage::DenseId;
 
 #[derive(Clone)]
-pub(crate) struct PSlab<I, V> {
+pub(crate) struct PDenseSlab<I, V> {
     data: Slab<V>,
     phantom: std::marker::PhantomData<I>,
 }
-impl<I, V> PSlab<I, V>
+impl<I, V> PDenseSlab<I, V>
 where
     I: DenseId,
 {
