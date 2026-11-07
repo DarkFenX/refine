@@ -9,7 +9,7 @@ use crate::{Ability, Fighter, ad::AAbilId, sol::SolCore, ud::UItemId};
 pub struct AbilityIter<'iter> {
     sol: &'iter mut SolCore,
     fighter_uid: UItemId,
-    abil_aids: Vec<AAbilId>,
+    abil_aids: Box<[AAbilId]>,
     index: usize,
 }
 impl<'iter, 'lend> Lending<'lend> for AbilityIter<'iter> {
@@ -44,7 +44,7 @@ impl<'s> Fighter<'s> {
             .get_r_item_base()
         {
             Some(rib) => rib.abil_ids.clone(),
-            None => Vec::new(),
+            None => Box::default(),
         };
         AbilityIter::new(self.sol, self.uid, abil_aids)
     }
@@ -54,7 +54,7 @@ impl<'s> Fighter<'s> {
 // Private
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl<'iter> AbilityIter<'iter> {
-    fn new(sol: &'iter mut SolCore, fighter_uid: UItemId, abil_aids: Vec<AAbilId>) -> Self {
+    fn new(sol: &'iter mut SolCore, fighter_uid: UItemId, abil_aids: Box<[AAbilId]>) -> Self {
         Self {
             sol,
             fighter_uid,

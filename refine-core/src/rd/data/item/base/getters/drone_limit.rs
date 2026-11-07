@@ -9,7 +9,7 @@ use crate::{
 
 #[derive(Clone)]
 pub(crate) struct RShipDroneLimit {
-    pub(crate) group_ids: Vec<AItemGrpId>,
+    pub(crate) group_ids: Box<[AItemGrpId]>,
 }
 
 pub(in crate::rd::data::item::base) fn get_ship_drone_limit(
@@ -28,5 +28,7 @@ pub(in crate::rd::data::item::base) fn get_ship_drone_limit(
     if group_ids.is_empty() {
         return None;
     }
-    Some(RShipDroneLimit { group_ids })
+    Some(RShipDroneLimit {
+        group_ids: group_ids.into_boxed_slice(),
+    })
 }

@@ -21,9 +21,10 @@ impl<I, K, V> RIMapDeduperLinear<I, K, V> {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Generic - map itself
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-/// Map with values in a vector and keys pointing to them by ID; several keys can share a value.
+/// Map with values in a boxed slice and keys pointing to them by ID; several keys can share a
+/// value.
 pub(crate) struct IndirectMap<I, K, V, H> {
-    values: Vec<V>,
+    values: Box<[V]>,
     ids: Map<K, I, H>,
 }
 impl<I, K, V, H> IndirectMap<I, K, V, H>
@@ -75,10 +76,9 @@ where
         self.ids.insert(key, I::new(index));
     }
     pub(crate) fn build(mut self) -> IndirectMap<I, K, V, H> {
-        self.values.shrink_to_fit();
         self.ids.shrink_to_fit();
         IndirectMap {
-            values: self.values,
+            values: self.values.into_boxed_slice(),
             ids: self.ids,
         }
     }

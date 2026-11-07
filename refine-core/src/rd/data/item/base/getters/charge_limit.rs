@@ -9,7 +9,7 @@ use crate::{
 
 #[derive(Clone)]
 pub(crate) struct RItemChargeLimit {
-    pub(crate) group_ids: Vec<AItemGrpId>,
+    pub(crate) group_ids: Box<[AItemGrpId]>,
 }
 
 pub(in crate::rd::data::item::base) fn get_item_charge_limit(
@@ -33,5 +33,7 @@ pub(in crate::rd::data::item::base) fn get_item_charge_limit(
     if group_ids.is_empty() {
         return None;
     }
-    Some(RItemChargeLimit { group_ids })
+    Some(RItemChargeLimit {
+        group_ids: group_ids.into_boxed_slice(),
+    })
 }

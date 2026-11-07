@@ -20,7 +20,7 @@ pub(crate) struct RAttr {
     pub(crate) buff_str_attr_rid: Option<RAttrId>,
     // Attributes whose values on the same item are calculated using value of this attribute
     // directly, not via modifiers
-    pub(crate) dependent_attr_rids: Vec<RAttrId>,
+    pub(crate) dependent_attr_rids: Box<[RAttrId]>,
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////

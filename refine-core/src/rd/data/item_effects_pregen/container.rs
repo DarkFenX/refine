@@ -11,7 +11,7 @@ use crate::{
 /// Effects every item type runs without effect mode overrides, per effect resolution options.
 pub(crate) struct RItemsEffectsPregen {
     // Indexed by IDs item types store
-    data: Vec<RItemEffectsPregenEntry>,
+    data: Box<[RItemEffectsPregenEntry]>,
 }
 impl RItemsEffectsPregen {
     pub(crate) fn get(&self, effects_pregen_id: RItemEffectsPregenId) -> &RItemEffectsPregenEntry {

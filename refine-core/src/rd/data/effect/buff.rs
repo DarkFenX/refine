@@ -6,7 +6,7 @@ use crate::{
 
 pub(crate) struct REffectBuff {
     pub(crate) attr_merge: Option<REffectBuffAttrMerge>,
-    pub(crate) full: Vec<REffectBuffFull>,
+    pub(crate) full: Box<[REffectBuffFull]>,
 }
 
 pub(crate) struct REffectBuffAttrMerge {

@@ -1,5 +1,3 @@
-use itertools::Itertools;
-
 use crate::{ad::AAttrId, rd::RAttrId, util::RMap};
 
 #[derive(Clone)]
@@ -260,9 +258,9 @@ pub(crate) struct RAttrConsts {
     pub(crate) warp_scramble_status: Option<RAttrId>,
     pub(crate) warp_speed_mult: Option<RAttrId>,
     // Derived data
-    pub(crate) limited_precision: Vec<RAttrId>,
-    pub(crate) buff_merge_ids_strs: Vec<(RAttrId, RAttrId)>,
-    pub(crate) buff_merge_ids: Vec<RAttrId>,
+    pub(crate) limited_precision: Box<[RAttrId]>,
+    pub(crate) buff_merge_ids_strs: Box<[(RAttrId, RAttrId)]>,
+    pub(crate) buff_merge_ids: Box<[RAttrId]>,
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -274,7 +272,7 @@ impl RAttrConsts {
             .iter()
             .filter_map(|aid| attr_aid_rid_map.get(aid).copied())
             .collect();
-        let buff_merge_ids_strs = AAttrId::BUFF_MERGE_ATTRS
+        let buff_merge_ids_strs: Box<[_]> = AAttrId::BUFF_MERGE_ATTRS
             .iter()
             .filter_map(|(buff_id_aid, buff_str_aid)| {
                 match (attr_aid_rid_map.get(buff_id_aid), attr_aid_rid_map.get(buff_str_aid)) {
@@ -282,7 +280,7 @@ impl RAttrConsts {
                     _ => None,
                 }
             })
-            .collect_vec();
+            .collect();
         // Store buff ID attribute only if there is corresponding buff strength attribute
         let buff_merge_ids = buff_merge_ids_strs
             .iter()

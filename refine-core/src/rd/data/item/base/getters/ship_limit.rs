@@ -9,8 +9,8 @@ use crate::{
 
 #[derive(Clone)]
 pub(crate) struct RItemShipLimit {
-    pub(crate) type_aids: Vec<AItemId>,
-    pub(crate) group_aids: Vec<AItemGrpId>,
+    pub(crate) type_aids: Box<[AItemId]>,
+    pub(crate) group_aids: Box<[AItemGrpId]>,
 }
 
 pub(in crate::rd::data::item::base) fn get_item_ship_limit(
@@ -96,7 +96,7 @@ pub(in crate::rd::data::item::base) fn get_item_ship_limit(
         return None;
     }
     Some(RItemShipLimit {
-        type_aids: limit_type_aids,
-        group_aids: limit_group_aids,
+        type_aids: limit_type_aids.into_boxed_slice(),
+        group_aids: limit_group_aids.into_boxed_slice(),
     })
 }

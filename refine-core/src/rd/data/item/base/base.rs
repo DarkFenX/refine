@@ -47,7 +47,7 @@ pub(crate) struct RItemBase {
     // Item-specific effect data, only stored if differs to default
     pub(crate) effect_datas: RMap<REffectId, RItemBaseEffectData>,
     pub(crate) defeff_rid: Option<REffectId>,
-    pub(crate) abil_ids: Vec<AAbilId>,
+    pub(crate) abil_ids: Box<[AAbilId]>,
     pub(crate) srqs: RMap<AItemId, SkillLevel>,
     // Derived data - item type flags
     pub(crate) is_cloak: bool,
@@ -63,11 +63,11 @@ pub(crate) struct RItemBase {
     // Derived data - buff item list IDs. Those are intentionally vectors: they are used for
     // iteration, and for membership checks. For cases where it matters (e.g. non-ship items) those
     // do not have more than a couple of entries, so are faster than sets.
-    pub(crate) proj_buff_item_list_rids: Vec<RItemListId>,
-    pub(crate) fleet_buff_item_list_rids: Vec<RItemListId>,
+    pub(crate) proj_buff_item_list_rids: Box<[RItemListId]>,
+    pub(crate) fleet_buff_item_list_rids: Box<[RItemListId]>,
     // Derived data - misc
     pub(crate) max_state: RState,
-    pub(crate) cap_consumers: Vec<RItemCapConsumer>,
+    pub(crate) cap_consumers: Box<[RItemCapConsumer]>,
     pub(crate) ship_kind: Option<RShipKind>,
     pub(crate) disallowed_in_wspace: bool,
     // Derived data - base item attribute values, cast to necessary type
@@ -250,24 +250,27 @@ impl RItemBase {
         self.has_online_effect = has_online_effect(&self.effect_rids, effect_aid_rid_map);
         self.takes_turret_hardpoint = has_turret_effect(&self.effect_rids, effect_aid_rid_map);
         self.takes_launcher_hardpoint = has_launcher_effect(&self.effect_rids, effect_aid_rid_map);
-        self.proj_buff_item_list_rids.extend(
-            a_item
-                .proj_buff_item_list_ids
-                .iter()
-                .filter_map(|item_list_aid| item_list_aid_rid_map.get(item_list_aid).copied()),
-        );
-        self.fleet_buff_item_list_rids.extend(
-            a_item
-                .fleet_buff_item_list_ids
-                .iter()
-                .filter_map(|item_list_aid| item_list_aid_rid_map.get(item_list_aid).copied()),
-        );
-        for &effect_rid in self.effect_rids.iter() {
-            let r_effect = r_effects.get(effect_rid).unwrap();
-            if let Some(opc_spec) = r_effect.cap_consume {
-                self.cap_consumers.push(RItemCapConsumer { effect_rid, opc_spec })
-            }
-        }
+        self.proj_buff_item_list_rids = a_item
+            .proj_buff_item_list_ids
+            .iter()
+            .filter_map(|item_list_aid| item_list_aid_rid_map.get(item_list_aid).copied())
+            .collect();
+        self.fleet_buff_item_list_rids = a_item
+            .fleet_buff_item_list_ids
+            .iter()
+            .filter_map(|item_list_aid| item_list_aid_rid_map.get(item_list_aid).copied())
+            .collect();
+        self.cap_consumers = self
+            .effect_rids
+            .iter()
+            .filter_map(|&effect_rid| {
+                r_effects
+                    .get(effect_rid)
+                    .unwrap()
+                    .cap_consume
+                    .map(|opc_spec| RItemCapConsumer { effect_rid, opc_spec })
+            })
+            .collect();
         self.ship_kind = get_ship_kind(self.cat_id, &self.srqs);
     }
     pub(in crate::rd::data::item) fn fill_runtime_extended(

@@ -12,7 +12,7 @@ pub(crate) struct RBuff {
     pub(crate) aid: ABuffId,
     pub(crate) aggr_mode: ABuffAggrMode,
     pub(crate) op: AOp,
-    pub(crate) mods: Vec<RBuffModifier>,
+    pub(crate) mods: Box<[RBuffModifier]>,
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -34,11 +34,10 @@ impl RBuff {
         attr_aid_rid_map: &RMap<AAttrId, RAttrId>,
     ) {
         let a_buff = a_buffs.get(&self.aid).unwrap();
-        self.mods.extend(
-            a_buff
-                .mods
-                .iter()
-                .filter_map(|a_buff_mod| RBuffModifier::try_from_a_buff_mod(a_buff_mod, attr_aid_rid_map)),
-        )
+        self.mods = a_buff
+            .mods
+            .iter()
+            .filter_map(|a_buff_mod| RBuffModifier::try_from_a_buff_mod(a_buff_mod, attr_aid_rid_map))
+            .collect();
     }
 }

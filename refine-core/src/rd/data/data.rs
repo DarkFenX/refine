@@ -323,11 +323,15 @@ fn fill_attrs(
             attr_deps.push((zone_attr_rid, sec_attr_rid));
         }
     }
+    let mut affector_dependents: RMap<RAttrId, Vec<RAttrId>> = RMap::new();
     for (affector_attr_rid, affectee_attr_rid) in attr_deps {
-        let dependent_attr_rids = &mut attrs.get_mut(affector_attr_rid).unwrap().dependent_attr_rids;
+        let dependent_attr_rids = affector_dependents.entry(affector_attr_rid).or_default();
         if !dependent_attr_rids.contains(&affectee_attr_rid) {
             dependent_attr_rids.push(affectee_attr_rid);
         }
+    }
+    for (affector_attr_rid, dependent_attr_rids) in affector_dependents {
+        attrs.get_mut(affector_attr_rid).unwrap().dependent_attr_rids = dependent_attr_rids.into_boxed_slice();
     }
 }
 

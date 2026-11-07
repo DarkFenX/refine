@@ -9,7 +9,7 @@ use crate::{
 
 #[derive(Clone)]
 pub(crate) struct RItemContLimit {
-    pub(crate) group_ids: Vec<AItemGrpId>,
+    pub(crate) group_ids: Box<[AItemGrpId]>,
 }
 
 pub(in crate::rd::data::item::base) fn get_item_container_limit(
@@ -35,5 +35,7 @@ pub(in crate::rd::data::item::base) fn get_item_container_limit(
     if group_ids.is_empty() {
         return None;
     }
-    Some(RItemContLimit { group_ids })
+    Some(RItemContLimit {
+        group_ids: group_ids.into_boxed_slice(),
+    })
 }

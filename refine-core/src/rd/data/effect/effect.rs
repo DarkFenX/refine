@@ -25,10 +25,10 @@ pub(crate) struct REffect {
     pub(crate) state: RState,
     pub(crate) charge: Option<REffectCharge>,
     pub(crate) buff: Option<REffectBuff>,
-    pub(crate) modifiers: Vec<REffectModifier>,
+    pub(crate) modifiers: Box<[REffectModifier]>,
     pub(crate) calc_custom_mod: Option<CalcCustomModifier>,
     pub(crate) projectee_filter: Option<REffectProjecteeFilter>,
-    pub(crate) stopped_effect_rids: Vec<REffectId>,
+    pub(crate) stopped_effect_rids: Box<[REffectId]>,
     pub(crate) cloaks_carrier: bool,
     pub(crate) kills_item: bool,
     pub(crate) is_active_with_duration: bool,
@@ -198,18 +198,16 @@ impl REffect {
         self.buff = a_effect.buff.as_ref().and_then(|a_effect_buff| {
             REffectBuff::try_from_a_buff(a_effect_buff, item_list_aid_rid_map, attr_aid_rid_map, buff_aid_rid_map)
         });
-        self.modifiers.extend(
-            a_effect
-                .modifiers
-                .iter()
-                .filter_map(|a_effect_mod| REffectModifier::try_from_a_effect_mod(a_effect_mod, attr_aid_rid_map)),
-        );
-        self.stopped_effect_rids.extend(
-            a_effect
-                .stopped_effect_ids
-                .iter()
-                .filter_map(|effect_aid| effect_aid_rid_map.get(effect_aid)),
-        );
+        self.modifiers = a_effect
+            .modifiers
+            .iter()
+            .filter_map(|a_effect_mod| REffectModifier::try_from_a_effect_mod(a_effect_mod, attr_aid_rid_map))
+            .collect();
+        self.stopped_effect_rids = a_effect
+            .stopped_effect_ids
+            .iter()
+            .filter_map(|effect_aid| effect_aid_rid_map.get(effect_aid).copied())
+            .collect();
         self.discharge_attr_rid = a_effect
             .discharge_attr_id
             .and_then(|attr_aid| attr_aid_rid_map.get(&attr_aid))
