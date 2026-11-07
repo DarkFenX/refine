@@ -19,6 +19,9 @@ pub(in crate::ud::item) struct UItemBase {
     effect_modes: UEffectModes,
     // Source-dependent data
     cache: Option<ItemBaseCache>,
+    // TODO: try moving into the cache, which owns running effects. The cache has no padding left,
+    // TODO: so it would grow from 40 to 48 bytes (here the field fills padding after state),
+    // TODO: growing the item and shifting inlining in unrelated code (up to 5% slower)
     // Promise about running effects: when set, they are exactly pregenerated effects of the current
     // runtime item up to this state, so a state change only starts or stops pregenerated effects
     // between the two states. None makes no promise (e.g. after resolution with effect mode
