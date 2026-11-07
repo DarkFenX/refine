@@ -11,8 +11,12 @@ pub(crate) use item::{
     RItem, RItemBase, RItemBaseEffectData, RItemCapConsumer, RItemChargeLimit, RItemContLimit, RItemFlexData,
     RItemShipLimit, RShipDroneLimit, RShipKind,
 };
+pub(crate) use item_effects_pregen::{
+    RItemEffectOptions, RItemEffectsPregenEntry, RItemEffectsPregenId, RItemEffectsResolver,
+};
 pub(crate) use item_list::{RItemList, RItemListId};
-pub(crate) use muta::{RMuta, RMutaAttrRange, RMutaPregen, RMutaPregenMergedAttrsId};
+pub(crate) use muta::{RMuta, RMutaAttrRange};
+pub(crate) use muta_pregen::{RMutasPregen, RMutasPregenMergedAttrsId};
 pub(crate) use shared::RState;
 
 mod abil;
@@ -21,6 +25,8 @@ mod buff;
 mod data;
 mod effect;
 mod item;
+mod item_effects_pregen;
 mod item_list;
 mod muta;
+mod muta_pregen;
 mod shared;

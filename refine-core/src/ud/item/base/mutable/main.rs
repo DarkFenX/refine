@@ -3,8 +3,8 @@ use crate::{
     ad::{AAttrId, AEffectId, AItemId},
     err::basic::ItemNotMutatedError,
     rd::{
-        RAttrId, RData, REffectId, RItemBase, RItemFlexData, RMuta, RMutaAttrRange, RMutaPregenMergedAttrsId, RState,
-        RcMuta,
+        RAttrId, RData, REffectId, RItemBase, RItemEffectOptions, RItemFlexData, RMuta, RMutaAttrRange,
+        RMutasPregenMergedAttrsId, RState, RcMuta,
     },
     ud::{
         UAttrMutationRequest, UItemMutationRequest,
@@ -612,21 +612,17 @@ impl UItemBaseMutable {
         &mut self,
         reuse_eupdates: &mut UEffectUpdates,
         r_data: &RData,
-        require_disabled_defeff: bool,
-        force_active_nondefeff: bool,
+        effect_options: RItemEffectOptions,
     ) {
-        self.base
-            .update_reffs(reuse_eupdates, r_data, require_disabled_defeff, force_active_nondefeff);
+        self.base.update_reffs(reuse_eupdates, r_data, effect_options);
     }
     pub(in crate::ud::item) fn stop_all_reffs(
         &mut self,
         reuse_eupdates: &mut UEffectUpdates,
         r_data: &RData,
-        require_disabled_defeff: bool,
-        force_active_nondefeff: bool,
+        effect_options: RItemEffectOptions,
     ) {
-        self.base
-            .stop_all_reffs(reuse_eupdates, r_data, require_disabled_defeff, force_active_nondefeff);
+        self.base.stop_all_reffs(reuse_eupdates, r_data, effect_options);
     }
 }
 
@@ -680,7 +676,7 @@ pub(crate) struct ItemMutationDataCache {
     mutator: RcMuta,
     flex_data: RItemFlexData,
     /// ID which is used to locate pregenerated merged attributes (which are not mutated)
-    pregen_attrs_rid: RMutaPregenMergedAttrsId,
+    pregen_attrs_rid: RMutasPregenMergedAttrsId,
 }
 impl ItemMutationDataCache {
     pub(crate) fn get_base_type_aid(&self) -> AItemId {
@@ -689,7 +685,7 @@ impl ItemMutationDataCache {
     pub(crate) fn get_r_mutator(&self) -> &RMuta {
         &self.mutator
     }
-    pub(crate) fn get_pregen_attrs_rid(&self) -> RMutaPregenMergedAttrsId {
+    pub(crate) fn get_pregen_attrs_rid(&self) -> RMutasPregenMergedAttrsId {
         self.pregen_attrs_rid
     }
 }
@@ -737,9 +733,13 @@ mod debug {
     use crate::{dbg::DebugResult, ud::UData};
 
     impl UItemBaseMutable {
-        pub(in crate::ud::item) fn consistency_check(&self, u_data: &UData) -> DebugResult {
+        pub(in crate::ud::item) fn consistency_check(
+            &self,
+            u_data: &UData,
+            effect_options: RItemEffectOptions,
+        ) -> DebugResult {
             let Self { base, mutation } = self;
-            base.consistency_check(u_data)?;
+            base.consistency_check(u_data, effect_options)?;
             if let Some(mutation_data) = mutation {
                 mutation_data.consistency_check(u_data)?;
             }

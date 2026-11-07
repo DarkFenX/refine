@@ -2,7 +2,7 @@ use crate::{
     Count, EffectMode, ItemId, ItemKind, ModRack, ModuleState, OptionalReload, PValue, RackPos, Spool,
     ad::{AEffectId, AItemId},
     err::basic::ItemNotMutatedError,
-    rd::{RAttrId, RData, REffectId, RItemBase, RItemFlexData, RState},
+    rd::{RAttrId, RData, REffectId, RItemBase, RItemEffectOptions, RItemFlexData, RState},
     ud::{
         UAttrMutationRequest, UData, UFitId, UItemId, UItemMutationRequest,
         err::{ItemMutatedError, MutatorInplaceError},
@@ -77,10 +77,11 @@ impl UModule {
         self.base.get_reffs()
     }
     pub(crate) fn update_reffs(&mut self, reuse_eupdates: &mut UEffectUpdates, r_data: &RData) {
-        self.base.update_reffs(reuse_eupdates, r_data, false, false);
+        self.base.update_reffs(reuse_eupdates, r_data, RItemEffectOptions::NONE);
     }
     pub(crate) fn stop_all_reffs(&mut self, reuse_eupdates: &mut UEffectUpdates, r_data: &RData) {
-        self.base.stop_all_reffs(reuse_eupdates, r_data, false, false)
+        self.base
+            .stop_all_reffs(reuse_eupdates, r_data, RItemEffectOptions::NONE)
     }
     pub(in crate::ud::item) fn get_effect_mode_by_rid(&self, effect_rid: &REffectId) -> EffectMode {
         self.base.get_effect_mode_by_rid(effect_rid)
@@ -259,7 +260,7 @@ mod debug {
                 spool_override: _,
                 optional_reload_override: _,
             } = self;
-            base.consistency_check(u_data)?;
+            base.consistency_check(u_data, RItemEffectOptions::NONE)?;
             fit_uid.consistency_check(u_data)?;
             if let Some(charge_uid) = charge_uid {
                 charge_uid.consistency_check(u_data, false)?;

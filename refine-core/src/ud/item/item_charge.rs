@@ -1,7 +1,7 @@
 use crate::{
     EffectMode, ItemId, ItemKind,
     ad::{AEffectId, AItemId},
-    rd::{RData, REffectId, RItemBase, RItemFlexData, RState},
+    rd::{RData, REffectId, RItemBase, RItemEffectOptions, RItemFlexData, RState},
     ud::{
         UFitId, UItemId,
         item::{REffs, UEffectModeOverrideIter, UEffectUpdates, UItemBase, UProjs},
@@ -62,10 +62,11 @@ impl UCharge {
         self.base.get_reffs()
     }
     pub(crate) fn update_reffs(&mut self, reuse_eupdates: &mut UEffectUpdates, r_data: &RData) {
-        self.base.update_reffs(reuse_eupdates, r_data, false, false);
+        self.base.update_reffs(reuse_eupdates, r_data, RItemEffectOptions::NONE);
     }
     pub(in crate::ud::item) fn stop_all_reffs(&mut self, reuse_eupdates: &mut UEffectUpdates, r_data: &RData) {
-        self.base.stop_all_reffs(reuse_eupdates, r_data, false, false)
+        self.base
+            .stop_all_reffs(reuse_eupdates, r_data, RItemEffectOptions::NONE)
     }
     pub(in crate::ud::item) fn get_effect_mode_by_rid(&self, effect_rid: &REffectId) -> EffectMode {
         self.base.get_effect_mode_by_rid(effect_rid)
@@ -172,7 +173,7 @@ mod debug {
                 activated: _,
                 force_disabled: _,
             } = self;
-            base.consistency_check(u_data)?;
+            base.consistency_check(u_data, RItemEffectOptions::NONE)?;
             fit_uid.consistency_check(u_data)?;
             cont_item_uid.consistency_check(u_data, false)?;
             projs.consistency_check(u_data)?;

@@ -1,10 +1,10 @@
 use crate::{
     EffectMode, ItemId,
     ad::{AEffectId, AItemId},
-    rd::{RData, REffectId, RItemBase, RItemFlexData, RState, RcItem},
+    rd::{RData, REffectId, RItemBase, RItemEffectOptions, RItemFlexData, RState, RcItem},
     ud::item::{
         REffs, UEffectModeOverrideIter,
-        base::{UEffectUpdates, process_effects},
+        base::{UEffectUpdates, UItemEffectsResolver},
         misc::UEffectModes,
     },
 };
@@ -19,12 +19,17 @@ pub(in crate::ud::item) struct UItemBase {
     effect_modes: UEffectModes,
     // Source-dependent data
     cache: Option<ItemBaseCache>,
+    // Promise about running effects: when set, they are exactly pregenerated effects of the current
+    // runtime item up to this state, so a state change only starts or stops pregenerated effects
+    // between the two states. None makes no promise (e.g. after resolution with effect mode
+    // overrides), and the next resolution evaluates every effect
+    reffs_pregen_up_to: Option<RState>,
 }
 
 #[derive(Clone)]
 struct ItemBaseCache {
     r_item: RcItem,
-    /// Running effects, are available only when adapted item is set
+    /// Running effects, are available only when runtime item is set
     reffs: REffs,
 }
 
@@ -42,6 +47,7 @@ impl UItemBase {
                 r_item: r_item.clone(),
                 reffs: REffs::new(),
             }),
+            reffs_pregen_up_to: Some(RState::Ghost),
         }
     }
     pub(in crate::ud::item::base) fn base_with_type_aid_not_loaded(
@@ -55,6 +61,7 @@ impl UItemBase {
             state,
             effect_modes: UEffectModes::new(),
             cache: None,
+            reffs_pregen_up_to: None,
         }
     }
     pub(in crate::ud::item::base) fn base_with_r_item(item_id: ItemId, r_item: RcItem, state: RState) -> Self {
@@ -67,6 +74,7 @@ impl UItemBase {
                 r_item,
                 reffs: REffs::new(),
             }),
+            reffs_pregen_up_to: Some(RState::Ghost),
         }
     }
 }
@@ -160,43 +168,52 @@ impl UItemBase {
         &mut self,
         reuse_eupdates: &mut UEffectUpdates,
         r_data: &RData,
-        require_disabled_defeff: bool,
-        force_active_nondefeff: bool,
+        effect_options: RItemEffectOptions,
     ) {
         // Always clear, regardless of item being loaded or not
         reuse_eupdates.clear();
         if let Some(cache) = &mut self.cache {
-            process_effects(
+            let has_mode_overrides = self.effect_modes.has_overrides_for_current_src();
+            let reffs_pregen_up_to = match has_mode_overrides {
+                true => None,
+                false => self.reffs_pregen_up_to,
+            };
+            UItemEffectsResolver::process_effects(
                 reuse_eupdates,
                 &mut cache.reffs,
                 r_data,
                 &cache.r_item,
+                reffs_pregen_up_to,
                 self.state,
                 &self.effect_modes,
-                require_disabled_defeff,
-                force_active_nondefeff,
-            )
+                effect_options,
+            );
+            self.reffs_pregen_up_to = match has_mode_overrides {
+                true => None,
+                false => Some(self.state),
+            };
         }
     }
     pub(in crate::ud::item) fn stop_all_reffs(
         &mut self,
         reuse_eupdates: &mut UEffectUpdates,
         r_data: &RData,
-        require_disabled_defeff: bool,
-        force_active_nondefeff: bool,
+        effect_options: RItemEffectOptions,
     ) {
         reuse_eupdates.clear();
         if let Some(cache) = &mut self.cache {
-            process_effects(
+            UItemEffectsResolver::process_effects(
                 reuse_eupdates,
                 &mut cache.reffs,
                 r_data,
                 &cache.r_item,
+                None,
                 RState::Ghost,
                 &self.effect_modes,
-                require_disabled_defeff,
-                force_active_nondefeff,
-            )
+                effect_options,
+            );
+            // No effects run in ghost state, whatever effect modes are
+            self.reffs_pregen_up_to = Some(RState::Ghost);
         }
     }
 }
@@ -215,9 +232,7 @@ impl UItemBase {
     pub(in crate::ud::item::base) fn base_set_r_item(&mut self, r_item: RcItem) {
         self.type_aid = r_item.base.aid;
         match &mut self.cache {
-            Some(cache) => {
-                cache.r_item = r_item;
-            }
+            Some(cache) => cache.r_item = r_item,
             None => {
                 self.cache = Some(ItemBaseCache {
                     r_item,
@@ -225,6 +240,9 @@ impl UItemBase {
                 })
             }
         }
+        // Runtime item is replaced only while all effects of the item are stopped (type change,
+        // mutation, data source switch)
+        self.reffs_pregen_up_to = Some(RState::Ghost);
     }
     pub(in crate::ud::item::base) fn base_get_r_item(&self) -> Option<&RcItem> {
         self.cache.as_ref().map(|v| &v.r_item)
@@ -237,13 +255,21 @@ impl UItemBase {
 #[cfg(feature = "dev")]
 mod debug {
     use super::*;
-    use crate::{dbg::DebugResult, ud::UData};
+    use crate::{
+        dbg::DebugResult,
+        ud::{UData, item::base::UItemEffectsResolver},
+    };
 
     impl UItemBase {
-        pub(in crate::ud::item) fn consistency_check(&self, u_data: &UData) -> DebugResult {
+        pub(in crate::ud::item) fn consistency_check(
+            &self,
+            u_data: &UData,
+            effect_options: RItemEffectOptions,
+        ) -> DebugResult {
             let Self {
                 effect_modes,
                 cache,
+                reffs_pregen_up_to,
                 // Not checked
                 item_id: _,
                 type_aid: _,
@@ -259,6 +285,19 @@ mod debug {
                 }
                 for effect_rid in reffs.iter() {
                     effect_rid.consistency_check(u_data)?;
+                }
+                UItemEffectsResolver::effects_pregen_consistency_check(&u_data.r_data, r_item)?;
+                // Running effects have to be exactly pregenerated effects up to the stored state
+                if let Some(reffs_pregen_up_to) = *reffs_pregen_up_to {
+                    let pregen_entry = u_data
+                        .r_data
+                        .get_item_effects_pregen_entry(r_item.base.get_effects_pregen_id(effect_options));
+                    let pregen_rids = pregen_entry.get_above_up_to(RState::Ghost, reffs_pregen_up_to);
+                    if pregen_rids.len() != reffs.len()
+                        || pregen_rids.iter().any(|effect_rid| !reffs.contains(effect_rid))
+                    {
+                        return Err(Default::default());
+                    }
                 }
             }
             effect_modes.consistency_check(u_data)?;

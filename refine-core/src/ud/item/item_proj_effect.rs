@@ -1,7 +1,7 @@
 use crate::{
     EffectMode, ItemId, ItemKind,
     ad::{AEffectId, AItemId},
-    rd::{RData, REffectId, RItemBase, RItemFlexData, RState},
+    rd::{RData, REffectId, RItemBase, RItemEffectOptions, RItemFlexData, RState},
     ud::item::{
         REffs, UEffectModeOverrideIter, UEffectUpdates, UItemBase, UProjs, bool_to_state_active, state_to_bool,
     },
@@ -45,10 +45,11 @@ impl UProjEffect {
         self.base.get_reffs()
     }
     pub(crate) fn update_reffs(&mut self, reuse_eupdates: &mut UEffectUpdates, r_data: &RData) {
-        self.base.update_reffs(reuse_eupdates, r_data, false, false);
+        self.base.update_reffs(reuse_eupdates, r_data, RItemEffectOptions::NONE);
     }
     pub(in crate::ud::item) fn stop_all_reffs(&mut self, reuse_eupdates: &mut UEffectUpdates, r_data: &RData) {
-        self.base.stop_all_reffs(reuse_eupdates, r_data, false, false)
+        self.base
+            .stop_all_reffs(reuse_eupdates, r_data, RItemEffectOptions::NONE)
     }
     pub(in crate::ud::item) fn get_effect_mode_by_rid(&self, effect_rid: &REffectId) -> EffectMode {
         self.base.get_effect_mode_by_rid(effect_rid)
@@ -115,7 +116,7 @@ mod debug {
     impl UProjEffect {
         pub(in crate::ud::item) fn consistency_check(&self, u_data: &UData) -> DebugResult {
             let Self { base, projs } = self;
-            base.consistency_check(u_data)?;
+            base.consistency_check(u_data, RItemEffectOptions::NONE)?;
             projs.consistency_check(u_data)?;
             // All projections are supposed to be without range on projected effect
             for (_projectee_uid, proj_data) in projs.iter() {

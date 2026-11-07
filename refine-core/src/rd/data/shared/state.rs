@@ -19,6 +19,7 @@ pub(crate) enum RState {
     Overload,
 }
 impl RState {
+    pub(crate) const COUNT: usize = STATES.len();
     pub(crate) fn above_up_to(low: Self, high: Self) -> &'static [Self] {
         &STATES[low as usize + 1..=high as usize]
     }

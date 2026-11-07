@@ -6,8 +6,9 @@ use crate::{
         AItemLists, AItems, AMutas,
     },
     rd::{
-        RAbil, RAttr, RAttrConsts, RAttrId, RBuff, RBuffId, REffect, REffectConsts, REffectId, RItem, RItemList,
-        RItemListId, RMuta, RMutaPregen,
+        RAbil, RAttr, RAttrConsts, RAttrId, RBuff, RBuffId, REffect, REffectConsts, REffectId, RItem,
+        RItemEffectsPregenEntry, RItemEffectsPregenId, RItemList, RItemListId, RMuta, RMutasPregen,
+        data::item_effects_pregen::RItemsEffectsPregen,
     },
     util::{PSlab, RMap},
 };
@@ -19,6 +20,7 @@ pub(crate) type RcMuta = Arc<RMuta>;
 
 pub(crate) struct RData {
     items: RMap<AItemId, RcItem>,
+    item_effects_pregen: RItemsEffectsPregen,
     item_lists: PSlab<RItemListId, RItemList>,
     attrs: PSlab<RAttrId, RAttr>,
     attr_aid_rid_map: RMap<AAttrId, RAttrId>,
@@ -29,7 +31,7 @@ pub(crate) struct RData {
     buffs: PSlab<RBuffId, RBuff>,
     buff_aid_rid_map: RMap<ABuffId, RBuffId>,
     mutas: RMap<AItemId, RcMuta>,
-    muta_pregen: RMutaPregen,
+    muta_pregen: RMutasPregen,
     abils: RMap<AAbilId, RAbil>,
     // Extra data stored directly on RData for ease of access / optimization purposes
     online_effect: Option<RcEffect>,
@@ -39,6 +41,12 @@ impl RData {
     // Item methods
     pub(crate) fn get_item_by_aid(&self, item_aid: &AItemId) -> Option<&RcItem> {
         self.items.get(item_aid)
+    }
+    pub(crate) fn get_item_effects_pregen_entry(
+        &self,
+        effects_pregen_id: RItemEffectsPregenId,
+    ) -> &RItemEffectsPregenEntry {
+        self.item_effects_pregen.get(effects_pregen_id)
     }
     // Item list methods
     pub(crate) fn get_item_list_by_rid(&self, item_list_rid: RItemListId) -> &RItemList {
@@ -87,7 +95,7 @@ impl RData {
     pub(crate) fn get_rah_duration_attr_rid(&self) -> Option<RAttrId> {
         self.rah_duration_attr_rid
     }
-    pub(crate) fn get_muta_pregen(&self) -> &RMutaPregen {
+    pub(crate) fn get_muta_pregen(&self) -> &RMutasPregen {
         &self.muta_pregen
     }
 }
@@ -127,6 +135,8 @@ impl RData {
             &effect_consts,
             &effects,
         );
+        // Effects are resolved using item and effect data
+        let item_effects_pregen = RItemsEffectsPregen::new(&mut items, &effects, &effect_consts);
         fill_attrs(&mut attrs, &a_data.attrs, &attr_aid_rid_map, &attr_consts);
         fill_buffs(&mut buffs, &a_data.buffs, &attr_aid_rid_map);
         fill_mutas(&mut mutas, &a_data.mutas, &attr_aid_rid_map);
@@ -138,9 +148,10 @@ impl RData {
         let online_effect = effect_consts
             .online
             .map(|effect_rid| effects.get(effect_rid).unwrap().clone());
-        let muta_pregen = RMutaPregen::new(&items, &mutas, &attr_aid_rid_map, &attr_consts);
+        let muta_pregen = RMutasPregen::new(&items, &mutas, &attr_aid_rid_map, &attr_consts);
         Self {
             items,
+            item_effects_pregen,
             item_lists,
             attrs,
             attr_aid_rid_map,

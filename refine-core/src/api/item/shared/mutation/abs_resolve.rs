@@ -1,14 +1,14 @@
 use crate::{
     UnitInterval, Value,
     ad::{AAttrId, AItemId},
-    rd::{RData, RMutaPregenMergedAttrsId},
+    rd::{RData, RMutasPregenMergedAttrsId},
 };
 
 // Expects an effective mutation which can mutate the attribute; returns None if mutation range
 // limits the attribute to a single value
 pub(in crate::api::item::shared::mutation) fn resolve_absolute_into_roll(
     r_data: &RData,
-    pregen_attrs_rid: RMutaPregenMergedAttrsId,
+    pregen_attrs_rid: RMutasPregenMergedAttrsId,
     mutator_type_aid: &AItemId,
     attr_aid: &AAttrId,
     absolute_value: Value,

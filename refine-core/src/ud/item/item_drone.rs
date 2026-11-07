@@ -2,7 +2,7 @@ use crate::{
     EffectMode, ItemId, ItemKind, MinionState, NpcProp, PValue,
     ad::{AEffectId, AItemId},
     err::basic::ItemNotMutatedError,
-    rd::{RAttrId, RData, REffectId, RItemBase, RItemFlexData, RState},
+    rd::{RAttrId, RData, REffectId, RItemBase, RItemEffectOptions, RItemFlexData, RState},
     ud::{
         UAttrMutationRequest, UFitId, UItemMutationRequest,
         err::{ItemMutatedError, MutatorInplaceError},
@@ -68,10 +68,12 @@ impl UDrone {
         self.base.get_reffs()
     }
     pub(crate) fn update_reffs(&mut self, reuse_eupdates: &mut UEffectUpdates, r_data: &RData) {
-        self.base.update_reffs(reuse_eupdates, r_data, false, true);
+        self.base
+            .update_reffs(reuse_eupdates, r_data, RItemEffectOptions::FORCE_ACTIVE_NONDEFEFF);
     }
     pub(in crate::ud::item) fn stop_all_reffs(&mut self, reuse_eupdates: &mut UEffectUpdates, r_data: &RData) {
-        self.base.stop_all_reffs(reuse_eupdates, r_data, false, true)
+        self.base
+            .stop_all_reffs(reuse_eupdates, r_data, RItemEffectOptions::FORCE_ACTIVE_NONDEFEFF)
     }
     pub(in crate::ud::item) fn get_effect_mode_by_rid(&self, effect_rid: &REffectId) -> EffectMode {
         self.base.get_effect_mode_by_rid(effect_rid)
@@ -215,7 +217,7 @@ mod debug {
                 physics: _,
                 npc_prop_override: _,
             } = self;
-            base.consistency_check(u_data)?;
+            base.consistency_check(u_data, RItemEffectOptions::FORCE_ACTIVE_NONDEFEFF)?;
             fit_uid.consistency_check(u_data)?;
             projs.consistency_check(u_data)?;
             // Radius of projector should match radius of drone, radius of projectee should match

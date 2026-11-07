@@ -1,7 +1,7 @@
 use crate::{
     EffectMode, ItemId, ItemKind, SkillLevel,
     ad::{AEffectId, AItemId},
-    rd::{RData, REffectId, RItemBase, RItemFlexData, RState},
+    rd::{RData, REffectId, RItemBase, RItemEffectOptions, RItemFlexData, RState},
     ud::{
         UFitId,
         item::{REffs, UEffectModeOverrideIter, UEffectUpdates, UItemBase, bool_to_state_offline, state_to_bool},
@@ -55,10 +55,11 @@ impl USkill {
         self.base.get_reffs()
     }
     pub(crate) fn update_reffs(&mut self, reuse_eupdates: &mut UEffectUpdates, r_data: &RData) {
-        self.base.update_reffs(reuse_eupdates, r_data, false, false);
+        self.base.update_reffs(reuse_eupdates, r_data, RItemEffectOptions::NONE);
     }
     pub(in crate::ud::item) fn stop_all_reffs(&mut self, reuse_eupdates: &mut UEffectUpdates, r_data: &RData) {
-        self.base.stop_all_reffs(reuse_eupdates, r_data, false, false)
+        self.base
+            .stop_all_reffs(reuse_eupdates, r_data, RItemEffectOptions::NONE)
     }
     pub(in crate::ud::item) fn get_effect_mode_by_rid(&self, effect_rid: &REffectId) -> EffectMode {
         self.base.get_effect_mode_by_rid(effect_rid)
@@ -133,7 +134,7 @@ mod debug {
                 // Not checked
                 level: _,
             } = self;
-            base.consistency_check(u_data)?;
+            base.consistency_check(u_data, RItemEffectOptions::NONE)?;
             fit_uid.consistency_check(u_data)?;
             Ok(())
         }

@@ -25,6 +25,11 @@ impl UEffectModes {
 // Query methods
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl UEffectModes {
+    pub(in crate::ud::item) fn has_overrides_for_current_src(&self) -> bool {
+        // Even if container has adapted effect IDs, they might be not applicable on current source;
+        // only runtime effect overrides tell that
+        !self.by_rid.is_empty()
+    }
     pub(in crate::ud::item) fn get_by_rid(&self, effect_rid: &REffectId) -> EffectMode {
         match self.by_rid.get(effect_rid) {
             Some(effect_mode) => *effect_mode,

@@ -1,7 +1,7 @@
 use crate::{
     CountNz, EffectMode, FighterCountInfo, ItemId, ItemKind, MinionState, PValue, RearmMinion,
     ad::{AEffectId, AItemId},
-    rd::{RData, REffectId, RItemBase, RItemFlexData, RState},
+    rd::{RData, REffectId, RItemBase, RItemEffectOptions, RItemFlexData, RState},
     ud::{
         UEffectUpdates, UFitId, UPhysics, UProjs,
         item::{REffs, UAutocharges, UEffectModeOverrideIter, UItemBase},
@@ -64,10 +64,12 @@ impl UFighter {
         self.base.get_reffs()
     }
     pub(crate) fn update_reffs(&mut self, reuse_eupdates: &mut UEffectUpdates, r_data: &RData) {
-        self.base.update_reffs(reuse_eupdates, r_data, true, false);
+        self.base
+            .update_reffs(reuse_eupdates, r_data, RItemEffectOptions::REQUIRE_DISABLED_DEFEFF);
     }
     pub(in crate::ud::item) fn stop_all_reffs(&mut self, reuse_eupdates: &mut UEffectUpdates, r_data: &RData) {
-        self.base.stop_all_reffs(reuse_eupdates, r_data, true, false)
+        self.base
+            .stop_all_reffs(reuse_eupdates, r_data, RItemEffectOptions::REQUIRE_DISABLED_DEFEFF)
     }
     pub(crate) fn get_effect_mode_by_rid(&self, effect_rid: &REffectId) -> EffectMode {
         self.base.get_effect_mode_by_rid(effect_rid)
@@ -205,7 +207,7 @@ mod debug {
                 physics: _,
                 rearm_minion_override: _,
             } = self;
-            base.consistency_check(u_data)?;
+            base.consistency_check(u_data, RItemEffectOptions::REQUIRE_DISABLED_DEFEFF)?;
             fit_uid.consistency_check(u_data)?;
             autocharges.consistency_check(u_data)?;
             projs.consistency_check(u_data)?;

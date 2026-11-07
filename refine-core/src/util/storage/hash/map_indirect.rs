@@ -1,41 +1,37 @@
 use std::hash::{BuildHasher, Hash};
 
-use super::map::{Map, RMap};
+use super::map::Map;
 use crate::util::DenseId;
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-// Non-const-specific
+// Regular rustc hasher
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-pub(crate) type RDedupMap<I, K, V> = DedupMap<I, K, V, rustc_hash::FxBuildHasher>;
-impl<I, K, V> Default for RDedupMap<I, K, V> {
-    fn default() -> Self {
+pub(crate) type RIndirectMap<I, K, V> = IndirectMap<I, K, V, rustc_hash::FxBuildHasher>;
+
+pub(crate) type RIMapDeduperLinear<I, K, V> = IMapDeduperLinear<I, K, V, rustc_hash::FxBuildHasher>;
+impl<I, K, V> RIMapDeduperLinear<I, K, V> {
+    pub(crate) fn new() -> Self {
         Self {
             values: Vec::new(),
-            ids: RMap::new(),
+            ids: Map::new(),
         }
-    }
-}
-impl<I, K, V> RDedupMap<I, K, V> {
-    pub(crate) fn new() -> Self {
-        Self::default()
     }
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-// Shared
+// Generic - map itself
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-/// Map which stores equal values once, with keys pointing to a shared entry.
-pub(crate) struct DedupMap<I, K, V, H> {
+/// Map with values in a vector and keys pointing to them by ID; several keys can share a value.
+pub(crate) struct IndirectMap<I, K, V, H> {
     values: Vec<V>,
     ids: Map<K, I, H>,
 }
-impl<I, K, V, H> DedupMap<I, K, V, H>
+impl<I, K, V, H> IndirectMap<I, K, V, H>
 where
     I: DenseId,
     K: Eq + Hash,
     H: BuildHasher,
 {
-    // View methods
     pub(crate) fn get(&self, key: &K) -> Option<&V> {
         let id = *self.ids.get(key)?;
         Some(&self.values[id.index()])
@@ -52,11 +48,23 @@ where
             _ => false,
         }
     }
-    // Modification methods
-    pub(crate) fn insert(&mut self, key: K, val: V)
-    where
-        V: PartialEq,
-    {
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Generic - builder with linear deduplication
+////////////////////////////////////////////////////////////////////////////////////////////////////
+pub(crate) struct IMapDeduperLinear<I, K, V, H> {
+    values: Vec<V>,
+    ids: Map<K, I, H>,
+}
+impl<I, K, V, H> IMapDeduperLinear<I, K, V, H>
+where
+    I: DenseId,
+    K: Eq + Hash,
+    V: PartialEq,
+    H: BuildHasher,
+{
+    pub(crate) fn insert(&mut self, key: K, val: V) {
         let index = match self.values.iter().position(|v| *v == val) {
             Some(index) => index,
             None => {
@@ -66,8 +74,12 @@ where
         };
         self.ids.insert(key, I::new(index));
     }
-    pub(crate) fn shrink_to_fit(&mut self) {
+    pub(crate) fn build(mut self) -> IndirectMap<I, K, V, H> {
         self.values.shrink_to_fit();
         self.ids.shrink_to_fit();
+        IndirectMap {
+            values: self.values,
+            ids: self.ids,
+        }
     }
 }

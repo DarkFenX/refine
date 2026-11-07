@@ -656,11 +656,17 @@ mod debug {
             {
                 return Err(Default::default());
             }
-            // Running effects have to be up to date with item state and effect modes
+            // Running effects have to be up to date with item state and effect modes. They are
+            // resolved from scratch, since the pregen path only looks at effects a state change
+            // could start or stop
             let mut item = self.clone();
             let mut eupdates = UEffectUpdates::new();
+            item.stop_all_reffs(&mut eupdates, &u_data.r_data);
             item.update_reffs(&mut eupdates, &u_data.r_data);
-            if !eupdates.to_start.is_empty() || !eupdates.to_stop.is_empty() {
+            let resolved_reffs = item.get_reffs().unwrap();
+            if resolved_reffs.len() != reffs.len()
+                || reffs.iter().any(|effect_rid| !resolved_reffs.contains(effect_rid))
+            {
                 return Err(Default::default());
             }
             Ok(())

@@ -26,7 +26,8 @@ use crate::{
     ad::{AAbilId, AAttrId, AEffectId, AItem, AItemCatId, AItemGrpId, AItemId, AItemListId},
     rd::{
         RAttrConsts, RAttrId, REffectConsts, REffectId, RItemBaseEffectData, RItemCapConsumer, RItemChargeLimit,
-        RItemContLimit, RItemListId, RItemShipLimit, RShipDroneLimit, RShipKind, RState, RcEffect,
+        RItemContLimit, RItemEffectOptions, RItemEffectsPregenId, RItemListId, RItemShipLimit, RShipDroneLimit,
+        RShipKind, RState, RcEffect,
     },
     util::{PSlab, RMap, RSet},
     val::DetectedItemKind,
@@ -117,10 +118,12 @@ pub(crate) struct RItemBase {
     // Derived data - ship limits
     pub(crate) activation_blocks_cloak: bool,
     pub(crate) activation_blocks_in_assist: bool,
-    // Derived data - misc
+    // Derived data - item kinds
     pub(crate) detected_kind: Option<DetectedItemKind>,
     /// Which ship type this item fits to
     pub(crate) item_ship_kind: Option<RShipKind>,
+    // Derived data - fields filled by external entities
+    pub(in crate::rd::data) effects_pregen_ids: [RItemEffectsPregenId; RItemEffectOptions::ALL.len()],
 }
 
 impl RItemBase {
@@ -128,6 +131,9 @@ impl RItemBase {
         self.effect_datas
             .get(effect_rid)
             .unwrap_or(&RItemBaseEffectData::DEFAULT)
+    }
+    pub(crate) fn get_effects_pregen_id(&self, effect_options: RItemEffectOptions) -> RItemEffectsPregenId {
+        self.effects_pregen_ids[effect_options.index()]
     }
 }
 
@@ -219,6 +225,8 @@ impl RItemBase {
             activation_blocks_in_assist: Default::default(),
             detected_kind: Default::default(),
             item_ship_kind: Default::default(),
+            // Filled by external entities
+            effects_pregen_ids: Default::default(),
         }
     }
     pub(in crate::rd::data::item) fn fill_runtime_basic(
@@ -327,7 +335,7 @@ impl RItemBase {
         // Ship limits
         self.activation_blocks_cloak = get_activation_blocks_cloak(r_item_attrs, attr_consts);
         self.activation_blocks_in_assist = get_activation_blocks_in_assist(r_item_attrs, attr_consts);
-        // Misc
+        // Item kinds
         self.detected_kind = detect_item_kind(
             self.grp_id,
             self.cat_id,
