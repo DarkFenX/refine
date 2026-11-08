@@ -49,6 +49,9 @@ impl Calc {
             .revs
             .iter_revs_on_item_add_remove()
             .filter_map(|(ckey, reviser)| {
+                if !reviser.reacts_to(item) {
+                    return None;
+                }
                 let cmod = self.rmods.get_cmod(ckey);
                 match reviser.revise(ctx, cmod.rmod.affector_espec.item_uid, item_uid, item) {
                     true => Some(cmod),
@@ -70,6 +73,9 @@ impl Calc {
             .revs
             .iter_revs_on_item_add_remove()
             .filter_map(|(ckey, reviser)| {
+                if !reviser.reacts_to(item) {
+                    return None;
+                }
                 let cmod = self.rmods.get_cmod(ckey);
                 match reviser.revise(ctx, cmod.rmod.affector_espec.item_uid, item_uid, item) {
                     true => Some(cmod),
