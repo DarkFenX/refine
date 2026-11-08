@@ -59,6 +59,15 @@ impl ModStrength {
             Self::Custom(custom_str) => custom_str.get_item_add_remove_reviser(),
         }
     }
+    // Dependency methods - define if modifier registers ad-hoc attribute dependencies with its
+    // effect as source
+    pub(super) fn adds_deps_with_source(&self) -> bool {
+        match self {
+            Self::Attr(..) => false,
+            Self::Hardcoded(..) => false,
+            Self::Custom(custom_str) => custom_str.adds_deps_with_source(),
+        }
+    }
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////

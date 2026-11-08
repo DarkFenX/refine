@@ -218,9 +218,6 @@ impl Calc {
                 self.unreg_raw_mod(&mut reuse_items, &mut reuse_cmods, ctx, item_uid, item, rmod_id, &rmod);
                 self.rmods.remove_by_espec_p2(rmod_id);
             }
-            // Remove all ad-hoc attribute dependencies defined by effects being stopped. It is used
-            // by e.g. custom propulsion module modifier
-            self.deps.remove_by_source(&espec);
         }
         self.reuse.rmod_ids.put(reuse_rmod_ids);
         self.reuse.items.put(reuse_items);
@@ -601,6 +598,11 @@ impl Calc {
                 }
             },
             ModifierKind::Targeted => self.std.unreg_proj_mod(rmod_id, rmod),
+        }
+        // Ad-hoc attribute dependencies registered during calculation, e.g. by custom propulsion
+        // module modifier
+        if rmod.adds_deps_with_source() {
+            self.deps.remove_by_source(&rmod.affector_espec);
         }
         self.unreg_raw_mod_for_buff(item_uid, rmod_id, rmod);
     }

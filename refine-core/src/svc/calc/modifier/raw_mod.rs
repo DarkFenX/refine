@@ -214,6 +214,11 @@ impl RawModifier {
     pub(in crate::svc::calc) fn get_item_add_remove_reviser(&self) -> Option<ItemAddRemoveReviser> {
         self.strength.get_item_add_remove_reviser()
     }
+    // Dependency methods - define if modifier registers ad-hoc attribute dependencies with its
+    // effect as source
+    pub(in crate::svc::calc) fn adds_deps_with_source(&self) -> bool {
+        self.strength.adds_deps_with_source()
+    }
 }
 
 fn get_effect_mod_kind(effect_cat: AEffectCatId, affectee_filter: &AffecteeFilter) -> Option<ModifierKind> {

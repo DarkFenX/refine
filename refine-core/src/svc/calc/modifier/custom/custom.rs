@@ -74,6 +74,13 @@ impl CalcCustomModStrength {
             CalcCustomModifier::MissileFlightTime => Some(ItemAddRemoveReviser::MissileFlightTime),
         }
     }
+    pub(in crate::svc::calc::modifier) fn adds_deps_with_source(&self) -> bool {
+        match &self.kind {
+            CalcCustomModifier::PropSpeed => true,
+            CalcCustomModifier::AarPaste => false,
+            CalcCustomModifier::MissileFlightTime => false,
+        }
+    }
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
