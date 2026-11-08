@@ -49,11 +49,10 @@ impl SolMapGuarded {
         inner_sol.close();
         self.inner.write().remove(&inner_sol.get_id()).is_some()
     }
-    pub(crate) fn remove_if(&self, mut predicate: impl FnMut(&SolInner) -> bool) -> usize {
+    pub(crate) fn remove_if(&self, mut predicate: impl FnMut(&SolInner) -> bool) -> Vec<SolInnerGuarded> {
         // Move locked sols into separate vector without actually freeing them up just yet, not to
         // hold map lock longer than needed
-        let removed: Vec<_> = self
-            .inner
+        self.inner
             .write()
             .extract_if(|_, inner_sol| match inner_sol.try_lock() {
                 Ok(mut sol) => {
@@ -66,8 +65,7 @@ impl SolMapGuarded {
                 // If it's locked - it means it's being worked on, we don't touch that
                 Err(..) => false,
             })
-            .collect();
-        // With the vector holding them gone, sols are actually dropped here
-        removed.len()
+            .map(|(_, inner_sol)| inner_sol)
+            .collect()
     }
 }

@@ -7,12 +7,17 @@ impl Refine {
     pub(crate) fn cleanup_sols(&self, sol_inact_limit: Duration) {
         tracing::debug!("starting cleanup");
         let now = Instant::now();
-        let cleaned_count = self
+        let removed_sols = self
             .id_sol_map
             .remove_if(|sol| sol.is_poisoned() || sol.get_last_accessed() + sol_inact_limit < now);
-        match cleaned_count {
+        match removed_sols.len() {
             0 => tracing::debug!("nothing to clean"),
-            _ => tracing::info!("{cleaned_count} solar systems cleaned up"),
+            cleaned_count => {
+                // Free them up on a separate thread, not to put extra load on tokio threads or
+                // rayon thread pools servicing requests
+                tokio::task::spawn_blocking(move || drop(removed_sols));
+                tracing::info!("{cleaned_count} solar systems cleaned up");
+            }
         }
     }
 }
