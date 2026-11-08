@@ -1,14 +1,20 @@
-use crate::util::DenseId;
+use crate::{num::U32NonMax, util::DenseId};
 
 #[derive(Copy, Clone, Eq, PartialEq, Ord, PartialOrd, Hash, Debug)]
-pub(crate) struct UItemId(usize);
+pub(crate) struct UItemId(U32NonMax);
+impl UItemId {
+    pub(crate) const NICHE: u32 = U32NonMax::NICHE;
+    pub(crate) fn into_raw(self) -> u32 {
+        self.0.into_u32()
+    }
+}
 
 impl DenseId for UItemId {
     fn new(index: usize) -> Self {
-        Self(index)
+        Self(U32NonMax::from_usize(index))
     }
     fn index(self) -> usize {
-        self.0
+        self.0.into_usize()
     }
 }
 

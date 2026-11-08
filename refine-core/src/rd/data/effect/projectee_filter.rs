@@ -5,6 +5,7 @@ use crate::{
     util::RMap,
 };
 
+#[derive(Copy, Clone)]
 pub(crate) enum REffectProjecteeFilter {
     ItemList(RItemListId),
     ItemListAttr(RAttrId),

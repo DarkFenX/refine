@@ -46,19 +46,24 @@ where
 {
     // Query methods
     #[expect(dead_code)]
+    #[inline(always)]
     pub(crate) fn get_l1(&self, key1: &K1) -> Option<&Map<K2, V, H2>> {
         self.data.get(key1)
     }
     #[expect(dead_code)]
+    #[inline(always)]
     pub(crate) fn get_value(&self, key1: &K1, key2: &K2) -> Option<&V> {
         self.get_l1(key1).and_then(|m1l| m1l.get(key2))
     }
+    #[inline(always)]
     pub(crate) fn iter(&self) -> impl ExactSizeIterator<Item = (&K1, &Map<K2, V, H2>)> {
         self.data.iter()
     }
+    #[inline(always)]
     pub(crate) fn values(&self) -> impl ExactSizeIterator<Item = &Map<K2, V, H2>> {
         self.data.values()
     }
+    #[inline(always)]
     pub(crate) fn is_empty(&self) -> bool {
         self.data.is_empty()
     }

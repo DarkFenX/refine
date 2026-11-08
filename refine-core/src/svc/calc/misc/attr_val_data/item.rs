@@ -32,14 +32,14 @@ impl ItemAttrData {
         (self.dense_entries, self.sparse)
     }
     #[inline]
-    pub(in crate::svc::calc) fn get(&self, attr_rid: &RAttrId) -> Option<&AttrEntry> {
+    pub(in crate::svc::calc) fn get(&self, attr_rid: RAttrId) -> Option<&AttrEntry> {
         let index = attr_rid.index();
         match index < DENSE_ATTR_COUNT {
             true => match self.dense_positions[index] {
                 NO_ENTRY => None,
                 position => Some(&self.dense_entries[position as usize].1),
             },
-            false => self.sparse.get(attr_rid),
+            false => self.sparse.get(&attr_rid),
         }
     }
     fn get_mut(&mut self, attr_rid: RAttrId) -> Option<&mut AttrEntry> {
@@ -70,17 +70,17 @@ impl ItemAttrData {
             false => self.sparse.entry(attr_rid).or_default(),
         }
     }
-    pub(in crate::svc::calc) fn iter(&self) -> impl Iterator<Item = (&RAttrId, &AttrEntry)> {
+    pub(in crate::svc::calc) fn iter(&self) -> impl Iterator<Item = (RAttrId, &AttrEntry)> {
         self.dense_entries
             .iter()
-            .map(|(attr_rid, attr_entry)| (attr_rid, attr_entry))
-            .chain(self.sparse.iter())
+            .map(|(attr_rid, attr_entry)| (*attr_rid, attr_entry))
+            .chain(self.sparse.iter().map(|(attr_rid, attr_entry)| (*attr_rid, attr_entry)))
     }
     pub(in crate::svc::calc) fn len(&self) -> usize {
         self.dense_entries.len() + self.sparse.len()
     }
     pub(in crate::svc::calc) fn get_postproc(&self, attr_rid: RAttrId) -> Option<ItemAttrPostproc> {
-        self.get(&attr_rid)?.postproc
+        self.get(attr_rid)?.postproc
     }
     pub(in crate::svc::calc) fn set_value_and_get_postproc(
         &mut self,
@@ -95,7 +95,7 @@ impl ItemAttrData {
         self.get_mut(attr_rid)
             .is_some_and(|attr_entry| attr_entry.value.take().is_some())
     }
-    pub(in crate::svc::calc) fn has_value(&self, attr_rid: &RAttrId) -> bool {
+    pub(in crate::svc::calc) fn has_value(&self, attr_rid: RAttrId) -> bool {
         self.get(attr_rid).is_some_and(|attr_entry| attr_entry.value.is_some())
     }
     pub(in crate::svc::calc) fn reg_postproc(&mut self, attr_rid: RAttrId, postprocs: ItemAttrPostproc) {

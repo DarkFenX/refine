@@ -14,17 +14,17 @@ impl UProjs {
     pub(crate) fn add(&mut self, item_uid: UItemId, proj_data: Option<UProjData>) {
         self.data.insert(item_uid, proj_data);
     }
-    pub(crate) fn remove(&mut self, item_uid: &UItemId) -> Option<Option<UProjData>> {
-        self.data.remove(item_uid)
+    pub(crate) fn remove(&mut self, item_uid: UItemId) -> Option<Option<UProjData>> {
+        self.data.remove(&item_uid)
     }
-    pub(crate) fn contains(&self, item_uid: &UItemId) -> bool {
-        self.data.contains_key(item_uid)
+    pub(crate) fn contains(&self, item_uid: UItemId) -> bool {
+        self.data.contains_key(&item_uid)
     }
-    pub(crate) fn get(&self, item_uid: &UItemId) -> Option<Option<UProjData>> {
-        self.data.get(item_uid).copied()
+    pub(crate) fn get(&self, item_uid: UItemId) -> Option<Option<UProjData>> {
+        self.data.get(&item_uid).copied()
     }
-    pub(crate) fn get_proj_data_mut(&mut self, item_uid: &UItemId) -> Option<&mut UProjData> {
-        match self.data.get_mut(item_uid) {
+    pub(crate) fn get_proj_data_mut(&mut self, item_uid: UItemId) -> Option<&mut UProjData> {
+        match self.data.get_mut(&item_uid) {
             Some(Some(u_proj_data)) => Some(u_proj_data),
             _ => None,
         }

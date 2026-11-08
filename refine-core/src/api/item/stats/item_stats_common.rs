@@ -52,7 +52,7 @@ pub trait ItemStatsCommon: ItemStatsSealed {
         let item_uid = self.get_uid();
         let switched = self.is_switched();
         let sol = self.get_sol_mut();
-        let projectee_uid = sol.u_data.get_projectee_uid(projectee_item_id)?;
+        let projectee_uid = sol.u_data.get_projectee_uid(*projectee_item_id)?;
         let cseq_cache = match switched {
             true => &mut sol.reuse.cseq_cache_switched,
             false => &mut sol.reuse.cseq_cache,
@@ -110,7 +110,7 @@ pub trait ItemStatsCommon: ItemStatsSealed {
         let item_uid = self.get_uid();
         let switched = self.is_switched();
         let sol = self.get_sol_mut();
-        let projectee_uid = sol.u_data.get_projectee_uid(projectee_item_id)?;
+        let projectee_uid = sol.u_data.get_projectee_uid(*projectee_item_id)?;
         let cseq_cache = match switched {
             true => &mut sol.reuse.cseq_cache_switched,
             false => &mut sol.reuse.cseq_cache,
@@ -146,7 +146,7 @@ pub trait ItemStatsCommon: ItemStatsSealed {
         let item_uid = self.get_uid();
         let switched = self.is_switched();
         let sol = self.get_sol_mut();
-        let projectee_uid = sol.u_data.get_projectee_uid(projectee_item_id)?;
+        let projectee_uid = sol.u_data.get_projectee_uid(*projectee_item_id)?;
         let cseq_cache = match switched {
             true => &mut sol.reuse.cseq_cache_switched,
             false => &mut sol.reuse.cseq_cache,
@@ -175,7 +175,7 @@ pub trait ItemStatsCommon: ItemStatsSealed {
         let item_uid = self.get_uid();
         let switched = self.is_switched();
         let sol = self.get_sol_mut();
-        let projectee_uid = sol.u_data.get_projectee_uid(projectee_item_id)?;
+        let projectee_uid = sol.u_data.get_projectee_uid(*projectee_item_id)?;
         let cseq_cache = match switched {
             true => &mut sol.reuse.cseq_cache_switched,
             false => &mut sol.reuse.cseq_cache,

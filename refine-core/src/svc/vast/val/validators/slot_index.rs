@@ -83,7 +83,7 @@ fn validate_slot_index_verbose(
     data: &RMapRSet<SlotIndex, UItemId>,
 ) -> Option<ValSlotIndexFail> {
     let mut slot_users = Vec::new();
-    for (slot_index, users) in data.iter() {
+    for (&slot_index, users) in data.iter() {
         if users.len() >= 2 {
             let users = users
                 .filter_map(|item_uid| match kfs.contains(item_uid) {
@@ -93,7 +93,7 @@ fn validate_slot_index_verbose(
                 .collect_vec();
             if !users.is_empty() {
                 slot_users.push(ValSlotIndexSlotInfo {
-                    slot: *slot_index,
+                    slot: slot_index,
                     item_ids: users,
                 });
             }

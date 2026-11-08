@@ -39,7 +39,7 @@ impl SolCore {
             None => match u_module.get_r_item_base() {
                 Some(rib) if let Some(defeff_rid) = rib.defeff_rid => {
                     self.u_data.r_data.get_effect_by_rid(defeff_rid).activates_charge()
-                        && u_module.get_reffs().is_some_and(|v| v.contains(&defeff_rid))
+                        && u_module.get_reffs().is_some_and(|v| v.contains(defeff_rid))
                 }
                 _ => false,
             },

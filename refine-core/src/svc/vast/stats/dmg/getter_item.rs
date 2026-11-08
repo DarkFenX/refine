@@ -103,7 +103,7 @@ impl Vast {
         let Some(cseq_map) = get_item_cseq_map(cseq_cache, ctx, calc, item_uid, cycling_options) else {
             return Ok(());
         };
-        for (&effect_rid, cseq) in cseq_map.iter() {
+        for (effect_rid, cseq) in cseq_map.iter() {
             let effect = ctx.u_data.r_data.get_effect_by_rid(effect_rid);
             if let Some(ospec) = &effect.normal_dmg {
                 add_normal_dmg(

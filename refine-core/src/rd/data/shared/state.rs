@@ -29,7 +29,7 @@ impl RState {
 // Conversions
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl RState {
-    pub(in crate::rd::data) fn from_a_state(a_state: &AState) -> Self {
+    pub(in crate::rd::data) fn from_a_state(a_state: AState) -> Self {
         match a_state {
             AState::Disabled => Self::Disabled,
             AState::Offline => Self::Offline,

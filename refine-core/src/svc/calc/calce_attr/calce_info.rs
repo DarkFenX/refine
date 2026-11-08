@@ -71,7 +71,7 @@ impl Calc {
         let item_attr_data = self.get_item_data_with_err(item_uid)?;
         let base_attrs = &ctx.u_data.items.get(item_uid).get_r_item_flex_data().unwrap().attrs;
         let mut attr_rids = RSet::with_capacity(item_attr_data.len().max(base_attrs.len()));
-        for (&attr_rid, attr_entry) in item_attr_data.iter() {
+        for (attr_rid, attr_entry) in item_attr_data.iter() {
             if attr_entry.value.is_some() {
                 attr_rids.insert(attr_rid);
             }
@@ -82,7 +82,7 @@ impl Calc {
     fn iter_affections(
         &mut self,
         ctx: &SvcCtx,
-        item_uid: &UItemId,
+        item_uid: UItemId,
         item: &UItem,
         attr_rid: RAttrId,
     ) -> impl Iterator<Item = Affection> {
@@ -121,7 +121,7 @@ impl Calc {
         let attr = ctx.u_data.r_data.get_attr_by_rid(attr_rid);
         let base_attr_info = self.calc_item_base_attr_info(ctx, item_uid, item, attr);
         let mut accumulator = ModAccumInfo::new();
-        for affection in self.iter_affections(ctx, &item_uid, item, attr_rid) {
+        for affection in self.iter_affections(ctx, item_uid, item, attr_rid) {
             accumulator.add_val(
                 affection.effect_rid,
                 affection.modification.op,
@@ -181,7 +181,7 @@ impl Calc {
         // Post-dogma calculations
         let extra_attr_info = accumulator.apply_extra_mods(dogma_attr_info);
         // Custom post-processing functions - since infos are not cached, it's fine to have it here
-        match self.attrs.get_item_attr_data(item_uid).unwrap().get(&attr_rid) {
+        match self.attrs.get_item_attr_data(item_uid).unwrap().get(attr_rid) {
             Some(attr_entry) if let Some(postproc) = attr_entry.postproc => {
                 postproc.info(self, ctx, item_uid, extra_attr_info)
             }

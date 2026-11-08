@@ -315,7 +315,7 @@ impl Vast {
             _ => (),
         }
     }
-    pub(in crate::svc) fn item_unloaded(&mut self, u_data: &UData, item_uid: &UItemId, item: &UItem) {
+    pub(in crate::svc) fn item_unloaded(&mut self, u_data: &UData, item_uid: UItemId, item: &UItem) {
         let Some(fit_uid) = item.get_fit_uid() else {
             return;
         };
@@ -325,16 +325,16 @@ impl Vast {
             && !a_srqs.is_empty()
         {
             for &skill_item_aid in a_srqs.keys() {
-                fit_data.srqs_skill_item_map.remove_entry(skill_item_aid, item_uid);
+                fit_data.srqs_skill_item_map.remove_entry(skill_item_aid, &item_uid);
             }
-            fit_data.srqs_missing.remove(item_uid);
+            fit_data.srqs_missing.remove(&item_uid);
         }
         match item {
             UItem::Booster(booster) => {
                 let booster_rib = booster.get_r_item_base().unwrap();
                 fit_data.item_kind_remove(item_uid, booster_rib.detected_kind, DetectedItemKind::Booster);
                 if let Some(slot) = booster_rib.booster_slot {
-                    fit_data.slotted_boosters.remove_entry(slot, item_uid);
+                    fit_data.slotted_boosters.remove_entry(slot, &item_uid);
                 }
             }
             UItem::Character(character) => {
@@ -344,60 +344,60 @@ impl Vast {
             UItem::Charge(charge) => {
                 let charge_rib = charge.get_r_item_base().unwrap();
                 fit_data.item_kind_remove(item_uid, charge_rib.detected_kind, DetectedItemKind::Charge);
-                fit_data.charge_group.remove(item_uid);
+                fit_data.charge_group.remove(&item_uid);
                 if charge_rib.cont_limit.is_some() {
-                    fit_data.charge_cont_group.remove(item_uid);
+                    fit_data.charge_cont_group.remove(&item_uid);
                 }
-                fit_data.charge_size.remove(item_uid);
-                fit_data.charge_volume.remove(item_uid);
+                fit_data.charge_size.remove(&item_uid);
+                fit_data.charge_volume.remove(&item_uid);
                 if charge_rib.sec_zone_limitable {
-                    fit_data.sec_zone_unactivable.remove(item_uid);
+                    fit_data.sec_zone_unactivable.remove(&item_uid);
                 }
             }
             UItem::Drone(drone) => {
                 let drone_rib = drone.get_r_item_base().unwrap();
                 let drone_rifd = drone.get_r_item_flex_data().unwrap();
                 fit_data.item_kind_remove(item_uid, drone_rib.detected_kind, DetectedItemKind::Drone);
-                fit_data.drones_volume.remove(item_uid);
+                fit_data.drones_volume.remove(&item_uid);
                 if drone_rifd.bandwidth_use.is_some() {
-                    fit_data.drones_bandwidth.remove(item_uid);
+                    fit_data.drones_bandwidth.remove(&item_uid);
                 }
                 if !fit_data.drone_group_limit.is_empty() {
-                    fit_data.drone_groups.remove(item_uid);
+                    fit_data.drone_groups.remove(&item_uid);
                 }
             }
             UItem::Fighter(fighter) => {
                 let fighter_rib = fighter.get_r_item_base().unwrap();
                 fit_data.item_kind_remove(item_uid, fighter_rib.detected_kind, DetectedItemKind::Fighter);
-                fit_data.fighters_volume.remove(item_uid);
+                fit_data.fighters_volume.remove(&item_uid);
                 let count = fighter.get_count_info().unwrap();
                 if count.current > count.max {
-                    fit_data.fighter_squad_size.remove(item_uid);
+                    fit_data.fighter_squad_size.remove(&item_uid);
                 }
                 if fighter_rib.is_light_fighter {
-                    fit_data.light_fighters.remove(item_uid);
+                    fit_data.light_fighters.remove(&item_uid);
                 }
                 if fighter_rib.is_heavy_fighter {
-                    fit_data.heavy_fighters.remove(item_uid);
+                    fit_data.heavy_fighters.remove(&item_uid);
                 }
                 if fighter_rib.is_support_fighter {
-                    fit_data.support_fighters.remove(item_uid);
+                    fit_data.support_fighters.remove(&item_uid);
                 }
                 if fighter_rib.is_st_light_fighter {
-                    fit_data.st_light_fighters.remove(item_uid);
+                    fit_data.st_light_fighters.remove(&item_uid);
                 }
                 if fighter_rib.is_st_heavy_fighter {
-                    fit_data.st_heavy_fighters.remove(item_uid);
+                    fit_data.st_heavy_fighters.remove(&item_uid);
                 }
                 if fighter_rib.is_st_support_fighter {
-                    fit_data.st_support_fighters.remove(item_uid);
+                    fit_data.st_support_fighters.remove(&item_uid);
                 }
             }
             UItem::Implant(implant) => {
                 let implant_rib = implant.get_r_item_base().unwrap();
                 fit_data.item_kind_remove(item_uid, implant_rib.detected_kind, DetectedItemKind::Implant);
                 if let Some(slot) = implant_rib.implant_slot {
-                    fit_data.slotted_implants.remove_entry(slot, item_uid);
+                    fit_data.slotted_implants.remove_entry(slot, &item_uid);
                 }
             }
             UItem::Module(module) => {
@@ -405,24 +405,24 @@ impl Vast {
                 let module_rifd = module.get_r_item_flex_data().unwrap();
                 fit_data.module_item_kind_remove(item_uid, module_rib.detected_kind, module);
                 if module_rib.takes_turret_hardpoint {
-                    fit_data.mods_turret.remove(item_uid);
+                    fit_data.mods_turret.remove(&item_uid);
                 }
                 if module_rib.takes_launcher_hardpoint {
-                    fit_data.mods_launcher.remove(item_uid);
+                    fit_data.mods_launcher.remove(&item_uid);
                 }
                 if module_rib.is_cloak {
                     fit_data.mods_fitted_cloaks -= Count::ONE;
                 }
                 if module_rib.ship_limit.is_some() {
-                    fit_data.ship_limited_items.remove(item_uid);
-                    fit_data.ship_limit_mismatches.remove(item_uid);
+                    fit_data.ship_limited_items.remove(&item_uid);
+                    fit_data.ship_limit_mismatches.remove(&item_uid);
                 }
                 if let Some(item_grp_aid) = module_rib.val_fitted_group_id {
                     fit_data
                         .mods_svcs_rigs_max_group_fitted_all
-                        .remove_entry(item_grp_aid, item_uid);
+                        .remove_entry(item_grp_aid, &item_uid);
                     if module_rifd.max_group_fitted_limited {
-                        fit_data.mods_svcs_rigs_max_group_fitted_limited.remove(item_uid);
+                        fit_data.mods_svcs_rigs_max_group_fitted_limited.remove(&item_uid);
                     }
                 }
                 if let Some(charge_uid) = module.get_charge_uid() {
@@ -436,75 +436,75 @@ impl Vast {
                     fit_data.charge_volume.remove(&charge_uid);
                 }
                 if is_capital_module(module_rib) {
-                    fit_data.mods_capital.remove(item_uid);
+                    fit_data.mods_capital.remove(&item_uid);
                 }
                 if module_rib.max_type_fitted.is_some() {
                     fit_data
                         .mods_svcs_max_type_fitted
-                        .remove_l2(module.get_rendered_type_aid(), item_uid);
+                        .remove_l2(module.get_rendered_type_aid(), &item_uid);
                 }
                 if module_rib.online_max_sec_class.is_some() {
-                    fit_data.sec_zone_unonlineable_class.remove(item_uid);
+                    fit_data.sec_zone_unonlineable_class.remove(&item_uid);
                 }
                 if module_rib.sec_zone_limitable {
-                    fit_data.sec_zone_unactivable.remove(item_uid);
+                    fit_data.sec_zone_unactivable.remove(&item_uid);
                 }
-                fit_data.mods_rigs_svcs_vs_ship_kind.remove(item_uid);
+                fit_data.mods_rigs_svcs_vs_ship_kind.remove(&item_uid);
                 if !module_rib.cap_consumers.is_empty() {
-                    fit_data.mods_cap_consumers.remove(item_uid);
+                    fit_data.mods_cap_consumers.remove(&item_uid);
                 }
             }
             UItem::Rig(rig) => {
                 let rig_rib = rig.get_r_item_base().unwrap();
                 let rig_rifd = rig.get_r_item_flex_data().unwrap();
                 fit_data.item_kind_remove(item_uid, rig_rib.detected_kind, DetectedItemKind::Rig);
-                fit_data.rigs_rig_size.remove(item_uid);
-                fit_data.rig_size_mismatches.remove(item_uid);
+                fit_data.rigs_rig_size.remove(&item_uid);
+                fit_data.rig_size_mismatches.remove(&item_uid);
                 if rig_rib.ship_limit.is_some() {
-                    fit_data.ship_limited_items.remove(item_uid);
-                    fit_data.ship_limit_mismatches.remove(item_uid);
+                    fit_data.ship_limited_items.remove(&item_uid);
+                    fit_data.ship_limit_mismatches.remove(&item_uid);
                 }
                 if let Some(item_grp_aid) = rig_rib.val_fitted_group_id {
                     fit_data
                         .mods_svcs_rigs_max_group_fitted_all
-                        .remove_entry(item_grp_aid, item_uid);
+                        .remove_entry(item_grp_aid, &item_uid);
                     if rig_rifd.max_group_fitted_limited {
-                        fit_data.mods_svcs_rigs_max_group_fitted_limited.remove(item_uid);
+                        fit_data.mods_svcs_rigs_max_group_fitted_limited.remove(&item_uid);
                     }
                 }
                 if rig_rib.sec_zone_limitable {
-                    fit_data.sec_zone_fitted.remove(item_uid);
+                    fit_data.sec_zone_fitted.remove(&item_uid);
                 }
-                fit_data.mods_rigs_svcs_vs_ship_kind.remove(item_uid);
+                fit_data.mods_rigs_svcs_vs_ship_kind.remove(&item_uid);
             }
             UItem::Service(service) => {
                 let service_rib = service.get_r_item_base().unwrap();
                 let service_rifd = service.get_r_item_flex_data().unwrap();
                 fit_data.item_kind_remove(item_uid, service_rib.detected_kind, DetectedItemKind::Service);
                 if service_rib.ship_limit.is_some() {
-                    fit_data.ship_limited_items.remove(item_uid);
-                    fit_data.ship_limit_mismatches.remove(item_uid);
+                    fit_data.ship_limited_items.remove(&item_uid);
+                    fit_data.ship_limit_mismatches.remove(&item_uid);
                 }
                 if let Some(item_grp_aid) = service_rib.val_fitted_group_id {
                     fit_data
                         .mods_svcs_rigs_max_group_fitted_all
-                        .remove_entry(item_grp_aid, item_uid);
+                        .remove_entry(item_grp_aid, &item_uid);
                     if service_rifd.max_group_fitted_limited {
-                        fit_data.mods_svcs_rigs_max_group_fitted_limited.remove(item_uid);
+                        fit_data.mods_svcs_rigs_max_group_fitted_limited.remove(&item_uid);
                     }
                 }
                 if service_rib.max_type_fitted.is_some() {
                     fit_data
                         .mods_svcs_max_type_fitted
-                        .remove_l2(service.get_type_aid(), item_uid);
+                        .remove_l2(service.get_type_aid(), &item_uid);
                 }
                 if service_rib.sec_zone_limitable {
-                    fit_data.sec_zone_fitted.remove(item_uid);
+                    fit_data.sec_zone_fitted.remove(&item_uid);
                 }
                 if service_rib.online_max_sec_class.is_some() {
-                    fit_data.sec_zone_unonlineable_class.remove(item_uid);
+                    fit_data.sec_zone_unonlineable_class.remove(&item_uid);
                 }
-                fit_data.mods_rigs_svcs_vs_ship_kind.remove(item_uid);
+                fit_data.mods_rigs_svcs_vs_ship_kind.remove(&item_uid);
             }
             UItem::Ship(ship) => {
                 let ship_rib = ship.get_r_item_base().unwrap();
@@ -515,13 +515,13 @@ impl Vast {
                     fit_data.drone_groups.clear();
                 }
                 if ship_rib.sec_zone_limitable {
-                    fit_data.sec_zone_fitted.remove(item_uid);
+                    fit_data.sec_zone_fitted.remove(&item_uid);
                 }
                 if ship_rib.disallowed_in_wspace {
-                    fit_data.sec_zone_fitted_wspace_banned.remove(item_uid);
+                    fit_data.sec_zone_fitted_wspace_banned.remove(&item_uid);
                 }
                 if ship_rib.enables_conduit {
-                    fit_data.conduit_enablers.remove(item_uid);
+                    fit_data.conduit_enablers.remove(&item_uid);
                 }
                 fit_data.mods_rigs_svcs_vs_ship_kind.clear();
                 // Unloaded ship still has type, but no group and rig size
@@ -536,19 +536,19 @@ impl Vast {
                 let item_rib = stance.get_r_item_base().unwrap();
                 fit_data.item_kind_remove(item_uid, item_rib.detected_kind, DetectedItemKind::Stance);
                 if item_rib.ship_limit.is_some() {
-                    fit_data.ship_limited_items.remove(item_uid);
-                    fit_data.ship_limit_mismatches.remove(item_uid);
+                    fit_data.ship_limited_items.remove(&item_uid);
+                    fit_data.ship_limit_mismatches.remove(&item_uid);
                 }
             }
             UItem::Subsystem(subsystem) => {
                 let subsystem_rib = subsystem.get_r_item_base().unwrap();
                 fit_data.item_kind_remove(item_uid, subsystem_rib.detected_kind, DetectedItemKind::Subsystem);
                 if let Some(slot) = subsystem_rib.subsystem_slot {
-                    fit_data.slotted_subsystems.remove_entry(slot, item_uid);
+                    fit_data.slotted_subsystems.remove_entry(slot, &item_uid);
                 }
                 if subsystem_rib.ship_limit.is_some() {
-                    fit_data.ship_limited_items.remove(item_uid);
-                    fit_data.ship_limit_mismatches.remove(item_uid);
+                    fit_data.ship_limited_items.remove(&item_uid);
+                    fit_data.ship_limit_mismatches.remove(&item_uid);
                 }
             }
             _ => (),

@@ -207,12 +207,12 @@ impl Calc {
         let mut reuse_cmods = self.reuse.cmods.take();
         for &effect_rid in effect_rids {
             let espec = EffectSpec::new(item_uid, effect_rid);
-            self.rmods.remove_by_espec_p1(&mut reuse_rmod_ids, &espec);
+            self.rmods.remove_by_espec_p1(&mut reuse_rmod_ids, espec);
             for &rmod_id in reuse_rmod_ids.iter() {
                 // Attribute changes caused by unregistering a modifier can remove other modifiers
                 // of the effect (e.g. buff modifiers which depend on attribute values), and their
                 // IDs can be reused by modifiers of other effects
-                let Some(rmod) = self.rmods.get_rmod_for_espec(rmod_id, &espec) else {
+                let Some(rmod) = self.rmods.get_rmod_for_espec(rmod_id, espec) else {
                     continue;
                 };
                 self.unreg_raw_mod(&mut reuse_items, &mut reuse_cmods, ctx, item_uid, item, rmod_id, &rmod);
@@ -238,7 +238,7 @@ impl Calc {
         self.std.project_effect(
             &mut reuse_cmods,
             &self.rmods,
-            &projector_espec,
+            projector_espec,
             projectee_uid,
             projectee_item,
         );
@@ -260,7 +260,7 @@ impl Calc {
         self.std.query_projected_effect(
             &mut reuse_cmods,
             &self.rmods,
-            &projector_espec,
+            projector_espec,
             projectee_uid,
             projectee_item,
         );
@@ -286,7 +286,7 @@ impl Calc {
         self.std.unproject_effect(
             &mut reuse_cmods,
             &self.rmods,
-            &projector_espec,
+            projector_espec,
             projectee_uid,
             projectee_item,
         );
@@ -305,14 +305,14 @@ impl Calc {
             self.force_attr_value_recalc(ctx, AttrSpec::new(aspec.item_uid, dependent_attr_rid));
         }
         // Clear up attribute values which rely on passed attribute via ad-hoc dependencies
-        let affectee_aspecs = self.deps.iter_affectee_aspecs(&aspec).copied().collect_vec();
+        let affectee_aspecs = self.deps.iter_affectee_aspecs(aspec).collect_vec();
         for affectee_aspec in affectee_aspecs.into_iter() {
             self.force_attr_value_recalc(ctx, affectee_aspec);
         }
         // Clear up attribute values which rely on passed attribute as a modification source
         let cmods = self
             .std
-            .iter_affector_spec_ckeys(&aspec)
+            .iter_affector_spec_ckeys(aspec)
             .map(|ckey| self.rmods.get_cmod(ckey))
             .collect_vec();
         if !cmods.is_empty() {
@@ -330,7 +330,7 @@ impl Calc {
         if ctx.ac().buff_merge_ids.contains(&aspec.attr_rid) {
             let item = ctx.u_data.items.get(aspec.item_uid);
             // Remove modifiers of buffs which rely on the attribute
-            let rmod_ids = self.buffs.extract_dependent_mods(&aspec);
+            let rmod_ids = self.buffs.extract_dependent_mods(aspec);
             if rmod_ids.len() > 0 {
                 let mut reuse_items = self.reuse.items.take();
                 let mut reuse_cmods = self.reuse.cmods.take();
@@ -353,14 +353,14 @@ impl Calc {
                 self.reuse.cmods.put(reuse_cmods);
             }
             // Generate new modifiers using new value and apply them
-            let effect_rids = self.buffs.get_effects(&aspec.item_uid);
+            let effect_rids = self.buffs.get_effects(aspec.item_uid);
             if effect_rids.len() > 0 {
                 let effect_rids = effect_rids.collect_vec();
                 let rmods = self.generate_dependent_buff_mods_for_attr(
                     ctx,
                     aspec.item_uid,
                     item,
-                    effect_rids.iter(),
+                    effect_rids.into_iter(),
                     aspec.attr_rid,
                 );
                 let mut reuse_items = self.reuse.items.take();
@@ -386,7 +386,7 @@ impl Calc {
             }
         }
         // Notify RAH sim
-        self.rah_attr_value_changed(ctx, &aspec);
+        self.rah_attr_value_changed(ctx, aspec);
     }
     pub(in crate::svc) fn force_attr_value_recalc(&mut self, ctx: &SvcCtx, aspec: AttrSpec) {
         // Sometimes calc service receives requests to clear attributes it does not know yet; this
@@ -421,7 +421,7 @@ impl Calc {
             // No value calculated before that - there are no dependents to clear (dependents always
             // request dependencies while calculating their values). In this case we do not remove
             // attribute, because only postprocessing output is supposed to change
-            if item_attr_data.has_value(&aspec.attr_rid) {
+            if item_attr_data.has_value(aspec.attr_rid) {
                 self.attr_value_changed(ctx, aspec);
             }
         }
@@ -602,7 +602,7 @@ impl Calc {
         // Ad-hoc attribute dependencies registered during calculation, e.g. by custom propulsion
         // module modifier
         if rmod.adds_deps_with_source() {
-            self.deps.remove_by_source(&rmod.affector_espec);
+            self.deps.remove_by_source(rmod.affector_espec);
         }
         self.unreg_raw_mod_for_buff(item_uid, rmod_id, rmod);
     }
@@ -617,7 +617,7 @@ impl Calc {
         // Buff modifiers re-generated for an already projected effect are not covered by effect
         // projection, so they are projected onto effect projectees here
         reuse_cmods.clear();
-        for projectee_uid in self.buffs.iter_projectees(&rmod.affector_espec) {
+        for projectee_uid in self.buffs.iter_projectees(rmod.affector_espec) {
             let projectee_item = ctx.u_data.items.get(projectee_uid);
             if let Some(cmod) = self.std.project_mod(rmod_id, rmod, projectee_uid, projectee_item) {
                 reuse_cmods.push(cmod);
@@ -636,7 +636,7 @@ impl Calc {
         rmod: RawModifier,
     ) {
         reuse_cmods.clear();
-        for projectee_uid in self.buffs.iter_projectees(&rmod.affector_espec) {
+        for projectee_uid in self.buffs.iter_projectees(rmod.affector_espec) {
             let projectee_item = ctx.u_data.items.get(projectee_uid);
             if let Some(cmod) = self.std.unproject_mod(rmod_id, rmod, projectee_uid, projectee_item) {
                 reuse_cmods.push(cmod);
@@ -655,7 +655,7 @@ impl Calc {
     fn unreg_raw_mod_for_buff(&mut self, item_uid: UItemId, rmod_id: RawModId, rmod: &RawModifier) {
         if let Some(buff_type_attr_rid) = rmod.buff_type_attr_rid {
             self.buffs
-                .unreg_dependent_mod(AttrSpec::new(item_uid, buff_type_attr_rid), &rmod_id);
+                .unreg_dependent_mod(AttrSpec::new(item_uid, buff_type_attr_rid), rmod_id);
         }
     }
     fn force_mod_affectee_attr_recalc(&mut self, reuse_affectees: &mut Vec<UItemId>, ctx: &SvcCtx, cmod: &CtxModifier) {

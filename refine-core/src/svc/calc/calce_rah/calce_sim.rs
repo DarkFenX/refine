@@ -14,6 +14,7 @@ use super::{
 use crate::{
     Count, PValue, Value,
     misc::{DmgKinds, EffectSpec},
+    num::ValueNiched,
     svc::{
         SvcCtx,
         calc::{Calc, CalcAttrVals, calce_rah::shared::SIG_ROUND_DIGITS},
@@ -24,7 +25,7 @@ use crate::{
 };
 
 const FALLBACK_RESONANCE: CalcAttrVals = CalcAttrVals {
-    base: Value::ONE,
+    base: ValueNiched::from_value(Value::ONE),
     dogma: Value::ONE,
     extra: Value::ONE,
 };

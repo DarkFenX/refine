@@ -9,11 +9,11 @@ impl REffs {
     pub(in crate::ud::item) fn new() -> Self {
         Self { data: SmallRSet::new() }
     }
-    pub(crate) fn iter(&self) -> std::slice::Iter<'_, REffectId> {
-        self.data.iter()
+    pub(crate) fn iter(&self) -> impl ExactSizeIterator<Item = REffectId> {
+        self.data.iter().copied()
     }
-    pub(crate) fn contains(&self, effect_rid: &REffectId) -> bool {
-        self.data.contains(effect_rid)
+    pub(crate) fn contains(&self, effect_rid: REffectId) -> bool {
+        self.data.contains(&effect_rid)
     }
     pub(in crate::ud::item) fn len(&self) -> usize {
         self.data.len()
@@ -22,8 +22,8 @@ impl REffs {
     pub(in crate::ud::item) fn extend(&mut self, effect_rids: impl IntoIterator<Item = REffectId>) {
         self.data.extend(effect_rids)
     }
-    pub(in crate::ud::item) fn remove(&mut self, effect_rid: &REffectId) -> bool {
-        self.data.remove(effect_rid)
+    pub(in crate::ud::item) fn remove(&mut self, effect_rid: REffectId) -> bool {
+        self.data.remove(&effect_rid)
     }
     pub(in crate::ud::item) fn drain(&mut self) -> impl ExactSizeIterator<Item = REffectId> {
         self.data.drain()

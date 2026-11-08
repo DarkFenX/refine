@@ -114,6 +114,7 @@ where
     H1: BuildHasher,
     H2: BuildHasher,
 {
+    #[inline(always)]
     pub(crate) fn get(&self, key: &K) -> impl ExactSizeIterator<Item = &V> + use<'_, K, V, H1, H2> {
         match self.data.get(key) {
             Some(values) => values.iter(),
@@ -126,17 +127,21 @@ where
     {
         vec.extend(self.get(key).copied());
     }
+    #[inline(always)]
     pub(crate) fn iter(&self) -> impl ExactSizeIterator<Item = (&K, impl ExactSizeIterator<Item = &V>)> {
         self.data.iter().map(|(k, v)| (k, v.iter()))
     }
     #[expect(dead_code)]
+    #[inline(always)]
     pub(crate) fn keys(&self) -> impl ExactSizeIterator<Item = &K> {
         self.data.keys()
     }
+    #[inline(always)]
     pub(crate) fn values(&self) -> impl ExactSizeIterator<Item = impl ExactSizeIterator<Item = &V>> {
         self.data.values().map(|v| v.iter())
     }
     #[cfg(feature = "dev")]
+    #[inline(always)]
     pub(crate) fn contains_entry(&self, key: &K, value: &V) -> bool {
         match self.data.get(key) {
             Some(values) => values.contains(value),
@@ -144,6 +149,7 @@ where
         }
     }
     #[expect(dead_code)]
+    #[inline(always)]
     pub(crate) fn is_empty(&self) -> bool {
         self.data.is_empty()
     }
@@ -195,6 +201,7 @@ where
     V: Eq + Hash,
     H: BuildHasher,
 {
+    #[inline(always)]
     fn iter(&self) -> Either<std::option::IntoIter<&V>, impl ExactSizeIterator<Item = &V>> {
         match self {
             Self::One(value) => Either::Left(Some(value).into_iter()),
@@ -202,6 +209,7 @@ where
         }
     }
     #[cfg(feature = "dev")]
+    #[inline(always)]
     fn contains(&self, value: &V) -> bool {
         match self {
             Self::One(old_value) => old_value == value,

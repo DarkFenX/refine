@@ -58,10 +58,10 @@ impl VastFitData {
         }
         match ctx.u_data.sec_zone {
             SecZone::HiSec(..) => {
-                'items: for (item_uid, item_data) in self.sec_zone_effect.iter() {
+                'items: for (&item_uid, item_data) in self.sec_zone_effect.iter() {
                     for sec_zone_info in item_data.values() {
                         if sec_zone_info.banned_in_hisec {
-                            match kfs.contains(item_uid) {
+                            match kfs.contains(&item_uid) {
                                 true => continue 'items,
                                 false => return false,
                             }
@@ -71,10 +71,10 @@ impl VastFitData {
                 true
             }
             SecZone::LowSec(..) => {
-                'items: for (item_uid, item_data) in self.sec_zone_effect.iter() {
+                'items: for (&item_uid, item_data) in self.sec_zone_effect.iter() {
                     for sec_zone_info in item_data.values() {
                         if sec_zone_info.banned_in_lowsec {
-                            match kfs.contains(item_uid) {
+                            match kfs.contains(&item_uid) {
                                 true => continue 'items,
                                 false => return false,
                             }
@@ -104,7 +104,7 @@ impl VastFitData {
                         if sec_zone_info.banned_in_hisec {
                             match kfs.contains(&item_uid) {
                                 true => continue 'items,
-                                false => add_failed_effect(ctx.u_data, &mut effects, effect_rid, sec_zone_info),
+                                false => add_failed_effect(ctx.u_data, &mut effects, effect_rid, *sec_zone_info),
                             }
                         }
                     }
@@ -121,7 +121,7 @@ impl VastFitData {
                         if sec_zone_info.banned_in_lowsec {
                             match kfs.contains(&item_uid) {
                                 true => continue 'items,
-                                false => add_failed_effect(ctx.u_data, &mut effects, effect_rid, sec_zone_info),
+                                false => add_failed_effect(ctx.u_data, &mut effects, effect_rid, *sec_zone_info),
                             }
                         }
                     }
@@ -147,7 +147,7 @@ fn add_failed_effect(
     u_data: &UData,
     item_fails: &mut Vec<ValEffectSecZoneEffectInfo>,
     effect_rid: REffectId,
-    sec_zone_info: &EffectSecZoneInfo,
+    sec_zone_info: EffectSecZoneInfo,
 ) {
     let effect_id = EffectId::from_aid(u_data.r_data.get_effect_by_rid(effect_rid).aid);
     let mut allowed_zones = Vec::new();

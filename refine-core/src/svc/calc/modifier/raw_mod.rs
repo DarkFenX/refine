@@ -4,6 +4,7 @@ use crate::{
     Value,
     ad::AEffectCatId,
     misc::EffectSpec,
+    num::U32NonMax,
     rd::{
         RAttrId, RBuff, RBuffModifier, REffect, REffectBuffScope, REffectModStrength, REffectModifier,
         REffectProjModSpec,
@@ -20,13 +21,13 @@ use crate::{
 };
 
 #[derive(Copy, Clone, Eq, PartialEq, Hash)]
-pub(in crate::svc::calc) struct RawModId(usize);
+pub(in crate::svc::calc) struct RawModId(U32NonMax);
 impl DenseId for RawModId {
     fn new(index: usize) -> Self {
-        Self(index)
+        Self(U32NonMax::from_usize(index))
     }
     fn index(self) -> usize {
-        self.0
+        self.0.into_usize()
     }
 }
 
@@ -90,7 +91,7 @@ impl RawModifier {
         affector_item: &UItem,
         effect: &REffect,
         buff: &RBuff,
-        buff_scope: &REffectBuffScope,
+        buff_scope: REffectBuffScope,
         buff_mod: &RBuffModifier,
         buff_type_attr_rid: Option<RAttrId>,
         buff_str_attr_rid: RAttrId,
@@ -113,7 +114,7 @@ impl RawModifier {
         affector_item: &UItem,
         effect: &REffect,
         buff: &RBuff,
-        buff_scope: &REffectBuffScope,
+        buff_scope: REffectBuffScope,
         buff_mod: &RBuffModifier,
         buff_str: Value,
     ) -> Option<Self> {
@@ -135,7 +136,7 @@ impl RawModifier {
         affector_item: &UItem,
         effect: &REffect,
         buff: &RBuff,
-        buff_scope: &REffectBuffScope,
+        buff_scope: REffectBuffScope,
         buff_mod: &RBuffModifier,
         buff_type_attr_rid: Option<RAttrId>,
         buff_str: ModStrength,
@@ -171,7 +172,7 @@ impl RawModifier {
                 aggr_mode: AggrMode::from_buff(buff),
                 affectee_filter: AffecteeFilter::from_buff_affectee_filter(
                     &buff_mod.affectee_filter,
-                    Location::ItemList(*item_list_rid),
+                    Location::ItemList(item_list_rid),
                     affector_item,
                 ),
                 affectee_attr_rid: buff_mod.affectee_attr_rid,
@@ -192,7 +193,7 @@ impl RawModifier {
                 aggr_mode: AggrMode::from_buff(buff),
                 affectee_filter: AffecteeFilter::from_buff_affectee_filter(
                     &buff_mod.affectee_filter,
-                    Location::ItemList(*item_list_rid),
+                    Location::ItemList(item_list_rid),
                     affector_item,
                 ),
                 affectee_attr_rid: buff_mod.affectee_attr_rid,
@@ -272,13 +273,13 @@ mod debug {
             affector_espec.consistency_check(u_data, true)?;
             strength.consistency_check(u_data)?;
             affectee_attr_rid.consistency_check(u_data)?;
-            if let Some(attr_rid) = buff_type_attr_rid.as_ref() {
+            if let Some(attr_rid) = *buff_type_attr_rid {
                 attr_rid.consistency_check(u_data)?;
             }
             if let Some(mspec) = proj_spec.as_ref() {
                 mspec.consistency_check(u_data)?;
             }
-            if let Some(attr_rid) = resist_attr_rid.as_ref() {
+            if let Some(attr_rid) = *resist_attr_rid {
                 attr_rid.consistency_check(u_data)?;
             }
             Ok(())

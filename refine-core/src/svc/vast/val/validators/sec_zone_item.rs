@@ -350,8 +350,8 @@ fn class_check_fast(kfs: &RSet<UItemId>, ctx: &SvcCtx, limitable_items: &RMap<UI
         return true;
     }
     let current_sec_class = zone_to_class(ctx.u_data.sec_zone);
-    for (item_uid, &item_sec_class) in limitable_items.iter() {
-        if current_sec_class > item_sec_class && !kfs.contains(item_uid) {
+    for (&item_uid, &item_sec_class) in limitable_items.iter() {
+        if current_sec_class > item_sec_class && !kfs.contains(&item_uid) {
             return false;
         }
     }

@@ -19,25 +19,25 @@ impl CtxModifier {
     pub(in crate::svc::calc) fn new(rmod: RawModifier) -> Self {
         Self {
             rmod,
-            ctx: ModContext::None,
+            ctx: ModContext::new(),
         }
     }
     pub(in crate::svc::calc) fn with_item(rmod: RawModifier, item_uid: UItemId) -> Self {
         Self {
             rmod,
-            ctx: ModContext::Item(item_uid),
+            ctx: ModContext::with_item(item_uid),
         }
     }
     pub(in crate::svc::calc) fn with_fit(rmod: RawModifier, fit_uid: UFitId) -> Self {
         Self {
             rmod,
-            ctx: ModContext::Fit(fit_uid),
+            ctx: ModContext::with_fit(fit_uid),
         }
     }
     pub(in crate::svc::calc) fn with_fit_item(rmod: RawModifier, fit_uid: UFitId, item_uid: UItemId) -> Self {
         Self {
             rmod,
-            ctx: ModContext::FitItem(fit_uid, item_uid),
+            ctx: ModContext::with_fit_item(fit_uid, item_uid),
         }
     }
     pub(in crate::svc::calc) fn from_ckey(rmod: RawModifier, ckey: CtxModKey) -> Self {
@@ -68,16 +68,13 @@ mod debug {
     impl CtxModifier {
         pub(in crate::svc::calc) fn consistency_check(&self, u_data: &UData) -> DebugResult {
             let Self { rmod, ctx } = self;
-            match *ctx {
-                // Item modifier is applied to is not necessarily loaded (e.g. a module projected to
-                // a non-loaded ship)
-                ModContext::None => (),
-                ModContext::Item(item_uid) => item_uid.consistency_check(u_data, false)?,
-                ModContext::Fit(fit_uid) => fit_uid.consistency_check(u_data)?,
-                ModContext::FitItem(fit_uid, item_uid) => {
-                    fit_uid.consistency_check(u_data)?;
-                    item_uid.consistency_check(u_data, false)?;
-                }
+            if let Some(fit_uid) = ctx.get_fit_uid() {
+                fit_uid.consistency_check(u_data)?;
+            }
+            // Item modifier is applied to is not necessarily loaded (e.g. a module projected to a
+            // non-loaded ship)
+            if let Some(item_uid) = ctx.get_item_uid() {
+                item_uid.consistency_check(u_data, false)?;
             }
             rmod.consistency_check(u_data)?;
             Ok(())

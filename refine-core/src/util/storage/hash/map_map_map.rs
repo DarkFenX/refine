@@ -53,9 +53,11 @@ where
 {
     // Query methods
     #[cfg(feature = "dev")]
+    #[inline(always)]
     pub(crate) fn iter(&self) -> impl ExactSizeIterator<Item = (&K1, &MapMap<K2, K3, V, H2, H3>)> {
         self.data.iter()
     }
+    #[inline(always)]
     pub(crate) fn get_l1(&self, key1: &K1) -> Option<&MapMap<K2, K3, V, H2, H3>> {
         self.data.get(key1)
     }

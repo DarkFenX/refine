@@ -24,7 +24,7 @@ pub(crate) enum NEffectEcmChecker {
     Bomb,
 }
 impl NEffectEcmChecker {
-    pub(crate) fn check(&self, u_item: &UItem, attr_consts: &RAttrConsts) -> bool {
+    pub(crate) fn check(self, u_item: &UItem, attr_consts: &RAttrConsts) -> bool {
         match self {
             Self::Bomb => check_bomb(u_item, attr_consts),
         }
@@ -70,7 +70,7 @@ impl NEffectOutputGetter for NEffectEcmOutputGetter {
     type XArgs = ();
 
     fn get(
-        &self,
+        self,
         ctx: &SvcCtx,
         calc: &mut Calc,
         item_uid: UItemId,

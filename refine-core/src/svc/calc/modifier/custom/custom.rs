@@ -20,7 +20,7 @@ pub(crate) enum CalcCustomModifier {
     MissileFlightTime,
 }
 impl CalcCustomModifier {
-    pub(in crate::svc::calc) fn make_rmod(&self, attr_consts: &RAttrConsts, espec: EffectSpec) -> Option<RawModifier> {
+    pub(in crate::svc::calc) fn make_rmod(self, attr_consts: &RAttrConsts, espec: EffectSpec) -> Option<RawModifier> {
         match self {
             Self::PropSpeed => prop_speed::make_rmod(attr_consts, espec),
             Self::AarPaste => aar_paste::make_rmod(attr_consts, espec),
@@ -45,7 +45,7 @@ pub(in crate::svc::calc::modifier) struct CalcCustomModStrength {
 }
 impl CalcCustomModStrength {
     pub(in crate::svc::calc::modifier) fn get_affector_info(
-        &self,
+        self,
         ctx: &SvcCtx,
         item_uid: UItemId,
     ) -> SmallVec<[CalcModInfoAffector; 1]> {
@@ -56,7 +56,7 @@ impl CalcCustomModStrength {
         }
     }
     pub(in crate::svc::calc::modifier) fn get_strength(
-        &self,
+        self,
         calc: &mut Calc,
         ctx: &SvcCtx,
         espec: EffectSpec,
@@ -67,14 +67,14 @@ impl CalcCustomModStrength {
             CalcCustomModifier::MissileFlightTime => missile_flight_time::get_mod_val(calc, ctx, espec),
         }
     }
-    pub(in crate::svc::calc::modifier) fn get_item_add_remove_reviser(&self) -> Option<ItemAddRemoveReviser> {
+    pub(in crate::svc::calc::modifier) fn get_item_add_remove_reviser(self) -> Option<ItemAddRemoveReviser> {
         match &self.kind {
             CalcCustomModifier::PropSpeed => None,
             CalcCustomModifier::AarPaste => Some(ItemAddRemoveReviser::AarPaste),
             CalcCustomModifier::MissileFlightTime => Some(ItemAddRemoveReviser::MissileFlightTime),
         }
     }
-    pub(in crate::svc::calc::modifier) fn adds_deps_with_source(&self) -> bool {
+    pub(in crate::svc::calc::modifier) fn adds_deps_with_source(self) -> bool {
         match &self.kind {
             CalcCustomModifier::PropSpeed => true,
             CalcCustomModifier::AarPaste => false,
@@ -98,7 +98,7 @@ mod debug {
                 // Not checked
                 kind: _,
             } = self;
-            if let Some(attr_rid) = *affector_attr_rid {
+            if let Some(attr_rid) = affector_attr_rid {
                 attr_rid.consistency_check(u_data)?;
             }
             Ok(())

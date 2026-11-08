@@ -43,7 +43,7 @@ impl RMuta {
         self.attr_mods.extend(a_muta.attrs.iter().filter_map(|a_muta_attr| {
             attr_aid_rid_map
                 .get(&a_muta_attr.attr_id)
-                .map(|attr_rid| (*attr_rid, RMutaAttrRange::from_a_attr_range(&a_muta_attr.range)))
+                .map(|&attr_rid| (attr_rid, RMutaAttrRange::from_a_attr_range(&a_muta_attr.range)))
         }))
     }
 }

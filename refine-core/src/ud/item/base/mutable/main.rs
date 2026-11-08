@@ -197,22 +197,22 @@ impl UItemBaseMutable {
         // Presized, since growing it costs more than unused capacity
         let mut changed_attr_rids = Vec::with_capacity(new_attrs.len());
         let mut old_found = 0;
-        for (attr_rid, new_value) in new_attrs.iter() {
-            match old_attrs.get(attr_rid) {
+        for (&attr_rid, new_value) in new_attrs.iter() {
+            match old_attrs.get(&attr_rid) {
                 Some(old_value) => {
                     old_found += 1;
                     if old_value != new_value {
-                        changed_attr_rids.push(*attr_rid);
+                        changed_attr_rids.push(attr_rid);
                     }
                 }
-                None => changed_attr_rids.push(*attr_rid),
+                None => changed_attr_rids.push(attr_rid),
             }
         }
         // Attributes which are gone have to be looked for only if some old ones were not found
         if old_found != old_attrs.len() {
-            for attr_rid in old_attrs.keys() {
-                if !new_attrs.contains_key(attr_rid) {
-                    changed_attr_rids.push(*attr_rid);
+            for &attr_rid in old_attrs.keys() {
+                if !new_attrs.contains_key(&attr_rid) {
+                    changed_attr_rids.push(attr_rid);
                 }
             }
         }
@@ -229,7 +229,7 @@ impl UItemBaseMutable {
     pub(in crate::ud::item) fn set_state(&mut self, state: RState) {
         self.base.set_state(state)
     }
-    pub(in crate::ud::item) fn get_effect_mode_by_rid(&self, effect_rid: &REffectId) -> EffectMode {
+    pub(in crate::ud::item) fn get_effect_mode_by_rid(&self, effect_rid: REffectId) -> EffectMode {
         self.base.get_effect_mode_by_rid(effect_rid)
     }
     pub(in crate::ud::item) fn iter_effect_mode_overrides(&self) -> UEffectModeOverrideIter<'_> {

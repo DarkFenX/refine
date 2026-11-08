@@ -39,7 +39,7 @@ impl Svc {
     pub(crate) fn notify_state_activated(&mut self, item_uid: UItemId, item: &UItem, state: RState) {
         self.vast.item_state_activated(item_uid, item, state);
     }
-    pub(crate) fn notify_state_deactivated(&mut self, item_uid: &UItemId, item: &UItem, state: RState) {
+    pub(crate) fn notify_state_deactivated(&mut self, item_uid: UItemId, item: &UItem, state: RState) {
         self.vast.item_state_deactivated(item_uid, item, state);
     }
     pub(crate) fn notify_item_loaded(&mut self, u_data: &UData, item_uid: UItemId, item: &UItem) {
@@ -50,7 +50,7 @@ impl Svc {
     pub(crate) fn notify_item_unloaded(&mut self, u_data: &UData, item_uid: UItemId, item: &UItem) {
         let svc_ctx = &SvcCtx::new(u_data, &self.eff_projs);
         self.calc.item_unloaded(svc_ctx, item_uid, item);
-        self.vast.item_unloaded(u_data, &item_uid, item);
+        self.vast.item_unloaded(u_data, item_uid, item);
     }
     pub(crate) fn notify_base_attr_value_changed(&mut self, u_data: &UData, item_uid: UItemId, attr_rid: RAttrId) {
         let svc_ctx = &SvcCtx::new(u_data, &self.eff_projs);
@@ -60,7 +60,7 @@ impl Svc {
     pub(crate) fn notify_item_state_activated_loaded(&mut self, item_uid: UItemId, item: &UItem, state: RState) {
         self.vast.item_state_activated_loaded(item_uid, item, state);
     }
-    pub(crate) fn notify_item_state_deactivated_loaded(&mut self, item_uid: &UItemId, item: &UItem, state: RState) {
+    pub(crate) fn notify_item_state_deactivated_loaded(&mut self, item_uid: UItemId, item: &UItem, state: RState) {
         self.vast.item_state_deactivated_loaded(item_uid, item, state);
     }
     pub(crate) fn notify_effects_started(

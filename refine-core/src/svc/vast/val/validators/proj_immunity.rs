@@ -185,19 +185,19 @@ fn is_offense_blocked(ctx: &SvcCtx, calc: &mut Calc, projectee_uid: UItemId, _va
 }
 
 fn is_resist_blocked(ctx: &SvcCtx, calc: &mut Calc, projectee_aspec: AttrSpec, _vast: &Vast) -> bool {
-    REffectResist::get_mult_by_aspec(ctx, calc, &projectee_aspec) == Some(UnitInterval::ZERO)
+    REffectResist::get_mult_by_aspec(ctx, calc, projectee_aspec) == Some(UnitInterval::ZERO)
 }
 
 trait GetItemUid {
-    fn get_item_uid(&self) -> UItemId;
+    fn get_item_uid(self) -> UItemId;
 }
 impl GetItemUid for UItemId {
-    fn get_item_uid(&self) -> UItemId {
-        *self
+    fn get_item_uid(self) -> UItemId {
+        self
     }
 }
 impl GetItemUid for AttrSpec {
-    fn get_item_uid(&self) -> UItemId {
+    fn get_item_uid(self) -> UItemId {
         self.item_uid
     }
 }

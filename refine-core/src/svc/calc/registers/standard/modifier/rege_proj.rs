@@ -31,12 +31,12 @@ impl StandardRegister {
         &mut self,
         reuse_cmods: &mut Vec<CtxModifier>,
         rmods: &RawModStorage,
-        projector_espec: &EffectSpec,
+        projector_espec: EffectSpec,
         projectee_uid: UItemId,
         projectee_item: &UItem,
     ) {
         // Register projection and get appropriate context modifiers.
-        let rmod_ids = self.rmods_proj.get(projector_espec);
+        let rmod_ids = self.rmods_proj.get(&projector_espec);
         reuse_cmods.clear();
         for &rmod_id in rmod_ids {
             let rmod = *rmods.get_rmod(rmod_id);
@@ -72,12 +72,12 @@ impl StandardRegister {
         &mut self,
         reuse_cmods: &mut Vec<CtxModifier>,
         rmods: &RawModStorage,
-        projector_espec: &EffectSpec,
+        projector_espec: EffectSpec,
         projectee_uid: UItemId,
         projectee_item: &UItem,
     ) {
         // Unregister projection and get appropriate context modifiers.
-        let rmod_ids = self.rmods_proj.get(projector_espec);
+        let rmod_ids = self.rmods_proj.get(&projector_espec);
         reuse_cmods.clear();
         for &rmod_id in rmod_ids {
             let rmod = *rmods.get_rmod(rmod_id);
@@ -113,12 +113,12 @@ impl StandardRegister {
         &mut self,
         reuse_cmods: &mut Vec<CtxModifier>,
         rmods: &RawModStorage,
-        projector_espec: &EffectSpec,
+        projector_espec: EffectSpec,
         projectee_uid: UItemId,
         projectee_item: &UItem,
     ) {
         // Get context modifiers for projection.
-        let rmod_ids = self.rmods_proj.get(projector_espec);
+        let rmod_ids = self.rmods_proj.get(&projector_espec);
         reuse_cmods.clear();
         for &rmod_id in rmod_ids {
             let rmod = *rmods.get_rmod(rmod_id);

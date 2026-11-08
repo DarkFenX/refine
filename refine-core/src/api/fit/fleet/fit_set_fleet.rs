@@ -47,7 +47,7 @@ impl SolCore {
             self.svc
                 .notify_fit_removed_from_fleet(&self.u_data, old_u_fleet, fit_uid);
             let old_u_fleet = self.u_data.fleets.get_mut(old_fleet_uid);
-            old_u_fleet.remove_fit(&fit_uid);
+            old_u_fleet.remove_fit(fit_uid);
         }
         // Assign new fleet
         let u_fit = self.u_data.fits.get_mut(fit_uid);

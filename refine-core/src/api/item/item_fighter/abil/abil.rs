@@ -20,7 +20,7 @@ impl<'s> Ability<'s> {
         let u_fighter = self.sol.u_data.items.get(self.fighter_uid).dc_fighter().unwrap();
         u_fighter
             .get_r_item_base()?
-            .get_effect_data(&r_abil.effect_rid)
+            .get_effect_data(r_abil.effect_rid)
             .ability_charge_count
     }
 }

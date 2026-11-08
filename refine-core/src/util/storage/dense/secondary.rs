@@ -23,6 +23,7 @@ where
             data: SecondaryMap::new(),
         }
     }
+    #[inline(always)]
     pub(crate) fn get(&self, id: I) -> Option<&V> {
         self.data.get(id).and_then(|v| v.as_ref())
     }
@@ -30,6 +31,7 @@ where
         self.data.get_mut(id).and_then(|v| v.as_mut())
     }
     #[cfg(feature = "dev")]
+    #[inline(always)]
     pub(crate) fn iter(&self) -> impl Iterator<Item = (I, &V)> {
         self.data
             .iter()
@@ -66,6 +68,7 @@ where
     pub(crate) fn new() -> Self {
         Self { inner: SDense::new() }
     }
+    #[inline(always)]
     pub(crate) fn get(&self, id: I) -> &V {
         self.inner.get(id).unwrap()
     }
@@ -73,6 +76,7 @@ where
         self.inner.get_mut(id).unwrap()
     }
     #[cfg(feature = "dev")]
+    #[inline(always)]
     pub(crate) fn iter(&self) -> impl Iterator<Item = (I, &V)> {
         self.inner.iter()
     }

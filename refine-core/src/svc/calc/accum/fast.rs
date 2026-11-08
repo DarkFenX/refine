@@ -500,7 +500,7 @@ impl PenVals {
     fn is_empty(&self) -> bool {
         self.len == 0
     }
-    fn add(&mut self, val: Value, key: fn(&Value) -> Value) {
+    fn add(&mut self, val: Value, key: fn(Value) -> Value) {
         if self.len < self.vals.len() {
             self.vals[self.len] = val;
             self.len += 1;
@@ -509,23 +509,23 @@ impl PenVals {
         // Long penalty chains are considered unlikely
         std::hint::cold_path();
         // Replace the weakest mult change, if new one is stronger
-        let (weakest_idx, weakest_val) = self.vals.iter().enumerate().max_by_key(|(_, v)| key(v)).unwrap();
-        if key(&val) < key(weakest_val) {
+        let (weakest_idx, weakest_val) = self.vals.iter().enumerate().max_by_key(|(_, v)| key(**v)).unwrap();
+        if key(val) < key(*weakest_val) {
             self.vals[weakest_idx] = val;
         }
     }
-    fn sorted(&mut self, key: fn(&Value) -> Value) -> &[Value] {
+    fn sorted(&mut self, key: fn(Value) -> Value) -> &[Value] {
         let vals = &mut self.vals[..self.len];
-        vals.sort_unstable_by_key(key);
+        vals.sort_unstable_by_key(|v| key(*v));
         vals
     }
 }
 
-fn neg_key(val: &Value) -> Value {
-    *val
+fn neg_key(val: Value) -> Value {
+    val
 }
-fn pos_key(val: &Value) -> Value {
-    -*val
+fn pos_key(val: Value) -> Value {
+    -val
 }
 
 /// Take a slice of mult changes, return mult

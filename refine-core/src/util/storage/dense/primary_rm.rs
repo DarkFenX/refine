@@ -18,6 +18,7 @@ where
             phantom: std::marker::PhantomData,
         }
     }
+    #[inline(always)]
     pub(crate) fn get(&self, id: I) -> Option<&V> {
         self.data.get(id.index())
     }
@@ -25,6 +26,7 @@ where
         self.data.get_mut(id.index())
     }
     #[cfg(feature = "dev")]
+    #[inline(always)]
     pub(crate) fn iter(&self) -> impl ExactSizeIterator<Item = (I, &V)> {
         self.data.iter().map(|(index, value)| (I::new(index), value))
     }
@@ -37,6 +39,7 @@ where
     pub(crate) fn remove(&mut self, id: I) -> V {
         self.data.remove(id.index())
     }
+    #[inline(always)]
     pub(crate) fn len(&self) -> usize {
         self.data.len()
     }

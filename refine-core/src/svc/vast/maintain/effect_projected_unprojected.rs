@@ -55,8 +55,8 @@ impl Vast {
         {
             let projectee_fit_data = self.get_fit_data_mut(projectee_fit_uid);
             let stopper = EffectSpec::new(projector_uid, effect.rid);
-            for stop_effect_rid in effect.stopped_effect_rids.iter() {
-                let stopped = EffectSpec::new(projectee_uid, *stop_effect_rid);
+            for &stop_effect_rid in effect.stopped_effect_rids.iter() {
+                let stopped = EffectSpec::new(projectee_uid, stop_effect_rid);
                 projectee_fit_data.stopped_effects.add_entry(stopped, stopper);
             }
         }
@@ -150,8 +150,8 @@ impl Vast {
         {
             let projectee_fit_data = self.get_fit_data_mut(projectee_fit_uid);
             let stopper = EffectSpec::new(projector_uid, effect.rid);
-            for stop_effect_rid in effect.stopped_effect_rids.iter() {
-                let stopped = EffectSpec::new(projectee_uid, *stop_effect_rid);
+            for &stop_effect_rid in effect.stopped_effect_rids.iter() {
+                let stopped = EffectSpec::new(projectee_uid, stop_effect_rid);
                 projectee_fit_data.stopped_effects.remove_entry(stopped, &stopper);
             }
         }

@@ -30,7 +30,7 @@ impl SolCore {
         if let Some(projs) = u_data.items.get(item_uid).get_projs() {
             for projectee_uid in projs.iter_projectees() {
                 SolCore::util_remove_item_projection(u_data, svc, item_uid, projectee_uid);
-                rev_projs.unreg_projectee(&item_uid, projectee_uid);
+                rev_projs.unreg_projectee(item_uid, projectee_uid);
             }
         }
     }
@@ -44,7 +44,7 @@ impl SolCore {
         let projector_u_item = u_data.items.get(projector_uid);
         let projectee_u_item = u_data.items.get(projectee_uid);
         if let Some(reffs) = projector_u_item.get_reffs() {
-            for &effect_rid in reffs.iter() {
+            for effect_rid in reffs.iter() {
                 let r_effect = u_data.r_data.get_effect_by_rid(effect_rid);
                 if is_effect_projectable(projector_u_item, r_effect) {
                     svc.notify_effect_projected(
@@ -69,7 +69,7 @@ impl SolCore {
         let projector_u_item = u_data.items.get(projector_uid);
         let projectee_u_item = u_data.items.get(projectee_uid);
         if let Some(reffs) = projector_u_item.get_reffs() {
-            for &effect_rid in reffs.iter() {
+            for effect_rid in reffs.iter() {
                 let r_effect = u_data.r_data.get_effect_by_rid(effect_rid);
                 if is_effect_projectable(projector_u_item, r_effect) {
                     svc.notify_effect_unprojected(
@@ -94,7 +94,7 @@ impl SolCore {
         let projector_u_item = u_data.items.get(projector_uid);
         let projectee_u_item = u_data.items.get(projectee_uid);
         if let Some(reffs) = projector_u_item.get_reffs() {
-            for &effect_rid in reffs.iter() {
+            for effect_rid in reffs.iter() {
                 let r_effect = u_data.r_data.get_effect_by_rid(effect_rid);
                 if is_effect_projectable(projector_u_item, r_effect) {
                     svc.notify_effect_proj_data_changed(

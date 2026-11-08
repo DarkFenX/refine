@@ -110,7 +110,7 @@ impl UItemEffectsResolver {
                         });
                     }
                     reuse_eupdates.to_stop.push(effect_rid);
-                    reffs.remove(&effect_rid);
+                    reffs.remove(effect_rid);
                 }
             }
         }
@@ -132,7 +132,7 @@ impl UItemEffectsResolver {
         );
         let online_effect_rid = r_data.get_effect_consts().online;
         let online_running = match online_effect_rid {
-            Some(online_effect_rid) => reffs.contains(&online_effect_rid),
+            Some(online_effect_rid) => reffs.contains(online_effect_rid),
             None => false,
         };
         // Whenever online effect status changes, it should be guaranteed that online effect is
@@ -151,12 +151,12 @@ impl UItemEffectsResolver {
             let should_run = RItemEffectsResolver::resolve_effect_status(
                 &item.base,
                 effect,
-                item_effect_modes.get_by_rid(&effect_rid),
+                item_effect_modes.get_by_rid(effect_rid),
                 item_state,
                 effect_options,
                 online_should_run,
             );
-            let running = reffs.contains(&effect_rid);
+            let running = reffs.contains(effect_rid);
             if running && !should_run {
                 reuse_eupdates.to_stop.push(effect_rid);
                 if effect.activates_charge_for_item(item) {
@@ -182,7 +182,7 @@ impl UItemEffectsResolver {
             };
         }
         reffs.extend(reuse_eupdates.to_start.iter().copied());
-        for effect_rid in reuse_eupdates.to_stop.iter() {
+        for &effect_rid in reuse_eupdates.to_stop.iter() {
             reffs.remove(effect_rid);
         }
     }
@@ -191,6 +191,7 @@ impl UItemEffectsResolver {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Auxiliary entities
 ////////////////////////////////////////////////////////////////////////////////////////////////////
+#[derive(Copy, Clone)]
 pub(crate) struct UAutochargeActivation {
     pub(crate) effect_rid: REffectId,
     pub(crate) active: bool,
@@ -256,7 +257,7 @@ mod debug {
                     );
                     let pregen_rids = pregen_entry.get_above_up_to(RState::Ghost, state);
                     if pregen_rids.len() != reffs.len()
-                        || pregen_rids.iter().any(|effect_rid| !reffs.contains(effect_rid))
+                        || pregen_rids.iter().any(|effect_rid| !reffs.contains(*effect_rid))
                     {
                         return Err(Default::default());
                     }

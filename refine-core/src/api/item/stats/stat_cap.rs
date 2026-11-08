@@ -46,7 +46,7 @@ impl<'s> ItemStats<'s> {
         let item_uid = self.uid;
         let sol = &mut *self.sol;
         let nosf_projectee_item_uid = match nosf_projectee_item_id {
-            Some(nosf_projectee_item_id) => Some(sol.u_data.get_projectee_uid(nosf_projectee_item_id)?),
+            Some(nosf_projectee_item_id) => Some(sol.u_data.get_projectee_uid(*nosf_projectee_item_id)?),
             None => None,
         };
         let stagger = StatCapSimStaggerInt::from_pub(sol, stagger);

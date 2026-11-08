@@ -30,7 +30,7 @@ pub(in crate::svc::calc) enum ItemAttrPostproc {
 }
 impl ItemAttrPostproc {
     pub(in crate::svc::calc) fn fast(
-        &self,
+        self,
         calc: &mut Calc,
         ctx: &SvcCtx,
         item_uid: UItemId,
@@ -47,7 +47,7 @@ impl ItemAttrPostproc {
         }
     }
     pub(in crate::svc::calc) fn info(
-        &self,
+        self,
         calc: &mut Calc,
         ctx: &SvcCtx,
         item_uid: UItemId,

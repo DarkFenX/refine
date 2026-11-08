@@ -51,7 +51,7 @@ pub(crate) enum NEffectProjMultGetter {
 }
 impl NEffectProjMultGetter {
     pub(crate) fn get_proj_mult(
-        &self,
+        self,
         ctx: &SvcCtx,
         calc: &mut Calc,
         projector_uid: UItemId,
@@ -107,7 +107,7 @@ impl NEffectProjMultGetter {
             }
         }
     }
-    pub(crate) fn get_non_proj_mult(&self, crit_options: StatCritOptions) -> Option<PValue> {
+    pub(crate) fn get_non_proj_mult(self, crit_options: StatCritOptions) -> Option<PValue> {
         match self {
             Self::Turret | Self::Disintegrator => match crit_options {
                 StatCritOptions::Include => Some(TURRET_CTH_1_CRIT_MULT),
@@ -117,7 +117,7 @@ impl NEffectProjMultGetter {
         }
     }
     /// Returns attributes which can affect modifier application strength
-    pub(crate) fn get_proj_modifier_attr_aids(&self, a_effect: &AEffect) -> [Option<AAttrId>; 2] {
+    pub(crate) fn get_proj_modifier_attr_aids(self, a_effect: &AEffect) -> [Option<AAttrId>; 2] {
         // Only variants actually used to project modifiers are filled
         match self {
             Self::Null => [None, None],

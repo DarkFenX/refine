@@ -53,11 +53,11 @@ impl VastFitData {
     ) -> Option<ValRigSizeFail> {
         let allowed_size = get_allowed_size(ship)?;
         let mut rig_sizes = Vec::new();
-        for rig_uid in self.rig_size_mismatches.iter() {
-            if !kfs.contains(rig_uid) {
+        for &rig_uid in self.rig_size_mismatches.iter() {
+            if !kfs.contains(&rig_uid) {
                 rig_sizes.push(ValRigSizeItemInfo {
-                    rig_id: ctx.u_data.items.ext_id_by_int_id(*rig_uid),
-                    size: *self.rigs_rig_size.get(rig_uid).unwrap(),
+                    rig_id: ctx.u_data.items.ext_id_by_int_id(rig_uid),
+                    size: *self.rigs_rig_size.get(&rig_uid).unwrap(),
                 });
             }
         }

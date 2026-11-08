@@ -36,8 +36,8 @@ pub trait ItemCommon: ItemSealed {
         };
         let effect_infos = effect_rids.map(move |&effect_rid| {
             let effect_aid = sol.u_data.r_data.get_effect_by_rid(effect_rid).aid;
-            let running = reffs.contains(&effect_rid);
-            let mode = item.get_effect_mode_by_rid(&effect_rid);
+            let running = reffs.contains(effect_rid);
+            let mode = item.get_effect_mode_by_rid(effect_rid);
             (EffectId::from_aid(effect_aid), ItemEffectInfo { running, mode })
         });
         Ok(effect_infos)

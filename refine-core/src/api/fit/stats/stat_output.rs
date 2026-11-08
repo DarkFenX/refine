@@ -33,7 +33,7 @@ impl<'s> FitStats<'s> {
         crit_options: StatCritOptions,
         projectee_item_id: &ItemId,
     ) -> Result<StatDmgApplied, StatFitAppliedError> {
-        let projectee_uid = self.sol.u_data.get_projectee_uid(projectee_item_id)?;
+        let projectee_uid = self.sol.u_data.get_projectee_uid(*projectee_item_id)?;
         Ok(self.sol.svc.get_stat_fit_dmg_applied(
             &mut self.sol.reuse.cseq_cache,
             &self.sol.u_data,
@@ -79,7 +79,7 @@ impl<'s> FitStats<'s> {
         time_options: StatTimeOptions,
         projectee_item_id: &ItemId,
     ) -> Result<StatOutReps, StatFitAppliedError> {
-        let projectee_uid = self.sol.u_data.get_projectee_uid(projectee_item_id)?;
+        let projectee_uid = self.sol.u_data.get_projectee_uid(*projectee_item_id)?;
         Ok(self.sol.svc.get_stat_fit_outgoing_rps(
             &mut self.sol.reuse.cseq_cache,
             &self.sol.u_data,
@@ -103,7 +103,7 @@ impl<'s> FitStats<'s> {
         time_options: StatTimeOptions,
         projectee_item_id: &ItemId,
     ) -> Result<PValue, StatFitAppliedError> {
-        let projectee_uid = self.sol.u_data.get_projectee_uid(projectee_item_id)?;
+        let projectee_uid = self.sol.u_data.get_projectee_uid(*projectee_item_id)?;
         Ok(self.sol.svc.get_stat_fit_outgoing_cps(
             &mut self.sol.reuse.cseq_cache,
             &self.sol.u_data,
@@ -128,7 +128,7 @@ impl<'s> FitStats<'s> {
         time_options: StatTimeOptions,
         projectee_item_id: &ItemId,
     ) -> Result<PValue, StatFitAppliedError> {
-        let projectee_uid = self.sol.u_data.get_projectee_uid(projectee_item_id)?;
+        let projectee_uid = self.sol.u_data.get_projectee_uid(*projectee_item_id)?;
         Ok(self.sol.svc.get_stat_fit_outgoing_nps(
             &mut self.sol.reuse.cseq_cache,
             &self.sol.u_data,

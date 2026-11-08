@@ -34,6 +34,7 @@ where
     H: BuildHasher,
 {
     #[expect(dead_code)]
+    #[inline(always)]
     pub(crate) fn get(&self, key: &K) -> impl ExactSizeIterator<Item = &V> {
         match self.data.get(key) {
             Some(v) => v.iter(),
@@ -41,10 +42,12 @@ where
         }
     }
     #[expect(dead_code)]
+    #[inline(always)]
     pub(crate) fn iter(&self) -> impl ExactSizeIterator<Item = (&K, impl ExactSizeIterator<Item = &V>)> {
         self.data.iter().map(|(k, v)| (k, v.iter()))
     }
     #[expect(dead_code)]
+    #[inline(always)]
     pub(crate) fn is_empty(&self) -> bool {
         self.data.is_empty()
     }

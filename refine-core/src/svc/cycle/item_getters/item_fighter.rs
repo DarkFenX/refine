@@ -45,7 +45,7 @@ pub(super) fn build_fighter_cseq_map(
     if !fighter.is_loaded() {
         return false;
     };
-    let effect_rids = fighter.get_reffs().unwrap().iter().copied();
+    let effect_rids = fighter.get_reffs().unwrap().iter();
     match fighter_co {
         FighterCyclingOptions::Burst => burst_fill_cseqs(ctx, calc, item_uid, fighter, effect_rids, cseq_build),
         FighterCyclingOptions::Sim { rearm_minions } => {
@@ -91,7 +91,7 @@ fn get_effect_info(
     }
     // No appropriate duration - effect does not cycle
     let active_duration = funcs::get_effect_duration_s(ctx, calc, item_uid, effect)?;
-    let effect_data = fighter.get_r_item_base().unwrap().get_effect_data(&effect_rid);
+    let effect_data = fighter.get_r_item_base().unwrap().get_effect_data(effect_rid);
     // Completely skip effects which can't cycle
     if effect_data.ability_charge_count == Some(Count::ZERO) {
         return None;
@@ -131,7 +131,7 @@ fn burst_fill_cseqs(
     // If there are any self-killer effects, the fastest one is used, and other effects are
     // discarded
     if let Some(sk_effect_rid) = sk_item_info.get_effect_rid() {
-        cseq_build.retain(|&k, _| k == sk_effect_rid);
+        cseq_build.retain(|k, _| k == sk_effect_rid);
     }
 }
 fn burst_fill_effect_cseq(
@@ -180,7 +180,7 @@ fn sim_no_rearm_fill_cseqs(
     // If there are any self-killer effects, the fastest one is used, and other effects are
     // discarded
     if let Some(sk_effect_rid) = sk_item_info.get_effect_rid() {
-        cseq_build.retain(|&k, _| k == sk_effect_rid);
+        cseq_build.retain(|k, _| k == sk_effect_rid);
     }
 }
 fn sim_no_rearm_fill_effect_cseq(

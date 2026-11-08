@@ -19,9 +19,9 @@ impl SolCore {
             u_proj_data.update_src_radius(item_radius);
         }
         // Incoming projections
-        for projector_uid in rev_projs.iter_projectors(&item_uid) {
+        for projector_uid in rev_projs.iter_projectors(item_uid) {
             let projector_u_item = u_data.items.get_mut(projector_uid);
-            if let Some(u_proj_data) = projector_u_item.get_projs_mut().unwrap().get_proj_data_mut(&item_uid)
+            if let Some(u_proj_data) = projector_u_item.get_projs_mut().unwrap().get_proj_data_mut(item_uid)
                 && u_proj_data.update_tgt_radius(item_radius)
             {
                 let u_proj_data = Some(*u_proj_data);

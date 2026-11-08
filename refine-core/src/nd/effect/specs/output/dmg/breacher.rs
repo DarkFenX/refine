@@ -46,7 +46,7 @@ impl NEffectOutputGetter for NEffectBreacherOutputGetter {
     type XArgs = ();
 
     fn get(
-        &self,
+        self,
         ctx: &SvcCtx,
         calc: &mut Calc,
         item_uid: UItemId,
@@ -78,7 +78,7 @@ fn get_regular(ctx: &SvcCtx, calc: &mut Calc, projector_uid: UItemId) -> Option<
     );
     let breacher = NEffectBreacherAmount::try_new(
         abs_max,
-        UnitInterval::from_finite_pvalue_clamped(rel_max),
+        UnitInterval::from_pvalue_clamped(rel_max),
         Count::from_pvalue_trunced(duration_s * PValue::SERVER_TICK_HZ),
     )?;
     Some(Output::Simple(OutputSimple {

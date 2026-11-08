@@ -17,8 +17,8 @@ impl RevisionRegister {
     // Query methods
     pub(in crate::svc::calc) fn iter_revs_on_item_add_remove(
         &self,
-    ) -> impl ExactSizeIterator<Item = (&CtxModKey, &ItemAddRemoveReviser)> {
-        self.item_add_remove.iter()
+    ) -> impl ExactSizeIterator<Item = (&CtxModKey, ItemAddRemoveReviser)> {
+        self.item_add_remove.iter().map(|(ckey, &reviser)| (ckey, reviser))
     }
     // Modification methods
     pub(in crate::svc::calc) fn reg_mod(&mut self, rmod_id: RawModId, cmod: &CtxModifier) {

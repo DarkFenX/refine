@@ -44,18 +44,22 @@ where
         self.ext_id_to_int_id.insert(ext_id, int_id);
         int_id
     }
+    #[inline(always)]
     pub(crate) fn int_id_by_ext_id(&self, ext_id: &ExtId) -> Option<IntId> {
         self.ext_id_to_int_id.get(ext_id).copied()
     }
+    #[inline(always)]
     pub(crate) fn int_id_by_ext_id_err(&self, ext_id: &ExtId) -> Result<IntId, Err> {
         match self.ext_id_to_int_id.get(ext_id) {
             Some(&int_id) => Ok(int_id),
             None => Err(Err::from(*ext_id)),
         }
     }
+    #[inline(always)]
     pub(crate) fn ext_id_by_int_id(&self, int_id: IntId) -> ExtId {
         self.get(int_id).lib_get_id()
     }
+    #[inline(always)]
     pub(crate) fn get(&self, int_id: IntId) -> &T {
         // Internal IDs are supposed to be valid throughout whole lib, so just unwrap
         self.data.get(int_id).unwrap()
@@ -70,17 +74,20 @@ where
         self.ext_id_to_int_id.remove(&entity.lib_get_id());
         entity
     }
+    #[inline(always)]
     pub(crate) fn iter(&self) -> impl ExactSizeIterator<Item = (IntId, &T)> {
         self.ext_id_to_int_id
             .values()
             .map(|&int_id| (int_id, self.data.get(int_id).unwrap()))
     }
+    #[inline(always)]
     pub(crate) fn keys(&self) -> impl ExactSizeIterator<Item = IntId> {
         self.ext_id_to_int_id.values().copied()
     }
     pub(crate) fn values_mut(&mut self) -> impl ExactSizeIterator<Item = &mut T> {
         self.data.iter_mut().map(|(_, entity)| entity)
     }
+    #[inline(always)]
     pub(crate) fn len(&self) -> usize {
         self.data.len()
     }
@@ -100,6 +107,7 @@ where
         let pos = self.detached.iter().rposition(|&v| v == int_id).unwrap();
         self.detached.swap_remove(pos);
     }
+    #[inline(always)]
     pub(crate) fn has_detached(&self) -> bool {
         !self.detached.is_empty()
     }
@@ -109,6 +117,7 @@ where
             self.data.remove(int_id);
         }
     }
+    #[inline(always)]
     pub(crate) fn get_id_counter(&self) -> ExtId {
         self.counter
     }
@@ -146,9 +155,11 @@ mod debug {
         IntId: Hash + DenseId,
         ExtId: Eq + Hash,
     {
+        #[inline(always)]
         pub(crate) fn try_get(&self, int_id: IntId) -> Option<&T> {
             self.data.get(int_id)
         }
+        #[inline(always)]
         pub(crate) fn values(&self) -> impl ExactSizeIterator<Item = &T> {
             self.ext_id_to_int_id
                 .values()

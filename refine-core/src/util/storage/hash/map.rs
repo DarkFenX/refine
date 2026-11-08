@@ -93,6 +93,7 @@ where
         }
     }
     // View methods
+    #[inline(always)]
     pub(crate) fn get<Q>(&self, key: &Q) -> Option<&V>
     where
         K: Borrow<Q>,
@@ -100,24 +101,31 @@ where
     {
         self.data.get(key)
     }
+    #[inline(always)]
     pub(crate) fn get_opt(&self, key: Option<K>) -> Option<&V> {
         key.and_then(|key| self.data.get(&key))
     }
+    #[inline(always)]
     pub(crate) fn iter(&self) -> impl ExactSizeIterator<Item = (&K, &V)> {
         self.data.iter()
     }
+    #[inline(always)]
     pub(crate) fn keys(&self) -> impl ExactSizeIterator<Item = &K> {
         self.data.keys()
     }
+    #[inline(always)]
     pub(crate) fn values(&self) -> impl ExactSizeIterator<Item = &V> {
         self.data.values()
     }
+    #[inline(always)]
     pub(crate) fn contains_key(&self, key: &K) -> bool {
         self.data.contains_key(key)
     }
+    #[inline(always)]
     pub(crate) fn is_empty(&self) -> bool {
         self.data.is_empty()
     }
+    #[inline(always)]
     pub(crate) fn len(&self) -> usize {
         self.data.len()
     }
@@ -163,6 +171,7 @@ where
         self.data.into_values()
     }
     // Set-alike view methods
+    #[inline(always)]
     pub(crate) fn is_subset<H2>(&self, other: &Set<K, H2>) -> bool
     where
         H2: BuildHasher + Default,
@@ -173,6 +182,7 @@ where
             false => false,
         }
     }
+    #[inline(always)]
     pub(crate) fn difference<H2>(&self, other: &Set<K, H2>) -> impl Iterator<Item = (&K, &V)>
     where
         H2: BuildHasher + Default,

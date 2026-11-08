@@ -18,12 +18,14 @@ where
             data: PrimaryMap::with_capacity(capacity),
         }
     }
+    #[inline(always)]
     pub(crate) fn get(&self, id: I) -> Option<&V> {
         self.data.get(id)
     }
     pub(crate) fn get_mut(&mut self, id: I) -> Option<&mut V> {
         self.data.get_mut(id)
     }
+    #[inline(always)]
     pub(crate) fn iter(&self) -> impl ExactSizeIterator<Item = (I, &V)> {
         self.data.iter()
     }

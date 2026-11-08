@@ -194,7 +194,7 @@ impl UItem {
             Self::SwEffect(sw_effect) => sw_effect.stop_all_reffs(reuse_eupdates, r_data),
         }
     }
-    pub(crate) fn get_effect_mode_by_rid(&self, effect_rid: &REffectId) -> EffectMode {
+    pub(crate) fn get_effect_mode_by_rid(&self, effect_rid: REffectId) -> EffectMode {
         match self {
             Self::Autocharge(autocharge) => autocharge.get_effect_mode_by_rid(effect_rid),
             Self::Booster(booster) => booster.get_effect_mode_by_rid(effect_rid),
@@ -652,7 +652,7 @@ mod debug {
             // over from previous data
             if reffs
                 .iter()
-                .any(|effect_rid| !item_rib.effect_rids.contains(effect_rid))
+                .any(|effect_rid| !item_rib.effect_rids.contains(&effect_rid))
             {
                 return Err(Default::default());
             }

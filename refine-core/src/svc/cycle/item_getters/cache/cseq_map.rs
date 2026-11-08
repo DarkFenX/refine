@@ -14,14 +14,14 @@ pub(in crate::svc) struct CseqMap {
     entries: Vec<(REffectId, CseqFull)>,
 }
 impl CseqMap {
-    pub(in crate::svc) fn get(&self, effect_rid: &REffectId) -> Option<&CseqFull> {
+    pub(in crate::svc) fn get(&self, effect_rid: REffectId) -> Option<&CseqFull> {
         self.entries
             .iter()
-            .find(|(entry_effect_rid, _)| entry_effect_rid == effect_rid)
+            .find(|(entry_effect_rid, _)| *entry_effect_rid == effect_rid)
             .map(|(_, cseq)| cseq)
     }
-    pub(in crate::svc) fn iter(&self) -> impl ExactSizeIterator<Item = (&REffectId, &CseqFull)> {
-        self.entries.iter().map(|(effect_rid, cseq)| (effect_rid, cseq))
+    pub(in crate::svc) fn iter(&self) -> impl ExactSizeIterator<Item = (REffectId, &CseqFull)> {
+        self.entries.iter().map(|(effect_rid, cseq)| (*effect_rid, cseq))
     }
 }
 
@@ -39,8 +39,8 @@ impl CseqMap {
         // Builders should insert every effect max once
         self.entries.push((effect_rid, cseq))
     }
-    pub(super) fn retain(&mut self, mut func: impl FnMut(&REffectId, &mut CseqFull) -> bool) {
-        self.entries.retain_mut(|(effect_rid, cseq)| func(effect_rid, cseq))
+    pub(super) fn retain(&mut self, mut func: impl FnMut(REffectId, &mut CseqFull) -> bool) {
+        self.entries.retain_mut(|(effect_rid, cseq)| func(*effect_rid, cseq))
     }
     pub(super) fn clear(&mut self) {
         self.entries.clear()

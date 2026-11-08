@@ -65,6 +65,7 @@ where
     V: Eq + Hash + Clone,
     H: BuildHasher + Clone,
 {
+    #[inline(always)]
     pub(crate) fn get(&self, id: I) -> impl ExactSizeIterator<Item = &V> + use<'_, I, V, H> {
         match self.data.get(id) {
             Some(v) => v.iter(),
@@ -72,6 +73,7 @@ where
         }
     }
     #[cfg(feature = "dev")]
+    #[inline(always)]
     pub(crate) fn iter(&self) -> impl Iterator<Item = (I, impl ExactSizeIterator<Item = &V>)> {
         self.data.iter().map(|(k, v)| (k, v.iter()))
     }

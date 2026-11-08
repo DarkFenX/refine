@@ -237,7 +237,7 @@ impl CapSim {
             false => (self.wm_low_cap + self.wm_aux_high) / (Value::TWO * self.max_cap),
         };
         // Extra checks for case when max cap is 0
-        StatCapSim::Stable(UnitInterval::from_finite_value_clamped(match stability.is_finite() {
+        StatCapSim::Stable(UnitInterval::from_value_clamped(match stability.is_finite() {
             true => stability,
             false => Value::ONE,
         }))
@@ -459,7 +459,7 @@ impl CapSim {
             // value if cap is not regenerating
             true => Some(match self.tau {
                 Some(..) => StatCapSim::Stable(UnitInterval::ONE),
-                None => StatCapSim::Stable(UnitInterval::from_finite_value_clamped(self.cap / self.max_cap)),
+                None => StatCapSim::Stable(UnitInterval::from_value_clamped(self.cap / self.max_cap)),
             }),
             false => None,
         }

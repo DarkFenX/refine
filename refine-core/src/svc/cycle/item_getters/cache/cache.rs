@@ -143,7 +143,7 @@ impl<'c> CseqBuild<'c> {
     pub(in crate::svc::cycle::item_getters) fn insert(&mut self, effect_rid: REffectId, cseq: CseqFull) {
         self.cache.cseq_slots[self.slot_position].insert(effect_rid, cseq)
     }
-    pub(in crate::svc::cycle::item_getters) fn retain(&mut self, func: impl FnMut(&REffectId, &mut CseqFull) -> bool) {
+    pub(in crate::svc::cycle::item_getters) fn retain(&mut self, func: impl FnMut(REffectId, &mut CseqFull) -> bool) {
         self.cache.cseq_slots[self.slot_position].retain(func)
     }
     pub(in crate::svc::cycle::item_getters) fn finish(mut self, cycles: bool) -> Option<&'c CseqMap> {

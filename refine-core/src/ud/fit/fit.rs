@@ -170,7 +170,7 @@ mod debug {
                 let Some(fleet) = u_data.fleets.try_get(fleet_uid) else {
                     return Err(Default::default());
                 };
-                if !fleet.contains_fit(&fit_uid) {
+                if !fleet.contains_fit(fit_uid) {
                     return Err(Default::default());
                 }
             }

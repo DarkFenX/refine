@@ -24,5 +24,5 @@ pub(in crate::api::item::shared::mutation) fn resolve_absolute_into_roll(
         return None;
     }
     let value = (absolute_value - min_value) / (max_value - min_value);
-    Some(UnitInterval::from_finite_value_clamped(value))
+    Some(UnitInterval::from_value_clamped(value))
 }

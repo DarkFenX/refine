@@ -56,7 +56,7 @@ pub(super) fn build_module_cseq_map(
         return false;
     };
     let mut sk_item_info = SelfKillerItemInfo::new();
-    for &effect_rid in module.get_reffs().unwrap().iter() {
+    for effect_rid in module.get_reffs().unwrap().iter() {
         fill_module_effect_info(
             cseq_build,
             &mut sk_item_info,
@@ -72,7 +72,7 @@ pub(super) fn build_module_cseq_map(
     // If there are any self-killer effects, the fastest one is used, and other effects are
     // discarded
     if let Some(sk_effect_rid) = sk_item_info.get_effect_rid() {
-        cseq_build.retain(|&k, _| k == sk_effect_rid);
+        cseq_build.retain(|k, _| k == sk_effect_rid);
     }
     true
 }

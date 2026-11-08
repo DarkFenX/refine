@@ -40,7 +40,7 @@ impl Calc {
                             item,
                             effect,
                             buff,
-                            &buff_full.scope,
+                            buff_full.scope,
                             None,
                             buff_str_attr_rid,
                         )
@@ -54,7 +54,7 @@ impl Calc {
                             item,
                             effect,
                             buff,
-                            &buff_full.scope,
+                            buff_full.scope,
                             buff_str,
                         )
                     }
@@ -97,7 +97,7 @@ impl Calc {
                         item,
                         effect,
                         buff,
-                        &buff_attr_merge.scope,
+                        buff_attr_merge.scope,
                         Some(*buff_type_attr_rid),
                         *buff_str_attr_rid,
                     );
@@ -105,19 +105,19 @@ impl Calc {
             }
         }
     }
-    pub(super) fn generate_dependent_buff_mods_for_attr<'a>(
+    pub(super) fn generate_dependent_buff_mods_for_attr(
         &mut self,
         ctx: &SvcCtx,
         item_uid: UItemId,
         item: &UItem,
-        effect_rids: impl Iterator<Item = &'a REffectId>,
+        effect_rids: impl Iterator<Item = REffectId>,
         buff_type_attr_rid: RAttrId,
     ) -> Vec<RawModifier> {
         let mut rmods = Vec::new();
         let Some(buff_str_attr_rid) = ctx.u_data.r_data.get_attr_by_rid(buff_type_attr_rid).buff_str_attr_rid else {
             return rmods;
         };
-        for &effect_rid in effect_rids {
+        for effect_rid in effect_rids {
             let effect = ctx.u_data.r_data.get_effect_by_rid(effect_rid);
             if let Some(effect_buff) = &effect.buff
                 && let Some(buff_attr_merge) = &effect_buff.attr_merge
@@ -136,7 +136,7 @@ impl Calc {
                     item,
                     effect,
                     buff,
-                    &buff_attr_merge.scope,
+                    buff_attr_merge.scope,
                     Some(buff_type_attr_rid),
                     buff_str_attr_rid,
                 );
@@ -153,7 +153,7 @@ fn add_buff_mods_with_attr(
     item: &UItem,
     effect: &REffect,
     buff: &RBuff,
-    buff_scope: &REffectBuffScope,
+    buff_scope: REffectBuffScope,
     buff_type_attr_rid: Option<RAttrId>,
     buff_str_attr_rid: RAttrId,
 ) {
@@ -182,7 +182,7 @@ fn add_buff_mods_with_hardcoded(
     item: &UItem,
     effect: &REffect,
     buff: &RBuff,
-    buff_scope: &REffectBuffScope,
+    buff_scope: REffectBuffScope,
     buff_str: Value,
 ) {
     for buff_mod in buff.mods.iter() {

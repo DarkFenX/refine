@@ -11,14 +11,14 @@ const PENALTY_IMMUNE_ITEM_CATS: [AItemCatId; 5] = [
 /// position of penalizable value in chain. In EVE client, it seems to have max of 8 values, after
 /// which modifications are ignored.
 pub(super) const PENALTY_MULTS: [UnitInterval; 8] = [
-    UnitInterval::from_finite_f64_clamped(1.0 / f64::from_bits(0x3ff0000000000000)),
-    UnitInterval::from_finite_f64_clamped(1.0 / f64::from_bits(0x3ff268d024fc2657)),
-    UnitInterval::from_finite_f64_clamped(1.0 / f64::from_bits(0x3ffc0a9eea34dd40)),
-    UnitInterval::from_finite_f64_clamped(1.0 / f64::from_bits(0x400c45e565788da0)),
-    UnitInterval::from_finite_f64_clamped(1.0 / f64::from_bits(0x4022de860d1e1273)),
-    UnitInterval::from_finite_f64_clamped(1.0 / f64::from_bits(0x4040abec60cb53f1)),
-    UnitInterval::from_finite_f64_clamped(1.0 / f64::from_bits(0x4063800e9ca1aa8e)),
-    UnitInterval::from_finite_f64_clamped(1.0 / f64::from_bits(0x408e320fff24307e)),
+    UnitInterval::from_f64_clamped(1.0 / f64::from_bits(0x3ff0_0000_0000_0000)),
+    UnitInterval::from_f64_clamped(1.0 / f64::from_bits(0x3ff2_68d0_24fc_2657)),
+    UnitInterval::from_f64_clamped(1.0 / f64::from_bits(0x3ffc_0a9e_ea34_dd40)),
+    UnitInterval::from_f64_clamped(1.0 / f64::from_bits(0x400c_45e5_6578_8da0)),
+    UnitInterval::from_f64_clamped(1.0 / f64::from_bits(0x4022_de86_0d1e_1273)),
+    UnitInterval::from_f64_clamped(1.0 / f64::from_bits(0x4040_abec_60cb_53f1)),
+    UnitInterval::from_f64_clamped(1.0 / f64::from_bits(0x4063_800e_9ca1_aa8e)),
+    UnitInterval::from_f64_clamped(1.0 / f64::from_bits(0x408e_320f_ff24_307e)),
 ];
 
 pub(super) fn is_penal(attr_penalizable: bool, affector_item_cat_aid: &AItemCatId) -> bool {

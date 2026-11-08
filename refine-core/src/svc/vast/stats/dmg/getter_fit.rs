@@ -187,7 +187,7 @@ impl VastFitData {
                 if !item_kinds.resolve(item, effect) {
                     continue;
                 }
-                let Some(cseq) = cseq_map.get(&effect_rid) else {
+                let Some(cseq) = cseq_map.get(effect_rid) else {
                     continue;
                 };
                 add_normal_dmg(
@@ -227,7 +227,7 @@ impl VastFitData {
                 if !item_kinds.resolve(item, effect) {
                     continue;
                 }
-                let Some(cseq) = cseq_map.get(&effect_rid) else {
+                let Some(cseq) = cseq_map.get(effect_rid) else {
                     continue;
                 };
                 breacher_accum.add(ctx, calc, item_uid, effect, cseq, ospec);

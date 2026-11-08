@@ -4,12 +4,12 @@ use crate::{
     ud::UItemId,
 };
 
-pub(crate) trait NEffectOutputGetter {
+pub(crate) trait NEffectOutputGetter: Copy {
     type Instance: Copy;
     type XArgs;
 
     fn get(
-        &self,
+        self,
         ctx: &SvcCtx,
         calc: &mut Calc,
         item_uid: UItemId,

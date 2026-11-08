@@ -33,14 +33,7 @@ impl PValue {
             false => Self(v.max(Self::MIN.0).min(Self::MAX.0)),
         }
     }
-    pub(crate) const fn from_finite_f64_clamped(v: f64) -> Self {
-        // Finite values never exceed MAX
-        Self(v.max(Self::MIN.0))
-    }
-    pub(crate) const fn from_f64_unchecked(v: f64) -> Self {
-        Self(v)
-    }
-    pub fn into_f64(self) -> f64 {
+    pub const fn into_f64(self) -> f64 {
         self.0
     }
 }
@@ -71,6 +64,13 @@ impl PValue {
 // Conversions
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl PValue {
+    pub(crate) const fn from_finite_f64_clamped(v: f64) -> Self {
+        // Finite values never exceed MAX
+        Self(v.max(Self::MIN.0))
+    }
+    pub(crate) const fn from_f64_unchecked(v: f64) -> Self {
+        Self(v)
+    }
     pub(crate) fn from_usize(v: usize) -> PValue {
         Self(v as f64)
     }
@@ -151,7 +151,7 @@ impl PValue {
     pub(crate) fn is_nan(self) -> bool {
         self.0.is_nan()
     }
-    pub(crate) fn is_finite(&self) -> bool {
+    pub(crate) fn is_finite(self) -> bool {
         self.0.is_finite()
     }
     pub(crate) fn sig_rounded(self, digits: u32) -> Self {

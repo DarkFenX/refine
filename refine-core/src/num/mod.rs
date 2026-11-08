@@ -5,8 +5,10 @@ pub use pvalue::{PValue, PValueError, PValueParseError};
 pub use rack_pos::{RackPos, RackPosError, RackPosParseError};
 pub use skill_level::{SkillLevel, SkillLevelError, SkillLevelParseError};
 pub use slot_index::SlotIndex;
+pub(crate) use u32_non_max::U32NonMax;
 pub use unit_interval::{UnitInterval, UnitIntervalError, UnitIntervalParseError};
 pub use value::{Value, ValueError, ValueParseError};
+pub(crate) use value_niched::ValueNiched;
 
 mod count;
 mod count_nz;
@@ -15,5 +17,7 @@ mod pvalue;
 mod rack_pos;
 mod skill_level;
 mod slot_index;
+mod u32_non_max;
 mod unit_interval;
 mod value;
+mod value_niched;

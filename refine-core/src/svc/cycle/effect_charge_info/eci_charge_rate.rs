@@ -39,7 +39,7 @@ pub(in crate::svc::cycle) fn get_eci_charge_rate(
         true => {
             let remaining = charge_count % charges_per_cycle;
             match remaining > Count::ZERO {
-                true => Some(UnitInterval::from_finite_value_clamped(
+                true => Some(UnitInterval::from_value_clamped(
                     remaining.into_value() / charges_per_cycle.into_value(),
                 )),
                 false => None,

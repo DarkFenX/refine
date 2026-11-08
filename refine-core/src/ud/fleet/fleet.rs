@@ -19,8 +19,8 @@ impl UFleet {
     pub(crate) fn add_fit(&mut self, fit_uid: UFitId) {
         self.fits.insert(fit_uid);
     }
-    pub(crate) fn remove_fit(&mut self, fit_uid: &UFitId) {
-        self.fits.remove(fit_uid);
+    pub(crate) fn remove_fit(&mut self, fit_uid: UFitId) {
+        self.fits.remove(&fit_uid);
     }
 }
 impl LibNamed for UFleet {
@@ -43,8 +43,8 @@ mod debug {
     use crate::{dbg::DebugResult, ud::UData};
 
     impl UFleet {
-        pub(crate) fn contains_fit(&self, fit: &UFitId) -> bool {
-            self.fits.contains(fit)
+        pub(crate) fn contains_fit(&self, fit: UFitId) -> bool {
+            self.fits.contains(&fit)
         }
         pub(in crate::ud) fn consistency_check(&self, u_data: &UData) -> DebugResult {
             let Self { id, fits } = self;

@@ -33,7 +33,7 @@ impl NEffectOutputGetter for NEffectDmgOutputGetter {
     type XArgs = ();
 
     fn get(
-        &self,
+        self,
         ctx: &SvcCtx,
         calc: &mut Calc,
         item_uid: UItemId,

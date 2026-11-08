@@ -12,7 +12,7 @@ pub(crate) enum NEffectChargeMultGetter {
 }
 impl NEffectChargeMultGetter {
     pub(crate) fn get(
-        &self,
+        self,
         ctx: &SvcCtx,
         calc: &mut Calc,
         item_uid: UItemId,

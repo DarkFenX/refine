@@ -22,8 +22,8 @@ impl BuffRegister {
         }
     }
     // Effect methods
-    pub(in crate::svc::calc) fn get_effects(&self, item_uid: &UItemId) -> impl ExactSizeIterator<Item = REffectId> {
-        self.effect_rids.get(item_uid).copied()
+    pub(in crate::svc::calc) fn get_effects(&self, item_uid: UItemId) -> impl ExactSizeIterator<Item = REffectId> {
+        self.effect_rids.get(&item_uid).copied()
     }
     pub(in crate::svc::calc) fn reg_effect(&mut self, item_uid: UItemId, effect: &REffect) {
         if uses_default_attrs(effect) {
@@ -36,8 +36,8 @@ impl BuffRegister {
         }
     }
     // Projection methods
-    pub(in crate::svc::calc) fn iter_projectees(&self, espec: &EffectSpec) -> impl ExactSizeIterator<Item = UItemId> {
-        self.projectees.get(espec).copied()
+    pub(in crate::svc::calc) fn iter_projectees(&self, espec: EffectSpec) -> impl ExactSizeIterator<Item = UItemId> {
+        self.projectees.get(&espec).copied()
     }
     pub(in crate::svc::calc) fn reg_projection(&mut self, espec: EffectSpec, effect: &REffect, projectee_uid: UItemId) {
         if uses_default_attrs(effect) {
@@ -57,15 +57,15 @@ impl BuffRegister {
     // Modifier methods
     pub(in crate::svc::calc) fn extract_dependent_mods(
         &mut self,
-        aspec: &AttrSpec,
+        aspec: AttrSpec,
     ) -> impl ExactSizeIterator<Item = RawModId> + use<> {
-        self.rmods.remove_key(aspec)
+        self.rmods.remove_key(&aspec)
     }
     pub(in crate::svc::calc) fn reg_dependent_mod(&mut self, aspec: AttrSpec, rmod_id: RawModId) {
         self.rmods.add_entry(aspec, rmod_id)
     }
-    pub(in crate::svc::calc) fn unreg_dependent_mod(&mut self, aspec: AttrSpec, rmod_id: &RawModId) {
-        self.rmods.remove_entry(aspec, rmod_id);
+    pub(in crate::svc::calc) fn unreg_dependent_mod(&mut self, aspec: AttrSpec, rmod_id: RawModId) {
+        self.rmods.remove_entry(aspec, &rmod_id);
     }
 }
 

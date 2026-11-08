@@ -17,7 +17,7 @@ const impl Default for StatItemChargeOptions {
 // Private
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl StatItemChargeOptions {
-    pub(crate) fn is_enabled(&self) -> bool {
+    pub(crate) fn is_enabled(self) -> bool {
         match self {
             Self::Include => true,
             Self::Exclude => false,

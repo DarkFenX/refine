@@ -6,6 +6,7 @@ use super::calce_shared::get_base_attr_value;
 use crate::{
     SecZone, Value,
     misc::EffectSpec,
+    num::ValueNiched,
     rd::{RAttr, RAttrId},
     svc::{
         Calc, SvcCtx,
@@ -173,7 +174,7 @@ impl Calc {
     fn get_cached_cval(&self, item_uid: UItemId, attr_rid: RAttrId) -> Option<CalcAttrVals> {
         // Cached value of an attribute which needs no postprocessing. It is inlined into hot
         // callers, which use regular methods for everything else
-        let attr_entry = self.attrs.get_item_attr_data(item_uid)?.get(&attr_rid)?;
+        let attr_entry = self.attrs.get_item_attr_data(item_uid)?.get(attr_rid)?;
         match attr_entry.postproc {
             Some(..) => None,
             None => attr_entry.value,
@@ -219,7 +220,7 @@ impl Calc {
     ) -> Result<CalcAttrVals, UItemLoadedError> {
         // Cached value, or value calculated and cached on a miss; postprocessed if PP
         let item_attr_data = self.get_item_data_with_err(item_uid)?;
-        if let Some(attr_entry) = item_attr_data.get(&attr_rid)
+        if let Some(attr_entry) = item_attr_data.get(attr_rid)
             && let Some(cval) = attr_entry.value
         {
             let cval = match attr_entry.postproc {
@@ -286,7 +287,7 @@ impl Calc {
         let base_attrs = &ctx.u_data.items.get(item_uid).get_r_item_flex_data().unwrap().attrs;
         let mut cval_map = RMap::with_capacity(item_attr_data.len().max(base_attrs.len()));
         let mut attrs_with_pps = Vec::new();
-        for (&attr_rid, attr_entry) in item_attr_data.iter() {
+        for (attr_rid, attr_entry) in item_attr_data.iter() {
             if let Some(cval) = attr_entry.value {
                 cval_map.insert(attr_rid, cval);
                 if let Some(postproc) = attr_entry.postproc {
@@ -364,7 +365,7 @@ impl Calc {
         &mut self,
         ctx: &SvcCtx,
         accumulator: &mut ModAccumFast,
-        item_uid: &UItemId,
+        item_uid: UItemId,
         item: &UItem,
         attr: &RAttr,
         filter: F,
@@ -460,7 +461,7 @@ impl Calc {
             .accums
             .take()
             .unwrap_or_else(|| Box::new(ModAccumFast::new()));
-        self.accumulate_modifications(ctx, &mut accumulator, &item_uid, item, attr, mod_filter);
+        self.accumulate_modifications(ctx, &mut accumulator, item_uid, item, attr, mod_filter);
         let mut dogma_val = accumulator.apply_dogma_mods(base_val, attr.hig);
         // Lower value limit
         if let Some(limiter_attr_rid) = attr.min_attr_rid
@@ -481,7 +482,7 @@ impl Calc {
         let extra_val = accumulator.apply_extra_mods(dogma_val);
         self.reuse.accums.put(Some(accumulator));
         CalcAttrVals {
-            base: base_val,
+            base: ValueNiched::from_value(base_val),
             dogma: dogma_val,
             extra: extra_val,
         }

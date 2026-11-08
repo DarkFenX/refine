@@ -127,9 +127,9 @@ pub(crate) struct RItemBase {
 }
 
 impl RItemBase {
-    pub(crate) fn get_effect_data(&self, effect_rid: &REffectId) -> &RItemBaseEffectData {
+    pub(crate) fn get_effect_data(&self, effect_rid: REffectId) -> &RItemBaseEffectData {
         self.effect_datas
-            .get(effect_rid)
+            .get(&effect_rid)
             .unwrap_or(&RItemBaseEffectData::DEFAULT)
     }
     pub(crate) fn get_effects_pregen_id(&self, effect_options: RItemEffectOptions) -> RItemEffectsPregenId {
@@ -179,7 +179,7 @@ impl RItemBase {
             val_fitted_group_id: *val_fitted_group_id,
             val_online_group_id: *val_online_group_id,
             val_active_group_id: *val_active_group_id,
-            max_state: RState::from_a_state(max_state),
+            max_state: RState::from_a_state(*max_state),
             disallowed_in_wspace: *disallowed_in_wspace,
             // Fields which depend on data not available on adapted item
             effect_rids: Default::default(),

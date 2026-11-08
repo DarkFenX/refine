@@ -41,6 +41,6 @@ impl<'s> FullMAttr<'s> {
             return None;
         }
         let value = (value - min_value) / (max_value - min_value);
-        Some(UnitInterval::from_finite_value_clamped(value))
+        Some(UnitInterval::from_value_clamped(value))
     }
 }

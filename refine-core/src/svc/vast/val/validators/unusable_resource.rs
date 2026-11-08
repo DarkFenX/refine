@@ -52,8 +52,8 @@ impl VastFitData {
             return true;
         }
         let max = get_max_resource(ctx, calc, fit.ship, ctx.ac().drone_bandwidth).unwrap_or(Value::ZERO);
-        for (item_uid, &item_use) in self.drones_bandwidth.iter() {
-            if item_use > max && !kfs.contains(item_uid) {
+        for (&item_uid, &item_use) in self.drones_bandwidth.iter() {
+            if item_use > max && !kfs.contains(&item_uid) {
                 return false;
             }
         }

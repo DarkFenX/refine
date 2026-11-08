@@ -57,8 +57,8 @@ impl VastFitData {
     pub(in crate::svc::vast::val) fn validate_max_type_fitted_fast(&self, kfs: &RSet<UItemId>) -> bool {
         for item_type_data in self.mods_svcs_max_type_fitted.values() {
             let fitted = Count::from_usize(item_type_data.len());
-            for (item_uid, &allowed) in item_type_data.iter() {
-                if fitted > allowed && !kfs.contains(item_uid) {
+            for (&item_uid, &allowed) in item_type_data.iter() {
+                if fitted > allowed && !kfs.contains(&item_uid) {
                     return false;
                 }
             }
@@ -74,8 +74,8 @@ impl VastFitData {
         let mut item_types = RMap::new();
         for (&item_aid, item_type_data) in self.mods_svcs_max_type_fitted.iter() {
             let fitted = Count::from_usize(item_type_data.len());
-            for (item_uid, &allowed) in item_type_data.iter() {
-                if fitted > allowed && !kfs.contains(item_uid) {
+            for (&item_uid, &allowed) in item_type_data.iter() {
+                if fitted > allowed && !kfs.contains(&item_uid) {
                     item_types
                         .entry(item_aid)
                         .or_insert_with(|| ValMaxTypeTypeInfo {
@@ -85,7 +85,7 @@ impl VastFitData {
                         })
                         .items
                         .push(ValMaxTypeItemInfo {
-                            item_id: ctx.u_data.items.ext_id_by_int_id(*item_uid),
+                            item_id: ctx.u_data.items.ext_id_by_int_id(item_uid),
                             limit: allowed,
                         });
                 }

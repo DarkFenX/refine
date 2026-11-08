@@ -47,24 +47,30 @@ where
     V: Eq + Hash,
     H: BuildHasher,
 {
+    #[inline(always)]
     pub(crate) fn iter(&self) -> impl ExactSizeIterator<Item = &V> {
         self.data.iter()
     }
+    #[inline(always)]
     pub(crate) fn contains(&self, val: &V) -> bool {
         self.data.contains(val)
     }
+    #[inline(always)]
     pub(crate) fn is_empty(&self) -> bool {
         self.data.is_empty()
     }
+    #[inline(always)]
     pub(crate) fn len(&self) -> usize {
         self.data.len()
     }
+    #[inline(always)]
     pub(crate) fn difference<'a, H2>(&'a self, other: &'a Set<V, H2>) -> impl Iterator<Item = &'a V>
     where
         H2: BuildHasher + Default,
     {
         self.iter().filter(|v| !other.contains(v))
     }
+    #[inline(always)]
     pub(crate) fn is_subset<H2>(&self, other: &Set<V, H2>) -> bool
     where
         H2: BuildHasher + Default,

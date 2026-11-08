@@ -18,6 +18,7 @@ pub(crate) struct CalcModInfo {
     pub(crate) affectors: SmallVec<[CalcModInfoAffector; 1]>,
 }
 
+#[derive(Copy, Clone)]
 pub(crate) struct CalcModInfoAffector {
     pub(crate) item_uid: UItemId,
     pub(crate) attr_rid: Option<RAttrId>,

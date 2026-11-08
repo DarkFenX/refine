@@ -68,7 +68,7 @@ impl SolCore {
                 .iter()
                 .filter_map(|ac_act| {
                     autocharges
-                        .get_ac_uid(&ac_act.effect_rid)
+                        .get_ac_uid(ac_act.effect_rid)
                         .map(|ac_uid| (ac_uid, ac_act.active))
                 })
                 .collect_vec();

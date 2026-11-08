@@ -37,6 +37,7 @@ where
     V: Eq + Hash,
     H: BuildHasher,
 {
+    #[inline(always)]
     pub(crate) fn len(&self) -> usize {
         self.data.len()
     }

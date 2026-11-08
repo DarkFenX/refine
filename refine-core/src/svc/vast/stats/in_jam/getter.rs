@@ -39,7 +39,7 @@ impl Vast {
                 continue;
             };
             for (&effect_rid, ospec) in projector_data.iter() {
-                let Some(cseq) = cseq_map.get(&effect_rid) else {
+                let Some(cseq) = cseq_map.get(effect_rid) else {
                     continue;
                 };
                 let effect = ctx.u_data.r_data.get_effect_by_rid(effect_rid);
@@ -114,8 +114,8 @@ impl Vast {
             }
         }
         let jam = StatInJam {
-            chance: UnitInterval::from_finite_value_clamped(Value::ONE - projectee_unjam_chance),
-            uptime: UnitInterval::from_finite_value_clamped(Value::ONE - projectee_unjam_uptime),
+            chance: UnitInterval::from_value_clamped(Value::ONE - projectee_unjam_chance),
+            uptime: UnitInterval::from_value_clamped(Value::ONE - projectee_unjam_uptime),
         };
         Ok(jam)
     }

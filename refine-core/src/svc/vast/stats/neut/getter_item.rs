@@ -30,7 +30,7 @@ impl Vast {
             return Ok(nps);
         };
         let u_item = ctx.u_data.items.get(item_uid);
-        for (&effect_rid, cseq) in cseq_map.iter() {
+        for (effect_rid, cseq) in cseq_map.iter() {
             let effect = ctx.u_data.r_data.get_effect_by_rid(effect_rid);
             let ospec = match &effect.neut {
                 Some(neut) if neut.check(u_item, ctx.ac()) => neut.ospec,

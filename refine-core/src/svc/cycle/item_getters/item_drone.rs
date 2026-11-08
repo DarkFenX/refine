@@ -23,7 +23,7 @@ pub(super) fn build_drone_cseq_map(
     if !drone.is_loaded() {
         return false;
     };
-    for &effect_rid in drone.get_reffs().unwrap().iter() {
+    for effect_rid in drone.get_reffs().unwrap().iter() {
         let effect = ctx.u_data.r_data.get_effect_by_rid(effect_rid);
         if !effect.is_active_with_duration {
             continue;

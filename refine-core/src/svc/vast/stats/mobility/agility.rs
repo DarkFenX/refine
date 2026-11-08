@@ -5,7 +5,7 @@ use crate::{
 };
 
 /// Result of calculation of -math.log(0.25) / 1000000 using 64-bit python 2.7
-const AGILITY_CONST: PValue = PValue::from_finite_f64_clamped(f64::from_bits(0x3eb74216c502a54f));
+const AGILITY_CONST: PValue = PValue::from_finite_f64_clamped(f64::from_bits(0x3eb7_4216_c502_a54f));
 
 impl Vast {
     pub(in crate::svc) fn get_stat_item_agility(

@@ -102,7 +102,7 @@ impl Calc {
             self.clear_fit_rah_results(ctx, fit_uid);
         }
     }
-    pub(in crate::svc::calc) fn rah_attr_value_changed(&mut self, ctx: &SvcCtx, aspec: &AttrSpec) {
+    pub(in crate::svc::calc) fn rah_attr_value_changed(&mut self, ctx: &SvcCtx, aspec: AttrSpec) {
         if self.rah.sim_running {
             return;
         }

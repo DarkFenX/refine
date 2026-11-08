@@ -24,7 +24,7 @@ pub(crate) enum NEffectDmgKindGetter {
     MissileLaunching,
 }
 impl NEffectDmgKindGetter {
-    pub(crate) fn get(&self, u_item: &UItem) -> NEffectDmgKind {
+    pub(crate) fn get(self, u_item: &UItem) -> NEffectDmgKind {
         match self {
             Self::Turret => NEffectDmgKind::Turret,
             Self::Missile => NEffectDmgKind::Missile,

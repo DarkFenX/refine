@@ -40,9 +40,9 @@ impl SolCore {
         let ship_radius = self.u_data.get_fit_ship_radius(fit_uid);
         SolCore::util_update_ship_radius_for_outgoing_projs(&mut self.u_data, &mut self.svc, fit_uid, ship_radius);
         // Update incoming projections
-        for projector_uid in self.rev_projs.iter_projectors(&ship_uid) {
+        for projector_uid in self.rev_projs.iter_projectors(ship_uid) {
             let projector_u_item = self.u_data.items.get_mut(projector_uid);
-            if let Some(u_proj_data) = projector_u_item.get_projs_mut().unwrap().get_proj_data_mut(&ship_uid)
+            if let Some(u_proj_data) = projector_u_item.get_projs_mut().unwrap().get_proj_data_mut(ship_uid)
                 && u_proj_data.update_tgt_radius(ship_radius)
             {
                 let u_proj_data = Some(*u_proj_data);

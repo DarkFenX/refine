@@ -67,7 +67,7 @@ impl<I> StatCapBlcSrcKinds<I> {
 #[derive(Copy, Clone, Default)]
 pub struct StatCapBlcRegen {
     #[cfg_attr(feature = "serde", serde(default = "custom_serde::cap_perc_default"))]
-    pub cap_perc: UnitInterval = UnitInterval::from_finite_f64_clamped(0.25),
+    pub cap_perc: UnitInterval = UnitInterval::from_f64_clamped(0.25),
 }
 
 #[cfg_attr(
@@ -160,7 +160,7 @@ impl StatCapBlcNosfsOptionsInt {
     fn from_pub(pub_opt: StatCapBlcNosfs, u_data: &UData) -> Result<Self, ProjecteeUidError> {
         Ok(Self {
             projectee_item_uid: match pub_opt.projectee_item_id {
-                Some(projectee_item_id) => Some(u_data.get_projectee_uid(&projectee_item_id)?),
+                Some(projectee_item_id) => Some(u_data.get_projectee_uid(projectee_item_id)?),
                 None => None,
             },
         })
@@ -179,6 +179,6 @@ mod custom_serde {
     }
 
     pub(super) fn cap_perc_default() -> UnitInterval {
-        UnitInterval::from_finite_f64_clamped(0.25)
+        UnitInterval::from_f64_clamped(0.25)
     }
 }

@@ -13,7 +13,7 @@ impl StandardRegister {
     pub(in crate::svc::calc) fn get_mods_for_affectee(
         &self,
         reuse_ckeys: &mut Vec<CtxModKey>,
-        item_uid: &UItemId,
+        item_uid: UItemId,
         item: &UItem,
         attr_rid: RAttrId,
         fits: &UFits,
@@ -24,7 +24,7 @@ impl StandardRegister {
         let item_rib = item.get_r_item_base().unwrap();
         let item_grp_id = item_rib.grp_id;
         let srqs = &item_rib.srqs;
-        extend_ckeys(reuse_ckeys, &self.cmods.direct, &(*item_uid, attr_rid));
+        extend_ckeys(reuse_ckeys, &self.cmods.direct, &(item_uid, attr_rid));
         if let Some(other_item_uid) = item.get_other_uid() {
             extend_ckeys(reuse_ckeys, &self.cmods.other, &(other_item_uid, attr_rid));
         }
@@ -57,9 +57,9 @@ impl StandardRegister {
     }
     pub(in crate::svc::calc) fn iter_affector_spec_ckeys(
         &self,
-        affector_aspec: &AttrSpec,
+        affector_aspec: AttrSpec,
     ) -> impl ExactSizeIterator<Item = &CtxModKey> {
-        self.cmods.by_aspec.get(affector_aspec)
+        self.cmods.by_aspec.get(&affector_aspec)
     }
 }
 

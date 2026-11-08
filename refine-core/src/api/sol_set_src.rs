@@ -285,7 +285,7 @@ impl SolCore {
             projector_u_item
                 .get_projs_mut()
                 .unwrap()
-                .get_proj_data_mut(&projectee_uid)
+                .get_proj_data_mut(projectee_uid)
                 .unwrap()
                 .update_radii(src_rad, tgt_rag);
         }

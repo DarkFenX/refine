@@ -130,7 +130,7 @@ impl REffect {
             resist_attr_id: _,
         } = a_effect;
         let n_effect = N_EFFECT_MAP.get(id);
-        let state = RState::from_a_state(state);
+        let state = RState::from_a_state(*state);
         Self {
             aid: *id,
             rid: effect_rid,

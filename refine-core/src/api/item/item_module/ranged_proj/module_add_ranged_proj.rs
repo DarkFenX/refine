@@ -34,7 +34,7 @@ impl SolCore {
         let u_module = u_item.dc_module().unwrap();
         // Check if projection has already been defined
         let projectee_u_item = self.u_data.items.get(projectee_uid);
-        if u_module.get_projs().contains(&projectee_uid) {
+        if u_module.get_projs().contains(projectee_uid) {
             return Err(ProjNotFoundError {
                 projector_item_id: u_module.get_item_id(),
                 projectee_item_id: projectee_u_item.get_item_id(),

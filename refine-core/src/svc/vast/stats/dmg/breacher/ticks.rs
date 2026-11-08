@@ -50,13 +50,13 @@ pub(super) struct AbtInfinite {
     pub(super) initial_delay: Count,
 }
 impl AbtInfinite {
-    fn get_initial_delay(&self) -> Count {
+    fn get_initial_delay(self) -> Count {
         self.initial_delay
     }
-    fn get_loop_len(&self) -> Count {
+    fn get_loop_len(self) -> Count {
         Count::ONE
     }
-    fn call_for_dmg_ranges<F>(&self, req_range: TickRange, func: &mut F)
+    fn call_for_dmg_ranges<F>(self, req_range: TickRange, func: &mut F)
     where
         F: FnMut(TickRange),
     {

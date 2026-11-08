@@ -12,7 +12,7 @@ impl SolCore {
     ) -> Result<(), ProjFoundError> {
         // Check if projection is defined
         let u_module = self.u_data.items.get(module_uid).dc_module().unwrap();
-        if !u_module.get_projs().contains(&projectee_uid) {
+        if !u_module.get_projs().contains(projectee_uid) {
             return Err(ProjFoundError {
                 projector_item_id: u_module.get_item_id(),
                 projectee_item_id: self.u_data.items.ext_id_by_int_id(projectee_uid),
@@ -27,14 +27,14 @@ impl SolCore {
         SolCore::util_remove_item_projection(&self.u_data, &mut self.svc, module_uid, projectee_uid);
         // Update user data for charge
         if let Some(charge_uid) = charge_uid {
-            self.rev_projs.unreg_projectee(&charge_uid, projectee_uid);
+            self.rev_projs.unreg_projectee(charge_uid, projectee_uid);
             let u_charge = self.u_data.items.get_mut(charge_uid).dc_charge_mut().unwrap();
-            u_charge.get_projs_mut().remove(&projectee_uid);
+            u_charge.get_projs_mut().remove(projectee_uid);
         }
         // Update user data for module
-        self.rev_projs.unreg_projectee(&module_uid, projectee_uid);
+        self.rev_projs.unreg_projectee(module_uid, projectee_uid);
         let u_module = self.u_data.items.get_mut(module_uid).dc_module_mut().unwrap();
-        u_module.get_projs_mut().remove(&projectee_uid);
+        u_module.get_projs_mut().remove(projectee_uid);
         if self.undo.is_recording() {
             self.undo.record(UndoStep::ProjRemoved(module_uid, projectee_uid));
         }

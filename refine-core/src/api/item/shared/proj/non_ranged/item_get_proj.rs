@@ -18,7 +18,7 @@ impl SolCore {
             .get(projector_uid)
             .get_projs()
             .unwrap()
-            .contains(&projectee_uid)
+            .contains(projectee_uid)
         {
             true => Ok(Proj::new(self, projector_uid, projectee_uid)),
             false => Err(ProjFoundError {

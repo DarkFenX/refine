@@ -30,9 +30,6 @@ impl Value {
             false => Self(v.clamp(Self::MIN.0, Self::MAX.0)),
         }
     }
-    pub(crate) const fn from_f64_unchecked(v: f64) -> Self {
-        Self(v)
-    }
     pub const fn into_f64(self) -> f64 {
         self.0
     }
@@ -64,6 +61,9 @@ impl Value {
 // Conversions
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl Value {
+    pub(crate) const fn from_f64_unchecked(v: f64) -> Self {
+        Self(v)
+    }
     pub(crate) fn from_a_value(a_value: AValue) -> Self {
         Self(a_value.into_f64())
     }
@@ -142,7 +142,7 @@ impl Value {
     pub(crate) fn round_to_digits(&mut self, digits: i32) {
         self.0 = round(self.0, digits);
     }
-    pub(crate) fn is_finite(&self) -> bool {
+    pub(crate) fn is_finite(self) -> bool {
         self.0.is_finite()
     }
     pub(crate) fn mul_add(self, a: Self, b: Self) -> Self {

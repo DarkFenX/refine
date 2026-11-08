@@ -9,25 +9,25 @@ use crate::{
 
 impl REffectResist {
     pub(in crate::svc) fn get_mult_by_projection(
-        &self,
+        self,
         ctx: &SvcCtx,
         calc: &mut Calc,
         projector_uid: UItemId,
         projectee_uid: UItemId,
     ) -> Option<UnitInterval> {
         let resist_rid = self.get_attr_rid(ctx.u_data, projector_uid)?;
-        Self::get_mult_by_aspec(ctx, calc, &AttrSpec::new(projectee_uid, resist_rid))
+        Self::get_mult_by_aspec(ctx, calc, AttrSpec::new(projectee_uid, resist_rid))
     }
-    pub(in crate::svc) fn get_attr_rid(&self, u_data: &UData, projector_uid: UItemId) -> Option<RAttrId> {
+    pub(in crate::svc) fn get_attr_rid(self, u_data: &UData, projector_uid: UItemId) -> Option<RAttrId> {
         match self {
-            Self::Attr(resist_attr_rid) => Some(*resist_attr_rid),
+            Self::Attr(resist_attr_rid) => Some(resist_attr_rid),
             Self::AttrRef(ref_attr_rid) => {
                 let ref_value = *u_data
                     .items
                     .get(projector_uid)
                     .get_r_item_flex_data()?
                     .attrs
-                    .get(ref_attr_rid)?;
+                    .get(&ref_attr_rid)?;
                 let resist_attr_aid = AAttrId::try_eve_from_f64_rounded(ref_value.into_f64())?;
                 u_data.r_data.get_attr_rid_by_aid(&resist_attr_aid)
             }
@@ -41,12 +41,12 @@ impl REffectResist {
     pub(in crate::svc) fn get_mult_by_aspec(
         ctx: &SvcCtx,
         calc: &mut Calc,
-        projectee_aspec: &AttrSpec,
+        projectee_aspec: AttrSpec,
     ) -> Option<UnitInterval> {
         let mult = calc.get_item_attr_odogma(ctx, projectee_aspec.item_uid, projectee_aspec.attr_rid)?;
         Some(match mult <= Value::from_f64_unchecked(0.0001) {
             true => UnitInterval::ZERO,
-            false => UnitInterval::from_finite_value_clamped(mult),
+            false => UnitInterval::from_value_clamped(mult),
         })
     }
 }

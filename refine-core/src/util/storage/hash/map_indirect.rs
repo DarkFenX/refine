@@ -33,16 +33,20 @@ where
     K: Eq + Hash,
     H: BuildHasher,
 {
+    #[inline(always)]
     pub(crate) fn get(&self, key: &K) -> Option<&V> {
         let id = *self.ids.get(key)?;
         Some(&self.values[id.index()])
     }
+    #[inline(always)]
     pub(crate) fn get_id(&self, key: &K) -> Option<I> {
         self.ids.get(key).copied()
     }
+    #[inline(always)]
     pub(crate) fn get_by_id(&self, id: I) -> &V {
         &self.values[id.index()]
     }
+    #[inline(always)]
     pub(crate) fn is_same_entry(&self, key1: &K, key2: &K) -> bool {
         match (self.ids.get(key1), self.ids.get(key2)) {
             (Some(id1), Some(id2)) => id1 == id2,

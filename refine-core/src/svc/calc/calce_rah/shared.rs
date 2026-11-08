@@ -20,6 +20,7 @@ impl<T> ItemDataVec<T> {
             data: SmallVec::with_capacity(capacity),
         }
     }
+    #[inline(always)]
     pub(super) fn get(&self, index: usize) -> &T {
         // Logic in RAH sim guarantees that stored item count coincides to simulated item count
         self.data.get(index).unwrap()
@@ -31,15 +32,18 @@ impl<T> ItemDataVec<T> {
     pub(super) fn push(&mut self, value: T) {
         self.data.push(value)
     }
+    #[inline(always)]
     pub(super) fn iter(&self) -> impl ExactSizeIterator<Item = &T> {
         self.data.iter()
     }
     pub(super) fn iter_mut(&mut self) -> impl ExactSizeIterator<Item = &mut T> {
         self.data.iter_mut()
     }
+    #[inline(always)]
     pub(super) fn len(&self) -> usize {
         self.data.len()
     }
+    #[inline(always)]
     pub(super) fn is_empty(&self) -> bool {
         self.data.is_empty()
     }

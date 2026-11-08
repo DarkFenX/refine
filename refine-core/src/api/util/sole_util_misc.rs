@@ -20,7 +20,7 @@ impl SolCore {
         // projections of their parent items
         let projector_uids = self
             .rev_projs
-            .iter_projectors(&projectee_uid)
+            .iter_projectors(projectee_uid)
             .filter(|&projector_uid| {
                 !matches!(
                     self.u_data.items.get(projector_uid),

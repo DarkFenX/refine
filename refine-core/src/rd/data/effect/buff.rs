@@ -9,6 +9,7 @@ pub(crate) struct REffectBuff {
     pub(crate) full: Box<[REffectBuffFull]>,
 }
 
+#[derive(Copy, Clone)]
 pub(crate) struct REffectBuffAttrMerge {
     pub(crate) scope: REffectBuffScope,
 }
@@ -19,6 +20,7 @@ pub(crate) struct REffectBuffFull {
     pub(crate) scope: REffectBuffScope,
 }
 
+#[derive(Copy, Clone)]
 pub(crate) enum REffectBuffScope {
     Carrier,
     Projected(RItemListId),

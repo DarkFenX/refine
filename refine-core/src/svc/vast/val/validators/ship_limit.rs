@@ -80,13 +80,13 @@ impl VastFitData {
             None => (None, None),
         };
         let mut mismatches = Vec::new();
-        for limited_item_uid in self.ship_limit_mismatches.iter() {
-            if kfs.contains(limited_item_uid) {
+        for &limited_item_uid in self.ship_limit_mismatches.iter() {
+            if kfs.contains(&limited_item_uid) {
                 continue;
             }
-            let limited_item_rib = ctx.u_data.items.get(*limited_item_uid).get_r_item_base().unwrap();
+            let limited_item_rib = ctx.u_data.items.get(limited_item_uid).get_r_item_base().unwrap();
             mismatches.push(ValShipLimitItemInfo::from_id_and_r_limit(
-                ctx.u_data.items.ext_id_by_int_id(*limited_item_uid),
+                ctx.u_data.items.ext_id_by_int_id(limited_item_uid),
                 limited_item_rib.ship_limit.as_ref().unwrap(),
             ));
         }

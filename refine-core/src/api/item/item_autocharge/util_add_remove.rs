@@ -56,7 +56,7 @@ impl SolCore {
                         .items
                         .get(item_uid)
                         .get_reffs()
-                        .is_some_and(|v| v.contains(&effect_rid));
+                        .is_some_and(|v| v.contains(effect_rid));
                 let u_autocharge = UAutocharge::new(
                     autocharge_item_id,
                     ac_type_aid,

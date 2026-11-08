@@ -31,7 +31,7 @@ impl Svc {
             CYCLE_COUNT_OPTIONS,
         )?;
         let mut charged_cycles = Count::ZERO;
-        let cseq = cseq_map.get(&defeff_rid)?;
+        let cseq = cseq_map.get(defeff_rid)?;
         let cycle_parts = cseq.get_parts();
         for cycle_part in cycle_parts.iter() {
             // Current part uncharged means item is empty by this point

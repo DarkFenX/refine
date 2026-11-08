@@ -2,7 +2,7 @@ use crate::{
     svc::{
         SvcCtx,
         calc::{
-            AffecteeFilter, CtxModifier, Location, LocationKind, ModContext, ModifierKind, RawModifier,
+            AffecteeFilter, CtxModifier, Location, LocationKind, ModifierKind, RawModifier,
             registers::standard::data::StandardRegister,
         },
     },
@@ -20,16 +20,16 @@ impl StandardRegister {
         // All the context modifiers passed to this method have to come from the standard register.
         // This way we can ensure context modifiers are valid, and make processing cheaper
         reuse_affectees.clear();
-        match cmod.ctx {
-            ModContext::None => self.fill_no_context(reuse_affectees, ctx, &cmod.rmod),
-            ModContext::Item(item_uid) => match cmod.rmod.kind {
+        match (cmod.ctx.get_fit_uid(), cmod.ctx.get_item_uid()) {
+            (None, None) => self.fill_no_context(reuse_affectees, ctx, &cmod.rmod),
+            (None, Some(item_uid)) => match cmod.rmod.kind {
                 ModifierKind::Buff | ModifierKind::FleetBuff | ModifierKind::Targeted => {
                     self.fill_direct_only(reuse_affectees, &cmod.rmod, item_uid)
                 }
                 _ => (),
             },
-            ModContext::Fit(fit_uid) => self.fill_for_fit(reuse_affectees, ctx, &cmod.rmod, fit_uid),
-            ModContext::FitItem(fit_uid, item_uid) => match cmod.rmod.kind {
+            (Some(fit_uid), None) => self.fill_for_fit(reuse_affectees, ctx, &cmod.rmod, fit_uid),
+            (Some(fit_uid), Some(item_uid)) => match cmod.rmod.kind {
                 ModifierKind::Targeted => {
                     self.fill_for_fit_item_target(reuse_affectees, ctx, &cmod.rmod, fit_uid, item_uid)
                 }

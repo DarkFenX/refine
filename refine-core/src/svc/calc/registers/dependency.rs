@@ -34,9 +34,9 @@ impl DependencyRegister {
     // Query methods
     pub(in crate::svc::calc) fn iter_affectee_aspecs(
         &self,
-        affector_aspec: &AttrSpec,
-    ) -> impl ExactSizeIterator<Item = &AttrSpec> {
-        self.data.get(affector_aspec)
+        affector_aspec: AttrSpec,
+    ) -> impl ExactSizeIterator<Item = AttrSpec> {
+        self.data.get(&affector_aspec).copied()
     }
     // Modification methods
     pub(in crate::svc::calc) fn add_with_source(
@@ -50,11 +50,11 @@ impl DependencyRegister {
         self.source_by_item.add_entry(affector_aspec.item_uid, source_espec);
         self.source_by_item.add_entry(affectee_aspec.item_uid, source_espec);
     }
-    pub(in crate::svc::calc) fn remove_by_source(&mut self, source_espec: &EffectSpec) {
-        for (affector_spec, affectee_spec) in self.by_source.remove_key(source_espec) {
+    pub(in crate::svc::calc) fn remove_by_source(&mut self, source_espec: EffectSpec) {
+        for (affector_spec, affectee_spec) in self.by_source.remove_key(&source_espec) {
             self.data.remove_entry(affector_spec, &affectee_spec);
-            self.source_by_item.remove_entry(affector_spec.item_uid, source_espec);
-            self.source_by_item.remove_entry(affectee_spec.item_uid, source_espec);
+            self.source_by_item.remove_entry(affector_spec.item_uid, &source_espec);
+            self.source_by_item.remove_entry(affectee_spec.item_uid, &source_espec);
         }
     }
     pub(in crate::svc::calc) fn remove_item(&mut self, item_uid: UItemId) {

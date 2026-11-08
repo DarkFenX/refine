@@ -114,7 +114,7 @@ impl UItemBase {
     pub(in crate::ud::item) fn set_state(&mut self, state: RState) {
         self.state = state;
     }
-    pub(in crate::ud::item) fn get_effect_mode_by_rid(&self, effect_rid: &REffectId) -> EffectMode {
+    pub(in crate::ud::item) fn get_effect_mode_by_rid(&self, effect_rid: REffectId) -> EffectMode {
         self.effect_modes.get_by_rid(effect_rid)
     }
     pub(in crate::ud::item) fn get_effect_mode_by_aid(&self, effect_aid: &AEffectId) -> EffectMode {
@@ -297,7 +297,7 @@ mod debug {
                         .get_item_effects_pregen_entry(r_item.base.get_effects_pregen_id(effect_options));
                     let pregen_rids = pregen_entry.get_above_up_to(RState::Ghost, reffs_pregen_up_to);
                     if pregen_rids.len() != reffs.len()
-                        || pregen_rids.iter().any(|effect_rid| !reffs.contains(effect_rid))
+                        || pregen_rids.iter().any(|effect_rid| !reffs.contains(*effect_rid))
                     {
                         return Err(Default::default());
                     }

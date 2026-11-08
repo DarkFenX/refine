@@ -1,10 +1,12 @@
 use crate::nd::{NEffectCharge, NEffectChargeDepl, NEffectChargeLoc};
 
+#[derive(Copy, Clone)]
 pub(crate) struct REffectCharge {
     pub(crate) location: REffectChargeLoc,
     pub(super) activates_charge: bool,
 }
 
+#[derive(Copy, Clone)]
 pub(crate) enum REffectChargeLoc {
     Loaded(NEffectChargeDepl),
     Autocharge,

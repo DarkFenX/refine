@@ -44,10 +44,10 @@ impl VastFitData {
         ctx: &SvcCtx,
         calc: &mut Calc,
     ) -> bool {
-        for (stopped_espec, stopper_especs) in self.stopped_effects.iter() {
+        for (&stopped_espec, stopper_especs) in self.stopped_effects.iter() {
             let stopped_u_item = ctx.u_data.items.get(stopped_espec.item_uid);
             if let Some(stopped_reffs) = stopped_u_item.get_reffs()
-                && stopped_reffs.contains(&stopped_espec.effect_rid)
+                && stopped_reffs.contains(stopped_espec.effect_rid)
                 && is_any_in_effective_range(ctx, calc, stopper_especs.copied(), stopped_espec.item_uid)
                 && !kfs.contains(&stopped_espec.item_uid)
             {
@@ -64,10 +64,10 @@ impl VastFitData {
         calc: &mut Calc,
     ) -> Option<ValEffectStopperFail> {
         let mut items = RMap::new();
-        for (stopped_espec, stopper_especs) in self.stopped_effects.iter() {
+        for (&stopped_espec, stopper_especs) in self.stopped_effects.iter() {
             let stopped_u_item = ctx.u_data.items.get(stopped_espec.item_uid);
             if let Some(stopped_reffs) = stopped_u_item.get_reffs()
-                && stopped_reffs.contains(&stopped_espec.effect_rid)
+                && stopped_reffs.contains(stopped_espec.effect_rid)
                 && is_any_in_effective_range(ctx, calc, stopper_especs.copied(), stopped_espec.item_uid)
                 && !kfs.contains(&stopped_espec.item_uid)
             {

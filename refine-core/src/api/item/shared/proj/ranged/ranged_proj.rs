@@ -26,7 +26,7 @@ impl<'s> RangedProj<'s> {
             .get(self.projector_uid)
             .get_projs()
             .unwrap()
-            .get(projectee_uid)
+            .get(*projectee_uid)
             .unwrap()
             .unwrap();
         ProjRange::from_u_proj_data(u_proj)

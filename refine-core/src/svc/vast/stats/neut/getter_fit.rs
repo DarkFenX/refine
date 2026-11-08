@@ -80,7 +80,7 @@ fn get_nps(
             if !item_kinds.resolve(effect) {
                 continue;
             }
-            let Some(cseq) = cseq_map.get(&effect_rid) else {
+            let Some(cseq) = cseq_map.get(effect_rid) else {
                 continue;
             };
             if let Some(accum) = match time_options {

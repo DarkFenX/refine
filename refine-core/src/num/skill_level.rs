@@ -1,31 +1,35 @@
-use std::str::FromStr;
+use std::{mem::transmute, pat::pattern_type, str::FromStr};
 
 use crate::{Value, ad::ASkillLevel};
+
+const MIN_RAW: u8 = 0;
+const MAX_RAW: u8 = 5;
+type Range = pattern_type!(u8 is MIN_RAW..=MAX_RAW);
 
 /// Level a skill is trained to, within `[0, 5]` range.
 ///
 /// Serialization notes: deserialization clamps out-of-range input instead of failing.
-#[cfg_attr(feature = "serde", derive(serde::Serialize), serde(transparent))]
-#[derive(Copy, Clone, Eq, PartialEq, Hash, Ord, PartialOrd, derive_more::Display)]
-pub struct SkillLevel(u8);
+#[derive(Copy, Clone)]
+pub struct SkillLevel(Range);
 impl SkillLevel {
     pub fn from_i32_checked(level: i32) -> Result<Self, SkillLevelError> {
-        match (Self::MIN.0 as i32..=Self::MAX.0 as i32).contains(&level) {
-            true => Ok(Self(level as u8)),
+        match (Self::MIN.into_u8() as i32..=Self::MAX.into_u8() as i32).contains(&level) {
+            true => Ok(Self::from_u8(level as u8)),
             false => Err(SkillLevelError { level }),
         }
     }
     pub const fn from_i32_clamped(level: i32) -> Self {
-        Self(level.clamp(Self::MIN.0 as i32, Self::MAX.0 as i32) as u8)
+        Self::from_u8(level.clamp(Self::MIN.into_u8() as i32, Self::MAX.into_u8() as i32) as u8)
     }
     pub const fn from_u64_clamped(level: u64) -> Self {
-        Self(level.clamp(Self::MIN.0 as u64, Self::MAX.0 as u64) as u8)
+        Self::from_u8(level.clamp(Self::MIN.into_u8() as u64, Self::MAX.into_u8() as u64) as u8)
     }
     pub const fn from_i64_clamped(level: i64) -> Self {
-        Self(level.clamp(Self::MIN.0 as i64, Self::MAX.0 as i64) as u8)
+        Self::from_u8(level.clamp(Self::MIN.into_u8() as i64, Self::MAX.into_u8() as i64) as u8)
     }
     pub const fn into_u8(self) -> u8 {
-        self.0
+        // SAFETY: any value in range can be represented by base type
+        unsafe { transmute::<Range, u8>(self.0) }
     }
 }
 
@@ -43,39 +47,86 @@ pub struct SkillLevelError {
 // Constants
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl SkillLevel {
-    pub const DEFAULT: Self = Self(0);
-    pub const MIN: Self = Self(0);
-    pub const MAX: Self = Self(5);
+    pub const DEFAULT: Self = Self::from_u8(MIN_RAW);
+    pub const MIN: Self = Self::from_u8(MIN_RAW);
+    pub const MAX: Self = Self::from_u8(MAX_RAW);
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Conversions
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl SkillLevel {
+    const fn from_u8(level: u8) -> Self {
+        assert!(level <= MAX_RAW);
+        // SAFETY: just checked that the level is in range
+        Self(unsafe { transmute::<u8, Range>(level) })
+    }
     pub(crate) fn from_f64_rounded(level: f64) -> Self {
-        Self(level.clamp(Self::MIN.0 as f64, Self::MAX.0 as f64).round() as u8)
+        Self::from_u8(
+            level
+                .clamp(Self::MIN.into_u8() as f64, Self::MAX.into_u8() as f64)
+                .round() as u8,
+        )
     }
     pub(crate) fn from_a_skill_level(a_skill_level: ASkillLevel) -> Self {
-        Self(a_skill_level.into_u8())
+        Self::from_u8(a_skill_level.into_u8())
     }
     pub(crate) fn into_value(self) -> Value {
-        Value::from_f64_unchecked(self.0 as f64)
+        Value::from_f64_unchecked(self.into_u8() as f64)
     }
 }
 impl From<SkillLevel> for u8 {
     fn from(v: SkillLevel) -> Self {
-        v.0
+        v.into_u8()
     }
 }
 impl From<SkillLevel> for i32 {
     fn from(v: SkillLevel) -> Self {
-        v.0 as i32
+        v.into_u8() as i32
+    }
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Ordering/equality/hash - pattern types do not provide those
+////////////////////////////////////////////////////////////////////////////////////////////////////
+impl Eq for SkillLevel {}
+impl PartialEq for SkillLevel {
+    fn eq(&self, other: &Self) -> bool {
+        self.into_u8() == other.into_u8()
+    }
+}
+impl std::marker::StructuralPartialEq for SkillLevel {}
+
+impl Ord for SkillLevel {
+    fn cmp(&self, other: &Self) -> std::cmp::Ordering {
+        self.into_u8().cmp(&other.into_u8())
+    }
+}
+impl PartialOrd for SkillLevel {
+    fn partial_cmp(&self, other: &Self) -> Option<std::cmp::Ordering> {
+        Some(self.cmp(other))
+    }
+}
+
+// Pattern types have no Hash to derive
+impl std::hash::Hash for SkillLevel {
+    fn hash<H>(&self, state: &mut H)
+    where
+        H: std::hash::Hasher,
+    {
+        self.into_u8().hash(state);
     }
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Custom de/serialization
 ////////////////////////////////////////////////////////////////////////////////////////////////////
+impl std::fmt::Display for SkillLevel {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        std::fmt::Display::fmt(&self.into_u8(), f)
+    }
+}
+
 impl FromStr for SkillLevel {
     type Err = SkillLevelParseError;
 
@@ -102,9 +153,21 @@ pub enum SkillLevelParseError {
 
 #[cfg(feature = "serde")]
 mod custom_serde {
-    use serde::de::{Deserialize, Deserializer, Error, Visitor};
+    use serde::{
+        de::{Deserialize, Deserializer, Error, Visitor},
+        ser::{Serialize, Serializer},
+    };
 
     use super::*;
+
+    impl Serialize for SkillLevel {
+        fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+        where
+            S: Serializer,
+        {
+            serializer.serialize_u8(self.into_u8())
+        }
+    }
 
     struct VisitorImpl;
     impl Visitor<'_> for VisitorImpl {

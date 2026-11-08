@@ -21,7 +21,7 @@ pub(crate) struct SmallSet<V, const N: usize, H> {
 #[derive(Clone)]
 struct Spilled<V, H> {
     vals: Vec<V>,
-    index: Map<V, usize, H>,
+    index: Map<V, u32, H>,
 }
 impl<V, const N: usize, H> Default for SmallSet<V, N, H>
 where
@@ -59,18 +59,21 @@ where
     pub(crate) fn new() -> Self {
         Self::default()
     }
+    #[inline(always)]
     pub(crate) fn iter(&self) -> std::slice::Iter<'_, V> {
         match self.len > N {
             true => self.spill.as_ref().unwrap().vals.iter(),
             false => self.inline[..self.len].iter(),
         }
     }
+    #[inline(always)]
     pub(crate) fn contains(&self, val: &V) -> bool {
         match self.len > N {
             true => self.spill.as_ref().unwrap().index.contains_key(val),
             false => self.inline[..self.len].contains(val),
         }
     }
+    #[inline(always)]
     pub(crate) fn len(&self) -> usize {
         self.len
     }
@@ -98,7 +101,9 @@ where
             spill.vals.extend_from_slice(&self.inline);
             spill.vals.push(val);
             spill.index.clear();
-            spill.index.extend(spill.vals.iter().enumerate().map(|(i, &v)| (v, i)));
+            spill
+                .index
+                .extend(spill.vals.iter().enumerate().map(|(i, &v)| (v, i as u32)));
             self.len += 1;
             return true;
         }
@@ -106,7 +111,7 @@ where
         match spill.index.entry(val) {
             Entry::Occupied(..) => false,
             Entry::Vacant(entry) => {
-                entry.insert(spill.vals.len());
+                entry.insert(spill.vals.len() as u32);
                 spill.vals.push(val);
                 self.len += 1;
                 true
@@ -131,12 +136,13 @@ where
         let Some(pos) = spill.index.remove(val) else {
             return false;
         };
+        let pos = pos as usize;
         spill.vals.swap_remove(pos);
         self.len -= 1;
         if self.len == N {
             self.inline.copy_from_slice(&spill.vals);
         } else if let Some(&moved) = spill.vals.get(pos) {
-            spill.index.insert(moved, pos);
+            spill.index.insert(moved, pos as u32);
         }
         true
     }

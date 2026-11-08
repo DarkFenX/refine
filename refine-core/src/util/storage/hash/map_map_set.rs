@@ -58,18 +58,22 @@ where
     H3: BuildHasher,
 {
     // Query methods
+    #[inline(always)]
     pub(crate) fn get_l1(&self, key1: &K1) -> Option<&MapSet<K2, V, H2, H3>> {
         self.data.get(key1)
     }
+    #[inline(always)]
     pub(crate) fn get_l2(&self, key1: &K1, key2: &K2) -> impl ExactSizeIterator<Item = &V> {
         match self.get_l1(key1) {
             Some(ks1l) => ks1l.get(key2),
             None => self.empty.get(key2),
         }
     }
+    #[inline(always)]
     pub(crate) fn iter(&self) -> impl ExactSizeIterator<Item = (&K1, &MapSet<K2, V, H2, H3>)> {
         self.data.iter()
     }
+    #[inline(always)]
     pub(crate) fn keys_l2(&self, key1: &K1) -> impl ExactSizeIterator<Item = &K2> + use<'_, K1, K2, V, H1, H2, H3> {
         match self.get_l1(key1) {
             Some(ks1l) => ks1l.keys(),

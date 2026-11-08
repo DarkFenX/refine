@@ -21,7 +21,7 @@ pub struct ItemAttrValues {
 impl ItemAttrValues {
     pub(in crate::api) fn from_calc_attr_vals(calc_attr_vals: CalcAttrVals) -> Self {
         ItemAttrValues {
-            base: calc_attr_vals.base,
+            base: calc_attr_vals.base.into_value(),
             modified: calc_attr_vals.extra,
         }
     }

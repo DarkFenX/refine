@@ -1,24 +1,23 @@
-use crate::util::DenseId;
+use crate::{num::U32NonMax, util::DenseId};
 
-// IDs are u32 to keep key-to-ID maps and mutation caches smaller
 #[derive(Copy, Clone, Eq, PartialEq)]
-pub(crate) struct RMutasPregenMergedAttrsId(u32);
+pub(crate) struct RMutasPregenMergedAttrsId(U32NonMax);
 impl DenseId for RMutasPregenMergedAttrsId {
     fn new(index: usize) -> Self {
-        Self(index.try_into().unwrap())
+        Self(U32NonMax::from_usize(index))
     }
     fn index(self) -> usize {
-        self.0 as usize
+        self.0.into_usize()
     }
 }
 
 #[derive(Copy, Clone, Eq, PartialEq)]
-pub(super) struct RMutasPregenFlexDataId(u32);
+pub(super) struct RMutasPregenFlexDataId(U32NonMax);
 impl DenseId for RMutasPregenFlexDataId {
     fn new(index: usize) -> Self {
-        Self(index.try_into().unwrap())
+        Self(U32NonMax::from_usize(index))
     }
     fn index(self) -> usize {
-        self.0 as usize
+        self.0.into_usize()
     }
 }

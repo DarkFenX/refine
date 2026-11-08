@@ -12,7 +12,7 @@ impl SolCore {
     ) -> Result<(), ProjFoundError> {
         // Check if projection is defined
         let u_drone = self.u_data.items.get(drone_uid).dc_drone().unwrap();
-        if !u_drone.get_projs().contains(&projectee_uid) {
+        if !u_drone.get_projs().contains(projectee_uid) {
             return Err(ProjFoundError {
                 projector_item_id: u_drone.get_item_id(),
                 projectee_item_id: self.u_data.items.ext_id_by_int_id(projectee_uid),
@@ -21,9 +21,9 @@ impl SolCore {
         // Update services
         SolCore::util_remove_item_projection(&self.u_data, &mut self.svc, drone_uid, projectee_uid);
         // Update user data
-        self.rev_projs.unreg_projectee(&drone_uid, projectee_uid);
+        self.rev_projs.unreg_projectee(drone_uid, projectee_uid);
         let u_drone = self.u_data.items.get_mut(drone_uid).dc_drone_mut().unwrap();
-        u_drone.get_projs_mut().remove(&projectee_uid);
+        u_drone.get_projs_mut().remove(projectee_uid);
         if self.undo.is_recording() {
             self.undo.record(UndoStep::ProjRemoved(drone_uid, projectee_uid));
         }

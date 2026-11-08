@@ -85,7 +85,7 @@ fn get_cap_injects(
             continue;
         };
         for (&effect_rid, ospec) in item_data.iter() {
-            let Some(cseq) = cseq_map.get(&effect_rid) else {
+            let Some(cseq) = cseq_map.get(effect_rid) else {
                 continue;
             };
             let effect = ctx.u_data.r_data.get_effect_by_rid(effect_rid);
@@ -129,7 +129,7 @@ fn get_cap_consumed(
             continue;
         };
         for (&effect_rid, ospec) in item_data.iter() {
-            let Some(cseq) = cseq_map.get(&effect_rid) else {
+            let Some(cseq) = cseq_map.get(effect_rid) else {
                 continue;
             };
             let effect = ctx.u_data.r_data.get_effect_by_rid(effect_rid);
@@ -174,7 +174,7 @@ fn get_nosfs(
             continue;
         };
         for (&effect_rid, ospec) in item_data.iter() {
-            let Some(cseq) = cseq_map.get(&effect_rid) else {
+            let Some(cseq) = cseq_map.get(effect_rid) else {
                 continue;
             };
             let effect = ctx.u_data.r_data.get_effect_by_rid(effect_rid);
@@ -245,7 +245,7 @@ fn get_incoming_cap_transfers(
             continue;
         };
         for (&effect_rid, ospec) in item_data.iter() {
-            let Some(cseq) = cseq_map.get(&effect_rid) else {
+            let Some(cseq) = cseq_map.get(effect_rid) else {
                 continue;
             };
             let effect = ctx.u_data.r_data.get_effect_by_rid(effect_rid);
@@ -316,7 +316,7 @@ fn get_incoming_neuts(
             continue;
         };
         for (&effect_rid, ospec) in item_data.iter() {
-            let Some(cseq) = cseq_map.get(&effect_rid) else {
+            let Some(cseq) = cseq_map.get(effect_rid) else {
                 continue;
             };
             let effect = ctx.u_data.r_data.get_effect_by_rid(effect_rid);

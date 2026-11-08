@@ -24,14 +24,10 @@ impl RawModStorage {
     pub(in crate::svc::calc) fn get_cmod(&self, ckey: &CtxModKey) -> CtxModifier {
         CtxModifier::from_ckey(*self.get_rmod(ckey.rmod_id), *ckey)
     }
-    pub(in crate::svc::calc) fn get_rmod_for_espec(
-        &self,
-        rmod_id: RawModId,
-        espec: &EffectSpec,
-    ) -> Option<RawModifier> {
+    pub(in crate::svc::calc) fn get_rmod_for_espec(&self, rmod_id: RawModId, espec: EffectSpec) -> Option<RawModifier> {
         self.data
             .get(rmod_id)
-            .filter(|rmod| rmod.affector_espec == *espec)
+            .filter(|rmod| rmod.affector_espec == espec)
             .copied()
     }
     // Modification methods
@@ -55,9 +51,9 @@ impl RawModStorage {
         let rmod = self.data.remove(rmod_id);
         self.by_espec.remove_entry(rmod.affector_espec, &rmod_id);
     }
-    pub(in crate::svc::calc) fn remove_by_espec_p1(&mut self, reuse_rmod_ids: &mut Vec<RawModId>, espec: &EffectSpec) {
+    pub(in crate::svc::calc) fn remove_by_espec_p1(&mut self, reuse_rmod_ids: &mut Vec<RawModId>, espec: EffectSpec) {
         reuse_rmod_ids.clear();
-        reuse_rmod_ids.extend(self.by_espec.remove_key(espec));
+        reuse_rmod_ids.extend(self.by_espec.remove_key(&espec));
     }
     pub(in crate::svc::calc) fn remove_by_espec_p2(&mut self, rmod_id: RawModId) {
         self.data.remove(rmod_id);
@@ -99,7 +95,7 @@ mod debug {
                     .items
                     .get(espec.item_uid)
                     .get_reffs()
-                    .is_some_and(|reffs| reffs.contains(&espec.effect_rid))
+                    .is_some_and(|reffs| reffs.contains(espec.effect_rid))
                 {
                     return Err(Default::default());
                 }

@@ -13,7 +13,7 @@ fn internal_cycle_count(item: &UItem, effect_rid: REffectId) -> InfCount {
         // Effect wants autocharge, but item does not support autocharges -> can't cycle
         return InfCount::Count(Count::ZERO);
     };
-    if !autocharges.contains_ac_for_effect(&effect_rid) {
+    if !autocharges.contains_ac_for_effect(effect_rid) {
         // Effect wants autocharge, but no autocharge in the item - can't cycle. Since autocharges
         // are not added here when they cannot be loaded, non-loaded autocharges are covered by this
         // as well.
@@ -24,7 +24,7 @@ fn internal_cycle_count(item: &UItem, effect_rid: REffectId) -> InfCount {
     match item
         .get_r_item_base()
         .unwrap()
-        .get_effect_data(&effect_rid)
+        .get_effect_data(effect_rid)
         .ability_charge_count
     {
         Some(charge_count) => InfCount::Count(charge_count),

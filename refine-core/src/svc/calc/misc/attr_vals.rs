@@ -1,8 +1,9 @@
-use crate::Value;
+use crate::{Value, num::ValueNiched};
 
 #[derive(Copy, Clone)]
 pub(crate) struct CalcAttrVals {
-    pub(crate) base: Value,
+    // Rarely used, makes space for all the types wrapping this one to get wrapped into None
+    pub(crate) base: ValueNiched,
     pub(in crate::svc::calc) dogma: Value,
     pub(crate) extra: Value,
 }

@@ -38,7 +38,7 @@ impl UItemVec {
     }
     pub(crate) fn get_equip_pos(&self) -> Option<RackPos> {
         let mut pos = 0;
-        for iter_pos in self.data.keys() {
+        for &iter_pos in self.data.keys() {
             let iter_pos = iter_pos.into_usize();
             if iter_pos > pos {
                 break;

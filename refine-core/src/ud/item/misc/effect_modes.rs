@@ -30,8 +30,8 @@ impl UEffectModes {
         // only runtime effect overrides tell that
         !self.by_rid.is_empty()
     }
-    pub(in crate::ud::item) fn get_by_rid(&self, effect_rid: &REffectId) -> EffectMode {
-        match self.by_rid.get(effect_rid) {
+    pub(in crate::ud::item) fn get_by_rid(&self, effect_rid: REffectId) -> EffectMode {
+        match self.by_rid.get(&effect_rid) {
             Some(effect_mode) => *effect_mode,
             None => EffectMode::default(),
         }
@@ -81,9 +81,9 @@ impl UEffectModes {
     }
     pub(in crate::ud::item) fn update_rids(&mut self, r_data: &RData) {
         self.by_rid.clear();
-        for (effect_aid, effect_mode) in self.by_aid.iter() {
+        for (effect_aid, &effect_mode) in self.by_aid.iter() {
             if let Some(effect_rid) = r_data.get_effect_rid_by_aid(effect_aid) {
-                self.by_rid.insert(effect_rid, *effect_mode);
+                self.by_rid.insert(effect_rid, effect_mode);
             }
         }
     }

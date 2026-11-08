@@ -30,7 +30,7 @@ pub(crate) enum NEffectNeutChecker {
     Bomb,
 }
 impl NEffectNeutChecker {
-    pub(crate) fn check(&self, u_item: &UItem, attr_consts: &RAttrConsts) -> bool {
+    pub(crate) fn check(self, u_item: &UItem, attr_consts: &RAttrConsts) -> bool {
         match self {
             Self::Bomb => check_bomb(u_item, attr_consts),
         }

@@ -88,7 +88,7 @@ mod debug {
                 let Some(projector_projs) = u_data.items.get(projector_espec.item_uid).get_projs() else {
                     return Err(Default::default());
                 };
-                let Some(Some(u_proj_data)) = projector_projs.get(projectee_uid) else {
+                let Some(Some(u_proj_data)) = projector_projs.get(*projectee_uid) else {
                     // Error in either of cases:
                     // - when user data item has no projection data - since projection register is
                     // supposed to track only relations with projection data

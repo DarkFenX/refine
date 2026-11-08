@@ -49,9 +49,9 @@ fn switch_item_state(svc: &mut Svc, item_uid: UItemId, u_item: &UItem, old_state
             let is_item_loaded = u_item.is_loaded();
             for &state in RState::above_up_to(new_state, old_state).iter().rev() {
                 if is_item_loaded {
-                    svc.notify_item_state_deactivated_loaded(&item_uid, u_item, state);
+                    svc.notify_item_state_deactivated_loaded(item_uid, u_item, state);
                 }
-                svc.notify_state_deactivated(&item_uid, u_item, state);
+                svc.notify_state_deactivated(item_uid, u_item, state);
             }
         }
     }

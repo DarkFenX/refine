@@ -99,12 +99,12 @@ impl VastFitData {
     }
     pub(in crate::svc::vast) fn item_kind_remove(
         &mut self,
-        item_uid: &UItemId,
+        item_uid: UItemId,
         item_kind: Option<DetectedItemKind>,
         expected_kind: DetectedItemKind,
     ) {
         if item_kind != Some(expected_kind) {
-            self.item_kind.remove(item_uid);
+            self.item_kind.remove(&item_uid);
         }
     }
     pub(in crate::svc::vast) fn module_item_kind_add(
@@ -117,7 +117,7 @@ impl VastFitData {
     }
     pub(in crate::svc::vast) fn module_item_kind_remove(
         &mut self,
-        item_uid: &UItemId,
+        item_uid: UItemId,
         item_kind: Option<DetectedItemKind>,
         module: &UModule,
     ) {

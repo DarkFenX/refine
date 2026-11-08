@@ -10,14 +10,14 @@ pub(in crate::svc::calc) enum ItemAddRemoveReviser {
     MissileFlightTime,
 }
 impl ItemAddRemoveReviser {
-    pub(in crate::svc::calc) fn reacts_to(&self, changed_item: &UItem) -> bool {
+    pub(in crate::svc::calc) fn reacts_to(self, changed_item: &UItem) -> bool {
         match self {
             Self::AarPaste => aar_paste::reacts_to_item_add_removal(changed_item),
             Self::MissileFlightTime => missile_flight_time::reacts_to_item_add_removal(changed_item),
         }
     }
     pub(in crate::svc::calc) fn revise(
-        &self,
+        self,
         ctx: &SvcCtx,
         affector_uid: UItemId,
         changed_uid: UItemId,
