@@ -23,16 +23,16 @@ pub(crate) fn round(val: f64, digits: i32) -> f64 {
 
 /// Check if two numbers match up to a specified count of significant orders.
 ///
-/// Numbers closer to 0 than the last of those orders are considered to be 0. Numbers which are 1 or
-/// more apart never match, regardless of their magnitude.
+/// Orders are counted from the integer part: numbers above 1 have to match in that many digits
+/// after the dot regardless of their magnitude, and lesser ones have to be as close in relative
+/// terms as 1 is. Numbers closer to 0 than the last of those orders are considered to be 0.
 pub(crate) fn sig_eq(val1: f64, val2: f64, sig_orders: u32) -> bool {
     let tolerance = pow10(-(sig_orders as i32));
     let (abs1, abs2) = (val1.abs(), val2.abs());
     if abs1 < tolerance && abs2 < tolerance {
         return true;
     }
-    let diff = (val1 - val2).abs();
-    diff < 1.0 && diff <= abs1.min(abs2) * tolerance
+    (val1 - val2).abs() <= abs1.min(abs2).min(1.0) * tolerance
 }
 
 // Precalculated powers of 10

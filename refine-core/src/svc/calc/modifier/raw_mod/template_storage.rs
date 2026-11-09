@@ -86,6 +86,8 @@ fn fill_buff_templates(templates: &mut Vec<RawModifier>, effect: &mut REffect, b
     };
     let mut buff_fulls = std::mem::take(&mut effect_buff.full).into_vec();
     buff_fulls.retain(|buff_full| {
+        // Buff modifiers usually fail all together (e.g. on item-specific resistance check), so do
+        // not handle them one-by-one, stick to per-buff granularity
         let start = templates.len();
         let buff = buffs.get(buff_full.buff_rid).unwrap();
         for buff_mod in buff.mods.iter() {

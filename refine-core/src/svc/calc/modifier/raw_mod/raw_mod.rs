@@ -28,7 +28,7 @@ use crate::{
 pub(in crate::svc::calc) struct RawModifier {
     pub(in crate::svc::calc) kind: ModifierKind,
     pub(in crate::svc::calc) affector_espec: EffectSpec,
-    pub(in crate::svc::calc) strength: ModStrength,
+    pub(in crate::svc::calc::modifier) strength: ModStrength,
     pub(in crate::svc::calc) op: CalcOp,
     pub(in crate::svc::calc) aggr_mode: AggrMode,
     pub(in crate::svc::calc) affectee_filter: AffecteeFilter,

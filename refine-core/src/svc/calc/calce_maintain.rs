@@ -139,18 +139,18 @@ impl Calc {
             .map(|&effect_rid| r_data.get_effect_by_rid(effect_rid));
         // Notify core calc services
         let mut reuse_items = self.reuse.items.take();
-        let mut has_stored_rmods = false;
+        let mut needs_rmod_gen = false;
         for effect in effects.clone() {
             for (rmod_id, rmod) in r_data.get_rmod_templates().iter_effect(effect, item_uid) {
                 self.reg_raw_mod(&mut reuse_items, ctx, item_uid, item, rmod_id, rmod);
             }
             if effect.needs_rmod_gen {
-                has_stored_rmods = true;
+                needs_rmod_gen = true;
                 self.reg_stored_rmods(&mut reuse_items, ctx, item_uid, item, effect);
             }
         }
-        // Effects with buffs which rely on on-item attributes always have stored modifiers
-        if has_stored_rmods {
+        // Effects with buffs which rely on on-item attributes always need modifier generation
+        if needs_rmod_gen {
             self.reg_buff_effects(&mut reuse_items, ctx, item_uid, item, effects);
         }
         self.reuse.items.put(reuse_items);

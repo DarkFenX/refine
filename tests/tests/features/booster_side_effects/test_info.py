@@ -1,38 +1,6 @@
 from fw import approx, check_no_field
 
 
-def setup_strength_test(client, consts, *, strength1, strength2):
-    eve_grp1_id = client.mk_eve_item_group()
-    eve_grp2_id = client.mk_eve_item_group()
-    eve_chance_attr_id = client.mk_eve_attr()
-    eve_affector_attr1_id = client.mk_eve_attr()
-    eve_affector_attr2_id = client.mk_eve_attr()
-    eve_affectee_attr_id = client.mk_eve_attr()
-    eve_mod1 = client.mk_eve_effect_mod(
-        func=consts.EveModFunc.loc_grp,
-        loc=consts.EveModLoc.ship,
-        grp=eve_grp1_id,
-        op=consts.EveModOp.post_percent,
-        affector_attr_id=eve_affector_attr1_id,
-        affectee_attr_id=eve_affectee_attr_id)
-    eve_mod2 = client.mk_eve_effect_mod(
-        func=consts.EveModFunc.loc_grp,
-        loc=consts.EveModLoc.ship,
-        grp=eve_grp2_id,
-        op=consts.EveModOp.post_percent,
-        affector_attr_id=eve_affector_attr2_id,
-        affectee_attr_id=eve_affectee_attr_id)
-    eve_effect_id = client.mk_eve_effect(chance_attr_id=eve_chance_attr_id, mod_info=[eve_mod1, eve_mod2])
-    eve_booster_id = client.mk_eve_item(
-        attrs={eve_chance_attr_id: 0.4, eve_affector_attr1_id: strength1, eve_affector_attr2_id: strength2},
-        eff_ids=[eve_effect_id])
-    client.create_sources()
-    api_sol = client.create_sol()
-    api_fit = api_sol.create_fit()
-    api_booster = api_fit.add_booster(type_id=eve_booster_id)
-    return api_booster.update().side_effects[eve_effect_id]
-
-
 def test_no_side_effects(client, consts):
     # Imitate just primary booster effect
     eve_affector_attr_id = client.mk_eve_attr()
@@ -344,51 +312,66 @@ def test_strength_mismatch_attr(client, consts):
     assert api_side.mod.str == approx(25)
 
 
-def test_strength_mismatch_value(client, consts):
-    # Action
-    api_side = setup_strength_test(client, consts, strength1=25, strength2=25.001)
+def test_strength_value_comparison(client, consts):
+    eve_grp1_id = client.mk_eve_item_group()
+    eve_grp2_id = client.mk_eve_item_group()
+    eve_chance_attr_id = client.mk_eve_attr()
+    eve_affector_attr1_id = client.mk_eve_attr()
+    eve_affector_attr2_id = client.mk_eve_attr()
+    eve_affectee_attr_id = client.mk_eve_attr()
+    eve_mod1 = client.mk_eve_effect_mod(
+        func=consts.EveModFunc.loc_grp,
+        loc=consts.EveModLoc.ship,
+        grp=eve_grp1_id,
+        op=consts.EveModOp.post_percent,
+        affector_attr_id=eve_affector_attr1_id,
+        affectee_attr_id=eve_affectee_attr_id)
+    eve_mod2 = client.mk_eve_effect_mod(
+        func=consts.EveModFunc.loc_grp,
+        loc=consts.EveModLoc.ship,
+        grp=eve_grp2_id,
+        op=consts.EveModOp.post_percent,
+        affector_attr_id=eve_affector_attr2_id,
+        affectee_attr_id=eve_affectee_attr_id)
+    eve_effect_id = client.mk_eve_effect(chance_attr_id=eve_chance_attr_id, mod_info=[eve_mod1, eve_mod2])
+
+    def mk_eve_booster(*, strength1: float, strength2: float) -> int:
+        return client.mk_eve_item(
+            attrs={eve_chance_attr_id: 0.4, eve_affector_attr1_id: strength1, eve_affector_attr2_id: strength2},
+            eff_ids=[eve_effect_id])
+
+    # 5 orders after the dot, regardless of how big the number is
+    eve_match_id = mk_eve_booster(strength1=25, strength2=25.000005)
+    eve_mismatch_id = mk_eve_booster(strength1=25, strength2=25.0001)
+    eve_big_match_id = mk_eve_booster(strength1=1000000, strength2=1000000.000005)
+    eve_big_mismatch_id = mk_eve_booster(strength1=1000000, strength2=1000000.001)
+    eve_int_mismatch_id = mk_eve_booster(strength1=1000000, strength2=1000001)
+    # 1.15 * 100, the same value as 115 reached in a different way
+    eve_float_error_id = mk_eve_booster(strength1=114.99999999999999, strength2=115)
+    # 5 orders relative to the number when it is less than 1
+    eve_small_match_id = mk_eve_booster(strength1=0.5, strength2=0.500001)
+    eve_small_mismatch_id = mk_eve_booster(strength1=0.5, strength2=0.50001)
+    # Everything close to 0 is considered to be 0
+    eve_zero_match_id = mk_eve_booster(strength1=0.000001, strength2=0.000009)
+    eve_zero_mismatch_id = mk_eve_booster(strength1=0, strength2=0.00002)
+    client.create_sources()
+    api_sol = client.create_sol()
+    api_fit = api_sol.create_fit()
+
+    def get_strength_info(eve_booster_id: int) -> object:
+        return api_fit.add_booster(type_id=eve_booster_id).update().side_effects[eve_effect_id].mod
+
     # Verification
-    assert api_side.mod is None
-
-
-def test_strength_almost_equal(client, consts):
-    # Action
-    api_side = setup_strength_test(client, consts, strength1=25, strength2=25.0001)
-    # Verification
-    assert api_side.mod.op == consts.ApiSideEffectOp.perc
-    assert api_side.mod.str == approx(25, accuracy=4)
-
-
-def test_strength_float_error_around_int(client, consts):
-    # 1.15 * 100, which is the same value as 115 reached in a different way
-    # Action
-    api_side = setup_strength_test(client, consts, strength1=114.99999999999999, strength2=115)
-    # Verification
-    assert api_side.mod.op == consts.ApiSideEffectOp.perc
-    assert api_side.mod.str == approx(115)
-
-
-def test_strength_mismatch_int(client, consts):
-    # Different integers do not match, even if they are close in relative terms
-    # Action
-    api_side = setup_strength_test(client, consts, strength1=1000000, strength2=1000001)
-    # Verification
-    assert api_side.mod is None
-
-
-def test_strength_close_to_zero(client, consts):
-    # Action
-    api_side = setup_strength_test(client, consts, strength1=0.000001, strength2=0.000009)
-    # Verification
-    assert api_side.mod.op == consts.ApiSideEffectOp.perc
-    assert api_side.mod.str == approx(0, accuracy=5)
-
-
-def test_strength_mismatch_zero(client, consts):
-    # Action
-    api_side = setup_strength_test(client, consts, strength1=0, strength2=0.00002)
-    # Verification
-    assert api_side.mod is None
+    assert get_strength_info(eve_match_id).str == approx(25, accuracy=5)
+    assert get_strength_info(eve_mismatch_id) is None
+    assert get_strength_info(eve_big_match_id).str == approx(1000000, accuracy=5)
+    assert get_strength_info(eve_big_mismatch_id) is None
+    assert get_strength_info(eve_int_mismatch_id) is None
+    assert get_strength_info(eve_float_error_id).str == approx(115)
+    assert get_strength_info(eve_small_match_id).str == approx(0.5, accuracy=5)
+    assert get_strength_info(eve_small_mismatch_id) is None
+    assert get_strength_info(eve_zero_match_id).str == approx(0, accuracy=5)
+    assert get_strength_info(eve_zero_mismatch_id) is None
 
 
 def test_modded_chance(client, consts):

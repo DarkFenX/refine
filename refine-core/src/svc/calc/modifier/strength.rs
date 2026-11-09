@@ -12,8 +12,9 @@ use crate::{
     ud::UItemId,
 };
 
-#[derive(Copy, Clone, PartialEq)]
-pub(in crate::svc::calc) enum ModStrength {
+#[cfg_attr(feature = "dev", derive(PartialEq))]
+#[derive(Copy, Clone)]
+pub(super) enum ModStrength {
     Attr(RAttrId),
     Hardcoded(Value),
     Custom(CalcCustomModStrength),
