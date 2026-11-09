@@ -5,7 +5,7 @@ use crate::{
     rd::{RAttrId, RData, REffect, REffectId},
     svc::{
         SvcCtx,
-        calc::{Calc, CtxModifier, ModifierKind, RawModId, RawModSlot, RawModTemplates, RawModifier},
+        calc::{Calc, CtxModifier, ModifierKind, RawModId, RawModSlot, RawModTemplates, RawModifier, registers::RegOp},
     },
     ud::{UFitId, UFleet, UItem, UItemId},
 };
@@ -179,7 +179,7 @@ impl Calc {
         let mut reuse_items = self.reuse.items.take();
         for &effect_rid in effect_rids {
             let effect = r_data.get_effect_by_rid(effect_rid);
-            // Includes modifiers which failed to register, unregistering those does nothing
+            // Includes modifiers which failed to register, which unregistration skips the same way
             for (rmod_id, rmod) in r_data.get_rmod_templates().iter_effect(effect, item_uid) {
                 self.unreg_raw_mod(&mut reuse_items, ctx, item_uid, item, rmod_id, &rmod);
             }
@@ -507,83 +507,7 @@ impl Calc {
         rmod_id: RawModId,
         rmod: RawModifier,
     ) -> bool {
-        let registered = match rmod.kind {
-            ModifierKind::Local => match self.std.reg_local_mod(item, rmod_id, rmod) {
-                Some(cmod) => {
-                    self.force_mod_affectee_attr_recalc(reuse_items, ctx, &cmod);
-                    // Revisions - we need those only for local modifiers for now
-                    self.revs.reg_mod(rmod_id, &cmod);
-                    true
-                }
-                None => false,
-            },
-            ModifierKind::FleetBuff => {
-                let mut reuse_cmods = self.reuse.cmods.take();
-                let registered = self.std.reg_fleet_buff_mod(&mut reuse_cmods, ctx, item, rmod_id, rmod);
-                for cmod in reuse_cmods.iter() {
-                    self.force_mod_affectee_attr_recalc(reuse_items, ctx, cmod);
-                }
-                self.reuse.cmods.put(reuse_cmods);
-                registered
-            }
-            ModifierKind::System => match item {
-                UItem::SwEffect(..) => {
-                    let mut reuse_cmods = self.reuse.cmods.take();
-                    let registered = self.std.reg_sw_system_mod(&mut reuse_cmods, ctx, rmod_id, rmod);
-                    for cmod in reuse_cmods.iter() {
-                        self.force_mod_affectee_attr_recalc(reuse_items, ctx, cmod);
-                    }
-                    self.reuse.cmods.put(reuse_cmods);
-                    registered
-                }
-                UItem::FwEffect(fw_effect) => match self.std.reg_fw_system_mod(fw_effect, rmod_id, rmod) {
-                    Some(cmod) => {
-                        self.force_mod_affectee_attr_recalc(reuse_items, ctx, &cmod);
-                        true
-                    }
-                    None => false,
-                },
-                UItem::ProjEffect(..) => {
-                    self.std.reg_proj_mod(rmod_id, &rmod);
-                    true
-                }
-                _ => false,
-            },
-            ModifierKind::Buff => match item {
-                UItem::SwEffect(..) => {
-                    let mut reuse_cmods = self.reuse.cmods.take();
-                    let registered = self.std.reg_sw_buff_mod(&mut reuse_cmods, ctx, rmod_id, rmod);
-                    for cmod in reuse_cmods.iter() {
-                        self.force_mod_affectee_attr_recalc(reuse_items, ctx, cmod);
-                    }
-                    self.reuse.cmods.put(reuse_cmods);
-                    registered
-                }
-                UItem::FwEffect(fw_effect) => {
-                    let mut reuse_cmods = self.reuse.cmods.take();
-                    let registered = self
-                        .std
-                        .reg_fw_buff_mod(&mut reuse_cmods, ctx, fw_effect, rmod_id, rmod);
-                    for cmod in reuse_cmods.iter() {
-                        self.force_mod_affectee_attr_recalc(reuse_items, ctx, cmod);
-                    }
-                    self.reuse.cmods.put(reuse_cmods);
-                    registered
-                }
-                _ => {
-                    self.std.reg_proj_mod(rmod_id, &rmod);
-                    true
-                }
-            },
-            ModifierKind::Targeted => {
-                self.std.reg_proj_mod(rmod_id, &rmod);
-                true
-            }
-        };
-        if registered {
-            self.reg_raw_mod_for_buff(item_uid, rmod_id, &rmod);
-        }
-        registered
+        self.process_raw_mod::<{ RegOp::Reg }>(reuse_items, ctx, item_uid, item, rmod_id, rmod)
     }
     fn unreg_raw_mod(
         &mut self,
@@ -594,71 +518,111 @@ impl Calc {
         rmod_id: RawModId,
         rmod: &RawModifier,
     ) {
-        // Regular modifiers
-        match rmod.kind {
-            ModifierKind::Local => {
-                if let Some(cmod) = self.std.unreg_local_mod(item, rmod_id, *rmod) {
+        self.process_raw_mod::<{ RegOp::Unreg }>(reuse_items, ctx, item_uid, item, rmod_id, *rmod);
+    }
+    fn process_raw_mod<const OP: RegOp>(
+        &mut self,
+        reuse_items: &mut Vec<UItemId>,
+        ctx: &SvcCtx,
+        item_uid: UItemId,
+        item: &UItem,
+        rmod_id: RawModId,
+        rmod: RawModifier,
+    ) -> bool {
+        let processed = match rmod.kind {
+            ModifierKind::Local => match self.std.process_local_mod::<OP>(item, rmod_id, rmod) {
+                Some(cmod) => {
                     self.force_mod_affectee_attr_recalc(reuse_items, ctx, &cmod);
                     // Revisions - we need those only for local modifiers for now
-                    self.revs.unreg_mod(rmod_id, &cmod);
+                    match OP {
+                        RegOp::Reg => self.revs.reg_mod(rmod_id, &cmod),
+                        RegOp::Unreg => self.revs.unreg_mod(rmod_id, &cmod),
+                    }
+                    true
                 }
-            }
+                None => false,
+            },
             ModifierKind::FleetBuff => {
                 let mut reuse_cmods = self.reuse.cmods.take();
-                self.std
-                    .unreg_fleet_buff_mod(&mut reuse_cmods, ctx, item, rmod_id, *rmod);
+                let processed = self
+                    .std
+                    .process_fleet_buff_mod::<OP>(&mut reuse_cmods, ctx, item, rmod_id, rmod);
                 for cmod in reuse_cmods.iter() {
                     self.force_mod_affectee_attr_recalc(reuse_items, ctx, cmod);
                 }
                 self.reuse.cmods.put(reuse_cmods);
+                processed
             }
             ModifierKind::System => match item {
                 UItem::SwEffect(..) => {
                     let mut reuse_cmods = self.reuse.cmods.take();
-                    self.std.unreg_sw_system_mod(&mut reuse_cmods, ctx, rmod_id, *rmod);
+                    let processed = self
+                        .std
+                        .process_sw_system_mod::<OP>(&mut reuse_cmods, ctx, rmod_id, rmod);
                     for cmod in reuse_cmods.iter() {
                         self.force_mod_affectee_attr_recalc(reuse_items, ctx, cmod);
                     }
                     self.reuse.cmods.put(reuse_cmods);
+                    processed
                 }
-                UItem::FwEffect(fw_effect) => {
-                    if let Some(cmod) = self.std.unreg_fw_system_mod(fw_effect, rmod_id, *rmod) {
+                UItem::FwEffect(fw_effect) => match self.std.process_fw_system_mod::<OP>(fw_effect, rmod_id, rmod) {
+                    Some(cmod) => {
                         self.force_mod_affectee_attr_recalc(reuse_items, ctx, &cmod);
+                        true
                     }
+                    None => false,
+                },
+                UItem::ProjEffect(..) => {
+                    self.std.process_proj_mod::<OP>(rmod_id, &rmod);
+                    true
                 }
-                UItem::ProjEffect(..) => self.std.unreg_proj_mod(rmod_id, rmod),
-                _ => (),
+                _ => false,
             },
             ModifierKind::Buff => match item {
                 UItem::SwEffect(..) => {
                     let mut reuse_cmods = self.reuse.cmods.take();
-                    self.std.unreg_sw_buff_mod(&mut reuse_cmods, ctx, rmod_id, rmod);
+                    let processed = self.std.process_sw_buff_mod::<OP>(&mut reuse_cmods, ctx, rmod_id, rmod);
                     for cmod in reuse_cmods.iter() {
                         self.force_mod_affectee_attr_recalc(reuse_items, ctx, cmod);
                     }
                     self.reuse.cmods.put(reuse_cmods);
+                    processed
                 }
                 UItem::FwEffect(fw_effect) => {
                     let mut reuse_cmods = self.reuse.cmods.take();
-                    self.std
-                        .unreg_fw_buff_mod(&mut reuse_cmods, ctx, fw_effect, rmod_id, *rmod);
+                    let processed = self
+                        .std
+                        .process_fw_buff_mod::<OP>(&mut reuse_cmods, ctx, fw_effect, rmod_id, rmod);
                     for cmod in reuse_cmods.iter() {
                         self.force_mod_affectee_attr_recalc(reuse_items, ctx, cmod);
                     }
                     self.reuse.cmods.put(reuse_cmods);
+                    processed
                 }
                 _ => {
-                    self.std.unreg_proj_mod(rmod_id, rmod);
+                    self.std.process_proj_mod::<OP>(rmod_id, &rmod);
+                    true
                 }
             },
-            ModifierKind::Targeted => self.std.unreg_proj_mod(rmod_id, rmod),
+            ModifierKind::Targeted => {
+                self.std.process_proj_mod::<OP>(rmod_id, &rmod);
+                true
+            }
+        };
+        if processed {
+            match OP {
+                RegOp::Reg => self.reg_raw_mod_for_buff(item_uid, rmod_id, &rmod),
+                RegOp::Unreg => {
+                    // Ad-hoc attribute dependencies registered during calculation, e.g. by custom
+                    // propulsion module modifier
+                    if rmod.adds_deps_with_source() {
+                        self.deps.remove_by_source(rmod.affector_espec);
+                    }
+                    self.unreg_raw_mod_for_buff(item_uid, rmod_id, &rmod);
+                }
+            }
         }
-        // Ad-hoc attribute dependencies registered during calculation, e.g. by custom propulsion
-        // module modifier
-        if rmod.adds_deps_with_source() {
-            self.deps.remove_by_source(rmod.affector_espec);
-        }
-        self.unreg_raw_mod_for_buff(item_uid, rmod_id, rmod);
+        processed
     }
     fn project_dependent_mod(
         &mut self,

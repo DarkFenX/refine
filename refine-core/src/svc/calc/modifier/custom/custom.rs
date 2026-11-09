@@ -4,10 +4,10 @@ use super::{aar_paste, missile_flight_time, prop_speed, reviser::ItemAddRemoveRe
 use crate::{
     Value,
     misc::EffectSpec,
-    rd::{RAttrConsts, RAttrId},
+    rd::{RAttrConsts, RAttrId, REffect},
     svc::{
         SvcCtx,
-        calc::{Calc, CalcModInfoAffector, RawModifier},
+        calc::{Calc, CalcModInfoAffector, RawModAffector, RawModItemDependent, RawModifier},
     },
     ud::UItemId,
 };
@@ -20,12 +20,18 @@ pub(crate) enum CalcCustomModifier {
     MissileFlightTime,
 }
 impl CalcCustomModifier {
-    pub(in crate::svc::calc) fn make_rmod(self, attr_consts: &RAttrConsts, espec: EffectSpec) -> Option<RawModifier> {
-        match self {
-            Self::PropSpeed => prop_speed::make_rmod(attr_consts, espec),
-            Self::AarPaste => aar_paste::make_rmod(attr_consts, espec),
-            Self::MissileFlightTime => missile_flight_time::make_rmod(attr_consts, espec),
-        }
+    pub(in crate::svc::calc) fn make_rmod(
+        self,
+        attr_consts: &RAttrConsts,
+        affector: RawModAffector,
+        effect: &REffect,
+    ) -> Result<Option<RawModifier>, RawModItemDependent> {
+        // None of custom modifiers are source-item-dependent so far
+        Ok(match self {
+            Self::PropSpeed => prop_speed::make_rmod(attr_consts, affector, effect),
+            Self::AarPaste => aar_paste::make_rmod(attr_consts, affector, effect),
+            Self::MissileFlightTime => missile_flight_time::make_rmod(attr_consts, affector, effect),
+        })
     }
 }
 

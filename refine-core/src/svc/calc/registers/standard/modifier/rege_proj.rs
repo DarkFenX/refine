@@ -13,7 +13,7 @@ use crate::{
     svc::calc::{
         CtxModifier, ModifierKind, RawModId, RawModTemplates, RawModifier,
         registers::{
-            RawModStorage, StandardRegister,
+            RawModStorage, RegOp, StandardRegister,
             standard::data::{StandardRegisterCtxMods, StandardRegisterRawProjStatus},
         },
     },
@@ -21,11 +21,11 @@ use crate::{
 };
 
 impl StandardRegister {
-    pub(in crate::svc::calc) fn reg_proj_mod(&mut self, rmod_id: RawModId, rmod: &RawModifier) {
-        self.rmods_proj.add_entry(rmod.affector_espec, rmod_id);
-    }
-    pub(in crate::svc::calc) fn unreg_proj_mod(&mut self, rmod_id: RawModId, rmod: &RawModifier) {
-        self.rmods_proj.remove_entry(rmod.affector_espec, &rmod_id);
+    pub(in crate::svc::calc) fn process_proj_mod<const OP: RegOp>(&mut self, rmod_id: RawModId, rmod: &RawModifier) {
+        match OP {
+            RegOp::Reg => self.rmods_proj.add_entry(rmod.affector_espec, rmod_id),
+            RegOp::Unreg => self.rmods_proj.remove_entry(rmod.affector_espec, &rmod_id),
+        }
     }
     pub(in crate::svc::calc) fn project_effect(
         &mut self,

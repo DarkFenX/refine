@@ -1,7 +1,7 @@
 use super::{
+    affector::{RawModAffector, RawModItemDependent},
     id::{RawModId, RawModTemplateId},
     raw_mod::RawModifier,
-    template_status::RawModTemplateStatus,
 };
 use crate::{
     rd::{RAttrConsts, RBuff, RBuffId, REffect, REffectId},
@@ -30,6 +30,7 @@ impl RawModTemplates {
             effect.rmod_templates = start as u32..templates.len() as u32;
             // Mark effects which still have some modifiers left for generation
             effect.needs_rmod_gen = !effect.modifiers.is_empty()
+                || effect.calc_custom_mod.is_some()
                 || effect
                     .buff
                     .as_ref()
@@ -59,23 +60,26 @@ impl RawModTemplates {
 // Modifiers which depend on the item running the effect stay on the effect
 fn fill_effect_templates(templates: &mut Vec<RawModifier>, effect: &mut REffect, attr_consts: &RAttrConsts) {
     let mut effect_mods = std::mem::take(&mut effect.modifiers).into_vec();
-    effect_mods.retain(
-        |effect_mod| match RawModifier::make_template_from_effect_mod(effect, effect_mod) {
-            RawModTemplateStatus::Template(template) => {
+    effect_mods.retain(|effect_mod| {
+        match RawModifier::try_from_effect_mod(RawModAffector::Template, effect, effect_mod) {
+            Ok(Some(template)) => {
                 templates.push(template);
                 false
             }
-            RawModTemplateStatus::NoModifier => false,
-            RawModTemplateStatus::ItemDependent => true,
-        },
-    );
+            Ok(None) => false,
+            Err(RawModItemDependent) => true,
+        }
+    });
     effect.modifiers = effect_mods.into_boxed_slice();
-    // All of custom modifiers can be templated so far (have no self-skillreq affectee filters, have
-    // no projection resistances which depend on source item), so add them as well
-    if let Some(custom_mod) = effect.calc_custom_mod
-        && let Some(template) = custom_mod.make_rmod(attr_consts, RawModifier::make_template_espec(effect))
-    {
-        templates.push(template);
+    if let Some(custom_mod) = effect.calc_custom_mod {
+        match custom_mod.make_rmod(attr_consts, RawModAffector::Template, effect) {
+            Ok(Some(template)) => {
+                templates.push(template);
+                effect.calc_custom_mod = None;
+            }
+            Ok(None) => effect.calc_custom_mod = None,
+            Err(RawModItemDependent) => (),
+        }
     }
 }
 
@@ -91,10 +95,10 @@ fn fill_buff_templates(templates: &mut Vec<RawModifier>, effect: &mut REffect, b
         let start = templates.len();
         let buff = buffs.get(buff_full.buff_rid).unwrap();
         for buff_mod in buff.mods.iter() {
-            match RawModifier::make_template_from_buff_mod(effect, buff, buff_full, buff_mod) {
-                RawModTemplateStatus::Template(template) => templates.push(template),
-                RawModTemplateStatus::NoModifier => (),
-                RawModTemplateStatus::ItemDependent => {
+            match RawModifier::try_from_buff_full_mod(RawModAffector::Template, effect, buff, buff_full, buff_mod) {
+                Ok(Some(template)) => templates.push(template),
+                Ok(None) => (),
+                Err(RawModItemDependent) => {
                     templates.truncate(start);
                     return true;
                 }

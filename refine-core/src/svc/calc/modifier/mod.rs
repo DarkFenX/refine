@@ -8,7 +8,9 @@ pub(in crate::svc::calc) use kind::ModifierKind;
 pub(in crate::svc::calc) use location::Location;
 pub(crate) use op::CalcOp;
 pub(crate) use raw_mod::RawModTemplates;
-pub(in crate::svc::calc) use raw_mod::{RawModId, RawModIdKind, RawModSlot, RawModifier};
+pub(in crate::svc::calc) use raw_mod::{
+    RawModAffector, RawModId, RawModIdKind, RawModItemDependent, RawModSlot, RawModifier,
+};
 use strength::ModStrength;
 
 mod affectee_filter;

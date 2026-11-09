@@ -1,13 +1,12 @@
 use smallvec::SmallVec;
 
-use super::template_status::RawModTemplateStatus;
+use super::affector::{RawModAffector, RawModItemDependent};
 use crate::{
     Value,
     ad::AEffectCatId,
     misc::EffectSpec,
     rd::{
-        RAttrId, RBuff, RBuffModifier, REffect, REffectBuffFull, REffectBuffScope, REffectModStrength, REffectModifier,
-        REffectProjModSpec, REffectResist,
+        RAttrId, RBuff, RBuffModifier, REffect, REffectBuffFull, REffectBuffScope, REffectModifier, REffectProjModSpec,
     },
     svc::{
         SvcCtx,
@@ -16,8 +15,7 @@ use crate::{
             modifier::ModStrength,
         },
     },
-    ud::{UData, UItem, UItemId},
-    util::DenseId,
+    ud::UItemId,
 };
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -61,219 +59,27 @@ impl RawModifier {
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-// Regular constructors
+// Constructors
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl RawModifier {
     pub(in crate::svc::calc) fn try_from_effect_mod(
-        u_data: &UData,
-        affector_uid: UItemId,
-        affector_item: &UItem,
+        affector: RawModAffector,
         effect: &REffect,
         effect_mod: &REffectModifier,
-    ) -> Option<Self> {
-        let affectee_filter =
-            AffecteeFilter::try_from_effect_affectee_filter(&effect_mod.affectee_filter, Some(affector_item))?;
-        let kind = get_effect_mod_kind(effect.category, &affectee_filter)?;
-        // Only targeted effects can be affected by projected modifier spec (range/resist reduction)
-        let (proj_spec, resist_attr_rid) = match kind {
-            ModifierKind::Targeted => (
-                effect.proj_mod,
-                effect
-                    .proj_mod
-                    .and_then(|v| v.resist)
-                    .and_then(|v| v.get_attr_rid(u_data, affector_uid)),
-            ),
-            _ => (None, None),
-        };
-        Some(Self::from_effect_mod_parts(
-            EffectSpec::new(affector_uid, effect.rid),
-            effect_mod,
-            kind,
-            affectee_filter,
-            proj_spec,
-            resist_attr_rid,
-        ))
-    }
-    pub(in crate::svc::calc) fn try_from_buff_with_attr(
-        u_data: &UData,
-        affector_uid: UItemId,
-        affector_item: &UItem,
-        effect: &REffect,
-        buff: &RBuff,
-        buff_scope: REffectBuffScope,
-        buff_mod: &RBuffModifier,
-        buff_type_attr_rid: Option<RAttrId>,
-        buff_str_attr_rid: RAttrId,
-    ) -> Option<Self> {
-        RawModifier::try_from_buff(
-            u_data,
-            affector_uid,
-            affector_item,
-            effect,
-            buff,
-            buff_scope,
-            buff_mod,
-            buff_type_attr_rid,
-            ModStrength::Attr(buff_str_attr_rid),
-        )
-    }
-    pub(in crate::svc::calc) fn try_from_buff_with_hardcoded(
-        u_data: &UData,
-        affector_rid: UItemId,
-        affector_item: &UItem,
-        effect: &REffect,
-        buff: &RBuff,
-        buff_scope: REffectBuffScope,
-        buff_mod: &RBuffModifier,
-        buff_str: Value,
-    ) -> Option<Self> {
-        RawModifier::try_from_buff(
-            u_data,
-            affector_rid,
-            affector_item,
-            effect,
-            buff,
-            buff_scope,
-            buff_mod,
-            None,
-            ModStrength::Hardcoded(buff_str),
-        )
-    }
-    fn try_from_buff(
-        u_data: &UData,
-        affector_uid: UItemId,
-        affector_item: &UItem,
-        effect: &REffect,
-        buff: &RBuff,
-        buff_scope: REffectBuffScope,
-        buff_mod: &RBuffModifier,
-        buff_type_attr_rid: Option<RAttrId>,
-        buff_str: ModStrength,
-    ) -> Option<Self> {
-        Self::try_from_buff_parts(
-            EffectSpec::new(affector_uid, effect.rid),
-            Some(affector_item),
-            || {
-                effect
-                    .proj_mod
-                    .and_then(|v| v.resist)
-                    .and_then(|v| v.get_attr_rid(u_data, affector_uid))
-            },
-            effect,
-            buff,
-            buff_scope,
-            buff_mod,
-            buff_type_attr_rid,
-            buff_str,
-        )
-    }
-}
-
-////////////////////////////////////////////////////////////////////////////////////////////////////
-// Template constructors
-////////////////////////////////////////////////////////////////////////////////////////////////////
-impl RawModifier {
-    pub(super) fn make_template_espec(effect: &REffect) -> EffectSpec {
-        // Item is replaced when a template gets resolved, put 0 there as default (but value does
-        // not really matter)
-        EffectSpec::new(UItemId::new(0), effect.rid)
-    }
-    pub(super) fn with_affector_uid(&self, item_uid: UItemId) -> Self {
-        let mut rmod = *self;
-        rmod.affector_espec.item_uid = item_uid;
-        rmod
-    }
-    pub(super) fn make_template_from_effect_mod(
-        effect: &REffect,
-        effect_mod: &REffectModifier,
-    ) -> RawModTemplateStatus {
-        let Some(affectee_filter) = AffecteeFilter::try_from_effect_affectee_filter(&effect_mod.affectee_filter, None)
-        else {
-            return RawModTemplateStatus::ItemDependent;
-        };
+    ) -> Result<Option<Self>, RawModItemDependent> {
+        let affectee_filter = AffecteeFilter::try_from_effect_affectee_filter(&effect_mod.affectee_filter, affector)?;
         let Some(kind) = get_effect_mod_kind(effect.category, &affectee_filter) else {
-            return RawModTemplateStatus::NoModifier;
+            return Ok(None);
         };
         // Only targeted effects can be affected by projected modifier spec (range/resist reduction)
         let (proj_spec, resist_attr_rid) = match kind {
-            ModifierKind::Targeted => match effect.proj_mod.and_then(|v| v.resist) {
-                Some(REffectResist::Attr(attr_rid)) => (effect.proj_mod, Some(attr_rid)),
-                Some(REffectResist::AttrRef(_) | REffectResist::RemoteResistance) => {
-                    return RawModTemplateStatus::ItemDependent;
-                }
-                None => (effect.proj_mod, None),
-            },
+            ModifierKind::Targeted => (effect.proj_mod, get_resist_attr_rid(affector, effect)?),
             _ => (None, None),
         };
-        RawModTemplateStatus::Template(Self::from_effect_mod_parts(
-            Self::make_template_espec(effect),
-            effect_mod,
+        Ok(Some(Self {
             kind,
-            affectee_filter,
-            proj_spec,
-            resist_attr_rid,
-        ))
-    }
-    pub(super) fn make_template_from_buff_mod(
-        effect: &REffect,
-        buff: &RBuff,
-        buff_full: &REffectBuffFull,
-        buff_mod: &RBuffModifier,
-    ) -> RawModTemplateStatus {
-        if !matches!(effect.category, AEffectCatId::ACTIVE | AEffectCatId::TARGET) {
-            return RawModTemplateStatus::NoModifier;
-        }
-        let resist_attr_rid = match effect.proj_mod.and_then(|v| v.resist) {
-            Some(REffectResist::Attr(attr_rid)) => Some(attr_rid),
-            // Only projected buffs are resisted
-            Some(REffectResist::AttrRef(_) | REffectResist::RemoteResistance)
-                if matches!(buff_full.scope, REffectBuffScope::Projected(..)) =>
-            {
-                return RawModTemplateStatus::ItemDependent;
-            }
-            _ => None,
-        };
-        let buff_str = match buff_full.strength {
-            REffectModStrength::Attr(attr_rid) => ModStrength::Attr(attr_rid),
-            REffectModStrength::Hardcoded(value) => ModStrength::Hardcoded(value),
-        };
-        match Self::try_from_buff_parts(
-            Self::make_template_espec(effect),
-            None,
-            || resist_attr_rid,
-            effect,
-            buff,
-            buff_full.scope,
-            buff_mod,
-            None,
-            buff_str,
-        ) {
-            Some(template) => RawModTemplateStatus::Template(template),
-            // Category is checked above, so it's the affectee filter which needs an item
-            None => RawModTemplateStatus::ItemDependent,
-        }
-    }
-}
-
-////////////////////////////////////////////////////////////////////////////////////////////////////
-// Shared
-////////////////////////////////////////////////////////////////////////////////////////////////////
-impl RawModifier {
-    fn from_effect_mod_parts(
-        affector_espec: EffectSpec,
-        effect_mod: &REffectModifier,
-        kind: ModifierKind,
-        affectee_filter: AffecteeFilter,
-        proj_spec: Option<REffectProjModSpec>,
-        resist_attr_rid: Option<RAttrId>,
-    ) -> Self {
-        Self {
-            kind,
-            affector_espec,
-            strength: match effect_mod.strength {
-                REffectModStrength::Attr(attr_rid) => ModStrength::Attr(attr_rid),
-                REffectModStrength::Hardcoded(value) => ModStrength::Hardcoded(value),
-            },
+            affector_espec: affector.get_espec(effect),
+            strength: ModStrength::from_effect_mod_strength(effect_mod.strength),
             op: CalcOp::from_a_op(effect_mod.op),
             aggr_mode: AggrMode::Stack,
             affectee_filter,
@@ -282,23 +88,58 @@ impl RawModifier {
             proj_spec,
             resist_attr_rid,
             ..
-        }
+        }))
     }
-    fn try_from_buff_parts(
-        affector_espec: EffectSpec,
-        affector_item: Option<&UItem>,
-        resist_attr_rid: impl FnOnce() -> Option<RAttrId>,
+    pub(in crate::svc::calc) fn try_from_buff_full_mod(
+        affector: RawModAffector,
+        effect: &REffect,
+        buff: &RBuff,
+        buff_full: &REffectBuffFull,
+        buff_mod: &RBuffModifier,
+    ) -> Result<Option<Self>, RawModItemDependent> {
+        Self::try_from_buff(
+            affector,
+            effect,
+            buff,
+            buff_full.scope,
+            buff_mod,
+            None,
+            ModStrength::from_effect_mod_strength(buff_full.strength),
+        )
+    }
+    pub(in crate::svc::calc) fn try_from_buff_with_attr(
+        affector: RawModAffector,
+        effect: &REffect,
+        buff: &RBuff,
+        buff_scope: REffectBuffScope,
+        buff_mod: &RBuffModifier,
+        buff_type_attr_rid: Option<RAttrId>,
+        buff_str_attr_rid: RAttrId,
+    ) -> Result<Option<Self>, RawModItemDependent> {
+        Self::try_from_buff(
+            affector,
+            effect,
+            buff,
+            buff_scope,
+            buff_mod,
+            buff_type_attr_rid,
+            ModStrength::Attr(buff_str_attr_rid),
+        )
+    }
+    fn try_from_buff(
+        affector: RawModAffector,
         effect: &REffect,
         buff: &RBuff,
         buff_scope: REffectBuffScope,
         buff_mod: &RBuffModifier,
         buff_type_attr_rid: Option<RAttrId>,
         buff_str: ModStrength,
-    ) -> Option<Self> {
+    ) -> Result<Option<Self>, RawModItemDependent> {
         if !matches!(effect.category, AEffectCatId::ACTIVE | AEffectCatId::TARGET) {
-            return None;
+            return Ok(None);
         }
-        Some(match buff_scope {
+        let affector_espec = affector.get_espec(effect);
+        Ok(Some(match buff_scope {
             // Special processing for carrier scope. It is unknown how those self-buffs work on
             // non-ship items, since EVE does not have those in game, but we convert those into
             // local modifiers which affect just ship for simplicity of further processing
@@ -311,7 +152,7 @@ impl RawModifier {
                 affectee_filter: AffecteeFilter::try_from_buff_affectee_filter(
                     &buff_mod.affectee_filter,
                     Location::Ship,
-                    affector_item,
+                    affector,
                 )?,
                 affectee_attr_rid: buff_mod.affectee_attr_rid,
                 buff_type_attr_rid,
@@ -327,12 +168,12 @@ impl RawModifier {
                 affectee_filter: AffecteeFilter::try_from_buff_affectee_filter(
                     &buff_mod.affectee_filter,
                     Location::ItemList(item_list_rid),
-                    affector_item,
+                    affector,
                 )?,
                 affectee_attr_rid: buff_mod.affectee_attr_rid,
                 buff_type_attr_rid,
                 proj_spec: effect.proj_mod,
-                resist_attr_rid: resist_attr_rid(),
+                resist_attr_rid: get_resist_attr_rid(affector, effect)?,
                 ..
             },
             // Fleet buffs cannot be resisted and range-reduced regardless of what effect says
@@ -345,13 +186,34 @@ impl RawModifier {
                 affectee_filter: AffecteeFilter::try_from_buff_affectee_filter(
                     &buff_mod.affectee_filter,
                     Location::ItemList(item_list_rid),
-                    affector_item,
+                    affector,
                 )?,
                 affectee_attr_rid: buff_mod.affectee_attr_rid,
                 buff_type_attr_rid,
                 ..
             },
-        })
+        }))
+    }
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Templates
+////////////////////////////////////////////////////////////////////////////////////////////////////
+impl RawModifier {
+    pub(super) fn with_affector_uid(&self, item_uid: UItemId) -> Self {
+        let mut rmod = *self;
+        rmod.affector_espec.item_uid = item_uid;
+        rmod
+    }
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Shared
+////////////////////////////////////////////////////////////////////////////////////////////////////
+fn get_resist_attr_rid(affector: RawModAffector, effect: &REffect) -> Result<Option<RAttrId>, RawModItemDependent> {
+    match effect.proj_mod.and_then(|v| v.resist) {
+        Some(resist) => affector.get_resist_attr_rid(resist),
+        None => Ok(None),
     }
 }
 
@@ -377,7 +239,7 @@ fn get_effect_mod_kind(effect_cat: AEffectCatId, affectee_filter: &AffecteeFilte
 #[cfg(feature = "dev")]
 mod debug {
     use super::*;
-    use crate::dbg::DebugResult;
+    use crate::{dbg::DebugResult, ud::UData};
 
     impl RawModifier {
         pub(in crate::svc::calc) fn consistency_check(&self, u_data: &UData) -> DebugResult {

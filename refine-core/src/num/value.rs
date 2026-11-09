@@ -6,7 +6,7 @@ use crate::{
     PValue,
     ad::AValue,
     def::AU,
-    util::{FLOAT_TOLERANCE, round, sig_round, sum_pai_owned, sum_pai_ref},
+    util::{FLOAT_TOLERANCE, approx_eq, round, sig_round, sum_pai_owned, sum_pai_ref},
 };
 
 /// Float value.
@@ -144,6 +144,9 @@ impl Value {
     }
     pub(crate) fn is_finite(self) -> bool {
         self.0.is_finite()
+    }
+    pub(crate) fn approx_eq(self, expected: Self, rel_tol: PValue, abs_tol: PValue) -> bool {
+        approx_eq(self.0, expected.0, rel_tol.into_f64(), abs_tol.into_f64())
     }
     pub(crate) fn mul_add(self, a: Self, b: Self) -> Self {
         Self(self.0.mul_add(a.0, b.0))

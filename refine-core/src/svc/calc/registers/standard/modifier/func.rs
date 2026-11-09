@@ -2,14 +2,29 @@ use std::hash::Hash;
 
 use crate::{
     misc::AttrSpec,
-    svc::calc::{CtxModKey, CtxModifier, RawModId},
+    svc::calc::{CtxModKey, CtxModifier, RawModId, registers::RegOp},
     util::RMapRSet,
 };
+
+pub(super) fn process_cmod<const OP: RegOp, K>(
+    key: K,
+    rmod_id: RawModId,
+    cmod: &CtxModifier,
+    main_storage: &mut RMapRSet<K, CtxModKey>,
+    aspec_storage: &mut RMapRSet<AttrSpec, CtxModKey>,
+) where
+    K: Eq + Hash,
+{
+    match OP {
+        RegOp::Reg => add_cmod(key, rmod_id, cmod, main_storage, aspec_storage),
+        RegOp::Unreg => remove_cmod(key, rmod_id, cmod, main_storage, aspec_storage),
+    }
+}
 
 pub(super) fn add_cmod<K>(
     key: K,
     rmod_id: RawModId,
-    cmod: CtxModifier,
+    cmod: &CtxModifier,
     main_storage: &mut RMapRSet<K, CtxModKey>,
     aspec_storage: &mut RMapRSet<AttrSpec, CtxModKey>,
 ) where

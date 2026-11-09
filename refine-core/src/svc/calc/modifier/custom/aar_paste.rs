@@ -5,21 +5,21 @@ use crate::{
     Value,
     ad::AItemId,
     misc::EffectSpec,
-    rd::RAttrConsts,
+    rd::{RAttrConsts, REffect},
     svc::{
         SvcCtx,
         calc::{
             AffecteeFilter, AggrMode, Calc, CalcCustomModifier, CalcModInfoAffector, CalcOp, Location, ModifierKind,
-            RawModifier, modifier::ModStrength,
+            RawModAffector, RawModifier, modifier::ModStrength,
         },
     },
     ud::{UItem, UItemId},
 };
 
-pub(super) fn make_rmod(attr_consts: &RAttrConsts, espec: EffectSpec) -> Option<RawModifier> {
+pub(super) fn make_rmod(attr_consts: &RAttrConsts, affector: RawModAffector, effect: &REffect) -> Option<RawModifier> {
     Some(RawModifier {
         kind: ModifierKind::Local,
-        affector_espec: espec,
+        affector_espec: affector.get_espec(effect),
         strength: ModStrength::Custom(CalcCustomModStrength {
             kind: CalcCustomModifier::AarPaste,
             affector_attr_rid: Some(attr_consts.charged_armor_dmg_mult?),

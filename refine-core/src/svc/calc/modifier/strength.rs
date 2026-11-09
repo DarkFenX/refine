@@ -4,7 +4,7 @@ use super::custom::CalcCustomModStrength;
 use crate::{
     Value,
     misc::EffectSpec,
-    rd::RAttrId,
+    rd::{RAttrId, REffectModStrength},
     svc::{
         SvcCtx,
         calc::{Calc, CalcModInfoAffector, ItemAddRemoveReviser},
@@ -66,6 +66,18 @@ impl ModStrength {
             Self::Attr(..) => false,
             Self::Hardcoded(..) => false,
             Self::Custom(custom_str) => custom_str.adds_deps_with_source(),
+        }
+    }
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Conversions
+////////////////////////////////////////////////////////////////////////////////////////////////////
+impl ModStrength {
+    pub(super) fn from_effect_mod_strength(effect_mod_strength: REffectModStrength) -> Self {
+        match effect_mod_strength {
+            REffectModStrength::Attr(attr_rid) => Self::Attr(attr_rid),
+            REffectModStrength::Hardcoded(value) => Self::Hardcoded(value),
         }
     }
 }

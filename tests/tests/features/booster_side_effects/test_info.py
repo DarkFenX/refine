@@ -340,20 +340,22 @@ def test_strength_value_comparison(client, consts):
             attrs={eve_chance_attr_id: 0.4, eve_affector_attr1_id: strength1, eve_affector_attr2_id: strength2},
             eff_ids=[eve_effect_id])
 
-    # 5 orders after the dot, regardless of how big the number is
-    eve_match_id = mk_eve_booster(strength1=25, strength2=25.000005)
-    eve_mismatch_id = mk_eve_booster(strength1=25, strength2=25.0001)
-    eve_big_match_id = mk_eve_booster(strength1=1000000, strength2=1000000.000005)
-    eve_big_mismatch_id = mk_eve_booster(strength1=1000000, strength2=1000000.001)
-    eve_int_mismatch_id = mk_eve_booster(strength1=1000000, strength2=1000001)
+    # Relative to the strength closest to 0, regardless of how big the number is
+    eve_match_id = mk_eve_booster(strength1=25, strength2=25.0002)
+    eve_mismatch_id = mk_eve_booster(strength1=25, strength2=25.0003)
+    eve_big_match_id = mk_eve_booster(strength1=1000000, strength2=1000009)
+    eve_big_mismatch_id = mk_eve_booster(strength1=1000000, strength2=1000011)
+    # Strength closest to 0 is compared against and returned, whichever modifier has it
+    eve_reversed_match_id = mk_eve_booster(strength1=25.0002, strength2=25)
+    eve_negative_match_id = mk_eve_booster(strength1=-25, strength2=-25.0002)
     # 1.15 * 100, the same value as 115 reached in a different way
     eve_float_error_id = mk_eve_booster(strength1=114.99999999999999, strength2=115)
-    # 5 orders relative to the number when it is less than 1
-    eve_small_match_id = mk_eve_booster(strength1=0.5, strength2=0.500001)
-    eve_small_mismatch_id = mk_eve_booster(strength1=0.5, strength2=0.50001)
-    # Everything close to 0 is considered to be 0
-    eve_zero_match_id = mk_eve_booster(strength1=0.000001, strength2=0.000009)
-    eve_zero_mismatch_id = mk_eve_booster(strength1=0, strength2=0.00002)
+    eve_small_match_id = mk_eve_booster(strength1=0.5, strength2=0.500004)
+    eve_small_mismatch_id = mk_eve_booster(strength1=0.5, strength2=0.500006)
+    eve_tiny_mismatch_id = mk_eve_booster(strength1=0.000001, strength2=0.000009)
+    # Absolute tolerance for numbers close to 0
+    eve_zero_match_id = mk_eve_booster(strength1=0, strength2=0.00000000001)
+    eve_zero_mismatch_id = mk_eve_booster(strength1=0, strength2=0.000000001)
     client.create_sources()
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
@@ -362,15 +364,17 @@ def test_strength_value_comparison(client, consts):
         return api_fit.add_booster(type_id=eve_booster_id).update().side_effects[eve_effect_id].mod
 
     # Verification
-    assert get_strength_info(eve_match_id).str == approx(25, accuracy=5)
+    assert get_strength_info(eve_match_id).str == approx(25)
     assert get_strength_info(eve_mismatch_id) is None
-    assert get_strength_info(eve_big_match_id).str == approx(1000000, accuracy=5)
+    assert get_strength_info(eve_big_match_id).str == approx(1000000)
     assert get_strength_info(eve_big_mismatch_id) is None
-    assert get_strength_info(eve_int_mismatch_id) is None
+    assert get_strength_info(eve_reversed_match_id).str == approx(25)
+    assert get_strength_info(eve_negative_match_id).str == approx(-25)
     assert get_strength_info(eve_float_error_id).str == approx(115)
-    assert get_strength_info(eve_small_match_id).str == approx(0.5, accuracy=5)
+    assert get_strength_info(eve_small_match_id).str == approx(0.5)
     assert get_strength_info(eve_small_mismatch_id) is None
-    assert get_strength_info(eve_zero_match_id).str == approx(0, accuracy=5)
+    assert get_strength_info(eve_tiny_mismatch_id) is None
+    assert get_strength_info(eve_zero_match_id).str == approx(0)
     assert get_strength_info(eve_zero_mismatch_id) is None
 
 

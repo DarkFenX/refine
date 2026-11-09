@@ -4,24 +4,24 @@ use super::CalcCustomModStrength;
 use crate::{
     Value,
     misc::{AttrSpec, EffectSpec},
-    rd::RAttrConsts,
+    rd::{RAttrConsts, REffect},
     svc::{
         SvcCtx,
         calc::{
             AffecteeFilter, AggrMode, Calc, CalcCustomModifier, CalcModInfoAffector, CalcOp, Location, ModifierKind,
-            RawModifier, modifier::ModStrength,
+            RawModAffector, RawModifier, modifier::ModStrength,
         },
     },
     ud::UItemId,
 };
 
-pub(super) fn make_rmod(attr_consts: &RAttrConsts, espec: EffectSpec) -> Option<RawModifier> {
+pub(super) fn make_rmod(attr_consts: &RAttrConsts, affector: RawModAffector, effect: &REffect) -> Option<RawModifier> {
     if attr_consts.speed_boost_factor.is_none() || attr_consts.mass.is_none() {
         return None;
     }
     Some(RawModifier {
         kind: ModifierKind::Local,
-        affector_espec: espec,
+        affector_espec: affector.get_espec(effect),
         strength: ModStrength::Custom(CalcCustomModStrength {
             kind: CalcCustomModifier::PropSpeed,
             // Exposing just 1 on-item attribute here which should change more than the other

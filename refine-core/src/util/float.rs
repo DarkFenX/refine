@@ -21,18 +21,12 @@ pub(crate) fn round(val: f64, digits: i32) -> f64 {
     (val * mul).round() / mul
 }
 
-/// Check if two numbers match up to a specified count of significant orders.
+/// Check if a number is close to an expected one.
 ///
-/// Orders are counted from the integer part: numbers above 1 have to match in that many digits
-/// after the dot regardless of their magnitude, and lesser ones have to be as close in relative
-/// terms as 1 is. Numbers closer to 0 than the last of those orders are considered to be 0.
-pub(crate) fn sig_eq(val1: f64, val2: f64, sig_orders: u32) -> bool {
-    let tolerance = pow10(-(sig_orders as i32));
-    let (abs1, abs2) = (val1.abs(), val2.abs());
-    if abs1 < tolerance && abs2 < tolerance {
-        return true;
-    }
-    (val1 - val2).abs() <= abs1.min(abs2).min(1.0) * tolerance
+/// The difference has to be within the relative tolerance of the expected number, or within the
+/// absolute tolerance, whichever is bigger.
+pub(crate) fn approx_eq(actual: f64, expected: f64, rel_tol: f64, abs_tol: f64) -> bool {
+    (actual - expected).abs() <= f64::max(rel_tol * expected.abs(), abs_tol)
 }
 
 // Precalculated powers of 10
