@@ -18,7 +18,6 @@ impl Calc {
         item: &UItem,
         effect: &REffect,
     ) {
-        reuse_rmods.clear();
         // Regular modifiers
         for effect_mod in effect.modifiers.iter() {
             match RawModifier::try_from_effect_mod(u_data, item_uid, item, effect, effect_mod) {

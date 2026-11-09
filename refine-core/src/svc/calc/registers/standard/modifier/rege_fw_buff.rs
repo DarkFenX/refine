@@ -26,7 +26,6 @@ impl StandardRegister {
         rmod_id: RawModId,
         rmod: RawModifier,
     ) -> bool {
-        reuse_cmods.clear();
         let valid = match rmod.affectee_filter {
             AffecteeFilter::Direct(Location::ItemList(item_list_rid)) => {
                 let fit_uid = fw_effect.get_fit_uid();
@@ -91,7 +90,6 @@ impl StandardRegister {
         rmod_id: RawModId,
         rmod: RawModifier,
     ) {
-        reuse_cmods.clear();
         match rmod.affectee_filter {
             AffecteeFilter::Direct(Location::ItemList(item_list_rid)) => {
                 let fit_uid = fw_effect.get_fit_uid();

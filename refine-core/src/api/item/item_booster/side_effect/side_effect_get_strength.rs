@@ -20,8 +20,8 @@ impl SideEffectStr {
 impl<'s> SideEffect<'s> {
     /// Get side effect strength as an operator and modification value.
     ///
-    /// Returns something only if all the side effect modifiers use the same operator and attribute
-    /// ID to apply modification.
+    /// Returns something only if all the side effect modifiers use the same operator and almost the
+    /// same strength.
     pub fn get_strength(&mut self) -> Option<SideEffectStr> {
         let effect_rid = self.sol.u_data.r_data.get_effect_rid_by_aid(&self.effect_aid).unwrap();
         let (op, strength) = self

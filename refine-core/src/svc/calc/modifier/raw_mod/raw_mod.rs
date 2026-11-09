@@ -227,10 +227,10 @@ impl RawModifier {
             Some(REffectResist::Attr(attr_rid)) => Some(attr_rid),
             // Only projected buffs are resisted
             Some(REffectResist::AttrRef(_) | REffectResist::RemoteResistance)
-            if matches!(buff_full.scope, REffectBuffScope::Projected(..)) =>
-                {
-                    return RawModTemplateStatus::ItemDependent;
-                }
+                if matches!(buff_full.scope, REffectBuffScope::Projected(..)) =>
+            {
+                return RawModTemplateStatus::ItemDependent;
+            }
             _ => None,
         };
         let buff_str = match buff_full.strength {

@@ -38,7 +38,6 @@ impl StandardRegister {
     ) {
         // Register projection and get appropriate context modifiers.
         let rmod_ids = self.rmods_proj.get(&projector_espec);
-        reuse_cmods.clear();
         for &rmod_id in rmod_ids {
             let rmod = rmods.get_rmod(templates, rmod_id);
             if let Some(cmod) = proj_mod(
@@ -80,7 +79,6 @@ impl StandardRegister {
     ) {
         // Unregister projection and get appropriate context modifiers.
         let rmod_ids = self.rmods_proj.get(&projector_espec);
-        reuse_cmods.clear();
         for &rmod_id in rmod_ids {
             let rmod = rmods.get_rmod(templates, rmod_id);
             if let Some(cmod) = unproj_mod(
@@ -122,7 +120,6 @@ impl StandardRegister {
     ) {
         // Get context modifiers for projection.
         let rmod_ids = self.rmods_proj.get(&projector_espec);
-        reuse_cmods.clear();
         for &rmod_id in rmod_ids {
             let rmod = rmods.get_rmod(templates, rmod_id);
             if let Some(cmod) = match rmod.kind {

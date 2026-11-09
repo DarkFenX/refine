@@ -58,7 +58,6 @@ impl RawModStorage {
         reuse_rmod_slots: &mut Vec<RawModSlot>,
         espec: EffectSpec,
     ) {
-        reuse_rmod_slots.clear();
         reuse_rmod_slots.extend(self.by_espec.remove_key(&espec));
     }
     pub(in crate::svc::calc) fn remove_by_espec_p2(&mut self, slot: RawModSlot) {

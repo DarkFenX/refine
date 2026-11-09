@@ -147,7 +147,6 @@ impl StandardRegister {
         rmods: &RawModStorage,
         item: &UItem,
     ) {
-        reuse_cmods.clear();
         if let (Some(item_fit_uid), Some(loc_kind)) = (item.get_fit_uid(), item.get_ship_loc_kind()) {
             for ((stored_fit_uid, stored_loc_kind, _), stored_cmods) in self.cmods.loc.iter() {
                 if item_fit_uid == *stored_fit_uid && loc_kind == *stored_loc_kind {

@@ -21,6 +21,20 @@ pub(crate) fn round(val: f64, digits: i32) -> f64 {
     (val * mul).round() / mul
 }
 
+/// Check if two numbers match up to a specified count of significant orders.
+///
+/// Numbers closer to 0 than the last of those orders are considered to be 0. Numbers which are 1 or
+/// more apart never match, regardless of their magnitude.
+pub(crate) fn sig_eq(val1: f64, val2: f64, sig_orders: u32) -> bool {
+    let tolerance = pow10(-(sig_orders as i32));
+    let (abs1, abs2) = (val1.abs(), val2.abs());
+    if abs1 < tolerance && abs2 < tolerance {
+        return true;
+    }
+    let diff = (val1 - val2).abs();
+    diff < 1.0 && diff <= abs1.min(abs2) * tolerance
+}
+
 // Precalculated powers of 10
 const POW10_MIN: i32 = -22;
 const POW10_MAX: i32 = 22;

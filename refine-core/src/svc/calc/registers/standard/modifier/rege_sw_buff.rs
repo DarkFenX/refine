@@ -24,7 +24,6 @@ impl StandardRegister {
         rmod_id: RawModId,
         rmod: RawModifier,
     ) -> bool {
-        reuse_cmods.clear();
         let valid = match rmod.affectee_filter {
             AffecteeFilter::Direct(Location::ItemList(item_list_rid)) => {
                 for fit_uid in ctx.u_data.fits.keys() {
@@ -86,7 +85,6 @@ impl StandardRegister {
         rmod_id: RawModId,
         rmod: &RawModifier,
     ) {
-        reuse_cmods.clear();
         match rmod.affectee_filter {
             AffecteeFilter::Direct(Location::ItemList(item_list_rid)) => {
                 for fit_uid in ctx.u_data.fits.keys() {

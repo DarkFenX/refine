@@ -18,7 +18,6 @@ impl StandardRegister {
         attr_rid: RAttrId,
         fits: &UFits,
     ) {
-        reuse_ckeys.clear();
         let fit_uid = item.get_fit_uid();
         let root_loc = item.get_root_loc_kind();
         let item_rib = item.get_r_item_base().unwrap();

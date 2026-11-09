@@ -68,6 +68,7 @@ mod debug {
             for (espec, rmods) in self.rmods.iter_by_espec() {
                 let item = u_data.items.get(espec.item_uid);
                 let effect = u_data.r_data.get_effect_by_rid(espec.effect_rid);
+                generated_rmods.clear();
                 self.generate_mods_for_effect(&mut generated_rmods, u_data, espec.item_uid, item, effect);
                 for rmod in rmods {
                     // Modifiers of partially defined buffs depend on attribute values, and are not

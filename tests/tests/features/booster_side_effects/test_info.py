@@ -1,6 +1,38 @@
 from fw import approx, check_no_field
 
 
+def setup_strength_test(client, consts, *, strength1, strength2):
+    eve_grp1_id = client.mk_eve_item_group()
+    eve_grp2_id = client.mk_eve_item_group()
+    eve_chance_attr_id = client.mk_eve_attr()
+    eve_affector_attr1_id = client.mk_eve_attr()
+    eve_affector_attr2_id = client.mk_eve_attr()
+    eve_affectee_attr_id = client.mk_eve_attr()
+    eve_mod1 = client.mk_eve_effect_mod(
+        func=consts.EveModFunc.loc_grp,
+        loc=consts.EveModLoc.ship,
+        grp=eve_grp1_id,
+        op=consts.EveModOp.post_percent,
+        affector_attr_id=eve_affector_attr1_id,
+        affectee_attr_id=eve_affectee_attr_id)
+    eve_mod2 = client.mk_eve_effect_mod(
+        func=consts.EveModFunc.loc_grp,
+        loc=consts.EveModLoc.ship,
+        grp=eve_grp2_id,
+        op=consts.EveModOp.post_percent,
+        affector_attr_id=eve_affector_attr2_id,
+        affectee_attr_id=eve_affectee_attr_id)
+    eve_effect_id = client.mk_eve_effect(chance_attr_id=eve_chance_attr_id, mod_info=[eve_mod1, eve_mod2])
+    eve_booster_id = client.mk_eve_item(
+        attrs={eve_chance_attr_id: 0.4, eve_affector_attr1_id: strength1, eve_affector_attr2_id: strength2},
+        eff_ids=[eve_effect_id])
+    client.create_sources()
+    api_sol = client.create_sol()
+    api_fit = api_sol.create_fit()
+    api_booster = api_fit.add_booster(type_id=eve_booster_id)
+    return api_booster.update().side_effects[eve_effect_id]
+
+
 def test_no_side_effects(client, consts):
     # Imitate just primary booster effect
     eve_affector_attr_id = client.mk_eve_attr()
@@ -310,6 +342,53 @@ def test_strength_mismatch_attr(client, consts):
     assert api_side.state is True
     assert api_side.mod.op == consts.ApiSideEffectOp.perc
     assert api_side.mod.str == approx(25)
+
+
+def test_strength_mismatch_value(client, consts):
+    # Action
+    api_side = setup_strength_test(client, consts, strength1=25, strength2=25.001)
+    # Verification
+    assert api_side.mod is None
+
+
+def test_strength_almost_equal(client, consts):
+    # Action
+    api_side = setup_strength_test(client, consts, strength1=25, strength2=25.0001)
+    # Verification
+    assert api_side.mod.op == consts.ApiSideEffectOp.perc
+    assert api_side.mod.str == approx(25, accuracy=4)
+
+
+def test_strength_float_error_around_int(client, consts):
+    # 1.15 * 100, which is the same value as 115 reached in a different way
+    # Action
+    api_side = setup_strength_test(client, consts, strength1=114.99999999999999, strength2=115)
+    # Verification
+    assert api_side.mod.op == consts.ApiSideEffectOp.perc
+    assert api_side.mod.str == approx(115)
+
+
+def test_strength_mismatch_int(client, consts):
+    # Different integers do not match, even if they are close in relative terms
+    # Action
+    api_side = setup_strength_test(client, consts, strength1=1000000, strength2=1000001)
+    # Verification
+    assert api_side.mod is None
+
+
+def test_strength_close_to_zero(client, consts):
+    # Action
+    api_side = setup_strength_test(client, consts, strength1=0.000001, strength2=0.000009)
+    # Verification
+    assert api_side.mod.op == consts.ApiSideEffectOp.perc
+    assert api_side.mod.str == approx(0, accuracy=5)
+
+
+def test_strength_mismatch_zero(client, consts):
+    # Action
+    api_side = setup_strength_test(client, consts, strength1=0, strength2=0.00002)
+    # Verification
+    assert api_side.mod is None
 
 
 def test_modded_chance(client, consts):

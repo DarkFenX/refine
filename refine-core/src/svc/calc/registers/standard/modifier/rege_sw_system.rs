@@ -23,7 +23,6 @@ impl StandardRegister {
         rmod_id: RawModId,
         rmod: RawModifier,
     ) -> bool {
-        reuse_cmods.clear();
         let valid = match rmod.affectee_filter {
             AffecteeFilter::Direct(loc) if let Ok(loc_kind) = loc.try_into() => {
                 reuse_cmods.reserve(ctx.u_data.fits.len());
@@ -89,7 +88,6 @@ impl StandardRegister {
         rmod_id: RawModId,
         rmod: RawModifier,
     ) {
-        reuse_cmods.clear();
         match rmod.affectee_filter {
             AffecteeFilter::Direct(loc) if let Ok(loc_kind) = loc.try_into() => {
                 reuse_cmods.reserve(ctx.u_data.fits.len());

@@ -26,7 +26,6 @@ impl StandardRegister {
         rmod_id: RawModId,
         rmod: RawModifier,
     ) -> bool {
-        reuse_cmods.clear();
         let Some(fit_uid) = item.get_fit_uid() else {
             return false;
         };
@@ -56,7 +55,6 @@ impl StandardRegister {
         rmod_id: RawModId,
         rmod: RawModifier,
     ) {
-        reuse_cmods.clear();
         let Some(fit_uid) = item.get_fit_uid() else {
             return;
         };
@@ -84,7 +82,6 @@ impl StandardRegister {
         fleet: &UFleet,
         fit_uid: UFitId,
     ) {
-        reuse_cmods.clear();
         // Outgoing fleet boosts
         for &rmod_id in self.rmods_fleet.get(&fit_uid) {
             let rmod = rmods.get_rmod(ctx.rmt(), rmod_id);
@@ -113,7 +110,6 @@ impl StandardRegister {
         fleet: &UFleet,
         fit_uid: UFitId,
     ) {
-        reuse_cmods.clear();
         // Outgoing fleet boosts
         for &rmod_id in self.rmods_fleet.get(&fit_uid) {
             let rmod = rmods.get_rmod(ctx.rmt(), rmod_id);
