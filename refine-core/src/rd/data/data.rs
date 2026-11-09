@@ -146,8 +146,8 @@ impl RData {
         let rah_duration_attr_rid = effect_consts
             .adaptive_armor_hardener
             .and_then(|effect_rid| effects.get(effect_rid).unwrap().duration_attr_rid);
-        let muta_pregen = RMutasPregen::new(&items, &mutas, &attr_aid_rid_map, &attr_consts);
-        fill_effect_remote_resists(&mut effects, &items, &mutas, &muta_pregen);
+        let muta_pregen = RMutasPregen::new(&items, &a_data.mutas.data, &attr_aid_rid_map, &attr_consts);
+        fill_effect_remote_resists(&mut effects, &items, &muta_pregen);
         // Modifier templates depend on where effects take resist attribute from, so process them
         // after resists
         let rmod_templates = RawModTemplates::from_effects(&mut effects, &buffs, &attr_consts);

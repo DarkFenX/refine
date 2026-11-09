@@ -1,6 +1,6 @@
 use crate::{
     ad::AItemId,
-    rd::{RAttrId, REffect, REffectId, REffectResist, RItem, RMutasPregen, RcItem, RcMuta},
+    rd::{RAttrId, REffect, REffectId, REffectResist, RItem, RMutasPregen, RcItem},
     util::{PDense, RMap, RSet},
 };
 
@@ -11,13 +11,12 @@ use crate::{
 pub(in crate::rd::data) fn fill_effect_remote_resists(
     effects: &mut PDense<REffectId, REffect>,
     items: &RMap<AItemId, RcItem>,
-    mutas: &RMap<AItemId, RcMuta>,
     muta_pregen: &RMutasPregen,
 ) {
     let mut effect_resists = RMap::new();
-    let mutated_type_aids: RSet<_> = mutas
-        .values()
-        .flat_map(|muta| muta.item_map.values().copied())
+    let mutated_type_aids: RSet<_> = muta_pregen
+        .iter_entries()
+        .map(|pregen_entry| pregen_entry.mutated_item.base.aid)
         .collect();
     // Fill data for non-mutated items
     for (type_aid, r_item) in items.iter() {
@@ -26,14 +25,13 @@ pub(in crate::rd::data) fn fill_effect_remote_resists(
         }
     }
     // Fill data for mutated items
-    for r_muta in mutas.values() {
-        for (base_type_aid, mutated_type_aid) in r_muta.item_map.iter() {
-            if let Some(r_item) = items.get(mutated_type_aid)
-                && let Some(rifd) = muta_pregen.get_flex_data(*base_type_aid, r_muta.id)
-            {
-                add_item_remote_resist(&mut effect_resists, r_item, rifd.remote_resist_attr_rid);
-            }
-        }
+    for pregen_entry in muta_pregen.iter_entries() {
+        let rifd = muta_pregen.get_flex_data(pregen_entry);
+        add_item_remote_resist(
+            &mut effect_resists,
+            &pregen_entry.mutated_item,
+            rifd.remote_resist_attr_rid,
+        );
     }
     // Transfer full matches to effects which rely on remote resist attr ID
     for (&effect_rid, effect_resist) in effect_resists.iter() {

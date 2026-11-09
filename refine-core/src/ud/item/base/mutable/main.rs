@@ -71,7 +71,8 @@ impl UItemBaseMutable {
                 mutation: Some(item_mutation_data),
             };
         };
-        let Some(mutated_r_item) = mutator.item_map.get(&type_aid).and_then(|v| r_data.get_item_by_aid(v)) else {
+        let muta_pregen = r_data.get_muta_pregen();
+        let Some(pregen_entry) = muta_pregen.get_entry(type_aid, mutator_type_aid) else {
             // No mutated item ID in mapping or no mutated item itself
             return match r_data.get_item_by_aid(&type_aid) {
                 // If base item is available, return base item, but with ineffective
@@ -88,15 +89,12 @@ impl UItemBaseMutable {
             };
         };
         // Make proper mutated item once we have all the data
-        let (pregen_attrs_rid, mut item_flex_data) = r_data
-            .get_muta_pregen()
-            .get_merged_attrs_rid_and_flex_data(type_aid, mutator_type_aid)
-            .unwrap();
+        let mut item_flex_data = muta_pregen.get_unmutated_flex_data(pregen_entry);
         apply_attr_mutations(&mut item_flex_data, mutator, &item_mutation_data.attr_rolls, r_data);
-        let regular_base = UItemBase::base_with_r_item(item_id, mutated_r_item.clone(), state);
+        let regular_base = UItemBase::base_with_r_item(item_id, pregen_entry.mutated_item.clone(), state);
         item_mutation_data.cache = Some(ItemMutationDataCache {
             base_type_aid: type_aid,
-            pregen_attrs_rid,
+            pregen_attrs_rid: pregen_entry.merged_attrs_rid,
             mutator: mutator.clone(),
             flex_data: item_flex_data,
         });
@@ -166,26 +164,28 @@ impl UItemBaseMutable {
         // Only effective mutation can keep rendered item type when base type changes
         let item_mutation = self.mutation.as_mut()?;
         let mutation_cache = item_mutation.cache.as_mut()?;
+        let muta_pregen = r_data.get_muta_pregen();
+        let new_pregen_entry = muta_pregen.get_entry(type_aid, item_mutation.mutator_type_aid)?;
         // With mutation cache set, item base stores mutated item
         let mutated_r_item = self.base.base_get_r_item().unwrap();
-        if mutation_cache.mutator.item_map.get(&type_aid) != Some(&mutated_r_item.base.aid) {
+        if new_pregen_entry.mutated_item.base.aid != mutated_r_item.base.aid {
             return None;
         }
-        let muta_pregen = r_data.get_muta_pregen();
-        let new_pregen_attrs_rid = muta_pregen
-            .get_merged_attrs_rid(type_aid, item_mutation.mutator_type_aid)
-            .unwrap();
         // Same unmutated attributes mean the same data derived from them, and the same attribute
         // values
-        if new_pregen_attrs_rid == mutation_cache.pregen_attrs_rid {
+        if new_pregen_entry.merged_attrs_rid == mutation_cache.pregen_attrs_rid {
             mutation_cache.base_type_aid = type_aid;
             return Some(Vec::new());
         }
-        // Services keep data derived from attributes, so with it changed, item has to be re-added
-        if !muta_pregen.is_same_flex_data(mutation_cache.base_type_aid, type_aid, item_mutation.mutator_type_aid) {
+        // Services keep data derived from attributes, so with it changed, item has to be re-added.
+        // Mutation cache is set only when pregenerated data exists
+        let old_pregen_entry = muta_pregen
+            .get_entry(mutation_cache.base_type_aid, item_mutation.mutator_type_aid)
+            .unwrap();
+        if !muta_pregen.is_same_flex_data(old_pregen_entry, new_pregen_entry) {
             return None;
         }
-        let new_attrs = muta_pregen.get_merged_attrs(new_pregen_attrs_rid).clone();
+        let new_attrs = muta_pregen.get_merged_attrs(new_pregen_entry.merged_attrs_rid).clone();
         let old_attrs = std::mem::replace(&mut mutation_cache.flex_data.attrs, new_attrs);
         apply_attr_mutations(
             &mut mutation_cache.flex_data,
@@ -217,7 +217,7 @@ impl UItemBaseMutable {
             }
         }
         mutation_cache.base_type_aid = type_aid;
-        mutation_cache.pregen_attrs_rid = new_pregen_attrs_rid;
+        mutation_cache.pregen_attrs_rid = new_pregen_entry.merged_attrs_rid;
         Some(changed_attr_rids)
     }
     pub(in crate::ud::item) fn get_rendered_type_aid(&self) -> AItemId {
@@ -282,11 +282,8 @@ impl UItemBaseMutable {
                 }
             }
         };
-        let Some(mutated_r_item) = mutator
-            .item_map
-            .get(&base_type_aid)
-            .and_then(|v| r_data.get_item_by_aid(v))
-        else {
+        let muta_pregen = r_data.get_muta_pregen();
+        let Some(pregen_entry) = muta_pregen.get_entry(base_type_aid, item_mutation.mutator_type_aid) else {
             // No mutated aitem ID or no item itself - invalidate mutated cache and use non-mutated
             // item
             match r_data.get_item_by_aid(&base_type_aid) {
@@ -303,16 +300,13 @@ impl UItemBaseMutable {
             }
         };
         // Compose attribute cache
-        let (pregen_attrs_rid, mut item_flex_data) = r_data
-            .get_muta_pregen()
-            .get_merged_attrs_rid_and_flex_data(base_type_aid, item_mutation.mutator_type_aid)
-            .unwrap();
+        let mut item_flex_data = muta_pregen.get_unmutated_flex_data(pregen_entry);
         apply_attr_mutations(&mut item_flex_data, mutator, &item_mutation.attr_rolls, r_data);
         // Everything needed is at hand, update item
-        self.base.base_set_r_item(mutated_r_item.clone());
+        self.base.base_set_r_item(pregen_entry.mutated_item.clone());
         item_mutation.cache = Some(ItemMutationDataCache {
             base_type_aid,
-            pregen_attrs_rid,
+            pregen_attrs_rid: pregen_entry.merged_attrs_rid,
             mutator: mutator.clone(),
             flex_data: item_flex_data,
         });
@@ -348,26 +342,20 @@ impl UItemBaseMutable {
             self.mutation = Some(item_mutation_data);
             return Ok(());
         };
-        let Some(mutated_r_item) = mutator
-            .item_map
-            .get(&base_type_aid)
-            .and_then(|v| r_data.get_item_by_aid(v))
-        else {
+        let muta_pregen = r_data.get_muta_pregen();
+        let Some(pregen_entry) = muta_pregen.get_entry(base_type_aid, mutator_type_aid) else {
             // No mutated aitem ID or no mutated item itself - nothing changes, except for
             // user-defined mutations getting stored
             self.mutation = Some(item_mutation_data);
             return Ok(());
         };
         // Since we have all the data now, apply mutation properly
-        let (pregen_attrs_rid, mut item_flex_data) = r_data
-            .get_muta_pregen()
-            .get_merged_attrs_rid_and_flex_data(base_type_aid, mutator_type_aid)
-            .unwrap();
+        let mut item_flex_data = muta_pregen.get_unmutated_flex_data(pregen_entry);
         apply_attr_mutations(&mut item_flex_data, mutator, &item_mutation_data.attr_rolls, r_data);
-        self.base.base_set_r_item(mutated_r_item.clone());
+        self.base.base_set_r_item(pregen_entry.mutated_item.clone());
         item_mutation_data.cache = Some(ItemMutationDataCache {
             base_type_aid,
-            pregen_attrs_rid,
+            pregen_attrs_rid: pregen_entry.merged_attrs_rid,
             mutator: mutator.clone(),
             flex_data: item_flex_data,
         });
@@ -512,11 +500,7 @@ impl UItemBaseMutable {
             // Mutation is not effective, and stays so if new mutator cannot mutate base item, in
             // which case only mutator ID changes
             let base_type_aid = self.base.get_type_aid();
-            return match r_data
-                .get_mutator_by_aid(&mutator_type_aid)
-                .and_then(|v| v.item_map.get(&base_type_aid))
-                .and_then(|v| r_data.get_item_by_aid(v))
-            {
+            return match r_data.get_muta_pregen().get_entry(base_type_aid, mutator_type_aid) {
                 Some(..) => Err(MutatorInplaceError::MutatedTypeChange),
                 None => {
                     item_mutation.mutator_type_aid = mutator_type_aid;
@@ -527,16 +511,19 @@ impl UItemBaseMutable {
         let mutator = r_data
             .get_mutator_by_aid(&mutator_type_aid)
             .ok_or(MutatorInplaceError::MutatedTypeChange)?;
+        let muta_pregen = r_data.get_muta_pregen();
         // With mutation cache set, item base stores mutated item
         let mutated_r_item = self.base.base_get_r_item().unwrap();
-        if mutator.item_map.get(&mutation_cache.base_type_aid) != Some(&mutated_r_item.base.aid) {
+        if muta_pregen
+            .get_entry(mutation_cache.base_type_aid, mutator_type_aid)
+            .map(|v| v.mutated_item.base.aid)
+            != Some(mutated_r_item.base.aid)
+        {
             return Err(MutatorInplaceError::MutatedTypeChange);
         }
         // Unmutated attributes depend only on base and mutated items, which do not change, so
         // pregenerated attributes ID stays the same as well
-        let unmutated_attrs = r_data
-            .get_muta_pregen()
-            .get_merged_attrs(mutation_cache.pregen_attrs_rid);
+        let unmutated_attrs = muta_pregen.get_merged_attrs(mutation_cache.pregen_attrs_rid);
         // Mutators which share mutated item normally mutate the same attributes
         let mut changed_attr_rids = Vec::with_capacity(mutator.attr_mods.len());
         // Attributes not mutated by new mutator get their unmutated values back
@@ -593,9 +580,11 @@ impl UItemBaseMutable {
         // Mutation cache is valid as long as data source stays the same, only the mutated item is
         // not stored on it
         if let Some(cache) = &item_mutation_data.cache {
-            let mutated_type_aid = cache.mutator.item_map.get(&cache.base_type_aid).unwrap();
-            let mutated_r_item = r_data.get_item_by_aid(mutated_type_aid).unwrap();
-            self.base.base_set_r_item(mutated_r_item.clone());
+            let pregen_entry = r_data
+                .get_muta_pregen()
+                .get_entry(cache.base_type_aid, item_mutation_data.mutator_type_aid)
+                .unwrap();
+            self.base.base_set_r_item(pregen_entry.mutated_item.clone());
         }
         self.mutation = Some(item_mutation_data);
     }
@@ -773,7 +762,8 @@ mod debug {
             if u_data
                 .r_data
                 .get_muta_pregen()
-                .get_merged_attrs_rid(*base_type_aid, mutator.id)
+                .get_entry(*base_type_aid, mutator.id)
+                .map(|v| v.merged_attrs_rid)
                 != Some(*pregen_attrs_rid)
             {
                 return Err(Default::default());

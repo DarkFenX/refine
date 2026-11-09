@@ -9,7 +9,6 @@ use crate::{
 /// A mutator controls how attributes of an item it is being applied to change.
 pub(crate) struct RMuta {
     pub(crate) id: AItemId,
-    pub(crate) item_map: RMap<AItemId, AItemId>,
     pub(crate) attr_mods: RMap<RAttrId, RMutaAttrRange>,
 }
 impl LibGetId<AItemId> for RMuta {
@@ -25,11 +24,6 @@ impl RMuta {
     pub(in crate::rd::data) fn from_a_muta(a_muta: &AMuta) -> Self {
         Self {
             id: a_muta.id,
-            item_map: a_muta
-                .items
-                .iter()
-                .map(|v| (v.base_item_id, v.mutated_item_id))
-                .collect(),
             // Fields which depend on data not available during instantiation
             attr_mods: RMap::new(),
         }
