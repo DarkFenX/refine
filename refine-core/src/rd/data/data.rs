@@ -10,6 +10,7 @@ use crate::{
         RItemEffectsPregenEntry, RItemEffectsPregenId, RItemList, RItemListId, RMuta, RMutasPregen,
         data::{effect_resist_transfer::fill_effect_remote_resists, item_effects_pregen::RItemsEffectsPregen},
     },
+    svc::calc::RawModTemplates,
     util::{PDense, RMap},
 };
 
@@ -32,6 +33,7 @@ pub(crate) struct RData {
     mutas: RMap<AItemId, RcMuta>,
     muta_pregen: RMutasPregen,
     abils: RMap<AAbilId, RAbil>,
+    rmod_templates: RawModTemplates,
     // Extra data stored directly on RData for ease of access / optimization purposes
     rah_duration_attr_rid: Option<RAttrId>,
 }
@@ -69,6 +71,9 @@ impl RData {
     }
     pub(crate) fn get_effect_consts(&self) -> &REffectConsts {
         &self.effect_consts
+    }
+    pub(crate) fn get_rmod_templates(&self) -> &RawModTemplates {
+        &self.rmod_templates
     }
     // Buff methods
     pub(crate) fn get_buff_by_rid(&self, buff_rid: RBuffId) -> &RBuff {
@@ -143,6 +148,9 @@ impl RData {
             .and_then(|effect_rid| effects.get(effect_rid).unwrap().duration_attr_rid);
         let muta_pregen = RMutasPregen::new(&items, &mutas, &attr_aid_rid_map, &attr_consts);
         fill_effect_remote_resists(&mut effects, &items, &mutas, &muta_pregen);
+        // Modifier templates depend on where effects take resist attribute from, so process them
+        // after resists
+        let rmod_templates = RawModTemplates::from_effects(&mut effects, &buffs, &attr_consts);
         Self {
             items,
             item_effects_pregen,
@@ -158,6 +166,7 @@ impl RData {
             mutas,
             muta_pregen,
             abils,
+            rmod_templates,
             rah_duration_attr_rid,
         }
     }

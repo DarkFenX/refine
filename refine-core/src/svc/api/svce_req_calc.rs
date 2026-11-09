@@ -1,8 +1,9 @@
 use crate::{
-    rd::RAttrId,
+    Value,
+    rd::{RAttrId, REffectId},
     svc::{
         Svc, SvcCtx,
-        calc::{CalcAttrVals, CalcModInfo},
+        calc::{CalcAttrVals, CalcModInfo, CalcOp},
         err::UItemLoadedError,
     },
     ud::{UData, UItemId},
@@ -42,5 +43,18 @@ impl Svc {
     ) -> Result<impl ExactSizeIterator<Item = CalcModInfo>, UItemLoadedError> {
         self.calc
             .iter_item_attr_mods(&SvcCtx::new(u_data, &self.eff_projs), item_uid, attr_rid)
+    }
+    // Specific request for side-effects
+    pub(crate) fn get_effect_mods_op_str(
+        &mut self,
+        u_data: &UData,
+        item_uid: UItemId,
+        effect_rid: REffectId,
+    ) -> Option<(CalcOp, Value)> {
+        self.calc.get_effect_mods_op_str(
+            &SvcCtx::new(u_data, &self.eff_projs),
+            item_uid,
+            u_data.r_data.get_effect_by_rid(effect_rid),
+        )
     }
 }

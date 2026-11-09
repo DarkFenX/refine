@@ -36,14 +36,15 @@ pub(crate) use misc::{CalcAttrVals, CalcModInfo, CalcModInfoAffector};
 use misc::{CalcModification, CalcModificationKey, CalcValueKind, ItemAttrPostproc, LocationKind};
 use modifier::{
     AffecteeFilter, AggrKey, AggrMode, CtxModKey, CtxModifier, ItemAddRemoveReviser, Location, ModContext,
-    ModifierKind, RawModId, RawModifier,
+    ModifierKind, RawModId, RawModIdKind, RawModSlot, RawModifier,
 };
-pub(crate) use modifier::{CalcCustomModifier, CalcOp};
+pub(crate) use modifier::{CalcCustomModifier, CalcOp, RawModTemplates};
 
 mod accum;
 mod calc;
 mod calce_attr;
 mod calce_maintain;
+mod calce_misc;
 mod calce_modgen;
 mod calce_rah;
 mod misc;

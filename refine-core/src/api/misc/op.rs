@@ -1,4 +1,4 @@
-use crate::{ad::AOp, svc::calc::CalcOp};
+use crate::svc::calc::CalcOp;
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Public
@@ -47,21 +47,6 @@ pub enum Op {
 // Private
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl Op {
-    pub(in crate::api) fn from_a_op(a_op: AOp) -> Self {
-        match a_op {
-            AOp::PreAssign => Self::PreAssign,
-            AOp::PreMul => Self::PreMul,
-            AOp::PreDiv => Self::PreDiv,
-            AOp::Add => Self::Add,
-            AOp::Sub => Self::Sub,
-            AOp::PostMul => Self::PostMul,
-            AOp::PostMulImmune => Self::PostMul,
-            AOp::PostDiv => Self::PostDiv,
-            AOp::PostPerc => Self::PostPerc,
-            AOp::PostPercImmune => Self::PostPerc,
-            AOp::PostAssign => Self::PostAssign,
-        }
-    }
     pub(crate) fn from_calc_op(calc_op: CalcOp) -> Self {
         match calc_op {
             CalcOp::PreAssign => Self::PreAssign,

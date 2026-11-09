@@ -11,7 +11,7 @@ use super::{
 use crate::{
     misc::EffectSpec,
     svc::calc::{
-        CtxModifier, ModifierKind, RawModId, RawModifier,
+        CtxModifier, ModifierKind, RawModId, RawModTemplates, RawModifier,
         registers::{
             RawModStorage, StandardRegister,
             standard::data::{StandardRegisterCtxMods, StandardRegisterRawProjStatus},
@@ -30,6 +30,7 @@ impl StandardRegister {
     pub(in crate::svc::calc) fn project_effect(
         &mut self,
         reuse_cmods: &mut Vec<CtxModifier>,
+        templates: &RawModTemplates,
         rmods: &RawModStorage,
         projector_espec: EffectSpec,
         projectee_uid: UItemId,
@@ -39,7 +40,7 @@ impl StandardRegister {
         let rmod_ids = self.rmods_proj.get(&projector_espec);
         reuse_cmods.clear();
         for &rmod_id in rmod_ids {
-            let rmod = *rmods.get_rmod(rmod_id);
+            let rmod = rmods.get_rmod(templates, rmod_id);
             if let Some(cmod) = proj_mod(
                 &mut self.rmods_proj_status,
                 &mut self.cmods,
@@ -71,6 +72,7 @@ impl StandardRegister {
     pub(in crate::svc::calc) fn unproject_effect(
         &mut self,
         reuse_cmods: &mut Vec<CtxModifier>,
+        templates: &RawModTemplates,
         rmods: &RawModStorage,
         projector_espec: EffectSpec,
         projectee_uid: UItemId,
@@ -80,7 +82,7 @@ impl StandardRegister {
         let rmod_ids = self.rmods_proj.get(&projector_espec);
         reuse_cmods.clear();
         for &rmod_id in rmod_ids {
-            let rmod = *rmods.get_rmod(rmod_id);
+            let rmod = rmods.get_rmod(templates, rmod_id);
             if let Some(cmod) = unproj_mod(
                 &mut self.rmods_proj_status,
                 &mut self.cmods,
@@ -112,6 +114,7 @@ impl StandardRegister {
     pub(in crate::svc::calc) fn query_projected_effect(
         &mut self,
         reuse_cmods: &mut Vec<CtxModifier>,
+        templates: &RawModTemplates,
         rmods: &RawModStorage,
         projector_espec: EffectSpec,
         projectee_uid: UItemId,
@@ -121,7 +124,7 @@ impl StandardRegister {
         let rmod_ids = self.rmods_proj.get(&projector_espec);
         reuse_cmods.clear();
         for &rmod_id in rmod_ids {
-            let rmod = *rmods.get_rmod(rmod_id);
+            let rmod = rmods.get_rmod(templates, rmod_id);
             if let Some(cmod) = match rmod.kind {
                 // System modifiers are not requested, since their application does not depend on
                 // projection attributes (like range)
@@ -135,18 +138,19 @@ impl StandardRegister {
     }
     pub(in crate::svc::calc::registers::standard) fn load_affectee_for_proj(
         &mut self,
+        templates: &RawModTemplates,
         rmods: &RawModStorage,
         projectee_uid: UItemId,
         projectee_item: &UItem,
     ) {
         self.rmods_proj_status.inactive.buffer_if(projectee_uid, |&rmod_id| {
-            let rmod = rmods.get_rmod(rmod_id);
+            let rmod = rmods.get_rmod(templates, rmod_id);
             match rmod.kind {
                 ModifierKind::Targeted => {
-                    load_affectee_for_proj_target(&mut self.cmods, rmod_id, rmod, projectee_uid, projectee_item)
+                    load_affectee_for_proj_target(&mut self.cmods, rmod_id, &rmod, projectee_uid, projectee_item)
                 }
                 ModifierKind::Buff => {
-                    load_affectee_for_proj_buff(&mut self.cmods, rmod_id, rmod, projectee_uid, projectee_item)
+                    load_affectee_for_proj_buff(&mut self.cmods, rmod_id, &rmod, projectee_uid, projectee_item)
                 }
                 _ => false,
             }
@@ -157,18 +161,19 @@ impl StandardRegister {
     }
     pub(in crate::svc::calc::registers::standard) fn unload_affectee_for_proj(
         &mut self,
+        templates: &RawModTemplates,
         rmods: &RawModStorage,
         projectee_uid: UItemId,
         projectee_item: &UItem,
     ) {
         self.rmods_proj_status.active.buffer_if(projectee_uid, |&rmod_id| {
-            let rmod = rmods.get_rmod(rmod_id);
+            let rmod = rmods.get_rmod(templates, rmod_id);
             match rmod.kind {
                 ModifierKind::Targeted => {
-                    unload_affectee_for_proj_target(&mut self.cmods, rmod_id, rmod, projectee_uid, projectee_item)
+                    unload_affectee_for_proj_target(&mut self.cmods, rmod_id, &rmod, projectee_uid, projectee_item)
                 }
                 ModifierKind::Buff => {
-                    unload_affectee_for_proj_buff(&mut self.cmods, rmod_id, rmod, projectee_uid, projectee_item)
+                    unload_affectee_for_proj_buff(&mut self.cmods, rmod_id, &rmod, projectee_uid, projectee_item)
                 }
                 _ => false,
             }

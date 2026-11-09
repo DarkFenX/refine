@@ -6,12 +6,12 @@ use crate::{
 };
 
 impl Svc {
-    pub(crate) fn notify_fit_added(&mut self, fit_uid: UFitId) {
-        self.calc.fit_added(fit_uid);
+    pub(crate) fn notify_fit_added(&mut self, u_data: &UData, fit_uid: UFitId) {
+        self.calc.fit_added(u_data.r_data.get_rmod_templates(), fit_uid);
         self.vast.fit_added(fit_uid);
     }
-    pub(crate) fn notify_fit_removed(&mut self, fit_uid: UFitId) {
-        self.calc.fit_removed(fit_uid);
+    pub(crate) fn notify_fit_removed(&mut self, u_data: &UData, fit_uid: UFitId) {
+        self.calc.fit_removed(u_data.r_data.get_rmod_templates(), fit_uid);
         self.vast.fit_removed(fit_uid);
     }
     pub(crate) fn notify_fit_added_to_fleet(&mut self, u_data: &UData, fleet: &UFleet, fit_uid: UFitId) {

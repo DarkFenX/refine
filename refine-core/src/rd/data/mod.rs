@@ -3,9 +3,9 @@ pub(crate) use attr::{RAttr, RAttrConsts, RAttrId};
 pub(crate) use buff::{RBuff, RBuffId, RBuffModifier};
 pub(crate) use data::{RData, RcData, RcItem, RcMuta};
 pub(crate) use effect::{
-    REffect, REffectBuff, REffectBuffScope, REffectCharge, REffectChargeLoc, REffectConsts, REffectDisallows,
-    REffectEcm, REffectId, REffectLocalOpcSpec, REffectMining, REffectModStrength, REffectModifier, REffectNeut,
-    REffectProjModSpec, REffectProjOpcSpec, REffectProjecteeFilter, REffectResist, REffectSpoolAttrs,
+    REffect, REffectBuff, REffectBuffFull, REffectBuffScope, REffectCharge, REffectChargeLoc, REffectConsts,
+    REffectDisallows, REffectEcm, REffectId, REffectLocalOpcSpec, REffectMining, REffectModStrength, REffectModifier,
+    REffectNeut, REffectProjModSpec, REffectProjOpcSpec, REffectProjecteeFilter, REffectResist, REffectSpoolAttrs,
 };
 pub(crate) use item::{
     RItem, RItemBase, RItemBaseEffectData, RItemCapConsumer, RItemChargeLimit, RItemContLimit, RItemFlexData,

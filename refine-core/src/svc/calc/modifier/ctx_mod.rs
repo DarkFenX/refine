@@ -58,8 +58,9 @@ mod debug {
 
     impl CtxModKey {
         pub(in crate::svc::calc) fn consistency_check(&self, u_data: &UData, rmods: &RawModStorage) -> DebugResult {
-            match rmods.try_get_rmod(self.rmod_id) {
-                Some(rmod) => CtxModifier::from_ckey(*rmod, *self).consistency_check(u_data),
+            self.rmod_id.consistency_check(u_data, rmods)?;
+            match rmods.try_get_rmod(u_data.r_data.get_rmod_templates(), self.rmod_id) {
+                Some(rmod) => CtxModifier::from_ckey(rmod, *self).consistency_check(u_data),
                 None => Err(Default::default()),
             }
         }

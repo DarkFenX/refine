@@ -148,7 +148,6 @@ where
             None => false,
         }
     }
-    #[expect(dead_code)]
     #[inline(always)]
     pub(crate) fn is_empty(&self) -> bool {
         self.data.is_empty()

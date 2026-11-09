@@ -379,7 +379,7 @@ impl Calc {
             // Shortcut for case when modifications cannot overlap
             ..=1 => {
                 if let Some(ckey) = reuse_ckeys.first() {
-                    let cmod = self.rmods.get_cmod(ckey);
+                    let cmod = self.rmods.get_cmod(ctx.rmt(), ckey);
                     if let Some(modification) = self.make_modification(ctx, &cmod, &filter) {
                         add_cmod_to_accum(accumulator, &modification, attr);
                     }
@@ -390,7 +390,7 @@ impl Calc {
             2..=LINEAR_DEDUP_LIMIT => {
                 let mut mods: SmallVec<[_; LINEAR_DEDUP_LIMIT]> = SmallVec::new();
                 for ckey in reuse_ckeys.iter() {
-                    let cmod = self.rmods.get_cmod(ckey);
+                    let cmod = self.rmods.get_cmod(ctx.rmt(), ckey);
                     if let Some(modification) = self.make_modification(ctx, &cmod, &filter) {
                         let dedup_key = CalcModificationKey::from_cmod(&cmod);
                         match mods
@@ -411,7 +411,7 @@ impl Calc {
             _ => {
                 let mut reuse_mods = self.reuse.mods.take();
                 for ckey in reuse_ckeys.iter() {
-                    let cmod = self.rmods.get_cmod(ckey);
+                    let cmod = self.rmods.get_cmod(ctx.rmt(), ckey);
                     if let Some(modification) = self.make_modification(ctx, &cmod, &filter) {
                         reuse_mods.insert(CalcModificationKey::from_cmod(&cmod), modification);
                     }

@@ -1,4 +1,4 @@
-use crate::{Op, SideEffect, Value, rd::REffectModStrength};
+use crate::{Op, SideEffect, Value};
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Public
@@ -23,26 +23,13 @@ impl<'s> SideEffect<'s> {
     /// Returns something only if all the side effect modifiers use the same operator and attribute
     /// ID to apply modification.
     pub fn get_strength(&mut self) -> Option<SideEffectStr> {
-        let r_data = &self.sol.u_data.r_data;
-        let effect_rid = r_data.get_effect_rid_by_aid(&self.effect_aid).unwrap();
-        let mut se_strs = r_data
-            .get_effect_by_rid(effect_rid)
-            .modifiers
-            .iter()
-            .map(|modifier| (modifier.op, modifier.strength));
-        let (op, strength) = se_strs.next()?;
-        if !se_strs.all(|se_str| se_str == (op, strength)) {
-            return None;
-        }
-        let strength = match strength {
-            REffectModStrength::Attr(attr_rid) => match self.sol.internal_get_item_attr(self.item_uid, attr_rid) {
-                Ok(calc_val) => calc_val.extra,
-                Err(..) => return None,
-            },
-            REffectModStrength::Hardcoded(strength) => strength,
-        };
+        let effect_rid = self.sol.u_data.r_data.get_effect_rid_by_aid(&self.effect_aid).unwrap();
+        let (op, strength) = self
+            .sol
+            .svc
+            .get_effect_mods_op_str(&self.sol.u_data, self.item_uid, effect_rid)?;
         Some(SideEffectStr {
-            op: Op::from_a_op(op),
+            op: Op::from_calc_op(op),
             strength,
         })
     }

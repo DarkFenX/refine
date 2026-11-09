@@ -3,7 +3,7 @@ use crate::{
     svc::{
         SvcCtx,
         calc::{
-            AffecteeFilter, CtxModifier, Location, RawModId, RawModifier,
+            AffecteeFilter, CtxModifier, Location, RawModId, RawModTemplates, RawModifier,
             registers::{
                 RawModStorage,
                 standard::{
@@ -87,10 +87,10 @@ impl StandardRegister {
         reuse_cmods.clear();
         // Outgoing fleet boosts
         for &rmod_id in self.rmods_fleet.get(&fit_uid) {
-            let rmod = rmods.get_rmod(rmod_id);
+            let rmod = rmods.get_rmod(ctx.rmt(), rmod_id);
             for fleet_fit_uid in fleet.iter_fits() {
                 if fleet_fit_uid != fit_uid {
-                    apply_fleet_mod_with_fit_uid(reuse_cmods, ctx, &mut self.cmods, rmod_id, *rmod, fleet_fit_uid);
+                    apply_fleet_mod_with_fit_uid(reuse_cmods, ctx, &mut self.cmods, rmod_id, rmod, fleet_fit_uid);
                 }
             }
         }
@@ -100,7 +100,7 @@ impl StandardRegister {
                 continue;
             }
             for &rmod_id in self.rmods_fleet.get(&fleet_fit_uid) {
-                let rmod = *rmods.get_rmod(rmod_id);
+                let rmod = rmods.get_rmod(ctx.rmt(), rmod_id);
                 apply_fleet_mod_with_fit_uid(reuse_cmods, ctx, &mut self.cmods, rmod_id, rmod, fit_uid);
             }
         }
@@ -116,10 +116,10 @@ impl StandardRegister {
         reuse_cmods.clear();
         // Outgoing fleet boosts
         for &rmod_id in self.rmods_fleet.get(&fit_uid) {
-            let rmod = rmods.get_rmod(rmod_id);
+            let rmod = rmods.get_rmod(ctx.rmt(), rmod_id);
             for fleet_fit_uid in fleet.iter_fits() {
                 if fleet_fit_uid != fit_uid {
-                    unapply_fleet_mod_with_fit_uid(reuse_cmods, ctx, &mut self.cmods, rmod_id, *rmod, fleet_fit_uid);
+                    unapply_fleet_mod_with_fit_uid(reuse_cmods, ctx, &mut self.cmods, rmod_id, rmod, fleet_fit_uid);
                 }
             }
         }
@@ -129,8 +129,8 @@ impl StandardRegister {
                 continue;
             }
             for &rmod_id in self.rmods_fleet.get(&fleet_fit_uid) {
-                let rmod = rmods.get_rmod(rmod_id);
-                unapply_fleet_mod_with_fit_uid(reuse_cmods, ctx, &mut self.cmods, rmod_id, *rmod, fit_uid);
+                let rmod = rmods.get_rmod(ctx.rmt(), rmod_id);
+                unapply_fleet_mod_with_fit_uid(reuse_cmods, ctx, &mut self.cmods, rmod_id, rmod, fit_uid);
             }
         }
     }
@@ -147,12 +147,12 @@ impl StandardRegister {
             Some(fleet_uid) => {
                 let fleet = ctx.u_data.fleets.get(fleet_uid);
                 for fleet_fit_uid in fleet.iter_fits() {
-                    let fleet_rmods = get_rmods_with_ids(rmods, &self.rmods_fleet, fleet_fit_uid);
+                    let fleet_rmods = get_rmods_with_ids(ctx.rmt(), rmods, &self.rmods_fleet, fleet_fit_uid);
                     apply_fleet_mods_to_ship_fit(&mut self.cmods, fleet_rmods, ship_uid, ship);
                 }
             }
             None => {
-                let fleet_rmods = get_rmods_with_ids(rmods, &self.rmods_fleet, fit_uid);
+                let fleet_rmods = get_rmods_with_ids(ctx.rmt(), rmods, &self.rmods_fleet, fit_uid);
                 apply_fleet_mods_to_ship_fit(&mut self.cmods, fleet_rmods, ship_uid, ship);
             }
         }
@@ -170,26 +170,27 @@ impl StandardRegister {
             Some(fleet_uid) => {
                 let fleet = ctx.u_data.fleets.get(fleet_uid);
                 for fleet_fit_uid in fleet.iter_fits() {
-                    let fleet_rmods = get_rmods_with_ids(rmods, &self.rmods_fleet, fleet_fit_uid);
+                    let fleet_rmods = get_rmods_with_ids(ctx.rmt(), rmods, &self.rmods_fleet, fleet_fit_uid);
                     unapply_fleet_mods_from_ship_fit(&mut self.cmods, fleet_rmods, ship_uid, ship);
                 }
             }
             None => {
-                let fleet_rmods = get_rmods_with_ids(rmods, &self.rmods_fleet, fit_uid);
+                let fleet_rmods = get_rmods_with_ids(ctx.rmt(), rmods, &self.rmods_fleet, fit_uid);
                 unapply_fleet_mods_from_ship_fit(&mut self.cmods, fleet_rmods, ship_uid, ship);
             }
         }
     }
 }
 
-fn get_rmods_with_ids<'a>(
-    rmods: &'a RawModStorage,
+fn get_rmods_with_ids(
+    templates: &RawModTemplates,
+    rmods: &RawModStorage,
     rmods_fleet: &RMapRSet<UFitId, RawModId>,
     fit_uid: UFitId,
-) -> impl ExactSizeIterator<Item = (RawModId, &'a RawModifier)> {
+) -> impl ExactSizeIterator<Item = (RawModId, RawModifier)> {
     rmods_fleet
         .get(&fit_uid)
-        .map(|&rmod_id| (rmod_id, rmods.get_rmod(rmod_id)))
+        .map(|&rmod_id| (rmod_id, rmods.get_rmod(templates, rmod_id)))
 }
 fn is_fit_ship_on_fleet_item_list<'u>(
     ctx: &SvcCtx<'u, '_>,
@@ -321,9 +322,9 @@ fn unapply_fleet_mod_with_fit_uid(
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Apply-unapply functions for ship changes
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-fn apply_fleet_mods_to_ship_fit<'a>(
+fn apply_fleet_mods_to_ship_fit(
     reg_cmods: &mut StandardRegisterCtxMods,
-    fleet_rmods: impl Iterator<Item = (RawModId, &'a RawModifier)>,
+    fleet_rmods: impl Iterator<Item = (RawModId, RawModifier)>,
     ship_uid: UItemId,
     ship: &UShip,
 ) {
@@ -333,7 +334,7 @@ fn apply_fleet_mods_to_ship_fit<'a>(
             AffecteeFilter::Direct(Location::ItemList(item_list_rid))
                 if is_ship_on_fleet_item_list(ship, item_list_rid) =>
             {
-                let cmod = CtxModifier::with_item(*rmod, ship_uid);
+                let cmod = CtxModifier::with_item(rmod, ship_uid);
                 let key = (ship_uid, cmod.rmod.affectee_attr_rid);
                 add_cmod(key, rmod_id, cmod, &mut reg_cmods.direct, &mut reg_cmods.by_aspec);
             }
@@ -341,7 +342,7 @@ fn apply_fleet_mods_to_ship_fit<'a>(
                 if is_ship_on_fleet_item_list(ship, item_list_rid)
                     && let Ok(loc_kind) = ship.get_ship_kind().try_into() =>
             {
-                let cmod = CtxModifier::with_fit_item(*rmod, fit_uid, ship_uid);
+                let cmod = CtxModifier::with_fit_item(rmod, fit_uid, ship_uid);
                 let key = (fit_uid, loc_kind, cmod.rmod.affectee_attr_rid);
                 add_cmod(key, rmod_id, cmod, &mut reg_cmods.loc, &mut reg_cmods.by_aspec);
             }
@@ -349,7 +350,7 @@ fn apply_fleet_mods_to_ship_fit<'a>(
                 if is_ship_on_fleet_item_list(ship, item_list_rid)
                     && let Ok(loc_kind) = ship.get_ship_kind().try_into() =>
             {
-                let cmod = CtxModifier::with_fit_item(*rmod, fit_uid, ship_uid);
+                let cmod = CtxModifier::with_fit_item(rmod, fit_uid, ship_uid);
                 let key = (fit_uid, loc_kind, item_grp_id, cmod.rmod.affectee_attr_rid);
                 add_cmod(key, rmod_id, cmod, &mut reg_cmods.loc_grp, &mut reg_cmods.by_aspec);
             }
@@ -357,7 +358,7 @@ fn apply_fleet_mods_to_ship_fit<'a>(
                 if is_ship_on_fleet_item_list(ship, item_list_rid)
                     && let Ok(loc_kind) = ship.get_ship_kind().try_into() =>
             {
-                let cmod = CtxModifier::with_fit_item(*rmod, fit_uid, ship_uid);
+                let cmod = CtxModifier::with_fit_item(rmod, fit_uid, ship_uid);
                 let key = (fit_uid, loc_kind, srq_type_aid, cmod.rmod.affectee_attr_rid);
                 add_cmod(key, rmod_id, cmod, &mut reg_cmods.loc_srq, &mut reg_cmods.by_aspec);
             }
@@ -365,9 +366,9 @@ fn apply_fleet_mods_to_ship_fit<'a>(
         }
     }
 }
-fn unapply_fleet_mods_from_ship_fit<'a>(
+fn unapply_fleet_mods_from_ship_fit(
     reg_cmods: &mut StandardRegisterCtxMods,
-    fleet_rmods: impl Iterator<Item = (RawModId, &'a RawModifier)>,
+    fleet_rmods: impl Iterator<Item = (RawModId, RawModifier)>,
     ship_uid: UItemId,
     ship: &UShip,
 ) {
@@ -377,7 +378,7 @@ fn unapply_fleet_mods_from_ship_fit<'a>(
             AffecteeFilter::Direct(Location::ItemList(item_list_rid))
                 if is_ship_on_fleet_item_list(ship, item_list_rid) =>
             {
-                let cmod = CtxModifier::with_item(*rmod, ship_uid);
+                let cmod = CtxModifier::with_item(rmod, ship_uid);
                 let key = (ship_uid, cmod.rmod.affectee_attr_rid);
                 remove_cmod(key, rmod_id, &cmod, &mut reg_cmods.direct, &mut reg_cmods.by_aspec);
             }
@@ -385,7 +386,7 @@ fn unapply_fleet_mods_from_ship_fit<'a>(
                 if is_ship_on_fleet_item_list(ship, item_list_rid)
                     && let Ok(loc_kind) = ship.get_ship_kind().try_into() =>
             {
-                let cmod = CtxModifier::with_fit_item(*rmod, fit_uid, ship_uid);
+                let cmod = CtxModifier::with_fit_item(rmod, fit_uid, ship_uid);
                 let key = (fit_uid, loc_kind, cmod.rmod.affectee_attr_rid);
                 remove_cmod(key, rmod_id, &cmod, &mut reg_cmods.loc, &mut reg_cmods.by_aspec);
             }
@@ -393,7 +394,7 @@ fn unapply_fleet_mods_from_ship_fit<'a>(
                 if is_ship_on_fleet_item_list(ship, item_list_rid)
                     && let Ok(loc_kind) = ship.get_ship_kind().try_into() =>
             {
-                let cmod = CtxModifier::with_fit_item(*rmod, fit_uid, ship_uid);
+                let cmod = CtxModifier::with_fit_item(rmod, fit_uid, ship_uid);
                 let key = (fit_uid, loc_kind, item_grp_id, cmod.rmod.affectee_attr_rid);
                 remove_cmod(key, rmod_id, &cmod, &mut reg_cmods.loc_grp, &mut reg_cmods.by_aspec);
             }
@@ -401,7 +402,7 @@ fn unapply_fleet_mods_from_ship_fit<'a>(
                 if is_ship_on_fleet_item_list(ship, item_list_rid)
                     && let Ok(loc_kind) = ship.get_ship_kind().try_into() =>
             {
-                let cmod = CtxModifier::with_fit_item(*rmod, fit_uid, ship_uid);
+                let cmod = CtxModifier::with_fit_item(rmod, fit_uid, ship_uid);
                 let key = (fit_uid, loc_kind, srq_type_aid, cmod.rmod.affectee_attr_rid);
                 remove_cmod(key, rmod_id, &cmod, &mut reg_cmods.loc_srq, &mut reg_cmods.by_aspec);
             }

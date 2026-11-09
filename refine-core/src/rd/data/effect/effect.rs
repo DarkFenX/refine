@@ -1,3 +1,5 @@
+use std::ops::Range;
+
 use crate::{
     ad::{AAttrId, ABuffId, AEffect, AEffectCatId, AEffectId, AItemListId},
     nd::{
@@ -25,8 +27,13 @@ pub(crate) struct REffect {
     pub(crate) state: RState,
     pub(crate) charge: Option<REffectCharge>,
     pub(crate) buff: Option<REffectBuff>,
+    // Holds only modifiers which did not become templates
     pub(crate) modifiers: Box<[REffectModifier]>,
     pub(crate) calc_custom_mod: Option<CalcCustomModifier>,
+    // Reference to template range, which includes templated modifiers of the effect
+    pub(crate) rmod_templates: Range<u32>,
+    // True - effect has some modifiers which were not templated, false - all are in templates
+    pub(crate) needs_rmod_gen: bool,
     pub(crate) projectee_filter: Option<REffectProjecteeFilter>,
     pub(crate) stopped_effect_rids: Box<[REffectId]>,
     pub(crate) cloaks_carrier: bool,
@@ -155,6 +162,8 @@ impl REffect {
             // Fields which depend on data not available during instantiation
             buff: Default::default(),
             modifiers: Default::default(),
+            rmod_templates: Default::default(),
+            needs_rmod_gen: Default::default(),
             projectee_filter: Default::default(),
             stopped_effect_rids: Default::default(),
             is_blockable_offensive_modifier: Default::default(),

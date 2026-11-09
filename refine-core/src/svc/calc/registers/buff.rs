@@ -22,6 +22,9 @@ impl BuffRegister {
         }
     }
     // Effect methods
+    pub(in crate::svc::calc) fn has_effects(&self) -> bool {
+        !self.effect_rids.is_empty()
+    }
     pub(in crate::svc::calc) fn get_effects(&self, item_uid: UItemId) -> impl ExactSizeIterator<Item = REffectId> {
         self.effect_rids.get(&item_uid).copied()
     }

@@ -1,7 +1,7 @@
 use std::hash::Hash;
 
 use crate::{
-    svc::calc::{CalcModification, CalcModificationKey, CtxModKey, CtxModifier, ModAccumFast, RawModId, RawModifier},
+    svc::calc::{CalcModification, CalcModificationKey, CtxModKey, CtxModifier, ModAccumFast, RawModSlot, RawModifier},
     ud::UItemId,
     util::RMap,
 };
@@ -14,7 +14,7 @@ const MAX_MAP_CAPACITY: usize = 128;
 #[derive(Clone, Default)]
 pub(in crate::svc::calc) struct CalcReuse {
     pub(in crate::svc::calc) items: Reuse<Vec<UItemId>>,
-    pub(in crate::svc::calc) rmod_ids: Reuse<Vec<RawModId>>,
+    pub(in crate::svc::calc) rmod_slots: Reuse<Vec<RawModSlot>>,
     pub(in crate::svc::calc) rmods: Reuse<Vec<RawModifier>>,
     pub(in crate::svc::calc) ckeys: Reuse<Vec<CtxModKey>>,
     pub(in crate::svc::calc) cmods: Reuse<Vec<CtxModifier>>,

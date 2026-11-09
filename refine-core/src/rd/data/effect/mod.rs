@@ -1,4 +1,4 @@
-pub(crate) use buff::{REffectBuff, REffectBuffScope};
+pub(crate) use buff::{REffectBuff, REffectBuffFull, REffectBuffScope};
 pub(crate) use charge::{REffectCharge, REffectChargeLoc};
 pub(crate) use consts::REffectConsts;
 pub(crate) use disallows::REffectDisallows;

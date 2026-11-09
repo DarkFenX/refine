@@ -298,7 +298,8 @@ def test_strength_mismatch_attr(client, consts):
     api_side = api_booster.update().side_effects[eve_effect_id]
     assert api_side.chance == approx(0.4)
     assert api_side.state is False
-    assert api_side.mod is None
+    assert api_side.mod.op == consts.ApiSideEffectOp.perc
+    assert api_side.mod.str == approx(25)
     # Action
     api_booster.change_booster(side_effects={eve_effect_id: True})
     # Verification
@@ -307,7 +308,8 @@ def test_strength_mismatch_attr(client, consts):
     api_side = api_booster.update().side_effects[eve_effect_id]
     assert api_side.chance == approx(0.4)
     assert api_side.state is True
-    assert api_side.mod is None
+    assert api_side.mod.op == consts.ApiSideEffectOp.perc
+    assert api_side.mod.str == approx(25)
 
 
 def test_modded_chance(client, consts):

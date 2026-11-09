@@ -1,6 +1,6 @@
 use crate::{
     rd::{RAttrConsts, REffectConsts},
-    svc::eff_projs::EffProjs,
+    svc::{calc::RawModTemplates, eff_projs::EffProjs},
     ud::UData,
 };
 
@@ -18,5 +18,8 @@ impl<'u, 'p> SvcCtx<'u, 'p> {
     }
     pub(crate) fn ec(&self) -> &REffectConsts {
         self.u_data.r_data.get_effect_consts()
+    }
+    pub(crate) fn rmt(&self) -> &RawModTemplates {
+        self.u_data.r_data.get_rmod_templates()
     }
 }

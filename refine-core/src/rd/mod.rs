@@ -9,13 +9,14 @@
 //! - Remapping some IDs to dense IDs for faster access to some entity types.
 
 pub(crate) use data::{
-    RAbil, RAttr, RAttrConsts, RAttrId, RBuff, RBuffId, RBuffModifier, RData, REffect, REffectBuff, REffectBuffScope,
-    REffectCharge, REffectChargeLoc, REffectConsts, REffectDisallows, REffectEcm, REffectId, REffectLocalOpcSpec,
-    REffectMining, REffectModStrength, REffectModifier, REffectNeut, REffectProjModSpec, REffectProjOpcSpec,
-    REffectProjecteeFilter, REffectResist, REffectSpoolAttrs, RItem, RItemBase, RItemBaseEffectData, RItemCapConsumer,
-    RItemChargeLimit, RItemContLimit, RItemEffectOptions, RItemEffectsPregenEntry, RItemEffectsPregenId,
-    RItemEffectsResolver, RItemFlexData, RItemList, RItemListId, RItemShipLimit, RMuta, RMutaAttrRange, RMutasPregen,
-    RMutasPregenMergedAttrsId, RShipDroneLimit, RShipKind, RState, RcData, RcItem, RcMuta,
+    RAbil, RAttr, RAttrConsts, RAttrId, RBuff, RBuffId, RBuffModifier, RData, REffect, REffectBuff, REffectBuffFull,
+    REffectBuffScope, REffectCharge, REffectChargeLoc, REffectConsts, REffectDisallows, REffectEcm, REffectId,
+    REffectLocalOpcSpec, REffectMining, REffectModStrength, REffectModifier, REffectNeut, REffectProjModSpec,
+    REffectProjOpcSpec, REffectProjecteeFilter, REffectResist, REffectSpoolAttrs, RItem, RItemBase,
+    RItemBaseEffectData, RItemCapConsumer, RItemChargeLimit, RItemContLimit, RItemEffectOptions,
+    RItemEffectsPregenEntry, RItemEffectsPregenId, RItemEffectsResolver, RItemFlexData, RItemList, RItemListId,
+    RItemShipLimit, RMuta, RMutaAttrRange, RMutasPregen, RMutasPregenMergedAttrsId, RShipDroneLimit, RShipKind, RState,
+    RcData, RcItem, RcMuta,
 };
 
 mod data;

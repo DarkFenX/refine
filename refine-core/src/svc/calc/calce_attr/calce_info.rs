@@ -91,7 +91,7 @@ impl Calc {
         self.std
             .get_mods_for_affectee(&mut reuse_ckeys, item_uid, item, attr_rid, &ctx.u_data.fits);
         for ckey in reuse_ckeys.iter() {
-            let cmod = &self.rmods.get_cmod(ckey);
+            let cmod = &self.rmods.get_cmod(ctx.rmt(), ckey);
             let Some(val) = cmod.rmod.get_mod_val(self, ctx) else {
                 continue;
             };

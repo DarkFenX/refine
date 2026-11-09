@@ -7,7 +7,8 @@ pub(in crate::svc::calc) use custom::ItemAddRemoveReviser;
 pub(in crate::svc::calc) use kind::ModifierKind;
 pub(in crate::svc::calc) use location::Location;
 pub(crate) use op::CalcOp;
-pub(in crate::svc::calc) use raw_mod::{RawModId, RawModifier};
+pub(crate) use raw_mod::RawModTemplates;
+pub(in crate::svc::calc) use raw_mod::{RawModId, RawModIdKind, RawModSlot, RawModifier};
 use strength::ModStrength;
 
 mod affectee_filter;

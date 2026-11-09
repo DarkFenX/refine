@@ -5,18 +5,18 @@ use crate::{
     rd::{RAttrId, RData, REffect, REffectId},
     svc::{
         SvcCtx,
-        calc::{Calc, CtxModifier, ModifierKind, RawModId, RawModifier},
+        calc::{Calc, CtxModifier, ModifierKind, RawModId, RawModSlot, RawModTemplates, RawModifier},
     },
     ud::{UFitId, UFleet, UItem, UItemId},
 };
 
 impl Calc {
     // Modification methods
-    pub(in crate::svc) fn fit_added(&mut self, fit_uid: UFitId) {
-        self.std.reg_fit_for_sw(&self.rmods, fit_uid)
+    pub(in crate::svc) fn fit_added(&mut self, templates: &RawModTemplates, fit_uid: UFitId) {
+        self.std.reg_fit_for_sw(templates, &self.rmods, fit_uid)
     }
-    pub(in crate::svc) fn fit_removed(&mut self, fit_uid: UFitId) {
-        self.std.unreg_fit_for_sw(&self.rmods, fit_uid)
+    pub(in crate::svc) fn fit_removed(&mut self, templates: &RawModTemplates, fit_uid: UFitId) {
+        self.std.unreg_fit_for_sw(templates, &self.rmods, fit_uid)
     }
     pub(in crate::svc) fn fit_added_to_fleet(&mut self, ctx: &SvcCtx, fleet: &UFleet, fit_uid: UFitId) {
         let mut reuse_cmods = self.reuse.cmods.take();
@@ -52,7 +52,7 @@ impl Calc {
                 if !reviser.reacts_to(item) {
                     return None;
                 }
-                let cmod = self.rmods.get_cmod(ckey);
+                let cmod = self.rmods.get_cmod(ctx.rmt(), ckey);
                 match reviser.revise(ctx, cmod.rmod.affector_espec.item_uid, item_uid, item) {
                     true => Some(cmod),
                     false => None,
@@ -76,7 +76,7 @@ impl Calc {
                 if !reviser.reacts_to(item) {
                     return None;
                 }
-                let cmod = self.rmods.get_cmod(ckey);
+                let cmod = self.rmods.get_cmod(ctx.rmt(), ckey);
                 match reviser.revise(ctx, cmod.rmod.affector_espec.item_uid, item_uid, item) {
                     true => Some(cmod),
                     false => None,
@@ -138,50 +138,22 @@ impl Calc {
             .iter()
             .map(|&effect_rid| r_data.get_effect_by_rid(effect_rid));
         // Notify core calc services
-        let mut reuse_rmod_ids = self.reuse.rmod_ids.take();
-        let mut reuse_rmods = self.reuse.rmods.take();
         let mut reuse_items = self.reuse.items.take();
-        let mut reuse_cmods = self.reuse.cmods.take();
+        let mut has_stored_rmods = false;
         for effect in effects.clone() {
-            self.generate_mods_for_effect(&mut reuse_rmods, ctx.u_data, item_uid, item, effect);
-            self.reg_raw_mods(
-                &mut reuse_rmod_ids,
-                &mut reuse_items,
-                &mut reuse_cmods,
-                ctx,
-                item,
-                EffectSpec::new(item_uid, effect.rid),
-                &reuse_rmods,
-            );
-        }
-        // Buffs which rely on on-item attributes are generated after all other modifiers of started
-        // effects are registered, since those modifiers can change applied buff ID
-        for effect in effects.clone() {
-            if let Some(effect_buff) = &effect.buff
-                && effect_buff.attr_merge.is_some()
-            {
-                self.generate_dependent_buff_mods_for_effect(&mut reuse_rmods, ctx, item_uid, item, effect);
-                self.reg_raw_mods(
-                    &mut reuse_rmod_ids,
-                    &mut reuse_items,
-                    &mut reuse_cmods,
-                    ctx,
-                    item,
-                    EffectSpec::new(item_uid, effect.rid),
-                    &reuse_rmods,
-                );
+            for (rmod_id, rmod) in r_data.get_rmod_templates().iter_effect(effect, item_uid) {
+                self.reg_raw_mod(&mut reuse_items, ctx, item_uid, item, rmod_id, rmod);
+            }
+            if effect.needs_rmod_gen {
+                has_stored_rmods = true;
+                self.reg_stored_rmods(&mut reuse_items, ctx, item_uid, item, effect);
             }
         }
-        // Buff maintenance - add info about effects which use default buff attributes. Done after
-        // all modifiers are registered, so that buff modifiers of started effects are not generated
-        // again while starting them
-        for effect in effects {
-            self.buffs.reg_effect(item_uid, effect);
+        // Effects with buffs which rely on on-item attributes always have stored modifiers
+        if has_stored_rmods {
+            self.reg_buff_effects(&mut reuse_items, ctx, item_uid, item, effects);
         }
-        self.reuse.rmod_ids.put(reuse_rmod_ids);
-        self.reuse.rmods.put(reuse_rmods);
         self.reuse.items.put(reuse_items);
-        self.reuse.cmods.put(reuse_cmods);
         // Notify RAH sim
         self.rah_effects_started(ctx, item_uid, item, effect_rids);
     }
@@ -192,36 +164,30 @@ impl Calc {
         item: &UItem,
         effect_rids: &[REffectId],
     ) {
+        let r_data: &RData = &ctx.u_data.r_data;
         // Notify RAH sim
         self.rah_effects_stopped(ctx, item_uid, item, effect_rids);
         // Notify core calc services
         // Buff maintenance - remove info about effects which use default buff attributes before
         // removing any modifiers. Removal can change buff attribute values, and buff modifiers
         // would be re-generated for effects which are still registered
-        for &effect_rid in effect_rids {
-            self.buffs
-                .unreg_effect(item_uid, ctx.u_data.r_data.get_effect_by_rid(effect_rid));
-        }
-        let mut reuse_rmod_ids = self.reuse.rmod_ids.take();
-        let mut reuse_items = self.reuse.items.take();
-        let mut reuse_cmods = self.reuse.cmods.take();
-        for &effect_rid in effect_rids {
-            let espec = EffectSpec::new(item_uid, effect_rid);
-            self.rmods.remove_by_espec_p1(&mut reuse_rmod_ids, espec);
-            for &rmod_id in reuse_rmod_ids.iter() {
-                // Attribute changes caused by unregistering a modifier can remove other modifiers
-                // of the effect (e.g. buff modifiers which depend on attribute values), and their
-                // IDs can be reused by modifiers of other effects
-                let Some(rmod) = self.rmods.get_rmod_for_espec(rmod_id, espec) else {
-                    continue;
-                };
-                self.unreg_raw_mod(&mut reuse_items, &mut reuse_cmods, ctx, item_uid, item, rmod_id, &rmod);
-                self.rmods.remove_by_espec_p2(rmod_id);
+        if self.buffs.has_effects() {
+            for &effect_rid in effect_rids {
+                self.buffs.unreg_effect(item_uid, r_data.get_effect_by_rid(effect_rid));
             }
         }
-        self.reuse.rmod_ids.put(reuse_rmod_ids);
+        let mut reuse_items = self.reuse.items.take();
+        for &effect_rid in effect_rids {
+            let effect = r_data.get_effect_by_rid(effect_rid);
+            // Includes modifiers which failed to register, unregistering those does nothing
+            for (rmod_id, rmod) in r_data.get_rmod_templates().iter_effect(effect, item_uid) {
+                self.unreg_raw_mod(&mut reuse_items, ctx, item_uid, item, rmod_id, &rmod);
+            }
+            if effect.needs_rmod_gen {
+                self.unreg_stored_rmods(&mut reuse_items, ctx, item_uid, item, effect_rid);
+            }
+        }
         self.reuse.items.put(reuse_items);
-        self.reuse.cmods.put(reuse_cmods);
     }
     pub(in crate::svc) fn effect_projected(
         &mut self,
@@ -237,6 +203,7 @@ impl Calc {
         let mut reuse_cmods = self.reuse.cmods.take();
         self.std.project_effect(
             &mut reuse_cmods,
+            ctx.rmt(),
             &self.rmods,
             projector_espec,
             projectee_uid,
@@ -259,6 +226,7 @@ impl Calc {
         let mut reuse_cmods = self.reuse.cmods.take();
         self.std.query_projected_effect(
             &mut reuse_cmods,
+            ctx.rmt(),
             &self.rmods,
             projector_espec,
             projectee_uid,
@@ -285,6 +253,7 @@ impl Calc {
         let mut reuse_cmods = self.reuse.cmods.take();
         self.std.unproject_effect(
             &mut reuse_cmods,
+            ctx.rmt(),
             &self.rmods,
             projector_espec,
             projectee_uid,
@@ -313,7 +282,7 @@ impl Calc {
         let cmods = self
             .std
             .iter_affector_spec_ckeys(aspec)
-            .map(|ckey| self.rmods.get_cmod(ckey))
+            .map(|ckey| self.rmods.get_cmod(ctx.rmt(), ckey))
             .collect_vec();
         if !cmods.is_empty() {
             let mut reuse_affectees = self.reuse.items.take();
@@ -336,18 +305,10 @@ impl Calc {
                 let mut reuse_cmods = self.reuse.cmods.take();
                 let rmod_ids = rmod_ids.collect_vec();
                 for rmod_id in rmod_ids.into_iter() {
-                    let rmod = *self.rmods.get_rmod(rmod_id);
+                    let rmod = self.rmods.get_rmod(ctx.rmt(), rmod_id);
                     self.unproject_dependent_mod(&mut reuse_items, &mut reuse_cmods, ctx, rmod_id, rmod);
-                    self.unreg_raw_mod(
-                        &mut reuse_items,
-                        &mut reuse_cmods,
-                        ctx,
-                        aspec.item_uid,
-                        item,
-                        rmod_id,
-                        &rmod,
-                    );
-                    self.rmods.remove_full(rmod_id);
+                    self.unreg_raw_mod(&mut reuse_items, ctx, aspec.item_uid, item, rmod_id, &rmod);
+                    self.rmods.remove_full(rmod_id.expect_slot());
                 }
                 self.reuse.items.put(reuse_items);
                 self.reuse.cmods.put(reuse_cmods);
@@ -366,17 +327,10 @@ impl Calc {
                 let mut reuse_items = self.reuse.items.take();
                 let mut reuse_cmods = self.reuse.cmods.take();
                 for rmod in rmods.into_iter() {
-                    let rmod_id = self.rmods.add(rmod);
-                    if !self.reg_raw_mod(
-                        &mut reuse_items,
-                        &mut reuse_cmods,
-                        ctx,
-                        aspec.item_uid,
-                        item,
-                        rmod_id,
-                        rmod,
-                    ) {
-                        self.rmods.remove_full(rmod_id);
+                    let slot = self.rmods.add(rmod);
+                    let rmod_id = RawModId::from_slot(slot);
+                    if !self.reg_raw_mod(&mut reuse_items, ctx, aspec.item_uid, item, rmod_id, rmod) {
+                        self.rmods.remove_full(slot);
                         continue;
                     }
                     self.project_dependent_mod(&mut reuse_items, &mut reuse_cmods, ctx, rmod_id, rmod);
@@ -443,11 +397,92 @@ impl Calc {
         self.force_oattr_postproc_recalc(ctx, skill_uid, ctx.ac().skill_level);
     }
     // Private methods
+    fn reg_stored_rmods(
+        &mut self,
+        reuse_items: &mut Vec<UItemId>,
+        ctx: &SvcCtx,
+        item_uid: UItemId,
+        item: &UItem,
+        effect: &REffect,
+    ) {
+        let mut reuse_rmod_slots = self.reuse.rmod_slots.take();
+        let mut reuse_rmods = self.reuse.rmods.take();
+        self.generate_mods_for_effect(&mut reuse_rmods, ctx.u_data, item_uid, item, effect);
+        self.reg_raw_mods(
+            &mut reuse_rmod_slots,
+            reuse_items,
+            ctx,
+            item,
+            EffectSpec::new(item_uid, effect.rid),
+            &reuse_rmods,
+        );
+        self.reuse.rmod_slots.put(reuse_rmod_slots);
+        self.reuse.rmods.put(reuse_rmods);
+    }
+    fn unreg_stored_rmods(
+        &mut self,
+        reuse_items: &mut Vec<UItemId>,
+        ctx: &SvcCtx,
+        item_uid: UItemId,
+        item: &UItem,
+        effect_rid: REffectId,
+    ) {
+        let mut reuse_rmod_slots = self.reuse.rmod_slots.take();
+        let espec = EffectSpec::new(item_uid, effect_rid);
+        self.rmods.remove_by_espec_p1(&mut reuse_rmod_slots, espec);
+        for &slot in reuse_rmod_slots.iter() {
+            // Attribute changes caused by unregistering a modifier can remove other modifiers of
+            // the effect (e.g. buff modifiers which depend on attribute values), and their slots
+            // can be reused by modifiers of other effects
+            let Some(rmod) = self.rmods.get_rmod_for_espec(slot, espec) else {
+                continue;
+            };
+            let rmod_id = RawModId::from_slot(slot);
+            self.unreg_raw_mod(reuse_items, ctx, item_uid, item, rmod_id, &rmod);
+            self.rmods.remove_by_espec_p2(slot);
+        }
+        self.reuse.rmod_slots.put(reuse_rmod_slots);
+    }
+    fn reg_buff_effects<'e>(
+        &mut self,
+        reuse_items: &mut Vec<UItemId>,
+        ctx: &SvcCtx,
+        item_uid: UItemId,
+        item: &UItem,
+        effects: impl Clone + Iterator<Item = &'e REffect>,
+    ) {
+        let mut reuse_rmod_slots = self.reuse.rmod_slots.take();
+        let mut reuse_rmods = self.reuse.rmods.take();
+        // Buffs which rely on on-item attributes are generated after all other modifiers of started
+        // effects are registered, since those modifiers can change applied buff ID
+        for effect in effects.clone() {
+            if let Some(effect_buff) = &effect.buff
+                && effect_buff.attr_merge.is_some()
+            {
+                self.generate_dependent_buff_mods_for_effect(&mut reuse_rmods, ctx, item_uid, item, effect);
+                self.reg_raw_mods(
+                    &mut reuse_rmod_slots,
+                    reuse_items,
+                    ctx,
+                    item,
+                    EffectSpec::new(item_uid, effect.rid),
+                    &reuse_rmods,
+                );
+            }
+        }
+        // Buff maintenance - add info about effects which use default buff attributes. Done after
+        // all modifiers are registered, so that buff modifiers of started effects are not generated
+        // again while starting them
+        for effect in effects {
+            self.buffs.reg_effect(item_uid, effect);
+        }
+        self.reuse.rmod_slots.put(reuse_rmod_slots);
+        self.reuse.rmods.put(reuse_rmods);
+    }
     fn reg_raw_mods(
         &mut self,
-        reuse_rmod_ids: &mut Vec<RawModId>,
+        reuse_rmod_slots: &mut Vec<RawModSlot>,
         reuse_items: &mut Vec<UItemId>,
-        reuse_cmods: &mut Vec<CtxModifier>,
         ctx: &SvcCtx,
         item: &UItem,
         espec: EffectSpec,
@@ -455,17 +490,17 @@ impl Calc {
     ) {
         // Add all modifiers of the effect in one go to avoid unnecessary allocations, and then
         // keep only those which were registered successfully
-        self.rmods.add_for_espec(reuse_rmod_ids, espec, rmods);
-        for (&rmod_id, &rmod) in std::iter::zip(reuse_rmod_ids.iter(), rmods.iter()) {
-            if !self.reg_raw_mod(reuse_items, reuse_cmods, ctx, espec.item_uid, item, rmod_id, rmod) {
-                self.rmods.remove_full(rmod_id);
+        self.rmods.add_for_espec(reuse_rmod_slots, espec, rmods);
+        for (&slot, &rmod) in std::iter::zip(reuse_rmod_slots.iter(), rmods.iter()) {
+            let rmod_id = RawModId::from_slot(slot);
+            if !self.reg_raw_mod(reuse_items, ctx, espec.item_uid, item, rmod_id, rmod) {
+                self.rmods.remove_full(slot);
             }
         }
     }
     fn reg_raw_mod(
         &mut self,
         reuse_items: &mut Vec<UItemId>,
-        reuse_cmods: &mut Vec<CtxModifier>,
         ctx: &SvcCtx,
         item_uid: UItemId,
         item: &UItem,
@@ -483,18 +518,22 @@ impl Calc {
                 None => false,
             },
             ModifierKind::FleetBuff => {
-                let registered = self.std.reg_fleet_buff_mod(reuse_cmods, ctx, item, rmod_id, rmod);
+                let mut reuse_cmods = self.reuse.cmods.take();
+                let registered = self.std.reg_fleet_buff_mod(&mut reuse_cmods, ctx, item, rmod_id, rmod);
                 for cmod in reuse_cmods.iter() {
                     self.force_mod_affectee_attr_recalc(reuse_items, ctx, cmod);
                 }
+                self.reuse.cmods.put(reuse_cmods);
                 registered
             }
             ModifierKind::System => match item {
                 UItem::SwEffect(..) => {
-                    let registered = self.std.reg_sw_system_mod(reuse_cmods, ctx, rmod_id, rmod);
+                    let mut reuse_cmods = self.reuse.cmods.take();
+                    let registered = self.std.reg_sw_system_mod(&mut reuse_cmods, ctx, rmod_id, rmod);
                     for cmod in reuse_cmods.iter() {
                         self.force_mod_affectee_attr_recalc(reuse_items, ctx, cmod);
                     }
+                    self.reuse.cmods.put(reuse_cmods);
                     registered
                 }
                 UItem::FwEffect(fw_effect) => match self.std.reg_fw_system_mod(fw_effect, rmod_id, rmod) {
@@ -512,17 +551,23 @@ impl Calc {
             },
             ModifierKind::Buff => match item {
                 UItem::SwEffect(..) => {
-                    let registered = self.std.reg_sw_buff_mod(reuse_cmods, ctx, rmod_id, rmod);
+                    let mut reuse_cmods = self.reuse.cmods.take();
+                    let registered = self.std.reg_sw_buff_mod(&mut reuse_cmods, ctx, rmod_id, rmod);
                     for cmod in reuse_cmods.iter() {
                         self.force_mod_affectee_attr_recalc(reuse_items, ctx, cmod);
                     }
+                    self.reuse.cmods.put(reuse_cmods);
                     registered
                 }
                 UItem::FwEffect(fw_effect) => {
-                    let registered = self.std.reg_fw_buff_mod(reuse_cmods, ctx, fw_effect, rmod_id, rmod);
+                    let mut reuse_cmods = self.reuse.cmods.take();
+                    let registered = self
+                        .std
+                        .reg_fw_buff_mod(&mut reuse_cmods, ctx, fw_effect, rmod_id, rmod);
                     for cmod in reuse_cmods.iter() {
                         self.force_mod_affectee_attr_recalc(reuse_items, ctx, cmod);
                     }
+                    self.reuse.cmods.put(reuse_cmods);
                     registered
                 }
                 _ => {
@@ -543,7 +588,6 @@ impl Calc {
     fn unreg_raw_mod(
         &mut self,
         reuse_items: &mut Vec<UItemId>,
-        reuse_cmods: &mut Vec<CtxModifier>,
         ctx: &SvcCtx,
         item_uid: UItemId,
         item: &UItem,
@@ -560,17 +604,22 @@ impl Calc {
                 }
             }
             ModifierKind::FleetBuff => {
-                self.std.unreg_fleet_buff_mod(reuse_cmods, ctx, item, rmod_id, *rmod);
+                let mut reuse_cmods = self.reuse.cmods.take();
+                self.std
+                    .unreg_fleet_buff_mod(&mut reuse_cmods, ctx, item, rmod_id, *rmod);
                 for cmod in reuse_cmods.iter() {
                     self.force_mod_affectee_attr_recalc(reuse_items, ctx, cmod);
                 }
+                self.reuse.cmods.put(reuse_cmods);
             }
             ModifierKind::System => match item {
                 UItem::SwEffect(..) => {
-                    self.std.unreg_sw_system_mod(reuse_cmods, ctx, rmod_id, *rmod);
+                    let mut reuse_cmods = self.reuse.cmods.take();
+                    self.std.unreg_sw_system_mod(&mut reuse_cmods, ctx, rmod_id, *rmod);
                     for cmod in reuse_cmods.iter() {
                         self.force_mod_affectee_attr_recalc(reuse_items, ctx, cmod);
                     }
+                    self.reuse.cmods.put(reuse_cmods);
                 }
                 UItem::FwEffect(fw_effect) => {
                     if let Some(cmod) = self.std.unreg_fw_system_mod(fw_effect, rmod_id, *rmod) {
@@ -582,16 +631,21 @@ impl Calc {
             },
             ModifierKind::Buff => match item {
                 UItem::SwEffect(..) => {
-                    self.std.unreg_sw_buff_mod(reuse_cmods, ctx, rmod_id, rmod);
+                    let mut reuse_cmods = self.reuse.cmods.take();
+                    self.std.unreg_sw_buff_mod(&mut reuse_cmods, ctx, rmod_id, rmod);
                     for cmod in reuse_cmods.iter() {
                         self.force_mod_affectee_attr_recalc(reuse_items, ctx, cmod);
                     }
+                    self.reuse.cmods.put(reuse_cmods);
                 }
                 UItem::FwEffect(fw_effect) => {
-                    self.std.unreg_fw_buff_mod(reuse_cmods, ctx, fw_effect, rmod_id, *rmod);
+                    let mut reuse_cmods = self.reuse.cmods.take();
+                    self.std
+                        .unreg_fw_buff_mod(&mut reuse_cmods, ctx, fw_effect, rmod_id, *rmod);
                     for cmod in reuse_cmods.iter() {
                         self.force_mod_affectee_attr_recalc(reuse_items, ctx, cmod);
                     }
+                    self.reuse.cmods.put(reuse_cmods);
                 }
                 _ => {
                     self.std.unreg_proj_mod(rmod_id, rmod);
