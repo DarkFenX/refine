@@ -36,7 +36,6 @@ pub(in crate::svc::vast::val) enum ValKind {
     UnusableCap,
     // Charges
     ChargeGroup,
-    ChargeParentGroup,
     ChargeSize,
     ChargeVolume,
     // Rigs

@@ -37,7 +37,6 @@ class ValOptions:
     unusable_cap: ValOption = Absent
     # Charges
     charge_group: ValOption = Absent
-    charge_parent_group: ValOption = Absent
     charge_size: ValOption = Absent
     charge_volume: ValOption = Absent
     # Rigs

@@ -6,7 +6,6 @@ use super::getters::{
         get_volume,
     },
     charge_limit::get_item_charge_limit,
-    container_limit::get_item_container_limit,
     drone_limit::get_ship_drone_limit,
     effect_immunity::get_disallow_vs_ew_immune_tgt,
     fighter_kind::{
@@ -26,8 +25,8 @@ use crate::{
     ad::{AAbilId, AAttrId, AEffectId, AItem, AItemCatId, AItemGrpId, AItemId, AItemListId},
     rd::{
         RAttrConsts, RAttrId, REffect, REffectConsts, REffectId, RItemBaseEffectData, RItemCapConsumer,
-        RItemChargeLimit, RItemContLimit, RItemEffectOptions, RItemEffectsPregenId, RItemListId, RItemShipLimit,
-        RShipDroneLimit, RShipKind, RState,
+        RItemChargeLimit, RItemEffectOptions, RItemEffectsPregenId, RItemListId, RItemShipLimit, RShipDroneLimit,
+        RShipKind, RState,
     },
     util::{PDense, RMap},
     val::DetectedItemKind,
@@ -103,8 +102,6 @@ pub(crate) struct RItemBase {
     pub(crate) ship_limit: Option<RItemShipLimit>,
     /// Items can load those charges
     pub(crate) charge_limit: Option<RItemChargeLimit>,
-    /// Charges can be loaded into those items
-    pub(crate) cont_limit: Option<RItemContLimit>,
     /// Ship can use those drones
     pub(crate) drone_limit: Option<RShipDroneLimit>,
     // Derived data - self-limits
@@ -215,7 +212,6 @@ impl RItemBase {
             subsystem_slot: Default::default(),
             ship_limit: Default::default(),
             charge_limit: Default::default(),
-            cont_limit: Default::default(),
             drone_limit: Default::default(),
             max_type_fitted: Default::default(),
             sec_zone_limitable: Default::default(),
@@ -333,7 +329,6 @@ impl RItemBase {
         // Various aggregated limits
         self.ship_limit = get_item_ship_limit(self.aid, r_item_attrs, attr_consts);
         self.charge_limit = get_item_charge_limit(r_item_attrs, attr_consts);
-        self.cont_limit = get_item_container_limit(r_item_attrs, attr_consts);
         self.drone_limit = get_ship_drone_limit(r_item_attrs, attr_consts);
         // Self-limits
         self.max_type_fitted = get_max_type_fitted_count(r_item_attrs, attr_consts);

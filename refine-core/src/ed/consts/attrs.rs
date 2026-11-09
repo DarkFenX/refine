@@ -61,7 +61,6 @@ impl EAttrId {
     pub(crate) const THERM_DMG: Self = Self::from_i32(118);
     pub(crate) const AMMO_LOADED: Self = Self::from_i32(127);
     pub(crate) const CHARGE_SIZE: Self = Self::from_i32(128);
-    pub(crate) const LAUNCHER_GROUP: Self = Self::from_i32(137);
     pub(crate) const WARP_CAPACITOR_NEED: Self = Self::from_i32(153);
     pub(crate) const FALLOFF: Self = Self::from_i32(158);
     pub(crate) const TRACKING_SPEED: Self = Self::from_i32(160);
@@ -118,8 +117,6 @@ impl EAttrId {
     pub(crate) const SPEED_BOOST_FACTOR: Self = Self::from_i32(567);
     pub(crate) const EXPLOSION_DELAY_BONUS: Self = Self::from_i32(596);
     pub(crate) const WARP_SPEED_MULT: Self = Self::from_i32(600);
-    pub(crate) const LAUNCHER_GROUP2: Self = Self::from_i32(602);
-    pub(crate) const LAUNCHER_GROUP3: Self = Self::from_i32(603);
     pub(crate) const CHARGE_GROUP1: Self = Self::from_i32(604);
     pub(crate) const CHARGE_GROUP2: Self = Self::from_i32(605);
     pub(crate) const CHARGE_GROUP3: Self = Self::from_i32(606);
@@ -222,9 +219,6 @@ impl EAttrId {
     pub(crate) const FTR_CAPACITY: Self = Self::from_i32(2055);
     pub(crate) const SERVICE_SLOTS: Self = Self::from_i32(2056);
     pub(crate) const CAN_FIT_SHIP_GROUP9: Self = Self::from_i32(2065);
-    pub(crate) const LAUNCHER_GROUP4: Self = Self::from_i32(2076);
-    pub(crate) const LAUNCHER_GROUP5: Self = Self::from_i32(2077);
-    pub(crate) const LAUNCHER_GROUP6: Self = Self::from_i32(2078);
     pub(crate) const CAN_FIT_SHIP_TYPE6: Self = Self::from_i32(2103);
     pub(crate) const FTR_ABIL_EVASION_EM_RESONANCE: Self = Self::from_i32(2118);
     pub(crate) const FTR_ABIL_EVASION_THERM_RESONANCE: Self = Self::from_i32(2119);

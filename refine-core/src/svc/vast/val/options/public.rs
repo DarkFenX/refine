@@ -185,12 +185,6 @@ impl<I> ValOptions<I> {
         self.overrides.push((ValKind::ChargeGroup, option));
         self
     }
-    /// Some charges restrict into which modules they can be loaded by module group; if charge from
-    /// disallowed group is loaded, validation fails for charge.
-    pub fn with_charge_parent_group(mut self, option: OptionExt<ValEnabled<I>>) -> Self {
-        self.overrides.push((ValKind::ChargeParentGroup, option));
-        self
-    }
     /// Some charges and modules have charge size set. When a module specifies it, and has a charge
     /// without size or with mismatching size loaded, this validation fails for the charge.
     pub fn with_charge_size(mut self, option: OptionExt<ValEnabled<I>>) -> Self {

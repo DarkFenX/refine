@@ -63,7 +63,6 @@ impl Vast {
                 fit_data.item_kind_add(item_uid, charge_rib.detected_kind, DetectedItemKind::Charge);
                 if let Some(cont_rib) = cont_item.get_r_item_base() {
                     fit_data.handle_charge_group_add(cont_uid, cont_rib, item_uid, charge_rib);
-                    fit_data.handle_charge_cont_group_add(cont_uid, cont_rib, item_uid, charge_rib);
                     fit_data.handle_charge_size_add(cont_uid, cont_rib, item_uid, charge_rib);
                     fit_data.handle_charge_volume_add(cont_uid, cont_rib, item_uid, charge_rib);
                 }
@@ -155,7 +154,6 @@ impl Vast {
                     let charge_item = u_data.items.get(charge_uid);
                     if let Some(charge_rib) = charge_item.get_r_item_base() {
                         fit_data.handle_charge_group_add(item_uid, module_rib, charge_uid, charge_rib);
-                        fit_data.handle_charge_cont_group_add(item_uid, module_rib, charge_uid, charge_rib);
                         fit_data.handle_charge_size_add(item_uid, module_rib, charge_uid, charge_rib);
                         fit_data.handle_charge_volume_add(item_uid, module_rib, charge_uid, charge_rib);
                     }
@@ -345,9 +343,6 @@ impl Vast {
                 let charge_rib = charge.get_r_item_base().unwrap();
                 fit_data.item_kind_remove(item_uid, charge_rib.detected_kind, DetectedItemKind::Charge);
                 fit_data.charge_group.remove(&item_uid);
-                if charge_rib.cont_limit.is_some() {
-                    fit_data.charge_cont_group.remove(&item_uid);
-                }
                 fit_data.charge_size.remove(&item_uid);
                 fit_data.charge_volume.remove(&item_uid);
                 if charge_rib.sec_zone_limitable {
@@ -429,7 +424,6 @@ impl Vast {
                     if module_rib.charge_limit.is_some() {
                         fit_data.charge_group.remove(&charge_uid);
                     }
-                    fit_data.charge_cont_group.remove(&charge_uid);
                     if module_rib.charge_size.is_some() {
                         fit_data.charge_size.remove(&charge_uid);
                     }

@@ -1,12 +1,12 @@
 use crate::{
     FitId,
     val::{
-        ValActivationBlockedFail, ValCapitalModFail, ValChargeGroupFail, ValChargeParentGroupFail, ValChargeSizeFail,
-        ValChargeVolumeFail, ValCloakingBlockedFail, ValDroneGroupFail, ValEffectSecZoneFail, ValEffectStopperFail,
-        ValFighterSquadSizeFail, ValItemKindFail, ValItemSecZoneFail, ValItemVsShipKindFail, ValMaxGroupFail,
-        ValMaxTypeFail, ValModuleStateFail, ValNotLoadedItemFail, ValOverloadSkillFail, ValProjFilterFail,
-        ValProjImmunityFail, ValResourceFail, ValRigSizeFail, ValShipLimitFail, ValShipStanceFail, ValSlotCountFail,
-        ValSlotIndexFail, ValSrqFail, ValUnusableCapFail, ValUnusableResFail, ValUnusableSlotFail,
+        ValActivationBlockedFail, ValCapitalModFail, ValChargeGroupFail, ValChargeSizeFail, ValChargeVolumeFail,
+        ValCloakingBlockedFail, ValDroneGroupFail, ValEffectSecZoneFail, ValEffectStopperFail, ValFighterSquadSizeFail,
+        ValItemKindFail, ValItemSecZoneFail, ValItemVsShipKindFail, ValMaxGroupFail, ValMaxTypeFail,
+        ValModuleStateFail, ValNotLoadedItemFail, ValOverloadSkillFail, ValProjFilterFail, ValProjImmunityFail,
+        ValResourceFail, ValRigSizeFail, ValShipLimitFail, ValShipStanceFail, ValSlotCountFail, ValSlotIndexFail,
+        ValSrqFail, ValUnusableCapFail, ValUnusableResFail, ValUnusableSlotFail,
     },
 };
 
@@ -94,8 +94,6 @@ pub struct ValResultFit {
     // Charges
     #[cfg_attr(feature = "serde", serde(skip_serializing_if = "Option::is_none"))]
     pub charge_group: Option<ValChargeGroupFail> = None,
-    #[cfg_attr(feature = "serde", serde(skip_serializing_if = "Option::is_none"))]
-    pub charge_parent_group: Option<ValChargeParentGroupFail> = None,
     #[cfg_attr(feature = "serde", serde(skip_serializing_if = "Option::is_none"))]
     pub charge_size: Option<ValChargeSizeFail> = None,
     #[cfg_attr(feature = "serde", serde(skip_serializing_if = "Option::is_none"))]
@@ -219,7 +217,6 @@ impl ValResultFit {
             overload_skill,
             unusable_cap,
             charge_group,
-            charge_parent_group,
             charge_size,
             charge_volume,
             rig_slot_count,
@@ -293,7 +290,6 @@ impl ValResultFit {
             && unusable_cap.is_none()
             // Charges
             && charge_group.is_none()
-            && charge_parent_group.is_none()
             && charge_size.is_none()
             && charge_volume.is_none()
             // Rigs

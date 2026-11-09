@@ -132,7 +132,6 @@ impl AAttrId {
     pub(crate) const THERM_DMG: Self = Self::from_eid(EAttrId::THERM_DMG);
     pub(crate) const AMMO_LOADED: Self = Self::from_eid(EAttrId::AMMO_LOADED);
     pub(crate) const CHARGE_SIZE: Self = Self::from_eid(EAttrId::CHARGE_SIZE);
-    pub(crate) const LAUNCHER_GROUP: Self = Self::from_eid(EAttrId::LAUNCHER_GROUP);
     pub(crate) const WARP_CAPACITOR_NEED: Self = Self::from_eid(EAttrId::WARP_CAPACITOR_NEED);
     pub(crate) const FALLOFF: Self = Self::from_eid(EAttrId::FALLOFF);
     pub(crate) const TRACKING_SPEED: Self = Self::from_eid(EAttrId::TRACKING_SPEED);
@@ -190,8 +189,6 @@ impl AAttrId {
     pub(crate) const SPEED_BOOST_FACTOR: Self = Self::from_eid(EAttrId::SPEED_BOOST_FACTOR);
     pub(crate) const EXPLOSION_DELAY_BONUS: Self = Self::from_eid(EAttrId::EXPLOSION_DELAY_BONUS);
     pub(crate) const WARP_SPEED_MULT: Self = Self::from_eid(EAttrId::WARP_SPEED_MULT);
-    pub(crate) const LAUNCHER_GROUP2: Self = Self::from_eid(EAttrId::LAUNCHER_GROUP2);
-    pub(crate) const LAUNCHER_GROUP3: Self = Self::from_eid(EAttrId::LAUNCHER_GROUP3);
     pub(crate) const CHARGE_GROUP1: Self = Self::from_eid(EAttrId::CHARGE_GROUP1);
     pub(crate) const CHARGE_GROUP2: Self = Self::from_eid(EAttrId::CHARGE_GROUP2);
     pub(crate) const CHARGE_GROUP3: Self = Self::from_eid(EAttrId::CHARGE_GROUP3);
@@ -302,9 +299,6 @@ impl AAttrId {
     pub(crate) const FTR_CAPACITY: Self = Self::from_eid(EAttrId::FTR_CAPACITY);
     pub(crate) const SERVICE_SLOTS: Self = Self::from_eid(EAttrId::SERVICE_SLOTS);
     pub(crate) const CAN_FIT_SHIP_GROUP9: Self = Self::from_eid(EAttrId::CAN_FIT_SHIP_GROUP9);
-    pub(crate) const LAUNCHER_GROUP4: Self = Self::from_eid(EAttrId::LAUNCHER_GROUP4);
-    pub(crate) const LAUNCHER_GROUP5: Self = Self::from_eid(EAttrId::LAUNCHER_GROUP5);
-    pub(crate) const LAUNCHER_GROUP6: Self = Self::from_eid(EAttrId::LAUNCHER_GROUP6);
     pub(crate) const CAN_FIT_SHIP_TYPE6: Self = Self::from_eid(EAttrId::CAN_FIT_SHIP_TYPE6);
     pub(crate) const FTR_ABIL_EVASION_EM_RESONANCE: Self = Self::from_eid(EAttrId::FTR_ABIL_EVASION_EM_RESONANCE);
     pub(crate) const FTR_ABIL_EVASION_THERM_RESONANCE: Self = Self::from_eid(EAttrId::FTR_ABIL_EVASION_THERM_RESONANCE);

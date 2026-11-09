@@ -111,11 +111,6 @@ impl Vast {
         {
             return false;
         }
-        if let ValOptionInt::Enabled(opts) = options.get(ValKind::ChargeParentGroup)
-            && !fit_data.validate_charge_cont_group_fast(&opts.kfs)
-        {
-            return false;
-        }
         if let ValOptionInt::Enabled(opts) = options.get(ValKind::ChargeSize)
             && !fit_data.validate_charge_size_fast(&opts.kfs)
         {
@@ -497,7 +492,6 @@ impl Vast {
             overload_skill,
             unusable_cap,
             charge_group,
-            charge_parent_group,
             charge_size,
             charge_volume,
             rig_slot_count,
@@ -626,9 +620,6 @@ impl Vast {
         ////////////////////////////////////////////////////////////////////////////////////////////
         if let ValOptionInt::Enabled(opts) = options.get(ValKind::ChargeGroup) {
             *charge_group = fit_data.validate_charge_group_verbose(&opts.kfs, ctx);
-        }
-        if let ValOptionInt::Enabled(opts) = options.get(ValKind::ChargeParentGroup) {
-            *charge_parent_group = fit_data.validate_charge_cont_group_verbose(&opts.kfs, ctx);
         }
         if let ValOptionInt::Enabled(opts) = options.get(ValKind::ChargeSize) {
             *charge_size = fit_data.validate_charge_size_verbose(&opts.kfs, ctx);

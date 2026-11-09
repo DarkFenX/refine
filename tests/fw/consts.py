@@ -337,7 +337,6 @@ class EveAttr(IntEnum):
     therm_dmg = 118
     ammo_loaded = 127
     charge_size = 128
-    launcher_group = 137
     warp_capacitor_need = 153
     falloff = 158
     tracking_speed = 160
@@ -388,8 +387,6 @@ class EveAttr(IntEnum):
     scan_resolution = 564
     speed_boost_factor = 567
     warp_speed_mult = 600
-    launcher_group2 = 602
-    launcher_group3 = 603
     charge_group1 = 604
     charge_group2 = 605
     charge_group3 = 606
@@ -473,9 +470,6 @@ class EveAttr(IntEnum):
     ftr_capacity = 2055
     service_slots = 2056
     can_fit_ship_group9 = 2065
-    launcher_group4 = 2076
-    launcher_group5 = 2077
-    launcher_group6 = 2078
     can_fit_ship_type6 = 2103
     ftr_abil_missiles_expl_radius = 2125
     ftr_abil_missiles_expl_velocity = 2126

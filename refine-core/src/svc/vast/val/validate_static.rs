@@ -7,9 +7,9 @@ use crate::{
             ValOptionsInt,
             val::{
                 ValKind, ValOptionInt, get_fit_ship_rig_size, get_fit_ship_type_group, get_item_vs_ship_kind_mismatch,
-                is_capital_module, is_charge_cont_group_mismatch, is_charge_group_mismatch, is_charge_size_mismatch,
-                is_charge_volume_mismatch, is_drone_group_mismatch, is_rig_size_mismatch, is_ship_limit_met,
-                is_ship_subcap, is_skill_level_missing, is_slot_index_taken,
+                is_capital_module, is_charge_group_mismatch, is_charge_size_mismatch, is_charge_volume_mismatch,
+                is_drone_group_mismatch, is_rig_size_mismatch, is_ship_limit_met, is_ship_subcap,
+                is_skill_level_missing, is_slot_index_taken,
             },
         },
     },
@@ -138,11 +138,6 @@ impl Vast {
         let charge_rib = &charge_r_item.base;
         if let ValOptionInt::Enabled(..) = options.get(ValKind::ChargeGroup)
             && is_charge_group_mismatch(cont_rib, charge_rib)
-        {
-            return false;
-        }
-        if let ValOptionInt::Enabled(..) = options.get(ValKind::ChargeParentGroup)
-            && is_charge_cont_group_mismatch(cont_rib, charge_rib)
         {
             return false;
         }

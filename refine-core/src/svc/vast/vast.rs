@@ -112,7 +112,6 @@ pub(in crate::svc) struct VastFitData {
     pub(in crate::svc::vast) mods_max_group_active_limited: RMap<UItemId, AItemGrpId>,
     // Validation-related - module-charge restrictions
     pub(in crate::svc::vast) charge_group: RMap<UItemId, UItemId>,
-    pub(in crate::svc::vast) charge_cont_group: RMap<UItemId, UItemId>,
     pub(in crate::svc::vast) charge_size: RMap<UItemId, UItemId>,
     pub(in crate::svc::vast) charge_volume: RMap<UItemId, UItemId>,
     // Validation-related - projection
@@ -234,7 +233,6 @@ impl VastFitData {
             mods_max_group_active_limited: RMap::new(),
             // Validation-related - module-charge restrictions
             charge_group: RMap::new(),
-            charge_cont_group: RMap::new(),
             charge_size: RMap::new(),
             charge_volume: RMap::new(),
             // Validation-related - projection
@@ -478,7 +476,6 @@ mod debug {
                 mods_max_group_active_all,
                 mods_max_group_active_limited,
                 charge_group,
-                charge_cont_group,
                 charge_size,
                 charge_volume,
                 projectee_filter,
@@ -702,10 +699,6 @@ mod debug {
             // Validation-related - module-charge restrictions
             ////////////////////////////////////////////////////////////////////////////////////////
             for (charge_uid, cont_uid) in charge_group.iter() {
-                cont_uid.consistency_check(u_data, true)?;
-                charge_uid.consistency_check(u_data, true)?;
-            }
-            for (charge_uid, cont_uid) in charge_cont_group.iter() {
                 cont_uid.consistency_check(u_data, true)?;
                 charge_uid.consistency_check(u_data, true)?;
             }
