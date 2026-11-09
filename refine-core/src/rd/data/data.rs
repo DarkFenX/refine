@@ -8,7 +8,7 @@ use crate::{
     rd::{
         RAbil, RAttr, RAttrConsts, RAttrId, RBuff, RBuffId, REffect, REffectConsts, REffectId, RItem,
         RItemEffectsPregenEntry, RItemEffectsPregenId, RItemList, RItemListId, RMuta, RMutasPregen,
-        data::item_effects_pregen::RItemsEffectsPregen,
+        data::{effect_resist_transfer::fill_effect_remote_resists, item_effects_pregen::RItemsEffectsPregen},
     },
     util::{PDense, RMap},
 };
@@ -142,6 +142,7 @@ impl RData {
             .adaptive_armor_hardener
             .and_then(|effect_rid| effects.get(effect_rid).unwrap().duration_attr_rid);
         let muta_pregen = RMutasPregen::new(&items, &mutas, &attr_aid_rid_map, &attr_consts);
+        fill_effect_remote_resists(&mut effects, &items, &mutas, &muta_pregen);
         Self {
             items,
             item_effects_pregen,

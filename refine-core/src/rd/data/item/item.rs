@@ -10,7 +10,7 @@ use crate::{
 /// values.
 pub(crate) struct RItem {
     pub(crate) base: RItemBase,
-    pub(crate) attr_data: RItemFlexData,
+    pub(crate) flex_data: RItemFlexData,
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -20,7 +20,7 @@ impl RItem {
     pub(in crate::rd::data) fn from_a_item(a_item: &AItem) -> Self {
         Self {
             base: RItemBase::from_a_item(a_item),
-            attr_data: RItemFlexData::default(),
+            flex_data: RItemFlexData::default(),
         }
     }
     pub(in crate::rd::data) fn fill_runtime(
@@ -35,13 +35,13 @@ impl RItem {
     ) {
         self.base
             .fill_runtime_basic(a_items, item_list_aid_rid_map, effect_aid_rid_map, r_effects);
-        self.attr_data
+        self.flex_data
             .fill_runtime(&self.base, a_items, attr_aid_rid_map, attr_consts);
         self.base.fill_runtime_extended(
             a_items,
             item_list_aid_rid_map,
             attr_aid_rid_map,
-            &self.attr_data.attrs,
+            &self.flex_data.attrs,
             r_effects,
             attr_consts,
             effect_consts,

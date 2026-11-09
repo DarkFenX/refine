@@ -90,7 +90,7 @@ impl UItemBase {
         self.base_get_r_item().map(|v| &v.base)
     }
     pub(in crate::ud::item) fn get_r_item_flex_data(&self) -> Option<&RItemFlexData> {
-        self.base_get_r_item().map(|v| &v.attr_data)
+        self.base_get_r_item().map(|v| &v.flex_data)
     }
 }
 
@@ -282,8 +282,8 @@ mod debug {
                 for cap_consumer in r_item.base.cap_consumers.iter() {
                     cap_consumer.consistency_check(u_data)?;
                 }
-                r_item.attr_data.consistency_check(u_data)?;
-                for attr_rid in r_item.attr_data.attrs.keys() {
+                r_item.flex_data.consistency_check(u_data)?;
+                for attr_rid in r_item.flex_data.attrs.keys() {
                     attr_rid.consistency_check(u_data)?;
                 }
                 for effect_rid in reffs.iter() {

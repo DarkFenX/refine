@@ -24,6 +24,7 @@ mod attr;
 mod buff;
 mod data;
 mod effect;
+mod effect_resist_transfer;
 mod item;
 mod item_effects_pregen;
 mod item_list;

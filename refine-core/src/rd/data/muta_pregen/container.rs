@@ -23,6 +23,13 @@ impl RMutasPregen {
     ) -> Option<RMutasPregenMergedAttrsId> {
         self.merged_attrs.get_id(&(base_type_aid, mutator_type_aid))
     }
+    pub(in crate::rd::data) fn get_flex_data(
+        &self,
+        base_type_aid: AItemId,
+        mutator_type_aid: AItemId,
+    ) -> Option<&RItemFlexData> {
+        self.flex_data.get(&(base_type_aid, mutator_type_aid))
+    }
     pub(crate) fn is_same_flex_data(
         &self,
         base_type1_aid: AItemId,
@@ -64,14 +71,14 @@ impl RMutasPregen {
                 };
                 let mut merged_attrs = match items.get(base_type_aid) {
                     Some(base_r_item) => {
-                        let mut merged_attrs = base_r_item.attr_data.attrs.clone();
+                        let mut merged_attrs = base_r_item.flex_data.attrs.clone();
                         // Base item attributes have priority in case of collisions
-                        for (&attr_rid, &attr_val) in mutated_r_item.attr_data.attrs.iter() {
+                        for (&attr_rid, &attr_val) in mutated_r_item.flex_data.attrs.iter() {
                             merged_attrs.entry(attr_rid).or_insert(attr_val);
                         }
                         merged_attrs
                     }
-                    None => mutated_r_item.attr_data.attrs.clone(),
+                    None => mutated_r_item.flex_data.attrs.clone(),
                 };
                 merged_attrs.shrink_to_fit();
                 let mut merged_data = RItemFlexData::from_attrs(merged_attrs, attr_aid_rid_map, attr_consts);
