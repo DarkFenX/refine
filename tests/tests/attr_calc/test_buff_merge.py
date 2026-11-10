@@ -229,3 +229,225 @@ def test_attr_change_stop_other_effect(client, consts):
     assert api_fleeted_ship.attrs[eve_affectee_attr1_id].modified == approx(7.5)
     assert api_fleeted_ship.attrs[eve_affectee_attr2_id].modified == approx(7.5)
     assert api_fleeted_ship.attrs[eve_affectee_attr3_id].modified == approx(7.5)
+
+
+def test_attr_change_buff_start_switch_stop(client, consts):
+    # One update starts the buff effect and stops the effect which assigns buff type. Started
+    # effects are processed first, so buff modifiers are generated with the assigned type, and
+    # have to be re-generated when the other effect stops later in the update
+    eve_buff_type_attr_id = client.mk_eve_attr(id_=consts.EveAttr.warfare_buff_1_id)
+    eve_buff_val_attr_id = client.mk_eve_attr(id_=consts.EveAttr.warfare_buff_1_value)
+    eve_assign_attr_id = client.mk_eve_attr()
+    eve_affectee_attr1_id = client.mk_eve_attr()
+    eve_affectee_attr2_id = client.mk_eve_attr()
+    eve_buff1_id = client.mk_eve_buff(
+        aggr_mode=consts.EveBuffAggrMode.max,
+        op=consts.EveBuffOp.post_mul,
+        item_mods=[client.mk_eve_buff_mod(attr_id=eve_affectee_attr1_id)])
+    eve_buff2_id = client.mk_eve_buff(
+        aggr_mode=consts.EveBuffAggrMode.max,
+        op=consts.EveBuffOp.post_mul,
+        item_mods=[client.mk_eve_buff_mod(attr_id=eve_affectee_attr2_id)])
+    eve_effect_id = client.mk_eve_effect(id_=consts.UtilEffect.buff_fleet_ships, cat_id=consts.EveEffCat.active)
+    eve_assign_mod = client.mk_eve_effect_mod(
+        func=consts.EveModFunc.item,
+        loc=consts.EveModLoc.item,
+        op=consts.EveModOp.post_assign,
+        affector_attr_id=eve_assign_attr_id,
+        affectee_attr_id=eve_buff_type_attr_id)
+    eve_assign_effect_id = client.mk_eve_effect(mod_info=[eve_assign_mod])
+    eve_module_id = client.mk_eve_item(
+        attrs={eve_buff_type_attr_id: eve_buff1_id, eve_buff_val_attr_id: 5, eve_assign_attr_id: eve_buff2_id},
+        eff_ids=[eve_effect_id, eve_assign_effect_id],
+        defeff_id=eve_effect_id)
+    # Keeps the assigned buff during data generation
+    client.mk_eve_item(attrs={eve_buff_type_attr_id: eve_buff2_id})
+    eve_ship_id = client.mk_eve_ship(attrs={eve_affectee_attr1_id: 7.5, eve_affectee_attr2_id: 7.5})
+    client.create_sources()
+    api_sol = client.create_sol()
+    api_fit = api_sol.create_fit()
+    api_ship = api_fit.set_ship(type_id=eve_ship_id)
+    api_module = api_fit.add_module(
+        type_id=eve_module_id,
+        state=consts.ApiModuleState.active,
+        effect_modes={eve_effect_id: consts.ApiEffMode.force_stop})
+    # Verification
+    assert api_module.update().attrs[eve_buff_type_attr_id].modified == approx(eve_buff2_id)
+    api_ship.update()
+    assert api_ship.attrs[eve_affectee_attr1_id].modified == approx(7.5)
+    assert api_ship.attrs[eve_affectee_attr2_id].modified == approx(7.5)
+    # Action
+    api_module.change_module(effect_modes={
+        eve_effect_id: consts.ApiEffMode.full_compliance,
+        eve_assign_effect_id: consts.ApiEffMode.force_stop})
+    # Verification
+    assert api_module.update().attrs[eve_buff_type_attr_id].modified == approx(eve_buff1_id)
+    api_ship.update()
+    assert api_ship.attrs[eve_affectee_attr1_id].modified == approx(37.5)
+    assert api_ship.attrs[eve_affectee_attr2_id].modified == approx(7.5)
+
+
+def test_attr_change_buff_stop_switch_start(client, consts):
+    # One update stops the buff effect and starts the effect which assigns buff type. The start
+    # comes first and re-generates buff modifiers of the buff effect, which stops later in the
+    # update and has to take the re-generated modifiers with it
+    eve_buff_type_attr_id = client.mk_eve_attr(id_=consts.EveAttr.warfare_buff_1_id)
+    eve_buff_val_attr_id = client.mk_eve_attr(id_=consts.EveAttr.warfare_buff_1_value)
+    eve_assign_attr_id = client.mk_eve_attr()
+    eve_affectee_attr1_id = client.mk_eve_attr()
+    eve_affectee_attr2_id = client.mk_eve_attr()
+    eve_buff1_id = client.mk_eve_buff(
+        aggr_mode=consts.EveBuffAggrMode.max,
+        op=consts.EveBuffOp.post_mul,
+        item_mods=[client.mk_eve_buff_mod(attr_id=eve_affectee_attr1_id)])
+    eve_buff2_id = client.mk_eve_buff(
+        aggr_mode=consts.EveBuffAggrMode.max,
+        op=consts.EveBuffOp.post_mul,
+        item_mods=[client.mk_eve_buff_mod(attr_id=eve_affectee_attr2_id)])
+    eve_effect_id = client.mk_eve_effect(id_=consts.UtilEffect.buff_fleet_ships, cat_id=consts.EveEffCat.active)
+    eve_assign_mod = client.mk_eve_effect_mod(
+        func=consts.EveModFunc.item,
+        loc=consts.EveModLoc.item,
+        op=consts.EveModOp.post_assign,
+        affector_attr_id=eve_assign_attr_id,
+        affectee_attr_id=eve_buff_type_attr_id)
+    eve_assign_effect_id = client.mk_eve_effect(mod_info=[eve_assign_mod])
+    eve_module_id = client.mk_eve_item(
+        attrs={eve_buff_type_attr_id: eve_buff1_id, eve_buff_val_attr_id: 5, eve_assign_attr_id: eve_buff2_id},
+        eff_ids=[eve_effect_id, eve_assign_effect_id],
+        defeff_id=eve_effect_id)
+    # Keeps the assigned buff during data generation
+    client.mk_eve_item(attrs={eve_buff_type_attr_id: eve_buff2_id})
+    eve_ship_id = client.mk_eve_ship(attrs={eve_affectee_attr1_id: 7.5, eve_affectee_attr2_id: 7.5})
+    client.create_sources()
+    api_sol = client.create_sol()
+    api_fit = api_sol.create_fit()
+    api_ship = api_fit.set_ship(type_id=eve_ship_id)
+    api_module = api_fit.add_module(
+        type_id=eve_module_id,
+        state=consts.ApiModuleState.active,
+        effect_modes={eve_assign_effect_id: consts.ApiEffMode.force_stop})
+    # Verification
+    assert api_module.update().attrs[eve_buff_type_attr_id].modified == approx(eve_buff1_id)
+    api_ship.update()
+    assert api_ship.attrs[eve_affectee_attr1_id].modified == approx(37.5)
+    assert api_ship.attrs[eve_affectee_attr2_id].modified == approx(7.5)
+    # Action
+    api_module.change_module(effect_modes={
+        eve_effect_id: consts.ApiEffMode.force_stop,
+        eve_assign_effect_id: consts.ApiEffMode.full_compliance})
+    # Verification
+    assert api_module.update().attrs[eve_buff_type_attr_id].modified == approx(eve_buff2_id)
+    api_ship.update()
+    assert api_ship.attrs[eve_affectee_attr1_id].modified == approx(7.5)
+    assert api_ship.attrs[eve_affectee_attr2_id].modified == approx(7.5)
+
+
+def test_attr_change_proj_buff_start_switch_stop(client, consts):
+    # As the local variant, with a projected buff: the buff effect is projected while starting, so
+    # its re-generated modifiers have to reach the projectee
+    eve_buff_type_attr_id = client.mk_eve_attr(id_=consts.EveAttr.warfare_buff_1_id)
+    eve_buff_val_attr_id = client.mk_eve_attr(id_=consts.EveAttr.warfare_buff_1_value)
+    eve_assign_attr_id = client.mk_eve_attr()
+    eve_affectee_attr1_id = client.mk_eve_attr()
+    eve_affectee_attr2_id = client.mk_eve_attr()
+    eve_buff1_id = client.mk_eve_buff(
+        aggr_mode=consts.EveBuffAggrMode.max,
+        op=consts.EveBuffOp.post_mul,
+        item_mods=[client.mk_eve_buff_mod(attr_id=eve_affectee_attr1_id)])
+    eve_buff2_id = client.mk_eve_buff(
+        aggr_mode=consts.EveBuffAggrMode.max,
+        op=consts.EveBuffOp.post_mul,
+        item_mods=[client.mk_eve_buff_mod(attr_id=eve_affectee_attr2_id)])
+    eve_effect_id = client.mk_eve_effect(id_=consts.UtilEffect.buff_ships, cat_id=consts.EveEffCat.active)
+    eve_assign_mod = client.mk_eve_effect_mod(
+        func=consts.EveModFunc.item,
+        loc=consts.EveModLoc.item,
+        op=consts.EveModOp.post_assign,
+        affector_attr_id=eve_assign_attr_id,
+        affectee_attr_id=eve_buff_type_attr_id)
+    eve_assign_effect_id = client.mk_eve_effect(mod_info=[eve_assign_mod])
+    eve_module_id = client.mk_eve_item(
+        attrs={eve_buff_type_attr_id: eve_buff1_id, eve_buff_val_attr_id: 5, eve_assign_attr_id: eve_buff2_id},
+        eff_ids=[eve_effect_id, eve_assign_effect_id],
+        defeff_id=eve_effect_id)
+    # Keeps the assigned buff during data generation
+    client.mk_eve_item(attrs={eve_buff_type_attr_id: eve_buff2_id})
+    eve_ship_id = client.mk_eve_ship(attrs={eve_affectee_attr1_id: 7.5, eve_affectee_attr2_id: 7.5})
+    client.create_sources()
+    api_sol = client.create_sol()
+    api_affectee_fit = api_sol.create_fit()
+    api_affectee_ship = api_affectee_fit.set_ship(type_id=eve_ship_id)
+    api_affector_fit = api_sol.create_fit()
+    api_affector_module = api_affector_fit.add_module(
+        type_id=eve_module_id,
+        state=consts.ApiModuleState.active,
+        proj_item_ids=[api_affectee_ship.id],
+        effect_modes={eve_effect_id: consts.ApiEffMode.force_stop})
+    # Verification
+    api_affectee_ship.update()
+    assert api_affectee_ship.attrs[eve_affectee_attr1_id].modified == approx(7.5)
+    assert api_affectee_ship.attrs[eve_affectee_attr2_id].modified == approx(7.5)
+    # Action
+    api_affector_module.change_module(effect_modes={
+        eve_effect_id: consts.ApiEffMode.full_compliance,
+        eve_assign_effect_id: consts.ApiEffMode.force_stop})
+    # Verification
+    api_affectee_ship.update()
+    assert api_affectee_ship.attrs[eve_affectee_attr1_id].modified == approx(37.5)
+    assert api_affectee_ship.attrs[eve_affectee_attr2_id].modified == approx(7.5)
+
+
+def test_attr_change_proj_buff_stop_switch_start(client, consts):
+    # As the local variant, with a projected buff: re-generated modifiers are projected, and have
+    # to be unprojected when the buff effect stops later in the update
+    eve_buff_type_attr_id = client.mk_eve_attr(id_=consts.EveAttr.warfare_buff_1_id)
+    eve_buff_val_attr_id = client.mk_eve_attr(id_=consts.EveAttr.warfare_buff_1_value)
+    eve_assign_attr_id = client.mk_eve_attr()
+    eve_affectee_attr1_id = client.mk_eve_attr()
+    eve_affectee_attr2_id = client.mk_eve_attr()
+    eve_buff1_id = client.mk_eve_buff(
+        aggr_mode=consts.EveBuffAggrMode.max,
+        op=consts.EveBuffOp.post_mul,
+        item_mods=[client.mk_eve_buff_mod(attr_id=eve_affectee_attr1_id)])
+    eve_buff2_id = client.mk_eve_buff(
+        aggr_mode=consts.EveBuffAggrMode.max,
+        op=consts.EveBuffOp.post_mul,
+        item_mods=[client.mk_eve_buff_mod(attr_id=eve_affectee_attr2_id)])
+    eve_effect_id = client.mk_eve_effect(id_=consts.UtilEffect.buff_ships, cat_id=consts.EveEffCat.active)
+    eve_assign_mod = client.mk_eve_effect_mod(
+        func=consts.EveModFunc.item,
+        loc=consts.EveModLoc.item,
+        op=consts.EveModOp.post_assign,
+        affector_attr_id=eve_assign_attr_id,
+        affectee_attr_id=eve_buff_type_attr_id)
+    eve_assign_effect_id = client.mk_eve_effect(mod_info=[eve_assign_mod])
+    eve_module_id = client.mk_eve_item(
+        attrs={eve_buff_type_attr_id: eve_buff1_id, eve_buff_val_attr_id: 5, eve_assign_attr_id: eve_buff2_id},
+        eff_ids=[eve_effect_id, eve_assign_effect_id],
+        defeff_id=eve_effect_id)
+    # Keeps the assigned buff during data generation
+    client.mk_eve_item(attrs={eve_buff_type_attr_id: eve_buff2_id})
+    eve_ship_id = client.mk_eve_ship(attrs={eve_affectee_attr1_id: 7.5, eve_affectee_attr2_id: 7.5})
+    client.create_sources()
+    api_sol = client.create_sol()
+    api_affectee_fit = api_sol.create_fit()
+    api_affectee_ship = api_affectee_fit.set_ship(type_id=eve_ship_id)
+    api_affector_fit = api_sol.create_fit()
+    api_affector_module = api_affector_fit.add_module(
+        type_id=eve_module_id,
+        state=consts.ApiModuleState.active,
+        proj_item_ids=[api_affectee_ship.id],
+        effect_modes={eve_assign_effect_id: consts.ApiEffMode.force_stop})
+    # Verification
+    api_affectee_ship.update()
+    assert api_affectee_ship.attrs[eve_affectee_attr1_id].modified == approx(37.5)
+    assert api_affectee_ship.attrs[eve_affectee_attr2_id].modified == approx(7.5)
+    # Action
+    api_affector_module.change_module(effect_modes={
+        eve_effect_id: consts.ApiEffMode.force_stop,
+        eve_assign_effect_id: consts.ApiEffMode.full_compliance})
+    # Verification
+    api_affectee_ship.update()
+    assert api_affectee_ship.attrs[eve_affectee_attr1_id].modified == approx(7.5)
+    assert api_affectee_ship.attrs[eve_affectee_attr2_id].modified == approx(7.5)
