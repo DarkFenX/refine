@@ -1,6 +1,6 @@
 use crate::{
     ad::AItemId,
-    rd::{RAttrId, REffect, REffectId, RItemBase, RItemEffectListId, RcItem},
+    rd::{RAttrId, REffect, REffectId, RItemBase, RItemEffectListId, RMutasPregen, RcItem},
     svc::calc::RawModTemplates,
     util::{DenseId, PDense, RMap, RSet},
 };
@@ -29,16 +29,28 @@ impl RLocalRmtAffectors {
 impl RLocalRmtAffectors {
     pub(in crate::rd::data) fn new(
         items: &RMap<AItemId, RcItem>,
-        effect_list_refs: &[AItemId],
+        muta_pregen: &RMutasPregen,
+        effect_list_count: usize,
         effects: &PDense<REffectId, REffect>,
         rmod_templates: &RawModTemplates,
     ) -> Self {
+        // Effect lists of item types, and of mutated items, which item types don't include
+        let mut effect_lists: Vec<Option<&[REffectId]>> = vec![None; effect_list_count];
+        for r_item in items
+            .values()
+            .chain(muta_pregen.iter_entries().map(|entry| &entry.mutated_item))
+        {
+            effect_lists[r_item.base.effect_list_id.index()].get_or_insert(&r_item.base.effect_rids);
+        }
         let mut ranges = RMap::new();
         let mut effect_rids = Vec::new();
         let mut attr_rids = RSet::new();
         // Go through each unique effect list
-        for (index, item_aid) in effect_list_refs.iter().enumerate() {
-            let list_effect_rids = &items.get(item_aid).unwrap().base.effect_rids;
+        for (index, list_effect_rids) in effect_lists.into_iter().enumerate() {
+            // Lists only of dynamic item types which no mutation produces
+            let Some(list_effect_rids) = list_effect_rids else {
+                continue;
+            };
             // For each, get affector attribute IDs of modifier templates (but only for local
             // modifier kind)
             attr_rids.clear();

@@ -1,11 +1,13 @@
 use serde::Deserialize;
 
-use crate::phb::data::{Key, KeyMergeOne};
+use crate::phb::data::{Key, KeyMergeOne, shared::int_to_bool};
 
 #[derive(Deserialize)]
 pub(in crate::phb) struct PItem {
     #[serde(rename = "groupID")]
     group_id: i32,
+    #[serde(rename = "isDynamicType", default, deserialize_with = "int_to_bool")]
+    is_dynamic: bool,
     capacity: f64,
     mass: f64,
     radius: f64,
@@ -16,6 +18,7 @@ impl KeyMergeOne<rc::ed::EItem> for PItem {
         merged.push(rc::ed::EItem {
             id: rc::ed::EItemId::from_i32(key),
             group_id: rc::ed::EItemGrpId::from_i32(self.group_id),
+            is_dynamic: self.is_dynamic,
             capacity: Some(rc::ed::EFloat::from_f64(self.capacity)),
             mass: Some(rc::ed::EFloat::from_f64(self.mass)),
             radius: Some(rc::ed::EFloat::from_f64(self.radius)),

@@ -26,6 +26,7 @@ impl ADataGenerator {
             let EItem {
                 id,
                 group_id,
+                is_dynamic,
                 // Moved to item attributes during normalization
                 capacity: _,
                 mass: _,
@@ -45,6 +46,7 @@ impl ADataGenerator {
                 id: AItemId::from_eid(*id),
                 grp_id: AItemGrpId::from_eid(*group_id),
                 cat_id: AItemCatId::from_eid(cat_eid),
+                is_dynamic: *is_dynamic,
                 attrs: AItemAttrs::new(),
                 effects: AItemEffects::new(),
                 defeff_id: defeff_eid.map(AEffectId::from_eid),

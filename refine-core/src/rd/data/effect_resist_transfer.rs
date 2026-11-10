@@ -1,7 +1,7 @@
 use crate::{
     ad::AItemId,
     rd::{RAttrId, REffect, REffectId, REffectResist, RItem, RMutasPregen, RcItem},
-    util::{PDense, RMap, RSet},
+    util::{PDense, RMap},
 };
 
 /// Moves remote resistance attribute reference from items to effects whenever possible.
@@ -14,15 +14,10 @@ pub(in crate::rd::data) fn fill_effect_remote_resists(
     muta_pregen: &RMutasPregen,
 ) {
     let mut effect_resists = RMap::new();
-    let mutated_type_aids: RSet<_> = muta_pregen
-        .iter_entries()
-        .map(|pregen_entry| pregen_entry.mutated_item.base.aid)
-        .collect();
-    // Fill data for non-mutated items
-    for (type_aid, r_item) in items.iter() {
-        if !mutated_type_aids.contains(type_aid) {
-            add_item_remote_resist(&mut effect_resists, r_item, r_item.flex_data.remote_resist_attr_rid);
-        }
+    // Fill data for non-mutated items. By this point, dynamic types ("raw" mutation target types)
+    // have been removed from the items container
+    for r_item in items.values() {
+        add_item_remote_resist(&mut effect_resists, r_item, r_item.flex_data.remote_resist_attr_rid);
     }
     // Fill data for mutated items
     for pregen_entry in muta_pregen.iter_entries() {

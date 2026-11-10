@@ -136,11 +136,13 @@ impl RawModTemplates {
     ) -> impl Iterator<Item = RawModifier> {
         let start = effect.rmod_templates.start as usize;
         let end = effect.rmod_templates.end as usize;
-        self.0[start..end].iter().filter_map(move |template| {
-            (matches!(template.kind, ModifierKind::Local)
-                && template.get_affector_attr_rid() == Some(affector_attr_rid))
-            .then(|| template.with_affector_uid(item_uid))
-        })
+        self.0[start..end]
+            .iter()
+            .filter(move |template| {
+                matches!(template.kind, ModifierKind::Local)
+                    && template.get_affector_attr_rid() == Some(affector_attr_rid)
+            })
+            .map(move |template| template.with_affector_uid(item_uid))
     }
 }
 

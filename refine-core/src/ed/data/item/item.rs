@@ -6,6 +6,7 @@ use crate::{
 pub struct EItem {
     pub id: EItemId,
     pub group_id: EItemGrpId,
+    pub is_dynamic: bool,
     pub capacity: Option<EFloat>,
     pub mass: Option<EFloat>,
     pub radius: Option<EFloat>,

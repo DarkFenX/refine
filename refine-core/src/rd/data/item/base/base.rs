@@ -154,6 +154,8 @@ impl RItemBase {
             is_ice_harvester,
             disallowed_in_wspace,
             enables_portal,
+            // Defines where runtime data keeps the item type: dynamic ones only as mutated items
+            is_dynamic: _,
             // Converted into item flex data
             attrs: _,
             // Converted when runtime data is filled, since they refer to other entities

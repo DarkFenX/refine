@@ -8,6 +8,8 @@ pub(in crate::sde) struct SItem {
     id: i32,
     #[serde(rename = "groupID")]
     group_id: i32,
+    #[serde(rename = "isDynamicType", default)]
+    is_dynamic: bool,
     capacity: Option<f64>,
     mass: Option<f64>,
     radius: Option<f64>,
@@ -18,6 +20,7 @@ impl ExtractOne<rc::ed::EItem> for SItem {
         extracted.push(rc::ed::EItem {
             id: rc::ed::EItemId::from_i32(self.id),
             group_id: rc::ed::EItemGrpId::from_i32(self.group_id),
+            is_dynamic: self.is_dynamic,
             capacity: self.capacity.map(rc::ed::EFloat::from_f64),
             mass: self.mass.map(rc::ed::EFloat::from_f64),
             radius: self.radius.map(rc::ed::EFloat::from_f64),

@@ -143,8 +143,8 @@ impl RData {
             &effect_consts,
             &effects,
         );
-        // Item types get effect list IDs before mutated item data shares them
-        let effect_list_refs = fill_item_effect_list_ids(&mut items);
+        // Item types get effect list IDs before mutated item processing potentially shares them
+        let effect_list_count = fill_item_effect_list_ids(&mut items);
         // Effects are resolved using item and effect data
         let item_effects_pregen = RItemsEffectsPregen::new(&mut items, &effects, &effect_consts);
         fill_attrs(&mut attrs, &a_data.attrs, &attr_aid_rid_map, &attr_consts);
@@ -156,6 +156,7 @@ impl RData {
             .adaptive_armor_hardener
             .and_then(|effect_rid| effects.get(effect_rid).unwrap().duration_attr_rid);
         let muta_pregen = RMutasPregen::new(&items, &a_data.mutas.data, &attr_aid_rid_map, &attr_consts);
+        strip_dynamic_types(&a_data.items, &mut items);
         // Adapted data is not needed anymore; freeing it here lets data built from here on, and its
         // temporaries, reuse that memory instead of growing the heap
         drop(a_data);
@@ -166,7 +167,8 @@ impl RData {
         for attr_rid in rmod_templates.iter_local_affector_attr_rids() {
             attrs.get_mut(attr_rid).unwrap().local_rmt_affector = true;
         }
-        let local_rmt_affectors = RLocalRmtAffectors::new(&items, &effect_list_refs, &effects, &rmod_templates);
+        let local_rmt_affectors =
+            RLocalRmtAffectors::new(&items, &muta_pregen, effect_list_count, &effects, &rmod_templates);
         Self {
             items,
             item_effects_pregen,
@@ -264,6 +266,15 @@ fn make_buffs(a_buffs: &ABuffs) -> (PDense<RBuffId, RBuff>, RMap<ABuffId, RBuffI
 }
 
 // Runtime data filling
+fn strip_dynamic_types(a_items: &AItems, r_items: &mut RMap<AItemId, RcItem>) {
+    // Dynamic item types exist only as mutated items, which the mutation pregen keeps; item types
+    // on their own don't include them, so they never load without a mutation
+    for a_item in a_items.data.values().filter(|a_item| a_item.is_dynamic) {
+        r_items.remove(&a_item.id);
+    }
+    r_items.shrink_to_fit();
+}
+
 fn fill_effects(
     effects: &mut PDense<REffectId, REffect>,
     a_effects: &AEffects,
@@ -305,31 +316,27 @@ fn fill_items(
         );
     }
 }
-fn fill_item_effect_list_ids(items: &mut RMap<AItemId, RcItem>) -> Vec<AItemId> {
-    // Returns an item type with each effect list, indexed by effect list ID
-    let mut effect_list_item_aids = Vec::new();
-    let item_effect_list_ids: Vec<_> = {
-        let mut effect_list_ids = RMap::new();
-        items
-            .iter()
-            .map(|(&item_aid, r_item)| {
-                let effect_list_id = *effect_list_ids
-                    .entry(r_item.base.effect_rids.as_ref())
-                    .or_insert_with(|| {
-                        effect_list_item_aids.push(item_aid);
-                        RItemEffectListId::new(effect_list_item_aids.len() - 1)
-                    });
-                (item_aid, effect_list_id)
-            })
-            .collect()
-    };
+fn fill_item_effect_list_ids(items: &mut RMap<AItemId, RcItem>) -> usize {
+    // Returns the number of effect lists
+    let mut effect_list_ids = RMap::new();
+    let item_effect_list_ids: Vec<_> = items
+        .iter()
+        .map(|(&item_aid, r_item)| {
+            let next_id = RItemEffectListId::new(effect_list_ids.len());
+            let effect_list_id = *effect_list_ids
+                .entry(r_item.base.effect_rids.as_ref())
+                .or_insert(next_id);
+            (item_aid, effect_list_id)
+        })
+        .collect();
+    let effect_list_count = effect_list_ids.len();
     for (item_aid, effect_list_id) in item_effect_list_ids {
         Arc::get_mut(items.get_mut(&item_aid).unwrap())
             .unwrap()
             .base
             .effect_list_id = effect_list_id;
     }
-    effect_list_item_aids
+    effect_list_count
 }
 
 fn fill_attrs(

@@ -11,6 +11,7 @@ pub struct AItem {
     pub id: AItemId,
     pub grp_id: AItemGrpId,
     pub cat_id: AItemCatId,
+    pub is_dynamic: bool,
     pub attrs: AItemAttrs,
     pub effects: AItemEffects,
     pub defeff_id: Option<AEffectId>,
