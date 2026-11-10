@@ -5,7 +5,10 @@ use crate::{
     rd::{RAttrId, RData, REffect, REffectId},
     svc::{
         SvcCtx,
-        calc::{Calc, CtxModifier, ModifierKind, RawModId, RawModSlot, RawModTemplates, RawModifier, registers::RegOp},
+        calc::{
+            Calc, CtxModifier, ItemAddRemoveReviser, ModifierKind, RawModId, RawModSlot, RawModTemplates, RawModifier,
+            registers::RegOp,
+        },
     },
     ud::{UFitId, UFleet, UItem, UItemId},
 };
@@ -13,98 +16,78 @@ use crate::{
 impl Calc {
     // Modification methods
     pub(in crate::svc) fn fit_added(&mut self, templates: &RawModTemplates, fit_uid: UFitId) {
-        self.std.reg_fit_for_sw(templates, &self.rmods, fit_uid)
+        self.std
+            .process_fit_for_sw::<{ RegOp::Reg }>(templates, &self.rmods, fit_uid)
     }
     pub(in crate::svc) fn fit_removed(&mut self, templates: &RawModTemplates, fit_uid: UFitId) {
-        self.std.unreg_fit_for_sw(templates, &self.rmods, fit_uid)
+        self.std
+            .process_fit_for_sw::<{ RegOp::Unreg }>(templates, &self.rmods, fit_uid)
     }
     pub(in crate::svc) fn fit_added_to_fleet(&mut self, ctx: &SvcCtx, fleet: &UFleet, fit_uid: UFitId) {
-        let mut reuse_cmods = self.reuse.cmods.take();
-        self.std
-            .reg_fleet_for_fit(&mut reuse_cmods, ctx, &self.rmods, fleet, fit_uid);
-        let mut reuse_affectees = self.reuse.items.take();
-        for cmod in reuse_cmods.iter() {
-            self.force_mod_affectee_attr_recalc(&mut reuse_affectees, ctx, cmod);
-        }
-        self.reuse.items.put(reuse_affectees);
-        self.reuse.cmods.put(reuse_cmods);
+        self.process_fleet_fit::<{ RegOp::Reg }>(ctx, fleet, fit_uid);
     }
     pub(in crate::svc) fn fit_removed_from_fleet(&mut self, ctx: &SvcCtx, fleet: &UFleet, fit_uid: UFitId) {
-        let mut reuse_cmods = self.reuse.cmods.take();
-        self.std
-            .unreg_fleet_for_fit(&mut reuse_cmods, ctx, &self.rmods, fleet, fit_uid);
-        let mut reuse_affectees = self.reuse.items.take();
-        for cmod in reuse_cmods.iter() {
-            self.force_mod_affectee_attr_recalc(&mut reuse_affectees, ctx, cmod);
-        }
-        self.reuse.items.put(reuse_affectees);
-        self.reuse.cmods.put(reuse_cmods);
+        self.process_fleet_fit::<{ RegOp::Unreg }>(ctx, fleet, fit_uid);
     }
     pub(in crate::svc) fn fit_rah_dps_profile_changed(&mut self, ctx: &SvcCtx, fit_uid: UFitId) {
         self.rah_fit_rah_dps_profile_changed(ctx, fit_uid);
     }
     pub(in crate::svc) fn item_added(&mut self, ctx: &SvcCtx, item_uid: UItemId, item: &UItem) {
         // Custom modifiers
-        let cmods = self
-            .revs
-            .iter_revs_on_item_add_remove()
-            .filter_map(|(ckey, reviser)| {
-                if !reviser.reacts_to(item) {
-                    return None;
-                }
-                let cmod = self.rmods.get_cmod(ctx.rmt(), ckey);
-                match reviser.revise(ctx, cmod.rmod.affector_espec.item_uid, item_uid, item) {
-                    true => Some(cmod),
-                    false => None,
-                }
-            })
-            .collect_vec();
-        if !cmods.is_empty() {
-            let mut reuse_items = self.reuse.items.take();
-            for cmod in cmods.into_iter() {
-                self.force_mod_affectee_attr_recalc(&mut reuse_items, ctx, &cmod);
+        for reviser in ItemAddRemoveReviser::ALL {
+            if !reviser.reacts_to(item) {
+                continue;
             }
-            self.reuse.items.put(reuse_items);
+            let cmods = self
+                .revs
+                .iter_revs_on_item_add_remove(reviser)
+                .filter_map(|ckey| {
+                    let cmod = self.rmods.get_cmod(ctx.rmt(), ckey);
+                    match reviser.revise(ctx, cmod.rmod.affector_espec.item_uid, item_uid, item) {
+                        true => Some(cmod),
+                        false => None,
+                    }
+                })
+                .collect_vec();
+            if !cmods.is_empty() {
+                let mut reuse_items = self.reuse.items.take();
+                for cmod in cmods.into_iter() {
+                    self.force_mod_affectee_attr_recalc(&mut reuse_items, ctx, &cmod);
+                }
+                self.reuse.items.put(reuse_items);
+            }
         }
     }
     pub(in crate::svc) fn item_removed(&mut self, ctx: &SvcCtx, item_uid: UItemId, item: &UItem) {
         // Custom modifiers
-        let cmods = self
-            .revs
-            .iter_revs_on_item_add_remove()
-            .filter_map(|(ckey, reviser)| {
-                if !reviser.reacts_to(item) {
-                    return None;
-                }
-                let cmod = self.rmods.get_cmod(ctx.rmt(), ckey);
-                match reviser.revise(ctx, cmod.rmod.affector_espec.item_uid, item_uid, item) {
-                    true => Some(cmod),
-                    false => None,
-                }
-            })
-            .collect_vec();
-        if !cmods.is_empty() {
-            let mut reuse_items = self.reuse.items.take();
-            for cmod in cmods.into_iter() {
-                self.force_mod_affectee_attr_recalc(&mut reuse_items, ctx, &cmod);
+        for reviser in ItemAddRemoveReviser::ALL {
+            if !reviser.reacts_to(item) {
+                continue;
             }
-            self.reuse.items.put(reuse_items);
+            let cmods = self
+                .revs
+                .iter_revs_on_item_add_remove(reviser)
+                .filter_map(|ckey| {
+                    let cmod = self.rmods.get_cmod(ctx.rmt(), ckey);
+                    match reviser.revise(ctx, cmod.rmod.affector_espec.item_uid, item_uid, item) {
+                        true => Some(cmod),
+                        false => None,
+                    }
+                })
+                .collect_vec();
+            if !cmods.is_empty() {
+                let mut reuse_items = self.reuse.items.take();
+                for cmod in cmods.into_iter() {
+                    self.force_mod_affectee_attr_recalc(&mut reuse_items, ctx, &cmod);
+                }
+                self.reuse.items.put(reuse_items);
+            }
         }
     }
     pub(in crate::svc) fn item_loaded(&mut self, ctx: &SvcCtx, item_uid: UItemId, item: &UItem) {
         // Notify core calc services
         self.attrs.item_loaded(ctx.u_data, item_uid, item);
-        let mut reuse_cmods = self.reuse.cmods.take();
-        self.std
-            .reg_affectee(&mut reuse_cmods, ctx, &self.rmods, item_uid, item);
-        if !reuse_cmods.is_empty() {
-            let mut reuse_affectees = self.reuse.items.take();
-            for cmod in reuse_cmods.iter() {
-                self.force_mod_affectee_attr_recalc(&mut reuse_affectees, ctx, cmod)
-            }
-            self.reuse.items.put(reuse_affectees);
-        }
-        self.reuse.cmods.put(reuse_cmods);
+        self.process_affectee::<{ RegOp::Reg }>(ctx, item_uid, item);
         // Notify RAH sim
         self.rah_item_loaded(ctx, item);
     }
@@ -112,17 +95,7 @@ impl Calc {
         // Notify RAH sim
         self.rah_item_unloaded(ctx, item);
         // Notify core calc services
-        let mut reuse_cmods = self.reuse.cmods.take();
-        self.std
-            .unreg_affectee(&mut reuse_cmods, ctx, &self.rmods, item_uid, item);
-        if !reuse_cmods.is_empty() {
-            let mut reuse_affectees = self.reuse.items.take();
-            for cmod in reuse_cmods.iter() {
-                self.force_mod_affectee_attr_recalc(&mut reuse_affectees, ctx, cmod)
-            }
-            self.reuse.items.put(reuse_affectees);
-        }
-        self.reuse.cmods.put(reuse_cmods);
+        self.process_affectee::<{ RegOp::Unreg }>(ctx, item_uid, item);
         self.deps.remove_item(item_uid);
         self.attrs.item_unloaded(item_uid);
     }
@@ -197,24 +170,7 @@ impl Calc {
         projectee_uid: UItemId,
         projectee_item: &UItem,
     ) {
-        // Buff maintenance - record projection before projecting, so that buff modifiers
-        // re-generated during recalculations get projected too
-        self.buffs.reg_projection(projector_espec, effect, projectee_uid);
-        let mut reuse_cmods = self.reuse.cmods.take();
-        self.std.project_effect(
-            &mut reuse_cmods,
-            ctx.rmt(),
-            &self.rmods,
-            projector_espec,
-            projectee_uid,
-            projectee_item,
-        );
-        let mut reuse_affectees = self.reuse.items.take();
-        for cmod in reuse_cmods.iter() {
-            self.force_mod_affectee_attr_recalc(&mut reuse_affectees, ctx, cmod);
-        }
-        self.reuse.items.put(reuse_affectees);
-        self.reuse.cmods.put(reuse_cmods);
+        self.process_effect_projection::<{ RegOp::Reg }>(ctx, projector_espec, effect, projectee_uid, projectee_item);
     }
     pub(in crate::svc) fn effect_proj_data_changed(
         &mut self,
@@ -247,24 +203,7 @@ impl Calc {
         projectee_uid: UItemId,
         projectee_item: &UItem,
     ) {
-        // Buff maintenance - remove projection info before unprojecting, so that buff modifiers
-        // re-generated during recalculations do not get projected
-        self.buffs.unreg_projection(projector_espec, effect, projectee_uid);
-        let mut reuse_cmods = self.reuse.cmods.take();
-        self.std.unproject_effect(
-            &mut reuse_cmods,
-            ctx.rmt(),
-            &self.rmods,
-            projector_espec,
-            projectee_uid,
-            projectee_item,
-        );
-        let mut reuse_affectees = self.reuse.items.take();
-        for cmod in reuse_cmods.iter() {
-            self.force_mod_affectee_attr_recalc(&mut reuse_affectees, ctx, cmod);
-        }
-        self.reuse.items.put(reuse_affectees);
-        self.reuse.cmods.put(reuse_cmods);
+        self.process_effect_projection::<{ RegOp::Unreg }>(ctx, projector_espec, effect, projectee_uid, projectee_item);
     }
     pub(in crate::svc) fn attr_value_changed(&mut self, ctx: &SvcCtx, aspec: AttrSpec) {
         // Clear up attribute values which rely on passed attribute directly, e.g. as an upper/lower
@@ -397,6 +336,61 @@ impl Calc {
         self.force_oattr_postproc_recalc(ctx, skill_uid, ctx.ac().skill_level);
     }
     // Private methods
+    fn process_affectee<const OP: RegOp>(&mut self, ctx: &SvcCtx, item_uid: UItemId, item: &UItem) {
+        let mut reuse_cmods = self.reuse.cmods.take();
+        self.std
+            .process_affectee::<OP>(&mut reuse_cmods, ctx, &self.rmods, item_uid, item);
+        if !reuse_cmods.is_empty() {
+            let mut reuse_affectees = self.reuse.items.take();
+            for cmod in reuse_cmods.iter() {
+                self.force_mod_affectee_attr_recalc(&mut reuse_affectees, ctx, cmod)
+            }
+            self.reuse.items.put(reuse_affectees);
+        }
+        self.reuse.cmods.put(reuse_cmods);
+    }
+    fn process_effect_projection<const OP: RegOp>(
+        &mut self,
+        ctx: &SvcCtx,
+        projector_espec: EffectSpec,
+        effect: &REffect,
+        projectee_uid: UItemId,
+        projectee_item: &UItem,
+    ) {
+        // Buff maintenance - record projection before projecting, and remove it before
+        // unprojecting, so that buff modifiers re-generated during recalculations get projected
+        // only while the effect is projected
+        match OP {
+            RegOp::Reg => self.buffs.reg_projection(projector_espec, effect, projectee_uid),
+            RegOp::Unreg => self.buffs.unreg_projection(projector_espec, effect, projectee_uid),
+        }
+        let mut reuse_cmods = self.reuse.cmods.take();
+        self.std.process_effect_projection::<OP>(
+            &mut reuse_cmods,
+            ctx.rmt(),
+            &self.rmods,
+            projector_espec,
+            projectee_uid,
+            projectee_item,
+        );
+        let mut reuse_affectees = self.reuse.items.take();
+        for cmod in reuse_cmods.iter() {
+            self.force_mod_affectee_attr_recalc(&mut reuse_affectees, ctx, cmod);
+        }
+        self.reuse.items.put(reuse_affectees);
+        self.reuse.cmods.put(reuse_cmods);
+    }
+    fn process_fleet_fit<const OP: RegOp>(&mut self, ctx: &SvcCtx, fleet: &UFleet, fit_uid: UFitId) {
+        let mut reuse_cmods = self.reuse.cmods.take();
+        self.std
+            .process_fleet_for_fit::<OP>(&mut reuse_cmods, ctx, &self.rmods, fleet, fit_uid);
+        let mut reuse_affectees = self.reuse.items.take();
+        for cmod in reuse_cmods.iter() {
+            self.force_mod_affectee_attr_recalc(&mut reuse_affectees, ctx, cmod);
+        }
+        self.reuse.items.put(reuse_affectees);
+        self.reuse.cmods.put(reuse_cmods);
+    }
     fn reg_stored_rmods(
         &mut self,
         reuse_items: &mut Vec<UItemId>,
@@ -632,18 +626,7 @@ impl Calc {
         rmod_id: RawModId,
         rmod: RawModifier,
     ) {
-        // Buff modifiers re-generated for an already projected effect are not covered by effect
-        // projection, so they are projected onto effect projectees here
-        reuse_cmods.clear();
-        for projectee_uid in self.buffs.iter_projectees(rmod.affector_espec) {
-            let projectee_item = ctx.u_data.items.get(projectee_uid);
-            if let Some(cmod) = self.std.project_mod(rmod_id, rmod, projectee_uid, projectee_item) {
-                reuse_cmods.push(cmod);
-            }
-        }
-        for cmod in reuse_cmods.iter() {
-            self.force_mod_affectee_attr_recalc(reuse_items, ctx, cmod);
-        }
+        self.process_dependent_mod_projection::<{ RegOp::Reg }>(reuse_items, reuse_cmods, ctx, rmod_id, rmod);
     }
     fn unproject_dependent_mod(
         &mut self,
@@ -653,10 +636,25 @@ impl Calc {
         rmod_id: RawModId,
         rmod: RawModifier,
     ) {
+        self.process_dependent_mod_projection::<{ RegOp::Unreg }>(reuse_items, reuse_cmods, ctx, rmod_id, rmod);
+    }
+    fn process_dependent_mod_projection<const OP: RegOp>(
+        &mut self,
+        reuse_items: &mut Vec<UItemId>,
+        reuse_cmods: &mut Vec<CtxModifier>,
+        ctx: &SvcCtx,
+        rmod_id: RawModId,
+        rmod: RawModifier,
+    ) {
+        // Buff modifiers re-generated for an already projected effect are not covered by effect
+        // projection, so they are projected onto effect projectees here
         reuse_cmods.clear();
         for projectee_uid in self.buffs.iter_projectees(rmod.affector_espec) {
             let projectee_item = ctx.u_data.items.get(projectee_uid);
-            if let Some(cmod) = self.std.unproject_mod(rmod_id, rmod, projectee_uid, projectee_item) {
+            if let Some(cmod) = self
+                .std
+                .process_mod_projection::<OP>(rmod_id, rmod, projectee_uid, projectee_item)
+            {
                 reuse_cmods.push(cmod);
             }
         }

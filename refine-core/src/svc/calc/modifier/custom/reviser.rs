@@ -10,6 +10,13 @@ pub(in crate::svc::calc) enum ItemAddRemoveReviser {
     MissileFlightTime,
 }
 impl ItemAddRemoveReviser {
+    pub(in crate::svc::calc) const ALL: [Self; 2] = [Self::AarPaste, Self::MissileFlightTime];
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Service methods
+////////////////////////////////////////////////////////////////////////////////////////////////////
+impl ItemAddRemoveReviser {
     pub(in crate::svc::calc) fn reacts_to(self, changed_item: &UItem) -> bool {
         match self {
             Self::AarPaste => aar_paste::reacts_to_item_add_removal(changed_item),

@@ -1,6 +1,6 @@
 pub(in crate::svc::calc) use buff::BuffRegister;
 pub(in crate::svc::calc) use dependency::DependencyRegister;
-pub(in crate::svc::calc) use op::RegOp;
+pub(in crate::svc::calc) use op::{RegOp, process_entry};
 pub(in crate::svc::calc) use raw_mods::RawModStorage;
 pub(in crate::svc::calc) use revision::RevisionRegister;
 pub(in crate::svc::calc) use standard::StandardRegister;
