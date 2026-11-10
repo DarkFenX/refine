@@ -7,7 +7,7 @@ use crate::{
         SvcCtx,
         calc::{
             Calc, CtxModifier, ItemAddRemoveReviser, ModifierKind, RawModId, RawModSlot, RawModTemplates, RawModifier,
-            registers::RegOp,
+            registers::{RegOp, StandardRegister},
         },
     },
     ud::{UFitId, UFleet, UItem, UItemId},
@@ -218,11 +218,37 @@ impl Calc {
             self.force_attr_value_recalc(ctx, affectee_aspec);
         }
         // Clear up attribute values which rely on passed attribute as a modification source
-        let cmods = self
+        let mut cmods = self
             .std
             .iter_affector_spec_ckeys(aspec)
             .map(|ckey| self.rmods.get_cmod(ctx.rmt(), ckey))
             .collect_vec();
+        // Local template modifiers are not registered by affector attribute, and have to be handled
+        // here
+        let item = ctx.u_data.items.get(aspec.item_uid);
+        if attr.local_rmt_affector
+            && let Some(item_rib) = item.get_r_item_base()
+            && let Some(reffs) = item.get_reffs()
+        {
+            for &effect_rid in ctx
+                .u_data
+                .r_data
+                .get_local_rmt_affector_effects(item_rib, aspec.attr_rid)
+            {
+                if !reffs.contains(effect_rid) {
+                    continue;
+                }
+                let effect = ctx.u_data.r_data.get_effect_by_rid(effect_rid);
+                for rmod in ctx
+                    .rmt()
+                    .iter_effect_local_by_affector_attr(effect, aspec.item_uid, aspec.attr_rid)
+                {
+                    if let Some(cmod) = StandardRegister::query_local_mod(item, rmod) {
+                        cmods.push(cmod);
+                    }
+                }
+            }
+        }
         if !cmods.is_empty() {
             let mut reuse_affectees = self.reuse.items.take();
             for cmod in cmods.into_iter() {

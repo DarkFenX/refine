@@ -1,6 +1,6 @@
 use crate::{
     svc::calc::{
-        AffecteeFilter, CtxModifier, Location, RawModId, RawModifier,
+        AffecteeFilter, CtxModifier, Location, LocationKind, RawModId, RawModifier,
         registers::{
             RegOp,
             standard::{StandardRegister, modifier::func::process_cmod},
@@ -70,6 +70,20 @@ impl StandardRegister {
                 process_cmod::<OP, _>(key, rmod_id, &cmod, &mut self.cmods.own_srq, &mut self.cmods.by_aspec);
                 Some(cmod)
             }
+        }
+    }
+    // Context modifier the same registration produces, without registering it
+    pub(in crate::svc::calc) fn query_local_mod(item: &UItem, rmod: RawModifier) -> Option<CtxModifier> {
+        match rmod.affectee_filter {
+            AffecteeFilter::Direct(Location::Item | Location::Other) => Some(CtxModifier::new(rmod)),
+            AffecteeFilter::Direct(loc)
+            | AffecteeFilter::Loc(loc)
+            | AffecteeFilter::LocGrp(loc, _)
+            | AffecteeFilter::LocSrq(loc, _) => {
+                let _: LocationKind = loc.try_into().ok()?;
+                Some(CtxModifier::with_fit(rmod, item.get_fit_uid()?))
+            }
+            AffecteeFilter::OwnSrq(_) => Some(CtxModifier::with_fit(rmod, item.get_fit_uid()?)),
         }
     }
 }

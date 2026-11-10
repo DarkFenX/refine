@@ -71,6 +71,9 @@ impl UFighter {
         self.base
             .stop_all_reffs(reuse_eupdates, r_data, RItemEffectOptions::REQUIRE_DISABLED_DEFEFF)
     }
+    pub(in crate::ud::item) fn remove_stopped_reffs(&mut self, eupdates: &UEffectUpdates) {
+        self.base.remove_stopped_reffs(eupdates);
+    }
     pub(crate) fn get_effect_mode_by_rid(&self, effect_rid: REffectId) -> EffectMode {
         self.base.get_effect_mode_by_rid(effect_rid)
     }

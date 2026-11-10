@@ -54,7 +54,7 @@ impl SolCore {
         self.effect_mode_update_postprocess(item_uid);
     }
     fn effect_mode_update_postprocess(&mut self, item_uid: UItemId) {
-        SolCore::util_process_effect_updates(&self.u_data, &mut self.svc, item_uid, &self.reuse.eupdates);
+        SolCore::util_process_effect_updates(&mut self.u_data, &mut self.svc, item_uid, &self.reuse.eupdates);
         let u_item = self.u_data.items.get(item_uid);
         let charge_uid = u_item.get_charge_uid();
         // Autocharges - use secondary effect updates container for their effects

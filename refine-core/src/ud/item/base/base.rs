@@ -219,6 +219,13 @@ impl UItemBase {
             self.reffs_pregen_up_to = Some(RState::Ghost);
         }
     }
+    // Effects stopped by update_reffs or stop_all_reffs stay running until services have processed
+    // their stop, so that services see their modifiers as belonging to running effects throughout
+    pub(in crate::ud::item) fn remove_stopped_reffs(&mut self, eupdates: &UEffectUpdates) {
+        if let Some(cache) = &mut self.cache {
+            cache.reffs.remove_running(&eupdates.to_stop);
+        }
+    }
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////

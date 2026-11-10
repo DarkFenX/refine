@@ -2,7 +2,7 @@ use std::hash::Hash;
 
 use crate::{
     misc::AttrSpec,
-    svc::calc::{CtxModKey, CtxModifier, RawModId, registers::RegOp},
+    svc::calc::{CtxModKey, CtxModifier, ModifierKind, RawModId, registers::RegOp},
     util::RMapRSet,
 };
 
@@ -32,7 +32,10 @@ pub(super) fn add_cmod<K>(
 {
     let ckey = cmod.get_ckey(rmod_id);
     main_storage.add_entry(key, ckey);
-    if let Some(affector_attr_rid) = cmod.rmod.get_affector_attr_rid() {
+    // Local template modifiers are handled separately
+    if let Some(affector_attr_rid) = cmod.rmod.get_affector_attr_rid()
+        && !(rmod_id.is_template() && matches!(cmod.rmod.kind, ModifierKind::Local))
+    {
         let affector_aspec = AttrSpec::new(cmod.rmod.affector_espec.item_uid, affector_attr_rid);
         aspec_storage.add_entry(affector_aspec, ckey);
     }
@@ -59,7 +62,10 @@ pub(super) fn remove_cmod<K>(
 {
     let ckey = cmod.get_ckey(rmod_id);
     main_storage.remove_entry(key, &ckey);
-    if let Some(affector_attr_rid) = cmod.rmod.get_affector_attr_rid() {
+    // Local template modifiers are handled separately
+    if let Some(affector_attr_rid) = cmod.rmod.get_affector_attr_rid()
+        && !(rmod_id.is_template() && matches!(cmod.rmod.kind, ModifierKind::Local))
+    {
         let affector_aspec = AttrSpec::new(cmod.rmod.affector_espec.item_uid, affector_attr_rid);
         aspec_storage.remove_entry(affector_aspec, &ckey);
     }

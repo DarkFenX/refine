@@ -613,6 +613,9 @@ impl UItemBaseMutable {
     ) {
         self.base.stop_all_reffs(reuse_eupdates, r_data, effect_options);
     }
+    pub(in crate::ud::item) fn remove_stopped_reffs(&mut self, eupdates: &UEffectUpdates) {
+        self.base.remove_stopped_reffs(eupdates);
+    }
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////

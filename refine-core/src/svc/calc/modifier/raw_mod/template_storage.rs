@@ -4,7 +4,8 @@ use super::{
     raw_mod::RawModifier,
 };
 use crate::{
-    rd::{RAttrConsts, RBuff, RBuffId, REffect, REffectId},
+    rd::{RAttrConsts, RAttrId, RBuff, RBuffId, REffect, REffectId},
+    svc::calc::ModifierKind,
     ud::UItemId,
     util::{DenseId, PDense},
 };
@@ -107,6 +108,40 @@ fn fill_buff_templates(templates: &mut Vec<RawModifier>, effect: &mut REffect, b
         false
     });
     effect.buff.as_mut().unwrap().full = buff_fulls.into();
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Related to local-modifier-affector optimization
+////////////////////////////////////////////////////////////////////////////////////////////////////
+impl RawModTemplates {
+    pub(crate) fn iter_local_affector_attr_rids(&self) -> impl Iterator<Item = RAttrId> {
+        self.0
+            .iter()
+            .filter(|template| matches!(template.kind, ModifierKind::Local))
+            .filter_map(|template| template.get_affector_attr_rid())
+    }
+    pub(crate) fn iter_effect_local_affector_attr_rids(&self, effect: &REffect) -> impl Iterator<Item = RAttrId> {
+        let start = effect.rmod_templates.start as usize;
+        let end = effect.rmod_templates.end as usize;
+        self.0[start..end]
+            .iter()
+            .filter(|template| matches!(template.kind, ModifierKind::Local))
+            .filter_map(|template| template.get_affector_attr_rid())
+    }
+    pub(in crate::svc::calc) fn iter_effect_local_by_affector_attr(
+        &self,
+        effect: &REffect,
+        item_uid: UItemId,
+        affector_attr_rid: RAttrId,
+    ) -> impl Iterator<Item = RawModifier> {
+        let start = effect.rmod_templates.start as usize;
+        let end = effect.rmod_templates.end as usize;
+        self.0[start..end].iter().filter_map(move |template| {
+            (matches!(template.kind, ModifierKind::Local)
+                && template.get_affector_attr_rid() == Some(affector_attr_rid))
+            .then(|| template.with_affector_uid(item_uid))
+        })
+    }
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////

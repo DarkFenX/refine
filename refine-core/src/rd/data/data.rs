@@ -6,12 +6,15 @@ use crate::{
         AItemLists, AItems, AMutas,
     },
     rd::{
-        RAbil, RAttr, RAttrConsts, RAttrId, RBuff, RBuffId, REffect, REffectConsts, REffectId, RItem,
-        RItemEffectsPregenEntry, RItemEffectsPregenId, RItemList, RItemListId, RMuta, RMutasPregen,
-        data::{effect_resist_transfer::fill_effect_remote_resists, item_effects_pregen::RItemsEffectsPregen},
+        RAbil, RAttr, RAttrConsts, RAttrId, RBuff, RBuffId, REffect, REffectConsts, REffectId, RItem, RItemBase,
+        RItemEffectListId, RItemEffectsPregenEntry, RItemEffectsPregenId, RItemList, RItemListId, RMuta, RMutasPregen,
+        data::{
+            effect_resist_transfer::fill_effect_remote_resists, item_effects_pregen::RItemsEffectsPregen,
+            rmod_template_affectors::RLocalRmtAffectors,
+        },
     },
     svc::calc::RawModTemplates,
-    util::{PDense, RMap},
+    util::{DenseId, PDense, RMap},
 };
 
 pub(crate) type RcData = Arc<RData>;
@@ -34,6 +37,7 @@ pub(crate) struct RData {
     muta_pregen: RMutasPregen,
     abils: RMap<AAbilId, RAbil>,
     rmod_templates: RawModTemplates,
+    rmod_template_affectors: RLocalRmtAffectors,
     // Extra data stored directly on RData for ease of access / optimization purposes
     rah_duration_attr_rid: Option<RAttrId>,
 }
@@ -98,6 +102,9 @@ impl RData {
     pub(crate) fn get_muta_pregen(&self) -> &RMutasPregen {
         &self.muta_pregen
     }
+    pub(crate) fn get_local_rmt_affector_effects(&self, item_base: &RItemBase, attr_rid: RAttrId) -> &[REffectId] {
+        self.rmod_template_affectors.get(item_base, attr_rid)
+    }
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -136,6 +143,8 @@ impl RData {
             &effect_consts,
             &effects,
         );
+        // Item types get effect list IDs before mutated item data shares them
+        let effect_list_refs = fill_item_effect_list_ids(&mut items);
         // Effects are resolved using item and effect data
         let item_effects_pregen = RItemsEffectsPregen::new(&mut items, &effects, &effect_consts);
         fill_attrs(&mut attrs, &a_data.attrs, &attr_aid_rid_map, &attr_consts);
@@ -147,10 +156,17 @@ impl RData {
             .adaptive_armor_hardener
             .and_then(|effect_rid| effects.get(effect_rid).unwrap().duration_attr_rid);
         let muta_pregen = RMutasPregen::new(&items, &a_data.mutas.data, &attr_aid_rid_map, &attr_consts);
+        // Adapted data is not needed anymore; freeing it here lets data built from here on, and its
+        // temporaries, reuse that memory instead of growing the heap
+        drop(a_data);
         fill_effect_remote_resists(&mut effects, &items, &muta_pregen);
         // Modifier templates depend on where effects take resist attribute from, so process them
         // after resists
         let rmod_templates = RawModTemplates::from_effects(&mut effects, &buffs, &attr_consts);
+        for attr_rid in rmod_templates.iter_local_affector_attr_rids() {
+            attrs.get_mut(attr_rid).unwrap().local_rmt_affector = true;
+        }
+        let local_rmt_affectors = RLocalRmtAffectors::new(&items, &effect_list_refs, &effects, &rmod_templates);
         Self {
             items,
             item_effects_pregen,
@@ -167,6 +183,7 @@ impl RData {
             muta_pregen,
             abils,
             rmod_templates,
+            rmod_template_affectors: local_rmt_affectors,
             rah_duration_attr_rid,
         }
     }
@@ -287,6 +304,32 @@ fn fill_items(
             effects,
         );
     }
+}
+fn fill_item_effect_list_ids(items: &mut RMap<AItemId, RcItem>) -> Vec<AItemId> {
+    // Returns an item type with each effect list, indexed by effect list ID
+    let mut effect_list_item_aids = Vec::new();
+    let item_effect_list_ids: Vec<_> = {
+        let mut effect_list_ids = RMap::new();
+        items
+            .iter()
+            .map(|(&item_aid, r_item)| {
+                let effect_list_id = *effect_list_ids
+                    .entry(r_item.base.effect_rids.as_ref())
+                    .or_insert_with(|| {
+                        effect_list_item_aids.push(item_aid);
+                        RItemEffectListId::new(effect_list_item_aids.len() - 1)
+                    });
+                (item_aid, effect_list_id)
+            })
+            .collect()
+    };
+    for (item_aid, effect_list_id) in item_effect_list_ids {
+        Arc::get_mut(items.get_mut(&item_aid).unwrap())
+            .unwrap()
+            .base
+            .effect_list_id = effect_list_id;
+    }
+    effect_list_item_aids
 }
 
 fn fill_attrs(

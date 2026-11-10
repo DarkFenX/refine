@@ -7,13 +7,14 @@ use crate::{
 
 impl SolCore {
     pub(in crate::api) fn util_process_effect_updates(
-        u_data: &UData,
+        u_data: &mut UData,
         svc: &mut Svc,
         item_uid: UItemId,
         eupdates: &UEffectUpdates,
     ) {
         let u_item = u_data.items.get(item_uid);
         process_effect_updates(u_data, svc, item_uid, u_item, eupdates);
+        SolCore::util_internal_remove_stopped_reffs(u_data, item_uid, eupdates);
     }
     pub(in crate::api::util) fn util_internal_process_effect_updates(
         u_data: &UData,
@@ -24,6 +25,21 @@ impl SolCore {
     ) {
         process_effect_updates(u_data, svc, item_uid, u_item, eupdates);
     }
+    pub(in crate::api::util) fn util_internal_remove_stopped_reffs(
+        u_data: &mut UData,
+        item_uid: UItemId,
+        eupdates: &UEffectUpdates,
+    ) {
+        if !eupdates.to_stop.is_empty() {
+            remove_stopped_reffs(u_data, item_uid, eupdates);
+        }
+    }
+}
+
+// Out of line, so that functions ending with the check stay small enough to inline
+#[inline(never)]
+fn remove_stopped_reffs(u_data: &mut UData, item_uid: UItemId, eupdates: &UEffectUpdates) {
+    u_data.items.get_mut(item_uid).remove_stopped_reffs(eupdates);
 }
 
 fn process_effect_updates(u_data: &UData, svc: &mut Svc, item_uid: UItemId, u_item: &UItem, eupdates: &UEffectUpdates) {

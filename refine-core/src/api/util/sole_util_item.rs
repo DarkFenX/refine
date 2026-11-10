@@ -21,9 +21,11 @@ impl SolCore {
             u_item.get_state(),
             eupdates,
         );
+        // Items are added in ghost state and go up from there, so effect updates have nothing
+        // stopped; not calling the effect stop handler because of it
     }
     pub(in crate::api) fn util_remove_item(
-        u_data: &UData,
+        u_data: &mut UData,
         svc: &mut Svc,
         item_uid: UItemId,
         reuse_eupdates: &mut UEffectUpdates,
@@ -42,5 +44,8 @@ impl SolCore {
             svc.notify_item_unloaded(u_data, item_uid, u_item)
         }
         svc.notify_item_removed(u_data, item_uid, u_item);
+        // Clear the running effects container only after services step, as they might depend on
+        // having pre-removal effect list
+        SolCore::util_internal_remove_stopped_reffs(u_data, item_uid, reuse_eupdates);
     }
 }

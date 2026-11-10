@@ -34,7 +34,7 @@ impl SolCore {
         let new_a_state = u_booster.get_state();
         u_booster.update_reffs(&mut self.reuse.eupdates, &self.u_data.r_data);
         SolCore::util_switch_item_state(
-            &self.u_data,
+            &mut self.u_data,
             &mut self.svc,
             booster_uid,
             old_a_state,

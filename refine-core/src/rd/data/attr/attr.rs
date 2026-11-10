@@ -18,6 +18,8 @@ pub(crate) struct RAttr {
     pub(crate) min_attr_rid: Option<RAttrId>,
     pub(crate) max_attr_rid: Option<RAttrId>,
     pub(crate) buff_str_attr_rid: Option<RAttrId>,
+    // Affector attribute of some local raw modifier template
+    pub(crate) local_rmt_affector: bool,
     // Attributes whose values on the same item are calculated using value of this attribute
     // directly, not via modifiers
     pub(crate) dependent_attr_rids: Box<[RAttrId]>,
@@ -31,6 +33,7 @@ impl RAttr {
         Self {
             rid: attr_r_id,
             aid: a_attr.id,
+            local_rmt_affector: false,
             penalizable: a_attr.penalizable,
             hig: a_attr.hig,
             def_val: Value::from_a_value(a_attr.def_val),

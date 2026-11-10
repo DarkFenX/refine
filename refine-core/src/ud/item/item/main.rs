@@ -194,6 +194,27 @@ impl UItem {
             Self::SwEffect(sw_effect) => sw_effect.stop_all_reffs(reuse_eupdates, r_data),
         }
     }
+    pub(crate) fn remove_stopped_reffs(&mut self, eupdates: &UEffectUpdates) {
+        match self {
+            Self::Autocharge(autocharge) => autocharge.remove_stopped_reffs(eupdates),
+            Self::Booster(booster) => booster.remove_stopped_reffs(eupdates),
+            Self::Character(character) => character.remove_stopped_reffs(eupdates),
+            Self::Charge(charge) => charge.remove_stopped_reffs(eupdates),
+            Self::Drone(drone) => drone.remove_stopped_reffs(eupdates),
+            Self::Fighter(fighter) => fighter.remove_stopped_reffs(eupdates),
+            Self::FwEffect(fw_effect) => fw_effect.remove_stopped_reffs(eupdates),
+            Self::Implant(implant) => implant.remove_stopped_reffs(eupdates),
+            Self::Module(module) => module.remove_stopped_reffs(eupdates),
+            Self::ProjEffect(proj_effect) => proj_effect.remove_stopped_reffs(eupdates),
+            Self::Rig(rig) => rig.remove_stopped_reffs(eupdates),
+            Self::Service(service) => service.remove_stopped_reffs(eupdates),
+            Self::Ship(ship) => ship.remove_stopped_reffs(eupdates),
+            Self::Skill(skill) => skill.remove_stopped_reffs(eupdates),
+            Self::Stance(stance) => stance.remove_stopped_reffs(eupdates),
+            Self::Subsystem(subsystem) => subsystem.remove_stopped_reffs(eupdates),
+            Self::SwEffect(sw_effect) => sw_effect.remove_stopped_reffs(eupdates),
+        }
+    }
     pub(crate) fn get_effect_mode_by_rid(&self, effect_rid: REffectId) -> EffectMode {
         match self {
             Self::Autocharge(autocharge) => autocharge.get_effect_mode_by_rid(effect_rid),
@@ -662,6 +683,7 @@ mod debug {
             let mut item = self.clone();
             let mut eupdates = UEffectUpdates::new();
             item.stop_all_reffs(&mut eupdates, &u_data.r_data);
+            item.remove_stopped_reffs(&eupdates);
             item.update_reffs(&mut eupdates, &u_data.r_data);
             let resolved_reffs = item.get_reffs().unwrap();
             if resolved_reffs.len() != reffs.len()

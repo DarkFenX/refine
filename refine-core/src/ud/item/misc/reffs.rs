@@ -22,10 +22,15 @@ impl REffs {
     pub(in crate::ud::item) fn extend(&mut self, effect_rids: impl IntoIterator<Item = REffectId>) {
         self.data.extend(effect_rids)
     }
-    pub(in crate::ud::item) fn remove(&mut self, effect_rid: REffectId) -> bool {
-        self.data.remove(&effect_rid)
-    }
-    pub(in crate::ud::item) fn drain(&mut self) -> impl ExactSizeIterator<Item = REffectId> {
-        self.data.drain()
+    // Takes distinct running effects
+    pub(in crate::ud::item) fn remove_running(&mut self, effect_rids: &[REffectId]) {
+        // All of them, e.g. when an item goes to ghost state
+        if effect_rids.len() == self.data.len() {
+            self.data.clear();
+            return;
+        }
+        for effect_rid in effect_rids {
+            self.data.remove(effect_rid);
+        }
     }
 }

@@ -26,6 +26,9 @@ impl RawModId {
             item_uid: None,
         }
     }
+    pub(in crate::svc::calc) fn is_template(self) -> bool {
+        self.item_uid.is_some()
+    }
     pub(in crate::svc::calc) fn kind(self) -> RawModIdKind {
         match self.item_uid {
             Some(item_uid) => RawModIdKind::Template(RawModTemplateId(self.index), item_uid),

@@ -10,6 +10,10 @@ use crate::{
 // Resolver
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 /// Updates running effects of an item, through pregenerated effects or dynamic resolution.
+///
+/// Started effects are added to running effects right away, stopped ones are only listed in
+/// effect updates, and leave running effects once services have processed them
+/// (`UItemBase::remove_stopped_reffs`).
 pub(super) struct UItemEffectsResolver;
 impl UItemEffectsResolver {
     pub(super) fn process_effects(
@@ -44,11 +48,11 @@ impl UItemEffectsResolver {
             ),
         }
     }
-    fn stop_all_effects(reuse_eupdates: &mut UEffectUpdates, reffs: &mut REffs, r_data: &RData, item: &RItem) {
+    fn stop_all_effects(reuse_eupdates: &mut UEffectUpdates, reffs: &REffs, r_data: &RData, item: &RItem) {
         // We don't want to waste time resolving effects when we want them to just stop (which
         // happens before e.g. item removal)
         reuse_eupdates.to_stop.reserve(reffs.len());
-        for effect_rid in reffs.drain() {
+        for effect_rid in reffs.iter() {
             let effect = r_data.get_effect_by_rid(effect_rid);
             if effect.activates_charge_for_item(item) {
                 reuse_eupdates.charge = Some(false);
@@ -110,7 +114,6 @@ impl UItemEffectsResolver {
                         });
                     }
                     reuse_eupdates.to_stop.push(effect_rid);
-                    reffs.remove(effect_rid);
                 }
             }
         }
@@ -182,9 +185,6 @@ impl UItemEffectsResolver {
             };
         }
         reffs.extend(reuse_eupdates.to_start.iter().copied());
-        for &effect_rid in reuse_eupdates.to_stop.iter() {
-            reffs.remove(effect_rid);
-        }
     }
 }
 

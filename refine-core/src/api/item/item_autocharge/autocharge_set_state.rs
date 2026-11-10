@@ -36,7 +36,7 @@ impl SolCore {
         let new_r_state = u_autocharge.get_state();
         u_autocharge.update_reffs(&mut self.reuse.eupdates, &self.u_data.r_data);
         SolCore::util_switch_item_state(
-            &self.u_data,
+            &mut self.u_data,
             &mut self.svc,
             autocharge_uid,
             old_r_state,

@@ -37,7 +37,7 @@ impl SolCore {
         u_module.update_reffs(&mut self.reuse.eupdates, &self.u_data.r_data);
         // Update services for module
         SolCore::util_switch_item_state(
-            &self.u_data,
+            &mut self.u_data,
             &mut self.svc,
             module_uid,
             old_a_state,

@@ -8,8 +8,8 @@ pub(crate) use effect::{
     REffectNeut, REffectProjModSpec, REffectProjOpcSpec, REffectProjecteeFilter, REffectResist, REffectSpoolAttrs,
 };
 pub(crate) use item::{
-    RItem, RItemBase, RItemBaseEffectData, RItemCapConsumer, RItemChargeLimit, RItemFlexData, RItemShipLimit,
-    RShipDroneLimit, RShipKind,
+    RItem, RItemBase, RItemBaseEffectData, RItemCapConsumer, RItemChargeLimit, RItemEffectListId, RItemFlexData,
+    RItemShipLimit, RShipDroneLimit, RShipKind,
 };
 pub(crate) use item_effects_pregen::{
     RItemEffectOptions, RItemEffectsPregenEntry, RItemEffectsPregenId, RItemEffectsResolver,
@@ -30,4 +30,5 @@ mod item_effects_pregen;
 mod item_list;
 mod muta;
 mod muta_pregen;
+mod rmod_template_affectors;
 mod shared;

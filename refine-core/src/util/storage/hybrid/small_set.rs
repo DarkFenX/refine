@@ -146,11 +146,8 @@ where
         }
         true
     }
-    pub(crate) fn drain(&mut self) -> impl ExactSizeIterator<Item = V> {
-        let len = std::mem::take(&mut self.len);
-        match len > N {
-            true => self.spill.as_ref().unwrap().vals.iter().copied(),
-            false => self.inline[..len].iter().copied(),
-        }
+    pub(crate) fn clear(&mut self) {
+        // Spilled storage is kept for reuse
+        self.len = 0;
     }
 }

@@ -7,7 +7,7 @@ use crate::{
 
 impl SolCore {
     pub(in crate::api) fn util_switch_item_state(
-        u_data: &UData,
+        u_data: &mut UData,
         svc: &mut Svc,
         item_uid: UItemId,
         old_state: RState,
@@ -18,6 +18,7 @@ impl SolCore {
             let u_item = u_data.items.get(item_uid);
             SolCore::util_internal_switch_item_state(u_data, svc, item_uid, u_item, old_state, new_state, eupdates);
         }
+        SolCore::util_internal_remove_stopped_reffs(u_data, item_uid, eupdates);
     }
     pub(in crate::api::util) fn util_internal_switch_item_state(
         u_data: &UData,
@@ -28,6 +29,7 @@ impl SolCore {
         new_state: RState,
         eupdates: &UEffectUpdates,
     ) {
+        // Doesn't remove stopped effects from running effects
         switch_item_state(svc, item_uid, u_item, old_state, new_state);
         SolCore::util_internal_process_effect_updates(u_data, svc, item_uid, u_item, eupdates);
     }

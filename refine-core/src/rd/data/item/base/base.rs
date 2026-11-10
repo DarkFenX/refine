@@ -25,8 +25,8 @@ use crate::{
     ad::{AAbilId, AAttrId, AEffectId, AItem, AItemCatId, AItemGrpId, AItemId, AItemListId},
     rd::{
         RAttrConsts, RAttrId, REffect, REffectConsts, REffectId, RItemBaseEffectData, RItemCapConsumer,
-        RItemChargeLimit, RItemEffectOptions, RItemEffectsPregenId, RItemListId, RItemShipLimit, RShipDroneLimit,
-        RShipKind, RState,
+        RItemChargeLimit, RItemEffectListId, RItemEffectOptions, RItemEffectsPregenId, RItemListId, RItemShipLimit,
+        RShipDroneLimit, RShipKind, RState,
     },
     util::{PDense, RMap},
     val::DetectedItemKind,
@@ -42,7 +42,7 @@ pub(crate) struct RItemBase {
     pub(crate) aid: AItemId,
     pub(crate) grp_id: AItemGrpId,
     pub(crate) cat_id: AItemCatId,
-    pub(crate) effect_rids: Box<[REffectId]>,
+    pub(crate) effect_rids: Box<[REffectId]>, // Sorted by adapted ID
     // Item-specific effect data, only stored if differs to default
     pub(crate) effect_datas: RMap<REffectId, RItemBaseEffectData>,
     pub(crate) defeff_rid: Option<REffectId>,
@@ -121,6 +121,7 @@ pub(crate) struct RItemBase {
     pub(crate) item_ship_kind: Option<RShipKind>,
     // Derived data - fields filled by external entities
     pub(in crate::rd::data) effects_pregen_ids: [RItemEffectsPregenId; RItemEffectOptions::ALL.len()],
+    pub(in crate::rd::data) effect_list_id: RItemEffectListId,
 }
 
 impl RItemBase {
@@ -223,6 +224,7 @@ impl RItemBase {
             item_ship_kind: Default::default(),
             // Filled by external entities
             effects_pregen_ids: Default::default(),
+            effect_list_id: Default::default(),
         }
     }
     pub(in crate::rd::data::item) fn fill_runtime_basic(

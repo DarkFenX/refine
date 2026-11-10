@@ -36,7 +36,7 @@ impl SolCore {
         let new_a_state = u_fw_effect.get_state();
         u_fw_effect.update_reffs(&mut self.reuse.eupdates, &self.u_data.r_data);
         SolCore::util_switch_item_state(
-            &self.u_data,
+            &mut self.u_data,
             &mut self.svc,
             fw_effect_uid,
             old_a_state,

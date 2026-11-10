@@ -52,7 +52,7 @@ impl SolCore {
             .collect_vec();
         // Update services for fighter
         SolCore::util_switch_item_state(
-            &self.u_data,
+            &mut self.u_data,
             &mut self.svc,
             fighter_uid,
             old_state,
