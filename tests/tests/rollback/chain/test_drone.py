@@ -15,7 +15,10 @@ def test_add_proj_not_found(client, consts):
         attrs={eve_affector_attr_id: 20},
         eff_ids=[eve_tgt_effect_id],
         defeff_id=eve_tgt_effect_id)
-    eve_mutated_drone_id = client.mk_eve_drone(eff_ids=[eve_tgt_effect_id], defeff_id=eve_tgt_effect_id)
+    eve_mutated_drone_id = client.mk_eve_drone(
+        is_dynamic=True,
+        eff_ids=[eve_tgt_effect_id],
+        defeff_id=eve_tgt_effect_id)
     eve_mutator_id = client.mk_eve_mutator(
         items=[([eve_base_drone_id], eve_mutated_drone_id)],
         attrs={eve_affector_attr_id: (0.5, 1.5)})
@@ -135,7 +138,7 @@ def test_change_type_proj_add_fail(client):
 def test_change_mutation_proj_add_fail(client):
     eve_roll_attr_id = client.mk_eve_attr()
     eve_base_drone_id = client.mk_eve_drone(attrs={eve_roll_attr_id: 20})
-    eve_mutated_drone_id = client.mk_eve_drone()
+    eve_mutated_drone_id = client.mk_eve_drone(is_dynamic=True)
     eve_mutator1_id = client.mk_eve_mutator(
         items=[([eve_base_drone_id], eve_mutated_drone_id)],
         attrs={eve_roll_attr_id: (0.5, 1.5)})

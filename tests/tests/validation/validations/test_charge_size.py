@@ -299,7 +299,7 @@ def test_mutation_module(client, consts):
     eve_charge1_id = client.mk_eve_item(attrs={eve_size_attr_id: 1})
     eve_charge2_id = client.mk_eve_item(attrs={eve_size_attr_id: 2})
     eve_base_module_id = client.mk_eve_item(attrs={eve_size_attr_id: 1})
-    eve_mutated_module_id = client.mk_eve_item(attrs={eve_size_attr_id: 2})
+    eve_mutated_module_id = client.mk_eve_item(is_dynamic=True, attrs={eve_size_attr_id: 2})
     eve_mutator_id = client.mk_eve_mutator(items=[([eve_base_module_id], eve_mutated_module_id)])
     client.create_sources()
     api_sol = client.create_sol()

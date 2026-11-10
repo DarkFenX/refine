@@ -507,7 +507,10 @@ def test_mutation_effect(client, consts):
     eve_high_effect_id = client.mk_eve_effect(id_=consts.EveEffect.hi_power)
     eve_mid_effect_id = client.mk_eve_effect(id_=consts.EveEffect.med_power)
     eve_base_module_id = client.mk_eve_item(cat_id=consts.EveItemCat.module, eff_ids=[eve_high_effect_id])
-    eve_mutated_module_id = client.mk_eve_item(cat_id=consts.EveItemCat.module, eff_ids=[eve_mid_effect_id])
+    eve_mutated_module_id = client.mk_eve_item(
+        cat_id=consts.EveItemCat.module,
+        is_dynamic=True,
+        eff_ids=[eve_mid_effect_id])
     eve_mutator_id = client.mk_eve_mutator(items=[([eve_base_module_id], eve_mutated_module_id)])
     client.create_sources()
     api_sol = client.create_sol()
@@ -547,7 +550,10 @@ def test_mutation_attr(client, consts):
     eve_booster_attr_id = client.mk_eve_attr(id_=consts.EveAttr.boosterness)
     eve_implant_attr_id = client.mk_eve_attr(id_=consts.EveAttr.implantness)
     eve_base_item_id = client.mk_eve_item(cat_id=consts.EveItemCat.implant, attrs={eve_booster_attr_id: 1})
-    eve_mutated_item_id = client.mk_eve_item(cat_id=consts.EveItemCat.implant, attrs={eve_implant_attr_id: 1})
+    eve_mutated_item_id = client.mk_eve_item(
+        cat_id=consts.EveItemCat.implant,
+        is_dynamic=True,
+        attrs={eve_implant_attr_id: 1})
     eve_mutator_id = client.mk_eve_mutator(items=[([eve_base_item_id], eve_mutated_item_id)])
     client.create_sources()
     api_sol = client.create_sol()

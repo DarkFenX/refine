@@ -16,6 +16,7 @@ class Item:
 
     id: int
     group_id: int | type[Absent]
+    is_dynamic: bool | type[Absent]
     attributes: dict[int, float] | type[Absent]
     effect_ids: list[int] | type[Absent]
     default_effect_id: int | None
@@ -34,6 +35,7 @@ class Item:
     def to_primitives(self, *, primitive_data: EvePrimitives) -> None:
         item_entry = {'typeID': self.id}
         conditional_insert(container=item_entry, path=['groupID'], value=self.group_id)
+        conditional_insert(container=item_entry, path=['isDynamicType'], value=self.is_dynamic, cast_to=int)
         self.__add_primitive_item_attributes(primitive_data=primitive_data)
         self.__add_primitive_item_effects(primitive_data=primitive_data)
         self.__add_primitive_item_abilities(primitive_data=primitive_data)

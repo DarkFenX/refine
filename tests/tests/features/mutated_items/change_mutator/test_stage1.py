@@ -36,7 +36,7 @@ def test_from_stage2(client, consts):
     eve_attr_id = client.mk_eve_attr()
     eve_base_item_id = client.mk_eve_item(attrs={eve_attr_id: 100})
     eve_other_base_item_id = client.mk_eve_item()
-    eve_other_mutated_item_id = client.mk_eve_item()
+    eve_other_mutated_item_id = client.mk_eve_item(is_dynamic=True)
     eve_mutator1_id = client.mk_eve_mutator(
         items=[([eve_other_base_item_id], eve_other_mutated_item_id)],
         attrs={eve_attr_id: (0.8, 1.2)})
@@ -104,7 +104,7 @@ def test_from_stage3(client, consts):
 def test_from_stage4(client, consts):
     eve_attr_id = client.mk_eve_attr()
     eve_base_item_id = client.mk_eve_item(attrs={eve_attr_id: 100})
-    eve_mutated_item_id = client.mk_eve_item()
+    eve_mutated_item_id = client.mk_eve_item(is_dynamic=True)
     eve_mutator1_id = client.mk_eve_mutator(
         items=[([eve_base_item_id], eve_mutated_item_id)],
         attrs={eve_attr_id: (0.8, 1.2)})

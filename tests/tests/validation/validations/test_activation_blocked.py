@@ -153,8 +153,8 @@ def test_mutation(client, consts):
     eve_attr_id = client.mk_eve_attr(id_=consts.EveAttr.activation_blocked, def_val=0)
     eve_base_module1_id = client.mk_eve_item(attrs={eve_attr_id: 1})
     eve_base_module2_id = client.mk_eve_item(attrs={eve_attr_id: 0})
-    eve_mutated_module1_id = client.mk_eve_item(attrs={eve_attr_id: 0})
-    eve_mutated_module2_id = client.mk_eve_item(attrs={eve_attr_id: 1})
+    eve_mutated_module1_id = client.mk_eve_item(is_dynamic=True, attrs={eve_attr_id: 0})
+    eve_mutated_module2_id = client.mk_eve_item(is_dynamic=True, attrs={eve_attr_id: 1})
     eve_mutator_id = client.mk_eve_mutator(
         items=[([eve_base_module1_id], eve_mutated_module1_id), ([eve_base_module2_id], eve_mutated_module2_id)],
         attrs={eve_attr_id: (0, 1)})

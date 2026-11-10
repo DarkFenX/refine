@@ -178,6 +178,7 @@ def test_mutation_charge_rate(client, consts):
         eff_ids=[eve_effect_id],
         defeff_id=eve_effect_id)
     eve_mutated_module_id = client.mk_eve_item(
+        is_dynamic=True,
         attrs={eve_capacity_attr_id: 0.50, eve_charge_rate_attr_id: 1, eve_cycle_time_attr_id: 1000},
         eff_ids=[eve_effect_id],
         defeff_id=eve_effect_id)

@@ -1,8 +1,7 @@
 """
 Here we check availability of info of various items via solar system info endpoint.
 """
-from fw import Spool, check_no_field
-from fw.util import Absent
+from fw import Absent, Spool, check_no_field
 
 
 def test_error_params_malformed(client):

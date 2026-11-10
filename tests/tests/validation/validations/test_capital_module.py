@@ -127,7 +127,10 @@ def test_modified(client, consts):
 def test_mutation(client, consts):
     eve_attr_id = client.mk_eve_attr(id_=consts.EveAttr.volume)
     eve_base_module_id = client.mk_eve_item(cat_id=consts.EveItemCat.module, attrs={eve_attr_id: 3000})
-    eve_mutated_module_id = client.mk_eve_item(cat_id=consts.EveItemCat.module, attrs={eve_attr_id: 4000})
+    eve_mutated_module_id = client.mk_eve_item(
+        cat_id=consts.EveItemCat.module,
+        is_dynamic=True,
+        attrs={eve_attr_id: 4000})
     eve_mutator_id = client.mk_eve_mutator(items=[([eve_base_module_id], eve_mutated_module_id)])
     eve_ship_id = client.mk_eve_ship()
     client.create_sources()

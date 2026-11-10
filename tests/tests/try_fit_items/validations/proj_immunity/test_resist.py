@@ -259,7 +259,7 @@ def test_tgt_mutation(client, consts):
         defeff_id=eve_launcher_effect_id)
     eve_src_charge_id = client.mk_eve_charge(eff_ids=[eve_src_effect_id], defeff_id=eve_src_effect_id)
     eve_tgt_base_item_id = client.mk_eve_item(attrs={eve_resist_attr_id: 1})
-    eve_tgt_mutated_item_id = client.mk_eve_item(attrs={eve_resist_attr_id: 0})
+    eve_tgt_mutated_item_id = client.mk_eve_item(is_dynamic=True, attrs={eve_resist_attr_id: 0})
     eve_tgt_mutator_id = client.mk_eve_mutator(
         items=[([eve_tgt_base_item_id], eve_tgt_mutated_item_id)],
         attrs={eve_resist_attr_id: (0, 2)})

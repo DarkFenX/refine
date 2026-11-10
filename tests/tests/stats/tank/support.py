@@ -1,7 +1,8 @@
 import typing
 from dataclasses import dataclass
 
-from fw.util import Absent, Default, conditional_insert
+from fw import Absent, Default
+from fw.util import conditional_insert
 
 if typing.TYPE_CHECKING:
     from collections.abc import Callable

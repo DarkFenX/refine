@@ -14,4 +14,4 @@ pytest.register_assert_rewrite(
 from unittest.mock import ANY as ANY_VALUE
 
 from .api import Effect, Muta, Spool
-from .util import approx, check_no_field
+from .util import Absent, Default, approx, check_no_field

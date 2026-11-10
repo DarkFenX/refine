@@ -169,7 +169,7 @@ def test_mutation(client, consts):
         eve_group_attr1_id: eve_grp1_id,
         eve_group_attr2_id: eve_grp2_id,
         eve_capacity_attr_id: 1})
-    eve_mutated_module_id = client.mk_eve_item(attrs={
+    eve_mutated_module_id = client.mk_eve_item(is_dynamic=True, attrs={
         eve_group_attr1_id: eve_grp3_id,
         eve_group_attr2_id: eve_grp2_id,
         eve_capacity_attr_id: 1})

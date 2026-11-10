@@ -171,7 +171,7 @@ def test_known_failures(client, consts):
 def test_mutation(client, consts):
     eve_ship_item_ids, eve_struct_item_ids, eve_other_item_id = make_eve_items(client=client, consts=consts)
     eve_base_module_id = client.mk_eve_item(cat_id=consts.EveItemCat.module)
-    eve_mutated_module_id = client.mk_eve_item(cat_id=consts.EveItemCat.structure_module)
+    eve_mutated_module_id = client.mk_eve_item(cat_id=consts.EveItemCat.structure_module, is_dynamic=True)
     eve_ship_id = client.mk_eve_ship()
     eve_struct_id = client.mk_eve_struct()
     eve_mutator_id = client.mk_eve_mutator(items=[([eve_base_module_id], eve_mutated_module_id)])

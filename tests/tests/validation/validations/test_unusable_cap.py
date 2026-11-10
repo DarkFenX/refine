@@ -263,6 +263,7 @@ def test_mutation_attr(client, consts):
         eff_ids=[eve_use_effect_id],
         defeff_id=eve_use_effect_id)
     eve_mutated_module_id = client.mk_eve_item(
+        is_dynamic=True,
         attrs={eve_use_attr_id: 1000},
         eff_ids=[eve_use_effect_id],
         defeff_id=eve_use_effect_id)
@@ -305,7 +306,10 @@ def test_mutation_effect(client, consts):
     eve_use_attr_id = client.mk_eve_attr()
     eve_use_effect_id = client.mk_eve_effect(cat_id=consts.EveEffCat.active, discharge_attr_id=eve_use_attr_id)
     eve_base_module_id = client.mk_eve_item(attrs={eve_use_attr_id: 1000})
-    eve_mutated_module_id = client.mk_eve_item(eff_ids=[eve_use_effect_id], defeff_id=eve_use_effect_id)
+    eve_mutated_module_id = client.mk_eve_item(
+        is_dynamic=True,
+        eff_ids=[eve_use_effect_id],
+        defeff_id=eve_use_effect_id)
     eve_mutator_id = client.mk_eve_mutator(items=[([eve_base_module_id], eve_mutated_module_id)])
     eve_ship_id = client.mk_eve_ship(attrs={eve_max_attr_id: 750})
     client.create_sources()

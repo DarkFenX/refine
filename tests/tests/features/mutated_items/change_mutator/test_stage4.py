@@ -4,7 +4,7 @@ from fw import Muta, approx, check_no_field
 def test_from_stage1_base_loaded(client, consts):
     eve_attr_id = client.mk_eve_attr()
     eve_base_item_id = client.mk_eve_item(attrs={eve_attr_id: 100})
-    eve_mutated_item_id = client.mk_eve_item()
+    eve_mutated_item_id = client.mk_eve_item(is_dynamic=True)
     eve_mutator1_id = client.alloc_item_id()
     eve_mutator2_id = client.mk_eve_mutator(
         items=[([eve_base_item_id], eve_mutated_item_id)],
@@ -43,7 +43,7 @@ def test_from_stage1_base_not_loaded(client, consts):
     # Mutation becomes effective even when base item is not loaded
     eve_attr_id = client.mk_eve_attr()
     eve_base_item_id = client.alloc_item_id()
-    eve_mutated_item_id = client.mk_eve_item(attrs={eve_attr_id: 100})
+    eve_mutated_item_id = client.mk_eve_item(is_dynamic=True, attrs={eve_attr_id: 100})
     eve_mutator1_id = client.alloc_item_id()
     eve_mutator2_id = client.mk_eve_mutator(
         items=[([eve_base_item_id], eve_mutated_item_id)],
@@ -82,9 +82,9 @@ def test_from_stage1_base_not_loaded(client, consts):
 def test_from_stage2(client, consts):
     eve_attr_id = client.mk_eve_attr()
     eve_base_item_id = client.mk_eve_item(attrs={eve_attr_id: 100})
-    eve_mutated_item_id = client.mk_eve_item()
+    eve_mutated_item_id = client.mk_eve_item(is_dynamic=True)
     eve_other_base_item_id = client.mk_eve_item()
-    eve_other_mutated_item_id = client.mk_eve_item()
+    eve_other_mutated_item_id = client.mk_eve_item(is_dynamic=True)
     eve_mutator1_id = client.mk_eve_mutator(
         items=[([eve_other_base_item_id], eve_other_mutated_item_id)],
         attrs={eve_attr_id: (0.8, 1.2)})
@@ -125,7 +125,7 @@ def test_from_stage3(client, consts):
     eve_attr_id = client.mk_eve_attr()
     eve_base_item_id = client.mk_eve_item(attrs={eve_attr_id: 100})
     eve_mutated_item1_id = client.alloc_item_id()
-    eve_mutated_item2_id = client.mk_eve_item()
+    eve_mutated_item2_id = client.mk_eve_item(is_dynamic=True)
     eve_mutator1_id = client.mk_eve_mutator(
         items=[([eve_base_item_id], eve_mutated_item1_id)],
         attrs={eve_attr_id: (0.8, 1.2)})
@@ -166,7 +166,7 @@ def test_from_stage4_range_value(client, consts):
     # Base scenario, where only mutation ranges change
     eve_attr_id = client.mk_eve_attr()
     eve_base_item_id = client.mk_eve_item(attrs={eve_attr_id: 100})
-    eve_mutated_item_id = client.mk_eve_item()
+    eve_mutated_item_id = client.mk_eve_item(is_dynamic=True)
     eve_mutator1_id = client.mk_eve_mutator(
         items=[([eve_base_item_id], eve_mutated_item_id)],
         attrs={eve_attr_id: (0.8, 1.2)})
@@ -211,7 +211,7 @@ def test_from_stage4_attr_ranges(client, consts):
     eve_attr1_id = client.mk_eve_attr()
     eve_attr2_id = client.mk_eve_attr()
     eve_base_item_id = client.mk_eve_item(attrs={eve_attr1_id: 100, eve_attr2_id: 100})
-    eve_mutated_item_id = client.mk_eve_item()
+    eve_mutated_item_id = client.mk_eve_item(is_dynamic=True)
     eve_mutator1_id = client.mk_eve_mutator(
         items=[([eve_base_item_id], eve_mutated_item_id)],
         attrs={eve_attr1_id: (0.8, 1.2)})
@@ -260,8 +260,8 @@ def test_from_stage4_mutated_item(client, consts):
     eve_attr1_id = client.mk_eve_attr()
     eve_attr2_id = client.mk_eve_attr()
     eve_base_item_id = client.mk_eve_item(attrs={eve_attr1_id: 100, eve_attr2_id: 100})
-    eve_mutated_item1_id = client.mk_eve_item()
-    eve_mutated_item2_id = client.mk_eve_item(attrs={eve_attr2_id: 200})
+    eve_mutated_item1_id = client.mk_eve_item(is_dynamic=True)
+    eve_mutated_item2_id = client.mk_eve_item(is_dynamic=True, attrs={eve_attr2_id: 200})
     eve_mutator1_id = client.mk_eve_mutator(
         items=[([eve_base_item_id], eve_mutated_item1_id)],
         attrs={eve_attr1_id: (0.8, 1.2), eve_attr2_id: (0.8, 1.2)})
@@ -319,7 +319,7 @@ def test_from_stage4_unmutated_values(client, consts):
     eve_absent1_attr_id = client.mk_eve_attr()
     eve_absent2_attr_id = client.mk_eve_attr()
     eve_base_item_id = client.mk_eve_item(attrs={eve_base_attr_id: 100})
-    eve_mutated_item_id = client.mk_eve_item(attrs={
+    eve_mutated_item_id = client.mk_eve_item(is_dynamic=True, attrs={
         eve_base_attr_id: 300,
         eve_mutated_attr_id: 200,
         eve_dropped_attr_id: 200})
@@ -384,7 +384,7 @@ def test_from_stage4_no_roll(client, consts):
     eve_attr1_id = client.mk_eve_attr()
     eve_attr2_id = client.mk_eve_attr()
     eve_base_item_id = client.mk_eve_item(attrs={eve_attr1_id: 100, eve_attr2_id: 100})
-    eve_mutated_item_id = client.mk_eve_item()
+    eve_mutated_item_id = client.mk_eve_item(is_dynamic=True)
     eve_mutator1_id = client.mk_eve_mutator(
         items=[([eve_base_item_id], eve_mutated_item_id)],
         attrs={eve_attr1_id: (0.8, 1.2), eve_attr2_id: (1.1, 1.3)})
@@ -430,7 +430,7 @@ def test_from_stage4_attr_change(client, consts):
     eve_roll_attr_id = client.mk_eve_attr()
     eve_absolute_attr_id = client.mk_eve_attr()
     eve_base_item_id = client.mk_eve_item(attrs={eve_roll_attr_id: 100, eve_absolute_attr_id: 100})
-    eve_mutated_item_id = client.mk_eve_item()
+    eve_mutated_item_id = client.mk_eve_item(is_dynamic=True)
     eve_mutator1_id = client.mk_eve_mutator(
         items=[([eve_base_item_id], eve_mutated_item_id)],
         attrs={eve_roll_attr_id: (0.8, 1.2), eve_absolute_attr_id: (0.8, 1.2)})
@@ -481,7 +481,7 @@ def test_modification_incoming(client, consts):
         affectee_attr_id=eve_affectee_attr_id)
     eve_effect_id = client.mk_eve_effect(mod_info=[eve_mod])
     eve_base_item_id = client.mk_eve_item(attrs={eve_affector_attr_id: 20, eve_affectee_attr_id: 200})
-    eve_mutated_item_id = client.mk_eve_item(eff_ids=[eve_effect_id])
+    eve_mutated_item_id = client.mk_eve_item(is_dynamic=True, eff_ids=[eve_effect_id])
     eve_mutator1_id = client.mk_eve_mutator(
         items=[([eve_base_item_id], eve_mutated_item_id)],
         attrs={eve_affectee_attr_id: (0.8, 1.2)})
@@ -531,7 +531,7 @@ def test_modification_outgoing(client, consts):
         affectee_attr_id=eve_affectee_attr_id)
     eve_effect_id = client.mk_eve_effect(mod_info=[eve_item_mod, eve_ship_mod, eve_charge_mod])
     eve_base_item_id = client.mk_eve_item(attrs={eve_affector_attr_id: 20, eve_affectee_attr_id: 200})
-    eve_mutated_item_id = client.mk_eve_item(eff_ids=[eve_effect_id])
+    eve_mutated_item_id = client.mk_eve_item(is_dynamic=True, eff_ids=[eve_effect_id])
     eve_mutator1_id = client.mk_eve_mutator(
         items=[([eve_base_item_id], eve_mutated_item_id)],
         attrs={eve_affector_attr_id: (0.8, 1.2)})
@@ -584,8 +584,8 @@ def test_projection_effect(client, consts):
         affectee_attr_id=eve_affectee_attr_id)
     eve_effect2_id = client.mk_eve_effect(cat_id=consts.EveEffCat.target, mod_info=[eve_modifier2])
     eve_base_item_id = client.mk_eve_item(attrs={eve_affector1_attr_id: 20, eve_affector2_attr_id: 30})
-    eve_mutated_item1_id = client.mk_eve_item(eff_ids=[eve_effect1_id], defeff_id=eve_effect1_id)
-    eve_mutated_item2_id = client.mk_eve_item(eff_ids=[eve_effect2_id], defeff_id=eve_effect2_id)
+    eve_mutated_item1_id = client.mk_eve_item(is_dynamic=True, eff_ids=[eve_effect1_id], defeff_id=eve_effect1_id)
+    eve_mutated_item2_id = client.mk_eve_item(is_dynamic=True, eff_ids=[eve_effect2_id], defeff_id=eve_effect2_id)
     eve_mutator1_id = client.mk_eve_mutator(items=[([eve_base_item_id], eve_mutated_item1_id)])
     eve_mutator2_id = client.mk_eve_mutator(items=[([eve_base_item_id], eve_mutated_item2_id)])
     eve_affectee_ship_id = client.mk_eve_ship(attrs={eve_affectee_attr_id: 100})
@@ -629,7 +629,7 @@ def test_projection_value(client, consts):
         affectee_attr_id=eve_affectee_attr_id)
     eve_effect_id = client.mk_eve_effect(cat_id=consts.EveEffCat.target, mod_info=[eve_mod])
     eve_base_item_id = client.mk_eve_item(attrs={eve_affector_attr_id: 20})
-    eve_mutated_item_id = client.mk_eve_item(eff_ids=[eve_effect_id], defeff_id=eve_effect_id)
+    eve_mutated_item_id = client.mk_eve_item(is_dynamic=True, eff_ids=[eve_effect_id], defeff_id=eve_effect_id)
     eve_mutator1_id = client.mk_eve_mutator(
         items=[([eve_base_item_id], eve_mutated_item_id)],
         attrs={eve_affector_attr_id: (0.8, 1.2)})
@@ -673,7 +673,7 @@ def test_drone(client, consts):
         eve_dropped_attr_id: 100,
         eve_changed_attr_id: 100,
         eve_added_attr_id: 100})
-    eve_mutated_item_id = client.mk_eve_drone()
+    eve_mutated_item_id = client.mk_eve_drone(is_dynamic=True)
     eve_mutator1_id = client.mk_eve_mutator(
         items=[([eve_base_item_id], eve_mutated_item_id)],
         attrs={eve_dropped_attr_id: (0.8, 1.2), eve_changed_attr_id: (0.8, 1.2)})

@@ -248,7 +248,7 @@ def test_mutation_use(client, consts):
     eve_use_attr_id = client.mk_eve_attr(id_=consts.EveAttr.cpu)
     eve_max_attr_id = client.mk_eve_attr(id_=consts.EveAttr.cpu_output)
     eve_base_module_id = client.mk_eve_item(attrs={eve_use_attr_id: 120})
-    eve_mutated_module_id = client.mk_eve_item()
+    eve_mutated_module_id = client.mk_eve_item(is_dynamic=True)
     eve_mutator_id = client.mk_eve_mutator(
         items=[([eve_base_module_id], eve_mutated_module_id)],
         attrs={eve_use_attr_id: (0.8, 1.2)})

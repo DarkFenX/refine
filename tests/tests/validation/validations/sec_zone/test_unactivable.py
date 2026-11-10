@@ -605,7 +605,7 @@ def test_modified(client, consts):
 def test_mutation(client, consts):
     eve_attr_id = client.mk_eve_attr(id_=consts.EveAttr.disallow_in_empire_space)
     eve_base_module_id = client.mk_eve_item(attrs={eve_attr_id: 1})
-    eve_mutated_module_id = client.mk_eve_item(attrs={eve_attr_id: 0})
+    eve_mutated_module_id = client.mk_eve_item(is_dynamic=True, attrs={eve_attr_id: 0})
     eve_mutator_id = client.mk_eve_mutator(
         items=[([eve_base_module_id], eve_mutated_module_id)],
         attrs={eve_attr_id: (0, 3)})

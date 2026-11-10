@@ -95,7 +95,7 @@ def test_mutation_capacity(client, consts):
     eve_capacity_attr_id = client.mk_eve_attr(id_=consts.EveAttr.capacity)
     eve_charge_id = client.mk_eve_item(attrs={eve_volume_attr_id: 0.05})
     eve_base_module_id = client.mk_eve_item(attrs={eve_capacity_attr_id: 0.5})
-    eve_mutated_module_id = client.mk_eve_item(attrs={eve_capacity_attr_id: 0.75})
+    eve_mutated_module_id = client.mk_eve_item(is_dynamic=True, attrs={eve_capacity_attr_id: 0.75})
     eve_mutator_id = client.mk_eve_mutator(
         items=[([eve_base_module_id], eve_mutated_module_id)],
         attrs={eve_capacity_attr_id: (1, 1.5)})

@@ -203,7 +203,7 @@ def test_mutation_use(client, consts):
     eve_use_attr_id = client.mk_eve_attr(id_=consts.EveAttr.drone_bandwidth_used)
     eve_max_attr_id = client.mk_eve_attr(id_=consts.EveAttr.drone_bandwidth)
     eve_base_drone_id = client.mk_eve_item(attrs={eve_use_attr_id: 50})
-    eve_mutated_drone_id = client.mk_eve_item(attrs={eve_use_attr_id: 25})
+    eve_mutated_drone_id = client.mk_eve_item(is_dynamic=True, attrs={eve_use_attr_id: 25})
     eve_mutator_id = client.mk_eve_mutator(
         items=[([eve_base_drone_id], eve_mutated_drone_id)],
         attrs={eve_use_attr_id: (0.8, 1.2)})

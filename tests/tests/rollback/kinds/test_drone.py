@@ -9,7 +9,7 @@ def setup_mutation(*, client, consts, basic_info):
         attrs={basic_info.affector_attr_id: 20, eve_roll_attr_id: 100},
         eff_ids=[eve_effect_id],
         defeff_id=eve_effect_id)
-    eve_mutated_drone_id = client.mk_eve_drone(eff_ids=[eve_effect_id], defeff_id=eve_effect_id)
+    eve_mutated_drone_id = client.mk_eve_drone(is_dynamic=True, eff_ids=[eve_effect_id], defeff_id=eve_effect_id)
     eve_mutator1_id = client.mk_eve_mutator(
         items=[([eve_base_drone_id], eve_mutated_drone_id)],
         attrs={basic_info.affector_attr_id: (0.5, 1.5), eve_roll_attr_id: (0.5, 1.5)})

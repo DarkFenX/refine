@@ -124,17 +124,17 @@ def test_mutation_outgoing(client, consts):
         falloff_attr_id=eve_falloff_attr_id,
         mod_info=[eve_mod])
 
-    def make_eve_drone(*, radius: float | None) -> int:
+    def make_eve_drone(*, radius: float | None, is_dynamic: bool = False) -> int:
         attrs = {eve_affector_attr_id: -85, eve_optimal_attr_id: 1000, eve_falloff_attr_id: 10000}
         if radius is not None:
             attrs[eve_radius_attr_id] = radius
-        return client.mk_eve_drone(attrs=attrs, eff_ids=[eve_effect_id], defeff_id=eve_effect_id)
+        return client.mk_eve_drone(is_dynamic=is_dynamic, attrs=attrs, eff_ids=[eve_effect_id], defeff_id=eve_effect_id)
 
     eve_affector_drone1_base1_id = make_eve_drone(radius=100)
     eve_affector_drone1_base2_id = make_eve_drone(radius=10)
-    eve_affector_drone1_mutated1_id = make_eve_drone(radius=500)
-    eve_affector_drone1_mutated2_id = make_eve_drone(radius=1000)
-    eve_affector_drone1_mutated3_id = make_eve_drone(radius=2000)
+    eve_affector_drone1_mutated1_id = make_eve_drone(radius=500, is_dynamic=True)
+    eve_affector_drone1_mutated2_id = make_eve_drone(radius=1000, is_dynamic=True)
+    eve_affector_drone1_mutated3_id = make_eve_drone(radius=2000, is_dynamic=True)
     eve_affector_drone1_mutator1_id = client.mk_eve_mutator(
         items=[
             ([eve_affector_drone1_base1_id], eve_affector_drone1_mutated1_id),
@@ -145,9 +145,9 @@ def test_mutation_outgoing(client, consts):
         attrs={eve_radius_attr_id: (0.5, 1.5)})
     eve_affector_drone2_base1_id = make_eve_drone(radius=None)
     eve_affector_drone2_base2_id = make_eve_drone(radius=None)
-    eve_affector_drone2_mutated1_id = make_eve_drone(radius=None)
-    eve_affector_drone2_mutated2_id = make_eve_drone(radius=None)
-    eve_affector_drone2_mutated3_id = make_eve_drone(radius=None)
+    eve_affector_drone2_mutated1_id = make_eve_drone(radius=None, is_dynamic=True)
+    eve_affector_drone2_mutated2_id = make_eve_drone(radius=None, is_dynamic=True)
+    eve_affector_drone2_mutated3_id = make_eve_drone(radius=None, is_dynamic=True)
     eve_affector_drone2_mutator1_id = client.mk_eve_mutator(items=[
         ([eve_affector_drone2_base1_id], eve_affector_drone2_mutated1_id),
         ([eve_affector_drone2_base2_id], eve_affector_drone2_mutated2_id)])
@@ -293,9 +293,15 @@ def test_mutation_incoming(client, consts):
     eve_affector_ship_id = client.mk_eve_ship()
     eve_affectee_drone1_base1_id = client.mk_eve_drone(attrs={eve_radius_attr_id: 100, eve_affectee_attr_id: 1000})
     eve_affectee_drone1_base2_id = client.mk_eve_drone(attrs={eve_radius_attr_id: 10, eve_affectee_attr_id: 1000})
-    eve_affectee_drone1_mutated1_id = client.mk_eve_drone(attrs={eve_radius_attr_id: 500, eve_affectee_attr_id: 1000})
-    eve_affectee_drone1_mutated2_id = client.mk_eve_drone(attrs={eve_radius_attr_id: 1000, eve_affectee_attr_id: 1000})
-    eve_affectee_drone1_mutated3_id = client.mk_eve_drone(attrs={eve_radius_attr_id: 2000, eve_affectee_attr_id: 1000})
+    eve_affectee_drone1_mutated1_id = client.mk_eve_drone(
+        is_dynamic=True,
+        attrs={eve_radius_attr_id: 500, eve_affectee_attr_id: 1000})
+    eve_affectee_drone1_mutated2_id = client.mk_eve_drone(
+        is_dynamic=True,
+        attrs={eve_radius_attr_id: 1000, eve_affectee_attr_id: 1000})
+    eve_affectee_drone1_mutated3_id = client.mk_eve_drone(
+        is_dynamic=True,
+        attrs={eve_radius_attr_id: 2000, eve_affectee_attr_id: 1000})
     eve_affectee_drone1_mutator1_id = client.mk_eve_mutator(
         items=[
             ([eve_affectee_drone1_base1_id], eve_affectee_drone1_mutated1_id),
@@ -306,9 +312,9 @@ def test_mutation_incoming(client, consts):
         attrs={eve_radius_attr_id: (0.5, 1.5)})
     eve_affectee_drone2_base1_id = client.mk_eve_item(attrs={eve_affectee_attr_id: 1000})
     eve_affectee_drone2_base2_id = client.mk_eve_item(attrs={eve_affectee_attr_id: 1000})
-    eve_affectee_drone2_mutated1_id = client.mk_eve_item(attrs={eve_affectee_attr_id: 1000})
-    eve_affectee_drone2_mutated2_id = client.mk_eve_item(attrs={eve_affectee_attr_id: 1000})
-    eve_affectee_drone2_mutated3_id = client.mk_eve_item(attrs={eve_affectee_attr_id: 1000})
+    eve_affectee_drone2_mutated1_id = client.mk_eve_item(is_dynamic=True, attrs={eve_affectee_attr_id: 1000})
+    eve_affectee_drone2_mutated2_id = client.mk_eve_item(is_dynamic=True, attrs={eve_affectee_attr_id: 1000})
+    eve_affectee_drone2_mutated3_id = client.mk_eve_item(is_dynamic=True, attrs={eve_affectee_attr_id: 1000})
     eve_affectee_drone2_mutator1_id = client.mk_eve_mutator(items=[
         ([eve_affectee_drone2_base1_id], eve_affectee_drone2_mutated1_id),
         ([eve_affectee_drone2_base2_id], eve_affectee_drone2_mutated2_id)])

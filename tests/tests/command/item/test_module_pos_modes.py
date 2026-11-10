@@ -1,5 +1,4 @@
-from fw import check_no_field
-from fw.util import Absent
+from fw import Absent, check_no_field
 
 
 def test_add_append(client, consts):

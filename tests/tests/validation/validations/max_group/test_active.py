@@ -124,7 +124,7 @@ def test_mutation_limit_priority(client, consts):
     eve_grp_id = client.mk_eve_item_group()
     eve_limit_attr_id = client.mk_eve_attr(id_=consts.EveAttr.max_group_active)
     eve_base_module_id = client.mk_eve_item(grp_id=eve_grp_id, attrs={eve_limit_attr_id: 2})
-    eve_mutated_module_id = client.mk_eve_item(grp_id=eve_grp_id, attrs={eve_limit_attr_id: 1})
+    eve_mutated_module_id = client.mk_eve_item(grp_id=eve_grp_id, is_dynamic=True, attrs={eve_limit_attr_id: 1})
     eve_mutator_id = client.mk_eve_mutator(
         items=[([eve_base_module_id], eve_mutated_module_id)],
         attrs={eve_limit_attr_id: (0.5, 2)})
@@ -169,7 +169,7 @@ def test_mutation_limit_inheritance(client, consts):
     eve_grp2_id = client.mk_eve_item_group()
     eve_limit_attr_id = client.mk_eve_attr(id_=consts.EveAttr.max_group_active)
     eve_base_module_id = client.mk_eve_item(grp_id=eve_grp1_id, attrs={eve_limit_attr_id: 1})
-    eve_mutated_module_id = client.mk_eve_item(grp_id=eve_grp2_id)
+    eve_mutated_module_id = client.mk_eve_item(grp_id=eve_grp2_id, is_dynamic=True)
     eve_other_module_id = client.mk_eve_item(grp_id=eve_grp2_id)
     eve_mutator_id = client.mk_eve_mutator(
         items=[([eve_base_module_id], eve_mutated_module_id)],
@@ -218,7 +218,7 @@ def test_mutation_limit_base_change(client, consts):
     eve_limit_attr_id = client.mk_eve_attr(id_=consts.EveAttr.max_group_active)
     eve_base_module1_id = client.mk_eve_item(grp_id=eve_grp1_id, attrs={eve_limit_attr_id: 1})
     eve_base_module2_id = client.mk_eve_item(grp_id=eve_grp1_id)
-    eve_mutated_module_id = client.mk_eve_item(grp_id=eve_grp2_id)
+    eve_mutated_module_id = client.mk_eve_item(grp_id=eve_grp2_id, is_dynamic=True)
     eve_other_module_id = client.mk_eve_item(grp_id=eve_grp2_id)
     eve_mutator_id = client.mk_eve_mutator(items=[([eve_base_module1_id, eve_base_module2_id], eve_mutated_module_id)])
     client.create_sources()

@@ -130,7 +130,7 @@ def test_mutation_limit_priority(client, consts):
     # Unrealistic scenario, just checking what happens
     eve_limit_attr_id = client.mk_eve_attr(id_=consts.EveAttr.max_type_fitted)
     eve_base_module_id = client.mk_eve_module(attrs={eve_limit_attr_id: 2})
-    eve_mutated_module_id = client.mk_eve_module(attrs={eve_limit_attr_id: 1})
+    eve_mutated_module_id = client.mk_eve_module(is_dynamic=True, attrs={eve_limit_attr_id: 1})
     eve_mutator_id = client.mk_eve_mutator(
         items=[([eve_base_module_id], eve_mutated_module_id)],
         attrs={eve_limit_attr_id: (1, 5)})
@@ -153,7 +153,7 @@ def test_mutation_limit_inheritance(client, consts):
     # Mutated items consider the restriction only when it is defined directly on mutated type
     eve_limit_attr_id = client.mk_eve_attr(id_=consts.EveAttr.max_type_fitted)
     eve_base_module_id = client.mk_eve_module(attrs={eve_limit_attr_id: 1})
-    eve_mutated_module_id = client.mk_eve_module()
+    eve_mutated_module_id = client.mk_eve_module(is_dynamic=True)
     eve_mutator_id = client.mk_eve_mutator(
         items=[([eve_base_module_id], eve_mutated_module_id)],
         attrs={eve_limit_attr_id: (1, 5)})

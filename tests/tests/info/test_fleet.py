@@ -2,8 +2,7 @@
 Here we check availability of info of various items via fleet info endpoint.
 """
 
-from fw import check_no_field
-from fw.util import Absent
+from fw import Absent, check_no_field
 
 
 def test_error_params_malformed(client):

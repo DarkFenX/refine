@@ -11,7 +11,7 @@ def test_rolls_range(client, consts):
     eve_base_item_id = client.mk_eve_item(
         datas=[eve_d1, eve_d2],
         attrs={eve_lower_attr_id: 100, eve_within_attr_id: 100, eve_higher_attr_id: 100})
-    eve_mutated_item_id = client.mk_eve_item(datas=[eve_d2])
+    eve_mutated_item_id = client.mk_eve_item(datas=[eve_d2], is_dynamic=True)
     eve_mutator_id = client.alloc_item_id(datas=[eve_d1, eve_d2])
     client.mk_eve_mutator(
         datas=[eve_d2],
@@ -75,7 +75,7 @@ def test_absolute_value_range(client, consts):
     eve_base_item_id = client.mk_eve_item(
         datas=[eve_d1, eve_d2],
         attrs={eve_lower_attr_id: 100, eve_within_attr_id: 100, eve_higher_attr_id: 100})
-    eve_mutated_item_id = client.mk_eve_item(datas=[eve_d2])
+    eve_mutated_item_id = client.mk_eve_item(datas=[eve_d2], is_dynamic=True)
     eve_mutator_id = client.alloc_item_id(datas=[eve_d1, eve_d2])
     client.mk_eve_mutator(
         datas=[eve_d2],
@@ -136,7 +136,7 @@ def test_no_base_item(client, consts):
     eve_absolute_attr_id = client.mk_eve_attr(datas=[eve_d1, eve_d2])
     eve_base_item_id = client.alloc_item_id(datas=[eve_d1, eve_d2])
     client.mk_eve_item(datas=[eve_d2], id_=eve_base_item_id, attrs={eve_roll_attr_id: 100, eve_absolute_attr_id: 100})
-    eve_mutated_item_id = client.mk_eve_item(datas=[eve_d2])
+    eve_mutated_item_id = client.mk_eve_item(datas=[eve_d2], is_dynamic=True)
     eve_mutator_id = client.alloc_item_id(datas=[eve_d1, eve_d2])
     client.mk_eve_mutator(
         datas=[eve_d2],

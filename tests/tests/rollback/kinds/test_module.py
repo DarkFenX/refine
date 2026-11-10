@@ -11,8 +11,8 @@ def setup_mutation(*, client, basic_info):
     eve_base_module2_id = client.mk_eve_item(
         attrs={basic_info.affector_attr_id: 30, eve_roll_attr_id: 100},
         eff_ids=[eve_effect_id])
-    eve_mutated_module1_id = client.mk_eve_item(eff_ids=[eve_effect_id])
-    eve_mutated_module2_id = client.mk_eve_item(eff_ids=[eve_effect_id])
+    eve_mutated_module1_id = client.mk_eve_item(is_dynamic=True, eff_ids=[eve_effect_id])
+    eve_mutated_module2_id = client.mk_eve_item(is_dynamic=True, eff_ids=[eve_effect_id])
     eve_mutator1_id = client.mk_eve_mutator(
         items=[([eve_base_module1_id], eve_mutated_module1_id), ([eve_base_module2_id], eve_mutated_module2_id)],
         attrs={basic_info.affector_attr_id: (0.5, 1.5), eve_roll_attr_id: (0.5, 1.5)})
@@ -363,7 +363,7 @@ def test_mutation_change_type_mutated_item_same(client, consts):
     eve_effect_id = client.mk_eve_effect(mod_info=[eve_basic_info.ship_mod])
     eve_base_module1_id = client.mk_eve_item(attrs={eve_basic_info.affector_attr_id: 20}, eff_ids=[eve_effect_id])
     eve_base_module2_id = client.mk_eve_item(attrs={eve_basic_info.affector_attr_id: 30}, eff_ids=[eve_effect_id])
-    eve_mutated_module_id = client.mk_eve_item(eff_ids=[eve_effect_id])
+    eve_mutated_module_id = client.mk_eve_item(is_dynamic=True, eff_ids=[eve_effect_id])
     eve_mutator_id = client.mk_eve_mutator(
         items=[([eve_base_module1_id, eve_base_module2_id], eve_mutated_module_id)],
         attrs={eve_basic_info.affector_attr_id: (0.5, 1.5)})

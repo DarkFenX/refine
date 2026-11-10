@@ -17,7 +17,7 @@ def test_to_stage4_different_base_values(client, consts):
         datas=[eve_d2],
         id_=eve_base_item_id,
         attrs={eve_lower_attr_id: 80, eve_within_attr_id: 100, eve_higher_attr_id: 120})
-    eve_mutated_item_id = client.mk_eve_item(datas=[eve_d1, eve_d2])
+    eve_mutated_item_id = client.mk_eve_item(datas=[eve_d1, eve_d2], is_dynamic=True)
     eve_mutator_id = client.mk_eve_mutator(
         datas=[eve_d1, eve_d2],
         items=[([eve_base_item_id], eve_mutated_item_id)],
@@ -75,7 +75,7 @@ def test_to_stage4_different_ranges(client, consts):
     eve_base_item_id = client.mk_eve_item(
         datas=[eve_d1, eve_d2],
         attrs={eve_lower_attr_id: 100, eve_within_attr_id: 100, eve_higher_attr_id: 100})
-    eve_mutated_item_id = client.mk_eve_item(datas=[eve_d1, eve_d2])
+    eve_mutated_item_id = client.mk_eve_item(datas=[eve_d1, eve_d2], is_dynamic=True)
     eve_mutator_id = client.alloc_item_id(datas=[eve_d1, eve_d2])
     client.mk_eve_mutator(
         datas=[eve_d1],
@@ -162,8 +162,8 @@ def test_to_stage4_different_group(client, consts):
         datas=[eve_d1, eve_d2],
         attrs={eve_affectee_attr1_id: 100, eve_affectee_attr2_id: 100})
     eve_mutated_item_id = client.alloc_item_id(datas=[eve_d1, eve_d2])
-    client.mk_eve_item(datas=[eve_d1], id_=eve_mutated_item_id, grp_id=eve_grp1_id)
-    client.mk_eve_item(datas=[eve_d2], id_=eve_mutated_item_id, grp_id=eve_grp2_id)
+    client.mk_eve_item(datas=[eve_d1], id_=eve_mutated_item_id, grp_id=eve_grp1_id, is_dynamic=True)
+    client.mk_eve_item(datas=[eve_d2], id_=eve_mutated_item_id, grp_id=eve_grp2_id, is_dynamic=True)
     eve_mutator_id = client.mk_eve_mutator(datas=[eve_d1, eve_d2], items=[([eve_base_item_id], eve_mutated_item_id)])
     eve_ship_id = client.mk_eve_ship(datas=[eve_d1, eve_d2])
     client.create_sources()
@@ -204,9 +204,9 @@ def test_to_stage4_different_id(client, consts):
     eve_d2 = client.mk_eve_data()
     eve_base_item_id = client.mk_eve_item(datas=[eve_d1, eve_d2])
     eve_d1_mutated_item_id = client.alloc_item_id(datas=[eve_d1, eve_d2])
-    client.mk_eve_item(datas=[eve_d1], id_=eve_d1_mutated_item_id)
+    client.mk_eve_item(datas=[eve_d1], id_=eve_d1_mutated_item_id, is_dynamic=True)
     eve_d2_mutated_item_id = client.alloc_item_id(datas=[eve_d1, eve_d2])
-    client.mk_eve_item(datas=[eve_d2], id_=eve_d2_mutated_item_id)
+    client.mk_eve_item(datas=[eve_d2], id_=eve_d2_mutated_item_id, is_dynamic=True)
     eve_mutator_id = client.alloc_item_id(datas=[eve_d1, eve_d2])
     client.mk_eve_mutator(datas=[eve_d1], id_=eve_mutator_id, items=[([eve_base_item_id], eve_d1_mutated_item_id)])
     client.mk_eve_mutator(datas=[eve_d2], id_=eve_mutator_id, items=[([eve_base_item_id], eve_d2_mutated_item_id)])
@@ -243,8 +243,8 @@ def test_to_stage4_no_base_item(client, consts):
     eve_base_item_id = client.alloc_item_id(datas=[eve_d1, eve_d2])
     client.mk_eve_item(datas=[eve_d1], id_=eve_base_item_id, attrs={eve_attr1_id: 100, eve_attr2_id: 100})
     eve_mutated_item_id = client.alloc_item_id(datas=[eve_d1, eve_d2])
-    client.mk_eve_item(datas=[eve_d1], id_=eve_mutated_item_id)
-    client.mk_eve_item(datas=[eve_d2], id_=eve_mutated_item_id, attrs={eve_attr1_id: 50})
+    client.mk_eve_item(datas=[eve_d1], id_=eve_mutated_item_id, is_dynamic=True)
+    client.mk_eve_item(datas=[eve_d2], id_=eve_mutated_item_id, is_dynamic=True, attrs={eve_attr1_id: 50})
     eve_mutator_id = client.mk_eve_mutator(
         datas=[eve_d1, eve_d2],
         items=[([eve_base_item_id], eve_mutated_item_id)],
@@ -330,7 +330,7 @@ def test_to_stage3_different_group(client, consts):
         grp_id=eve_grp2_id,
         attrs={eve_affectee_attr1_id: 100, eve_affectee_attr2_id: 100})
     eve_mutated_item_id = client.alloc_item_id(datas=[eve_d1, eve_d2])
-    client.mk_eve_item(datas=[eve_d1], id_=eve_mutated_item_id, grp_id=eve_grp1_id)
+    client.mk_eve_item(datas=[eve_d1], id_=eve_mutated_item_id, grp_id=eve_grp1_id, is_dynamic=True)
     eve_mutator_id = client.mk_eve_mutator(
         datas=[eve_d1, eve_d2],
         items=[([eve_base_item_id], eve_mutated_item_id)],
@@ -425,7 +425,7 @@ def test_to_stage2_different_group(client, consts):
         datas=[eve_d1, eve_d2],
         grp_id=eve_grp2_id,
         attrs={eve_affectee_attr1_id: 100, eve_affectee_attr2_id: 100})
-    eve_mutated_item_id = client.mk_eve_item(datas=[eve_d1, eve_d2], grp_id=eve_grp1_id)
+    eve_mutated_item_id = client.mk_eve_item(datas=[eve_d1, eve_d2], grp_id=eve_grp1_id, is_dynamic=True)
     eve_mutator_id = client.alloc_item_id(datas=[eve_d1, eve_d2])
     client.mk_eve_mutator(
         datas=[eve_d1],
@@ -503,7 +503,7 @@ def test_to_stage2_no_base_item(client, consts):
     eve_attr_id = client.mk_eve_attr(datas=[eve_d1, eve_d2])
     eve_base_item_id = client.alloc_item_id(datas=[eve_d1, eve_d2])
     client.mk_eve_item(datas=[eve_d1], id_=eve_base_item_id, attrs={eve_attr_id: 100})
-    eve_mutated_item_id = client.mk_eve_item(datas=[eve_d1, eve_d2])
+    eve_mutated_item_id = client.mk_eve_item(datas=[eve_d1, eve_d2], is_dynamic=True)
     eve_mutator_id = client.alloc_item_id(datas=[eve_d1, eve_d2])
     client.mk_eve_mutator(
         datas=[eve_d1],
@@ -590,7 +590,7 @@ def test_to_stage1_different_group(client, consts):
         datas=[eve_d1, eve_d2],
         grp_id=eve_grp2_id,
         attrs={eve_affectee_attr1_id: 100, eve_affectee_attr2_id: 100})
-    eve_mutated_item_id = client.mk_eve_item(datas=[eve_d1, eve_d2], grp_id=eve_grp1_id)
+    eve_mutated_item_id = client.mk_eve_item(datas=[eve_d1, eve_d2], grp_id=eve_grp1_id, is_dynamic=True)
     eve_mutator_id = client.alloc_item_id(datas=[eve_d1, eve_d2])
     client.mk_eve_mutator(
         datas=[eve_d1],
@@ -662,7 +662,7 @@ def test_to_stage1_no_base_item(client, consts):
     eve_attr_id = client.mk_eve_attr(datas=[eve_d1, eve_d2])
     eve_base_item_id = client.alloc_item_id(datas=[eve_d1, eve_d2])
     client.mk_eve_item(datas=[eve_d1], id_=eve_base_item_id, attrs={eve_attr_id: 100})
-    eve_mutated_item_id = client.mk_eve_item(datas=[eve_d1, eve_d2])
+    eve_mutated_item_id = client.mk_eve_item(datas=[eve_d1, eve_d2], is_dynamic=True)
     eve_mutator_id = client.alloc_item_id(datas=[eve_d1, eve_d2])
     client.mk_eve_mutator(
         datas=[eve_d1],
@@ -718,7 +718,7 @@ def test_from_stage3(client, consts):
     eve_attr_id = client.mk_eve_attr(datas=[eve_d1, eve_d2])
     eve_base_item_id = client.mk_eve_item(datas=[eve_d1, eve_d2], attrs={eve_attr_id: 100})
     eve_mutated_item_id = client.alloc_item_id(datas=[eve_d1, eve_d2])
-    client.mk_eve_item(datas=[eve_d2], id_=eve_mutated_item_id)
+    client.mk_eve_item(datas=[eve_d2], id_=eve_mutated_item_id, is_dynamic=True)
     eve_mutator_id = client.mk_eve_mutator(
         datas=[eve_d1, eve_d2],
         items=[([eve_base_item_id], eve_mutated_item_id)],
@@ -756,7 +756,7 @@ def test_from_stage2(client, consts):
     eve_d2 = client.mk_eve_data()
     eve_attr_id = client.mk_eve_attr(datas=[eve_d1, eve_d2])
     eve_base_item_id = client.mk_eve_item(datas=[eve_d1, eve_d2], attrs={eve_attr_id: 100})
-    eve_mutated_item_id = client.mk_eve_item(datas=[eve_d1, eve_d2])
+    eve_mutated_item_id = client.mk_eve_item(datas=[eve_d1, eve_d2], is_dynamic=True)
     eve_mutator_id = client.alloc_item_id(datas=[eve_d1, eve_d2])
     client.mk_eve_mutator(
         datas=[eve_d1],
@@ -802,7 +802,7 @@ def test_from_stage1(client, consts):
     eve_d2 = client.mk_eve_data()
     eve_attr_id = client.mk_eve_attr(datas=[eve_d1, eve_d2])
     eve_base_item_id = client.mk_eve_item(datas=[eve_d1, eve_d2], attrs={eve_attr_id: 100})
-    eve_mutated_item_id = client.mk_eve_item(datas=[eve_d1, eve_d2])
+    eve_mutated_item_id = client.mk_eve_item(datas=[eve_d1, eve_d2], is_dynamic=True)
     eve_mutator_id = client.alloc_item_id(datas=[eve_d1, eve_d2])
     client.mk_eve_mutator(
         datas=[eve_d2],
@@ -844,7 +844,7 @@ def test_drone(client, consts):
     eve_base_item_id = client.alloc_item_id(datas=[eve_d1, eve_d2])
     client.mk_eve_drone(datas=[eve_d1], id_=eve_base_item_id, attrs={eve_roll_attr_id: 100, eve_absolute_attr_id: 100})
     client.mk_eve_drone(datas=[eve_d2], id_=eve_base_item_id, attrs={eve_roll_attr_id: 80, eve_absolute_attr_id: 120})
-    eve_mutated_item_id = client.mk_eve_drone(datas=[eve_d1, eve_d2])
+    eve_mutated_item_id = client.mk_eve_drone(datas=[eve_d1, eve_d2], is_dynamic=True)
     eve_mutator_id = client.alloc_item_id(datas=[eve_d1, eve_d2])
     client.mk_eve_mutator(
         datas=[eve_d1],

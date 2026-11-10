@@ -342,6 +342,7 @@ def test_mutation(client, consts):
     eve_base_module_id = client.mk_eve_item(cat_id=consts.EveItemCat.module, eff_ids=[eve_passive_effect_id])
     eve_mutated_module_id = client.mk_eve_item(
         cat_id=consts.EveItemCat.module,
+        is_dynamic=True,
         eff_ids=[eve_passive_effect_id, eve_online_effect_id])
     eve_mutator_id = client.mk_eve_mutator(items=[([eve_base_module_id], eve_mutated_module_id)])
     client.create_sources()

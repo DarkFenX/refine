@@ -120,7 +120,7 @@ def test_add_mutated_proj_not_found(client, consts):
         affectee_attr_id=eve_local_attr_id)
     eve_local_effect_id = client.mk_eve_effect(mod_info=[eve_local_mod])
     eve_base_module_id = client.mk_eve_item(attrs={eve_roll_attr_id: 20}, eff_ids=[eve_local_effect_id])
-    eve_mutated_module_id = client.mk_eve_item(eff_ids=[eve_local_effect_id])
+    eve_mutated_module_id = client.mk_eve_item(is_dynamic=True, eff_ids=[eve_local_effect_id])
     eve_mutator_id = client.mk_eve_mutator(
         items=[([eve_base_module_id], eve_mutated_module_id)],
         attrs={eve_roll_attr_id: (0.5, 1.5)})
@@ -272,7 +272,7 @@ def test_change_rolls_proj_add_fail(client, consts):
         affectee_attr_id=eve_local_attr_id)
     eve_local_effect_id = client.mk_eve_effect(mod_info=[eve_local_mod])
     eve_base_module_id = client.mk_eve_item(attrs={eve_roll_attr_id: 20}, eff_ids=[eve_local_effect_id])
-    eve_mutated_module_id = client.mk_eve_item(eff_ids=[eve_local_effect_id])
+    eve_mutated_module_id = client.mk_eve_item(is_dynamic=True, eff_ids=[eve_local_effect_id])
     eve_mutator_id = client.mk_eve_mutator(
         items=[([eve_base_module_id], eve_mutated_module_id)],
         attrs={eve_roll_attr_id: (0.5, 1.5)})
@@ -313,7 +313,7 @@ def test_change_unmutate_proj_add_fail(client, consts):
         affectee_attr_id=eve_local_attr_id)
     eve_local_effect_id = client.mk_eve_effect(mod_info=[eve_local_mod])
     eve_base_module_id = client.mk_eve_item(attrs={eve_roll_attr_id: 20}, eff_ids=[eve_local_effect_id])
-    eve_mutated_module_id = client.mk_eve_item(eff_ids=[eve_local_effect_id])
+    eve_mutated_module_id = client.mk_eve_item(is_dynamic=True, eff_ids=[eve_local_effect_id])
     eve_mutator_id = client.mk_eve_mutator(
         items=[([eve_base_module_id], eve_mutated_module_id)],
         attrs={eve_roll_attr_id: (0.5, 1.5)})

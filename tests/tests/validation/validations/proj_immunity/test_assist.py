@@ -351,7 +351,7 @@ def test_tgt_mutation(client, consts):
     eve_src_effect_id = client.mk_eve_effect(cat_id=consts.EveEffCat.target, is_assistance=True)
     eve_src_item_id = client.mk_eve_item(eff_ids=[eve_src_effect_id], defeff_id=eve_src_effect_id)
     eve_tgt_base_item_id = client.mk_eve_item(attrs={eve_immunity_attr_id: 1})
-    eve_tgt_mutated_item_id = client.mk_eve_item(attrs={eve_immunity_attr_id: 0})
+    eve_tgt_mutated_item_id = client.mk_eve_item(is_dynamic=True, attrs={eve_immunity_attr_id: 0})
     eve_tgt_mutator_id = client.mk_eve_mutator(
         items=[([eve_tgt_base_item_id], eve_tgt_mutated_item_id)],
         attrs={eve_immunity_attr_id: (0, 2)})
@@ -402,7 +402,10 @@ def test_src_mutation(client, consts):
     eve_immunity_attr_id = client.mk_eve_attr(id_=consts.EveAttr.disallow_assistance)
     eve_src_effect_id = client.mk_eve_effect(cat_id=consts.EveEffCat.target, is_assistance=True)
     eve_src_base_item_id = client.mk_eve_item()
-    eve_src_mutated_item_id = client.mk_eve_item(eff_ids=[eve_src_effect_id], defeff_id=eve_src_effect_id)
+    eve_src_mutated_item_id = client.mk_eve_item(
+        is_dynamic=True,
+        eff_ids=[eve_src_effect_id],
+        defeff_id=eve_src_effect_id)
     eve_src_mutator_id = client.mk_eve_mutator(items=[([eve_src_base_item_id], eve_src_mutated_item_id)])
     eve_tgt_item_id = client.mk_eve_ship(attrs={eve_immunity_attr_id: 1})
     client.create_sources()

@@ -2,7 +2,7 @@ import typing
 from dataclasses import dataclass
 from itertools import chain
 
-from fw.util import Absent, Default
+from fw import Absent, Default
 
 if typing.TYPE_CHECKING:
     from fw.client import TestClient

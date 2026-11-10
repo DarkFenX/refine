@@ -133,6 +133,7 @@ class EveObjects:
             self, *,
             id_: int,
             grp_id: int,
+            is_dynamic: bool | type[Absent],
             attrs: dict[int, float] | type[Absent],
             eff_ids: list[int] | type[Absent],
             defeff_id: int | None,
@@ -151,6 +152,7 @@ class EveObjects:
         item = Item(
             id=id_,
             group_id=grp_id,
+            is_dynamic=is_dynamic,
             attributes=attrs,
             effect_ids=eff_ids,
             default_effect_id=defeff_id,

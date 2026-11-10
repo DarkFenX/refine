@@ -1,4 +1,4 @@
-from fw.util import Absent
+from fw import Absent
 
 
 def test_params_malformed(client):

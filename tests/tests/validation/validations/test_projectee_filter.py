@@ -265,7 +265,7 @@ def test_tgt_mutation(client, consts):
     eve_tgt_list_attr_id = client.mk_eve_attr(id_=consts.EveAttr.tgt_filter_typelist_id)
     eve_effect_id = client.mk_eve_effect(id_=consts.EveEffect.lightning_weapon, cat_id=consts.EveEffCat.target)
     eve_tgt_base_drone_id = client.mk_eve_drone()
-    eve_tgt_mutated_drone_id = client.mk_eve_drone()
+    eve_tgt_mutated_drone_id = client.mk_eve_drone(is_dynamic=True)
     eve_tgt_mutator_id = client.mk_eve_mutator(items=[([eve_tgt_base_drone_id], eve_tgt_mutated_drone_id)])
     eve_item_list1_id = client.mk_eve_item_list(inc_type_ids=[eve_tgt_base_drone_id])
     eve_item_list2_id = client.mk_eve_item_list(inc_type_ids=[eve_tgt_mutated_drone_id])
@@ -322,6 +322,7 @@ def test_src_mutation_itemlist_replaced(client, consts):
         eff_ids=[eve_effect_id],
         defeff_id=eve_effect_id)
     eve_mutated_module_id = client.mk_eve_item(
+        is_dynamic=True,
         attrs={eve_tgt_list_attr_id: eve_item_list1_id},
         eff_ids=[eve_effect_id],
         defeff_id=eve_effect_id)
@@ -381,7 +382,7 @@ def test_src_mutation_itemlist_inherited(client, consts):
     eve_ship2_id = client.mk_eve_ship()
     eve_item_list_id = client.mk_eve_item_list(inc_type_ids=[eve_ship2_id])
     eve_base_module_id = client.mk_eve_item(attrs={eve_tgt_list_attr_id: eve_item_list_id})
-    eve_mutated_module_id = client.mk_eve_item(eff_ids=[eve_effect_id], defeff_id=eve_effect_id)
+    eve_mutated_module_id = client.mk_eve_item(is_dynamic=True, eff_ids=[eve_effect_id], defeff_id=eve_effect_id)
     eve_mutator_id = client.mk_eve_mutator(items=[([eve_base_module_id], eve_mutated_module_id)])
     client.create_sources()
     api_sol = client.create_sol()

@@ -251,7 +251,7 @@ def test_mutation_drone_group(client, consts):
     eve_ship1_id = client.mk_eve_ship(attrs={eve_limit_attr_id: eve_group1_id})
     eve_ship2_id = client.mk_eve_ship(attrs={eve_limit_attr_id: eve_group2_id})
     eve_base_drone_id = client.mk_eve_item(grp_id=eve_group2_id)
-    eve_mutated_drone_id = client.mk_eve_item(grp_id=eve_group1_id)
+    eve_mutated_drone_id = client.mk_eve_item(grp_id=eve_group1_id, is_dynamic=True)
     eve_mutator_id = client.mk_eve_mutator(items=[([eve_base_drone_id], eve_mutated_drone_id)])
     client.create_sources()
     api_sol = client.create_sol()

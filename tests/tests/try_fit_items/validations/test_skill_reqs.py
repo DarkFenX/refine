@@ -273,7 +273,7 @@ def test_mutation(client):
     eve_skill1_id = client.mk_eve_item()
     eve_skill2_id = client.mk_eve_item()
     eve_base_drone_id = client.mk_eve_drone(srqs={eve_skill1_id: 2})
-    eve_mutated_drone_id = client.mk_eve_drone(srqs={eve_skill2_id: 4})
+    eve_mutated_drone_id = client.mk_eve_drone(is_dynamic=True, srqs={eve_skill2_id: 4})
     eve_mutator_id = client.mk_eve_mutator(items=[([eve_base_drone_id], eve_mutated_drone_id)])
     client.create_sources()
     api_sol = client.create_sol()

@@ -49,7 +49,7 @@ def test_ship_modified(client, consts):
             eve_hull_expl_mod_attr_id: 0.6},
         eff_ids=[eve_effect_id],
         defeff_id=eve_effect_id)
-    eve_mutated_module_id = client.mk_eve_item(eff_ids=[eve_effect_id], defeff_id=eve_effect_id)
+    eve_mutated_module_id = client.mk_eve_item(is_dynamic=True, eff_ids=[eve_effect_id], defeff_id=eve_effect_id)
     eve_mutator_id = client.mk_eve_mutator(
         items=[([eve_base_module_id], eve_mutated_module_id)],
         attrs={

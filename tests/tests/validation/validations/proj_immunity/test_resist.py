@@ -315,7 +315,7 @@ def test_tgt_mutation(client, consts):
     eve_src_effect_id = client.mk_eve_effect(cat_id=consts.EveEffCat.target, resist_attr_id=eve_resist_attr_id)
     eve_src_item_id = client.mk_eve_item(eff_ids=[eve_src_effect_id], defeff_id=eve_src_effect_id)
     eve_tgt_base_item_id = client.mk_eve_item(attrs={eve_resist_attr_id: 1})
-    eve_tgt_mutated_item_id = client.mk_eve_item(attrs={eve_resist_attr_id: 0})
+    eve_tgt_mutated_item_id = client.mk_eve_item(is_dynamic=True, attrs={eve_resist_attr_id: 0})
     eve_tgt_mutator_id = client.mk_eve_mutator(
         items=[([eve_tgt_base_item_id], eve_tgt_mutated_item_id)],
         attrs={eve_resist_attr_id: (0, 2)})
@@ -378,11 +378,13 @@ def test_src_mutation(client, consts):
         eff_ids=[eve_src_effect_id],
         defeff_id=eve_src_effect_id)
     eve_src_mutated_item1_id = client.mk_eve_item(
+        is_dynamic=True,
         attrs={eve_resist_def_attr_id: eve_resist_attr2_id},
         eff_ids=[eve_src_effect_id],
         defeff_id=eve_src_effect_id)
     eve_src_base_item2_id = client.mk_eve_item(eff_ids=[eve_src_effect_id], defeff_id=eve_src_effect_id)
     eve_src_mutated_item2_id = client.mk_eve_item(
+        is_dynamic=True,
         attrs={eve_resist_def_attr_id: eve_resist_attr3_id},
         eff_ids=[eve_src_effect_id],
         defeff_id=eve_src_effect_id)
@@ -444,7 +446,10 @@ def test_src_mutation_base_change(client, consts):
         attrs={eve_resist_def_attr_id: eve_resist_attr2_id},
         eff_ids=[eve_src_effect_id],
         defeff_id=eve_src_effect_id)
-    eve_src_mutated_item_id = client.mk_eve_item(eff_ids=[eve_src_effect_id], defeff_id=eve_src_effect_id)
+    eve_src_mutated_item_id = client.mk_eve_item(
+        is_dynamic=True,
+        eff_ids=[eve_src_effect_id],
+        defeff_id=eve_src_effect_id)
     eve_src_mutator_id = client.mk_eve_mutator(
         items=[([eve_src_base_item1_id, eve_src_base_item2_id], eve_src_mutated_item_id)])
     eve_tgt_item_id = client.mk_eve_ship(attrs={eve_resist_attr1_id: 0, eve_resist_attr2_id: 1})

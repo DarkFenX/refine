@@ -199,7 +199,7 @@ def test_mutation_limit_priority(client, consts):
     # Unrealistic scenario, only standup modules/services uses it, and it can't be mutated
     eve_attr_id = client.mk_eve_attr(id_=consts.EveAttr.online_max_security_class)
     eve_base_module_id = client.mk_eve_item(attrs={eve_attr_id: 1})
-    eve_mutated_module_id = client.mk_eve_item(attrs={eve_attr_id: 0})
+    eve_mutated_module_id = client.mk_eve_item(is_dynamic=True, attrs={eve_attr_id: 0})
     eve_mutator_id = client.mk_eve_mutator(
         items=[([eve_base_module_id], eve_mutated_module_id)],
         attrs={eve_attr_id: (1, 3)})
@@ -237,7 +237,7 @@ def test_mutation_limit_inheritance(client, consts):
     # Unrealistic scenario, only standup modules/services uses it, and it can't be mutated
     eve_attr_id = client.mk_eve_attr(id_=consts.EveAttr.online_max_security_class)
     eve_base_module_id = client.mk_eve_item()
-    eve_mutated_module_id = client.mk_eve_item(attrs={eve_attr_id: 1})
+    eve_mutated_module_id = client.mk_eve_item(is_dynamic=True, attrs={eve_attr_id: 1})
     eve_mutator_id = client.mk_eve_mutator(
         items=[([eve_base_module_id], eve_mutated_module_id)],
         attrs={eve_attr_id: (1, 3)})

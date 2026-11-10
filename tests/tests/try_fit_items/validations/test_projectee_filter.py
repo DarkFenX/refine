@@ -177,7 +177,7 @@ def test_tgt_mutation(client, consts):
         cat_id=consts.EveEffCat.active)
     eve_src_effect_id = client.mk_eve_effect(id_=consts.EveEffect.lightning_weapon, cat_id=consts.EveEffCat.target)
     eve_tgt_base_drone_id = client.mk_eve_drone()
-    eve_tgt_mutated_drone_id = client.mk_eve_drone()
+    eve_tgt_mutated_drone_id = client.mk_eve_drone(is_dynamic=True)
     eve_tgt_mutator_id = client.mk_eve_mutator(items=[([eve_tgt_base_drone_id], eve_tgt_mutated_drone_id)])
     eve_item_list1_id = client.mk_eve_item_list(inc_type_ids=[eve_tgt_base_drone_id])
     eve_item_list2_id = client.mk_eve_item_list(inc_type_ids=[eve_tgt_mutated_drone_id])
