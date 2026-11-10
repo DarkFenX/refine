@@ -16,11 +16,11 @@ impl ADataGenerator {
     /// Ensure that assumptions refine makes about the data are true.
     pub(in crate::ad::generator) fn validate(&mut self) {
         self.fk_check();
-        self.mutation_dynamic_types();
         self.default_effects();
         self.unmapped_abilities();
         self.broken_ability_links();
         self.item_ability_handler_effect();
+        self.mutation_dynamic_types();
     }
 }
 
@@ -164,53 +164,6 @@ fn fk_check_referee<T, F>(
             warning = format!("{}, <{} more entries hidden>", warning, entry_count - entry_limit);
         }
         a_warnings.validation.push(warning);
-    }
-}
-
-////////////////////////////////////////////////////////////////////////////////////////////////////
-// Allow only mutations where input type is non-dynamic, and output is dynamic
-////////////////////////////////////////////////////////////////////////////////////////////////////
-impl ADataGenerator {
-    fn mutation_dynamic_types(&mut self) {
-        let dynamic_ids: RSet<_> = self
-            .e_data
-            .items
-            .data
-            .iter()
-            .filter(|v| v.is_dynamic)
-            .map(|v| v.id)
-            .collect();
-        let mut muta_ids = RSet::new();
-        let muta_items = self
-            .e_data
-            .muta_items
-            .data
-            .extract_if(.., |v| {
-                dynamic_ids.contains(&v.in_item_id) || !dynamic_ids.contains(&v.out_item_id)
-            })
-            .inspect(|v| {
-                muta_ids.insert(v.muta_id);
-            })
-            .count();
-        if muta_items > 0 {
-            let entry_limit = 5;
-            let entry_count = muta_ids.len();
-            let mut warning = format!(
-                "removed {} {} with dynamic input or non-dynamic output item type, mutators: {}",
-                muta_items,
-                EMutaItem::lib_get_name(),
-                muta_ids
-                    .into_iter()
-                    .map(|v| v.into_i32())
-                    .sorted_unstable()
-                    .take(entry_limit)
-                    .join(", ")
-            );
-            if entry_count > entry_limit {
-                warning = format!("{}, <{} more entries hidden>", warning, entry_count - entry_limit);
-            }
-            self.a_data.warnings.validation.push(warning);
-        }
     }
 }
 
@@ -367,6 +320,53 @@ impl ADataGenerator {
                     .sorted_unstable()
                     .take(entry_limit)
                     .format_with(", ", |v, f| f(&format_args!("[{}, {}]", v.0, v.1)))
+            );
+            if entry_count > entry_limit {
+                warning = format!("{}, <{} more entries hidden>", warning, entry_count - entry_limit);
+            }
+            self.a_data.warnings.validation.push(warning);
+        }
+    }
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Allow only mutations where input type is non-dynamic, and output is dynamic
+////////////////////////////////////////////////////////////////////////////////////////////////////
+impl ADataGenerator {
+    fn mutation_dynamic_types(&mut self) {
+        let dynamic_ids: RSet<_> = self
+            .e_data
+            .items
+            .data
+            .iter()
+            .filter(|v| v.is_dynamic)
+            .map(|v| v.id)
+            .collect();
+        let mut muta_ids = RSet::new();
+        let muta_items = self
+            .e_data
+            .muta_items
+            .data
+            .extract_if(.., |v| {
+                dynamic_ids.contains(&v.in_item_id) || !dynamic_ids.contains(&v.out_item_id)
+            })
+            .inspect(|v| {
+                muta_ids.insert(v.muta_id);
+            })
+            .count();
+        if muta_items > 0 {
+            let entry_limit = 5;
+            let entry_count = muta_ids.len();
+            let mut warning = format!(
+                "removed {} {} with dynamic input or non-dynamic output item type, mutators: {}",
+                muta_items,
+                EMutaItem::lib_get_name(),
+                muta_ids
+                    .into_iter()
+                    .map(|v| v.into_i32())
+                    .sorted_unstable()
+                    .take(entry_limit)
+                    .join(", ")
             );
             if entry_count > entry_limit {
                 warning = format!("{}, <{} more entries hidden>", warning, entry_count - entry_limit);
