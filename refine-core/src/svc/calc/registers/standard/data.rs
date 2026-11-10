@@ -4,7 +4,7 @@ use crate::{
     rd::{RAttrId, RItemListId},
     svc::calc::{CtxModKey, LocationKind, RawModId},
     ud::{UFitId, UItemId},
-    util::{RMapRSet, RSet},
+    util::{RMap, RMapRSet, RSet},
 };
 
 #[derive(Clone)]
@@ -24,6 +24,12 @@ pub(in crate::svc::calc) struct StandardRegister {
     // Owner-modifiable items which belong to certain fit and have certain skill requirement
     // Map<(affectee fit, affectee srq), affectee item>
     pub(super) affectee_own_srq: RMapRSet<(UFitId, AItemId), UItemId>,
+    // Fit's ship location while the ship is registered
+    // Map<fit, location kind>
+    pub(super) fit_ships_loc_kind: RMap<UFitId, LocationKind>,
+    // While ship has no appropriate location, items are temporarily moved here
+    // Map<fit, items on ship or structure root>
+    pub(super) affectee_loc_parked: RMapRSet<UFitId, UItemId>,
     // Buff-modifiable items, which belong to certain fit and are on specific item list
     // Map<(affectee fit, item list), affectee item>
     pub(super) affectee_buffable: RMapRSet<(UFitId, RItemListId), UItemId>,
@@ -54,6 +60,8 @@ impl StandardRegister {
             affectee_loc_grp: RMapRSet::new(),
             affectee_loc_srq: RMapRSet::new(),
             affectee_own_srq: RMapRSet::new(),
+            fit_ships_loc_kind: RMap::new(),
+            affectee_loc_parked: RMapRSet::new(),
             affectee_buffable: RMapRSet::new(),
             affectee_buffable_ships: RMapRSet::new(),
             rmods_proj: RMapRSet::new(),
@@ -148,6 +156,8 @@ mod debug {
                 affectee_loc_grp,
                 affectee_loc_srq,
                 affectee_own_srq,
+                fit_ships_loc_kind: fit_loc_kinds,
+                affectee_loc_parked,
                 affectee_buffable,
                 affectee_buffable_ships,
                 rmods_proj,
@@ -187,6 +197,49 @@ mod debug {
                 for item_uid in item_uids {
                     item_uid.consistency_check(u_data, true)?;
                 }
+            }
+            // A fit's location kind comes from its registered ship, and items on ship or structure
+            // root are under it or parked, not both
+            for (fit_uid, loc_kind) in fit_loc_kinds.iter() {
+                fit_uid.consistency_check(u_data)?;
+                let Some(ship_uid) = u_data.fits.get(*fit_uid).ship else {
+                    return Err(Default::default());
+                };
+                if !affectee_root.contains_entry(&(*fit_uid, *loc_kind), &ship_uid)
+                    || affectee_loc_parked.get(fit_uid).len() > 0
+                {
+                    return Err(Default::default());
+                }
+            }
+            // Between operations, the register's kind is the one user data has for the fit; they
+            // differ only while a ship is being added, removed or reloaded
+            for (fit_uid, fit) in u_data.fits.iter() {
+                let fit_loc_kind: Option<LocationKind> = fit.ship_kind.try_into().ok();
+                if fit_loc_kinds.get(&fit_uid).copied() != fit_loc_kind {
+                    return Err(Default::default());
+                }
+            }
+            for (fit_uid, item_uids) in affectee_loc_parked.iter() {
+                fit_uid.consistency_check(u_data)?;
+                for item_uid in item_uids {
+                    item_uid.consistency_check(u_data, true)?;
+                }
+            }
+            let check_loc_kind = |fit_uid: &UFitId, loc_kind: &LocationKind| match loc_kind {
+                LocationKind::Character => true,
+                _ => fit_loc_kinds.get(fit_uid) == Some(loc_kind),
+            };
+            if affectee_loc
+                .iter()
+                .any(|((fit_uid, loc_kind), _)| !check_loc_kind(fit_uid, loc_kind))
+                || affectee_loc_grp
+                    .iter()
+                    .any(|((fit_uid, loc_kind, _), _)| !check_loc_kind(fit_uid, loc_kind))
+                || affectee_loc_srq
+                    .iter()
+                    .any(|((fit_uid, loc_kind, _), _)| !check_loc_kind(fit_uid, loc_kind))
+            {
+                return Err(Default::default());
             }
             for ((fit_uid, _), item_uids) in affectee_buffable.iter() {
                 fit_uid.consistency_check(u_data)?;

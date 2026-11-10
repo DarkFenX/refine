@@ -363,6 +363,18 @@ impl Calc {
     }
     // Private methods
     fn process_affectee<const OP: RegOp>(&mut self, ctx: &SvcCtx, item_uid: UItemId, item: &UItem) {
+        // A ship gives its fit the location kind, under which items on ship or structure root are
+        // registered: before its registration collects modifiers to invalidate, and until those
+        // are invalidated on its unregistration
+        let ship_fit_loc = match item {
+            UItem::Ship(ship) => item.get_ship_loc_kind().map(|loc_kind| (ship.get_fit_uid(), loc_kind)),
+            _ => None,
+        };
+        if OP == RegOp::Reg
+            && let Some((fit_uid, loc_kind)) = ship_fit_loc
+        {
+            self.std.activate_fit_loc(ctx.u_data, fit_uid, loc_kind);
+        }
         let mut reuse_cmods = self.reuse.cmods.take();
         self.std
             .process_affectee::<OP>(&mut reuse_cmods, ctx, &self.rmods, item_uid, item);
@@ -374,6 +386,11 @@ impl Calc {
             self.reuse.items.put(reuse_affectees);
         }
         self.reuse.cmods.put(reuse_cmods);
+        if OP == RegOp::Unreg
+            && let Some((fit_uid, _)) = ship_fit_loc
+        {
+            self.std.deactivate_fit_loc(ctx.u_data, fit_uid);
+        }
     }
     fn process_effect_projection<const OP: RegOp>(
         &mut self,
