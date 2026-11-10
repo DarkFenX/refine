@@ -342,7 +342,7 @@ def test_from_stage4_to_mutated_item_module(client, consts):
     # base type ID, so changing it to the exposed one has to switch base item
     eve_attr_id = client.mk_eve_attr()
     eve_base_item_id = client.mk_eve_item(attrs={eve_attr_id: 100})
-    eve_mutated_item_id = client.mk_eve_item(attrs={eve_attr_id: 150})
+    eve_mutated_item_id = client.mk_eve_item(is_dynamic=True, attrs={eve_attr_id: 150})
     eve_mutator_id = client.mk_eve_mutator(
         items=[([eve_base_item_id], eve_mutated_item_id)],
         attrs={eve_attr_id: (0.8, 1.2)})
@@ -360,13 +360,15 @@ def test_from_stage4_to_mutated_item_module(client, consts):
     assert api_item.attrs[eve_attr_id].base == approx(92)
     # Action
     api_item.change_module(type_id=eve_mutated_item_id)
-    # Verification - mutator has no mutation for the new base item
+    # Verification - mutator has no mutation for the new base item, and a dynamic type is not
+    # loaded on its own
     api_item.update()
     assert api_item.type_id == eve_mutated_item_id
     assert api_item.mutation.type == consts.ApiMutationType.dormant
     assert len(api_item.mutation.rolls) == 1
     assert api_item.mutation.rolls[eve_attr_id] == approx(0.3)
-    assert api_item.attrs[eve_attr_id].base == approx(150)
+    with check_no_field():
+        api_item.attrs  # ruff:ignore[useless-expression]
     # Action
     api_item.change_module(type_id=eve_base_item_id)
     # Verification
@@ -387,7 +389,7 @@ def test_from_stage4_to_mutated_item_drone(client, consts):
     # base type ID, so changing it to the exposed one has to switch base item
     eve_attr_id = client.mk_eve_attr()
     eve_base_item_id = client.mk_eve_item(attrs={eve_attr_id: 100})
-    eve_mutated_item_id = client.mk_eve_item(attrs={eve_attr_id: 150})
+    eve_mutated_item_id = client.mk_eve_item(is_dynamic=True, attrs={eve_attr_id: 150})
     eve_mutator_id = client.mk_eve_mutator(
         items=[([eve_base_item_id], eve_mutated_item_id)],
         attrs={eve_attr_id: (0.8, 1.2)})
@@ -405,13 +407,15 @@ def test_from_stage4_to_mutated_item_drone(client, consts):
     assert api_item.attrs[eve_attr_id].base == approx(92)
     # Action
     api_item.change_drone(type_id=eve_mutated_item_id)
-    # Verification - mutator has no mutation for the new base item
+    # Verification - mutator has no mutation for the new base item, and a dynamic type is not
+    # loaded on its own
     api_item.update()
     assert api_item.type_id == eve_mutated_item_id
     assert api_item.mutation.type == consts.ApiMutationType.dormant
     assert len(api_item.mutation.rolls) == 1
     assert api_item.mutation.rolls[eve_attr_id] == approx(0.3)
-    assert api_item.attrs[eve_attr_id].base == approx(150)
+    with check_no_field():
+        api_item.attrs  # ruff:ignore[useless-expression]
     # Action
     api_item.change_drone(type_id=eve_base_item_id)
     # Verification

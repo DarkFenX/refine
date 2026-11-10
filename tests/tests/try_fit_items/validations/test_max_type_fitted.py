@@ -150,7 +150,7 @@ def test_mutation_limit_priority(client, consts):
 
 
 def test_mutation_limit_inheritance(client, consts):
-    # Mutated items consider the restriction only when it is defined directly on mutated type
+    # Fitted mutated item counts as its mutated type, not as its base type
     eve_limit_attr_id = client.mk_eve_attr(id_=consts.EveAttr.max_type_fitted)
     eve_base_module_id = client.mk_eve_module(attrs={eve_limit_attr_id: 1})
     eve_mutated_module_id = client.mk_eve_module(is_dynamic=True)
@@ -166,18 +166,12 @@ def test_mutation_limit_inheritance(client, consts):
         mutation=eve_mutator_id)
     # Verification
     assert api_module.update().attrs[eve_limit_attr_id].modified == approx(1)
-    api_fit.check_try_fit_items(
-        val_options=ValOptions(max_type_fitted=True),
-        passing=[eve_base_module_id, eve_mutated_module_id],
-        failing=[])
+    api_fit.check_try_fit_items(val_options=ValOptions(max_type_fitted=True), passing=[eve_base_module_id], failing=[])
     # Action
     api_module.change_module(mutation=None)
     # Verification
     assert api_module.update().attrs[eve_limit_attr_id].modified == approx(1)
-    api_fit.check_try_fit_items(
-        val_options=ValOptions(max_type_fitted=True),
-        passing=[eve_mutated_module_id],
-        failing=[eve_base_module_id])
+    api_fit.check_try_fit_items(val_options=ValOptions(max_type_fitted=True), passing=[], failing=[eve_base_module_id])
 
 
 def test_no_attr(client, consts):

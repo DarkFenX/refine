@@ -441,3 +441,51 @@ def test_item_type_id(client, consts):
     assert api_item_mutation.type == consts.ApiMutationType.dormant
     with check_no_field():
         api_item_mutation.rolls  # ruff:ignore[useless-expression]
+
+
+def test_dynamic_flag_mismatch_base(client, consts):
+    # Mutation item mappings with dynamic in-type are removed as invalid, so mutation stays dormant
+    eve_attr_id = client.mk_eve_attr()
+    eve_base_item_id = client.mk_eve_item(is_dynamic=True, attrs={eve_attr_id: 100})
+    eve_mutated_item_id = client.mk_eve_item(is_dynamic=True, attrs={eve_attr_id: 150})
+    eve_mutator_id = client.mk_eve_mutator(
+        items=[([eve_base_item_id], eve_mutated_item_id)],
+        attrs={eve_attr_id: (0.8, 1.2)})
+    client.create_sources()
+    api_sol = client.create_sol()
+    api_fit = api_sol.create_fit()
+    api_item = api_fit.add_module(
+        type_id=eve_base_item_id,
+        mutation=(eve_mutator_id, {eve_attr_id: Muta.roll_to_api(val=0.3)}))
+    # Verification
+    api_item.update()
+    assert api_item.type_id == eve_base_item_id
+    assert api_item.mutation.type == consts.ApiMutationType.dormant
+    assert len(api_item.mutation.rolls) == 1
+    assert api_item.mutation.rolls[eve_attr_id] == approx(0.3)
+    with check_no_field():
+        api_item.attrs  # ruff:ignore[useless-expression]
+
+
+def test_dynamic_flag_mismatch_mutated(client, consts):
+    # Mutation item mappings with non-dynamic out-type are removed as invalid, so mutation stays
+    # dormant
+    eve_attr_id = client.mk_eve_attr()
+    eve_base_item_id = client.mk_eve_item(attrs={eve_attr_id: 100})
+    eve_mutated_item_id = client.mk_eve_item(attrs={eve_attr_id: 150})
+    eve_mutator_id = client.mk_eve_mutator(
+        items=[([eve_base_item_id], eve_mutated_item_id)],
+        attrs={eve_attr_id: (0.8, 1.2)})
+    client.create_sources()
+    api_sol = client.create_sol()
+    api_fit = api_sol.create_fit()
+    api_item = api_fit.add_module(
+        type_id=eve_base_item_id,
+        mutation=(eve_mutator_id, {eve_attr_id: Muta.roll_to_api(val=0.3)}))
+    # Verification
+    api_item.update()
+    assert api_item.type_id == eve_base_item_id
+    assert api_item.mutation.type == consts.ApiMutationType.dormant
+    assert len(api_item.mutation.rolls) == 1
+    assert api_item.mutation.rolls[eve_attr_id] == approx(0.3)
+    assert api_item.attrs[eve_attr_id].base == approx(100)

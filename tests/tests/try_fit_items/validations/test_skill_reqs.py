@@ -268,34 +268,6 @@ def test_module_switch_type_id(client):
         failing=[eve_module1_id])
 
 
-def test_mutation(client):
-    # Actual use-case, mutated drones switch spec skill
-    eve_skill1_id = client.mk_eve_item()
-    eve_skill2_id = client.mk_eve_item()
-    eve_base_drone_id = client.mk_eve_drone(srqs={eve_skill1_id: 2})
-    eve_mutated_drone_id = client.mk_eve_drone(is_dynamic=True, srqs={eve_skill2_id: 4})
-    eve_mutator_id = client.mk_eve_mutator(items=[([eve_base_drone_id], eve_mutated_drone_id)])
-    client.create_sources()
-    api_sol = client.create_sol()
-    api_fit = api_sol.create_fit()
-    api_skill1 = api_fit.add_skill(type_id=eve_skill1_id, level=2)
-    api_drone = api_fit.add_drone(type_id=eve_base_drone_id)
-    # Verification
-    api_fit.check_try_fit_items(
-        val_options=ValOptions(skill_reqs=True),
-        passing=[eve_base_drone_id],
-        failing=[eve_mutated_drone_id])
-    # Action
-    api_drone.change_drone(mutation=eve_mutator_id)
-    api_fit.add_skill(type_id=eve_skill2_id, level=4)
-    api_skill1.remove()
-    # Verification
-    api_fit.check_try_fit_items(
-        val_options=ValOptions(skill_reqs=True),
-        passing=[eve_mutated_drone_id],
-        failing=[eve_base_drone_id])
-
-
 def test_skill_state(client):
     # Disabled skill still satisfies skill requirements
     eve_skill_id = client.mk_eve_item()

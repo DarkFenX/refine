@@ -2,7 +2,7 @@ from fw import check_no_field
 from fw.api import ValOptions
 
 
-def test_booster(client):
+def test_item_booster(client):
     eve_loaded_id = client.mk_eve_item()
     eve_not_loaded_id = client.alloc_item_id()
     client.create_sources()
@@ -16,7 +16,7 @@ def test_booster(client):
     assert api_val.details.not_loaded_item == [api_not_loaded.id]
 
 
-def test_booster_switch_type_id(client):
+def test_item_booster_switch_type_id(client):
     eve_loaded_id = client.mk_eve_item()
     eve_not_loaded_id = client.alloc_item_id()
     client.create_sources()
@@ -43,7 +43,7 @@ def test_booster_switch_type_id(client):
         api_val.details  # ruff:ignore[useless-expression]
 
 
-def test_character(client):
+def test_item_character(client):
     eve_loaded_id = client.mk_eve_item()
     eve_not_loaded_id = client.alloc_item_id()
     client.create_sources()
@@ -63,7 +63,7 @@ def test_character(client):
     assert api_val.details.not_loaded_item == [api_char.id]
 
 
-def test_character_switch_type_id(client):
+def test_item_character_switch_type_id(client):
     eve_loaded_id = client.mk_eve_item()
     eve_not_loaded_id = client.alloc_item_id()
     client.create_sources()
@@ -90,7 +90,7 @@ def test_character_switch_type_id(client):
         api_val.details  # ruff:ignore[useless-expression]
 
 
-def test_charge(client):
+def test_item_charge(client):
     eve_module_id = client.mk_eve_item()
     eve_loaded_id = client.mk_eve_item()
     eve_not_loaded_id = client.alloc_item_id()
@@ -105,7 +105,7 @@ def test_charge(client):
     assert api_val.details.not_loaded_item == [api_not_loaded.charge.id]
 
 
-def test_charge_switch_type_id(client):
+def test_item_charge_switch_type_id(client):
     eve_module_id = client.mk_eve_item()
     eve_loaded_id = client.mk_eve_item()
     eve_not_loaded_id = client.alloc_item_id()
@@ -133,7 +133,7 @@ def test_charge_switch_type_id(client):
         api_val.details  # ruff:ignore[useless-expression]
 
 
-def test_drone(client):
+def test_item_drone(client):
     eve_loaded_id = client.mk_eve_item()
     eve_not_loaded_id = client.alloc_item_id()
     client.create_sources()
@@ -147,7 +147,7 @@ def test_drone(client):
     assert api_val.details.not_loaded_item == [api_not_loaded.id]
 
 
-def test_drone_switch_type_id(client):
+def test_item_drone_switch_type_id(client):
     eve_loaded_id = client.mk_eve_item()
     eve_not_loaded_id = client.alloc_item_id()
     client.create_sources()
@@ -174,7 +174,7 @@ def test_drone_switch_type_id(client):
         api_val.details  # ruff:ignore[useless-expression]
 
 
-def test_fighter(client):
+def test_item_fighter(client):
     eve_loaded_id = client.mk_eve_item()
     eve_not_loaded_id = client.alloc_item_id()
     client.create_sources()
@@ -188,7 +188,7 @@ def test_fighter(client):
     assert api_val.details.not_loaded_item == [api_not_loaded.id]
 
 
-def test_fighter_switch_type_id(client):
+def test_item_fighter_switch_type_id(client):
     eve_loaded_id = client.mk_eve_item()
     eve_not_loaded_id = client.alloc_item_id()
     client.create_sources()
@@ -215,7 +215,7 @@ def test_fighter_switch_type_id(client):
         api_val.details  # ruff:ignore[useless-expression]
 
 
-def test_fw_effect(client):
+def test_item_fw_effect(client):
     eve_loaded_id = client.mk_eve_item()
     eve_not_loaded_id = client.alloc_item_id()
     client.create_sources()
@@ -229,7 +229,7 @@ def test_fw_effect(client):
     assert api_val.details.not_loaded_item == [api_not_loaded.id]
 
 
-def test_fw_effect_switch_type_id(client):
+def test_item_fw_effect_switch_type_id(client):
     eve_loaded_id = client.mk_eve_item()
     eve_not_loaded_id = client.alloc_item_id()
     client.create_sources()
@@ -256,7 +256,7 @@ def test_fw_effect_switch_type_id(client):
         api_val.details  # ruff:ignore[useless-expression]
 
 
-def test_implant(client):
+def test_item_implant(client):
     eve_loaded_id = client.mk_eve_item()
     eve_not_loaded_id = client.alloc_item_id()
     client.create_sources()
@@ -270,7 +270,7 @@ def test_implant(client):
     assert api_val.details.not_loaded_item == [api_not_loaded.id]
 
 
-def test_implant_switch_type_id(client):
+def test_item_implant_switch_type_id(client):
     eve_loaded_id = client.mk_eve_item()
     eve_not_loaded_id = client.alloc_item_id()
     client.create_sources()
@@ -297,7 +297,7 @@ def test_implant_switch_type_id(client):
         api_val.details  # ruff:ignore[useless-expression]
 
 
-def test_module_high(client, consts):
+def test_item_module_high(client, consts):
     eve_loaded_id = client.mk_eve_item()
     eve_not_loaded_id = client.alloc_item_id()
     client.create_sources()
@@ -311,7 +311,7 @@ def test_module_high(client, consts):
     assert api_val.details.not_loaded_item == [api_not_loaded.id]
 
 
-def test_module_high_switch_type_id(client, consts):
+def test_item_module_high_switch_type_id(client, consts):
     eve_loaded_id = client.mk_eve_item()
     eve_not_loaded_id = client.alloc_item_id()
     client.create_sources()
@@ -338,7 +338,7 @@ def test_module_high_switch_type_id(client, consts):
         api_val.details  # ruff:ignore[useless-expression]
 
 
-def test_module_low(client, consts):
+def test_item_module_low(client, consts):
     eve_loaded_id = client.mk_eve_item()
     eve_not_loaded_id = client.alloc_item_id()
     client.create_sources()
@@ -352,7 +352,7 @@ def test_module_low(client, consts):
     assert api_val.details.not_loaded_item == [api_not_loaded.id]
 
 
-def test_module_low_switch_type_id(client, consts):
+def test_item_module_low_switch_type_id(client, consts):
     eve_loaded_id = client.mk_eve_item()
     eve_not_loaded_id = client.alloc_item_id()
     client.create_sources()
@@ -379,7 +379,7 @@ def test_module_low_switch_type_id(client, consts):
         api_val.details  # ruff:ignore[useless-expression]
 
 
-def test_module_mid(client, consts):
+def test_item_module_mid(client, consts):
     eve_loaded_id = client.mk_eve_item()
     eve_not_loaded_id = client.alloc_item_id()
     client.create_sources()
@@ -393,7 +393,7 @@ def test_module_mid(client, consts):
     assert api_val.details.not_loaded_item == [api_not_loaded.id]
 
 
-def test_module_mid_switch_type_id(client, consts):
+def test_item_module_mid_switch_type_id(client, consts):
     eve_loaded_id = client.mk_eve_item()
     eve_not_loaded_id = client.alloc_item_id()
     client.create_sources()
@@ -420,7 +420,7 @@ def test_module_mid_switch_type_id(client, consts):
         api_val.details  # ruff:ignore[useless-expression]
 
 
-def test_proj_effect(client):
+def test_item_proj_effect(client):
     eve_loaded_id = client.mk_eve_item()
     eve_not_loaded_id = client.alloc_item_id()
     client.create_sources()
@@ -433,7 +433,7 @@ def test_proj_effect(client):
     assert api_val.details.not_loaded_item == [api_not_loaded.id]
 
 
-def test_proj_effect_switch_type_id(client):
+def test_item_proj_effect_switch_type_id(client):
     eve_loaded_id = client.mk_eve_item()
     eve_not_loaded_id = client.alloc_item_id()
     client.create_sources()
@@ -459,7 +459,7 @@ def test_proj_effect_switch_type_id(client):
         api_val.details  # ruff:ignore[useless-expression]
 
 
-def test_rig(client):
+def test_item_rig(client):
     eve_loaded_id = client.mk_eve_item()
     eve_not_loaded_id = client.alloc_item_id()
     client.create_sources()
@@ -473,7 +473,7 @@ def test_rig(client):
     assert api_val.details.not_loaded_item == [api_not_loaded.id]
 
 
-def test_rig_switch_type_id(client):
+def test_item_rig_switch_type_id(client):
     eve_loaded_id = client.mk_eve_item()
     eve_not_loaded_id = client.alloc_item_id()
     client.create_sources()
@@ -500,7 +500,7 @@ def test_rig_switch_type_id(client):
         api_val.details  # ruff:ignore[useless-expression]
 
 
-def test_service(client):
+def test_item_service(client):
     eve_loaded_id = client.mk_eve_item()
     eve_not_loaded_id = client.alloc_item_id()
     client.create_sources()
@@ -514,7 +514,7 @@ def test_service(client):
     assert api_val.details.not_loaded_item == [api_not_loaded.id]
 
 
-def test_service_switch_type_id(client):
+def test_item_service_switch_type_id(client):
     eve_loaded_id = client.mk_eve_item()
     eve_not_loaded_id = client.alloc_item_id()
     client.create_sources()
@@ -541,7 +541,7 @@ def test_service_switch_type_id(client):
         api_val.details  # ruff:ignore[useless-expression]
 
 
-def test_ship(client):
+def test_item_ship(client):
     eve_loaded_id = client.mk_eve_ship()
     eve_not_loaded_id = client.alloc_item_id()
     client.create_sources()
@@ -561,7 +561,7 @@ def test_ship(client):
     assert api_val.details.not_loaded_item == [api_ship.id]
 
 
-def test_ship_switch_type_id(client):
+def test_item_ship_switch_type_id(client):
     eve_loaded_id = client.mk_eve_ship()
     eve_not_loaded_id = client.alloc_item_id()
     client.create_sources()
@@ -588,7 +588,7 @@ def test_ship_switch_type_id(client):
         api_val.details  # ruff:ignore[useless-expression]
 
 
-def test_skill(client):
+def test_item_skill(client):
     eve_loaded_id = client.mk_eve_item()
     eve_not_loaded_id = client.alloc_item_id()
     client.create_sources()
@@ -602,7 +602,7 @@ def test_skill(client):
     assert api_val.details.not_loaded_item == [api_not_loaded.id]
 
 
-def test_skill_switch_type_id(client):
+def test_item_skill_switch_type_id(client):
     eve_loaded_id = client.mk_eve_item()
     eve_not_loaded_id = client.alloc_item_id()
     client.create_sources()
@@ -629,7 +629,7 @@ def test_skill_switch_type_id(client):
         api_val.details  # ruff:ignore[useless-expression]
 
 
-def test_stance(client):
+def test_item_stance(client):
     eve_loaded_id = client.mk_eve_item()
     eve_not_loaded_id = client.alloc_item_id()
     client.create_sources()
@@ -649,7 +649,7 @@ def test_stance(client):
     assert api_val.details.not_loaded_item == [api_stance.id]
 
 
-def test_stance_switch_type_id(client):
+def test_item_stance_switch_type_id(client):
     eve_loaded_id = client.mk_eve_item()
     eve_not_loaded_id = client.alloc_item_id()
     client.create_sources()
@@ -676,7 +676,7 @@ def test_stance_switch_type_id(client):
         api_val.details  # ruff:ignore[useless-expression]
 
 
-def test_subsystem(client):
+def test_item_subsystem(client):
     eve_loaded_id = client.mk_eve_item()
     eve_not_loaded_id = client.alloc_item_id()
     client.create_sources()
@@ -690,7 +690,7 @@ def test_subsystem(client):
     assert api_val.details.not_loaded_item == [api_not_loaded.id]
 
 
-def test_subsystem_switch_type_id(client):
+def test_item_subsystem_switch_type_id(client):
     eve_loaded_id = client.mk_eve_item()
     eve_not_loaded_id = client.alloc_item_id()
     client.create_sources()
@@ -717,7 +717,7 @@ def test_subsystem_switch_type_id(client):
         api_val.details  # ruff:ignore[useless-expression]
 
 
-def test_sw_effect(client):
+def test_item_sw_effect(client):
     eve_loaded_id = client.mk_eve_item()
     eve_not_loaded_id = client.alloc_item_id()
     client.create_sources()
@@ -730,7 +730,7 @@ def test_sw_effect(client):
     assert api_val.details.not_loaded_item == [api_not_loaded.id]
 
 
-def test_sw_effect_switch_type_id(client):
+def test_item_sw_effect_switch_type_id(client):
     eve_loaded_id = client.mk_eve_item()
     eve_not_loaded_id = client.alloc_item_id()
     client.create_sources()
@@ -751,6 +751,50 @@ def test_sw_effect_switch_type_id(client):
     api_sw_effect.change_sw_effect(type_id=eve_loaded_id)
     # Verification
     api_val = api_sol.validate(options=ValOptions(not_loaded_item=True))
+    assert api_val.passed is True
+    with check_no_field():
+        api_val.details  # ruff:ignore[useless-expression]
+
+
+def test_item_dynamic_bare(client):
+    # Dynamic types are loaded only as mutated items, not on their own
+    eve_base_item_id = client.mk_eve_item()
+    eve_mutated_item_id = client.mk_eve_item(is_dynamic=True)
+    eve_mutator_id = client.mk_eve_mutator(items=[([eve_base_item_id], eve_mutated_item_id)])
+    client.create_sources()
+    api_sol = client.create_sol()
+    api_fit = api_sol.create_fit()
+    api_fit.add_module(type_id=eve_base_item_id, mutation=eve_mutator_id)
+    api_not_loaded = api_fit.add_module(type_id=eve_mutated_item_id)
+    # Verification
+    api_val = api_fit.validate(options=ValOptions(not_loaded_item=True))
+    assert api_val.passed is False
+    assert api_val.details.not_loaded_item == [api_not_loaded.id]
+
+
+def test_item_dynamic_switch_type_id(client):
+    eve_base_item_id = client.mk_eve_item()
+    eve_mutated_item_id = client.mk_eve_item(is_dynamic=True)
+    eve_mutator_id = client.mk_eve_mutator(items=[([eve_base_item_id], eve_mutated_item_id)])
+    client.create_sources()
+    api_sol = client.create_sol()
+    api_fit = api_sol.create_fit()
+    api_module = api_fit.add_module(type_id=eve_base_item_id, mutation=eve_mutator_id)
+    # Verification
+    api_val = api_fit.validate(options=ValOptions(not_loaded_item=True))
+    assert api_val.passed is True
+    with check_no_field():
+        api_val.details  # ruff:ignore[useless-expression]
+    # Action
+    api_module.change_module(type_id=eve_mutated_item_id)
+    # Verification - mutator has no mutation for a dynamic base type, which is not loaded on its own
+    api_val = api_fit.validate(options=ValOptions(not_loaded_item=True))
+    assert api_val.passed is False
+    assert api_val.details.not_loaded_item == [api_module.id]
+    # Action
+    api_module.change_module(type_id=eve_base_item_id)
+    # Verification
+    api_val = api_fit.validate(options=ValOptions(not_loaded_item=True))
     assert api_val.passed is True
     with check_no_field():
         api_val.details  # ruff:ignore[useless-expression]
