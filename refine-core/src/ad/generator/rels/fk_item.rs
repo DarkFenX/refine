@@ -8,7 +8,8 @@ use crate::{ad::generator::rels::KeyPart, ed::EItem};
 pub(in crate::ad::generator) struct ItemFk {
     pub(in crate::ad::generator) key: KeyPart,
     pub(in crate::ad::generator) cond: ItemFkCond,
-    // If True, entity carrying this FK needs alive target to be restored itself
+    // If true, entity carrying this FK is restored only when the target is in the data, alive or
+    // not, and meets the condition
     pub(in crate::ad::generator) required: bool,
 }
 impl ItemFk {

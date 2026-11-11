@@ -208,9 +208,13 @@ struct RowRestorer<'a> {
     adg_supp: &'a AdgSupport,
 }
 impl<'a> RowRestorer<'a> {
-    fn new(alive_items: &EDataCont<EItem>, item_pks_all: &'a RMap<KeyPart, ItemFkConds>, adg_supp: &'a AdgSupport) -> Self {
+    fn new(
+        items_alive: &EDataCont<EItem>,
+        item_pks_all: &'a RMap<KeyPart, ItemFkConds>,
+        adg_supp: &'a AdgSupport,
+    ) -> Self {
         Self {
-            item_pks_alive: alive_items.data.iter().map(|v| KeyPart::from_item_eid(v.id)).collect(),
+            item_pks_alive: items_alive.data.iter().map(|v| KeyPart::from_item_eid(v.id)).collect(),
             item_pks_all,
             adg_supp,
         }
@@ -241,7 +245,9 @@ impl<'a> RowRestorer<'a> {
     }
     // Target exists and meets the condition
     fn is_met(&self, fk: ItemFk) -> bool {
-        self.item_pks_all.get(&fk.key).is_some_and(|conds| conds.contains(fk.cond))
+        self.item_pks_all
+            .get(&fk.key)
+            .is_some_and(|conds| conds.contains(fk.cond))
     }
     fn is_alive_or_met(&self, fk: ItemFk) -> bool {
         self.item_pks_alive.contains(&fk.key) || self.is_met(fk)

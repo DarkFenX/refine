@@ -53,20 +53,6 @@ impl UItemBase {
             reffs_pregen_up_to: Some(RState::Ghost),
         }
     }
-    pub(in crate::ud::item::base) fn base_with_type_aid_not_loaded(
-        item_id: ItemId,
-        type_aid: AItemId,
-        state: RState,
-    ) -> Self {
-        Self {
-            item_id,
-            type_aid,
-            state,
-            effect_modes: UEffectModes::new(),
-            cache: None,
-            reffs_pregen_up_to: None,
-        }
-    }
     pub(in crate::ud::item::base) fn base_with_r_item(item_id: ItemId, r_item: RcItem, state: RState) -> Self {
         Self {
             item_id,
