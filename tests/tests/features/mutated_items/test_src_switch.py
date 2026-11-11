@@ -273,6 +273,7 @@ def test_to_stage3_different_group(client, consts):
         items=[([eve_base_item_id], eve_mutated_item_id)],
         attrs={eve_affectee_attr1_id: (0.8, 1.2), eve_affectee_attr2_id: (0.8, 1.2)})
     eve_ship_id = client.mk_eve_ship(datas=[eve_d1, eve_d2])
+    # On 2nd source cleanup drops the conversion with missing mutated item, and the mutator with it
     client.create_sources(cleanup_check=False)
     api_sol = client.create_sol(data=eve_d1)
     api_fit = api_sol.create_fit()
@@ -660,6 +661,7 @@ def test_from_stage3(client, consts):
         datas=[eve_d1, eve_d2],
         items=[([eve_base_item_id], eve_mutated_item_id)],
         attrs={eve_attr_id: (0.8, 1.2)})
+    # On 1st source cleanup drops the conversion with missing mutated item, and the mutator with it
     client.create_sources(cleanup_check=False)
     api_sol = client.create_sol(data=eve_d1)
     api_fit = api_sol.create_fit()

@@ -528,6 +528,60 @@ def test_base_item_absent_with_mapping(client, consts):
         api_item.attrs  # ruff:ignore[useless-expression]
 
 
+def test_dynamic_flag_mismatch_mutator(client, consts):
+    # Data cleanup drops mutation item mappings with dynamic mutator type, along with dynamic types
+    # no other mapping produces, so mutation stays dormant
+    eve_data = client.mk_eve_data()
+    eve_attr_id = client.mk_eve_attr(datas=[eve_data])
+    eve_base_item_id = client.mk_eve_item(datas=[eve_data], attrs={eve_attr_id: 100})
+    eve_mutated_item_id = client.mk_eve_item(datas=[eve_data], is_dynamic=True, attrs={eve_attr_id: 150})
+    eve_mutator_id = client.mk_eve_item(datas=[eve_data], is_dynamic=True)
+    eve_data.mk_mutator(
+        id_=eve_mutator_id,
+        items=[([eve_base_item_id], eve_mutated_item_id)],
+        attrs={eve_attr_id: (0.8, 1.2)})
+    client.create_sources(cleanup_check=False)
+    api_sol = client.create_sol(data=eve_data)
+    api_fit = api_sol.create_fit()
+    api_item = api_fit.add_module(
+        type_id=eve_base_item_id,
+        mutation=(eve_mutator_id, {eve_attr_id: Muta.roll_to_api(val=0.3)}))
+    # Verification
+    api_item.update()
+    assert api_item.type_id == eve_base_item_id
+    assert api_item.mutation.type == consts.ApiMutationType.dormant
+    assert len(api_item.mutation.rolls) == 1
+    assert api_item.mutation.rolls[eve_attr_id] == approx(0.3)
+    assert api_item.attrs[eve_attr_id].base == approx(100)
+
+
+def test_mutator_item_absent_with_mapping(client, consts):
+    # Data cleanup drops mutation item mappings whose mutator type is not in the data, along with
+    # dynamic types no other mapping produces, so mutation stays dormant
+    eve_data = client.mk_eve_data()
+    eve_attr_id = client.mk_eve_attr(datas=[eve_data])
+    eve_base_item_id = client.mk_eve_item(datas=[eve_data], attrs={eve_attr_id: 100})
+    eve_mutated_item_id = client.mk_eve_item(datas=[eve_data], is_dynamic=True, attrs={eve_attr_id: 150})
+    eve_mutator_id = client.alloc_item_id(datas=[eve_data])
+    eve_data.mk_mutator(
+        id_=eve_mutator_id,
+        items=[([eve_base_item_id], eve_mutated_item_id)],
+        attrs={eve_attr_id: (0.8, 1.2)})
+    client.create_sources(cleanup_check=False)
+    api_sol = client.create_sol(data=eve_data)
+    api_fit = api_sol.create_fit()
+    api_item = api_fit.add_module(
+        type_id=eve_base_item_id,
+        mutation=(eve_mutator_id, {eve_attr_id: Muta.roll_to_api(val=0.3)}))
+    # Verification
+    api_item.update()
+    assert api_item.type_id == eve_base_item_id
+    assert api_item.mutation.type == consts.ApiMutationType.dormant
+    assert len(api_item.mutation.rolls) == 1
+    assert api_item.mutation.rolls[eve_attr_id] == approx(0.3)
+    assert api_item.attrs[eve_attr_id].base == approx(100)
+
+
 def test_dynamic_flag_mismatch_mutated(client, consts):
     # Data cleanup drops mutation item mappings with non-dynamic out-type, so mutation stays dormant
     eve_attr_id = client.mk_eve_attr()
