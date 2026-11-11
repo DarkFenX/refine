@@ -15,8 +15,6 @@ pub(in crate::sde) struct SAttr {
     min_attribute_id: Option<i32>,
     #[serde(rename = "maxAttributeID")]
     max_attribute_id: Option<i32>,
-    #[serde(rename = "unitID")]
-    unit_id: Option<i32>,
 }
 impl ExtractOne<rc::ed::EAttr> for SAttr {
     fn extract(self, extracted: &mut Vec<rc::ed::EAttr>) {
@@ -27,7 +25,6 @@ impl ExtractOne<rc::ed::EAttr> for SAttr {
             default_value: rc::ed::EFloat::from_f64(self.default_value),
             min_attr_id: self.min_attribute_id.map(rc::ed::EAttrId::from_i32),
             max_attr_id: self.max_attribute_id.map(rc::ed::EAttrId::from_i32),
-            unit_id: self.unit_id.map(rc::ed::EAttrUnitId::from_i32),
         });
     }
 }

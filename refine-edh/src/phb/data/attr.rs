@@ -14,8 +14,6 @@ pub(in crate::phb) struct PAttr {
     min_attribute_id: Option<i32>,
     #[serde(rename = "maxAttributeID")]
     max_attribute_id: Option<i32>,
-    #[serde(rename = "unitID")]
-    unit_id: Option<i32>,
 }
 impl KeyMergeOne<rc::ed::EAttr> for PAttr {
     fn key_merge(self, key: Key, merged: &mut Vec<rc::ed::EAttr>) {
@@ -26,7 +24,6 @@ impl KeyMergeOne<rc::ed::EAttr> for PAttr {
             default_value: rc::ed::EFloat::from_f64(self.default_value),
             min_attr_id: self.min_attribute_id.map(rc::ed::EAttrId::from_i32),
             max_attr_id: self.max_attribute_id.map(rc::ed::EAttrId::from_i32),
-            unit_id: self.unit_id.map(rc::ed::EAttrUnitId::from_i32),
         });
     }
 }

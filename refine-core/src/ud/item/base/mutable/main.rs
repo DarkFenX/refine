@@ -65,7 +65,10 @@ impl UItemBaseMutable {
         let mutator_type_aid = mutation_request.mutator_type_aid;
         let mut item_mutation_data = convert_request_to_data(mutation_request);
         let muta_pregen = r_data.get_muta_pregen();
-        let Some(pregen_entry) = muta_pregen.get_entry(type_aid, mutator_type_aid) else {
+        let Some((pregen_entry, mutator)) = muta_pregen
+            .get_entry(type_aid, mutator_type_aid)
+            .zip(r_data.get_mutator_by_aid(&mutator_type_aid))
+        else {
             // No mutator, no conversion for base item, or base or mutated item not loaded - base
             // item, loaded or not, with ineffective user-defined mutations
             return Self {
@@ -73,8 +76,6 @@ impl UItemBaseMutable {
                 mutation: Some(item_mutation_data),
             };
         };
-        // Pregen entries exist only for conversions of loaded mutators
-        let mutator = r_data.get_mutator_by_aid(&mutator_type_aid).unwrap();
         // Make proper mutated item once we have all the data
         let mut item_flex_data = muta_pregen.get_unmutated_flex_data(pregen_entry);
         apply_attr_mutations(&mut item_flex_data, mutator, &item_mutation_data.attr_rolls, r_data);
@@ -255,7 +256,10 @@ impl UItemBaseMutable {
             None => self.base.get_type_aid(),
         };
         let muta_pregen = r_data.get_muta_pregen();
-        let Some(pregen_entry) = muta_pregen.get_entry(base_type_aid, item_mutation.mutator_type_aid) else {
+        let Some((pregen_entry, mutator)) = muta_pregen
+            .get_entry(base_type_aid, item_mutation.mutator_type_aid)
+            .zip(r_data.get_mutator_by_aid(&item_mutation.mutator_type_aid))
+        else {
             // No mutator, no conversion for base item, or base or mutated item not loaded -
             // invalidate mutated cache and use non-mutated item
             match r_data.get_item_by_aid(&base_type_aid) {
@@ -271,8 +275,6 @@ impl UItemBaseMutable {
                 }
             }
         };
-        // Pregen entries exist only for conversions of loaded mutators
-        let mutator = r_data.get_mutator_by_aid(&item_mutation.mutator_type_aid).unwrap();
         // Compose attribute cache
         let mut item_flex_data = muta_pregen.get_unmutated_flex_data(pregen_entry);
         apply_attr_mutations(&mut item_flex_data, mutator, &item_mutation.attr_rolls, r_data);
@@ -312,14 +314,15 @@ impl UItemBaseMutable {
         let mutator_type_aid = mutation_request.mutator_type_aid;
         let mut item_mutation_data = convert_request_to_data(mutation_request);
         let muta_pregen = r_data.get_muta_pregen();
-        let Some(pregen_entry) = muta_pregen.get_entry(base_type_aid, mutator_type_aid) else {
+        let Some((pregen_entry, mutator)) = muta_pregen
+            .get_entry(base_type_aid, mutator_type_aid)
+            .zip(r_data.get_mutator_by_aid(&mutator_type_aid))
+        else {
             // No mutator, no conversion for base item, or base or mutated item not loaded - nothing
             // changes, except for user-defined mutations getting stored
             self.mutation = Some(item_mutation_data);
             return Ok(());
         };
-        // Pregen entries exist only for conversions of loaded mutators
-        let mutator = r_data.get_mutator_by_aid(&mutator_type_aid).unwrap();
         // Since we have all the data now, apply mutation properly
         let mut item_flex_data = muta_pregen.get_unmutated_flex_data(pregen_entry);
         apply_attr_mutations(&mut item_flex_data, mutator, &item_mutation_data.attr_rolls, r_data);
@@ -489,8 +492,9 @@ impl UItemBaseMutable {
         {
             return Err(MutatorInplaceError::MutatedTypeChange);
         }
-        // Pregen entries exist only for conversions of loaded mutators
-        let mutator = r_data.get_mutator_by_aid(&mutator_type_aid).unwrap();
+        let mutator = r_data
+            .get_mutator_by_aid(&mutator_type_aid)
+            .ok_or(MutatorInplaceError::MutatedTypeChange)?;
         // Unmutated attributes depend only on base and mutated items, which do not change, so
         // pregenerated attributes ID stays the same as well
         let unmutated_attrs = muta_pregen.get_merged_attrs(mutation_cache.pregen_attrs_rid);

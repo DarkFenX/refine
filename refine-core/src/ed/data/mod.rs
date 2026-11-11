@@ -1,5 +1,5 @@
 pub use abil::{EAbil, EAbilId};
-pub use attr::{EAttr, EAttrId, EAttrUnitId};
+pub use attr::{EAttr, EAttrId};
 pub use buff::{EBuff, EBuffId, EBuffIm, EBuffLgm, EBuffLm, EBuffLrsm};
 pub use data::{EData, EDataCont};
 pub use effect::{EEffect, EEffectCatId, EEffectId, EEffectMod, EEffectModArg, EPrimitive};

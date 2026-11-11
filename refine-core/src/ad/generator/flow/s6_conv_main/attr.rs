@@ -18,8 +18,6 @@ impl ADataGenerator {
                     default_value,
                     min_attr_id,
                     max_attr_id,
-                    // Only used to find references in attribute values during generation
-                    unit_id: _,
                 } = e_attr;
                 let a_attr = AAttr {
                     id: AAttrId::from_eid(*id),

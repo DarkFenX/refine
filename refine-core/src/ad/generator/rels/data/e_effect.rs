@@ -3,7 +3,7 @@ use crate::{
         AEffectId,
         generator::{
             AdgSupport,
-            rels::{Fk, ItemFk, KeyPart, Pk},
+            rels::{Fk, KeyPart, Pk},
         },
     },
     ed::{EEffect, EPrimitive},
@@ -18,15 +18,6 @@ impl Pk for EEffect {
 }
 
 impl Fk for EEffect {
-    fn get_item_fks_regular(&self, _: &AdgSupport) -> Vec<ItemFk> {
-        self.get_fks_from_mod_args("skillTypeID")
-            .into_iter()
-            .map(ItemFk::any)
-            .collect()
-    }
-    fn get_group_fks(&self, _: &AdgSupport) -> Vec<KeyPart> {
-        self.get_fks_from_mod_args("groupID")
-    }
     fn get_item_list_fks(&self, adg_supp: &AdgSupport) -> Vec<KeyPart> {
         let mut fks = Vec::new();
         if let Some(effect_buff) = adg_supp.eff_buff_map.get(&self.id) {

@@ -2,14 +2,6 @@ use crate::ed::EAttrId;
 
 impl EAttrId {
     // Composite constants
-    pub(crate) const SKILL_ID_ATTRS: [Self; 6] = [
-        Self::REQUIRED_SKILL1,
-        Self::REQUIRED_SKILL2,
-        Self::REQUIRED_SKILL3,
-        Self::REQUIRED_SKILL4,
-        Self::REQUIRED_SKILL5,
-        Self::REQUIRED_SKILL6,
-    ];
     pub(crate) const BUFF_ID_ATTRS: [Self; 4] = [
         Self::WARFARE_BUFF1_ID,
         Self::WARFARE_BUFF2_ID,

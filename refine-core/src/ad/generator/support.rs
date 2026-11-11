@@ -1,6 +1,6 @@
 use crate::{
     ad::{AAttr, ABuff, AEffect, AEffectBuff},
-    ed::{EAttrId, EAttrUnitId, EData, EEffectId, EItemCatId, EItemGrpId, EItemId},
+    ed::{EData, EEffectId, EItemCatId, EItemGrpId, EItemId},
     nd::{N_ATTR_MAP, N_BUFF_MAP, N_EFFECT_MAP},
     util::{RMap, RMapRSet},
 };
@@ -8,7 +8,6 @@ use crate::{
 /// Container for auxiliary data.
 pub(in crate::ad::generator) struct AdgSupport {
     pub(in crate::ad::generator) grp_cat_map: RMap<EItemGrpId, EItemCatId>,
-    pub(in crate::ad::generator) attr_unit_map: RMap<EAttrId, EAttrUnitId>,
     pub(in crate::ad::generator) eff_item_map: RMapRSet<EEffectId, EItemId>,
     pub(in crate::ad::generator) eff_buff_map: RMap<EEffectId, AEffectBuff>,
     /// Standalone containers are for entities which do not exist in data yet, but will be put into
@@ -21,7 +20,6 @@ impl AdgSupport {
     pub(in crate::ad::generator) fn new() -> Self {
         Self {
             grp_cat_map: RMap::new(),
-            attr_unit_map: RMap::new(),
             eff_item_map: RMapRSet::new(),
             eff_buff_map: RMap::new(),
             standalone_attrs: Vec::new(),
@@ -31,7 +29,6 @@ impl AdgSupport {
     }
     pub(in crate::ad::generator) fn fill(&mut self, e_data: &EData) {
         self.fill_group_categories(e_data);
-        self.fill_attr_units(e_data);
         self.fill_effect_items(e_data);
         self.fill_effect_buff_data();
         self.fill_standalone_data();
@@ -39,13 +36,6 @@ impl AdgSupport {
     fn fill_group_categories(&mut self, e_data: &EData) {
         self.grp_cat_map
             .extend(e_data.groups.data.iter().map(|grp| (grp.id, grp.category_id)));
-    }
-    fn fill_attr_units(&mut self, e_data: &EData) {
-        for attr in e_data.attrs.data.iter() {
-            if let Some(unit) = attr.unit_id {
-                self.attr_unit_map.insert(attr.id, unit);
-            }
-        }
     }
     fn fill_effect_items(&mut self, e_data: &EData) {
         for item_effect in e_data.item_effects.data.iter() {
