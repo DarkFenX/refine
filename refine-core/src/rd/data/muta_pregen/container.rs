@@ -14,7 +14,7 @@ pub(crate) struct RMutasPregen {
     flex_data: Box<[RItemFlexData]>,
 }
 impl RMutasPregen {
-    /// Entries exist only for mutators which can turn the base item type into a loaded item type.
+    /// Entries exist only for conversions whose base and mutated item types are both loaded.
     pub(crate) fn get_entry(&self, base_type_aid: AItemId, mutator_type_aid: AItemId) -> Option<&RMutasPregenEntry> {
         self.entries.get(&(base_type_aid, mutator_type_aid))
     }
@@ -58,20 +58,17 @@ impl RMutasPregen {
                 .map(|v| (v.base_item_id, v.mutated_item_id))
                 .collect();
             for (base_type_aid, mutated_type_aid) in item_map.into_iter() {
+                let Some(base_r_item) = items.get(&base_type_aid) else {
+                    continue;
+                };
                 let Some(mutated_r_item) = items.get(&mutated_type_aid) else {
                     continue;
                 };
-                let mut entry_merged_attrs = match items.get(&base_type_aid) {
-                    Some(base_r_item) => {
-                        let mut entry_merged_attrs = base_r_item.flex_data.attrs.clone();
-                        // Base item attributes have priority in case of collisions
-                        for (&attr_rid, &attr_val) in mutated_r_item.flex_data.attrs.iter() {
-                            entry_merged_attrs.entry(attr_rid).or_insert(attr_val);
-                        }
-                        entry_merged_attrs
-                    }
-                    None => mutated_r_item.flex_data.attrs.clone(),
-                };
+                let mut entry_merged_attrs = base_r_item.flex_data.attrs.clone();
+                // Base item attributes have priority in case of collisions
+                for (&attr_rid, &attr_val) in mutated_r_item.flex_data.attrs.iter() {
+                    entry_merged_attrs.entry(attr_rid).or_insert(attr_val);
+                }
                 entry_merged_attrs.shrink_to_fit();
                 let mut entry_flex_data = RItemFlexData::from_attrs(entry_merged_attrs, attr_aid_rid_map, attr_consts);
                 let entry_merged_attrs = std::mem::take(&mut entry_flex_data.attrs);

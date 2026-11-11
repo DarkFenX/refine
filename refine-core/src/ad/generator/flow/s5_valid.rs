@@ -5,10 +5,10 @@ use crate::{
         ADataGenerator, ADataWarnings,
         generator::{
             AdgSupport, get_abil_effect,
-            rels::{Fk, KeyDb, KeyPart, Pk},
+            rels::{Fk, ItemFkConds, KeyDb, KeyPart, Pk},
         },
     },
-    ed::{EAbil, EAttr, EBuff, EData, EDataCont, EEffect, EItem, EItemAbil, EItemGroup, EItemList, EMutaItem},
+    ed::{EAbil, EAttr, EBuff, EData, EDataCont, EEffect, EItem, EItemAbil, EItemGroup, EItemList},
     util::{LibNamed, RMap, RSet},
 };
 
@@ -20,7 +20,6 @@ impl ADataGenerator {
         self.unmapped_abilities();
         self.broken_ability_links();
         self.item_ability_handler_effect();
-        self.mutation_dynamic_types();
     }
 }
 
@@ -74,14 +73,7 @@ where
         abils,
         buffs,
     } = pkdb;
-    fk_check_referee(
-        rer_cont,
-        items,
-        adg_supp,
-        a_warnings,
-        T::get_item_fks,
-        EItem::lib_get_name(),
-    );
+    fk_check_referee_for_item(rer_cont, items, adg_supp, a_warnings);
     fk_check_referee(
         rer_cont,
         groups,
@@ -145,26 +137,67 @@ fn fk_check_referee<T, F>(
     let mut fks = RSet::new();
     referer_cont.data.iter().for_each(|v| fks.extend(func(v, adg_supp)));
     let missing = fks.difference(referee_pks).copied().collect_vec();
-    if !missing.is_empty() {
-        let entry_limit = 5;
-        let entry_count = missing.len();
-        let mut warning = format!(
-            "{} refers to {} missing {}: {}",
-            T::lib_get_name(),
-            entry_count,
-            referee_name,
-            missing
-                .into_iter()
-                .map(|v| v.into_i32())
-                .sorted_unstable()
-                .take(entry_limit)
-                .join(", ")
-        );
-        if entry_count > entry_limit {
-            warning = format!("{}, <{} more entries hidden>", warning, entry_count - entry_limit);
+    push_fk_warning::<T>(a_warnings, missing, "missing", referee_name);
+}
+fn fk_check_referee_for_item<T>(
+    referer_cont: &EDataCont<T>,
+    referee_pks: &RMap<KeyPart, ItemFkConds>,
+    adg_supp: &AdgSupport,
+    a_warnings: &mut ADataWarnings,
+) where
+    T: Fk + LibNamed,
+{
+    let mut missing = RSet::new();
+    let mut invalid = RSet::new();
+    for fk in referer_cont.data.iter().flat_map(|v| v.iter_item_fks_all(adg_supp)) {
+        match referee_pks.get(&fk.key) {
+            None => {
+                missing.insert(fk.key);
+            }
+            Some(item_conds) if !item_conds.contains(fk.cond) => {
+                invalid.insert(fk.key);
+            }
+            _ => (),
         }
-        a_warnings.validation.push(warning);
     }
+    push_fk_warning::<T>(
+        a_warnings,
+        missing.into_iter().collect(),
+        "missing",
+        EItem::lib_get_name(),
+    );
+    push_fk_warning::<T>(
+        a_warnings,
+        invalid.into_iter().collect(),
+        "invalid",
+        EItem::lib_get_name(),
+    );
+}
+fn push_fk_warning<T>(a_warnings: &mut ADataWarnings, keys: Vec<KeyPart>, problem: &str, referee_name: &str)
+where
+    T: LibNamed,
+{
+    if keys.is_empty() {
+        return;
+    }
+    let entry_limit = 5;
+    let entry_count = keys.len();
+    let mut warning = format!(
+        "{} refers to {} {} {}: {}",
+        T::lib_get_name(),
+        entry_count,
+        problem,
+        referee_name,
+        keys.into_iter()
+            .map(|v| v.into_i32())
+            .sorted_unstable()
+            .take(entry_limit)
+            .join(", ")
+    );
+    if entry_count > entry_limit {
+        warning = format!("{}, <{} more entries hidden>", warning, entry_count - entry_limit);
+    }
+    a_warnings.validation.push(warning);
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -320,53 +353,6 @@ impl ADataGenerator {
                     .sorted_unstable()
                     .take(entry_limit)
                     .format_with(", ", |v, f| f(&format_args!("[{}, {}]", v.0, v.1)))
-            );
-            if entry_count > entry_limit {
-                warning = format!("{}, <{} more entries hidden>", warning, entry_count - entry_limit);
-            }
-            self.a_data.warnings.validation.push(warning);
-        }
-    }
-}
-
-////////////////////////////////////////////////////////////////////////////////////////////////////
-// Allow only mutations where input type is non-dynamic, and output is dynamic
-////////////////////////////////////////////////////////////////////////////////////////////////////
-impl ADataGenerator {
-    fn mutation_dynamic_types(&mut self) {
-        let dynamic_ids: RSet<_> = self
-            .e_data
-            .items
-            .data
-            .iter()
-            .filter(|v| v.is_dynamic)
-            .map(|v| v.id)
-            .collect();
-        let mut muta_ids = RSet::new();
-        let muta_items = self
-            .e_data
-            .muta_items
-            .data
-            .extract_if(.., |v| {
-                dynamic_ids.contains(&v.in_item_id) || !dynamic_ids.contains(&v.out_item_id)
-            })
-            .inspect(|v| {
-                muta_ids.insert(v.muta_id);
-            })
-            .count();
-        if muta_items > 0 {
-            let entry_limit = 5;
-            let entry_count = muta_ids.len();
-            let mut warning = format!(
-                "removed {} {} with dynamic input or non-dynamic output item type, mutators: {}",
-                muta_items,
-                EMutaItem::lib_get_name(),
-                muta_ids
-                    .into_iter()
-                    .map(|v| v.into_i32())
-                    .sorted_unstable()
-                    .take(entry_limit)
-                    .join(", ")
             );
             if entry_count > entry_limit {
                 warning = format!("{}, <{} more entries hidden>", warning, entry_count - entry_limit);

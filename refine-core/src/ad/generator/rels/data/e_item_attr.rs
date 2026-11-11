@@ -1,7 +1,7 @@
 use crate::{
     ad::generator::{
         AdgSupport,
-        rels::{Fk, KeyPart, Pk, attr_val_to_fk},
+        rels::{Fk, ItemFk, KeyPart, Pk, attr_val_to_fk},
     },
     ed::{EAttrId, EAttrUnitId, EItemAttr},
 };
@@ -16,17 +16,18 @@ impl Pk for EItemAttr {
 }
 
 impl Fk for EItemAttr {
-    fn get_item_fks(&self, adg_supp: &AdgSupport) -> Vec<KeyPart> {
+    fn get_item_fk_self_restoring(&self) -> Option<ItemFk> {
+        Some(ItemFk::any(KeyPart::from_item_eid(self.item_id)))
+    }
+    fn get_item_fks_regular(&self, adg_supp: &AdgSupport) -> Vec<ItemFk> {
         let mut fks = Vec::new();
-        let fk = KeyPart::from_item_eid(self.item_id);
-        fks.push(fk);
         if EAttrId::SKILL_ID_ATTRS.contains(&self.attr_id)
             && let Some(fk) = attr_val_to_fk(self.value)
         {
-            fks.push(fk);
+            fks.push(ItemFk::any(fk));
         }
         if let Some(fk) = self.get_fk_from_val(EAttrUnitId::ITEM_ID, adg_supp) {
-            fks.push(fk);
+            fks.push(ItemFk::any(fk));
         }
         fks
     }

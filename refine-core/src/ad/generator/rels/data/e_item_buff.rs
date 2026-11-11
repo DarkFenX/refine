@@ -1,7 +1,7 @@
 use crate::{
     ad::generator::{
         AdgSupport,
-        rels::{Fk, KeyPart, Pk},
+        rels::{Fk, ItemFk, KeyPart, Pk},
     },
     ed::EItemBuff,
 };
@@ -13,8 +13,8 @@ impl Pk for EItemBuff {
 }
 
 impl Fk for EItemBuff {
-    fn get_item_fks(&self, _: &AdgSupport) -> Vec<KeyPart> {
-        vec![KeyPart::from_item_eid(self.item_id)]
+    fn get_item_fks_regular(&self, _: &AdgSupport) -> Vec<ItemFk> {
+        vec![ItemFk::any(KeyPart::from_item_eid(self.item_id))]
     }
     fn get_item_list_fks(&self, _: &AdgSupport) -> Vec<KeyPart> {
         let mut fks = Vec::new();

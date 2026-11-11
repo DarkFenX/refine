@@ -1,10 +1,15 @@
+use itertools::Itertools;
+
 use crate::{
     ad::{
         ADataGenerator, ADataWarnings,
-        generator::rels::{KeyDb, KeyPart},
+        generator::{
+            AdgSupport,
+            rels::{Fk, ItemFk, ItemFkConds, KeyDb, KeyPart},
+        },
     },
-    ed::{EBuffId, EData, EDataCont, EEffectId, EItemCatId, EItemGrpId, EItemId, EItemListId},
-    util::{LibNamed, RSet},
+    ed::{EBuffId, EData, EDataCont, EEffectId, EItem, EItemCatId, EItemGrpId, EItemId, EItemListId},
+    util::{LibNamed, RMap, RSet},
 };
 
 const MAX_CYCLES: u32 = 100;
@@ -13,6 +18,8 @@ impl ADataGenerator {
     pub(in crate::ad::generator) fn clean_unused(&mut self) -> Result<(), ADataGeneratorCleanupError> {
         let mut trash = EData::new();
         self.trash_all(&mut trash);
+        // Keys of all items, with conditions they meet
+        let item_pks = KeyDb::new_pkdb(&trash).items;
         self.restore_core_items(&mut trash);
         self.restore_attrs(&mut trash);
         self.restore_hardcoded_buffs(&mut trash);
@@ -25,11 +32,18 @@ impl ADataGenerator {
             if counter > MAX_CYCLES {
                 return Err(ADataGeneratorCleanupError { max_cycles: MAX_CYCLES });
             }
-            changes = self.restore_item_data(&mut trash) || self.restore_fk_tgts(&mut trash);
+            changes = self.restore_item_data(&mut trash, &item_pks) || self.restore_fk_tgts(&mut trash);
         }
         self.record_stats(&trash);
+        self.record_missing_required(&trash, &item_pks);
         Ok(())
     }
+}
+
+#[derive(Debug, thiserror::Error)]
+#[error("reached limit of {max_cycles} cycles")]
+pub struct ADataGeneratorCleanupError {
+    pub max_cycles: u32,
 }
 
 fn move_data<T, F>(src_cont: &mut EDataCont<T>, tgt_cont: &mut EDataCont<T>, filter: F) -> bool
@@ -119,8 +133,9 @@ impl ADataGenerator {
         for eff in effs {
             items.extend(self.support.eff_item_map.get(&eff).copied())
         }
+        // Restore only non-dynamic items here, dynamic ones will be restored later as needed
         move_data(&mut trash.items, &mut self.e_data.items, |v| {
-            items.contains(&v.id) || grps.contains(&v.group_id)
+            !v.is_dynamic && (items.contains(&v.id) || grps.contains(&v.group_id))
         });
     }
     fn restore_attrs(&mut self, trash: &mut EData) {
@@ -148,34 +163,28 @@ impl ADataGenerator {
 // Cyclic restoration
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl ADataGenerator {
-    fn restore_item_data(&mut self, trash: &mut EData) -> bool {
-        let item_ids: RSet<_> = self.e_data.items.data.iter().map(|v| v.id).collect();
-        // We need the data which describes our items directly, so some FKs are avoided
-        // deliberately. For instance, having an item-attribute mapping entry restored just because
-        // its value refers some item which is already "alive" is undesired.
-        //
-        // Extra notes on specific entities:
-        // - Item buffs are restored if they contain any buff data
-        // - Mutator item conversions are restored for input/output items which are alive
-        // - Mutator attribute modifications are restored for alive mutators
-        move_data(&mut trash.item_attrs, &mut self.e_data.item_attrs, |v| {
-            item_ids.contains(&v.item_id)
-        }) || move_data(&mut trash.item_effects, &mut self.e_data.item_effects, |v| {
-            item_ids.contains(&v.item_id)
-        }) || move_data(&mut trash.item_abils, &mut self.e_data.item_abils, |v| {
-            item_ids.contains(&v.item_id)
-        }) || move_data(&mut trash.item_buffs, &mut self.e_data.item_buffs, |v| v.has_buffs())
-            || move_data(&mut trash.muta_items, &mut self.e_data.muta_items, |v| {
-                item_ids.contains(&v.in_item_id) || item_ids.contains(&v.out_item_id)
+    fn restore_item_data(&mut self, trash: &mut EData, item_pks: &RMap<KeyPart, ItemFkConds>) -> bool {
+        let restorer = RowRestorer::new(&self.e_data.items, item_pks, &self.support);
+        // We need the data which describes our items directly, so rows are restored only via their
+        // restoring FKs. For instance, having an item-attribute mapping entry restored just because
+        // its value refers some item which is already "alive" is undesired. Item buffs have no
+        // restoring FK: they are restored if they contain any buff data, and keep their items
+        // alive; buffs of dynamic items wait until a mutator item conversion restores the item.
+        restorer.restore(&mut trash.item_attrs, &mut self.e_data.item_attrs)
+            || restorer.restore(&mut trash.item_effects, &mut self.e_data.item_effects)
+            || restorer.restore(&mut trash.item_abils, &mut self.e_data.item_abils)
+            || move_data(&mut trash.item_buffs, &mut self.e_data.item_buffs, |v| {
+                v.has_buffs() && restorer.is_alive_or_met(ItemFk::non_dynamic(KeyPart::from_item_eid(v.item_id)))
             })
-            || move_data(&mut trash.muta_attrs, &mut self.e_data.muta_attrs, |v| {
-                item_ids.contains(&v.muta_id)
-            })
+            || restorer.restore(&mut trash.muta_items, &mut self.e_data.muta_items)
+            || restorer.restore(&mut trash.muta_attrs, &mut self.e_data.muta_attrs)
     }
     fn restore_fk_tgts(&mut self, trash: &mut EData) -> bool {
         let fkdb = KeyDb::new_fkdb(&self.e_data, &self.support);
         move_data(&mut trash.items, &mut self.e_data.items, |v| {
-            fkdb.items.contains(&KeyPart::from_item_eid(v.id))
+            fkdb.items
+                .get(&KeyPart::from_item_eid(v.id))
+                .is_some_and(|fk_conds| fk_conds.intersects(ItemFkConds::met_by(v)))
         }) || move_data(&mut trash.groups, &mut self.e_data.groups, |v| {
             fkdb.groups.contains(&KeyPart::from_item_grp_eid(v.id))
         }) || move_data(&mut trash.item_lists, &mut self.e_data.item_lists, |v| {
@@ -189,6 +198,53 @@ impl ADataGenerator {
         }) || move_data(&mut trash.buffs, &mut self.e_data.buffs, |v| {
             fkdb.buffs.contains(&KeyPart::from_buff_eid(v.id))
         })
+    }
+}
+
+// Restores rows via their restoring FKs, if none of their required FKs is missing
+struct RowRestorer<'a> {
+    item_pks_alive: RSet<KeyPart>,
+    item_pks_all: &'a RMap<KeyPart, ItemFkConds>,
+    adg_supp: &'a AdgSupport,
+}
+impl<'a> RowRestorer<'a> {
+    fn new(alive_items: &EDataCont<EItem>, item_pks_all: &'a RMap<KeyPart, ItemFkConds>, adg_supp: &'a AdgSupport) -> Self {
+        Self {
+            item_pks_alive: alive_items.data.iter().map(|v| KeyPart::from_item_eid(v.id)).collect(),
+            item_pks_all,
+            adg_supp,
+        }
+    }
+    fn restore<T>(&self, src_cont: &mut EDataCont<T>, tgt_cont: &mut EDataCont<T>) -> bool
+    where
+        T: Fk,
+    {
+        move_data(src_cont, tgt_cont, |v| {
+            self.restoring_fk_met(&*v) && self.iter_missing_required(&*v).next().is_none()
+        })
+    }
+    fn restoring_fk_met<T>(&self, row: &T) -> bool
+    where
+        T: Fk,
+    {
+        row.get_item_fk_self_restoring()
+            .is_some_and(|fk| self.item_pks_alive.contains(&fk.key) && self.is_met(fk))
+    }
+    fn iter_missing_required<T>(&self, row: &T) -> impl Iterator<Item = KeyPart>
+    where
+        T: Fk,
+    {
+        row.get_item_fks_regular(self.adg_supp)
+            .into_iter()
+            .filter(|fk| fk.required && !self.is_met(*fk))
+            .map(|fk| fk.key)
+    }
+    // Target exists and meets the condition
+    fn is_met(&self, fk: ItemFk) -> bool {
+        self.item_pks_all.get(&fk.key).is_some_and(|conds| conds.contains(fk.cond))
+    }
+    fn is_alive_or_met(&self, fk: ItemFk) -> bool {
+        self.item_pks_alive.contains(&fk.key) || self.is_met(fk)
     }
 }
 
@@ -226,6 +282,15 @@ impl ADataGenerator {
         record_cont_stats(muta_items, &trash.muta_items, &mut self.a_data.warnings);
         record_cont_stats(muta_attrs, &trash.muta_attrs, &mut self.a_data.warnings);
     }
+    fn record_missing_required(&mut self, trash: &EData, item_pks: &RMap<KeyPart, ItemFkConds>) {
+        let restorer = RowRestorer::new(&self.e_data.items, item_pks, &self.support);
+        let a_warnings = &mut self.a_data.warnings;
+        record_cont_missing_required(&restorer, &trash.item_attrs, a_warnings);
+        record_cont_missing_required(&restorer, &trash.item_effects, a_warnings);
+        record_cont_missing_required(&restorer, &trash.item_abils, a_warnings);
+        record_cont_missing_required(&restorer, &trash.muta_items, a_warnings);
+        record_cont_missing_required(&restorer, &trash.muta_attrs, a_warnings);
+    }
 }
 
 fn record_cont_stats<T>(e_cont_alive: &EDataCont<T>, e_cont_trash: &EDataCont<T>, a_warnings: &mut ADataWarnings)
@@ -242,8 +307,36 @@ where
     a_warnings.cleanup.push(warning);
 }
 
-#[derive(Debug, thiserror::Error)]
-#[error("reached limit of {max_cycles} cycles")]
-pub struct ADataGeneratorCleanupError {
-    pub max_cycles: u32,
+// Rows whose restoring FK is met stay in trash only due to missing required FK targets
+fn record_cont_missing_required<T>(restorer: &RowRestorer, e_cont_trash: &EDataCont<T>, a_warnings: &mut ADataWarnings)
+where
+    T: Fk + LibNamed,
+{
+    let mut rows = 0;
+    let mut missing_keys = RSet::new();
+    for row in e_cont_trash.data.iter().filter(|v| restorer.restoring_fk_met(*v)) {
+        rows += 1;
+        missing_keys.extend(restorer.iter_missing_required(row));
+    }
+    if rows == 0 {
+        return;
+    }
+    let entry_limit = 5;
+    let entry_count = missing_keys.len();
+    let mut warning = format!(
+        "skipped {} {} with missing required {}: {}",
+        rows,
+        T::lib_get_name(),
+        EItem::lib_get_name(),
+        missing_keys
+            .into_iter()
+            .map(|v| v.into_i32())
+            .sorted_unstable()
+            .take(entry_limit)
+            .join(", ")
+    );
+    if entry_count > entry_limit {
+        warning = format!("{}, <{} more entries hidden>", warning, entry_count - entry_limit);
+    }
+    a_warnings.cleanup.push(warning);
 }

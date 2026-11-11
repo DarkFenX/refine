@@ -73,7 +73,7 @@ impl UItemBaseMutable {
         };
         let muta_pregen = r_data.get_muta_pregen();
         let Some(pregen_entry) = muta_pregen.get_entry(type_aid, mutator_type_aid) else {
-            // No mutated item ID in mapping or no mutated item itself
+            // No conversion for base item, or base or mutated item not loaded
             return match r_data.get_item_by_aid(&type_aid) {
                 // If base item is available, return base item, but with ineffective
                 // user-defined mutations
@@ -284,8 +284,8 @@ impl UItemBaseMutable {
         };
         let muta_pregen = r_data.get_muta_pregen();
         let Some(pregen_entry) = muta_pregen.get_entry(base_type_aid, item_mutation.mutator_type_aid) else {
-            // No mutated aitem ID or no item itself - invalidate mutated cache and use non-mutated
-            // item
+            // No conversion for base item, or base or mutated item not loaded - invalidate mutated
+            // cache and use non-mutated item
             match r_data.get_item_by_aid(&base_type_aid) {
                 Some(base_r_item) => {
                     self.base.base_set_r_item(base_r_item.clone());
@@ -344,8 +344,8 @@ impl UItemBaseMutable {
         };
         let muta_pregen = r_data.get_muta_pregen();
         let Some(pregen_entry) = muta_pregen.get_entry(base_type_aid, mutator_type_aid) else {
-            // No mutated aitem ID or no mutated item itself - nothing changes, except for
-            // user-defined mutations getting stored
+            // No conversion for base item, or base or mutated item not loaded - nothing changes,
+            // except for user-defined mutations getting stored
             self.mutation = Some(item_mutation_data);
             return Ok(());
         };

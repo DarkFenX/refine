@@ -1,14 +1,14 @@
 use crate::{
     ad::generator::{
         AdgSupport,
-        rels::{Fk, KeyPart, Pk},
+        rels::{Fk, ItemFkCond, ItemFkConds, KeyPart, Pk},
     },
     ed::{EData, EDataCont},
-    util::RSet,
+    util::{RMap, RSet},
 };
 
 pub(in crate::ad::generator) struct KeyDb {
-    pub(in crate::ad::generator) items: RSet<KeyPart>,
+    pub(in crate::ad::generator) items: RMap<KeyPart, ItemFkConds>,
     pub(in crate::ad::generator) groups: RSet<KeyPart>,
     pub(in crate::ad::generator) item_lists: RSet<KeyPart>,
     pub(in crate::ad::generator) attrs: RSet<KeyPart>,
@@ -19,7 +19,7 @@ pub(in crate::ad::generator) struct KeyDb {
 impl KeyDb {
     pub(in crate::ad::generator) fn new() -> Self {
         Self {
-            items: RSet::new(),
+            items: RMap::new(),
             groups: RSet::new(),
             item_lists: RSet::new(),
             attrs: RSet::new(),
@@ -40,7 +40,13 @@ impl KeyDb {
             abils,
             buffs,
         } = &mut pkdb;
-        Self::extend_pk_vec(items, &e_data.items);
+        items.extend(
+            e_data
+                .items
+                .data
+                .iter()
+                .map(|v| (KeyPart::from_item_eid(v.id), ItemFkConds::met_by(v))),
+        );
         Self::extend_pk_vec(groups, &e_data.groups);
         Self::extend_pk_vec(item_lists, &e_data.item_lists);
         Self::extend_pk_vec(attrs, &e_data.attrs);
@@ -105,7 +111,9 @@ impl KeyDb {
             buffs,
         } = self;
         for v in cont.data.iter() {
-            items.extend(v.get_item_fks(adg_supp));
+            for fk in v.iter_item_fks_all(adg_supp) {
+                items.entry(fk.key).or_default().insert(fk.cond);
+            }
             groups.extend(v.get_group_fks(adg_supp));
             item_lists.extend(v.get_item_list_fks(adg_supp));
             attrs.extend(v.get_attr_fks(adg_supp));
@@ -129,7 +137,12 @@ impl KeyDb {
             attrs.extend(a_attr.iter_attr_eids().map(KeyPart::from_attr_eid));
         }
         for a_effect in adg_supp.standalone_effects.iter() {
-            items.extend(a_effect.iter_item_eids().map(KeyPart::from_item_eid));
+            for item_eid in a_effect.iter_item_eids() {
+                items
+                    .entry(KeyPart::from_item_eid(item_eid))
+                    .or_default()
+                    .insert(ItemFkCond::Any);
+            }
             attrs.extend(a_effect.iter_attr_eids().map(KeyPart::from_attr_eid));
             effects.extend(a_effect.iter_effect_eids().map(KeyPart::from_effect_eid));
             buffs.extend(a_effect.iter_buff_eids().map(KeyPart::from_buff_eid));

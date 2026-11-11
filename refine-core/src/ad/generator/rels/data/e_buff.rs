@@ -1,7 +1,7 @@
 use crate::{
     ad::generator::{
         AdgSupport,
-        rels::{Fk, KeyPart, Pk},
+        rels::{Fk, ItemFk, KeyPart, Pk},
     },
     ed::EBuff,
 };
@@ -13,10 +13,10 @@ impl Pk for EBuff {
 }
 
 impl Fk for EBuff {
-    fn get_item_fks(&self, _: &AdgSupport) -> Vec<KeyPart> {
+    fn get_item_fks_regular(&self, _: &AdgSupport) -> Vec<ItemFk> {
         self.locsrq_mods
             .iter()
-            .map(|v| KeyPart::from_item_eid(v.skill_id))
+            .map(|v| ItemFk::any(KeyPart::from_item_eid(v.skill_id)))
             .collect()
     }
     fn get_group_fks(&self, _: &AdgSupport) -> Vec<KeyPart> {

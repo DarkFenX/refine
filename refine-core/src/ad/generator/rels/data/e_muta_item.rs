@@ -1,7 +1,7 @@
 use crate::{
     ad::generator::{
         AdgSupport,
-        rels::{Fk, KeyPart, Pk},
+        rels::{Fk, ItemFk, KeyPart, Pk},
     },
     ed::EMutaItem,
 };
@@ -16,11 +16,13 @@ impl Pk for EMutaItem {
 }
 
 impl Fk for EMutaItem {
-    fn get_item_fks(&self, _: &AdgSupport) -> Vec<KeyPart> {
+    fn get_item_fk_self_restoring(&self) -> Option<ItemFk> {
+        Some(ItemFk::non_dynamic(KeyPart::from_item_eid(self.in_item_id)))
+    }
+    fn get_item_fks_regular(&self, _: &AdgSupport) -> Vec<ItemFk> {
         vec![
-            KeyPart::from_item_eid(self.muta_id),
-            KeyPart::from_item_eid(self.in_item_id),
-            KeyPart::from_item_eid(self.out_item_id),
+            ItemFk::non_dynamic(KeyPart::from_item_eid(self.muta_id)),
+            ItemFk::dynamic(KeyPart::from_item_eid(self.out_item_id)).required(),
         ]
     }
 }

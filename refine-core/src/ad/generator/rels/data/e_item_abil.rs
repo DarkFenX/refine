@@ -1,7 +1,7 @@
 use crate::{
     ad::generator::{
         AdgSupport, get_abil_effect,
-        rels::{Fk, KeyPart, Pk},
+        rels::{Fk, ItemFk, KeyPart, Pk},
     },
     ed::EItemAbil,
 };
@@ -16,8 +16,8 @@ impl Pk for EItemAbil {
 }
 
 impl Fk for EItemAbil {
-    fn get_item_fks(&self, _: &AdgSupport) -> Vec<KeyPart> {
-        vec![KeyPart::from_item_eid(self.item_id)]
+    fn get_item_fk_self_restoring(&self) -> Option<ItemFk> {
+        Some(ItemFk::any(KeyPart::from_item_eid(self.item_id)))
     }
     fn get_effect_fks(&self, _: &AdgSupport) -> Vec<KeyPart> {
         let mut fks = Vec::new();
