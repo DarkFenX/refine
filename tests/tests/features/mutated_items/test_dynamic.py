@@ -52,7 +52,7 @@ def test_src_switch(client, consts):
         datas=[eve_d1, eve_d2],
         items=[([eve_base_item_id], eve_mutated_item_id)],
         attrs={eve_attr_id: (0.8, 1.2)})
-    client.create_sources()
+    client.create_sources(cleanup_check=False)
     api_sol = client.create_sol(data=eve_d1)
     api_fit = api_sol.create_fit()
     api_bare_item = api_fit.add_module(type_id=eve_mutated_item_id)

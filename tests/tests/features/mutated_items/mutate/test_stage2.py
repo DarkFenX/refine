@@ -16,7 +16,7 @@ def test_rolls_range(client, consts):
     client.mk_eve_mutator(
         datas=[eve_d1],
         id_=eve_mutator_id,
-        # Valid input or output item is needed just to keep mutator data alive during cleanup
+        # Valid input item is needed just to keep mutator data alive during cleanup
         items=[([client.mk_eve_item(datas=[eve_d1])], eve_mutated_item_id)],
         attrs={eve_lower_attr_id: (0.8, 1.2), eve_within_attr_id: (0.8, 1.2), eve_higher_attr_id: (0.8, 1.2)})
     client.mk_eve_mutator(
@@ -86,7 +86,7 @@ def test_absolute_value_range(client, consts):
     client.mk_eve_mutator(
         datas=[eve_d1],
         id_=eve_mutator_id,
-        # Valid input or output item is needed just to keep mutator data alive during cleanup
+        # Valid input item is needed just to keep mutator data alive during cleanup
         items=[([client.mk_eve_item(datas=[eve_d1])], eve_mutated_item_id)],
         attrs={eve_lower_attr_id: (0.8, 1.2), eve_within_attr_id: (0.8, 1.2), eve_higher_attr_id: (0.8, 1.2)})
     client.mk_eve_mutator(
@@ -153,7 +153,7 @@ def test_no_base_item(client, consts):
     client.mk_eve_mutator(
         datas=[eve_d1],
         id_=eve_mutator_id,
-        # Valid input or output item is needed just to keep mutator data alive during cleanup
+        # Valid input item is needed just to keep mutator data alive during cleanup
         items=[([client.mk_eve_item(datas=[eve_d1])], eve_mutated_item_id)],
         attrs={eve_roll_attr_id: (0.8, 1.2), eve_absolute_attr_id: (0.8, 1.2)})
     client.mk_eve_mutator(
@@ -212,7 +212,7 @@ def test_no_base_value(client, consts):
     client.mk_eve_mutator(
         datas=[eve_d1],
         id_=eve_mutator_id,
-        # Valid input or output item is needed just to keep mutator data alive during cleanup
+        # Valid input item is needed just to keep mutator data alive during cleanup
         items=[([client.mk_eve_item(datas=[eve_d1])], eve_mutated_item_id)],
         attrs={eve_roll_attr_id: (0.8, 1.2), eve_absolute_attr_id: (0.8, 1.2)})
     client.mk_eve_mutator(
@@ -271,7 +271,7 @@ def test_no_mutation_range(client, consts):
     client.mk_eve_mutator(
         datas=[eve_d1],
         id_=eve_mutator_id,
-        # Valid input or output item is needed just to keep mutator data alive during cleanup
+        # Valid input item is needed just to keep mutator data alive during cleanup
         items=[([client.mk_eve_item(datas=[eve_d1])], eve_mutated_item_id)])
     client.mk_eve_mutator(
         datas=[eve_d2],
@@ -333,7 +333,7 @@ def test_zero_mutation_range(client, consts):
     client.mk_eve_mutator(
         datas=[eve_d1],
         id_=eve_mutator_id,
-        # Valid input or output item is needed just to keep mutator data alive during cleanup
+        # Valid input item is needed just to keep mutator data alive during cleanup
         items=[([client.mk_eve_item(datas=[eve_d1])], eve_mutated_item_id)],
         attrs={
             eve_roll_attr_id: (1.08, 1.08),
@@ -422,7 +422,7 @@ def test_zero_base_value(client, consts):
     client.mk_eve_mutator(
         datas=[eve_d1],
         id_=eve_mutator_id,
-        # Valid input or output item is needed just to keep mutator data alive during cleanup
+        # Valid input item is needed just to keep mutator data alive during cleanup
         items=[([client.mk_eve_item(datas=[eve_d1])], eve_mutated_item_id)],
         attrs={
             eve_roll_attr_id: (0.8, 1.2),
@@ -490,7 +490,7 @@ def test_zero_base_value(client, consts):
 def test_item_type_id(client, consts):
     # Check that base item type ID is used
     eve_base_item_id = client.mk_eve_item()
-    # Valid input or output item is needed just to keep mutator data alive during cleanup
+    # Valid input item is needed just to keep mutator data alive during cleanup
     eve_mutator_id = client.mk_eve_mutator(items=[([client.mk_eve_item()], client.mk_eve_item(is_dynamic=True))])
     client.create_sources()
     api_sol = client.create_sol()

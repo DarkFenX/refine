@@ -21,7 +21,7 @@ impl Fk for EMutaItem {
     }
     fn get_item_fks_regular(&self, _: &AdgSupport) -> Vec<ItemFk> {
         vec![
-            ItemFk::non_dynamic(KeyPart::from_item_eid(self.muta_id)),
+            ItemFk::non_dynamic(KeyPart::from_item_eid(self.muta_id)).required(),
             ItemFk::dynamic(KeyPart::from_item_eid(self.out_item_id)).required(),
         ]
     }

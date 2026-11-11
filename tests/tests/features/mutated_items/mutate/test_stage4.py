@@ -200,45 +200,6 @@ def test_absolute_value_range(client, consts):
     assert api_item.attrs[eve_higher_attr_id].base == approx(120)
 
 
-def test_no_base_item(client, consts):
-    # Check that absolute mutations are accepted for items w/o base item using mutated item
-    # attribute values
-    eve_roll_attr_id = client.mk_eve_attr()
-    eve_absolute_attr_id = client.mk_eve_attr()
-    eve_base_item_id = client.alloc_item_id()
-    eve_mutated_item_id = client.mk_eve_item(is_dynamic=True, attrs={eve_roll_attr_id: 50, eve_absolute_attr_id: 50})
-    eve_mutator_id = client.mk_eve_mutator(
-        items=[([eve_base_item_id], eve_mutated_item_id)],
-        attrs={eve_roll_attr_id: (0.8, 1.2), eve_absolute_attr_id: (0.8, 1.2)})
-    client.create_sources()
-    api_sol = client.create_sol()
-    api_fit = api_sol.create_fit()
-    api_item = api_fit.add_module(type_id=eve_base_item_id)
-    # Verification
-    api_item.update()
-    with check_no_field():
-        api_item.mutation  # ruff:ignore[useless-expression]
-    with check_no_field():
-        api_item.attrs  # ruff:ignore[useless-expression]
-    # Action
-    api_item.change_module(mutation=(eve_mutator_id, {
-        eve_roll_attr_id: Muta.roll_to_api(val=0.7),
-        eve_absolute_attr_id: Muta.abs_to_api(val=52)}))
-    # Verification
-    api_item.update()
-    assert api_item.mutation.type == consts.ApiMutationType.effective
-    assert len(api_item.mutation.attrs) == 2
-    assert api_item.mutation.attrs[eve_roll_attr_id].roll == approx(0.7)
-    assert api_item.mutation.attrs[eve_roll_attr_id].absolute == approx(54)
-    assert api_item.mutation.attrs[eve_absolute_attr_id].roll == approx(0.6)
-    assert api_item.mutation.attrs[eve_absolute_attr_id].absolute == approx(52)
-    assert len(api_item.mutation.rolls) == 2
-    assert api_item.mutation.rolls[eve_roll_attr_id] == approx(0.7)
-    assert api_item.mutation.rolls[eve_absolute_attr_id] == approx(0.6)
-    assert api_item.attrs[eve_roll_attr_id].base == approx(54)
-    assert api_item.attrs[eve_absolute_attr_id].base == approx(52)
-
-
 def test_no_base_value(client, consts):
     # Rolls accepted, absolutes discarded when base value is not available
     eve_d1 = client.mk_eve_data()

@@ -234,69 +234,6 @@ def test_to_stage4_different_id(client, consts):
         api_item_mutation.rolls  # ruff:ignore[useless-expression]
 
 
-def test_to_stage4_no_base_item(client, consts):
-    # Check switch to a mutated item with all the data but base item
-    eve_d1 = client.mk_eve_data()
-    eve_d2 = client.mk_eve_data()
-    eve_attr1_id = client.mk_eve_attr(datas=[eve_d1, eve_d2])
-    eve_attr2_id = client.mk_eve_attr(datas=[eve_d1, eve_d2])
-    eve_base_item_id = client.alloc_item_id(datas=[eve_d1, eve_d2])
-    client.mk_eve_item(datas=[eve_d1], id_=eve_base_item_id, attrs={eve_attr1_id: 100, eve_attr2_id: 100})
-    eve_mutated_item_id = client.alloc_item_id(datas=[eve_d1, eve_d2])
-    client.mk_eve_item(datas=[eve_d1], id_=eve_mutated_item_id, is_dynamic=True)
-    client.mk_eve_item(datas=[eve_d2], id_=eve_mutated_item_id, is_dynamic=True, attrs={eve_attr1_id: 50})
-    eve_mutator_id = client.mk_eve_mutator(
-        datas=[eve_d1, eve_d2],
-        items=[([eve_base_item_id], eve_mutated_item_id)],
-        attrs={eve_attr1_id: (0.8, 1.2), eve_attr2_id: (0.8, 1.2)})
-    client.create_sources()
-    api_sol = client.create_sol(data=eve_d1)
-    api_fit = api_sol.create_fit()
-    api_item = api_fit.add_module(type_id=eve_base_item_id, mutation=(eve_mutator_id, {
-        eve_attr1_id: Muta.roll_to_api(val=0.3),
-        eve_attr2_id: Muta.roll_to_api(val=0.3)}))
-    # Verification
-    api_item.update()
-    assert api_item.mutation.type == consts.ApiMutationType.effective
-    assert len(api_item.mutation.attrs) == 2
-    assert api_item.mutation.attrs[eve_attr1_id].roll == approx(0.3)
-    assert api_item.mutation.attrs[eve_attr1_id].absolute == approx(92)
-    assert api_item.mutation.attrs[eve_attr2_id].roll == approx(0.3)
-    assert api_item.mutation.attrs[eve_attr2_id].absolute == approx(92)
-    assert len(api_item.mutation.rolls) == 2
-    assert api_item.mutation.rolls[eve_attr1_id] == approx(0.3)
-    assert api_item.mutation.rolls[eve_attr2_id] == approx(0.3)
-    assert api_item.attrs[eve_attr1_id].base == approx(92)
-    assert api_item.attrs[eve_attr2_id].base == approx(92)
-    # Action
-    api_sol.change_src(data=eve_d2)
-    # Verification
-    api_item.update()
-    assert api_item.mutation.type == consts.ApiMutationType.effective
-    assert len(api_item.mutation.attrs) == 1
-    assert api_item.mutation.attrs[eve_attr1_id].roll == approx(0.3)
-    assert api_item.mutation.attrs[eve_attr1_id].absolute == approx(46)
-    assert len(api_item.mutation.rolls) == 2
-    assert api_item.mutation.rolls[eve_attr1_id] == approx(0.3)
-    assert api_item.mutation.rolls[eve_attr2_id] == approx(0.3)
-    assert api_item.attrs[eve_attr1_id].base == approx(46)
-    # Action
-    api_sol.change_src(data=eve_d1)
-    # Verification
-    api_item.update()
-    assert api_item.mutation.type == consts.ApiMutationType.effective
-    assert len(api_item.mutation.attrs) == 2
-    assert api_item.mutation.attrs[eve_attr1_id].roll == approx(0.3)
-    assert api_item.mutation.attrs[eve_attr1_id].absolute == approx(92)
-    assert api_item.mutation.attrs[eve_attr2_id].roll == approx(0.3)
-    assert api_item.mutation.attrs[eve_attr2_id].absolute == approx(92)
-    assert len(api_item.mutation.rolls) == 2
-    assert api_item.mutation.rolls[eve_attr1_id] == approx(0.3)
-    assert api_item.mutation.rolls[eve_attr2_id] == approx(0.3)
-    assert api_item.attrs[eve_attr1_id].base == approx(92)
-    assert api_item.attrs[eve_attr2_id].base == approx(92)
-
-
 def test_to_stage3_different_group(client, consts):
     # Check how item which is switched to new source with incomplete data behaves
     eve_d1 = client.mk_eve_data()
@@ -336,7 +273,7 @@ def test_to_stage3_different_group(client, consts):
         items=[([eve_base_item_id], eve_mutated_item_id)],
         attrs={eve_affectee_attr1_id: (0.8, 1.2), eve_affectee_attr2_id: (0.8, 1.2)})
     eve_ship_id = client.mk_eve_ship(datas=[eve_d1, eve_d2])
-    client.create_sources()
+    client.create_sources(cleanup_check=False)
     api_sol = client.create_sol(data=eve_d1)
     api_fit = api_sol.create_fit()
     api_fit.add_implant(type_id=eve_implant_id)
@@ -435,7 +372,7 @@ def test_to_stage2_different_group(client, consts):
     client.mk_eve_mutator(
         datas=[eve_d2],
         id_=eve_mutator_id,
-        # Valid input or output item is needed just to keep mutator data alive during cleanup
+        # Valid input item is needed just to keep mutator data alive during cleanup
         items=[([client.mk_eve_item(datas=[eve_d2])], eve_mutated_item_id)],
         attrs={eve_affectee_attr1_id: (0.8, 1.2), eve_affectee_attr2_id: (0.8, 1.2)})
     eve_ship_id = client.mk_eve_ship(datas=[eve_d1, eve_d2])
@@ -513,7 +450,7 @@ def test_to_stage2_no_base_item(client, consts):
     client.mk_eve_mutator(
         datas=[eve_d2],
         id_=eve_mutator_id,
-        # Valid input or output item is needed just to keep mutator data alive during cleanup
+        # Valid input item is needed just to keep mutator data alive during cleanup
         items=[([client.mk_eve_item(datas=[eve_d2])], eve_mutated_item_id)],
         attrs={eve_attr_id: (0.8, 1.2)})
     client.create_sources()
@@ -590,7 +527,7 @@ def test_to_stage1_different_group(client, consts):
         datas=[eve_d1, eve_d2],
         grp_id=eve_grp2_id,
         attrs={eve_affectee_attr1_id: 100, eve_affectee_attr2_id: 100})
-    eve_mutated_item_id = client.mk_eve_item(datas=[eve_d1, eve_d2], grp_id=eve_grp1_id, is_dynamic=True)
+    eve_mutated_item_id = client.mk_eve_item(datas=[eve_d1], grp_id=eve_grp1_id, is_dynamic=True)
     eve_mutator_id = client.alloc_item_id(datas=[eve_d1, eve_d2])
     client.mk_eve_mutator(
         datas=[eve_d1],
@@ -662,7 +599,7 @@ def test_to_stage1_no_base_item(client, consts):
     eve_attr_id = client.mk_eve_attr(datas=[eve_d1, eve_d2])
     eve_base_item_id = client.alloc_item_id(datas=[eve_d1, eve_d2])
     client.mk_eve_item(datas=[eve_d1], id_=eve_base_item_id, attrs={eve_attr_id: 100})
-    eve_mutated_item_id = client.mk_eve_item(datas=[eve_d1, eve_d2], is_dynamic=True)
+    eve_mutated_item_id = client.mk_eve_item(datas=[eve_d1], is_dynamic=True)
     eve_mutator_id = client.alloc_item_id(datas=[eve_d1, eve_d2])
     client.mk_eve_mutator(
         datas=[eve_d1],
@@ -723,7 +660,7 @@ def test_from_stage3(client, consts):
         datas=[eve_d1, eve_d2],
         items=[([eve_base_item_id], eve_mutated_item_id)],
         attrs={eve_attr_id: (0.8, 1.2)})
-    client.create_sources()
+    client.create_sources(cleanup_check=False)
     api_sol = client.create_sol(data=eve_d1)
     api_fit = api_sol.create_fit()
     api_item = api_fit.add_module(
@@ -761,7 +698,7 @@ def test_from_stage2(client, consts):
     client.mk_eve_mutator(
         datas=[eve_d1],
         id_=eve_mutator_id,
-        # Valid input or output item is needed just to keep mutator data alive during cleanup
+        # Valid input item is needed just to keep mutator data alive during cleanup
         items=[([client.mk_eve_item(datas=[eve_d1])], eve_mutated_item_id)],
         attrs={eve_attr_id: (0.8, 1.2)})
     client.mk_eve_mutator(
@@ -802,7 +739,7 @@ def test_from_stage1(client, consts):
     eve_d2 = client.mk_eve_data()
     eve_attr_id = client.mk_eve_attr(datas=[eve_d1, eve_d2])
     eve_base_item_id = client.mk_eve_item(datas=[eve_d1, eve_d2], attrs={eve_attr_id: 100})
-    eve_mutated_item_id = client.mk_eve_item(datas=[eve_d1, eve_d2], is_dynamic=True)
+    eve_mutated_item_id = client.mk_eve_item(datas=[eve_d2], is_dynamic=True)
     eve_mutator_id = client.alloc_item_id(datas=[eve_d1, eve_d2])
     client.mk_eve_mutator(
         datas=[eve_d2],

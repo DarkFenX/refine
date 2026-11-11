@@ -17,7 +17,7 @@ def test_rolls_range(client, consts):
         datas=[eve_d1, eve_d2],
         items=[([eve_base_item_id], eve_mutated_item_id)],
         attrs={eve_lower_attr_id: (0.8, 1.2), eve_within_attr_id: (0.8, 1.2), eve_higher_attr_id: (0.8, 1.2)})
-    client.create_sources()
+    client.create_sources(cleanup_check=False)
     api_sol = client.create_sol(data=eve_d1)
     api_fit = api_sol.create_fit()
     api_item = api_fit.add_module(type_id=eve_base_item_id, mutation=(eve_mutator_id, {
@@ -71,7 +71,7 @@ def test_absolute_value_range(client, consts):
         datas=[eve_d1, eve_d2],
         items=[([eve_base_item_id], eve_mutated_item_id)],
         attrs={eve_lower_attr_id: (0.8, 1.2), eve_within_attr_id: (0.8, 1.2), eve_higher_attr_id: (0.8, 1.2)})
-    client.create_sources()
+    client.create_sources(cleanup_check=False)
     api_sol = client.create_sol(data=eve_d1)
     api_fit = api_sol.create_fit()
     api_item = api_fit.add_module(type_id=eve_base_item_id, mutation=(eve_mutator_id, {
@@ -123,7 +123,7 @@ def test_no_base_value(client, consts):
         datas=[eve_d1, eve_d2],
         items=[([eve_base_item_id], eve_mutated_item_id)],
         attrs={eve_roll_attr_id: (0.8, 1.2), eve_absolute_attr_id: (0.8, 1.2)})
-    client.create_sources()
+    client.create_sources(cleanup_check=False)
     api_sol = client.create_sol(data=eve_d1)
     api_fit = api_sol.create_fit()
     api_item = api_fit.add_module(type_id=eve_base_item_id, mutation=(eve_mutator_id, {
@@ -172,7 +172,7 @@ def test_no_mutation_range(client, consts):
         id_=eve_mutator_id,
         items=[([eve_base_item_id], eve_mutated_item_id)],
         attrs={eve_roll_attr_id: (0.8, 1.2), eve_absolute_attr_id: (0.8, 1.2)})
-    client.create_sources()
+    client.create_sources(cleanup_check=False)
     api_sol = client.create_sol(data=eve_d1)
     api_fit = api_sol.create_fit()
     api_item = api_fit.add_module(type_id=eve_base_item_id, mutation=(eve_mutator_id, {
@@ -237,7 +237,7 @@ def test_zero_mutation_range(client, consts):
             eve_absolute_low_attr_id: (0.8, 1.2),
             eve_absolute_mid_attr_id: (0.8, 1.2),
             eve_absolute_high_attr_id: (0.8, 1.2)})
-    client.create_sources()
+    client.create_sources(cleanup_check=False)
     api_sol = client.create_sol(data=eve_d1)
     api_fit = api_sol.create_fit()
     api_item = api_fit.add_module(type_id=eve_base_item_id, mutation=(eve_mutator_id, {
@@ -307,7 +307,7 @@ def test_zero_base_value(client, consts):
             eve_absolute_low_attr_id: (0.8, 1.2),
             eve_absolute_mid_attr_id: (0.8, 1.2),
             eve_absolute_high_attr_id: (0.8, 1.2)})
-    client.create_sources()
+    client.create_sources(cleanup_check=False)
     api_sol = client.create_sol(data=eve_d1)
     api_fit = api_sol.create_fit()
     api_item = api_fit.add_module(type_id=eve_base_item_id, mutation=(eve_mutator_id, {
@@ -353,7 +353,7 @@ def test_item_type_id(client, consts):
     eve_base_item_id = client.mk_eve_item()
     eve_mutated_item_id = client.alloc_item_id()
     eve_mutator_id = client.mk_eve_mutator(items=[([eve_base_item_id], eve_mutated_item_id)])
-    client.create_sources()
+    client.create_sources(cleanup_check=False)
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
     api_item = api_fit.add_module(type_id=eve_base_item_id, mutation=eve_mutator_id)

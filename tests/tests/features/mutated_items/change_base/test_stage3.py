@@ -9,7 +9,7 @@ def test_from_stage2(client, consts):
     eve_mutator_id = client.mk_eve_mutator(
         items=[([eve_base_item2_id], eve_mutated_item2_id)],
         attrs={eve_attr_id: (0.8, 1.2)})
-    client.create_sources()
+    client.create_sources(cleanup_check=False)
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
     api_item = api_fit.add_module(
@@ -51,7 +51,7 @@ def test_from_stage3(client, consts):
     eve_mutator_id = client.mk_eve_mutator(
         items=[([eve_base_item1_id], eve_mutated_item1_id), ([eve_base_item2_id], eve_mutated_item2_id)],
         attrs={eve_attr_id: (0.8, 1.2)})
-    client.create_sources()
+    client.create_sources(cleanup_check=False)
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
     api_item = api_fit.add_module(
@@ -94,7 +94,7 @@ def test_from_stage4(client, consts):
     eve_mutator_id = client.mk_eve_mutator(
         items=[([eve_base_item1_id], eve_mutated_item1_id), ([eve_base_item2_id], eve_mutated_item2_id)],
         attrs={eve_attr1_id: (0.8, 1.2), eve_attr2_id: (0.8, 1.2)})
-    client.create_sources()
+    client.create_sources(cleanup_check=False)
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
     api_item = api_fit.add_module(type_id=eve_base_item1_id, mutation=(eve_mutator_id, {
