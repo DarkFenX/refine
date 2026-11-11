@@ -63,7 +63,8 @@ impl ADataGenerator {
     fn trash_all(&mut self, trash: &mut EData) {
         let EData {
             items,
-            groups,
+            // Groups are not cleaned: generation reads them only through support data
+            groups: _,
             item_lists,
             attrs,
             item_attrs,
@@ -77,7 +78,6 @@ impl ADataGenerator {
             muta_attrs,
         } = &mut self.e_data;
         move_data(items, &mut trash.items, |_| true);
-        move_data(groups, &mut trash.groups, |_| true);
         move_data(item_lists, &mut trash.item_lists, |_| true);
         move_data(attrs, &mut trash.attrs, |_| true);
         move_data(item_attrs, &mut trash.item_attrs, |_| true);
@@ -185,8 +185,6 @@ impl ADataGenerator {
             fkdb.items
                 .get(&KeyPart::from_item_eid(v.id))
                 .is_some_and(|fk_conds| fk_conds.intersects(ItemFkConds::met_by(v)))
-        }) || move_data(&mut trash.groups, &mut self.e_data.groups, |v| {
-            fkdb.groups.contains(&KeyPart::from_item_grp_eid(v.id))
         }) || move_data(&mut trash.item_lists, &mut self.e_data.item_lists, |v| {
             fkdb.item_lists.contains(&KeyPart::from_item_list_eid(v.id))
         }) || move_data(&mut trash.attrs, &mut self.e_data.attrs, |v| {
@@ -261,7 +259,7 @@ impl ADataGenerator {
     fn record_stats(&mut self, trash: &EData) {
         let EData {
             items,
-            groups,
+            groups: _,
             item_lists,
             attrs,
             item_attrs,
@@ -275,7 +273,6 @@ impl ADataGenerator {
             muta_attrs,
         } = &self.e_data;
         record_cont_stats(items, &trash.items, &mut self.a_data.warnings);
-        record_cont_stats(groups, &trash.groups, &mut self.a_data.warnings);
         record_cont_stats(item_lists, &trash.item_lists, &mut self.a_data.warnings);
         record_cont_stats(attrs, &trash.attrs, &mut self.a_data.warnings);
         record_cont_stats(item_attrs, &trash.item_attrs, &mut self.a_data.warnings);

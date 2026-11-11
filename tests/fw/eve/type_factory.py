@@ -627,7 +627,6 @@ class EveTypeFactory(EveDataManager):
             def_val: float | type[Absent | Default] = Default,
             min_attr_id: int | type[Absent | Default] = Default,
             max_attr_id: int | type[Absent | Default] = Default,
-            unit_id: int | type[Absent | Default] = Default,
     ) -> int:
         if datas is Default:
             datas = [self._get_default_eve_data()]
@@ -640,8 +639,7 @@ class EveTypeFactory(EveDataManager):
                 high_is_good=1 if high_is_good is Default else high_is_good,
                 def_val=0.0 if def_val is Default else def_val,
                 min_attr_id=Absent if min_attr_id is Default else min_attr_id,
-                max_attr_id=Absent if max_attr_id is Default else max_attr_id,
-                unit_id=Absent if unit_id is Default else unit_id)
+                max_attr_id=Absent if max_attr_id is Default else max_attr_id)
         return id_
 
     ################################################################################################

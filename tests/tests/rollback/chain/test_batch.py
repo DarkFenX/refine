@@ -391,7 +391,7 @@ def test_sol_stats_fail(client, consts):
 
 
 def test_sol_try_fit_items(client, consts):
-    eve_group_attr_id = client.mk_eve_attr(id_=consts.EveAttr.charge_group1, unit_id=consts.EveAttrUnit.group_id)
+    eve_group_attr_id = client.mk_eve_attr(id_=consts.EveAttr.charge_group1)
     eve_capacity_attr_id = client.mk_eve_attr(id_=consts.EveAttr.capacity)
     eve_affector_attr_id = client.mk_eve_attr()
     eve_attr_id = client.mk_eve_attr()

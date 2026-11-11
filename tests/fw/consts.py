@@ -611,12 +611,6 @@ class EveAttr(IntEnum):
 
 
 @unique
-class EveAttrUnit(IntEnum):
-    group_id = 115
-    item_id = 116
-
-
-@unique
 class CustomEffect(IntEnum):
     char_missile_dmg = 1
     aar_paste_boost = 2

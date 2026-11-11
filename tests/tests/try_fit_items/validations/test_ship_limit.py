@@ -4,7 +4,7 @@ from fw.api import ValOptions
 
 def test_type_single(client, consts):
     eve_ship_grp_id = client.mk_eve_ship_group()
-    eve_type_attr_id = client.mk_eve_attr(id_=consts.EveAttr.can_fit_ship_type1, unit_id=consts.EveAttrUnit.item_id)
+    eve_type_attr_id = client.mk_eve_attr(id_=consts.EveAttr.can_fit_ship_type1)
     eve_allowed_ship_id = client.mk_eve_ship(grp_id=eve_ship_grp_id)
     eve_disallowed_ship_id = client.mk_eve_ship(grp_id=eve_ship_grp_id)
     eve_module_id = client.mk_eve_module(attrs={eve_type_attr_id: eve_allowed_ship_id})
@@ -22,8 +22,8 @@ def test_type_single(client, consts):
 
 def test_type_multiple_different(client, consts):
     eve_ship_grp_id = client.mk_eve_ship_group()
-    eve_type_attr1_id = client.mk_eve_attr(id_=consts.EveAttr.can_fit_ship_type1, unit_id=consts.EveAttrUnit.item_id)
-    eve_type_attr2_id = client.mk_eve_attr(id_=consts.EveAttr.can_fit_ship_type2, unit_id=consts.EveAttrUnit.item_id)
+    eve_type_attr1_id = client.mk_eve_attr(id_=consts.EveAttr.can_fit_ship_type1)
+    eve_type_attr2_id = client.mk_eve_attr(id_=consts.EveAttr.can_fit_ship_type2)
     eve_allowed_ship1_id = client.mk_eve_ship(grp_id=eve_ship_grp_id)
     eve_allowed_ship2_id = client.mk_eve_ship(grp_id=eve_ship_grp_id)
     eve_disallowed_ship_id = client.mk_eve_ship(grp_id=eve_ship_grp_id)
@@ -43,9 +43,9 @@ def test_type_multiple_different(client, consts):
 
 def test_type_multiple_same_rounding(client, consts):
     eve_ship_grp_id = client.mk_eve_ship_group()
-    eve_type_attr1_id = client.mk_eve_attr(id_=consts.EveAttr.can_fit_ship_type1, unit_id=consts.EveAttrUnit.item_id)
-    eve_type_attr2_id = client.mk_eve_attr(id_=consts.EveAttr.can_fit_ship_type2, unit_id=consts.EveAttrUnit.item_id)
-    eve_type_attr3_id = client.mk_eve_attr(id_=consts.EveAttr.can_fit_ship_type3, unit_id=consts.EveAttrUnit.item_id)
+    eve_type_attr1_id = client.mk_eve_attr(id_=consts.EveAttr.can_fit_ship_type1)
+    eve_type_attr2_id = client.mk_eve_attr(id_=consts.EveAttr.can_fit_ship_type2)
+    eve_type_attr3_id = client.mk_eve_attr(id_=consts.EveAttr.can_fit_ship_type3)
     eve_allowed_ship1_id = client.mk_eve_ship(grp_id=eve_ship_grp_id)
     eve_allowed_ship2_id = client.mk_eve_ship(grp_id=eve_ship_grp_id)
     eve_disallowed_ship_id = client.mk_eve_ship(grp_id=eve_ship_grp_id)
@@ -68,7 +68,7 @@ def test_type_multiple_same_rounding(client, consts):
 def test_group_single(client, consts):
     eve_allowed_grp_id = client.mk_eve_ship_group()
     eve_disallowed_grp_id = client.mk_eve_ship_group()
-    eve_group_attr_id = client.mk_eve_attr(id_=consts.EveAttr.can_fit_ship_group1, unit_id=consts.EveAttrUnit.group_id)
+    eve_group_attr_id = client.mk_eve_attr(id_=consts.EveAttr.can_fit_ship_group1)
     eve_allowed_ship_id = client.mk_eve_ship(grp_id=eve_allowed_grp_id)
     eve_disallowed_ship_id = client.mk_eve_ship(grp_id=eve_disallowed_grp_id)
     eve_module_id = client.mk_eve_module(attrs={eve_group_attr_id: eve_allowed_grp_id})
@@ -88,8 +88,8 @@ def test_group_multiple_different(client, consts):
     eve_allowed_grp1_id = client.mk_eve_ship_group()
     eve_allowed_grp2_id = client.mk_eve_ship_group()
     eve_disallowed_grp_id = client.mk_eve_ship_group()
-    eve_group_attr1_id = client.mk_eve_attr(id_=consts.EveAttr.can_fit_ship_group1, unit_id=consts.EveAttrUnit.group_id)
-    eve_group_attr2_id = client.mk_eve_attr(id_=consts.EveAttr.can_fit_ship_group2, unit_id=consts.EveAttrUnit.group_id)
+    eve_group_attr1_id = client.mk_eve_attr(id_=consts.EveAttr.can_fit_ship_group1)
+    eve_group_attr2_id = client.mk_eve_attr(id_=consts.EveAttr.can_fit_ship_group2)
     eve_allowed_ship_id = client.mk_eve_ship(grp_id=eve_allowed_grp2_id)
     eve_disallowed_ship_id = client.mk_eve_ship(grp_id=eve_disallowed_grp_id)
     eve_module_id = client.mk_eve_module(
@@ -110,9 +110,9 @@ def test_group_multiple_same_rounding(client, consts):
     eve_allowed_grp1_id = client.mk_eve_ship_group()
     eve_allowed_grp2_id = client.mk_eve_ship_group()
     eve_disallowed_grp_id = client.mk_eve_ship_group()
-    eve_group_attr1_id = client.mk_eve_attr(id_=consts.EveAttr.can_fit_ship_group1, unit_id=consts.EveAttrUnit.group_id)
-    eve_group_attr2_id = client.mk_eve_attr(id_=consts.EveAttr.can_fit_ship_group2, unit_id=consts.EveAttrUnit.group_id)
-    eve_group_attr3_id = client.mk_eve_attr(id_=consts.EveAttr.can_fit_ship_group3, unit_id=consts.EveAttrUnit.group_id)
+    eve_group_attr1_id = client.mk_eve_attr(id_=consts.EveAttr.can_fit_ship_group1)
+    eve_group_attr2_id = client.mk_eve_attr(id_=consts.EveAttr.can_fit_ship_group2)
+    eve_group_attr3_id = client.mk_eve_attr(id_=consts.EveAttr.can_fit_ship_group3)
     eve_allowed_ship_id = client.mk_eve_ship(grp_id=eve_allowed_grp1_id)
     eve_disallowed_ship_id = client.mk_eve_ship(grp_id=eve_disallowed_grp_id)
     eve_module_id = client.mk_eve_module(attrs={
@@ -135,10 +135,10 @@ def test_combined(client, consts):
     eve_allowed_grp1_id = client.mk_eve_ship_group()
     eve_allowed_grp2_id = client.mk_eve_ship_group()
     eve_disallowed_grp_id = client.mk_eve_ship_group()
-    eve_type_attr1_id = client.mk_eve_attr(id_=consts.EveAttr.can_fit_ship_type8, unit_id=consts.EveAttrUnit.item_id)
-    eve_type_attr2_id = client.mk_eve_attr(id_=consts.EveAttr.can_fit_ship_type10, unit_id=consts.EveAttrUnit.item_id)
-    eve_group_attr1_id = client.mk_eve_attr(id_=consts.EveAttr.can_fit_ship_group4, unit_id=consts.EveAttrUnit.group_id)
-    eve_group_attr2_id = client.mk_eve_attr(id_=consts.EveAttr.can_fit_ship_group9, unit_id=consts.EveAttrUnit.group_id)
+    eve_type_attr1_id = client.mk_eve_attr(id_=consts.EveAttr.can_fit_ship_type8)
+    eve_type_attr2_id = client.mk_eve_attr(id_=consts.EveAttr.can_fit_ship_type10)
+    eve_group_attr1_id = client.mk_eve_attr(id_=consts.EveAttr.can_fit_ship_group4)
+    eve_group_attr2_id = client.mk_eve_attr(id_=consts.EveAttr.can_fit_ship_group9)
     eve_allowed_type_ship_id = client.mk_eve_ship(grp_id=eve_disallowed_grp_id)
     eve_allowed_group_ship_id = client.mk_eve_ship(grp_id=eve_allowed_grp2_id)
     eve_allowed_both_ship_id = client.mk_eve_ship(grp_id=eve_allowed_grp1_id)
@@ -170,7 +170,7 @@ def test_combined(client, consts):
 
 def test_struct(client, consts):
     eve_struct_grp_id = client.mk_eve_struct_group()
-    eve_type_attr_id = client.mk_eve_attr(id_=consts.EveAttr.can_fit_ship_type1, unit_id=consts.EveAttrUnit.item_id)
+    eve_type_attr_id = client.mk_eve_attr(id_=consts.EveAttr.can_fit_ship_type1)
     eve_allowed_struct_id = client.mk_eve_struct(grp_id=eve_struct_grp_id)
     eve_disallowed_struct_id = client.mk_eve_struct(grp_id=eve_struct_grp_id)
     eve_module_id = client.mk_eve_module(
@@ -190,7 +190,7 @@ def test_struct(client, consts):
 
 def test_rig(client, consts):
     eve_ship_grp_id = client.mk_eve_ship_group()
-    eve_type_attr_id = client.mk_eve_attr(id_=consts.EveAttr.can_fit_ship_type12, unit_id=consts.EveAttrUnit.item_id)
+    eve_type_attr_id = client.mk_eve_attr(id_=consts.EveAttr.can_fit_ship_type12)
     eve_allowed_ship_id = client.mk_eve_ship(grp_id=eve_ship_grp_id)
     eve_disallowed_ship_id = client.mk_eve_ship(grp_id=eve_ship_grp_id)
     eve_rig_id = client.mk_eve_rig(attrs={eve_type_attr_id: eve_allowed_ship_id})
@@ -208,7 +208,7 @@ def test_rig(client, consts):
 
 def test_service(client, consts):
     eve_struct_grp_id = client.mk_eve_struct_group()
-    eve_type_attr_id = client.mk_eve_attr(id_=consts.EveAttr.can_fit_ship_type11, unit_id=consts.EveAttrUnit.item_id)
+    eve_type_attr_id = client.mk_eve_attr(id_=consts.EveAttr.can_fit_ship_type11)
     eve_allowed_struct_id = client.mk_eve_struct(grp_id=eve_struct_grp_id)
     eve_disallowed_struct_id = client.mk_eve_struct(grp_id=eve_struct_grp_id)
     eve_service_id = client.mk_eve_service(attrs={eve_type_attr_id: eve_allowed_struct_id})
@@ -227,7 +227,7 @@ def test_service(client, consts):
 def test_subsystem(client, consts):
     # Subsystems have their special limit attribute
     eve_ship_grp_id = client.mk_eve_ship_group()
-    eve_type_attr_id = client.mk_eve_attr(id_=consts.EveAttr.fits_to_ship_type, unit_id=consts.EveAttrUnit.item_id)
+    eve_type_attr_id = client.mk_eve_attr(id_=consts.EveAttr.fits_to_ship_type)
     eve_allowed_ship_id = client.mk_eve_ship(grp_id=eve_ship_grp_id)
     eve_disallowed_ship_id = client.mk_eve_ship(grp_id=eve_ship_grp_id)
     eve_subsystem_id = client.mk_eve_subsystem(attrs={eve_type_attr_id: eve_allowed_ship_id})
@@ -246,8 +246,8 @@ def test_subsystem(client, consts):
 def test_known_failures(client, consts):
     eve_grp1_id = client.mk_eve_ship_group()
     eve_grp2_id = client.mk_eve_ship_group()
-    eve_type_attr_id = client.mk_eve_attr(id_=consts.EveAttr.can_fit_ship_type9, unit_id=consts.EveAttrUnit.item_id)
-    eve_group_attr_id = client.mk_eve_attr(id_=consts.EveAttr.can_fit_ship_group18, unit_id=consts.EveAttrUnit.group_id)
+    eve_type_attr_id = client.mk_eve_attr(id_=consts.EveAttr.can_fit_ship_type9)
+    eve_group_attr_id = client.mk_eve_attr(id_=consts.EveAttr.can_fit_ship_group18)
     eve_ship_id = client.mk_eve_ship(grp_id=eve_grp1_id)
     eve_other_ship_id = client.mk_eve_ship(grp_id=eve_grp2_id)
     eve_limited_module_id = client.mk_eve_module(
@@ -292,7 +292,7 @@ def test_modified_type(client, consts):
     # Verification - unrealistic scenario, but testing here detail of implementation: raw values of
     # attributes are taken, their modification does not affect validation
     eve_ship_grp_id = client.mk_eve_ship_group()
-    eve_type_attr_id = client.mk_eve_attr(id_=consts.EveAttr.can_fit_ship_type1, unit_id=consts.EveAttrUnit.item_id)
+    eve_type_attr_id = client.mk_eve_attr(id_=consts.EveAttr.can_fit_ship_type1)
     eve_allowed_ship_id = client.mk_eve_ship(grp_id=eve_ship_grp_id)
     eve_disallowed_ship_id = client.mk_eve_ship(grp_id=eve_ship_grp_id)
     eve_module_id = client.mk_eve_module(attrs={eve_type_attr_id: eve_allowed_ship_id})
@@ -325,7 +325,7 @@ def test_modified_group(client, consts):
     # attributes are taken, their modification does not affect validation
     eve_allowed_grp_id = client.mk_eve_ship_group()
     eve_disallowed_grp_id = client.mk_eve_ship_group()
-    eve_group_attr_id = client.mk_eve_attr(id_=consts.EveAttr.can_fit_ship_group1, unit_id=consts.EveAttrUnit.group_id)
+    eve_group_attr_id = client.mk_eve_attr(id_=consts.EveAttr.can_fit_ship_group1)
     eve_allowed_ship_id = client.mk_eve_ship(grp_id=eve_allowed_grp_id)
     eve_disallowed_ship_id = client.mk_eve_ship(grp_id=eve_disallowed_grp_id)
     eve_module_id = client.mk_eve_module(attrs={eve_group_attr_id: eve_allowed_grp_id})
@@ -356,8 +356,8 @@ def test_modified_group(client, consts):
 def test_no_ship(client, consts):
     eve_ship_grp1_id = client.mk_eve_ship_group()
     eve_ship_grp2_id = client.mk_eve_ship_group()
-    eve_type_attr_id = client.mk_eve_attr(id_=consts.EveAttr.can_fit_ship_type1, unit_id=consts.EveAttrUnit.item_id)
-    eve_group_attr_id = client.mk_eve_attr(id_=consts.EveAttr.can_fit_ship_group1, unit_id=consts.EveAttrUnit.group_id)
+    eve_type_attr_id = client.mk_eve_attr(id_=consts.EveAttr.can_fit_ship_type1)
+    eve_group_attr_id = client.mk_eve_attr(id_=consts.EveAttr.can_fit_ship_group1)
     eve_ship_id = client.mk_eve_ship(grp_id=eve_ship_grp2_id)
     eve_limited_module_id = client.mk_eve_module(
         attrs={eve_type_attr_id: eve_ship_id, eve_group_attr_id: eve_ship_grp1_id})
@@ -375,7 +375,7 @@ def test_no_ship(client, consts):
 def test_no_attr(client, consts):
     eve_ship_grp_id = client.mk_eve_ship_group()
     eve_type_attr1_id = consts.EveAttr.can_fit_ship_type1
-    eve_type_attr2_id = client.mk_eve_attr(id_=consts.EveAttr.can_fit_ship_type2, unit_id=consts.EveAttrUnit.item_id)
+    eve_type_attr2_id = client.mk_eve_attr(id_=consts.EveAttr.can_fit_ship_type2)
     eve_ship1_id = client.mk_eve_ship(grp_id=eve_ship_grp_id)
     eve_ship2_id = client.mk_eve_ship(grp_id=eve_ship_grp_id)
     eve_module1_id = client.mk_eve_module(attrs={eve_type_attr1_id: eve_ship1_id})
@@ -395,8 +395,8 @@ def test_no_attr(client, consts):
 
 def test_not_loaded_ship(client, consts):
     eve_ship_grp_id = client.mk_eve_ship_group()
-    eve_type_attr_id = client.mk_eve_attr(id_=consts.EveAttr.can_fit_ship_type1, unit_id=consts.EveAttrUnit.item_id)
-    eve_group_attr_id = client.mk_eve_attr(id_=consts.EveAttr.can_fit_ship_group1, unit_id=consts.EveAttrUnit.group_id)
+    eve_type_attr_id = client.mk_eve_attr(id_=consts.EveAttr.can_fit_ship_type1)
+    eve_group_attr_id = client.mk_eve_attr(id_=consts.EveAttr.can_fit_ship_group1)
     eve_ship1_id = client.alloc_item_id()
     eve_ship2_id = client.alloc_item_id()
     eve_module1_id = client.mk_eve_module(attrs={eve_type_attr_id: eve_ship1_id})
@@ -422,7 +422,7 @@ def test_not_loaded_ship(client, consts):
 
 
 def test_criterion_item_kind(client, consts):
-    eve_type_attr_id = client.mk_eve_attr(id_=consts.EveAttr.can_fit_ship_type1, unit_id=consts.EveAttrUnit.item_id)
+    eve_type_attr_id = client.mk_eve_attr(id_=consts.EveAttr.can_fit_ship_type1)
     eve_capacity_attr_id = client.mk_eve_attr(id_=consts.EveAttr.capacity)
     eve_ship_id = client.mk_eve_ship()
     eve_other_ship_id = client.mk_eve_ship()

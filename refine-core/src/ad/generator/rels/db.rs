@@ -9,7 +9,6 @@ use crate::{
 
 pub(in crate::ad::generator) struct KeyDb {
     pub(in crate::ad::generator) items: RMap<KeyPart, ItemFkConds>,
-    pub(in crate::ad::generator) groups: RSet<KeyPart>,
     pub(in crate::ad::generator) item_lists: RSet<KeyPart>,
     pub(in crate::ad::generator) attrs: RSet<KeyPart>,
     pub(in crate::ad::generator) effects: RSet<KeyPart>,
@@ -20,7 +19,6 @@ impl KeyDb {
     pub(in crate::ad::generator) fn new() -> Self {
         Self {
             items: RMap::new(),
-            groups: RSet::new(),
             item_lists: RSet::new(),
             attrs: RSet::new(),
             effects: RSet::new(),
@@ -33,7 +31,6 @@ impl KeyDb {
         let mut pkdb = Self::new();
         let Self {
             items,
-            groups,
             item_lists,
             attrs,
             effects,
@@ -47,7 +44,6 @@ impl KeyDb {
                 .iter()
                 .map(|v| (KeyPart::from_item_eid(v.id), ItemFkConds::met_by(v))),
         );
-        Self::extend_pk_vec(groups, &e_data.groups);
         Self::extend_pk_vec(item_lists, &e_data.item_lists);
         Self::extend_pk_vec(attrs, &e_data.attrs);
         Self::extend_pk_vec(effects, &e_data.effects);
@@ -67,7 +63,8 @@ impl KeyDb {
     pub(in crate::ad::generator) fn new_fkdb(e_data: &EData, adg_supp: &AdgSupport) -> Self {
         let EData {
             items,
-            groups,
+            // Groups refer to nothing
+            groups: _,
             item_lists,
             attrs,
             item_attrs,
@@ -82,7 +79,6 @@ impl KeyDb {
         } = e_data;
         let mut fkdb = Self::new();
         fkdb.extend_fk_vec(items, adg_supp);
-        fkdb.extend_fk_vec(groups, adg_supp);
         fkdb.extend_fk_vec(item_lists, adg_supp);
         fkdb.extend_fk_vec(attrs, adg_supp);
         fkdb.extend_fk_vec(item_attrs, adg_supp);
@@ -103,7 +99,6 @@ impl KeyDb {
     {
         let Self {
             items,
-            groups,
             item_lists,
             attrs,
             effects,
@@ -114,7 +109,6 @@ impl KeyDb {
             for fk in v.iter_item_fks_all(adg_supp) {
                 items.entry(fk.key).or_default().insert(fk.cond);
             }
-            groups.extend(v.get_group_fks(adg_supp));
             item_lists.extend(v.get_item_list_fks(adg_supp));
             attrs.extend(v.get_attr_fks(adg_supp));
             effects.extend(v.get_effect_fks(adg_supp));
@@ -125,7 +119,6 @@ impl KeyDb {
     fn process_standalone_data(&mut self, adg_supp: &AdgSupport) {
         let Self {
             items,
-            groups,
             item_lists,
             attrs,
             effects,
@@ -149,7 +142,6 @@ impl KeyDb {
             item_lists.extend(a_effect.iter_item_list_eids().map(KeyPart::from_item_list_eid));
         }
         for a_buff in adg_supp.standalone_buffs.iter() {
-            groups.extend(a_buff.iter_group_eids().map(KeyPart::from_item_grp_eid));
             attrs.extend(a_buff.iter_attr_eids().map(KeyPart::from_attr_eid));
             buffs.extend(a_buff.iter_buff_eids().map(KeyPart::from_buff_eid))
         }

@@ -18,7 +18,6 @@ class Attribute:
     default_value: float | type[Absent]
     min_attribute_id: int | type[Absent]
     max_attribute_id: int | type[Absent]
-    unit_id: int | type[Absent]
 
     def to_primitives(self, *, primitive_data: EvePrimitives) -> None:
         attr_entry = {'attributeID': self.id}
@@ -27,7 +26,6 @@ class Attribute:
         conditional_insert(container=attr_entry, path=['defaultValue'], value=self.default_value, cast_to=float)
         conditional_insert(container=attr_entry, path=['minAttributeID'], value=self.min_attribute_id, cast_to=int)
         conditional_insert(container=attr_entry, path=['maxAttributeID'], value=self.max_attribute_id, cast_to=int)
-        conditional_insert(container=attr_entry, path=['unitID'], value=self.unit_id, cast_to=int)
         if self.id in primitive_data.dogmaattributes:
             msg = f'attempt to add attribute with duplicate ID {self.id}'
             raise TestDataConsistencyError(msg)

@@ -8,7 +8,7 @@ use crate::{
             rels::{Fk, ItemFkConds, KeyDb, KeyPart, Pk},
         },
     },
-    ed::{EAbil, EAttr, EBuff, EData, EDataCont, EEffect, EItem, EItemAbil, EItemGroup, EItemList},
+    ed::{EAbil, EAttr, EBuff, EData, EDataCont, EEffect, EItem, EItemAbil, EItemList},
     util::{LibNamed, RMap, RSet},
 };
 
@@ -32,7 +32,8 @@ impl ADataGenerator {
         let pkdb = KeyDb::new_pkdb(&self.e_data);
         let EData {
             items,
-            groups,
+            // Groups refer to nothing
+            groups: _,
             item_lists,
             attrs,
             item_attrs,
@@ -46,7 +47,6 @@ impl ADataGenerator {
             muta_attrs,
         } = &self.e_data;
         fk_check_referer(items, &pkdb, &self.support, &mut self.a_data.warnings);
-        fk_check_referer(groups, &pkdb, &self.support, &mut self.a_data.warnings);
         fk_check_referer(item_lists, &pkdb, &self.support, &mut self.a_data.warnings);
         fk_check_referer(attrs, &pkdb, &self.support, &mut self.a_data.warnings);
         fk_check_referer(item_attrs, &pkdb, &self.support, &mut self.a_data.warnings);
@@ -66,7 +66,6 @@ where
 {
     let KeyDb {
         items,
-        groups,
         item_lists,
         attrs,
         effects,
@@ -74,14 +73,6 @@ where
         buffs,
     } = pkdb;
     fk_check_referee_for_item(rer_cont, items, adg_supp, a_warnings);
-    fk_check_referee(
-        rer_cont,
-        groups,
-        adg_supp,
-        a_warnings,
-        T::get_group_fks,
-        EItemGroup::lib_get_name(),
-    );
     fk_check_referee(
         rer_cont,
         item_lists,
@@ -147,29 +138,18 @@ fn fk_check_referee_for_item<T>(
 ) where
     T: Fk + LibNamed,
 {
-    let mut missing = RSet::new();
-    let mut invalid = RSet::new();
-    for fk in referer_cont.data.iter().flat_map(|v| v.iter_item_fks_all(adg_supp)) {
-        match referee_pks.get(&fk.key) {
-            None => {
-                missing.insert(fk.key);
-            }
-            Some(item_conds) if !item_conds.contains(fk.cond) => {
-                invalid.insert(fk.key);
-            }
-            _ => (),
-        }
-    }
+    // FK conditions matter only in cleanup, which keeps only rows whose targets meet them
+    let missing: RSet<_> = referer_cont
+        .data
+        .iter()
+        .flat_map(|v| v.iter_item_fks_all(adg_supp))
+        .filter(|fk| !referee_pks.contains_key(&fk.key))
+        .map(|fk| fk.key)
+        .collect();
     push_fk_warning::<T>(
         a_warnings,
         missing.into_iter().collect(),
         "missing",
-        EItem::lib_get_name(),
-    );
-    push_fk_warning::<T>(
-        a_warnings,
-        invalid.into_iter().collect(),
-        "invalid",
         EItem::lib_get_name(),
     );
 }

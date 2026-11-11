@@ -7,12 +7,8 @@ def test_drone_add_remove(client, consts):
     eve_group1_id = client.mk_eve_drone_group()
     eve_group2_id = client.mk_eve_drone_group()
     eve_group3_id = client.mk_eve_drone_group()
-    eve_limit_attr1_id = client.mk_eve_attr(
-        id_=consts.EveAttr.allowed_drone_group1,
-        unit_id=consts.EveAttrUnit.group_id)
-    eve_limit_attr2_id = client.mk_eve_attr(
-        id_=consts.EveAttr.allowed_drone_group2,
-        unit_id=consts.EveAttrUnit.group_id)
+    eve_limit_attr1_id = client.mk_eve_attr(id_=consts.EveAttr.allowed_drone_group1)
+    eve_limit_attr2_id = client.mk_eve_attr(id_=consts.EveAttr.allowed_drone_group2)
     eve_ship_id = client.mk_eve_ship(attrs={eve_limit_attr1_id: eve_group1_id, eve_limit_attr2_id: eve_group2_id})
     eve_drone1_id = client.mk_eve_drone(grp_id=eve_group1_id)
     eve_drone2_id = client.mk_eve_drone(grp_id=eve_group2_id)
@@ -32,12 +28,8 @@ def test_ship_add_set_remove(client, consts):
     eve_group1_id = client.mk_eve_drone_group()
     eve_group2_id = client.mk_eve_drone_group()
     eve_group3_id = client.mk_eve_drone_group()
-    eve_limit_attr1_id = client.mk_eve_attr(
-        id_=consts.EveAttr.allowed_drone_group1,
-        unit_id=consts.EveAttrUnit.group_id)
-    eve_limit_attr2_id = client.mk_eve_attr(
-        id_=consts.EveAttr.allowed_drone_group2,
-        unit_id=consts.EveAttrUnit.group_id)
+    eve_limit_attr1_id = client.mk_eve_attr(id_=consts.EveAttr.allowed_drone_group1)
+    eve_limit_attr2_id = client.mk_eve_attr(id_=consts.EveAttr.allowed_drone_group2)
     eve_ship1_id = client.mk_eve_ship(attrs={eve_limit_attr1_id: eve_group1_id})
     eve_ship2_id = client.mk_eve_ship()
     eve_ship3_id = client.mk_eve_ship(attrs={eve_limit_attr2_id: eve_group2_id})
@@ -68,12 +60,8 @@ def test_ship_add_set_remove(client, consts):
 def test_rounding(client, consts):
     eve_group1_id = client.mk_eve_drone_group()
     eve_group2_id = client.mk_eve_drone_group()
-    eve_limit_attr1_id = client.mk_eve_attr(
-        id_=consts.EveAttr.allowed_drone_group1,
-        unit_id=consts.EveAttrUnit.group_id)
-    eve_limit_attr2_id = client.mk_eve_attr(
-        id_=consts.EveAttr.allowed_drone_group2,
-        unit_id=consts.EveAttrUnit.group_id)
+    eve_limit_attr1_id = client.mk_eve_attr(id_=consts.EveAttr.allowed_drone_group1)
+    eve_limit_attr2_id = client.mk_eve_attr(id_=consts.EveAttr.allowed_drone_group2)
     eve_ship_id = client.mk_eve_ship(
         attrs={eve_limit_attr1_id: eve_group1_id - 0.4, eve_limit_attr2_id: eve_group1_id + 0.4})
     eve_drone1_id = client.mk_eve_drone(grp_id=eve_group1_id)
@@ -93,7 +81,7 @@ def test_known_failures(client, consts):
     eve_group1_id = client.mk_eve_drone_group()
     eve_group2_id = client.mk_eve_drone_group()
     eve_group3_id = client.mk_eve_drone_group()
-    eve_limit_attr_id = client.mk_eve_attr(id_=consts.EveAttr.allowed_drone_group1, unit_id=consts.EveAttrUnit.group_id)
+    eve_limit_attr_id = client.mk_eve_attr(id_=consts.EveAttr.allowed_drone_group1)
     eve_ship_id = client.mk_eve_ship(attrs={eve_limit_attr_id: eve_group1_id})
     eve_drone1_id = client.mk_eve_drone(grp_id=eve_group1_id)
     eve_drone2_id = client.mk_eve_drone(grp_id=eve_group2_id)
@@ -123,7 +111,7 @@ def test_known_failures(client, consts):
 def test_modified_limit(client, consts):
     eve_group1_id = client.mk_eve_drone_group()
     eve_group2_id = client.mk_eve_drone_group()
-    eve_limit_attr_id = client.mk_eve_attr(id_=consts.EveAttr.allowed_drone_group1, unit_id=consts.EveAttrUnit.group_id)
+    eve_limit_attr_id = client.mk_eve_attr(id_=consts.EveAttr.allowed_drone_group1)
     eve_ship_id = client.mk_eve_ship(attrs={eve_limit_attr_id: eve_group1_id})
     eve_drone1_id = client.mk_eve_drone(grp_id=eve_group1_id)
     eve_drone2_id = client.mk_eve_drone(grp_id=eve_group2_id)
@@ -160,9 +148,7 @@ def test_no_attr(client, consts):
     eve_group1_id = client.mk_eve_drone_group()
     eve_group2_id = client.mk_eve_drone_group()
     eve_limit_attr1_id = consts.EveAttr.allowed_drone_group1
-    eve_limit_attr2_id = client.mk_eve_attr(
-        id_=consts.EveAttr.allowed_drone_group2,
-        unit_id=consts.EveAttrUnit.group_id)
+    eve_limit_attr2_id = client.mk_eve_attr(id_=consts.EveAttr.allowed_drone_group2)
     eve_ship1_id = client.mk_eve_ship(attrs={eve_limit_attr1_id: eve_group2_id})
     eve_ship2_id = client.mk_eve_ship(attrs={eve_limit_attr1_id: eve_group1_id, eve_limit_attr2_id: eve_group2_id})
     eve_drone_id = client.mk_eve_drone(grp_id=eve_group1_id)
@@ -194,7 +180,7 @@ def test_not_loaded_ship(client):
 def test_criterion_item_kind(client, consts):
     eve_drone_group1_id = client.mk_eve_drone_group()
     eve_drone_group2_id = client.mk_eve_drone_group()
-    eve_limit_attr_id = client.mk_eve_attr(id_=consts.EveAttr.allowed_drone_group1, unit_id=consts.EveAttrUnit.group_id)
+    eve_limit_attr_id = client.mk_eve_attr(id_=consts.EveAttr.allowed_drone_group1)
     eve_capacity_attr_id = client.mk_eve_attr(id_=consts.EveAttr.capacity)
     eve_ship_id = client.mk_eve_ship(attrs={eve_limit_attr_id: eve_drone_group1_id})
     eve_booster_id = client.mk_eve_booster()

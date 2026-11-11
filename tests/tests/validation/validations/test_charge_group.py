@@ -5,7 +5,7 @@ from fw.api import ValOptions
 def test_bundled(client, consts):
     eve_grp1_id = client.mk_eve_item_group()
     eve_grp2_id = client.mk_eve_item_group()
-    eve_group_attr_id = client.mk_eve_attr(id_=consts.EveAttr.charge_group1, unit_id=consts.EveAttrUnit.group_id)
+    eve_group_attr_id = client.mk_eve_attr(id_=consts.EveAttr.charge_group1)
     eve_charge1_id = client.mk_eve_item(grp_id=eve_grp1_id)
     eve_charge2_id = client.mk_eve_item(grp_id=eve_grp2_id)
     eve_module_id = client.mk_eve_item(attrs={eve_group_attr_id: eve_grp1_id})
@@ -43,7 +43,7 @@ def test_bundled(client, consts):
 def test_separate(client, consts):
     eve_grp1_id = client.mk_eve_item_group()
     eve_grp2_id = client.mk_eve_item_group()
-    eve_group_attr_id = client.mk_eve_attr(id_=consts.EveAttr.charge_group1, unit_id=consts.EveAttrUnit.group_id)
+    eve_group_attr_id = client.mk_eve_attr(id_=consts.EveAttr.charge_group1)
     eve_charge1_id = client.mk_eve_item(grp_id=eve_grp1_id)
     eve_charge2_id = client.mk_eve_item(grp_id=eve_grp2_id)
     eve_module_id = client.mk_eve_item(attrs={eve_group_attr_id: eve_grp1_id})
@@ -82,8 +82,8 @@ def test_multiple_different(client, consts):
     eve_grp1_id = client.mk_eve_item_group()
     eve_grp2_id = client.mk_eve_item_group()
     eve_grp3_id = client.mk_eve_item_group()
-    eve_group_attr1_id = client.mk_eve_attr(id_=consts.EveAttr.charge_group3, unit_id=consts.EveAttrUnit.group_id)
-    eve_group_attr2_id = client.mk_eve_attr(id_=consts.EveAttr.charge_group4, unit_id=consts.EveAttrUnit.group_id)
+    eve_group_attr1_id = client.mk_eve_attr(id_=consts.EveAttr.charge_group3)
+    eve_group_attr2_id = client.mk_eve_attr(id_=consts.EveAttr.charge_group4)
     eve_charge1_id = client.mk_eve_item(grp_id=eve_grp1_id)
     eve_charge2_id = client.mk_eve_item(grp_id=eve_grp2_id)
     eve_charge3_id = client.mk_eve_item(grp_id=eve_grp3_id)
@@ -116,7 +116,7 @@ def test_multiple_different(client, consts):
 def test_known_failures(client, consts):
     eve_grp1_id = client.mk_eve_item_group()
     eve_grp2_id = client.mk_eve_item_group()
-    eve_group_attr_id = client.mk_eve_attr(id_=consts.EveAttr.charge_group1, unit_id=consts.EveAttrUnit.group_id)
+    eve_group_attr_id = client.mk_eve_attr(id_=consts.EveAttr.charge_group1)
     eve_charge1_id = client.mk_eve_item(grp_id=eve_grp1_id)
     eve_charge2_id = client.mk_eve_item(grp_id=eve_grp2_id)
     eve_module_id = client.mk_eve_item(attrs={eve_group_attr_id: eve_grp1_id})
@@ -150,9 +150,9 @@ def test_rounding(client, consts):
     eve_grp1_id = client.mk_eve_item_group()
     eve_grp2_id = client.mk_eve_item_group()
     eve_grp3_id = client.mk_eve_item_group()
-    eve_group_attr1_id = client.mk_eve_attr(id_=consts.EveAttr.charge_group1, unit_id=consts.EveAttrUnit.group_id)
-    eve_group_attr2_id = client.mk_eve_attr(id_=consts.EveAttr.charge_group2, unit_id=consts.EveAttrUnit.group_id)
-    eve_group_attr3_id = client.mk_eve_attr(id_=consts.EveAttr.charge_group3, unit_id=consts.EveAttrUnit.group_id)
+    eve_group_attr1_id = client.mk_eve_attr(id_=consts.EveAttr.charge_group1)
+    eve_group_attr2_id = client.mk_eve_attr(id_=consts.EveAttr.charge_group2)
+    eve_group_attr3_id = client.mk_eve_attr(id_=consts.EveAttr.charge_group3)
     eve_charge1_id = client.mk_eve_item(grp_id=eve_grp1_id)
     eve_charge2_id = client.mk_eve_item(grp_id=eve_grp2_id)
     eve_charge3_id = client.mk_eve_item(grp_id=eve_grp3_id)
@@ -188,7 +188,7 @@ def test_rounding(client, consts):
 def test_switch_type_id_module(client, consts):
     eve_grp1_id = client.mk_eve_item_group()
     eve_grp2_id = client.mk_eve_item_group()
-    eve_group_attr_id = client.mk_eve_attr(id_=consts.EveAttr.charge_group1, unit_id=consts.EveAttrUnit.group_id)
+    eve_group_attr_id = client.mk_eve_attr(id_=consts.EveAttr.charge_group1)
     eve_charge_id = client.mk_eve_item(grp_id=eve_grp1_id)
     eve_module1_id = client.mk_eve_item(attrs={eve_group_attr_id: eve_grp1_id})
     eve_module2_id = client.mk_eve_item(attrs={eve_group_attr_id: eve_grp2_id})
@@ -226,7 +226,7 @@ def test_switch_type_id_module(client, consts):
 def test_switch_type_id_charge(client, consts):
     eve_grp1_id = client.mk_eve_item_group()
     eve_grp2_id = client.mk_eve_item_group()
-    eve_group_attr_id = client.mk_eve_attr(id_=consts.EveAttr.charge_group1, unit_id=consts.EveAttrUnit.group_id)
+    eve_group_attr_id = client.mk_eve_attr(id_=consts.EveAttr.charge_group1)
     eve_charge1_id = client.mk_eve_item(grp_id=eve_grp1_id)
     eve_charge2_id = client.mk_eve_item(grp_id=eve_grp2_id)
     eve_charge3_id = client.alloc_item_id()
@@ -264,7 +264,7 @@ def test_switch_type_id_charge(client, consts):
 def test_modified(client, consts):
     eve_grp1_id = client.mk_eve_item_group()
     eve_grp2_id = client.mk_eve_item_group()
-    eve_group_attr_id = client.mk_eve_attr(id_=consts.EveAttr.charge_group1, unit_id=consts.EveAttrUnit.group_id)
+    eve_group_attr_id = client.mk_eve_attr(id_=consts.EveAttr.charge_group1)
     eve_charge1_id = client.mk_eve_item(grp_id=eve_grp1_id)
     eve_charge2_id = client.mk_eve_item(grp_id=eve_grp2_id)
     eve_module_id = client.mk_eve_item(attrs={eve_group_attr_id: eve_grp2_id})
@@ -318,8 +318,8 @@ def test_mutation(client, consts):
     eve_grp1_id = client.mk_eve_item_group()
     eve_grp2_id = client.mk_eve_item_group()
     eve_grp3_id = client.mk_eve_item_group()
-    eve_group_attr1_id = client.mk_eve_attr(id_=consts.EveAttr.charge_group1, unit_id=consts.EveAttrUnit.group_id)
-    eve_group_attr2_id = client.mk_eve_attr(id_=consts.EveAttr.charge_group2, unit_id=consts.EveAttrUnit.group_id)
+    eve_group_attr1_id = client.mk_eve_attr(id_=consts.EveAttr.charge_group1)
+    eve_group_attr2_id = client.mk_eve_attr(id_=consts.EveAttr.charge_group2)
     eve_charge1_id = client.mk_eve_item(grp_id=eve_grp1_id)
     client.mk_eve_item(grp_id=eve_grp2_id)
     eve_charge3_id = client.mk_eve_item(grp_id=eve_grp3_id)
@@ -362,7 +362,7 @@ def test_mutation(client, consts):
 
 def test_no_charge(client, consts):
     eve_grp_id = client.mk_eve_item_group()
-    eve_group_attr_id = client.mk_eve_attr(id_=consts.EveAttr.charge_group1, unit_id=consts.EveAttrUnit.group_id)
+    eve_group_attr_id = client.mk_eve_attr(id_=consts.EveAttr.charge_group1)
     eve_module_id = client.mk_eve_item(attrs={eve_group_attr_id: eve_grp_id})
     client.create_sources()
     api_sol = client.create_sol()
@@ -379,7 +379,7 @@ def test_no_attr(client, consts):
     eve_grp1_id = client.mk_eve_item_group()
     eve_grp2_id = client.mk_eve_item_group()
     eve_group_attr1_id = consts.EveAttr.charge_group1
-    eve_group_attr2_id = client.mk_eve_attr(id_=consts.EveAttr.charge_group4, unit_id=consts.EveAttrUnit.group_id)
+    eve_group_attr2_id = client.mk_eve_attr(id_=consts.EveAttr.charge_group4)
     eve_charge_id = client.mk_eve_item(grp_id=eve_grp1_id)
     eve_module1_id = client.mk_eve_item(attrs={eve_group_attr1_id: eve_grp2_id})
     eve_module2_id = client.mk_eve_item(attrs={eve_group_attr1_id: eve_grp1_id, eve_group_attr2_id: eve_grp2_id})
@@ -403,7 +403,7 @@ def test_no_attr(client, consts):
 
 
 def test_not_loaded_module(client, consts):
-    client.mk_eve_attr(id_=consts.EveAttr.charge_group1, unit_id=consts.EveAttrUnit.group_id)
+    client.mk_eve_attr(id_=consts.EveAttr.charge_group1)
     eve_charge_id = client.mk_eve_item()
     eve_module_id = client.alloc_item_id()
     client.create_sources()
@@ -419,7 +419,7 @@ def test_not_loaded_module(client, consts):
 
 def test_not_loaded_charge(client, consts):
     eve_grp_id = client.mk_eve_item_group()
-    eve_group_attr_id = client.mk_eve_attr(id_=consts.EveAttr.charge_group1, unit_id=consts.EveAttrUnit.group_id)
+    eve_group_attr_id = client.mk_eve_attr(id_=consts.EveAttr.charge_group1)
     eve_charge_id = client.alloc_item_id()
     eve_module_id = client.mk_eve_item(attrs={eve_group_attr_id: eve_grp_id})
     client.create_sources()
@@ -436,7 +436,7 @@ def test_not_loaded_charge(client, consts):
 def test_state(client, consts):
     eve_grp1_id = client.mk_eve_item_group()
     eve_grp2_id = client.mk_eve_item_group()
-    eve_group_attr_id = client.mk_eve_attr(id_=consts.EveAttr.charge_group1, unit_id=consts.EveAttrUnit.group_id)
+    eve_group_attr_id = client.mk_eve_attr(id_=consts.EveAttr.charge_group1)
     eve_charge_id = client.mk_eve_item(grp_id=eve_grp1_id)
     eve_module_id = client.mk_eve_item(attrs={eve_group_attr_id: eve_grp2_id})
     client.create_sources()
@@ -462,7 +462,7 @@ def test_state(client, consts):
 def test_criterion_item_kind(client, consts):
     eve_grp1_id = client.mk_eve_item_group()
     eve_grp2_id = client.mk_eve_item_group()
-    eve_group_attr_id = client.mk_eve_attr(id_=consts.EveAttr.charge_group1, unit_id=consts.EveAttrUnit.group_id)
+    eve_group_attr_id = client.mk_eve_attr(id_=consts.EveAttr.charge_group1)
     eve_item_id = client.mk_eve_item(grp_id=eve_grp1_id, attrs={eve_group_attr_id: eve_grp2_id})
     eve_module_id = client.mk_eve_item(grp_id=eve_grp1_id)
     eve_autocharge_attr_id = client.mk_eve_attr(id_=consts.EveAttr.ftr_abil_launch_bomb_type)

@@ -8,12 +8,12 @@ impl ADataGenerator {
     pub(super) fn conv_item_lists(&mut self) {
         // Prepare helper data containers
         let mut types_by_grp = RMapRSet::new();
+        let mut types_by_cat = RMapRSet::new();
         for item in self.e_data.items.data.iter() {
             types_by_grp.add_entry(item.group_id, item.id);
-        }
-        let mut types_by_cat = RMapRSet::new();
-        for group in self.e_data.groups.data.iter() {
-            types_by_cat.extend_entries(group.category_id, types_by_grp.get(&group.id).copied());
+            if let Some(&cat_id) = self.support.grp_cat_map.get(&item.group_id) {
+                types_by_cat.add_entry(cat_id, item.id);
+            }
         }
         // Convert item lists
         let mut a_item_lists = RMap::with_capacity(self.e_data.item_lists.data.len());

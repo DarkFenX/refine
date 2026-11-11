@@ -27,7 +27,7 @@ def test_kfs_restored(client, consts):
     # Charge which is put back after trying charges in its module should keep its known failures
     eve_grp1_id = client.mk_eve_charge_group()
     eve_grp2_id = client.mk_eve_charge_group()
-    eve_group_attr_id = client.mk_eve_attr(id_=consts.EveAttr.charge_group1, unit_id=consts.EveAttrUnit.group_id)
+    eve_group_attr_id = client.mk_eve_attr(id_=consts.EveAttr.charge_group1)
     eve_ban_attr_id = client.mk_eve_attr(id_=consts.EveAttr.disallow_in_empire_space)
     eve_capacity_attr_id = client.mk_eve_attr(id_=consts.EveAttr.capacity)
     eve_charge1_id = client.mk_eve_charge(grp_id=eve_grp1_id, attrs={eve_ban_attr_id: 1})
@@ -92,7 +92,7 @@ def test_module_types(client, consts):
     eve_grp1_id = client.mk_eve_charge_group()
     eve_grp2_id = client.mk_eve_charge_group()
     eve_grp3_id = client.mk_eve_charge_group()
-    eve_group_attr_id = client.mk_eve_attr(id_=consts.EveAttr.charge_group1, unit_id=consts.EveAttrUnit.group_id)
+    eve_group_attr_id = client.mk_eve_attr(id_=consts.EveAttr.charge_group1)
     eve_capacity_attr_id = client.mk_eve_attr(id_=consts.EveAttr.capacity)
     eve_charge1_id = client.mk_eve_charge(grp_id=eve_grp1_id)
     eve_charge2_id = client.mk_eve_charge(grp_id=eve_grp2_id)

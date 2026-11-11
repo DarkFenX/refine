@@ -15,7 +15,6 @@ def test_dynamic_buffs_unreachable(client, consts):
     # Verification
     assert api_src.warnings.adg_cleanup == [
         'cleaned 100.0% of EItem',
-        'cleaned 100.0% of EItemGroup',
         'cleaned 100.0% of EBuff',
         'cleaned 100.0% of EItemBuff']
 
@@ -47,7 +46,6 @@ def test_skipped_mutated_item_absent(client):
     # Verification
     assert api_src.warnings.adg_cleanup == [
         'cleaned 50.0% of EItem',
-        'cleaned 50.0% of EItemGroup',
         'cleaned 100.0% of EMutaItem',
         f'skipped 1 EMutaItem with missing required EItem: {eve_mutated_item_id}']
 
@@ -65,6 +63,16 @@ def test_skipped_mutator_dynamic(client):
     # Verification
     assert api_src.warnings.adg_cleanup == [
         'cleaned 66.7% of EItem',
-        'cleaned 66.7% of EItemGroup',
         'cleaned 100.0% of EMutaItem',
         f'skipped 1 EMutaItem with missing required EItem: {eve_mutator_id}']
+
+
+def test_value_reference(client, consts):
+    # Types referred to only by attribute values are cleaned: such values are used only as IDs
+    eve_skill_attr_id = client.mk_eve_attr(id_=consts.EveAttr.required_skill1)
+    eve_referee_id = client.mk_eve_item(cat_id=consts.EveItemCat.commodity)
+    client.mk_eve_item(attrs={eve_skill_attr_id: eve_referee_id})
+    # Action
+    api_src = client.create_source(cleanup_check=False)
+    # Verification
+    assert api_src.warnings.adg_cleanup == ['cleaned 50.0% of EItem']

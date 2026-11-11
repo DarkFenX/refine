@@ -1,5 +1,5 @@
 use crate::{
-    ad::generator::rels::{Fk, KeyPart, Pk},
+    ad::generator::rels::{KeyPart, Pk},
     ed::EItemGroup,
 };
 
@@ -8,5 +8,3 @@ impl Pk for EItemGroup {
         vec![KeyPart::from_item_grp_eid(self.id)]
     }
 }
-
-impl Fk for EItemGroup {}
