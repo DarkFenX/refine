@@ -3,7 +3,7 @@ use std::hash::Hash;
 use crate::{
     svc::calc::{CalcModification, CalcModificationKey, CtxModKey, CtxModifier, ModAccumFast, RawModSlot, RawModifier},
     ud::UItemId,
-    util::RMap,
+    util::{RMap, ROrdMap},
 };
 
 const MAX_SPARES: usize = 5;
@@ -18,7 +18,7 @@ pub(in crate::svc::calc) struct CalcReuse {
     pub(in crate::svc::calc) rmods: Reuse<Vec<RawModifier>>,
     pub(in crate::svc::calc) ckeys: Reuse<Vec<CtxModKey>>,
     pub(in crate::svc::calc) cmods: Reuse<Vec<CtxModifier>>,
-    pub(in crate::svc::calc) mods: Reuse<RMap<CalcModificationKey, CalcModification>>,
+    pub(in crate::svc::calc) mods: Reuse<ROrdMap<CalcModificationKey, CalcModification>>,
     pub(in crate::svc::calc) accums: Reuse<Option<Box<ModAccumFast>>>,
 }
 
@@ -47,6 +47,18 @@ where
     }
     fn clear(&mut self) {
         RMap::clear(self)
+    }
+}
+impl<K, V> Reusable for ROrdMap<K, V>
+where
+    K: Eq + Hash,
+{
+    fn is_reusable(&self) -> bool {
+        let capacity = self.capacity();
+        capacity > 0 && capacity <= MAX_MAP_CAPACITY
+    }
+    fn clear(&mut self) {
+        ROrdMap::clear(self)
     }
 }
 impl Reusable for Option<Box<ModAccumFast>> {

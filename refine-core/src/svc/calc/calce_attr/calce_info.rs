@@ -16,7 +16,7 @@ use crate::{
         err::UItemLoadedError,
     },
     ud::{UItem, UItemId},
-    util::{RMap, RMapVec, RSet},
+    util::{RMapVec, ROrdMap, RSet},
 };
 
 struct Affection {
@@ -86,7 +86,9 @@ impl Calc {
         item: &UItem,
         attr_rid: RAttrId,
     ) -> impl Iterator<Item = Affection> {
-        let mut affections = RMap::new();
+        // Insertion order, with a later overlapping modification replacing the stored one in place,
+        // as in the fast path, so both combine modifications in the same order
+        let mut affections = ROrdMap::new();
         let mut reuse_ckeys = self.reuse.ckeys.take();
         self.std
             .get_mods_for_affectee(&mut reuse_ckeys, item_uid, item, attr_rid, &ctx.u_data.fits);

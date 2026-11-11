@@ -407,7 +407,8 @@ impl Calc {
                     add_cmod_to_accum(accumulator, modification, attr);
                 }
             }
-            // Use hashmap deduplication for large sets of modifications
+            // Use ordered map deduplication for large sets of modifications; the map keeps
+            // insertion order, as linear deduplication does
             _ => {
                 let mut reuse_mods = self.reuse.mods.take();
                 for ckey in reuse_ckeys.iter() {
@@ -417,8 +418,8 @@ impl Calc {
                     }
                 }
                 self.reuse.ckeys.put(reuse_ckeys);
-                for (_, modification) in reuse_mods.drain() {
-                    add_cmod_to_accum(accumulator, &modification, attr);
+                for modification in reuse_mods.values() {
+                    add_cmod_to_accum(accumulator, modification, attr);
                 }
                 self.reuse.mods.put(reuse_mods);
             }

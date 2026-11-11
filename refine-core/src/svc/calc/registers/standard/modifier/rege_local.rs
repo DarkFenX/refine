@@ -10,6 +10,9 @@ use crate::{
 };
 
 impl StandardRegister {
+    // Keep in sync with query_local_mod: affector attribute changes find local template modifiers
+    // through it, not through a register, so both have to build the same context modifier and skip
+    // the same raw modifiers
     pub(in crate::svc::calc) fn process_local_mod<const OP: RegOp>(
         &mut self,
         item: &UItem,
@@ -72,7 +75,8 @@ impl StandardRegister {
             }
         }
     }
-    // Context modifier the same registration produces, without registering it
+    // Context modifier the same registration produces, without registering it; has to stay in sync
+    // with process_local_mod (same context modifiers, same skipped raw modifiers)
     pub(in crate::svc::calc) fn query_local_mod(item: &UItem, rmod: RawModifier) -> Option<CtxModifier> {
         match rmod.affectee_filter {
             AffecteeFilter::Direct(Location::Item | Location::Other) => Some(CtxModifier::new(rmod)),

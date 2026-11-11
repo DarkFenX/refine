@@ -224,7 +224,10 @@ impl Calc {
             .map(|ckey| self.rmods.get_cmod(ctx.rmt(), ckey))
             .collect_vec();
         // Local template modifiers are not registered by affector attribute, and have to be handled
-        // here
+        // here. They are found through the item's running effects, which take in an effect before
+        // its modifiers register and let it go only after they unregister, so every registered one
+        // is found; during a start or stop a few unregistered ones are too, which only adds
+        // invalidations their registration or unregistration does anyway
         let item = ctx.u_data.items.get(aspec.item_uid);
         if attr.local_rmt_affector
             && let Some(item_rib) = item.get_r_item_base()
