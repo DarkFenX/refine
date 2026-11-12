@@ -37,12 +37,12 @@ impl std::fmt::Debug for JsonZfsAdc {
 // Cacher trait implementation
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl rc::ad::AdaptedDataCacherCore for JsonZfsAdc {
-    fn load_from_cache(&self, fingerprint: &rc::ad::AFingerprint) -> Result<rc::ad::AData, rc::ad::err::AdcReadError> {
+    fn load_from_cache(&self, fingerprint: &rc::ad::AFingerprint) -> Result<rc::ad::AData, rc::ad::err::AdcLoadError> {
         let file = File::open(self.get_cache_path()).map_err(JsonZfsAdcFpReadError::Read)?;
         let mut reader = BufReader::new(file);
         let cached_fingerprint = zfs_shared::read_fp(&mut reader).map_err(JsonZfsAdcFpReadError::from)?;
         if cached_fingerprint != *fingerprint {
-            return Err(rc::ad::err::AdcReadError::FingerprintMismatch(cached_fingerprint));
+            return Err(rc::ad::err::AdcLoadError::FingerprintMismatch(cached_fingerprint));
         }
         let decoder = zstd::stream::Decoder::with_buffer(reader).map_err(JsonZfsAdcDataReadError::Read)?;
         let a_data = serde_json::from_reader(BufReader::new(decoder)).map_err(JsonZfsAdcDataReadError::from)?;

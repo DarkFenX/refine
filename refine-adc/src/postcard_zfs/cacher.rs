@@ -37,12 +37,12 @@ impl std::fmt::Debug for PostcardZfsAdc {
 // Cacher trait implementation
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl rc::ad::AdaptedDataCacherCore for PostcardZfsAdc {
-    fn load_from_cache(&self, fingerprint: &rc::ad::AFingerprint) -> Result<rc::ad::AData, rc::ad::err::AdcReadError> {
+    fn load_from_cache(&self, fingerprint: &rc::ad::AFingerprint) -> Result<rc::ad::AData, rc::ad::err::AdcLoadError> {
         let file = File::open(self.get_cache_path()).map_err(PostcardZfsAdcFpReadError::Read)?;
         let mut reader = BufReader::new(file);
         let cached_fingerprint = zfs_shared::read_fp(&mut reader).map_err(PostcardZfsAdcFpReadError::from)?;
         if cached_fingerprint != *fingerprint {
-            return Err(rc::ad::err::AdcReadError::FingerprintMismatch(cached_fingerprint));
+            return Err(rc::ad::err::AdcLoadError::FingerprintMismatch(cached_fingerprint));
         }
         let mut decoder = zstd::stream::Decoder::with_buffer(reader).map_err(PostcardZfsAdcDataReadError::Read)?;
         // Data is decompressed before parsing, so that zstd verifies checksum at the end of frame

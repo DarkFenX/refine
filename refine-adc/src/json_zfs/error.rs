@@ -15,7 +15,7 @@ impl From<serde_json::Error> for JsonZfsAdcDataReadError {
         }
     }
 }
-impl From<JsonZfsAdcDataReadError> for rc::ad::err::AdcReadError {
+impl From<JsonZfsAdcDataReadError> for rc::ad::err::AdcLoadError {
     fn from(error: JsonZfsAdcDataReadError) -> Self {
         Self::DataRead(Box::new(error))
     }
@@ -36,7 +36,7 @@ impl From<ZfsFpHeaderError> for JsonZfsAdcFpReadError {
         }
     }
 }
-impl From<JsonZfsAdcFpReadError> for rc::ad::err::AdcReadError {
+impl From<JsonZfsAdcFpReadError> for rc::ad::err::AdcLoadError {
     fn from(error: JsonZfsAdcFpReadError) -> Self {
         Self::FingerprintRead(Box::new(error))
     }

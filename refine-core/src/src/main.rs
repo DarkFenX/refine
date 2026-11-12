@@ -5,7 +5,7 @@ use super::{
     info::{SrcInfo, SrcOrigin, SrcOriginGeneratedReason, SrcWarnings},
 };
 use crate::{
-    ad::{AData, ADataGenerator, AFingerprint, AdaptedDataCacher, err::AdcReadError},
+    ad::{AData, ADataGenerator, AFingerprint, AdaptedDataCacher, err::AdcLoadError},
     ed::EveDataHandler,
     rd::RData,
 };
@@ -42,15 +42,15 @@ impl Src {
         let current_fingerprint = AFingerprint::new(&ed_version, &ad_cacher.get_impl().get_cacher_version());
         let reason = match ad_cacher.get_impl().load_from_cache(&current_fingerprint) {
             Ok(a_data) => return process(a_data, SrcOrigin::Cached(current_fingerprint.into_string())),
-            Err(AdcReadError::FingerprintRead(error)) => {
+            Err(AdcLoadError::FingerprintRead(error)) => {
                 SrcOriginGeneratedReason::NoCachedFingerprint(std::error::Report::new(&*error).to_string())
             }
-            Err(AdcReadError::FingerprintMismatch(cached_fingerprint)) => {
+            Err(AdcLoadError::FingerprintMismatch(cached_fingerprint)) => {
                 SrcOriginGeneratedReason::FingerprintMismatch(format!(
                     "needed fingerprint {current_fingerprint}, cached fingerprint {cached_fingerprint}"
                 ))
             }
-            Err(AdcReadError::DataRead(error)) => {
+            Err(AdcLoadError::DataRead(error)) => {
                 SrcOriginGeneratedReason::CacheLoadFailed(std::error::Report::new(&*error).to_string())
             }
         };

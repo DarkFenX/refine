@@ -27,7 +27,7 @@ mod generator;
 
 pub mod err {
     pub use crate::ad::{
-        cacher::{AdcReadError, AdcWriteError},
+        cacher::{AdcLoadError, AdcWriteError},
         generator::{ADataGeneratorCleanupError, ADataGeneratorError},
     };
 }

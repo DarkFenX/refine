@@ -7,7 +7,7 @@ pub enum PostcardZfsAdcDataReadError {
     #[error("parsing failed")]
     Parse(#[source] postcard::Error),
 }
-impl From<PostcardZfsAdcDataReadError> for rc::ad::err::AdcReadError {
+impl From<PostcardZfsAdcDataReadError> for rc::ad::err::AdcLoadError {
     fn from(error: PostcardZfsAdcDataReadError) -> Self {
         Self::DataRead(Box::new(error))
     }
@@ -28,7 +28,7 @@ impl From<ZfsFpHeaderError> for PostcardZfsAdcFpReadError {
         }
     }
 }
-impl From<PostcardZfsAdcFpReadError> for rc::ad::err::AdcReadError {
+impl From<PostcardZfsAdcFpReadError> for rc::ad::err::AdcLoadError {
     fn from(error: PostcardZfsAdcFpReadError) -> Self {
         Self::FingerprintRead(Box::new(error))
     }

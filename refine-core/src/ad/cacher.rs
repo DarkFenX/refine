@@ -37,7 +37,7 @@ impl fmt::Debug for AdaptedDataCacher {
 /// expensive process.
 pub trait AdaptedDataCacherCore: fmt::Debug + Send + Sync {
     /// Load cache with passed fingerprint from persistent storage.
-    fn load_from_cache(&self, fingerprint: &AFingerprint) -> Result<AData, AdcReadError>;
+    fn load_from_cache(&self, fingerprint: &AFingerprint) -> Result<AData, AdcLoadError>;
     /// Store passed data in cache.
     fn write_cache(&self, data: &AData, fingerprint: AFingerprint) -> Result<(), AdcWriteError>;
     /// Get adapted data cacher version.
@@ -48,7 +48,7 @@ pub trait AdaptedDataCacherCore: fmt::Debug + Send + Sync {
 }
 
 #[derive(Debug, thiserror::Error)]
-pub enum AdcReadError {
+pub enum AdcLoadError {
     #[error("unable to read cached fingerprint")]
     FingerprintRead(#[source] Box<dyn std::error::Error + Send + Sync>),
     #[error("cached fingerprint {0} is different")]
