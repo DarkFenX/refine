@@ -43,6 +43,19 @@ impl ThreadPool {
     {
         exec(&self.heavy, func).await
     }
+    pub(crate) fn free_standard<T>(&self, value: T)
+    where
+        T: Send + 'static,
+    {
+        let free_span = tracing::error_span!("free");
+        self.standard.spawn_fifo(move || {
+            let _sg = free_span.enter();
+            // A panic escaping a spawned rayon job aborts the process
+            if catch_unwind(AssertUnwindSafe(move || drop(value))).is_err() {
+                tracing::error!("panic while freeing removed data");
+            }
+        });
+    }
 }
 
 /// A job whose future is dropped before the job starts is skipped. Once started, a job runs to

@@ -36,6 +36,7 @@ impl Refine {
         if sol.inner().is_poisoned() {
             tracing::error!("discarding solar system poisoned by a panic");
             self.id_sol_map.remove(sol.inner_mut());
+            self.tpool.free_standard(sol.take_inner());
             return None;
         }
         Some(sol)

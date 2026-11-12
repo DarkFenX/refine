@@ -23,13 +23,17 @@ impl Refine {
     fn remove_src(&self, alias: &SrcAlias) -> Result<(), SrcRemoveError> {
         tracing::debug!("removing source with alias \"{alias}\"");
         let mut alias_data = self.src_alias_data.write();
-        let extracted_inner_sol = match alias_data.map.remove(alias) {
-            Some(inner_sol) => inner_sol,
+        let removed_src = match alias_data.map.remove(alias) {
+            Some(inner_src) => inner_src,
             None => return Err(SrcRemoveError::SrcNotFound(*alias)),
         };
-        if alias_data.is_default(&extracted_inner_sol) {
-            alias_data.default = None;
-        }
+        let removed_default = match alias_data.is_default(&removed_src) {
+            true => alias_data.default.take(),
+            false => None,
+        };
+        drop(alias_data);
+        // Core source is freed with the last of these unless solar systems still use it
+        self.tpool.free_standard((removed_src, removed_default));
         Ok(())
     }
 }
