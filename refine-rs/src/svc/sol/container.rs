@@ -50,8 +50,9 @@ impl SolMapGuarded {
         self.inner.write().remove(&inner_sol.get_id()).is_some()
     }
     pub(crate) fn remove_if(&self, mut predicate: impl FnMut(&SolInner) -> bool) -> Vec<SolInnerGuarded> {
-        // Move locked sols into separate vector without actually freeing them up just yet, not to
-        // hold map lock longer than needed
+        // Detection & removal under the same map lock, so that solar systems are not taken to do
+        // something and then removed. Removed ones are moved into a vector for the caller to free,
+        // so that they aren't dropped while the map lock is held
         self.inner
             .write()
             .extract_if(|_, inner_sol| match inner_sol.try_lock() {

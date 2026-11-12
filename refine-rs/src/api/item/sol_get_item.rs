@@ -1,10 +1,10 @@
 use rc::ItemCommon;
 
+use crate::{Item, ItemId, Sol};
+
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Public
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-use crate::{Item, ItemId, Sol};
-
 impl<'r, 's> Sol<'r> {
     #[tracing::instrument(name = "itm-get", level = "error", skip_all)]
     pub async fn get_item(&'s mut self, item_id: ItemId) -> Result<Item<'r, 's>, ItemGetError> {
