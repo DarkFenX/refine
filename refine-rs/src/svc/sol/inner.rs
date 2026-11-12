@@ -65,13 +65,12 @@ pub(crate) struct SolInner {
     id: SolId,
     src_alias: Arc<parking_lot::Mutex<SrcAlias>>,
     last_accessed: Instant,
-    // Set when the solar system is removed from the map, so that requests which were waiting for
-    // its lock do not work on it
-    closed: bool,
     // Set while a command runs on the core solar system, and left set if it panics, since its
     // changes can be partially applied
     poisoned: bool,
-    core_sol: rc::SolOwned,
+    // Taken out when the solar system is removed from the map, so that the remover frees it where
+    // it chooses, and requests which were waiting for the lock see a closed solar system
+    core_sol: Option<rc::SolOwned>,
 }
 impl SolInner {
     fn new(id: SolId, src_alias: Arc<parking_lot::Mutex<SrcAlias>>, core_sol: rc::SolOwned) -> Self {
@@ -79,9 +78,8 @@ impl SolInner {
             id,
             src_alias,
             last_accessed: Instant::now(),
-            closed: false,
             poisoned: false,
-            core_sol,
+            core_sol: Some(core_sol),
         }
     }
     pub(crate) fn get_id(&self) -> SolId {
@@ -99,11 +97,11 @@ impl SolInner {
     pub(in crate::svc) fn get_last_accessed(&self) -> Instant {
         self.last_accessed
     }
-    pub(super) fn close(&mut self) {
-        self.closed = true;
+    pub(super) fn close(&mut self) -> Option<rc::SolOwned> {
+        self.core_sol.take()
     }
     pub(crate) fn is_closed(&self) -> bool {
-        self.closed
+        self.core_sol.is_none()
     }
     pub(crate) fn is_poisoned(&self) -> bool {
         self.poisoned
@@ -111,8 +109,10 @@ impl SolInner {
     pub(super) fn exec<R>(&mut self, func: impl FnOnce(&mut rc::SolOwned) -> R) -> R {
         // Reachable only by a caller which caught the panic and kept its handle
         assert!(!self.poisoned, "solar system poisoned by a panic");
+        // Reachable only by a caller which kept its handle after removing the solar system
+        let core_sol = self.core_sol.as_mut().expect("solar system used after removal");
         self.poisoned = true;
-        let result = func(&mut self.core_sol);
+        let result = func(core_sol);
         self.poisoned = false;
         result
     }

@@ -35,8 +35,9 @@ impl Refine {
         }
         if sol.inner().is_poisoned() {
             tracing::error!("discarding solar system poisoned by a panic");
-            self.id_sol_map.remove(sol.inner_mut());
-            self.tpool.free_standard(sol.take_inner());
+            if let Some(core_sol) = self.id_sol_map.remove(sol.inner_mut()) {
+                self.tpool.free_standard(core_sol);
+            }
             return None;
         }
         Some(sol)
