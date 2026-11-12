@@ -36,12 +36,10 @@ impl fmt::Debug for AdaptedDataCacher {
 /// Caching helps to avoid regeneration of adapted data on every run, which is a relatively
 /// expensive process.
 pub trait AdaptedDataCacherCore: fmt::Debug + Send + Sync {
-    /// Get cached data fingerprint.
-    fn get_cache_fingerprint(&self) -> Result<AFingerprint, AdaptedDataCacherError>;
-    /// Load cache from persistent storage.
-    fn load_from_cache(&self) -> Result<AData, AdaptedDataCacherError>;
+    /// Load cache with passed fingerprint from persistent storage.
+    fn load_from_cache(&self, fingerprint: &AFingerprint) -> Result<AData, AdcReadError>;
     /// Store passed data in cache.
-    fn write_cache(&self, data: &AData, fingerprint: AFingerprint) -> Result<(), AdaptedDataCacherError>;
+    fn write_cache(&self, data: &AData, fingerprint: AFingerprint) -> Result<(), AdcWriteError>;
     /// Get adapted data cacher version.
     ///
     /// Change in version triggers adapted data cache rebuild, even if source data and core library
@@ -50,13 +48,15 @@ pub trait AdaptedDataCacherCore: fmt::Debug + Send + Sync {
 }
 
 #[derive(Debug, thiserror::Error)]
-#[error(transparent)]
-pub struct AdaptedDataCacherError(pub Box<dyn std::error::Error + Send + Sync>);
-impl AdaptedDataCacherError {
-    pub fn new<E>(error: E) -> Self
-    where
-        E: std::error::Error + Send + Sync + 'static,
-    {
-        Self(Box::new(error))
-    }
+pub enum AdcReadError {
+    #[error("unable to read cached fingerprint")]
+    FingerprintRead(#[source] Box<dyn std::error::Error + Send + Sync>),
+    #[error("cached fingerprint {0} is different")]
+    FingerprintMismatch(AFingerprint),
+    #[error("unable to read cached data")]
+    DataRead(#[source] Box<dyn std::error::Error + Send + Sync>),
 }
+
+#[derive(Debug, thiserror::Error)]
+#[error(transparent)]
+pub struct AdcWriteError(pub Box<dyn std::error::Error + Send + Sync>);

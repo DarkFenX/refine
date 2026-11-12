@@ -1,3 +1,5 @@
+use crate::zfs_shared::ZfsFpHeaderError;
+
 #[derive(thiserror::Error, Debug)]
 pub enum JsonZfsAdcDataReadError {
     #[error("reading failed")]
@@ -13,9 +15,9 @@ impl From<serde_json::Error> for JsonZfsAdcDataReadError {
         }
     }
 }
-impl From<JsonZfsAdcDataReadError> for rc::ad::err::AdaptedDataCacherError {
+impl From<JsonZfsAdcDataReadError> for rc::ad::err::AdcReadError {
     fn from(error: JsonZfsAdcDataReadError) -> Self {
-        Self::new(error)
+        Self::DataRead(Box::new(error))
     }
 }
 
@@ -23,10 +25,20 @@ impl From<JsonZfsAdcDataReadError> for rc::ad::err::AdaptedDataCacherError {
 pub enum JsonZfsAdcFpReadError {
     #[error("reading failed")]
     Read(#[source] std::io::Error),
+    #[error("fingerprint header is invalid")]
+    Header,
 }
-impl From<JsonZfsAdcFpReadError> for rc::ad::err::AdaptedDataCacherError {
+impl From<ZfsFpHeaderError> for JsonZfsAdcFpReadError {
+    fn from(error: ZfsFpHeaderError) -> Self {
+        match error {
+            ZfsFpHeaderError::Read(error) => Self::Read(error),
+            ZfsFpHeaderError::Invalid => Self::Header,
+        }
+    }
+}
+impl From<JsonZfsAdcFpReadError> for rc::ad::err::AdcReadError {
     fn from(error: JsonZfsAdcFpReadError) -> Self {
-        Self::new(error)
+        Self::FingerprintRead(Box::new(error))
     }
 }
 
@@ -38,8 +50,6 @@ pub enum JsonZfsAdcWriteError {
     DataWrite(#[source] std::io::Error),
     #[error("unable to serialize data")]
     DataSerialize(#[source] serde_json::Error),
-    #[error("unable to write fingerprint")]
-    FpWrite(#[source] std::io::Error),
 }
 impl From<std::io::Error> for JsonZfsAdcWriteError {
     fn from(error: std::io::Error) -> Self {
@@ -54,8 +64,8 @@ impl From<serde_json::Error> for JsonZfsAdcWriteError {
         }
     }
 }
-impl From<JsonZfsAdcWriteError> for rc::ad::err::AdaptedDataCacherError {
+impl From<JsonZfsAdcWriteError> for rc::ad::err::AdcWriteError {
     fn from(error: JsonZfsAdcWriteError) -> Self {
-        Self::new(error)
+        Self(Box::new(error))
     }
 }

@@ -1,11 +1,11 @@
 use std::{
-    fs::{OpenOptions, create_dir_all},
-    io::{self, BufReader, BufWriter, Write},
+    fs::{File, create_dir_all},
+    io::{self, BufReader, Read, Write},
     path::PathBuf,
 };
 
 use super::error::{PostcardZfsAdcDataReadError, PostcardZfsAdcFpReadError, PostcardZfsAdcWriteError};
-use crate::VERSION;
+use crate::{VERSION, zfs_shared};
 
 /// Postcard adapted data cacher implementation.
 ///
@@ -37,34 +37,36 @@ impl std::fmt::Debug for PostcardZfsAdc {
 // Cacher trait implementation
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl rc::ad::AdaptedDataCacherCore for PostcardZfsAdc {
-    fn get_cache_fingerprint(&self) -> Result<rc::ad::AFingerprint, rc::ad::err::AdaptedDataCacherError> {
-        let fingerprint =
-            std::fs::read_to_string(self.get_fingerprint_path()).map_err(PostcardZfsAdcFpReadError::Read)?;
-        Ok(rc::ad::AFingerprint::from_string(fingerprint.trim().into()))
-    }
-    fn load_from_cache(&self) -> Result<rc::ad::AData, rc::ad::err::AdaptedDataCacherError> {
-        let full_path = self.get_cache_path();
-        let file = OpenOptions::new()
-            .read(true)
-            .open(full_path)
+    fn load_from_cache(&self, fingerprint: &rc::ad::AFingerprint) -> Result<rc::ad::AData, rc::ad::err::AdcReadError> {
+        let file = File::open(self.get_cache_path()).map_err(PostcardZfsAdcFpReadError::Read)?;
+        let mut reader = BufReader::new(file);
+        let cached_fingerprint = zfs_shared::read_fp(&mut reader).map_err(PostcardZfsAdcFpReadError::from)?;
+        if cached_fingerprint != *fingerprint {
+            return Err(rc::ad::err::AdcReadError::FingerprintMismatch(cached_fingerprint));
+        }
+        let mut decoder = zstd::stream::Decoder::with_buffer(reader).map_err(PostcardZfsAdcDataReadError::Read)?;
+        // Data is decompressed before parsing, so that zstd verifies checksum at the end of frame
+        // before corrupted data reaches the parser
+        let mut bytes = Vec::new();
+        decoder
+            .read_to_end(&mut bytes)
             .map_err(PostcardZfsAdcDataReadError::Read)?;
-        let reader = zstd::stream::Decoder::new(file).map_err(PostcardZfsAdcDataReadError::Read)?;
-        // Scratch buffer needs to be bigger than the longest string in cache. As of 2026-07-30,
-        // the only stored strings are ADG warnings, and all of them are capped, so 64k is more than
-        // enough.
-        let mut scratch = vec![0; 64 * 1024];
-        let (a_data, _) = postcard::from_io((BufReader::new(reader), scratch.as_mut_slice()))
-            .map_err(PostcardZfsAdcDataReadError::from)?;
+        let a_data = postcard::from_bytes(&bytes).map_err(PostcardZfsAdcDataReadError::Parse)?;
         Ok(a_data)
     }
     fn write_cache(
         &self,
         a_data: &rc::ad::AData,
         fingerprint: rc::ad::AFingerprint,
-    ) -> Result<(), rc::ad::err::AdaptedDataCacherError> {
+    ) -> Result<(), rc::ad::err::AdcWriteError> {
         self.create_cache_dir()?;
-        self.write_data(a_data)?;
-        self.write_fingerprint(fingerprint)?;
+        zfs_shared::write(&self.get_cache_path(), &fingerprint, |writer| {
+            // Data is serialized before writing, since it is compact, this way it's easier, plus
+            // postcard does not keep I/O errors of writers, which results in even more code if
+            // those errors need to be kept
+            let bytes = postcard::to_stdvec(a_data).map_err(PostcardZfsAdcWriteError::DataSerialize)?;
+            writer.write_all(&bytes).map_err(PostcardZfsAdcWriteError::DataWrite)
+        })?;
         Ok(())
     }
     fn get_cacher_version(&self) -> String {
@@ -75,9 +77,6 @@ impl rc::ad::AdaptedDataCacherCore for PostcardZfsAdc {
 impl PostcardZfsAdc {
     fn get_cache_path(&self) -> PathBuf {
         self.dir.join(format!("{}.postcard.zst", self.name))
-    }
-    fn get_fingerprint_path(&self) -> PathBuf {
-        self.dir.join(format!("{}.postcard.zst.fp", self.name))
     }
     fn create_cache_dir(&self) -> Result<(), PostcardZfsAdcWriteError> {
         match create_dir_all(&self.dir) {
@@ -90,29 +89,5 @@ impl PostcardZfsAdc {
                 }
             }
         }
-    }
-    fn write_data(&self, a_data: &rc::ad::AData) -> Result<(), PostcardZfsAdcWriteError> {
-        let cache_path = self.get_cache_path();
-        let file = OpenOptions::new()
-            .create(true)
-            .write(true)
-            .truncate(true)
-            .open(cache_path)?;
-        // zstd has internal input buffer, but it uses FFI which makes it moderately expensive;
-        // postcard writes very few bytes at a time, so native write buffer actually helps
-        let writer = BufWriter::new(zstd::stream::Encoder::new(file, 7)?.auto_finish());
-        postcard::to_io(a_data, writer)?;
-        Ok(())
-    }
-    fn write_fingerprint(&self, fingerprint: rc::ad::AFingerprint) -> Result<(), PostcardZfsAdcWriteError> {
-        let fp_path = self.get_fingerprint_path();
-        let mut file = OpenOptions::new()
-            .create(true)
-            .write(true)
-            .truncate(true)
-            .open(fp_path)
-            .map_err(PostcardZfsAdcWriteError::FpWrite)?;
-        write!(file, "{fingerprint}").map_err(PostcardZfsAdcWriteError::FpWrite)?;
-        Ok(())
     }
 }

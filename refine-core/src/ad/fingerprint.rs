@@ -1,6 +1,6 @@
 use crate::VERSION;
 
-#[derive(Clone, Eq, PartialEq, Hash, derive_more::Display)]
+#[derive(Clone, Eq, PartialEq, Hash, Debug, derive_more::Display)]
 pub struct AFingerprint(String);
 impl AFingerprint {
     pub(crate) fn new(eve_data_version: &str, cacher_version: &str) -> Self {

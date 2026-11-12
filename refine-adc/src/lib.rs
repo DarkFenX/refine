@@ -14,6 +14,8 @@ pub use postcard_zfs::PostcardZfsAdc;
 mod json_zfs;
 #[cfg(feature = "postcard-zfs")]
 mod postcard_zfs;
+#[cfg(any(feature = "json-zfs", feature = "postcard-zfs"))]
+mod zfs_shared;
 
 pub mod err {
     #[cfg(feature = "json-zfs")]

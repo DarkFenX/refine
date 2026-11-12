@@ -5,7 +5,7 @@ use super::{
     info::{SrcInfo, SrcOrigin, SrcOriginGeneratedReason, SrcWarnings},
 };
 use crate::{
-    ad::{AData, ADataGenerator, AFingerprint, AdaptedDataCacher},
+    ad::{AData, ADataGenerator, AFingerprint, AdaptedDataCacher, err::AdcReadError},
     ed::EveDataHandler,
     rd::RData,
 };
@@ -40,43 +40,22 @@ impl Src {
             }
         };
         let current_fingerprint = AFingerprint::new(&ed_version, &ad_cacher.get_impl().get_cacher_version());
-        // No cached fingerprint - generate adapted data and cache it
-        let cached_fingerprint = match ad_cacher.get_impl().get_cache_fingerprint() {
-            Ok(cached_fingerprint) => cached_fingerprint,
-            Err(error) => {
-                return generate_and_cache(
-                    ed_handler,
-                    SrcOrigin::Generated(SrcOriginGeneratedReason::NoCachedFingerprint(
-                        std::error::Report::new(&error).to_string(),
-                    )),
-                    ad_cacher,
-                    current_fingerprint,
-                );
+        let reason = match ad_cacher.get_impl().load_from_cache(&current_fingerprint) {
+            Ok(a_data) => return process(a_data, SrcOrigin::Cached(current_fingerprint.into_string())),
+            Err(AdcReadError::FingerprintRead(error)) => {
+                SrcOriginGeneratedReason::NoCachedFingerprint(std::error::Report::new(&*error).to_string())
+            }
+            Err(AdcReadError::FingerprintMismatch(cached_fingerprint)) => {
+                SrcOriginGeneratedReason::FingerprintMismatch(format!(
+                    "needed fingerprint {current_fingerprint}, cached fingerprint {cached_fingerprint}"
+                ))
+            }
+            Err(AdcReadError::DataRead(error)) => {
+                SrcOriginGeneratedReason::CacheLoadFailed(std::error::Report::new(&*error).to_string())
             }
         };
-        // Fingerprint mismatch - generate adapted data and cache it
-        if cached_fingerprint != current_fingerprint {
-            return generate_and_cache(
-                ed_handler,
-                SrcOrigin::Generated(SrcOriginGeneratedReason::FingerprintMismatch(format!(
-                    "needed fingerprint {current_fingerprint}, cached fingerprint {cached_fingerprint}"
-                ))),
-                ad_cacher,
-                current_fingerprint,
-            );
-        }
-        match ad_cacher.get_impl().load_from_cache() {
-            Ok(a_data) => process(a_data, SrcOrigin::Cached(cached_fingerprint.into_string())),
-            // Cannot load cached data - generate adapted data and cache it
-            Err(error) => generate_and_cache(
-                ed_handler,
-                SrcOrigin::Generated(SrcOriginGeneratedReason::CacheLoadFailed(
-                    std::error::Report::new(&error).to_string(),
-                )),
-                ad_cacher,
-                current_fingerprint,
-            ),
-        }
+        // Cached data is unusable - generate adapted data and cache it
+        generate_and_cache(ed_handler, SrcOrigin::Generated(reason), ad_cacher, current_fingerprint)
     }
     pub fn get_info(&self) -> &SrcInfo {
         &self.info

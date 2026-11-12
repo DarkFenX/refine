@@ -1,11 +1,11 @@
 use std::{
-    fs::{OpenOptions, create_dir_all},
-    io::{self, BufReader, BufWriter, Write},
+    fs::{File, create_dir_all},
+    io::{self, BufReader},
     path::PathBuf,
 };
 
 use super::error::{JsonZfsAdcDataReadError, JsonZfsAdcFpReadError, JsonZfsAdcWriteError};
-use crate::VERSION;
+use crate::{VERSION, zfs_shared};
 
 /// JSON adapted data cacher implementation.
 ///
@@ -37,28 +37,26 @@ impl std::fmt::Debug for JsonZfsAdc {
 // Cacher trait implementation
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl rc::ad::AdaptedDataCacherCore for JsonZfsAdc {
-    fn get_cache_fingerprint(&self) -> Result<rc::ad::AFingerprint, rc::ad::err::AdaptedDataCacherError> {
-        let fingerprint = std::fs::read_to_string(self.get_fingerprint_path()).map_err(JsonZfsAdcFpReadError::Read)?;
-        Ok(rc::ad::AFingerprint::from_string(fingerprint.trim().into()))
-    }
-    fn load_from_cache(&self) -> Result<rc::ad::AData, rc::ad::err::AdaptedDataCacherError> {
-        let full_path = self.get_cache_path();
-        let file = OpenOptions::new()
-            .read(true)
-            .open(full_path)
-            .map_err(JsonZfsAdcDataReadError::Read)?;
-        let reader = zstd::stream::Decoder::new(file).map_err(JsonZfsAdcDataReadError::Read)?;
-        let a_data = serde_json::from_reader(BufReader::new(reader)).map_err(JsonZfsAdcDataReadError::from)?;
+    fn load_from_cache(&self, fingerprint: &rc::ad::AFingerprint) -> Result<rc::ad::AData, rc::ad::err::AdcReadError> {
+        let file = File::open(self.get_cache_path()).map_err(JsonZfsAdcFpReadError::Read)?;
+        let mut reader = BufReader::new(file);
+        let cached_fingerprint = zfs_shared::read_fp(&mut reader).map_err(JsonZfsAdcFpReadError::from)?;
+        if cached_fingerprint != *fingerprint {
+            return Err(rc::ad::err::AdcReadError::FingerprintMismatch(cached_fingerprint));
+        }
+        let decoder = zstd::stream::Decoder::with_buffer(reader).map_err(JsonZfsAdcDataReadError::Read)?;
+        let a_data = serde_json::from_reader(BufReader::new(decoder)).map_err(JsonZfsAdcDataReadError::from)?;
         Ok(a_data)
     }
     fn write_cache(
         &self,
         a_data: &rc::ad::AData,
         fingerprint: rc::ad::AFingerprint,
-    ) -> Result<(), rc::ad::err::AdaptedDataCacherError> {
+    ) -> Result<(), rc::ad::err::AdcWriteError> {
         self.create_cache_dir()?;
-        self.write_data(a_data)?;
-        self.write_fingerprint(fingerprint)?;
+        zfs_shared::write(&self.get_cache_path(), &fingerprint, |writer| {
+            serde_json::to_writer(writer, a_data).map_err(JsonZfsAdcWriteError::from)
+        })?;
         Ok(())
     }
     fn get_cacher_version(&self) -> String {
@@ -69,9 +67,6 @@ impl rc::ad::AdaptedDataCacherCore for JsonZfsAdc {
 impl JsonZfsAdc {
     fn get_cache_path(&self) -> PathBuf {
         self.dir.join(format!("{}.json.zst", self.name))
-    }
-    fn get_fingerprint_path(&self) -> PathBuf {
-        self.dir.join(format!("{}.json.zst.fp", self.name))
     }
     fn create_cache_dir(&self) -> Result<(), JsonZfsAdcWriteError> {
         match create_dir_all(&self.dir) {
@@ -84,29 +79,5 @@ impl JsonZfsAdc {
                 }
             }
         }
-    }
-    fn write_data(&self, a_data: &rc::ad::AData) -> Result<(), JsonZfsAdcWriteError> {
-        let cache_path = self.get_cache_path();
-        let file = OpenOptions::new()
-            .create(true)
-            .write(true)
-            .truncate(true)
-            .open(cache_path)?;
-        // zstd has internal input buffer, but it uses FFI which makes it moderately expensive;
-        // serde-json writes very few bytes at a time, so native write buffer actually helps
-        let writer = BufWriter::new(zstd::stream::Encoder::new(file, 7)?.auto_finish());
-        serde_json::to_writer(writer, a_data)?;
-        Ok(())
-    }
-    fn write_fingerprint(&self, fingerprint: rc::ad::AFingerprint) -> Result<(), JsonZfsAdcWriteError> {
-        let fp_path = self.get_fingerprint_path();
-        let mut file = OpenOptions::new()
-            .create(true)
-            .write(true)
-            .truncate(true)
-            .open(fp_path)
-            .map_err(JsonZfsAdcWriteError::FpWrite)?;
-        write!(file, "{fingerprint}").map_err(JsonZfsAdcWriteError::FpWrite)?;
-        Ok(())
     }
 }
