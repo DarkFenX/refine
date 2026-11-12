@@ -61,6 +61,7 @@ mod custom_serde_ad {
     };
 
     use super::*;
+    use crate::ad::data::shared::get_map_prealloc_capacity;
 
     impl Serialize for AItemSkillReqs {
         fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
@@ -93,8 +94,8 @@ mod custom_serde_ad {
                 where
                     S: SeqAccess<'de>,
                 {
-                    let size_hint = seq.size_hint().unwrap_or(0);
-                    let mut data = CMap::with_capacity(size_hint);
+                    let capacity = get_map_prealloc_capacity::<AItemId, AItemSkillReq>(seq.size_hint());
+                    let mut data = CMap::with_capacity(capacity);
                     while let Some(element) = seq.next_element::<AItemSkillReq>()? {
                         data.insert(element.id, element);
                     }
