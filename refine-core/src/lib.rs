@@ -1,4 +1,5 @@
 #![feature(default_field_values)]
+#![feature(pattern_types)]
 #![feature(type_alias_impl_trait)]
 #![feature(error_reporter)]
 #![feature(structural_match)]
@@ -14,10 +15,6 @@
 #![feature(const_result_trait_fn)]
 #![feature(adt_const_params)]
 #![cfg_attr(feature = "serde", feature(cfg_eval))]
-// Compiler-internal features, still useful
-#![expect(internal_features)]
-#![feature(pattern_types)]
-#![feature(pattern_type_macro)]
 // Error suppression
 #![expect(unevaluated_default_field_value)]
 
