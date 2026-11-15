@@ -17,9 +17,10 @@ def test_fail_single(client, consts):
     assert api_stats.calibration.one() == (approx(150), approx(125))
     api_val = api_fit.validate(options=ValOptions(calibration=True))
     assert api_val.passed is False
-    assert api_val.details.calibration.used == approx(150)
-    assert api_val.details.calibration.max == approx(125)
-    assert api_val.details.calibration.users == {api_rig.id: approx(150)}
+    assert api_val.details.calibration.status == consts.ApiValStatus.failed
+    assert api_val.details.calibration.fail.used == approx(150)
+    assert api_val.details.calibration.fail.max == approx(125)
+    assert api_val.details.calibration.fail.users == {api_rig.id: (consts.ApiValItemStatus.failed, approx(150))}
 
 
 def test_fail_multiple_ship(client, consts):
@@ -39,9 +40,12 @@ def test_fail_multiple_ship(client, consts):
     assert api_stats.calibration.one() == (approx(150), approx(125))
     api_val = api_fit.validate(options=ValOptions(calibration=True))
     assert api_val.passed is False
-    assert api_val.details.calibration.used == approx(150)
-    assert api_val.details.calibration.max == approx(125)
-    assert api_val.details.calibration.users == {api_rig1.id: approx(50), api_rig2.id: approx(100)}
+    assert api_val.details.calibration.status == consts.ApiValStatus.failed
+    assert api_val.details.calibration.fail.used == approx(150)
+    assert api_val.details.calibration.fail.max == approx(125)
+    assert api_val.details.calibration.fail.users == {
+        api_rig1.id: (consts.ApiValItemStatus.failed, approx(50)),
+        api_rig2.id: (consts.ApiValItemStatus.failed, approx(100))}
 
 
 def test_fail_multiple_struct(client, consts):
@@ -61,9 +65,12 @@ def test_fail_multiple_struct(client, consts):
     assert api_stats.calibration.one() == (approx(150), approx(125))
     api_val = api_fit.validate(options=ValOptions(calibration=True))
     assert api_val.passed is False
-    assert api_val.details.calibration.used == approx(150)
-    assert api_val.details.calibration.max == approx(125)
-    assert api_val.details.calibration.users == {api_rig1.id: approx(50), api_rig2.id: approx(100)}
+    assert api_val.details.calibration.status == consts.ApiValStatus.failed
+    assert api_val.details.calibration.fail.used == approx(150)
+    assert api_val.details.calibration.fail.max == approx(125)
+    assert api_val.details.calibration.fail.users == {
+        api_rig1.id: (consts.ApiValItemStatus.failed, approx(50)),
+        api_rig2.id: (consts.ApiValItemStatus.failed, approx(100))}
 
 
 def test_equal(client, consts):
@@ -81,8 +88,7 @@ def test_equal(client, consts):
     assert api_stats.calibration.one() == (approx(150), approx(150))
     api_val = api_fit.validate(options=ValOptions(calibration=True))
     assert api_val.passed is True
-    with check_no_field():
-        api_val.details  # ruff:ignore[useless-expression]
+    assert api_val.details.calibration.status == consts.ApiValStatus.passed
 
 
 def test_known_failures(client, consts):
@@ -106,8 +112,10 @@ def test_known_failures(client, consts):
     assert api_stats.calibration.one() == (approx(150), approx(125))
     api_val = api_fit.validate(options=ValOptions(calibration=[api_rig1.id]))
     assert api_val.passed is True
-    with check_no_field():
-        api_val.details  # ruff:ignore[useless-expression]
+    assert api_val.details.calibration.status == consts.ApiValStatus.passed_kfs
+    assert api_val.details.calibration.fail.used == approx(150)
+    assert api_val.details.calibration.fail.max == approx(125)
+    assert api_val.details.calibration.fail.users == {api_rig1.id: (consts.ApiValItemStatus.kf, 150)}
     # Action
     api_rig2 = api_fit.add_rig(type_id=eve_rig2_id)
     # Verification
@@ -115,22 +123,36 @@ def test_known_failures(client, consts):
     assert api_stats.calibration.one() == (approx(250), approx(125))
     api_val = api_fit.validate(options=ValOptions(calibration=[api_rig1.id]))
     assert api_val.passed is False
-    assert api_val.details.calibration.used == approx(250)
-    assert api_val.details.calibration.max == approx(125)
-    assert api_val.details.calibration.users == {api_rig2.id: 100}
+    assert api_val.details.calibration.status == consts.ApiValStatus.failed
+    assert api_val.details.calibration.fail.used == approx(250)
+    assert api_val.details.calibration.fail.max == approx(125)
+    assert api_val.details.calibration.fail.users == {
+        api_rig1.id: (consts.ApiValItemStatus.kf, 150),
+        api_rig2.id: (consts.ApiValItemStatus.failed, 100)}
     api_val = api_fit.validate(options=ValOptions(calibration=[api_rig2.id]))
     assert api_val.passed is False
-    assert api_val.details.calibration.used == approx(250)
-    assert api_val.details.calibration.max == approx(125)
-    assert api_val.details.calibration.users == {api_rig1.id: 150}
+    assert api_val.details.calibration.status == consts.ApiValStatus.failed
+    assert api_val.details.calibration.fail.used == approx(250)
+    assert api_val.details.calibration.fail.max == approx(125)
+    assert api_val.details.calibration.fail.users == {
+        api_rig1.id: (consts.ApiValItemStatus.failed, 150),
+        api_rig2.id: (consts.ApiValItemStatus.kf, 100)}
     api_val = api_fit.validate(options=ValOptions(calibration=[api_rig1.id, api_rig2.id]))
     assert api_val.passed is True
-    with check_no_field():
-        api_val.details  # ruff:ignore[useless-expression]
+    assert api_val.details.calibration.status == consts.ApiValStatus.passed_kfs
+    assert api_val.details.calibration.fail.used == approx(250)
+    assert api_val.details.calibration.fail.max == approx(125)
+    assert api_val.details.calibration.fail.users == {
+        api_rig1.id: (consts.ApiValItemStatus.kf, 150),
+        api_rig2.id: (consts.ApiValItemStatus.kf, 100)}
     api_val = api_fit.validate(options=ValOptions(calibration=[api_rig1.id, api_other.id, api_rig2.id]))
     assert api_val.passed is True
-    with check_no_field():
-        api_val.details  # ruff:ignore[useless-expression]
+    assert api_val.details.calibration.status == consts.ApiValStatus.passed_kfs
+    assert api_val.details.calibration.fail.used == approx(250)
+    assert api_val.details.calibration.fail.max == approx(125)
+    assert api_val.details.calibration.fail.users == {
+        api_rig1.id: (consts.ApiValItemStatus.kf, 150),
+        api_rig2.id: (consts.ApiValItemStatus.kf, 100)}
     # Action
     api_rig3 = api_fit.add_rig(type_id=eve_rig3_id)
     # Verification
@@ -138,8 +160,12 @@ def test_known_failures(client, consts):
     assert api_stats.calibration.one() == (approx(240), approx(125))
     api_val = api_fit.validate(options=ValOptions(calibration=[api_rig1.id, api_rig2.id]))
     assert api_val.passed is True
-    with check_no_field():
-        api_val.details  # ruff:ignore[useless-expression]
+    assert api_val.details.calibration.status == consts.ApiValStatus.passed_kfs
+    assert api_val.details.calibration.fail.used == approx(240)
+    assert api_val.details.calibration.fail.max == approx(125)
+    assert api_val.details.calibration.fail.users == {
+        api_rig1.id: (consts.ApiValItemStatus.kf, 150),
+        api_rig2.id: (consts.ApiValItemStatus.kf, 100)}
     # Action
     api_rig3.remove()
     api_rig4 = api_fit.add_rig(type_id=eve_rig4_id)
@@ -148,8 +174,12 @@ def test_known_failures(client, consts):
     assert api_stats.calibration.one() == (approx(250), approx(125))
     api_val = api_fit.validate(options=ValOptions(calibration=[api_rig1.id, api_rig2.id]))
     assert api_val.passed is True
-    with check_no_field():
-        api_val.details  # ruff:ignore[useless-expression]
+    assert api_val.details.calibration.status == consts.ApiValStatus.passed_kfs
+    assert api_val.details.calibration.fail.used == approx(250)
+    assert api_val.details.calibration.fail.max == approx(125)
+    assert api_val.details.calibration.fail.users == {
+        api_rig1.id: (consts.ApiValItemStatus.kf, 150),
+        api_rig2.id: (consts.ApiValItemStatus.kf, 100)}
     # Action
     api_rig4.remove()
     api_rig5 = api_fit.add_rig(type_id=eve_rig5_id)
@@ -158,9 +188,13 @@ def test_known_failures(client, consts):
     assert api_stats.calibration.one() == (approx(250.5), approx(125))
     api_val = api_fit.validate(options=ValOptions(calibration=[api_rig1.id, api_rig2.id]))
     assert api_val.passed is False
-    assert api_val.details.calibration.used == 250.5
-    assert api_val.details.calibration.max == 125
-    assert api_val.details.calibration.users == {api_rig5.id: 0.5}
+    assert api_val.details.calibration.status == consts.ApiValStatus.failed
+    assert api_val.details.calibration.fail.used == 250.5
+    assert api_val.details.calibration.fail.max == 125
+    assert api_val.details.calibration.fail.users == {
+        api_rig1.id: (consts.ApiValItemStatus.kf, 150),
+        api_rig2.id: (consts.ApiValItemStatus.kf, 100),
+        api_rig5.id: (consts.ApiValItemStatus.failed, 0.5)}
 
 
 def test_modified_use(client, consts):
@@ -191,9 +225,10 @@ def test_modified_use(client, consts):
     assert api_stats.calibration.one() == (approx(150), approx(125))
     api_val = api_fit.validate(options=ValOptions(calibration=True))
     assert api_val.passed is False
-    assert api_val.details.calibration.used == approx(150)
-    assert api_val.details.calibration.max == approx(125)
-    assert api_val.details.calibration.users == {api_rig.id: approx(150)}
+    assert api_val.details.calibration.status == consts.ApiValStatus.failed
+    assert api_val.details.calibration.fail.used == approx(150)
+    assert api_val.details.calibration.fail.max == approx(125)
+    assert api_val.details.calibration.fail.users == {api_rig.id: (consts.ApiValItemStatus.failed, approx(150))}
     # Action
     api_implant.remove()
     # Verification
@@ -202,9 +237,10 @@ def test_modified_use(client, consts):
     assert api_stats.calibration.one() == (approx(150), approx(125))
     api_val = api_fit.validate(options=ValOptions(calibration=True))
     assert api_val.passed is False
-    assert api_val.details.calibration.used == approx(150)
-    assert api_val.details.calibration.max == approx(125)
-    assert api_val.details.calibration.users == {api_rig.id: approx(150)}
+    assert api_val.details.calibration.status == consts.ApiValStatus.failed
+    assert api_val.details.calibration.fail.used == approx(150)
+    assert api_val.details.calibration.fail.max == approx(125)
+    assert api_val.details.calibration.fail.users == {api_rig.id: (consts.ApiValItemStatus.failed, approx(150))}
 
 
 def test_modified_max(client, consts):
@@ -232,9 +268,10 @@ def test_modified_max(client, consts):
     assert api_stats.calibration.one() == (approx(150), approx(120))
     api_val = api_fit.validate(options=ValOptions(calibration=True))
     assert api_val.passed is False
-    assert api_val.details.calibration.used == approx(150)
-    assert api_val.details.calibration.max == approx(120)
-    assert api_val.details.calibration.users == {api_rig.id: approx(150)}
+    assert api_val.details.calibration.status == consts.ApiValStatus.failed
+    assert api_val.details.calibration.fail.used == approx(150)
+    assert api_val.details.calibration.fail.max == approx(120)
+    assert api_val.details.calibration.fail.users == {api_rig.id: (consts.ApiValItemStatus.failed, approx(150))}
     # Action
     api_fit.add_implant(type_id=eve_implant_id)
     # Verification
@@ -243,8 +280,7 @@ def test_modified_max(client, consts):
     assert api_stats.calibration.one() == (approx(150), approx(180))
     api_val = api_fit.validate(options=ValOptions(calibration=True))
     assert api_val.passed is True
-    with check_no_field():
-        api_val.details  # ruff:ignore[useless-expression]
+    assert api_val.details.calibration.status == consts.ApiValStatus.passed
 
 
 def test_rounding(client, consts):
@@ -265,9 +301,12 @@ def test_rounding(client, consts):
     assert api_stats.calibration.one() == (approx(5.229), approx(5.223))
     api_val = api_fit.validate(options=ValOptions(calibration=True))
     assert api_val.passed is False
-    assert api_val.details.calibration.used == approx(5.229)
-    assert api_val.details.calibration.max == approx(5.223)
-    assert api_val.details.calibration.users == {api_rig1.id: approx(0.002), api_rig2.id: approx(5.227)}
+    assert api_val.details.calibration.status == consts.ApiValStatus.failed
+    assert api_val.details.calibration.fail.used == approx(5.229)
+    assert api_val.details.calibration.fail.max == approx(5.223)
+    assert api_val.details.calibration.fail.users == {
+        api_rig1.id: (consts.ApiValItemStatus.failed, approx(0.002)),
+        api_rig2.id: (consts.ApiValItemStatus.failed, approx(5.227))}
 
 
 def test_no_ship(client, consts):
@@ -283,9 +322,10 @@ def test_no_ship(client, consts):
     assert api_stats.calibration.one() == (approx(5), None)
     api_val = api_fit.validate(options=ValOptions(calibration=True))
     assert api_val.passed is False
-    assert api_val.details.calibration.used == approx(5)
-    assert api_val.details.calibration.max is None
-    assert api_val.details.calibration.users == {api_rig.id: approx(5)}
+    assert api_val.details.calibration.status == consts.ApiValStatus.failed
+    assert api_val.details.calibration.fail.used == approx(5)
+    assert api_val.details.calibration.fail.max is None
+    assert api_val.details.calibration.fail.users == {api_rig.id: (consts.ApiValItemStatus.failed, approx(5))}
 
 
 def test_not_loaded_ship(client, consts):
@@ -303,9 +343,10 @@ def test_not_loaded_ship(client, consts):
     assert api_stats.calibration.one() == (approx(5), None)
     api_val = api_fit.validate(options=ValOptions(calibration=True))
     assert api_val.passed is False
-    assert api_val.details.calibration.used == approx(5)
-    assert api_val.details.calibration.max is None
-    assert api_val.details.calibration.users == {api_rig.id: approx(5)}
+    assert api_val.details.calibration.status == consts.ApiValStatus.failed
+    assert api_val.details.calibration.fail.used == approx(5)
+    assert api_val.details.calibration.fail.max is None
+    assert api_val.details.calibration.fail.users == {api_rig.id: (consts.ApiValItemStatus.failed, approx(5))}
 
 
 def test_not_loaded_user(client, consts):
@@ -324,8 +365,7 @@ def test_not_loaded_user(client, consts):
     assert api_stats.calibration.one() == (approx(0), approx(125))
     api_val = api_fit.validate(options=ValOptions(calibration=True))
     assert api_val.passed is True
-    with check_no_field():
-        api_val.details  # ruff:ignore[useless-expression]
+    assert api_val.details.calibration.status == consts.ApiValStatus.passed
 
 
 def test_non_positive(client, consts):
@@ -347,9 +387,10 @@ def test_non_positive(client, consts):
     assert api_stats.calibration.one() == (approx(140), approx(125))
     api_val = api_fit.validate(options=ValOptions(calibration=True))
     assert api_val.passed is False
-    assert api_val.details.calibration.used == approx(140)
-    assert api_val.details.calibration.max == approx(125)
-    assert api_val.details.calibration.users == {api_rig2.id: approx(150)}
+    assert api_val.details.calibration.status == consts.ApiValStatus.failed
+    assert api_val.details.calibration.fail.used == approx(140)
+    assert api_val.details.calibration.fail.max == approx(125)
+    assert api_val.details.calibration.fail.users == {api_rig2.id: (consts.ApiValItemStatus.failed, approx(150))}
 
 
 def test_no_value_use(client, consts):
@@ -369,9 +410,10 @@ def test_no_value_use(client, consts):
     assert api_stats.calibration.one() == (approx(150), approx(125))
     api_val = api_fit.validate(options=ValOptions(calibration=True))
     assert api_val.passed is False
-    assert api_val.details.calibration.used == approx(150)
-    assert api_val.details.calibration.max == approx(125)
-    assert api_val.details.calibration.users == {api_rig1.id: approx(150)}
+    assert api_val.details.calibration.status == consts.ApiValStatus.failed
+    assert api_val.details.calibration.fail.used == approx(150)
+    assert api_val.details.calibration.fail.max == approx(125)
+    assert api_val.details.calibration.fail.users == {api_rig1.id: (consts.ApiValItemStatus.failed, approx(150))}
 
 
 def test_no_value_max(client, consts):
@@ -389,9 +431,10 @@ def test_no_value_max(client, consts):
     assert api_stats.calibration.one() == (approx(150), approx(0))
     api_val = api_fit.validate(options=ValOptions(calibration=True))
     assert api_val.passed is False
-    assert api_val.details.calibration.used == approx(150)
-    assert api_val.details.calibration.max == approx(0)
-    assert api_val.details.calibration.users == {api_rig.id: approx(150)}
+    assert api_val.details.calibration.status == consts.ApiValStatus.failed
+    assert api_val.details.calibration.fail.used == approx(150)
+    assert api_val.details.calibration.fail.max == approx(0)
+    assert api_val.details.calibration.fail.users == {api_rig.id: (consts.ApiValItemStatus.failed, approx(150))}
 
 
 def test_no_attr_use(client, consts):
@@ -407,8 +450,7 @@ def test_no_attr_use(client, consts):
     # Verification - users are assumed to take no resource when attribute does not exist
     api_val = api_fit.validate(options=ValOptions(calibration=True))
     assert api_val.passed is True
-    with check_no_field():
-        api_val.details  # ruff:ignore[useless-expression]
+    assert api_val.details.calibration.status == consts.ApiValStatus.passed
 
 
 def test_no_attr_max(client, consts):
@@ -424,9 +466,10 @@ def test_no_attr_max(client, consts):
     # Verification - when output attr does not exist, it is assumed to be 0
     api_val = api_fit.validate(options=ValOptions(calibration=True))
     assert api_val.passed is False
-    assert api_val.details.calibration.used == approx(50)
-    assert api_val.details.calibration.max == approx(0)
-    assert api_val.details.calibration.users == {api_rig.id: approx(50)}
+    assert api_val.details.calibration.status == consts.ApiValStatus.failed
+    assert api_val.details.calibration.fail.used == approx(50)
+    assert api_val.details.calibration.fail.max == approx(0)
+    assert api_val.details.calibration.fail.users == {api_rig.id: (consts.ApiValItemStatus.failed, approx(50))}
 
 
 def test_criterion_rig_state(client, consts):
@@ -444,8 +487,7 @@ def test_criterion_rig_state(client, consts):
     assert api_stats.calibration.one() == (approx(0), approx(125))
     api_val = api_fit.validate(options=ValOptions(calibration=True))
     assert api_val.passed is True
-    with check_no_field():
-        api_val.details  # ruff:ignore[useless-expression]
+    assert api_val.details.calibration.status == consts.ApiValStatus.passed
     # Action
     api_rig.change_rig(state=True)
     # Verification
@@ -453,9 +495,10 @@ def test_criterion_rig_state(client, consts):
     assert api_stats.calibration.one() == (approx(150), approx(125))
     api_val = api_fit.validate(options=ValOptions(calibration=True))
     assert api_val.passed is False
-    assert api_val.details.calibration.used == approx(150)
-    assert api_val.details.calibration.max == approx(125)
-    assert api_val.details.calibration.users == {api_rig.id: approx(150)}
+    assert api_val.details.calibration.status == consts.ApiValStatus.failed
+    assert api_val.details.calibration.fail.used == approx(150)
+    assert api_val.details.calibration.fail.max == approx(125)
+    assert api_val.details.calibration.fail.users == {api_rig.id: (consts.ApiValItemStatus.failed, approx(150))}
     # Action
     api_rig.change_rig(state=False)
     # Verification
@@ -463,8 +506,7 @@ def test_criterion_rig_state(client, consts):
     assert api_stats.calibration.one() == (approx(0), approx(125))
     api_val = api_fit.validate(options=ValOptions(calibration=True))
     assert api_val.passed is True
-    with check_no_field():
-        api_val.details  # ruff:ignore[useless-expression]
+    assert api_val.details.calibration.status == consts.ApiValStatus.passed
 
 
 def test_criterion_item_kind(client, consts):
@@ -501,8 +543,7 @@ def test_criterion_item_kind(client, consts):
     assert api_stats.calibration.one() == (approx(0), approx(125))
     api_val = api_fit.validate(options=ValOptions(calibration=True))
     assert api_val.passed is True
-    with check_no_field():
-        api_val.details  # ruff:ignore[useless-expression]
+    assert api_val.details.calibration.status == consts.ApiValStatus.passed
 
 
 def test_stat_not_requested(client, consts):
