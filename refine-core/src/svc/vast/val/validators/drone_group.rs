@@ -7,6 +7,7 @@ use crate::{
     svc::{SvcCtx, vast::VastFitData},
     ud::UItemId,
     util::RSet,
+    val::{ValItemStatus, ValResult},
 };
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -23,17 +24,16 @@ pub struct ValDroneGroupFail {
     /// Drone item groups allowed by the ship.
     pub allowed_group_ids: Vec<ItemGrpId>,
     /// Drones breaking the validation and their groups.
-    #[cfg_attr(feature = "serde", serde_as(as = "refine_serde::VecAsMap"))]
+    #[cfg_attr(feature = "serde", serde_as(as = "serde_with::KeyValueMap<_>"))]
     pub drone_groups: Vec<ValDroneGroupInfo>,
 }
 
 /// Drones which break the validation and their group.
-#[cfg_attr(feature = "serde", derive(refine_serde::VecAsMapEntry))]
+#[cfg_attr(feature = "serde", derive(serde_tuple::Serialize_tuple))]
 #[derive(Copy, Clone)]
 pub struct ValDroneGroupInfo {
-    #[cfg_attr(feature = "serde", vec_map(key))]
     pub drone_id: ItemId,
-    #[cfg_attr(feature = "serde", vec_map(value))]
+    pub status: ValItemStatus,
     pub group_id: ItemGrpId,
 }
 
@@ -53,32 +53,30 @@ impl VastFitData {
         &self,
         kfs: &RSet<UItemId>,
         ctx: &SvcCtx,
-    ) -> Option<ValDroneGroupFail> {
+    ) -> ValResult<ValDroneGroupFail> {
         if self.drone_groups.is_empty() {
-            return None;
+            return ValResult::Passed;
         }
         let drone_groups = self
             .drone_groups
             .iter()
-            .filter_map(|(drone_uid, drone_group_aid)| match kfs.contains(drone_uid) {
-                true => None,
-                false => Some(ValDroneGroupInfo {
-                    drone_id: ctx.u_data.items.ext_id_by_int_id(*drone_uid),
-                    group_id: ItemGrpId::from_aid(*drone_group_aid),
-                }),
+            .map(|(&drone_uid, &drone_group_aid)| ValDroneGroupInfo {
+                drone_id: ctx.u_data.items.ext_id_by_int_id(drone_uid),
+                status: ValItemStatus::from_kfs(kfs, drone_uid),
+                group_id: ItemGrpId::from_aid(drone_group_aid),
             })
             .collect_vec();
-        match drone_groups.is_empty() {
-            true => None,
-            false => Some(ValDroneGroupFail {
+        ValResult::from_fail(
+            drone_groups.iter().all(|v| v.status.is_kf()),
+            ValDroneGroupFail {
                 allowed_group_ids: self
                     .drone_group_limit
                     .iter()
                     .map(|grp_aid| ItemGrpId::from_aid(*grp_aid))
                     .collect(),
                 drone_groups,
-            }),
-        }
+            },
+        )
     }
 }
 

@@ -5,6 +5,7 @@ use crate::{
     svc::{Calc, SvcCtx, vast::VastFitData},
     ud::UItemId,
     util::{RMap, RMapRSet, RSet},
+    val::{ValItemStatus, ValResult},
 };
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -37,18 +38,17 @@ pub struct ValMaxGroupGroupInfo {
     /// How many items are in the group, in high enough state to count for validation purposes.
     pub group_item_count: Count,
     /// Offending items and their group limits.
-    #[cfg_attr(feature = "serde", serde_as(as = "refine_serde::VecAsMap"))]
+    #[cfg_attr(feature = "serde", serde_as(as = "serde_with::KeyValueMap<_>"))]
     pub items: Vec<ValMaxGroupItemInfo>,
 }
 
-#[cfg_attr(feature = "serde", derive(refine_serde::VecAsMapEntry))]
+#[cfg_attr(feature = "serde", derive(serde_tuple::Serialize_tuple))]
 #[derive(Copy, Clone)]
 pub struct ValMaxGroupItemInfo {
     /// Item which failed validation.
-    #[cfg_attr(feature = "serde", vec_map(key))]
     pub item_id: ItemId,
+    pub status: ValItemStatus,
     /// Max count of items in the group for this item not to fail the validation.
-    #[cfg_attr(feature = "serde", vec_map(value))]
     pub limit: Count,
 }
 
@@ -108,7 +108,7 @@ impl VastFitData {
         kfs: &RSet<UItemId>,
         ctx: &SvcCtx,
         calc: &mut Calc,
-    ) -> Option<ValMaxGroupFail> {
+    ) -> ValResult<ValMaxGroupFail> {
         validate_verbose(
             kfs,
             ctx,
@@ -123,7 +123,7 @@ impl VastFitData {
         kfs: &RSet<UItemId>,
         ctx: &SvcCtx,
         calc: &mut Calc,
-    ) -> Option<ValMaxGroupFail> {
+    ) -> ValResult<ValMaxGroupFail> {
         validate_verbose(
             kfs,
             ctx,
@@ -138,7 +138,7 @@ impl VastFitData {
         kfs: &RSet<UItemId>,
         ctx: &SvcCtx,
         calc: &mut Calc,
-    ) -> Option<ValMaxGroupFail> {
+    ) -> ValResult<ValMaxGroupFail> {
         validate_verbose(
             kfs,
             ctx,
@@ -178,13 +178,15 @@ fn validate_verbose(
     max_group_all: &RMapRSet<AItemGrpId, UItemId>,
     max_group_limited: &RMap<UItemId, AItemGrpId>,
     attr_rid: Option<RAttrId>,
-) -> Option<ValMaxGroupFail> {
-    let attr_rid = attr_rid?;
+) -> ValResult<ValMaxGroupFail> {
+    let Some(attr_rid) = attr_rid else {
+        return ValResult::Passed;
+    };
     let mut groups = RMap::new();
     for (&item_uid, &item_grp_aid) in max_group_limited.iter() {
         let item_limit = get_max_allowed_item_count(ctx, calc, item_uid, attr_rid);
         let actual = get_actual_item_count(max_group_all, &item_grp_aid);
-        if actual > item_limit && !kfs.contains(&item_uid) {
+        if actual > item_limit {
             groups
                 .entry(item_grp_aid)
                 .or_insert_with(|| ValMaxGroupGroupInfo {
@@ -195,15 +197,18 @@ fn validate_verbose(
                 .items
                 .push(ValMaxGroupItemInfo {
                     item_id: ctx.u_data.items.ext_id_by_int_id(item_uid),
+                    status: ValItemStatus::from_kfs(kfs, item_uid),
                     limit: item_limit,
                 });
         }
     }
+    let groups: Vec<_> = groups.into_values().collect();
     match groups.is_empty() {
-        true => None,
-        false => Some(ValMaxGroupFail {
-            groups: groups.into_values().collect(),
-        }),
+        true => ValResult::Passed,
+        false => ValResult::from_fail(
+            groups.iter().flat_map(|v| v.items.iter()).all(|v| v.status.is_kf()),
+            ValMaxGroupFail { groups },
+        ),
     }
 }
 

@@ -1,18 +1,27 @@
+use itertools::Itertools;
+
 use crate::{
-    ItemId,
     svc::{SvcCtx, Vast, vast::VastFitData},
     ud::UItemId,
     util::RSet,
+    val::{ValItemInfo, ValResult},
 };
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Result
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-#[cfg_attr(feature = "serde", derive(serde::Serialize), serde(transparent))]
+#[cfg_attr(
+    feature = "serde",
+    cfg_eval,
+    serde_with::serde_as,
+    derive(serde::Serialize),
+    serde(transparent)
+)]
 #[derive(Clone)]
 pub struct ValNotLoadedItemFail {
     /// Items which couldn't be loaded from current sol data source.
-    pub item_ids: Vec<ItemId>,
+    #[cfg_attr(feature = "serde", serde_as(as = "refine_serde::VecAsMap"))]
+    pub items: Vec<ValItemInfo>,
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -26,7 +35,7 @@ impl Vast {
         &self,
         kfs: &RSet<UItemId>,
         ctx: &SvcCtx,
-    ) -> Option<ValNotLoadedItemFail> {
+    ) -> ValResult<ValNotLoadedItemFail> {
         validate_verbose(kfs, &self.not_loaded, ctx)
     }
 }
@@ -39,7 +48,7 @@ impl VastFitData {
         &self,
         kfs: &RSet<UItemId>,
         ctx: &SvcCtx,
-    ) -> Option<ValNotLoadedItemFail> {
+    ) -> ValResult<ValNotLoadedItemFail> {
         validate_verbose(kfs, &self.not_loaded, ctx)
     }
 }
@@ -51,16 +60,13 @@ fn validate_fast(kfs: &RSet<UItemId>, not_loaded: &RSet<UItemId>) -> bool {
     }
 }
 
-fn validate_verbose(kfs: &RSet<UItemId>, not_loaded: &RSet<UItemId>, ctx: &SvcCtx) -> Option<ValNotLoadedItemFail> {
-    let item_ids: Vec<_> = not_loaded
+fn validate_verbose(kfs: &RSet<UItemId>, not_loaded: &RSet<UItemId>, ctx: &SvcCtx) -> ValResult<ValNotLoadedItemFail> {
+    let items = not_loaded
         .iter()
-        .filter_map(|&item_uid| match kfs.contains(&item_uid) {
-            true => None,
-            false => Some(ctx.u_data.items.ext_id_by_int_id(item_uid)),
-        })
-        .collect();
-    match item_ids.is_empty() {
-        true => None,
-        false => Some(ValNotLoadedItemFail { item_ids }),
+        .map(|&item_uid| ValItemInfo::from_uid(kfs, ctx, item_uid))
+        .collect_vec();
+    match items.is_empty() {
+        true => ValResult::Passed,
+        false => ValResult::from_fail(items.iter().all(|v| v.status.is_kf()), ValNotLoadedItemFail { items }),
     }
 }

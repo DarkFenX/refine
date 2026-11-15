@@ -5,6 +5,7 @@ use crate::{
     svc::{Calc, SvcCtx, vast::VastFitData},
     ud::{UItem, UItemId},
     util::RSet,
+    val::{ValItemStatus, ValResult},
 };
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -20,18 +21,17 @@ use crate::{
 pub struct ValUnusableCapFail {
     /// Cap use of any item can't exceed this value.
     pub max_cap: PValue,
-    #[cfg_attr(feature = "serde", serde_as(as = "refine_serde::VecAsMap"))]
+    #[cfg_attr(feature = "serde", serde_as(as = "serde_with::KeyValueMap<_>"))]
     pub items: Vec<ValUnusableCapItemInfo>,
 }
 
-#[cfg_attr(feature = "serde", derive(refine_serde::VecAsMapEntry))]
+#[cfg_attr(feature = "serde", derive(serde_tuple::Serialize_tuple))]
 #[derive(Copy, Clone)]
 pub struct ValUnusableCapItemInfo {
     /// Item which fails the validation.
-    #[cfg_attr(feature = "serde", vec_map(key))]
     pub item_id: ItemId,
+    pub status: ValItemStatus,
     /// Cap amount this item takes per cycle.
-    #[cfg_attr(feature = "serde", vec_map(value))]
     pub cap_use: PValue,
 }
 
@@ -78,14 +78,18 @@ impl VastFitData {
         ctx: &SvcCtx,
         calc: &mut Calc,
         ship_uid: Option<UItemId>,
-    ) -> Option<ValUnusableCapFail> {
-        let ship_uid = ship_uid?;
+    ) -> ValResult<ValUnusableCapFail> {
+        let Some(ship_uid) = ship_uid else {
+            return ValResult::Passed;
+        };
         if self.mods_cap_consumers.is_empty() {
-            return None;
+            return ValResult::Passed;
         }
         // Pass validation if ship is not loaded
-        let max_cap = calc.get_item_oattr_afb_oextra(ctx, ship_uid, ctx.ac().capacitor_capacity, Value::ZERO)?;
-        let max_cap = PValue::from_finite_value_clamped(max_cap);
+        let max_cap = match calc.get_item_oattr_afb_oextra(ctx, ship_uid, ctx.ac().capacitor_capacity, Value::ZERO) {
+            Some(max_cap) => PValue::from_finite_value_clamped(max_cap),
+            None => return ValResult::Passed,
+        };
         let mut items = Vec::new();
         for &item_uid in self.mods_cap_consumers.iter() {
             let u_item = ctx.u_data.items.get(item_uid);
@@ -98,16 +102,20 @@ impl VastFitData {
             else {
                 continue;
             };
-            if max_item_use > max_cap && !kfs.contains(&item_uid) {
+            if max_item_use > max_cap {
                 items.push(ValUnusableCapItemInfo {
                     item_id: ctx.u_data.items.ext_id_by_int_id(item_uid),
+                    status: ValItemStatus::from_kfs(kfs, item_uid),
                     cap_use: max_item_use,
                 });
             }
         }
         match items.is_empty() {
-            true => None,
-            false => Some(ValUnusableCapFail { max_cap, items }),
+            true => ValResult::Passed,
+            false => ValResult::from_fail(
+                items.iter().all(|v| v.status.is_kf()),
+                ValUnusableCapFail { max_cap, items },
+            ),
         }
     }
 }

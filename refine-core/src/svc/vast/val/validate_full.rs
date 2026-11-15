@@ -30,13 +30,11 @@ impl Vast {
         calc: &mut Calc,
         options: &ValOptionsSolInt,
     ) -> ValResultSol {
-        let mut sol_result = ValResultSol::new();
+        let mut sol_result = ValResultSol::with_fit_capacity(options.fit_uids.len());
         for &fit_uid in options.fit_uids.iter() {
             let fit_result = self.validate_fit_verbose(ctx, calc, fit_uid, &options.options);
-            if !fit_result.all_passed() {
-                let fit_id = ctx.u_data.fits.ext_id_by_int_id(fit_uid);
-                sol_result.fits.push((fit_id, fit_result));
-            }
+            let fit_id = ctx.u_data.fits.ext_id_by_int_id(fit_uid);
+            sol_result.fits.push((fit_id, fit_result));
         }
         if let ValOptionInt::Enabled(opts) = options.options.get(ValKind::NotLoadedItem) {
             sol_result.not_loaded_item = self.validate_not_loaded_item_verbose(&opts.kfs, ctx);
@@ -469,11 +467,14 @@ impl Vast {
         let ship = fit.ship.map(|v| ctx.u_data.items.get(v).dc_ship().unwrap());
         let mut result = ValResultFit { .. };
         let ValResultFit {
+            // Generic
             not_loaded_item,
             item_kind,
             skill_reqs,
+            // Implants/boosters
             implant_slot_index,
             booster_slot_index,
+            // Shared between mod-alike items
             cpu,
             powergrid,
             ship_limit,
@@ -482,6 +483,7 @@ impl Vast {
             max_group_active,
             max_type_fitted,
             item_vs_ship_kind,
+            // Modules
             high_slot_count,
             mid_slot_count,
             low_slot_count,
@@ -491,22 +493,28 @@ impl Vast {
             capital_module,
             overload_skill,
             unusable_cap,
+            // Charges
             charge_group,
             charge_size,
             charge_volume,
+            // Rigs
             rig_slot_count,
             calibration,
             rig_size,
+            // Services
             service_slot_count,
+            // T3 subsystems/stances
             subsystem_slot_count,
             subsystem_slot_index,
             ship_stance,
+            // Drones
             drone_bay_volume,
             launched_drone_count,
             drone_bandwidth,
             unlaunchable_drone_slot,
             unlaunchable_drone_bandwidth,
             drone_group,
+            // Fighters
             fighter_bay_volume,
             launched_fighter_count,
             launched_light_fighter_count,
@@ -523,13 +531,16 @@ impl Vast {
             unlaunchable_st_heavy_fighter,
             unlaunchable_st_support_fighter,
             fighter_squad_size,
+            // Projection, destination side
             activation_blocked,
             effect_stopper,
             cloaking_blocked,
+            // Projection, source side
             projectee_filter,
             assist_immunity,
             offense_immunity,
             resist_immunity,
+            // Sec zone
             sec_zone_fitted,
             sec_zone_online,
             sec_zone_active,

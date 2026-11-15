@@ -1,18 +1,25 @@
 use crate::{
-    ItemId,
     svc::{Calc, SvcCtx, funcs::is_attr_flag_set, vast::VastFitData},
     ud::UItemId,
     util::RSet,
+    val::{ValItemInfo, ValResult},
 };
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Result
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-#[cfg_attr(feature = "serde", derive(serde::Serialize), serde(transparent))]
+#[cfg_attr(
+    feature = "serde",
+    cfg_eval,
+    serde_with::serde_as,
+    derive(serde::Serialize),
+    serde(transparent)
+)]
 #[derive(Clone)]
 pub struct ValActivationBlockedFail {
     /// Modules which are active, but their activation is blocked by something.
-    pub module_ids: Vec<ItemId>,
+    #[cfg_attr(feature = "serde", serde_as(as = "refine_serde::VecAsMap"))]
+    pub modules: Vec<ValItemInfo>,
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -41,18 +48,21 @@ impl VastFitData {
         kfs: &RSet<UItemId>,
         ctx: &SvcCtx,
         calc: &mut Calc,
-    ) -> Option<ValActivationBlockedFail> {
-        let mut module_ids = Vec::new();
+    ) -> ValResult<ValActivationBlockedFail> {
+        let mut modules = Vec::new();
         if let Some(block_attr_rid) = ctx.ac().activation_blocked {
             for &item_uid in self.mods_active.iter() {
-                if is_attr_flag_set(ctx, calc, item_uid, block_attr_rid).unwrap_or(false) && !kfs.contains(&item_uid) {
-                    module_ids.push(ctx.u_data.items.ext_id_by_int_id(item_uid));
+                if is_attr_flag_set(ctx, calc, item_uid, block_attr_rid).unwrap_or(false) {
+                    modules.push(ValItemInfo::from_uid(kfs, ctx, item_uid));
                 }
             }
         }
-        match module_ids.is_empty() {
-            true => None,
-            false => Some(ValActivationBlockedFail { module_ids }),
+        match modules.is_empty() {
+            true => ValResult::Passed,
+            false => ValResult::from_fail(
+                modules.iter().all(|v| v.status.is_kf()),
+                ValActivationBlockedFail { modules },
+            ),
         }
     }
 }

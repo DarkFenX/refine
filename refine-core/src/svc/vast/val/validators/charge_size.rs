@@ -4,6 +4,7 @@ use crate::{
     svc::{SvcCtx, vast::VastFitData},
     ud::UItemId,
     util::RSet,
+    val::{ValItemStatus, ValResult},
 };
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -27,6 +28,7 @@ pub struct ValChargeSizeFail {
 pub struct ValChargeSizeChargeInfo {
     /// Charge item ID.
     pub charge_item_id: ItemId,
+    pub status: ValItemStatus,
     /// Parent module item ID.
     pub parent_item_id: ItemId,
     /// Size attribute value of current charge.
@@ -51,11 +53,12 @@ impl VastFitData {
         &self,
         kfs: &RSet<UItemId>,
         ctx: &SvcCtx,
-    ) -> Option<ValChargeSizeFail> {
+    ) -> ValResult<ValChargeSizeFail> {
         let mut charges = Vec::new();
-        for (&charge_uid, &cont_uid) in self.charge_size.difference(kfs) {
+        for (&charge_uid, &cont_uid) in self.charge_size.iter() {
             charges.push(ValChargeSizeChargeInfo {
                 charge_item_id: ctx.u_data.items.ext_id_by_int_id(charge_uid),
+                status: ValItemStatus::from_kfs(kfs, charge_uid),
                 parent_item_id: ctx.u_data.items.ext_id_by_int_id(cont_uid),
                 charge_size: ctx.u_data.items.get(charge_uid).get_r_item_base().unwrap().charge_size,
                 allowed_size: ctx
@@ -69,8 +72,8 @@ impl VastFitData {
             });
         }
         match charges.is_empty() {
-            true => None,
-            false => Some(ValChargeSizeFail { charges }),
+            true => ValResult::Passed,
+            false => ValResult::from_fail(charges.iter().all(|v| v.status.is_kf()), ValChargeSizeFail { charges }),
         }
     }
 }

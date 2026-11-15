@@ -4,6 +4,7 @@ use crate::{
     svc::{SvcCtx, vast::VastFitData},
     ud::{UFit, UItemId, UShip},
     util::RSet,
+    val::ValResult,
 };
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -43,22 +44,25 @@ impl VastFitData {
         ctx: &SvcCtx,
         fit: &UFit,
         ship: Option<&UShip>,
-    ) -> Option<ValShipStanceFail> {
-        let stance_uid = fit.stance?;
-        let Some(ship) = ship else {
-            return Some(ValShipStanceFail {
-                stance_item_id: ctx.u_data.items.ext_id_by_int_id(stance_uid),
-            });
+    ) -> ValResult<ValShipStanceFail> {
+        let Some(stance_uid) = fit.stance else {
+            return ValResult::Passed;
         };
-        if stanceable_matcher(ship) {
-            return None;
-        }
-        if kfs.contains(&stance_uid) {
-            return None;
-        }
-        Some(ValShipStanceFail {
-            stance_item_id: ctx.u_data.items.ext_id_by_int_id(stance_uid),
-        })
+        // Stance is the only item which can fail, so it has no status - validation result tells if
+        // it is a known failure. Without ship, known failures are not considered
+        let is_kf = match ship {
+            Some(ship) => match stanceable_matcher(ship) {
+                true => return ValResult::Passed,
+                false => kfs.contains(&stance_uid),
+            },
+            None => false,
+        };
+        ValResult::from_fail(
+            is_kf,
+            ValShipStanceFail {
+                stance_item_id: ctx.u_data.items.ext_id_by_int_id(stance_uid),
+            },
+        )
     }
 }
 

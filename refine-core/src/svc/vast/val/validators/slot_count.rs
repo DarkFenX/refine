@@ -1,5 +1,7 @@
+use itertools::Itertools;
+
 use crate::{
-    Count, ItemId,
+    Count,
     rd::RAttrId,
     svc::{
         Calc, SvcCtx,
@@ -7,12 +9,18 @@ use crate::{
     },
     ud::{UFit, UItemId, UItemVec},
     util::{RMap, RSet},
+    val::{ValItemInfo, ValResult},
 };
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Result
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-#[cfg_attr(feature = "serde", derive(serde_tuple::Serialize_tuple))]
+#[cfg_attr(
+    feature = "serde",
+    cfg_eval,
+    serde_with::serde_as,
+    derive(serde_tuple::Serialize_tuple)
+)]
 #[derive(Clone)]
 pub struct ValSlotCountFail {
     /// How many slots are taken by all the relevant items.
@@ -21,7 +29,8 @@ pub struct ValSlotCountFail {
     pub max: Option<Count>,
     /// Items which fail the validation. For unordered containers - all items, for ordered
     /// containers - only those which go past the slot limit.
-    pub users: Vec<ItemId>,
+    #[cfg_attr(feature = "serde", serde_as(as = "refine_serde::VecAsMap"))]
+    pub users: Vec<ValItemInfo>,
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -236,7 +245,7 @@ impl VastFitData {
         ctx: &SvcCtx,
         calc: &mut Calc,
         fit: &UFit,
-    ) -> Option<ValSlotCountFail> {
+    ) -> ValResult<ValSlotCountFail> {
         validate_verbose_ordered(kfs, ctx, calc, fit.ship, ctx.ac().hi_slots, &fit.mods_high)
     }
     pub(in crate::svc::vast::val) fn validate_mid_slot_count_verbose(
@@ -245,7 +254,7 @@ impl VastFitData {
         ctx: &SvcCtx,
         calc: &mut Calc,
         fit: &UFit,
-    ) -> Option<ValSlotCountFail> {
+    ) -> ValResult<ValSlotCountFail> {
         validate_verbose_ordered(kfs, ctx, calc, fit.ship, ctx.ac().med_slots, &fit.mods_mid)
     }
     pub(in crate::svc::vast::val) fn validate_low_slot_count_verbose(
@@ -254,7 +263,7 @@ impl VastFitData {
         ctx: &SvcCtx,
         calc: &mut Calc,
         fit: &UFit,
-    ) -> Option<ValSlotCountFail> {
+    ) -> ValResult<ValSlotCountFail> {
         validate_verbose_ordered(kfs, ctx, calc, fit.ship, ctx.ac().low_slots, &fit.mods_low)
     }
     pub(in crate::svc::vast::val) fn validate_turret_slot_count_verbose(
@@ -263,7 +272,7 @@ impl VastFitData {
         ctx: &SvcCtx,
         calc: &mut Calc,
         fit: &UFit,
-    ) -> Option<ValSlotCountFail> {
+    ) -> ValResult<ValSlotCountFail> {
         validate_verbose_unordered_set(kfs, ctx, calc, fit.ship, ctx.ac().turret_slots_left, &self.mods_turret)
     }
     pub(in crate::svc::vast::val) fn validate_launcher_slot_count_verbose(
@@ -272,7 +281,7 @@ impl VastFitData {
         ctx: &SvcCtx,
         calc: &mut Calc,
         fit: &UFit,
-    ) -> Option<ValSlotCountFail> {
+    ) -> ValResult<ValSlotCountFail> {
         validate_verbose_unordered_set(
             kfs,
             ctx,
@@ -288,7 +297,7 @@ impl VastFitData {
         ctx: &SvcCtx,
         calc: &mut Calc,
         fit: &UFit,
-    ) -> Option<ValSlotCountFail> {
+    ) -> ValResult<ValSlotCountFail> {
         validate_verbose_unordered_set(kfs, ctx, calc, fit.ship, ctx.ac().upgrade_slots_left, &fit.rigs)
     }
     pub(in crate::svc::vast::val) fn validate_service_slot_count_verbose(
@@ -297,7 +306,7 @@ impl VastFitData {
         ctx: &SvcCtx,
         calc: &mut Calc,
         fit: &UFit,
-    ) -> Option<ValSlotCountFail> {
+    ) -> ValResult<ValSlotCountFail> {
         validate_verbose_unordered_set(kfs, ctx, calc, fit.ship, ctx.ac().service_slots, &fit.services)
     }
     pub(in crate::svc::vast::val) fn validate_subsystem_slot_count_verbose(
@@ -306,7 +315,7 @@ impl VastFitData {
         ctx: &SvcCtx,
         calc: &mut Calc,
         fit: &UFit,
-    ) -> Option<ValSlotCountFail> {
+    ) -> ValResult<ValSlotCountFail> {
         validate_verbose_unordered_set(kfs, ctx, calc, fit.ship, ctx.ac().max_subsystems, &fit.subsystems)
     }
     pub(in crate::svc::vast::val) fn validate_launched_drone_count_verbose(
@@ -315,7 +324,7 @@ impl VastFitData {
         ctx: &SvcCtx,
         calc: &mut Calc,
         fit: &UFit,
-    ) -> Option<ValSlotCountFail> {
+    ) -> ValResult<ValSlotCountFail> {
         validate_verbose_unordered_map(
             kfs,
             ctx,
@@ -331,7 +340,7 @@ impl VastFitData {
         ctx: &SvcCtx,
         calc: &mut Calc,
         fit: &UFit,
-    ) -> Option<ValSlotCountFail> {
+    ) -> ValResult<ValSlotCountFail> {
         validate_verbose_unordered_set(kfs, ctx, calc, fit.ship, ctx.ac().ftr_tubes, &self.fighters_online)
     }
     pub(in crate::svc::vast::val) fn validate_launched_light_fighter_count_verbose(
@@ -340,7 +349,7 @@ impl VastFitData {
         ctx: &SvcCtx,
         calc: &mut Calc,
         fit: &UFit,
-    ) -> Option<ValSlotCountFail> {
+    ) -> ValResult<ValSlotCountFail> {
         validate_verbose_unordered_set(
             kfs,
             ctx,
@@ -356,7 +365,7 @@ impl VastFitData {
         ctx: &SvcCtx,
         calc: &mut Calc,
         fit: &UFit,
-    ) -> Option<ValSlotCountFail> {
+    ) -> ValResult<ValSlotCountFail> {
         validate_verbose_unordered_set(
             kfs,
             ctx,
@@ -372,7 +381,7 @@ impl VastFitData {
         ctx: &SvcCtx,
         calc: &mut Calc,
         fit: &UFit,
-    ) -> Option<ValSlotCountFail> {
+    ) -> ValResult<ValSlotCountFail> {
         validate_verbose_unordered_set(
             kfs,
             ctx,
@@ -388,7 +397,7 @@ impl VastFitData {
         ctx: &SvcCtx,
         calc: &mut Calc,
         fit: &UFit,
-    ) -> Option<ValSlotCountFail> {
+    ) -> ValResult<ValSlotCountFail> {
         validate_verbose_unordered_set(
             kfs,
             ctx,
@@ -404,7 +413,7 @@ impl VastFitData {
         ctx: &SvcCtx,
         calc: &mut Calc,
         fit: &UFit,
-    ) -> Option<ValSlotCountFail> {
+    ) -> ValResult<ValSlotCountFail> {
         validate_verbose_unordered_set(
             kfs,
             ctx,
@@ -420,7 +429,7 @@ impl VastFitData {
         ctx: &SvcCtx,
         calc: &mut Calc,
         fit: &UFit,
-    ) -> Option<ValSlotCountFail> {
+    ) -> ValResult<ValSlotCountFail> {
         validate_verbose_unordered_set(
             kfs,
             ctx,
@@ -491,20 +500,20 @@ fn validate_verbose_unordered_set(
     max_item_uid: Option<UItemId>,
     max_attr_rid: Option<RAttrId>,
     users: &RSet<UItemId>,
-) -> Option<ValSlotCountFail> {
+) -> ValResult<ValSlotCountFail> {
     let used = Count::from_usize(users.len());
     let max = get_attr_as_count(ctx, calc, max_item_uid, max_attr_rid);
     if used <= max.unwrap_or(Count::ZERO) {
-        return None;
+        return ValResult::Passed;
     }
-    let users: Vec<_> = users
-        .difference(kfs)
-        .map(|item_uid| ctx.u_data.items.ext_id_by_int_id(*item_uid))
-        .collect();
-    match users.is_empty() {
-        true => None,
-        false => Some(ValSlotCountFail { used, max, users }),
-    }
+    let users = users
+        .iter()
+        .map(|&item_uid| ValItemInfo::from_uid(kfs, ctx, item_uid))
+        .collect_vec();
+    ValResult::from_fail(
+        users.iter().all(|v| v.status.is_kf()),
+        ValSlotCountFail { used, max, users },
+    )
 }
 fn validate_verbose_unordered_map<T>(
     kfs: &RSet<UItemId>,
@@ -513,20 +522,20 @@ fn validate_verbose_unordered_map<T>(
     max_item_uid: Option<UItemId>,
     max_attr_rid: Option<RAttrId>,
     users: &RMap<UItemId, T>,
-) -> Option<ValSlotCountFail> {
+) -> ValResult<ValSlotCountFail> {
     let used = Count::from_usize(users.len());
     let max = get_attr_as_count(ctx, calc, max_item_uid, max_attr_rid);
     if used <= max.unwrap_or(Count::ZERO) {
-        return None;
+        return ValResult::Passed;
     }
-    let users: Vec<_> = users
-        .difference(kfs)
-        .map(|(item_uid, _)| ctx.u_data.items.ext_id_by_int_id(*item_uid))
-        .collect();
-    match users.is_empty() {
-        true => None,
-        false => Some(ValSlotCountFail { used, max, users }),
-    }
+    let users = users
+        .iter()
+        .map(|(&item_uid, _)| ValItemInfo::from_uid(kfs, ctx, item_uid))
+        .collect_vec();
+    ValResult::from_fail(
+        users.iter().all(|v| v.status.is_kf()),
+        ValSlotCountFail { used, max, users },
+    )
 }
 fn validate_verbose_ordered(
     kfs: &RSet<UItemId>,
@@ -535,22 +544,22 @@ fn validate_verbose_ordered(
     max_item_uid: Option<UItemId>,
     max_attr_rid: Option<RAttrId>,
     users: &UItemVec,
-) -> Option<ValSlotCountFail> {
+) -> ValResult<ValSlotCountFail> {
     let used = Count::from_usize(users.slot_count());
     let max = get_attr_as_count(ctx, calc, max_item_uid, max_attr_rid);
     let effective_max = max.unwrap_or(Count::ZERO);
     if used <= effective_max {
-        return None;
+        return ValResult::Passed;
     }
-    let users: Vec<_> = users
+    let users = users
         .iter_uids_from_pos(effective_max.into_rack_pos())
-        .filter_map(|item_uid| match kfs.contains(&item_uid) {
-            true => None,
-            false => Some(ctx.u_data.items.ext_id_by_int_id(item_uid)),
-        })
-        .collect();
+        .map(|item_uid| ValItemInfo::from_uid(kfs, ctx, item_uid))
+        .collect_vec();
     match users.is_empty() {
-        true => None,
-        false => Some(ValSlotCountFail { used, max, users }),
+        true => ValResult::Passed,
+        false => ValResult::from_fail(
+            users.iter().all(|v| v.status.is_kf()),
+            ValSlotCountFail { used, max, users },
+        ),
     }
 }

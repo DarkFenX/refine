@@ -6,6 +6,7 @@ use crate::{
     svc::{SvcCtx, vast::VastFitData},
     ud::{UFit, UItemId},
     util::RSet,
+    val::{ValItemStatus, ValResult},
 };
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -22,18 +23,17 @@ pub struct ValOverloadSkillFail {
     /// Current level of the Thermodynamics skill.
     pub td_lvl: Option<SkillLevel>,
     /// Overloaded modules which do not pass the check, and required Thermodynamics skill level.
-    #[cfg_attr(feature = "serde", serde_as(as = "refine_serde::VecAsMap"))]
+    #[cfg_attr(feature = "serde", serde_as(as = "serde_with::KeyValueMap<_>"))]
     pub module_reqs: Vec<ValOverloadSkillItemInfo>,
 }
 
-#[cfg_attr(feature = "serde", derive(refine_serde::VecAsMapEntry))]
+#[cfg_attr(feature = "serde", derive(serde_tuple::Serialize_tuple))]
 #[derive(Copy, Clone)]
 pub struct ValOverloadSkillItemInfo {
     /// Overloaded item which fails the validation.
-    #[cfg_attr(feature = "serde", vec_map(key))]
     pub item_id: ItemId,
+    pub status: ValItemStatus,
     /// Level of the Thermodynamics skill it needs to be overloadable.
-    #[cfg_attr(feature = "serde", vec_map(value))]
     pub level_req: SkillLevel,
 }
 
@@ -60,27 +60,31 @@ impl VastFitData {
         kfs: &RSet<UItemId>,
         ctx: &SvcCtx,
         fit: &UFit,
-    ) -> Option<ValOverloadSkillFail> {
+    ) -> ValResult<ValOverloadSkillFail> {
         if self.overload_td_lvl.is_empty() {
-            return None;
+            return ValResult::Passed;
         }
         let td_lvl = fit.skills.get(&AItemId::THERMODYNAMICS).map(|v| v.level);
         let module_reqs = self
             .overload_td_lvl
             .iter()
-            .filter_map(|(item_uid, req_lvl)| {
-                match td_lvl.map(|td_lvl| td_lvl >= *req_lvl).unwrap_or(false) || kfs.contains(item_uid) {
+            .filter_map(
+                |(&item_uid, &req_lvl)| match td_lvl.map(|td_lvl| td_lvl >= req_lvl).unwrap_or(false) {
                     true => None,
                     false => Some(ValOverloadSkillItemInfo {
-                        item_id: ctx.u_data.items.ext_id_by_int_id(*item_uid),
-                        level_req: *req_lvl,
+                        item_id: ctx.u_data.items.ext_id_by_int_id(item_uid),
+                        status: ValItemStatus::from_kfs(kfs, item_uid),
+                        level_req: req_lvl,
                     }),
-                }
-            })
+                },
+            )
             .collect_vec();
         match module_reqs.is_empty() {
-            true => None,
-            false => Some(ValOverloadSkillFail { td_lvl, module_reqs }),
+            true => ValResult::Passed,
+            false => ValResult::from_fail(
+                module_reqs.iter().all(|v| v.status.is_kf()),
+                ValOverloadSkillFail { td_lvl, module_reqs },
+            ),
         }
     }
 }

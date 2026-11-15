@@ -5,6 +5,7 @@ use crate::{
     svc::{SvcCtx, vast::VastFitData},
     ud::UItemId,
     util::RSet,
+    val::{ValItemStatus, ValResult},
 };
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -27,8 +28,8 @@ pub struct ValFighterSquadSizeFail {
 #[cfg_attr(feature = "serde", derive(serde_tuple::Serialize_tuple))]
 #[derive(Copy, Clone)]
 pub struct ValFighterSquadSizeFighterInfo {
-    /// Current squad size.
     pub fighter_id: ItemId,
+    pub status: ValItemStatus,
     /// Current squad size.
     pub size: CountNz,
     /// Max allowed squad size.
@@ -51,22 +52,23 @@ impl VastFitData {
         &self,
         kfs: &RSet<UItemId>,
         ctx: &SvcCtx,
-    ) -> Option<ValFighterSquadSizeFail> {
+    ) -> ValResult<ValFighterSquadSizeFail> {
         let fighters = self
             .fighter_squad_size
             .iter()
-            .filter_map(|(fighter_uid, fighter_info)| match kfs.contains(fighter_uid) {
-                true => None,
-                false => Some(ValFighterSquadSizeFighterInfo {
-                    fighter_id: ctx.u_data.items.ext_id_by_int_id(*fighter_uid),
-                    size: fighter_info.size,
-                    max_size: fighter_info.max_size,
-                }),
+            .map(|(&fighter_uid, fighter_info)| ValFighterSquadSizeFighterInfo {
+                fighter_id: ctx.u_data.items.ext_id_by_int_id(fighter_uid),
+                status: ValItemStatus::from_kfs(kfs, fighter_uid),
+                size: fighter_info.size,
+                max_size: fighter_info.max_size,
             })
             .collect_vec();
         match fighters.is_empty() {
-            true => None,
-            false => Some(ValFighterSquadSizeFail { fighters }),
+            true => ValResult::Passed,
+            false => ValResult::from_fail(
+                fighters.iter().all(|v| v.status.is_kf()),
+                ValFighterSquadSizeFail { fighters },
+            ),
         }
     }
 }

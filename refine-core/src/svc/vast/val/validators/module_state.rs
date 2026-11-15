@@ -5,6 +5,7 @@ use crate::{
     svc::{SvcCtx, vast::VastFitData},
     ud::UItemId,
     util::RSet,
+    val::{ValItemStatus, ValResult},
 };
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -28,6 +29,7 @@ pub struct ValModuleStateFail {
 #[derive(Copy, Clone)]
 pub struct ValModuleStateModuleInfo {
     pub module_id: ItemId,
+    pub status: ValItemStatus,
     /// Current module state.
     pub state: ModuleState,
     /// Highest state this module can be in.
@@ -50,22 +52,20 @@ impl VastFitData {
         &self,
         kfs: &RSet<UItemId>,
         ctx: &SvcCtx,
-    ) -> Option<ValModuleStateFail> {
+    ) -> ValResult<ValModuleStateFail> {
         let modules = self
             .mods_state
             .iter()
-            .filter_map(|(module_uid, module_info)| match kfs.contains(module_uid) {
-                true => None,
-                false => Some(ValModuleStateModuleInfo {
-                    module_id: ctx.u_data.items.ext_id_by_int_id(*module_uid),
-                    state: module_info.state,
-                    max_state: module_info.max_state,
-                }),
+            .map(|(&module_uid, module_info)| ValModuleStateModuleInfo {
+                module_id: ctx.u_data.items.ext_id_by_int_id(module_uid),
+                status: ValItemStatus::from_kfs(kfs, module_uid),
+                state: module_info.state,
+                max_state: module_info.max_state,
             })
             .collect_vec();
         match modules.is_empty() {
-            true => None,
-            false => Some(ValModuleStateFail { modules }),
+            true => ValResult::Passed,
+            false => ValResult::from_fail(modules.iter().all(|v| v.status.is_kf()), ValModuleStateFail { modules }),
         }
     }
 }

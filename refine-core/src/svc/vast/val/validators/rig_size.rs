@@ -3,6 +3,7 @@ use crate::{
     svc::{SvcCtx, vast::VastFitData},
     ud::{UData, UFit, UItemId, UShip},
     util::RSet,
+    val::{ValItemStatus, ValResult},
 };
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -18,18 +19,17 @@ use crate::{
 pub struct ValRigSizeFail {
     /// Rig size compatible with the ship.
     pub allowed_size: Value,
-    #[cfg_attr(feature = "serde", serde_as(as = "refine_serde::VecAsMap"))]
+    #[cfg_attr(feature = "serde", serde_as(as = "serde_with::KeyValueMap<_>"))]
     pub rig_sizes: Vec<ValRigSizeItemInfo>,
 }
 
-#[cfg_attr(feature = "serde", derive(refine_serde::VecAsMapEntry))]
+#[cfg_attr(feature = "serde", derive(serde_tuple::Serialize_tuple))]
 #[derive(Copy, Clone)]
 pub struct ValRigSizeItemInfo {
     /// Rig which failed the validation.
-    #[cfg_attr(feature = "serde", vec_map(key))]
     pub rig_id: ItemId,
+    pub status: ValItemStatus,
     /// Size of the rig.
-    #[cfg_attr(feature = "serde", vec_map(value))]
     pub size: Option<Value>,
 }
 
@@ -50,23 +50,27 @@ impl VastFitData {
         kfs: &RSet<UItemId>,
         ctx: &SvcCtx,
         ship: Option<&UShip>,
-    ) -> Option<ValRigSizeFail> {
-        let allowed_size = get_allowed_size(ship)?;
+    ) -> ValResult<ValRigSizeFail> {
+        let Some(allowed_size) = get_allowed_size(ship) else {
+            return ValResult::Passed;
+        };
         let mut rig_sizes = Vec::new();
         for &rig_uid in self.rig_size_mismatches.iter() {
-            if !kfs.contains(&rig_uid) {
-                rig_sizes.push(ValRigSizeItemInfo {
-                    rig_id: ctx.u_data.items.ext_id_by_int_id(rig_uid),
-                    size: *self.rigs_rig_size.get(&rig_uid).unwrap(),
-                });
-            }
+            rig_sizes.push(ValRigSizeItemInfo {
+                rig_id: ctx.u_data.items.ext_id_by_int_id(rig_uid),
+                status: ValItemStatus::from_kfs(kfs, rig_uid),
+                size: *self.rigs_rig_size.get(&rig_uid).unwrap(),
+            });
         }
         match rig_sizes.is_empty() {
-            true => None,
-            false => Some(ValRigSizeFail {
-                allowed_size,
-                rig_sizes,
-            }),
+            true => ValResult::Passed,
+            false => ValResult::from_fail(
+                rig_sizes.iter().all(|v| v.status.is_kf()),
+                ValRigSizeFail {
+                    allowed_size,
+                    rig_sizes,
+                },
+            ),
         }
     }
 }

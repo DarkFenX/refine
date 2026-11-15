@@ -1,5 +1,5 @@
 use crate::{
-    Count, ItemId,
+    Count,
     rd::RAttrId,
     svc::{
         Calc, SvcCtx,
@@ -7,18 +7,25 @@ use crate::{
     },
     ud::{UFit, UItemId},
     util::RSet,
+    val::{ValItemInfo, ValResult},
 };
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Result
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-#[cfg_attr(feature = "serde", derive(serde_tuple::Serialize_tuple))]
+#[cfg_attr(
+    feature = "serde",
+    cfg_eval,
+    serde_with::serde_as,
+    derive(serde_tuple::Serialize_tuple)
+)]
 #[derive(Clone)]
 pub struct ValUnusableSlotFail {
     /// How many slots available (when this validation fails, it's either None or 0).
     pub max: Option<Count>,
-    /// IDs of items which would attempt to take those slots if you used them.
-    pub users: Vec<ItemId>,
+    /// Items which would attempt to take those slots if you used them.
+    #[cfg_attr(feature = "serde", serde_as(as = "refine_serde::VecAsMap"))]
+    pub users: Vec<ValItemInfo>,
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -133,7 +140,7 @@ impl VastFitData {
         ctx: &SvcCtx,
         calc: &mut Calc,
         fit: &UFit,
-    ) -> Option<ValUnusableSlotFail> {
+    ) -> ValResult<ValUnusableSlotFail> {
         validate_verbose(kfs, ctx, calc, fit.character, ctx.ac().max_active_drones, &fit.drones)
     }
     pub(in crate::svc::vast::val) fn validate_unlaunchable_fighter_verbose(
@@ -142,7 +149,7 @@ impl VastFitData {
         ctx: &SvcCtx,
         calc: &mut Calc,
         fit: &UFit,
-    ) -> Option<ValUnusableSlotFail> {
+    ) -> ValResult<ValUnusableSlotFail> {
         validate_verbose(kfs, ctx, calc, fit.ship, ctx.ac().ftr_tubes, &fit.fighters)
     }
     pub(in crate::svc::vast::val) fn validate_unlaunchable_light_fighter_verbose(
@@ -151,7 +158,7 @@ impl VastFitData {
         ctx: &SvcCtx,
         calc: &mut Calc,
         fit: &UFit,
-    ) -> Option<ValUnusableSlotFail> {
+    ) -> ValResult<ValUnusableSlotFail> {
         validate_verbose(kfs, ctx, calc, fit.ship, ctx.ac().ftr_light_slots, &self.light_fighters)
     }
     pub(in crate::svc::vast::val) fn validate_unlaunchable_heavy_fighter_verbose(
@@ -160,7 +167,7 @@ impl VastFitData {
         ctx: &SvcCtx,
         calc: &mut Calc,
         fit: &UFit,
-    ) -> Option<ValUnusableSlotFail> {
+    ) -> ValResult<ValUnusableSlotFail> {
         validate_verbose(kfs, ctx, calc, fit.ship, ctx.ac().ftr_heavy_slots, &self.heavy_fighters)
     }
     pub(in crate::svc::vast::val) fn validate_unlaunchable_support_fighter_verbose(
@@ -169,7 +176,7 @@ impl VastFitData {
         ctx: &SvcCtx,
         calc: &mut Calc,
         fit: &UFit,
-    ) -> Option<ValUnusableSlotFail> {
+    ) -> ValResult<ValUnusableSlotFail> {
         validate_verbose(
             kfs,
             ctx,
@@ -185,7 +192,7 @@ impl VastFitData {
         ctx: &SvcCtx,
         calc: &mut Calc,
         fit: &UFit,
-    ) -> Option<ValUnusableSlotFail> {
+    ) -> ValResult<ValUnusableSlotFail> {
         validate_verbose(
             kfs,
             ctx,
@@ -201,7 +208,7 @@ impl VastFitData {
         ctx: &SvcCtx,
         calc: &mut Calc,
         fit: &UFit,
-    ) -> Option<ValUnusableSlotFail> {
+    ) -> ValResult<ValUnusableSlotFail> {
         validate_verbose(
             kfs,
             ctx,
@@ -217,7 +224,7 @@ impl VastFitData {
         ctx: &SvcCtx,
         calc: &mut Calc,
         fit: &UFit,
-    ) -> Option<ValUnusableSlotFail> {
+    ) -> ValResult<ValUnusableSlotFail> {
         validate_verbose(
             kfs,
             ctx,
@@ -253,20 +260,20 @@ fn validate_verbose(
     max_item_uid: Option<UItemId>,
     max_attr_rid: Option<RAttrId>,
     users: &RSet<UItemId>,
-) -> Option<ValUnusableSlotFail> {
+) -> ValResult<ValUnusableSlotFail> {
     if users.is_empty() {
-        return None;
+        return ValResult::Passed;
     }
     let max = get_attr_as_count(ctx, calc, max_item_uid, max_attr_rid);
     if max.unwrap_or(Count::ZERO) > Count::ZERO {
-        return None;
+        return ValResult::Passed;
     }
     let users: Vec<_> = users
-        .difference(kfs)
-        .map(|item_uid| ctx.u_data.items.ext_id_by_int_id(*item_uid))
+        .iter()
+        .map(|&item_uid| ValItemInfo::from_uid(kfs, ctx, item_uid))
         .collect();
-    match users.is_empty() {
-        true => None,
-        false => Some(ValUnusableSlotFail { max, users }),
-    }
+    ValResult::from_fail(
+        users.iter().all(|v| v.status.is_kf()),
+        ValUnusableSlotFail { max, users },
+    )
 }

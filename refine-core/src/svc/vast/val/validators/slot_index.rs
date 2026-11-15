@@ -1,10 +1,9 @@
-use itertools::Itertools;
-
 use crate::{
-    ItemId, SlotIndex,
+    SlotIndex,
     svc::{SvcCtx, vast::VastFitData},
     ud::UItemId,
     util::{RMapRSet, RSet},
+    val::{ValItemInfo, ValResult},
 };
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -31,8 +30,8 @@ pub struct ValSlotIndexSlotInfo {
     #[cfg_attr(feature = "serde", vec_map(key))]
     pub slot: SlotIndex,
     /// Multiple items attempting to use one slot.
-    #[cfg_attr(feature = "serde", vec_map(value))]
-    pub item_ids: Vec<ItemId>,
+    #[cfg_attr(feature = "serde", vec_map(value, serialize_as = "refine_serde::VecAsMap"))]
+    pub items: Vec<ValItemInfo>,
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -54,21 +53,21 @@ impl VastFitData {
         &self,
         kfs: &RSet<UItemId>,
         ctx: &SvcCtx,
-    ) -> Option<ValSlotIndexFail> {
+    ) -> ValResult<ValSlotIndexFail> {
         validate_slot_index_verbose(kfs, ctx, &self.slotted_implants)
     }
     pub(in crate::svc::vast::val) fn validate_booster_slot_index_verbose(
         &self,
         kfs: &RSet<UItemId>,
         ctx: &SvcCtx,
-    ) -> Option<ValSlotIndexFail> {
+    ) -> ValResult<ValSlotIndexFail> {
         validate_slot_index_verbose(kfs, ctx, &self.slotted_boosters)
     }
     pub(in crate::svc::vast::val) fn validate_subsystem_slot_index_verbose(
         &self,
         kfs: &RSet<UItemId>,
         ctx: &SvcCtx,
-    ) -> Option<ValSlotIndexFail> {
+    ) -> ValResult<ValSlotIndexFail> {
         validate_slot_index_verbose(kfs, ctx, &self.slotted_subsystems)
     }
 }
@@ -81,27 +80,24 @@ fn validate_slot_index_verbose(
     kfs: &RSet<UItemId>,
     ctx: &SvcCtx,
     data: &RMapRSet<SlotIndex, UItemId>,
-) -> Option<ValSlotIndexFail> {
+) -> ValResult<ValSlotIndexFail> {
     let mut slot_users = Vec::new();
     for (&slot_index, users) in data.iter() {
         if users.len() >= 2 {
-            let users = users
-                .filter_map(|item_uid| match kfs.contains(item_uid) {
-                    true => None,
-                    false => Some(ctx.u_data.items.ext_id_by_int_id(*item_uid)),
-                })
-                .collect_vec();
-            if !users.is_empty() {
-                slot_users.push(ValSlotIndexSlotInfo {
-                    slot: slot_index,
-                    item_ids: users,
-                });
-            }
+            slot_users.push(ValSlotIndexSlotInfo {
+                slot: slot_index,
+                items: users
+                    .map(|&item_uid| ValItemInfo::from_uid(kfs, ctx, item_uid))
+                    .collect(),
+            });
         }
     }
     match slot_users.is_empty() {
-        true => None,
-        false => Some(ValSlotIndexFail { slot_users }),
+        true => ValResult::Passed,
+        false => ValResult::from_fail(
+            slot_users.iter().flat_map(|v| v.items.iter()).all(|v| v.status.is_kf()),
+            ValSlotIndexFail { slot_users },
+        ),
     }
 }
 
