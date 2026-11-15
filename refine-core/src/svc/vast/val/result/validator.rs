@@ -10,7 +10,7 @@ pub enum ValResult<T> {
     NotRequested,
     Passed,
     /// Validation is failed only by items which were passed as known failures.
-    PassedWithKfs(T),
+    PassedKfs(T),
     Failed(T),
 }
 impl<T> ValResult<T> {
@@ -25,7 +25,7 @@ impl<T> ValResult<T> {
 impl<T> ValResult<T> {
     pub(in crate::svc::vast::val) fn from_fail(all_kfs: bool, fail: T) -> Self {
         match all_kfs {
-            true => Self::PassedWithKfs(fail),
+            true => Self::PassedKfs(fail),
             false => Self::Failed(fail),
         }
     }
@@ -57,7 +57,7 @@ mod custom_serde {
             let (status, fail) = match self {
                 Self::NotRequested => ("not_requested", None),
                 Self::Passed => ("passed", None),
-                Self::PassedWithKfs(fail) => ("passed_with_kfs", Some(fail)),
+                Self::PassedKfs(fail) => ("passed_kfs", Some(fail)),
                 Self::Failed(fail) => ("failed", Some(fail)),
             };
             let len = match fail {

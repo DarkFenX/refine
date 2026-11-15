@@ -785,6 +785,19 @@ class ApiValShipType(StrEnum):
 
 
 @unique
+class ApiValStatus(StrEnum):
+    passed = 'passed'
+    passed_kfs = 'passed_kfs'
+    failed = 'failed'
+
+
+@unique
+class ApiValItemStatus(StrEnum):
+    failed = 'failed'
+    kf = 'kf'
+
+
+@unique
 class ApiCapSimResult(StrEnum):
     stable = 'stable'
     time = 'time'
