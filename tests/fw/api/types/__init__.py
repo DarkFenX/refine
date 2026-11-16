@@ -8,6 +8,7 @@ from .stats import (
     ItemStatsOptions,
     StatCapNosfsOptions,
     StatCapRegenOptions,
+    StatCapSim,
     StatCapSrcKinds,
     StatDmgItemKinds,
     StatMiningItemKinds,

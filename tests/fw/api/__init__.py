@@ -8,6 +8,7 @@ from .types import (
     ModMoveMode,
     StatCapNosfsOptions,
     StatCapRegenOptions,
+    StatCapSim,
     StatCapSrcKinds,
     StatDmgItemKinds,
     StatMiningItemKinds,

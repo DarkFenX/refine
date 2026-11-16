@@ -27,3 +27,4 @@ from .res_fit import FitBatchStats, FitStats
 from .res_fleet import FleetBatchStats, FleetStats
 from .res_item import ItemBatchStats, ItemStats
 from .res_sol import SolBatchStats
+from .stat_cap_sim import StatCapSim

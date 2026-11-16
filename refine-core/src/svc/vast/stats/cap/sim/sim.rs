@@ -13,7 +13,9 @@ use crate::{
 
 const TIME_LIMIT: PValue = PValue::from_finite_f64_clamped(4.0 * 60.0 * 60.0);
 
-#[cfg_attr(feature = "serde", derive(serde::Serialize), serde(rename_all = "snake_case"))]
+/// Result of capacitor simulation.
+///
+/// Serialization notes: serialized format is a sequence, which has status, followed by its value.
 #[derive(Copy, Clone)]
 pub enum StatCapSim {
     /// Average stability value
@@ -470,4 +472,34 @@ enum EventSource {
     Heap,
     Current(usize),
     Injector,
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Custom de/serialization
+////////////////////////////////////////////////////////////////////////////////////////////////////
+#[cfg(feature = "serde")]
+mod custom_serde {
+    use serde::ser::{Serialize, SerializeTuple, Serializer};
+
+    use super::*;
+
+    impl Serialize for StatCapSim {
+        fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+        where
+            S: Serializer,
+        {
+            let mut tuple = serializer.serialize_tuple(2)?;
+            match self {
+                Self::Stable(stability) => {
+                    tuple.serialize_element("stable")?;
+                    tuple.serialize_element(stability)?;
+                }
+                Self::Time(time) => {
+                    tuple.serialize_element("time")?;
+                    tuple.serialize_element(time)?;
+                }
+            }
+            tuple.end()
+        }
+    }
 }

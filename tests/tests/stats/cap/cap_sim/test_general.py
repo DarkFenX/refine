@@ -1,5 +1,5 @@
 from fw import check_no_field
-from fw.api import FitStatsOptions, ItemStatsOptions
+from fw.api import FitStatsOptions, ItemStatsOptions, StatCapSim
 
 
 def test_zeros(client, consts):
@@ -13,9 +13,9 @@ def test_zeros(client, consts):
     api_ship = api_fit.set_ship(type_id=eve_ship_id)
     # Verification - stability value of 100% is exposed for this case
     api_fit_stats = api_fit.get_stats(options=FitStatsOptions(cap_sim=True))
-    assert api_fit_stats.cap_sim.one() == {consts.ApiCapSimResult.stable: 1}
+    assert api_fit_stats.cap_sim.one() == StatCapSim.stable(value=1)
     api_ship_stats = api_ship.get_stats(options=ItemStatsOptions(cap_sim=True))
-    assert api_ship_stats.cap_sim.one() == {consts.ApiCapSimResult.stable: 1}
+    assert api_ship_stats.cap_sim.one() == StatCapSim.stable(value=1)
 
 
 def test_ship_not_loaded(client, consts):

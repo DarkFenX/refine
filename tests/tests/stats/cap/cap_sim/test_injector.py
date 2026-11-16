@@ -1,5 +1,5 @@
 from fw import approx
-from fw.api import FitStatsOptions, ItemStatsOptions
+from fw.api import FitStatsOptions, ItemStatsOptions, StatCapSim
 
 
 def test_emergency(client, consts):
@@ -39,9 +39,9 @@ def test_emergency(client, consts):
     # next cycle at t10 injector is used, and finally at t20 injector can't cover module needs, so
     # it runs out
     api_fit_stats = api_fit.get_stats(options=FitStatsOptions(cap_sim=True))
-    assert api_fit_stats.cap_sim.one() == {consts.ApiCapSimResult.time: approx(20)}
+    assert api_fit_stats.cap_sim.one() == StatCapSim.time(value=approx(20))
     api_ship_stats = api_ship.get_stats(options=ItemStatsOptions(cap_sim=True))
-    assert api_ship_stats.cap_sim.one() == {consts.ApiCapSimResult.time: approx(20)}
+    assert api_ship_stats.cap_sim.one() == StatCapSim.time(value=approx(20))
 
 
 def test_topup(client, consts):
@@ -82,6 +82,6 @@ def test_topup(client, consts):
     api_fit.add_module(type_id=eve_injector_id, state=consts.ApiModuleState.active, charge_type_id=eve_charge_id)
     # Verification
     api_fit_stats = api_fit.get_stats(options=FitStatsOptions(cap_sim=True))
-    assert api_fit_stats.cap_sim.one() == {consts.ApiCapSimResult.stable: approx(0.7859468)}
+    assert api_fit_stats.cap_sim.one() == StatCapSim.stable(value=approx(0.7859468))
     api_ship_stats = api_ship.get_stats(options=ItemStatsOptions(cap_sim=True))
-    assert api_ship_stats.cap_sim.one() == {consts.ApiCapSimResult.stable: approx(0.7859468)}
+    assert api_ship_stats.cap_sim.one() == StatCapSim.stable(value=approx(0.7859468))

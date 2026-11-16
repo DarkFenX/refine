@@ -9,7 +9,7 @@ happen.
 """
 
 from fw import approx
-from fw.api import FitStatsOptions, ItemStatsOptions, StatsOptionCapSim
+from fw.api import FitStatsOptions, ItemStatsOptions, StatCapSim, StatsOptionCapSim
 
 
 def test_equal(client, consts):
@@ -39,9 +39,9 @@ def test_equal(client, consts):
         api_src_module.change_module(add_proj_item_ids=[api_tgt_ship.id])
     # Verification
     api_tgt_fit_stats = api_tgt_fit.get_stats(options=FitStatsOptions(cap_sim=[StatsOptionCapSim(stagger=False)]))
-    assert api_tgt_fit_stats.cap_sim.one() == {consts.ApiCapSimResult.time: approx(390)}
+    assert api_tgt_fit_stats.cap_sim.one() == StatCapSim.time(value=approx(390))
     api_tgt_ship_stats = api_tgt_ship.get_stats(options=ItemStatsOptions(cap_sim=[StatsOptionCapSim(stagger=False)]))
-    assert api_tgt_ship_stats.cap_sim.one() == {consts.ApiCapSimResult.time: approx(390)}
+    assert api_tgt_ship_stats.cap_sim.one() == StatCapSim.time(value=approx(390))
 
 
 def test_similar(client, consts):
@@ -83,9 +83,9 @@ def test_similar(client, consts):
         api_src_module.change_module(add_proj_item_ids=[api_tgt_ship.id])
     # Verification
     api_tgt_fit_stats = api_tgt_fit.get_stats(options=FitStatsOptions(cap_sim=[StatsOptionCapSim(stagger=False)]))
-    assert api_tgt_fit_stats.cap_sim.one() == {consts.ApiCapSimResult.time: approx(390)}
+    assert api_tgt_fit_stats.cap_sim.one() == StatCapSim.time(value=approx(390))
     api_tgt_ship_stats = api_tgt_ship.get_stats(options=ItemStatsOptions(cap_sim=[StatsOptionCapSim(stagger=False)]))
-    assert api_tgt_ship_stats.cap_sim.one() == {consts.ApiCapSimResult.time: approx(390)}
+    assert api_tgt_ship_stats.cap_sim.one() == StatCapSim.time(value=approx(390))
 
 
 def test_different_signs(client, consts):
@@ -127,9 +127,9 @@ def test_different_signs(client, consts):
     # been at 100%. But since every 5 seconds cap is drained to 0 and then gets back to 100%, 50%
     # stability value is recorded.
     api_tgt_fit_stats = api_tgt_fit.get_stats(options=FitStatsOptions(cap_sim=[StatsOptionCapSim(stagger=False)]))
-    assert api_tgt_fit_stats.cap_sim.one() == {consts.ApiCapSimResult.stable: approx(0.5)}
+    assert api_tgt_fit_stats.cap_sim.one() == StatCapSim.stable(value=approx(0.5))
     api_tgt_ship_stats = api_tgt_ship.get_stats(options=ItemStatsOptions(cap_sim=[StatsOptionCapSim(stagger=False)]))
-    assert api_tgt_ship_stats.cap_sim.one() == {consts.ApiCapSimResult.stable: approx(0.5)}
+    assert api_tgt_ship_stats.cap_sim.one() == StatCapSim.stable(value=approx(0.5))
 
 
 def test_hard_downtime(client, consts):
@@ -182,6 +182,6 @@ def test_hard_downtime(client, consts):
     # shouldn't be merged. If longer duration was taken for both, cap would've been stable; if
     # shorter - it'd last about 5 minutes
     api_tgt_fit_stats = api_tgt_fit.get_stats(options=FitStatsOptions(cap_sim=[StatsOptionCapSim(stagger=False)]))
-    assert api_tgt_fit_stats.cap_sim.one() == {consts.ApiCapSimResult.time: approx(1149)}
+    assert api_tgt_fit_stats.cap_sim.one() == StatCapSim.time(value=approx(1149))
     api_tgt_ship_stats = api_tgt_ship.get_stats(options=ItemStatsOptions(cap_sim=[StatsOptionCapSim(stagger=False)]))
-    assert api_tgt_ship_stats.cap_sim.one() == {consts.ApiCapSimResult.time: approx(1149)}
+    assert api_tgt_ship_stats.cap_sim.one() == StatCapSim.time(value=approx(1149))

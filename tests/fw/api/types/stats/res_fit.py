@@ -1,5 +1,6 @@
 from fw.util import AttrDict, AttrHookDef, NttList
 from .res_item import ItemStats
+from .stat_cap_sim import StatCapSim
 from .stat_dmg import StatDmg
 from .stat_ehp import StatEhp
 from .stat_erps import StatErps
@@ -92,7 +93,8 @@ class FitStats(AttrDict):
             # Ship cap
             'cap_amount': AttrHookDef(func=lambda d: NttList(d) if d is not None else None),
             'cap_balance': AttrHookDef(func=lambda d: NttList(d) if d is not None else None),
-            'cap_sim': AttrHookDef(func=lambda d: NttList(d) if d is not None else None),
+            'cap_sim': AttrHookDef(func=lambda d: (
+                NttList(StatCapSim.from_data(data=e) for e in d) if d is not None else None)),
             'neut_resist': AttrHookDef(func=lambda d: NttList(d) if d is not None else None),
             # Ship sensors
             'locks': AttrHookDef(func=lambda d: NttList(d) if d is not None else None),

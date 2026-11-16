@@ -1,5 +1,5 @@
 from fw import approx
-from fw.api import FitStatsOptions, ItemStatsOptions, StatsOptionCapSim
+from fw.api import FitStatsOptions, ItemStatsOptions, StatCapSim, StatsOptionCapSim
 
 
 def test_starting_cap(client, consts):
@@ -25,14 +25,14 @@ def test_starting_cap(client, consts):
     api_options = [StatsOptionCapSim(cap_perc=0.1), StatsOptionCapSim(cap_perc=0.3), StatsOptionCapSim(cap_perc=1)]
     api_fit_stats = api_fit.get_stats(options=FitStatsOptions(cap_sim=api_options))
     assert api_fit_stats.cap_sim == [
-        {consts.ApiCapSimResult.time: approx(16)},
-        {consts.ApiCapSimResult.stable: approx(0.3595835)},
-        {consts.ApiCapSimResult.stable: approx(0.3595835)}]
+        StatCapSim.time(value=approx(16)),
+        StatCapSim.stable(value=approx(0.3595835)),
+        StatCapSim.stable(value=approx(0.3595835))]
     api_ship_stats = api_ship.get_stats(options=ItemStatsOptions(cap_sim=api_options))
     assert api_ship_stats.cap_sim == [
-        {consts.ApiCapSimResult.time: approx(16)},
-        {consts.ApiCapSimResult.stable: approx(0.3595835)},
-        {consts.ApiCapSimResult.stable: approx(0.3595835)}]
+        StatCapSim.time(value=approx(16)),
+        StatCapSim.stable(value=approx(0.3595835)),
+        StatCapSim.stable(value=approx(0.3595835))]
 
 
 def test_no_events(client, consts):
@@ -47,28 +47,25 @@ def test_no_events(client, consts):
     api_options = [StatsOptionCapSim(cap_perc=0), StatsOptionCapSim(cap_perc=0.3), StatsOptionCapSim(cap_perc=1)]
     # Verification - without any cap use, regen gets cap to 100%
     api_fit_stats = api_fit.get_stats(options=FitStatsOptions(cap_sim=api_options))
-    assert api_fit_stats.cap_sim == [
-        {consts.ApiCapSimResult.stable: 1},
-        {consts.ApiCapSimResult.stable: 1},
-        {consts.ApiCapSimResult.stable: 1}]
+    assert api_fit_stats.cap_sim == [StatCapSim.stable(value=1), StatCapSim.stable(value=1), StatCapSim.stable(value=1)]
     api_ship_stats = api_ship.get_stats(options=ItemStatsOptions(cap_sim=api_options))
     assert api_ship_stats.cap_sim == [
-        {consts.ApiCapSimResult.stable: 1},
-        {consts.ApiCapSimResult.stable: 1},
-        {consts.ApiCapSimResult.stable: 1}]
+        StatCapSim.stable(value=1),
+        StatCapSim.stable(value=1),
+        StatCapSim.stable(value=1)]
     # Action
     api_ship.change_ship(type_id=eve_ship2_id)
     # Verification - without any cap use and regen, starting cap percentage is returned
     api_fit_stats = api_fit.get_stats(options=FitStatsOptions(cap_sim=api_options))
     assert api_fit_stats.cap_sim == [
-        {consts.ApiCapSimResult.stable: approx(0)},
-        {consts.ApiCapSimResult.stable: approx(0.3)},
-        {consts.ApiCapSimResult.stable: approx(1)}]
+        StatCapSim.stable(value=approx(0)),
+        StatCapSim.stable(value=approx(0.3)),
+        StatCapSim.stable(value=approx(1))]
     api_ship_stats = api_ship.get_stats(options=ItemStatsOptions(cap_sim=api_options))
     assert api_ship_stats.cap_sim == [
-        {consts.ApiCapSimResult.stable: approx(0)},
-        {consts.ApiCapSimResult.stable: approx(0.3)},
-        {consts.ApiCapSimResult.stable: approx(1)}]
+        StatCapSim.stable(value=approx(0)),
+        StatCapSim.stable(value=approx(0.3)),
+        StatCapSim.stable(value=approx(1))]
 
 
 def test_no_events_with_self_killer(client, consts):
@@ -97,27 +94,27 @@ def test_no_events_with_self_killer(client, consts):
     # stops cycling. Instability is returned only when there is not enough cap to use the module
     api_fit_stats = api_fit.get_stats(options=FitStatsOptions(cap_sim=api_options))
     assert api_fit_stats.cap_sim == [
-        {consts.ApiCapSimResult.time: approx(0)},
-        {consts.ApiCapSimResult.stable: 1},
-        {consts.ApiCapSimResult.stable: 1}]
+        StatCapSim.time(value=approx(0)),
+        StatCapSim.stable(value=1),
+        StatCapSim.stable(value=1)]
     api_ship_stats = api_ship.get_stats(options=ItemStatsOptions(cap_sim=api_options))
     assert api_ship_stats.cap_sim == [
-        {consts.ApiCapSimResult.time: approx(0)},
-        {consts.ApiCapSimResult.stable: 1},
-        {consts.ApiCapSimResult.stable: 1}]
+        StatCapSim.time(value=approx(0)),
+        StatCapSim.stable(value=1),
+        StatCapSim.stable(value=1)]
     # Action
     api_ship.change_ship(type_id=eve_ship2_id)
     # Verification - without any regen, starting cap minus used amount is returned as stability
     api_fit_stats = api_fit.get_stats(options=FitStatsOptions(cap_sim=api_options))
     assert api_fit_stats.cap_sim == [
-        {consts.ApiCapSimResult.time: approx(0)},
-        {consts.ApiCapSimResult.stable: approx(0.1)},
-        {consts.ApiCapSimResult.stable: approx(0.8)}]
+        StatCapSim.time(value=approx(0)),
+        StatCapSim.stable(value=approx(0.1)),
+        StatCapSim.stable(value=approx(0.8))]
     api_ship_stats = api_ship.get_stats(options=ItemStatsOptions(cap_sim=api_options))
     assert api_ship_stats.cap_sim == [
-        {consts.ApiCapSimResult.time: approx(0)},
-        {consts.ApiCapSimResult.stable: approx(0.1)},
-        {consts.ApiCapSimResult.stable: approx(0.8)}]
+        StatCapSim.time(value=approx(0)),
+        StatCapSim.stable(value=approx(0.1)),
+        StatCapSim.stable(value=approx(0.8))]
 
 
 def test_zeroed_positive_events(client, consts):
@@ -170,27 +167,27 @@ def test_zeroed_positive_events(client, consts):
     # Verification - without any cap use, regen gets cap to 100%
     api_tgt_fit_stats = api_tgt_fit.get_stats(options=FitStatsOptions(cap_sim=api_options))
     assert api_tgt_fit_stats.cap_sim == [
-        {consts.ApiCapSimResult.stable: 1},
-        {consts.ApiCapSimResult.stable: 1},
-        {consts.ApiCapSimResult.stable: 1}]
+        StatCapSim.stable(value=1),
+        StatCapSim.stable(value=1),
+        StatCapSim.stable(value=1)]
     api_tgt_ship_stats = api_tgt_ship.get_stats(options=ItemStatsOptions(cap_sim=api_options))
     assert api_tgt_ship_stats.cap_sim == [
-        {consts.ApiCapSimResult.stable: 1},
-        {consts.ApiCapSimResult.stable: 1},
-        {consts.ApiCapSimResult.stable: 1}]
+        StatCapSim.stable(value=1),
+        StatCapSim.stable(value=1),
+        StatCapSim.stable(value=1)]
     # Action
     api_tgt_ship.change_ship(type_id=eve_tgt_ship2_id)
     # Verification - without any cap use and without cap regen, starting cap percentage is returned
     api_tgt_fit_stats = api_tgt_fit.get_stats(options=FitStatsOptions(cap_sim=api_options))
     assert api_tgt_fit_stats.cap_sim == [
-        {consts.ApiCapSimResult.stable: approx(0)},
-        {consts.ApiCapSimResult.stable: approx(0.3)},
-        {consts.ApiCapSimResult.stable: approx(1)}]
+        StatCapSim.stable(value=approx(0)),
+        StatCapSim.stable(value=approx(0.3)),
+        StatCapSim.stable(value=approx(1))]
     api_tgt_ship_stats = api_tgt_ship.get_stats(options=ItemStatsOptions(cap_sim=api_options))
     assert api_tgt_ship_stats.cap_sim == [
-        {consts.ApiCapSimResult.stable: approx(0)},
-        {consts.ApiCapSimResult.stable: approx(0.3)},
-        {consts.ApiCapSimResult.stable: approx(1)}]
+        StatCapSim.stable(value=approx(0)),
+        StatCapSim.stable(value=approx(0.3)),
+        StatCapSim.stable(value=approx(1))]
 
 
 def test_zeroed_positive_events_with_self_killer(client, consts):
@@ -255,27 +252,27 @@ def test_zeroed_positive_events_with_self_killer(client, consts):
     # stops cycling. Instability is returned only when there is not enough cap to use the module
     api_tgt_fit_stats = api_tgt_fit.get_stats(options=FitStatsOptions(cap_sim=api_options))
     assert api_tgt_fit_stats.cap_sim == [
-        {consts.ApiCapSimResult.time: approx(0)},
-        {consts.ApiCapSimResult.stable: 1},
-        {consts.ApiCapSimResult.stable: 1}]
+        StatCapSim.time(value=approx(0)),
+        StatCapSim.stable(value=1),
+        StatCapSim.stable(value=1)]
     api_tgt_ship_stats = api_tgt_ship.get_stats(options=ItemStatsOptions(cap_sim=api_options))
     assert api_tgt_ship_stats.cap_sim == [
-        {consts.ApiCapSimResult.time: approx(0)},
-        {consts.ApiCapSimResult.stable: 1},
-        {consts.ApiCapSimResult.stable: 1}]
+        StatCapSim.time(value=approx(0)),
+        StatCapSim.stable(value=1),
+        StatCapSim.stable(value=1)]
     # Action
     api_tgt_ship.change_ship(type_id=eve_tgt_ship2_id)
     # Verification - without any regen, starting cap minus used amount is returned as stability
     api_tgt_fit_stats = api_tgt_fit.get_stats(options=FitStatsOptions(cap_sim=api_options))
     assert api_tgt_fit_stats.cap_sim == [
-        {consts.ApiCapSimResult.time: approx(0)},
-        {consts.ApiCapSimResult.stable: approx(0.1)},
-        {consts.ApiCapSimResult.stable: approx(0.8)}]
+        StatCapSim.time(value=approx(0)),
+        StatCapSim.stable(value=approx(0.1)),
+        StatCapSim.stable(value=approx(0.8))]
     api_tgt_ship_stats = api_tgt_ship.get_stats(options=ItemStatsOptions(cap_sim=api_options))
     assert api_tgt_ship_stats.cap_sim == [
-        {consts.ApiCapSimResult.time: approx(0)},
-        {consts.ApiCapSimResult.stable: approx(0.1)},
-        {consts.ApiCapSimResult.stable: approx(0.8)}]
+        StatCapSim.time(value=approx(0)),
+        StatCapSim.stable(value=approx(0.1)),
+        StatCapSim.stable(value=approx(0.8))]
 
 
 def test_zeroed_negative_events(client, consts):
@@ -316,27 +313,27 @@ def test_zeroed_negative_events(client, consts):
     # Verification - without any cap use, regen gets cap to 100%
     api_tgt_fit_stats = api_tgt_fit.get_stats(options=FitStatsOptions(cap_sim=api_options))
     assert api_tgt_fit_stats.cap_sim == [
-        {consts.ApiCapSimResult.stable: 1},
-        {consts.ApiCapSimResult.stable: 1},
-        {consts.ApiCapSimResult.stable: 1}]
+        StatCapSim.stable(value=1),
+        StatCapSim.stable(value=1),
+        StatCapSim.stable(value=1)]
     api_tgt_ship_stats = api_tgt_ship.get_stats(options=ItemStatsOptions(cap_sim=api_options))
     assert api_tgt_ship_stats.cap_sim == [
-        {consts.ApiCapSimResult.stable: 1},
-        {consts.ApiCapSimResult.stable: 1},
-        {consts.ApiCapSimResult.stable: 1}]
+        StatCapSim.stable(value=1),
+        StatCapSim.stable(value=1),
+        StatCapSim.stable(value=1)]
     # Action
     api_tgt_ship.change_ship(type_id=eve_tgt_ship2_id)
     # Verification - without any cap use and without cap regen, starting cap percentage is returned
     api_tgt_fit_stats = api_tgt_fit.get_stats(options=FitStatsOptions(cap_sim=api_options))
     assert api_tgt_fit_stats.cap_sim == [
-        {consts.ApiCapSimResult.stable: approx(0)},
-        {consts.ApiCapSimResult.stable: approx(0.3)},
-        {consts.ApiCapSimResult.stable: approx(1)}]
+        StatCapSim.stable(value=approx(0)),
+        StatCapSim.stable(value=approx(0.3)),
+        StatCapSim.stable(value=approx(1))]
     api_tgt_ship_stats = api_tgt_ship.get_stats(options=ItemStatsOptions(cap_sim=api_options))
     assert api_tgt_ship_stats.cap_sim == [
-        {consts.ApiCapSimResult.stable: approx(0)},
-        {consts.ApiCapSimResult.stable: approx(0.3)},
-        {consts.ApiCapSimResult.stable: approx(1)}]
+        StatCapSim.stable(value=approx(0)),
+        StatCapSim.stable(value=approx(0.3)),
+        StatCapSim.stable(value=approx(1))]
 
 
 def test_zeroed_negative_events_with_self_killer(client, consts):
@@ -388,27 +385,27 @@ def test_zeroed_negative_events_with_self_killer(client, consts):
     # stops cycling. Instability is returned only when there is not enough cap to use the module
     api_tgt_fit_stats = api_tgt_fit.get_stats(options=FitStatsOptions(cap_sim=api_options))
     assert api_tgt_fit_stats.cap_sim == [
-        {consts.ApiCapSimResult.time: approx(0)},
-        {consts.ApiCapSimResult.stable: 1},
-        {consts.ApiCapSimResult.stable: 1}]
+        StatCapSim.time(value=approx(0)),
+        StatCapSim.stable(value=1),
+        StatCapSim.stable(value=1)]
     api_tgt_ship_stats = api_tgt_ship.get_stats(options=ItemStatsOptions(cap_sim=api_options))
     assert api_tgt_ship_stats.cap_sim == [
-        {consts.ApiCapSimResult.time: approx(0)},
-        {consts.ApiCapSimResult.stable: 1},
-        {consts.ApiCapSimResult.stable: 1}]
+        StatCapSim.time(value=approx(0)),
+        StatCapSim.stable(value=1),
+        StatCapSim.stable(value=1)]
     # Action
     api_tgt_ship.change_ship(type_id=eve_tgt_ship2_id)
     # Verification - without any regen, starting cap minus used amount is returned as stability
     api_tgt_fit_stats = api_tgt_fit.get_stats(options=FitStatsOptions(cap_sim=api_options))
     assert api_tgt_fit_stats.cap_sim == [
-        {consts.ApiCapSimResult.time: approx(0)},
-        {consts.ApiCapSimResult.stable: approx(0.1)},
-        {consts.ApiCapSimResult.stable: approx(0.8)}]
+        StatCapSim.time(value=approx(0)),
+        StatCapSim.stable(value=approx(0.1)),
+        StatCapSim.stable(value=approx(0.8))]
     api_tgt_ship_stats = api_tgt_ship.get_stats(options=ItemStatsOptions(cap_sim=api_options))
     assert api_tgt_ship_stats.cap_sim == [
-        {consts.ApiCapSimResult.time: approx(0)},
-        {consts.ApiCapSimResult.stable: approx(0.1)},
-        {consts.ApiCapSimResult.stable: approx(0.8)}]
+        StatCapSim.time(value=approx(0)),
+        StatCapSim.stable(value=approx(0.1)),
+        StatCapSim.stable(value=approx(0.8))]
 
 
 def test_only_injects(client, consts):
@@ -438,28 +435,22 @@ def test_only_injects(client, consts):
     api_options = [StatsOptionCapSim(cap_perc=0), StatsOptionCapSim(cap_perc=0.3), StatsOptionCapSim(cap_perc=1)]
     # Verification
     api_fit_stats = api_fit.get_stats(options=FitStatsOptions(cap_sim=api_options))
-    assert api_fit_stats.cap_sim == [
-        {consts.ApiCapSimResult.stable: 1},
-        {consts.ApiCapSimResult.stable: 1},
-        {consts.ApiCapSimResult.stable: 1}]
+    assert api_fit_stats.cap_sim == [StatCapSim.stable(value=1), StatCapSim.stable(value=1), StatCapSim.stable(value=1)]
     api_ship_stats = api_ship.get_stats(options=ItemStatsOptions(cap_sim=api_options))
     assert api_ship_stats.cap_sim == [
-        {consts.ApiCapSimResult.stable: 1},
-        {consts.ApiCapSimResult.stable: 1},
-        {consts.ApiCapSimResult.stable: 1}]
+        StatCapSim.stable(value=1),
+        StatCapSim.stable(value=1),
+        StatCapSim.stable(value=1)]
     # Action
     api_ship.change_ship(type_id=eve_ship2_id)
     # Verification
     api_fit_stats = api_fit.get_stats(options=FitStatsOptions(cap_sim=api_options))
-    assert api_fit_stats.cap_sim == [
-        {consts.ApiCapSimResult.stable: 1},
-        {consts.ApiCapSimResult.stable: 1},
-        {consts.ApiCapSimResult.stable: 1}]
+    assert api_fit_stats.cap_sim == [StatCapSim.stable(value=1), StatCapSim.stable(value=1), StatCapSim.stable(value=1)]
     api_ship_stats = api_ship.get_stats(options=ItemStatsOptions(cap_sim=api_options))
     assert api_ship_stats.cap_sim == [
-        {consts.ApiCapSimResult.stable: 1},
-        {consts.ApiCapSimResult.stable: 1},
-        {consts.ApiCapSimResult.stable: 1}]
+        StatCapSim.stable(value=1),
+        StatCapSim.stable(value=1),
+        StatCapSim.stable(value=1)]
 
 
 def test_only_injects_with_self_killer(client, consts):
@@ -501,27 +492,27 @@ def test_only_injects_with_self_killer(client, consts):
     # Verification
     api_fit_stats = api_fit.get_stats(options=FitStatsOptions(cap_sim=api_options))
     assert api_fit_stats.cap_sim == [
-        {consts.ApiCapSimResult.time: approx(0)},
-        {consts.ApiCapSimResult.stable: 1},
-        {consts.ApiCapSimResult.stable: 1}]
+        StatCapSim.time(value=approx(0)),
+        StatCapSim.stable(value=1),
+        StatCapSim.stable(value=1)]
     api_ship_stats = api_ship.get_stats(options=ItemStatsOptions(cap_sim=api_options))
     assert api_ship_stats.cap_sim == [
-        {consts.ApiCapSimResult.time: approx(0)},
-        {consts.ApiCapSimResult.stable: 1},
-        {consts.ApiCapSimResult.stable: 1}]
+        StatCapSim.time(value=approx(0)),
+        StatCapSim.stable(value=1),
+        StatCapSim.stable(value=1)]
     # Action
     api_ship.change_ship(type_id=eve_ship2_id)
     # Verification
     api_fit_stats = api_fit.get_stats(options=FitStatsOptions(cap_sim=api_options))
     assert api_fit_stats.cap_sim == [
-        {consts.ApiCapSimResult.time: approx(0)},
-        {consts.ApiCapSimResult.stable: 1},
-        {consts.ApiCapSimResult.stable: 1}]
+        StatCapSim.time(value=approx(0)),
+        StatCapSim.stable(value=1),
+        StatCapSim.stable(value=1)]
     api_ship_stats = api_ship.get_stats(options=ItemStatsOptions(cap_sim=api_options))
     assert api_ship_stats.cap_sim == [
-        {consts.ApiCapSimResult.time: approx(0)},
-        {consts.ApiCapSimResult.stable: 1},
-        {consts.ApiCapSimResult.stable: 1}]
+        StatCapSim.time(value=approx(0)),
+        StatCapSim.stable(value=1),
+        StatCapSim.stable(value=1)]
 
 
 def test_only_transfers(client, consts):
@@ -550,27 +541,27 @@ def test_only_transfers(client, consts):
     # Verification
     api_tgt_fit_stats = api_tgt_fit.get_stats(options=FitStatsOptions(cap_sim=api_options))
     assert api_tgt_fit_stats.cap_sim == [
-        {consts.ApiCapSimResult.stable: 1},
-        {consts.ApiCapSimResult.stable: 1},
-        {consts.ApiCapSimResult.stable: 1}]
+        StatCapSim.stable(value=1),
+        StatCapSim.stable(value=1),
+        StatCapSim.stable(value=1)]
     api_tgt_ship_stats = api_tgt_ship.get_stats(options=ItemStatsOptions(cap_sim=api_options))
     assert api_tgt_ship_stats.cap_sim == [
-        {consts.ApiCapSimResult.stable: 1},
-        {consts.ApiCapSimResult.stable: 1},
-        {consts.ApiCapSimResult.stable: 1}]
+        StatCapSim.stable(value=1),
+        StatCapSim.stable(value=1),
+        StatCapSim.stable(value=1)]
     # Action
     api_tgt_ship.change_ship(type_id=eve_ship2_id)
     # Verification
     api_tgt_fit_stats = api_tgt_fit.get_stats(options=FitStatsOptions(cap_sim=api_options))
     assert api_tgt_fit_stats.cap_sim == [
-        {consts.ApiCapSimResult.stable: 1},
-        {consts.ApiCapSimResult.stable: 1},
-        {consts.ApiCapSimResult.stable: 1}]
+        StatCapSim.stable(value=1),
+        StatCapSim.stable(value=1),
+        StatCapSim.stable(value=1)]
     api_tgt_ship_stats = api_tgt_ship.get_stats(options=ItemStatsOptions(cap_sim=api_options))
     assert api_tgt_ship_stats.cap_sim == [
-        {consts.ApiCapSimResult.stable: 1},
-        {consts.ApiCapSimResult.stable: 1},
-        {consts.ApiCapSimResult.stable: 1}]
+        StatCapSim.stable(value=1),
+        StatCapSim.stable(value=1),
+        StatCapSim.stable(value=1)]
 
 
 def test_only_transfers_with_self_killer(client, consts):
@@ -610,27 +601,27 @@ def test_only_transfers_with_self_killer(client, consts):
     # Verification
     api_tgt_fit_stats = api_tgt_fit.get_stats(options=FitStatsOptions(cap_sim=api_options))
     assert api_tgt_fit_stats.cap_sim == [
-        {consts.ApiCapSimResult.time: approx(0)},
-        {consts.ApiCapSimResult.stable: 1},
-        {consts.ApiCapSimResult.stable: 1}]
+        StatCapSim.time(value=approx(0)),
+        StatCapSim.stable(value=1),
+        StatCapSim.stable(value=1)]
     api_tgt_ship_stats = api_tgt_ship.get_stats(options=ItemStatsOptions(cap_sim=api_options))
     assert api_tgt_ship_stats.cap_sim == [
-        {consts.ApiCapSimResult.time: approx(0)},
-        {consts.ApiCapSimResult.stable: 1},
-        {consts.ApiCapSimResult.stable: 1}]
+        StatCapSim.time(value=approx(0)),
+        StatCapSim.stable(value=1),
+        StatCapSim.stable(value=1)]
     # Action
     api_tgt_ship.change_ship(type_id=eve_ship2_id)
     # Verification
     api_tgt_fit_stats = api_tgt_fit.get_stats(options=FitStatsOptions(cap_sim=api_options))
     assert api_tgt_fit_stats.cap_sim == [
-        {consts.ApiCapSimResult.time: approx(0)},
-        {consts.ApiCapSimResult.stable: 1},
-        {consts.ApiCapSimResult.stable: 1}]
+        StatCapSim.time(value=approx(0)),
+        StatCapSim.stable(value=1),
+        StatCapSim.stable(value=1)]
     api_tgt_ship_stats = api_tgt_ship.get_stats(options=ItemStatsOptions(cap_sim=api_options))
     assert api_tgt_ship_stats.cap_sim == [
-        {consts.ApiCapSimResult.time: approx(0)},
-        {consts.ApiCapSimResult.stable: 1},
-        {consts.ApiCapSimResult.stable: 1}]
+        StatCapSim.time(value=approx(0)),
+        StatCapSim.stable(value=1),
+        StatCapSim.stable(value=1)]
 
 
 def test_ancil_armor(client, consts):
@@ -666,30 +657,22 @@ def test_ancil_armor(client, consts):
     api_fit_stats = api_fit.get_stats(options=FitStatsOptions(cap_sim=[
         StatsOptionCapSim(optional_reloads=consts.ApiOptionalReload.disabled),
         StatsOptionCapSim(optional_reloads=consts.ApiOptionalReload.on_empty)]))
-    assert api_fit_stats.cap_sim == [
-        {consts.ApiCapSimResult.time: approx(63)},
-        {consts.ApiCapSimResult.stable: approx(0.5492466)}]
+    assert api_fit_stats.cap_sim == [StatCapSim.time(value=approx(63)), StatCapSim.stable(value=approx(0.5492466))]
     api_ship_stats = api_ship.get_stats(options=ItemStatsOptions(cap_sim=[
         StatsOptionCapSim(optional_reloads=consts.ApiOptionalReload.disabled),
         StatsOptionCapSim(optional_reloads=consts.ApiOptionalReload.on_empty)]))
-    assert api_ship_stats.cap_sim == [
-        {consts.ApiCapSimResult.time: approx(63)},
-        {consts.ApiCapSimResult.stable: approx(0.5492466)}]
+    assert api_ship_stats.cap_sim == [StatCapSim.time(value=approx(63)), StatCapSim.stable(value=approx(0.5492466))]
     # Action
     api_module.change_module(charge_type_id=None)
     # Verification
     api_fit_stats = api_fit.get_stats(options=FitStatsOptions(cap_sim=[
         StatsOptionCapSim(optional_reloads=consts.ApiOptionalReload.disabled),
         StatsOptionCapSim(optional_reloads=consts.ApiOptionalReload.on_empty)]))
-    assert api_fit_stats.cap_sim == [
-        {consts.ApiCapSimResult.time: approx(63)},
-        {consts.ApiCapSimResult.time: approx(63)}]
+    assert api_fit_stats.cap_sim == [StatCapSim.time(value=approx(63)), StatCapSim.time(value=approx(63))]
     api_ship_stats = api_ship.get_stats(options=ItemStatsOptions(cap_sim=[
         StatsOptionCapSim(optional_reloads=consts.ApiOptionalReload.disabled),
         StatsOptionCapSim(optional_reloads=consts.ApiOptionalReload.on_empty)]))
-    assert api_ship_stats.cap_sim == [
-        {consts.ApiCapSimResult.time: approx(63)},
-        {consts.ApiCapSimResult.time: approx(63)}]
+    assert api_ship_stats.cap_sim == [StatCapSim.time(value=approx(63)), StatCapSim.time(value=approx(63))]
 
 
 def test_ancil_shield(client, consts):
@@ -728,25 +711,19 @@ def test_ancil_shield(client, consts):
     api_fit_stats = api_fit.get_stats(options=FitStatsOptions(cap_sim=[
         StatsOptionCapSim(optional_reloads=consts.ApiOptionalReload.disabled),
         StatsOptionCapSim(optional_reloads=consts.ApiOptionalReload.on_empty)]))
-    assert api_fit_stats.cap_sim == [
-        {consts.ApiCapSimResult.time: approx(33)},
-        {consts.ApiCapSimResult.stable: approx(1)}]
+    assert api_fit_stats.cap_sim == [StatCapSim.time(value=approx(33)), StatCapSim.stable(value=approx(1))]
     api_ship_stats = api_ship.get_stats(options=ItemStatsOptions(cap_sim=[
         StatsOptionCapSim(optional_reloads=consts.ApiOptionalReload.disabled),
         StatsOptionCapSim(optional_reloads=consts.ApiOptionalReload.on_empty)]))
-    assert api_ship_stats.cap_sim == [
-        {consts.ApiCapSimResult.time: approx(33)},
-        {consts.ApiCapSimResult.stable: approx(1)}]
+    assert api_ship_stats.cap_sim == [StatCapSim.time(value=approx(33)), StatCapSim.stable(value=approx(1))]
     # Action
     api_module.change_module(charge_type_id=None)
     # Verification
     api_fit_stats = api_fit.get_stats(options=FitStatsOptions(cap_sim=[
         StatsOptionCapSim(optional_reloads=consts.ApiOptionalReload.disabled),
         StatsOptionCapSim(optional_reloads=consts.ApiOptionalReload.on_empty)]))
-    assert api_fit_stats.cap_sim == [{consts.ApiCapSimResult.time: approx(6)}, {consts.ApiCapSimResult.time: approx(6)}]
+    assert api_fit_stats.cap_sim == [StatCapSim.time(value=approx(6)), StatCapSim.time(value=approx(6))]
     api_ship_stats = api_ship.get_stats(options=ItemStatsOptions(cap_sim=[
         StatsOptionCapSim(optional_reloads=consts.ApiOptionalReload.disabled),
         StatsOptionCapSim(optional_reloads=consts.ApiOptionalReload.on_empty)]))
-    assert api_ship_stats.cap_sim == [
-        {consts.ApiCapSimResult.time: approx(6)},
-        {consts.ApiCapSimResult.time: approx(6)}]
+    assert api_ship_stats.cap_sim == [StatCapSim.time(value=approx(6)), StatCapSim.time(value=approx(6))]

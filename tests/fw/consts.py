@@ -784,12 +784,6 @@ class ApiValItemStatus(StrEnum):
 
 
 @unique
-class ApiCapSimResult(StrEnum):
-    stable = 'stable'
-    time = 'time'
-
-
-@unique
 class ApiCtlAffector(StrEnum):
     unmodified = 'unmodified'
     deactivate = 'deactivate'

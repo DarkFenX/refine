@@ -1,5 +1,5 @@
 from fw import approx
-from fw.api import FitStatsOptions, ItemStatsOptions, StatsOptionCapSim
+from fw.api import FitStatsOptions, ItemStatsOptions, StatCapSim, StatsOptionCapSim
 
 
 def test_consumers(client, consts):
@@ -26,14 +26,14 @@ def test_consumers(client, consts):
     api_options = [StatsOptionCapSim(), StatsOptionCapSim(stagger=True), StatsOptionCapSim(stagger=False)]
     api_fit_stats = api_fit.get_stats(options=FitStatsOptions(cap_sim=api_options))
     assert api_fit_stats.cap_sim == [
-        {consts.ApiCapSimResult.time: 0},
-        {consts.ApiCapSimResult.stable: approx(0.4264583)},
-        {consts.ApiCapSimResult.time: 0}]
+        StatCapSim.time(value=0),
+        StatCapSim.stable(value=approx(0.4264583)),
+        StatCapSim.time(value=0)]
     api_ship_stats = api_ship.get_stats(options=ItemStatsOptions(cap_sim=api_options))
     assert api_ship_stats.cap_sim == [
-        {consts.ApiCapSimResult.time: 0},
-        {consts.ApiCapSimResult.stable: approx(0.4264583)},
-        {consts.ApiCapSimResult.time: 0}]
+        StatCapSim.time(value=0),
+        StatCapSim.stable(value=approx(0.4264583)),
+        StatCapSim.time(value=0)]
 
 
 def test_neuts(client, consts):
@@ -64,13 +64,11 @@ def test_neuts(client, consts):
     # staggered, they do not
     api_options = [StatsOptionCapSim(stagger=True), StatsOptionCapSim(stagger=False)]
     api_tgt_fit_stats = api_tgt_fit.get_stats(options=FitStatsOptions(cap_sim=api_options))
-    assert api_tgt_fit_stats.cap_sim == [
-        {consts.ApiCapSimResult.stable: approx(0.2891368)},
-        {consts.ApiCapSimResult.time: approx(390)}]
+    assert api_tgt_fit_stats.cap_sim == [StatCapSim.stable(value=approx(0.2891368)), StatCapSim.time(value=approx(390))]
     api_tgt_ship_stats = api_tgt_ship.get_stats(options=ItemStatsOptions(cap_sim=api_options))
     assert api_tgt_ship_stats.cap_sim == [
-        {consts.ApiCapSimResult.stable: approx(0.2891368)},
-        {consts.ApiCapSimResult.time: approx(390)}]
+        StatCapSim.stable(value=approx(0.2891368)),
+        StatCapSim.time(value=approx(390))]
 
 
 def test_transfers(client, consts):
@@ -108,13 +106,9 @@ def test_transfers(client, consts):
     # Verification
     api_options = [StatsOptionCapSim(stagger=True), StatsOptionCapSim(stagger=False)]
     api_tgt_fit_stats = api_tgt_fit.get_stats(options=FitStatsOptions(cap_sim=api_options))
-    assert api_tgt_fit_stats.cap_sim == [
-        {consts.ApiCapSimResult.stable: approx(0.3963343)},
-        {consts.ApiCapSimResult.time: approx(54)}]
+    assert api_tgt_fit_stats.cap_sim == [StatCapSim.stable(value=approx(0.3963343)), StatCapSim.time(value=approx(54))]
     api_tgt_ship_stats = api_tgt_ship.get_stats(options=ItemStatsOptions(cap_sim=api_options))
-    assert api_tgt_ship_stats.cap_sim == [
-        {consts.ApiCapSimResult.stable: approx(0.3963343)},
-        {consts.ApiCapSimResult.time: approx(54)}]
+    assert api_tgt_ship_stats.cap_sim == [StatCapSim.stable(value=approx(0.3963343)), StatCapSim.time(value=approx(54))]
 
 
 def test_cross_group(client, consts):
@@ -154,13 +148,9 @@ def test_cross_group(client, consts):
     # against each other even if their cycle parameters coincide
     api_options = [StatsOptionCapSim(stagger=True), StatsOptionCapSim(stagger=False)]
     api_tgt_fit_stats = api_tgt_fit.get_stats(options=FitStatsOptions(cap_sim=api_options))
-    assert api_tgt_fit_stats.cap_sim == [
-        {consts.ApiCapSimResult.time: approx(390)},
-        {consts.ApiCapSimResult.time: approx(390)}]
+    assert api_tgt_fit_stats.cap_sim == [StatCapSim.time(value=approx(390)), StatCapSim.time(value=approx(390))]
     api_tgt_ship_stats = api_tgt_ship.get_stats(options=ItemStatsOptions(cap_sim=api_options))
-    assert api_tgt_ship_stats.cap_sim == [
-        {consts.ApiCapSimResult.time: approx(390)},
-        {consts.ApiCapSimResult.time: approx(390)}]
+    assert api_tgt_ship_stats.cap_sim == [StatCapSim.time(value=approx(390)), StatCapSim.time(value=approx(390))]
 
 
 def test_different_amounts(client, consts):
@@ -196,13 +186,11 @@ def test_different_amounts(client, consts):
     # Verification
     api_options = [StatsOptionCapSim(stagger=True), StatsOptionCapSim(stagger=False)]
     api_tgt_fit_stats = api_tgt_fit.get_stats(options=FitStatsOptions(cap_sim=api_options))
-    assert api_tgt_fit_stats.cap_sim == [
-        {consts.ApiCapSimResult.stable: approx(0.3049515)},
-        {consts.ApiCapSimResult.time: approx(630)}]
+    assert api_tgt_fit_stats.cap_sim == [StatCapSim.stable(value=approx(0.3049515)), StatCapSim.time(value=approx(630))]
     api_tgt_ship_stats = api_tgt_ship.get_stats(options=ItemStatsOptions(cap_sim=api_options))
     assert api_tgt_ship_stats.cap_sim == [
-        {consts.ApiCapSimResult.stable: approx(0.3049515)},
-        {consts.ApiCapSimResult.time: approx(630)}]
+        StatCapSim.stable(value=approx(0.3049515)),
+        StatCapSim.time(value=approx(630))]
 
 
 def test_different_delays(client, consts):
@@ -246,13 +234,9 @@ def test_different_delays(client, consts):
     # nosf in the end of cycle), so the sim puts those into different staggering groups
     api_options = [StatsOptionCapSim(stagger=True), StatsOptionCapSim(stagger=False)]
     api_tgt_fit_stats = api_tgt_fit.get_stats(options=FitStatsOptions(cap_sim=api_options))
-    assert api_tgt_fit_stats.cap_sim == [
-        {consts.ApiCapSimResult.time: approx(640)},
-        {consts.ApiCapSimResult.time: approx(640)}]
+    assert api_tgt_fit_stats.cap_sim == [StatCapSim.time(value=approx(640)), StatCapSim.time(value=approx(640))]
     api_tgt_ship_stats = api_tgt_ship.get_stats(options=ItemStatsOptions(cap_sim=api_options))
-    assert api_tgt_ship_stats.cap_sim == [
-        {consts.ApiCapSimResult.time: approx(640)},
-        {consts.ApiCapSimResult.time: approx(640)}]
+    assert api_tgt_ship_stats.cap_sim == [StatCapSim.time(value=approx(640)), StatCapSim.time(value=approx(640))]
 
 
 def test_exceptions(client, consts):
@@ -299,25 +283,25 @@ def test_exceptions(client, consts):
     ]
     api_tgt_fit_stats = api_tgt_fit.get_stats(options=FitStatsOptions(cap_sim=api_options))
     assert api_tgt_fit_stats.cap_sim == [
-        {consts.ApiCapSimResult.stable: approx(0.2891368)},
-        {consts.ApiCapSimResult.stable: approx(0.2803728)},
-        {consts.ApiCapSimResult.time: approx(930)},
-        {consts.ApiCapSimResult.time: approx(390)},
-        {consts.ApiCapSimResult.time: approx(390)},
-        {consts.ApiCapSimResult.time: approx(390)},
-        {consts.ApiCapSimResult.time: approx(390)},
-        {consts.ApiCapSimResult.time: approx(930)},
-        {consts.ApiCapSimResult.stable: approx(0.2803728)},
-        {consts.ApiCapSimResult.stable: approx(0.2891368)}]
+        StatCapSim.stable(value=approx(0.2891368)),
+        StatCapSim.stable(value=approx(0.2803728)),
+        StatCapSim.time(value=approx(930)),
+        StatCapSim.time(value=approx(390)),
+        StatCapSim.time(value=approx(390)),
+        StatCapSim.time(value=approx(390)),
+        StatCapSim.time(value=approx(390)),
+        StatCapSim.time(value=approx(930)),
+        StatCapSim.stable(value=approx(0.2803728)),
+        StatCapSim.stable(value=approx(0.2891368))]
     api_tgt_ship_stats = api_tgt_ship.get_stats(options=ItemStatsOptions(cap_sim=api_options))
     assert api_tgt_ship_stats.cap_sim == [
-        {consts.ApiCapSimResult.stable: approx(0.2891368)},
-        {consts.ApiCapSimResult.stable: approx(0.2803728)},
-        {consts.ApiCapSimResult.time: approx(930)},
-        {consts.ApiCapSimResult.time: approx(390)},
-        {consts.ApiCapSimResult.time: approx(390)},
-        {consts.ApiCapSimResult.time: approx(390)},
-        {consts.ApiCapSimResult.time: approx(390)},
-        {consts.ApiCapSimResult.time: approx(930)},
-        {consts.ApiCapSimResult.stable: approx(0.2803728)},
-        {consts.ApiCapSimResult.stable: approx(0.2891368)}]
+        StatCapSim.stable(value=approx(0.2891368)),
+        StatCapSim.stable(value=approx(0.2803728)),
+        StatCapSim.time(value=approx(930)),
+        StatCapSim.time(value=approx(390)),
+        StatCapSim.time(value=approx(390)),
+        StatCapSim.time(value=approx(390)),
+        StatCapSim.time(value=approx(390)),
+        StatCapSim.time(value=approx(930)),
+        StatCapSim.stable(value=approx(0.2803728)),
+        StatCapSim.stable(value=approx(0.2891368))]
