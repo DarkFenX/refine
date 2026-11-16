@@ -1,4 +1,4 @@
-from fw import Muta, approx
+from fw import Muta, approx, check_no_field
 from fw.api import ValOptions
 
 
@@ -29,44 +29,46 @@ def test_src_breacher_tgt_ship_project_unproject(client, consts):
     # Verification
     api_val = api_src_fit.validate(options=ValOptions(projectee_filter=True))
     assert api_val.passed is True
-    assert api_val.details.projectee_filter.status == consts.ApiValStatus.passed
+    with check_no_field():
+        api_val.details  # ruff:ignore[useless-expression]
     api_val = api_tgt_fit.validate(options=ValOptions(projectee_filter=True))
     assert api_val.passed is True
-    assert api_val.details.projectee_filter.status == consts.ApiValStatus.passed
+    with check_no_field():
+        api_val.details  # ruff:ignore[useless-expression]
     # Action
     api_src_launcher.change_module(add_proj_item_ids=[api_tgt_ship.id])
     # Verification
     api_val = api_src_fit.validate(options=ValOptions(projectee_filter=True))
     assert api_val.passed is False
-    assert api_val.details.projectee_filter.status == consts.ApiValStatus.failed
-    assert api_val.details.projectee_filter.fail == {
-        api_src_launcher.id: (consts.ApiValItemStatus.failed, [api_tgt_ship.id])}
+    assert api_val.details.projectee_filter == {api_src_launcher.id: [api_tgt_ship.id]}
     api_val = api_tgt_fit.validate(options=ValOptions(projectee_filter=True))
     assert api_val.passed is True
-    assert api_val.details.projectee_filter.status == consts.ApiValStatus.passed
+    with check_no_field():
+        api_val.details  # ruff:ignore[useless-expression]
     # Action
     api_src_launcher.change_module(rm_proj_item_ids=[api_tgt_ship.id])
     # Verification
     api_val = api_src_fit.validate(options=ValOptions(projectee_filter=True))
     assert api_val.passed is True
-    assert api_val.details.projectee_filter.status == consts.ApiValStatus.passed
+    with check_no_field():
+        api_val.details  # ruff:ignore[useless-expression]
     api_val = api_tgt_fit.validate(options=ValOptions(projectee_filter=True))
     assert api_val.passed is True
-    assert api_val.details.projectee_filter.status == consts.ApiValStatus.passed
+    with check_no_field():
+        api_val.details  # ruff:ignore[useless-expression]
     # Action
     api_src_launcher.change_module(add_proj_item_ids=[api_tgt_ship.id])
     # Verification
     api_val = api_src_fit.validate(options=ValOptions(projectee_filter=True))
     assert api_val.passed is False
-    assert api_val.details.projectee_filter.status == consts.ApiValStatus.failed
-    assert api_val.details.projectee_filter.fail == {
-        api_src_launcher.id: (consts.ApiValItemStatus.failed, [api_tgt_ship.id])}
+    assert api_val.details.projectee_filter == {api_src_launcher.id: [api_tgt_ship.id]}
     # Action
     api_tgt_ship.change_ship(type_id=eve_ship2_id)
     # Verification
     api_val = api_src_fit.validate(options=ValOptions(projectee_filter=True))
     assert api_val.passed is True
-    assert api_val.details.projectee_filter.status == consts.ApiValStatus.passed
+    with check_no_field():
+        api_val.details  # ruff:ignore[useless-expression]
 
 
 def test_src_direct_dd(client, consts):
@@ -93,23 +95,20 @@ def test_src_direct_dd(client, consts):
     # Verification
     api_val = api_src_fit.validate(options=ValOptions(projectee_filter=True))
     assert api_val.passed is False
-    assert api_val.details.projectee_filter.status == consts.ApiValStatus.failed
-    assert api_val.details.projectee_filter.fail == {
-        api_src_module.id: (consts.ApiValItemStatus.failed, [api_other_ship1.id])}
+    assert api_val.details.projectee_filter == {api_src_module.id: [api_other_ship1.id]}
     # Action
     api_src_module.change_module(add_proj_item_ids=[api_cap_ship.id, api_freighter.id, api_jf.id, api_other_ship2.id])
     # Verification
     api_val = api_src_fit.validate(options=ValOptions(projectee_filter=True))
     assert api_val.passed is False
-    assert api_val.details.projectee_filter.status == consts.ApiValStatus.failed
-    assert api_val.details.projectee_filter.fail == {
-        api_src_module.id: (consts.ApiValItemStatus.failed, [api_other_ship1.id, api_other_ship2.id])}
+    assert api_val.details.projectee_filter == {api_src_module.id: [api_other_ship1.id, api_other_ship2.id]}
     # Action
     api_src_module.change_module(rm_proj_item_ids=[api_other_ship1.id, api_other_ship2.id])
     # Verification
     api_val = api_src_fit.validate(options=ValOptions(projectee_filter=True))
     assert api_val.passed is True
-    assert api_val.details.projectee_filter.status == consts.ApiValStatus.passed
+    with check_no_field():
+        api_val.details  # ruff:ignore[useless-expression]
 
 
 def test_src_standup_vorton(client, consts):
@@ -132,15 +131,14 @@ def test_src_standup_vorton(client, consts):
     # Verification
     api_val = api_src_fit.validate(options=ValOptions(projectee_filter=True))
     assert api_val.passed is False
-    assert api_val.details.projectee_filter.status == consts.ApiValStatus.failed
-    assert api_val.details.projectee_filter.fail == {
-        api_src_module.id: (consts.ApiValItemStatus.failed, [api_tgt_ship.id])}
+    assert api_val.details.projectee_filter == {api_src_module.id: [api_tgt_ship.id]}
     # Action
     api_tgt_ship.change_ship(type_id=eve_ship2_id)
     # Verification
     api_val = api_src_fit.validate(options=ValOptions(projectee_filter=True))
     assert api_val.passed is True
-    assert api_val.details.projectee_filter.status == consts.ApiValStatus.passed
+    with check_no_field():
+        api_val.details  # ruff:ignore[useless-expression]
 
 
 def test_multiple_src_effects(client, consts):
@@ -163,31 +161,26 @@ def test_multiple_src_effects(client, consts):
     # Verification
     api_val = api_src_fit.validate(options=ValOptions(projectee_filter=True))
     assert api_val.passed is False
-    assert api_val.details.projectee_filter.status == consts.ApiValStatus.failed
-    assert api_val.details.projectee_filter.fail == {
-        api_src_module.id: (consts.ApiValItemStatus.failed, [api_tgt_ship.id])}
+    assert api_val.details.projectee_filter == {api_src_module.id: [api_tgt_ship.id]}
     # Action
     api_src_module.change_module(effect_modes={eve_vorton_effect_id: consts.ApiEffMode.force_run})
     # Verification
     api_val = api_src_fit.validate(options=ValOptions(projectee_filter=True))
     assert api_val.passed is False
-    assert api_val.details.projectee_filter.status == consts.ApiValStatus.failed
-    assert api_val.details.projectee_filter.fail == {
-        api_src_module.id: (consts.ApiValItemStatus.failed, [api_tgt_ship.id])}
+    assert api_val.details.projectee_filter == {api_src_module.id: [api_tgt_ship.id]}
     # Action
     api_src_module.change_module(effect_modes={eve_direct_effect_id: consts.ApiEffMode.force_stop})
     # Verification
     api_val = api_src_fit.validate(options=ValOptions(projectee_filter=True))
     assert api_val.passed is False
-    assert api_val.details.projectee_filter.status == consts.ApiValStatus.failed
-    assert api_val.details.projectee_filter.fail == {
-        api_src_module.id: (consts.ApiValItemStatus.failed, [api_tgt_ship.id])}
+    assert api_val.details.projectee_filter == {api_src_module.id: [api_tgt_ship.id]}
     # Action
     api_src_module.change_module(effect_modes={eve_vorton_effect_id: consts.ApiEffMode.force_stop})
     # Verification
     api_val = api_src_fit.validate(options=ValOptions(projectee_filter=True))
     assert api_val.passed is True
-    assert api_val.details.projectee_filter.status == consts.ApiValStatus.passed
+    with check_no_field():
+        api_val.details  # ruff:ignore[useless-expression]
 
 
 def test_filter_reference_values(client, consts):
@@ -223,29 +216,27 @@ def test_filter_reference_values(client, consts):
     # Verification - ID is resolved to lower value which is an empty list, thus check fails
     api_val = api_src_fit.validate(options=ValOptions(projectee_filter=True))
     assert api_val.passed is False
-    assert api_val.details.projectee_filter.status == consts.ApiValStatus.failed
-    assert api_val.details.projectee_filter.fail == {
-        api_src_module.id: (consts.ApiValItemStatus.failed, [api_tgt_ship.id])}
+    assert api_val.details.projectee_filter == {api_src_module.id: [api_tgt_ship.id]}
     # Action
     api_src_module.change_module(type_id=eve_module2_id)
     # Verification - ID is rounded to the closest value, which is the type list ID
     api_val = api_src_fit.validate(options=ValOptions(projectee_filter=True))
     assert api_val.passed is True
-    assert api_val.details.projectee_filter.status == consts.ApiValStatus.passed
+    with check_no_field():
+        api_val.details  # ruff:ignore[useless-expression]
     # Action
     api_src_module.change_module(type_id=eve_module3_id)
     # Verification - ID is rounded to our type list ID again
     api_val = api_src_fit.validate(options=ValOptions(projectee_filter=True))
     assert api_val.passed is True
-    assert api_val.details.projectee_filter.status == consts.ApiValStatus.passed
+    with check_no_field():
+        api_val.details  # ruff:ignore[useless-expression]
     # Action
     api_src_module.change_module(type_id=eve_module4_id)
     # Verification - ID is resolved to higher value which is an empty list
     api_val = api_src_fit.validate(options=ValOptions(projectee_filter=True))
     assert api_val.passed is False
-    assert api_val.details.projectee_filter.status == consts.ApiValStatus.failed
-    assert api_val.details.projectee_filter.fail == {
-        api_src_module.id: (consts.ApiValItemStatus.failed, [api_tgt_ship.id])}
+    assert api_val.details.projectee_filter == {api_src_module.id: [api_tgt_ship.id]}
 
 
 def test_empty_list(client, consts):
@@ -267,9 +258,7 @@ def test_empty_list(client, consts):
     # Verification - if list is defined and fetched but is empty, validation fails
     api_val = api_src_fit.validate(options=ValOptions(projectee_filter=True))
     assert api_val.passed is False
-    assert api_val.details.projectee_filter.status == consts.ApiValStatus.failed
-    assert api_val.details.projectee_filter.fail == {
-        api_src_module.id: (consts.ApiValItemStatus.failed, [api_tgt_ship.id])}
+    assert api_val.details.projectee_filter == {api_src_module.id: [api_tgt_ship.id]}
 
 
 def test_tgt_mutation(client, consts):
@@ -298,29 +287,27 @@ def test_tgt_mutation(client, consts):
     # Verification
     api_val = api_src_fit.validate(options=ValOptions(projectee_filter=True))
     assert api_val.passed is True
-    assert api_val.details.projectee_filter.status == consts.ApiValStatus.passed
+    with check_no_field():
+        api_val.details  # ruff:ignore[useless-expression]
     # Action
     api_tgt_drone.change_drone(mutation=eve_tgt_mutator_id)
     # Verification
     api_val = api_src_fit.validate(options=ValOptions(projectee_filter=True))
     assert api_val.passed is False
-    assert api_val.details.projectee_filter.status == consts.ApiValStatus.failed
-    assert api_val.details.projectee_filter.fail == {
-        api_src_module.id: (consts.ApiValItemStatus.failed, [api_tgt_drone.id])}
+    assert api_val.details.projectee_filter == {api_src_module.id: [api_tgt_drone.id]}
     # Action
     api_src_module.change_module(type_id=eve_module2_id)
     # Verification
     api_val = api_src_fit.validate(options=ValOptions(projectee_filter=True))
     assert api_val.passed is True
-    assert api_val.details.projectee_filter.status == consts.ApiValStatus.passed
+    with check_no_field():
+        api_val.details  # ruff:ignore[useless-expression]
     # Action
     api_tgt_drone.change_drone(mutation=None)
     # Verification
     api_val = api_src_fit.validate(options=ValOptions(projectee_filter=True))
     assert api_val.passed is False
-    assert api_val.details.projectee_filter.status == consts.ApiValStatus.failed
-    assert api_val.details.projectee_filter.fail == {
-        api_src_module.id: (consts.ApiValItemStatus.failed, [api_tgt_drone.id])}
+    assert api_val.details.projectee_filter == {api_src_module.id: [api_tgt_drone.id]}
 
 
 def test_src_mutation_itemlist_replaced(client, consts):
@@ -353,39 +340,38 @@ def test_src_mutation_itemlist_replaced(client, consts):
     assert api_src_module.update().attrs[eve_tgt_list_attr_id].modified == approx(eve_item_list2_id)
     api_val = api_src_fit.validate(options=ValOptions(projectee_filter=True))
     assert api_val.passed is False
-    assert api_val.details.projectee_filter.status == consts.ApiValStatus.failed
-    assert api_val.details.projectee_filter.fail == {
-        api_src_module.id: (consts.ApiValItemStatus.failed, [api_tgt_ship.id])}
+    assert api_val.details.projectee_filter == {api_src_module.id: [api_tgt_ship.id]}
     # Action
     api_src_module.change_module(mutation=eve_mutator_id)
     # Verification
     assert api_src_module.update().attrs[eve_tgt_list_attr_id].modified == approx(eve_item_list2_id)
     api_val = api_src_fit.validate(options=ValOptions(projectee_filter=True))
     assert api_val.passed is True
-    assert api_val.details.projectee_filter.status == consts.ApiValStatus.passed
+    with check_no_field():
+        api_val.details  # ruff:ignore[useless-expression]
     # Action
     api_src_module.change_module(mutation={eve_tgt_list_attr_id: Muta.roll_to_api(val=0)})
     # Verification
     assert api_src_module.update().attrs[eve_tgt_list_attr_id].modified == approx(0)
     api_val = api_src_fit.validate(options=ValOptions(projectee_filter=True))
     assert api_val.passed is True
-    assert api_val.details.projectee_filter.status == consts.ApiValStatus.passed
+    with check_no_field():
+        api_val.details  # ruff:ignore[useless-expression]
     # Action
     api_tgt_ship.change_ship(type_id=eve_ship2_id)
     # Verification
     assert api_src_module.update().attrs[eve_tgt_list_attr_id].modified == approx(0)
     api_val = api_src_fit.validate(options=ValOptions(projectee_filter=True))
     assert api_val.passed is False
-    assert api_val.details.projectee_filter.status == consts.ApiValStatus.failed
-    assert api_val.details.projectee_filter.fail == {
-        api_src_module.id: (consts.ApiValItemStatus.failed, [api_tgt_ship.id])}
+    assert api_val.details.projectee_filter == {api_src_module.id: [api_tgt_ship.id]}
     # Action
     api_src_module.change_module(mutation=None)
     # Verification
     assert api_src_module.update().attrs[eve_tgt_list_attr_id].modified == approx(eve_item_list2_id)
     api_val = api_src_fit.validate(options=ValOptions(projectee_filter=True))
     assert api_val.passed is True
-    assert api_val.details.projectee_filter.status == consts.ApiValStatus.passed
+    with check_no_field():
+        api_val.details  # ruff:ignore[useless-expression]
 
 
 def test_src_mutation_itemlist_inherited(client, consts):
@@ -408,31 +394,36 @@ def test_src_mutation_itemlist_inherited(client, consts):
     # Verification
     api_val = api_src_fit.validate(options=ValOptions(projectee_filter=True))
     assert api_val.passed is True
-    assert api_val.details.projectee_filter.status == consts.ApiValStatus.passed
+    with check_no_field():
+        api_val.details  # ruff:ignore[useless-expression]
     # Action
     api_src_module.change_module(mutation=eve_mutator_id)
     # Verification
     api_val = api_src_fit.validate(options=ValOptions(projectee_filter=True))
     assert api_val.passed is True
-    assert api_val.details.projectee_filter.status == consts.ApiValStatus.passed
+    with check_no_field():
+        api_val.details  # ruff:ignore[useless-expression]
     # Action
     api_tgt_ship.change_ship(type_id=eve_ship2_id)
     # Verification
     api_val = api_src_fit.validate(options=ValOptions(projectee_filter=True))
     assert api_val.passed is True
-    assert api_val.details.projectee_filter.status == consts.ApiValStatus.passed
+    with check_no_field():
+        api_val.details  # ruff:ignore[useless-expression]
     # Action
     api_tgt_ship.change_ship(type_id=eve_ship1_id)
     # Verification
     api_val = api_src_fit.validate(options=ValOptions(projectee_filter=True))
     assert api_val.passed is True
-    assert api_val.details.projectee_filter.status == consts.ApiValStatus.passed
+    with check_no_field():
+        api_val.details  # ruff:ignore[useless-expression]
     # Action
     api_src_module.change_module(mutation=None)
     # Verification
     api_val = api_src_fit.validate(options=ValOptions(projectee_filter=True))
     assert api_val.passed is True
-    assert api_val.details.projectee_filter.status == consts.ApiValStatus.passed
+    with check_no_field():
+        api_val.details  # ruff:ignore[useless-expression]
 
 
 def test_known_failures(client, consts):
@@ -458,29 +449,19 @@ def test_known_failures(client, consts):
     # Verification
     api_val = api_src_fit.validate(options=ValOptions(projectee_filter=[api_src_item1.id]))
     assert api_val.passed is False
-    assert api_val.details.projectee_filter.status == consts.ApiValStatus.failed
-    assert api_val.details.projectee_filter.fail == {
-        api_src_item1.id: (consts.ApiValItemStatus.kf, [api_tgt_item.id]),
-        api_src_item2.id: (consts.ApiValItemStatus.failed, [api_tgt_item.id])}
+    assert api_val.details.projectee_filter == {api_src_item2.id: [api_tgt_item.id]}
     api_val = api_src_fit.validate(options=ValOptions(projectee_filter=[api_src_item2.id]))
     assert api_val.passed is False
-    assert api_val.details.projectee_filter.status == consts.ApiValStatus.failed
-    assert api_val.details.projectee_filter.fail == {
-        api_src_item1.id: (consts.ApiValItemStatus.failed, [api_tgt_item.id]),
-        api_src_item2.id: (consts.ApiValItemStatus.kf, [api_tgt_item.id])}
+    assert api_val.details.projectee_filter == {api_src_item1.id: [api_tgt_item.id]}
     api_val = api_src_fit.validate(options=ValOptions(projectee_filter=[api_src_item1.id, api_src_item2.id]))
     assert api_val.passed is True
-    assert api_val.details.projectee_filter.status == consts.ApiValStatus.passed_kfs
-    assert api_val.details.projectee_filter.fail == {
-        api_src_item1.id: (consts.ApiValItemStatus.kf, [api_tgt_item.id]),
-        api_src_item2.id: (consts.ApiValItemStatus.kf, [api_tgt_item.id])}
+    with check_no_field():
+        api_val.details  # ruff:ignore[useless-expression]
     api_val = api_src_fit.validate(options=ValOptions(
         projectee_filter=[api_src_item1.id, api_src_other.id, api_src_item2.id]))
     assert api_val.passed is True
-    assert api_val.details.projectee_filter.status == consts.ApiValStatus.passed_kfs
-    assert api_val.details.projectee_filter.fail == {
-        api_src_item1.id: (consts.ApiValItemStatus.kf, [api_tgt_item.id]),
-        api_src_item2.id: (consts.ApiValItemStatus.kf, [api_tgt_item.id])}
+    with check_no_field():
+        api_val.details  # ruff:ignore[useless-expression]
 
 
 def test_no_attr(client, consts):
@@ -503,7 +484,8 @@ def test_no_attr(client, consts):
     # Verification - if list is defined and fetched but is empty, validation fails
     api_val = api_src_fit.validate(options=ValOptions(projectee_filter=True))
     assert api_val.passed is True
-    assert api_val.details.projectee_filter.status == consts.ApiValStatus.passed
+    with check_no_field():
+        api_val.details  # ruff:ignore[useless-expression]
 
 
 def test_not_loaded_src(client, consts):
@@ -519,7 +501,8 @@ def test_not_loaded_src(client, consts):
     # Verification
     api_val = api_src_fit.validate(options=ValOptions(projectee_filter=True))
     assert api_val.passed is True
-    assert api_val.details.projectee_filter.status == consts.ApiValStatus.passed
+    with check_no_field():
+        api_val.details  # ruff:ignore[useless-expression]
 
 
 def test_not_loaded_tgt(client, consts):
@@ -542,12 +525,11 @@ def test_not_loaded_tgt(client, consts):
     # Verification
     api_val = api_src_fit.validate(options=ValOptions(projectee_filter=True))
     assert api_val.passed is False
-    assert api_val.details.projectee_filter.status == consts.ApiValStatus.failed
-    assert api_val.details.projectee_filter.fail == {
-        api_src_item.id: (consts.ApiValItemStatus.failed, [api_tgt_item.id])}
+    assert api_val.details.projectee_filter == {api_src_item.id: [api_tgt_item.id]}
     # Action
     api_tgt_item.change_ship(type_id=eve_tgt_item2_id)
     # Verification
     api_val = api_src_fit.validate(options=ValOptions(projectee_filter=True))
     assert api_val.passed is True
-    assert api_val.details.projectee_filter.status == consts.ApiValStatus.passed
+    with check_no_field():
+        api_val.details  # ruff:ignore[useless-expression]

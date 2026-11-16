@@ -1,5 +1,3 @@
-use itertools::Itertools;
-
 use crate::{
     ItemId, UnitInterval,
     misc::{AttrSpec, EffectSpec},
@@ -7,7 +5,7 @@ use crate::{
     svc::{Calc, SvcCtx, Vast, funcs::is_oattr_flag_set, vast::VastFitData},
     ud::{UItem, UItemId},
     util::{RMap, RMapRSet, RSet},
-    val::{ValItemStatus, ValResult},
+    val::ValResult,
 };
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -23,17 +21,18 @@ use crate::{
 #[derive(Clone)]
 pub struct ValProjImmunityFail {
     /// Projecting items and targets they can't be projected to.
-    #[cfg_attr(feature = "serde", serde_as(as = "serde_with::KeyValueMap<_>"))]
+    #[cfg_attr(feature = "serde", serde_as(as = "refine_serde::VecAsMap"))]
     pub items: Vec<ValProjImmunityItemInfo>,
 }
 
-#[cfg_attr(feature = "serde", derive(serde_tuple::Serialize_tuple))]
+#[cfg_attr(feature = "serde", derive(refine_serde::VecAsMapEntry))]
 #[derive(Clone)]
 pub struct ValProjImmunityItemInfo {
     /// Item-projector which fails the validation.
+    #[cfg_attr(feature = "serde", vec_map(key))]
     pub item_id: ItemId,
-    pub status: ValItemStatus,
     /// Projectee item IDs the projector can't be projected to.
+    #[cfg_attr(feature = "serde", vec_map(value))]
     pub projectee_item_ids: Vec<ItemId>,
 }
 
@@ -143,24 +142,28 @@ where
         if is_blocked(ctx, calc, projectee_data, vast) {
             let projectee_item_id = ctx.u_data.items.ext_id_by_int_id(projectee_data.get_item_uid());
             for projector_espec in projector_especs {
+                if kfs.contains(&projector_espec.item_uid) {
+                    continue;
+                }
+                let projector_item_id = ctx.u_data.items.ext_id_by_int_id(projector_espec.item_uid);
                 items
-                    .entry(projector_espec.item_uid)
+                    .entry(projector_item_id)
                     .or_insert_with(RSet::new)
                     .insert(projectee_item_id);
             }
         }
     }
-    let items = items
-        .into_iter()
-        .map(|(projector_uid, projectee_item_ids)| ValProjImmunityItemInfo {
-            item_id: ctx.u_data.items.ext_id_by_int_id(projector_uid),
-            status: ValItemStatus::from_kfs(kfs, projector_uid),
-            projectee_item_ids: projectee_item_ids.into_iter().collect(),
-        })
-        .collect_vec();
     match items.is_empty() {
         true => ValResult::Passed,
-        false => ValResult::from_fail(items.iter().all(|v| v.status.is_kf()), ValProjImmunityFail { items }),
+        false => ValResult::Failed(ValProjImmunityFail {
+            items: items
+                .into_iter()
+                .map(|(projector_item_id, projectee_item_ids)| ValProjImmunityItemInfo {
+                    item_id: projector_item_id,
+                    projectee_item_ids: projectee_item_ids.into_iter().collect(),
+                })
+                .collect(),
+        }),
     }
 }
 

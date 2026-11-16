@@ -3,7 +3,7 @@ use crate::{
     svc::{SvcCtx, vast::VastFitData},
     ud::{UData, UFit, UItemId, UShip},
     util::RSet,
-    val::{ValItemStatus, ValResult},
+    val::ValResult,
 };
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -19,17 +19,18 @@ use crate::{
 pub struct ValRigSizeFail {
     /// Rig size compatible with the ship.
     pub allowed_size: Value,
-    #[cfg_attr(feature = "serde", serde_as(as = "serde_with::KeyValueMap<_>"))]
+    #[cfg_attr(feature = "serde", serde_as(as = "refine_serde::VecAsMap"))]
     pub rig_sizes: Vec<ValRigSizeItemInfo>,
 }
 
-#[cfg_attr(feature = "serde", derive(serde_tuple::Serialize_tuple))]
+#[cfg_attr(feature = "serde", derive(refine_serde::VecAsMapEntry))]
 #[derive(Copy, Clone)]
 pub struct ValRigSizeItemInfo {
     /// Rig which failed the validation.
+    #[cfg_attr(feature = "serde", vec_map(key))]
     pub rig_id: ItemId,
-    pub status: ValItemStatus,
     /// Size of the rig.
+    #[cfg_attr(feature = "serde", vec_map(value))]
     pub size: Option<Value>,
 }
 
@@ -56,21 +57,19 @@ impl VastFitData {
         };
         let mut rig_sizes = Vec::new();
         for &rig_uid in self.rig_size_mismatches.iter() {
-            rig_sizes.push(ValRigSizeItemInfo {
-                rig_id: ctx.u_data.items.ext_id_by_int_id(rig_uid),
-                status: ValItemStatus::from_kfs(kfs, rig_uid),
-                size: *self.rigs_rig_size.get(&rig_uid).unwrap(),
-            });
+            if !kfs.contains(&rig_uid) {
+                rig_sizes.push(ValRigSizeItemInfo {
+                    rig_id: ctx.u_data.items.ext_id_by_int_id(rig_uid),
+                    size: *self.rigs_rig_size.get(&rig_uid).unwrap(),
+                });
+            }
         }
         match rig_sizes.is_empty() {
             true => ValResult::Passed,
-            false => ValResult::from_fail(
-                rig_sizes.iter().all(|v| v.status.is_kf()),
-                ValRigSizeFail {
-                    allowed_size,
-                    rig_sizes,
-                },
-            ),
+            false => ValResult::Failed(ValRigSizeFail {
+                allowed_size,
+                rig_sizes,
+            }),
         }
     }
 }

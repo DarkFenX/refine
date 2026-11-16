@@ -4,7 +4,6 @@ from .val_capital_module import ValCapModuleFail
 from .val_charge_group import ValChargeGroupFail
 from .val_charge_size import ValChargeSizeFail
 from .val_charge_volume import ValChargeVolumeFail
-from .val_cloaking_blocked import ValCloakingBlockedFail
 from .val_drone_group import ValDroneGroupFail
 from .val_effect_stopper import ValEffectStopperFail
 from .val_fighter_squad_size import ValFighterSquadSizeFail
@@ -18,7 +17,6 @@ from .val_overload_skill import ValOverloadSkillFail
 from .val_proj_immunity import ValProjImmunityFail
 from .val_projectee_filter import ValProjFilterFail
 from .val_resources import ValResourceFail
-from .val_result import ValResult
 from .val_rig_size import ValRigSizeFail
 from .val_sec_zone_effect import ValEffectSecZoneFail
 from .val_sec_zone_item import ValItemSecZoneFail
@@ -48,7 +46,7 @@ class SolValDetails(AttrDict):
     def __init__(self, *, data: dict) -> None:
         super().__init__(data=data, hooks={
             'fits': AttrHookDef(func=lambda d: {k: FitValDetails(data=v) for k, v in d.items()}),
-            'not_loaded_item': AttrHookDef(func=lambda d: ValResult(data=d, cls=ValNotLoadedItemFail))})
+            'not_loaded_item': AttrHookDef(func=lambda d: ValNotLoadedItemFail(data=d))})
 
 
 class FitValResult(AttrDict):
@@ -62,82 +60,81 @@ class FitValDetails(AttrDict):
     def __init__(self, *, data: dict) -> None:
         super().__init__(data=data, hooks={
             # Generic
-            'not_loaded_item': AttrHookDef(func=lambda d: ValResult(data=d, cls=ValNotLoadedItemFail)),
-            'item_kind': AttrHookDef(func=lambda d: ValResult(data=d, cls=ValItemKindFail)),
-            'skill_reqs': AttrHookDef(func=lambda d: ValResult(data=d, cls=ValSrqFail)),
+            'not_loaded_item': AttrHookDef(func=lambda d: ValNotLoadedItemFail(data=d)),
+            'item_kind': AttrHookDef(func=lambda d: ValItemKindFail(data=d)),
+            'skill_reqs': AttrHookDef(func=lambda d: ValSrqFail(data=d)),
             # Implants/boosters
-            'implant_slot_index': AttrHookDef(func=lambda d: ValResult(data=d, cls=ValSlotIndexFail)),
-            'booster_slot_index': AttrHookDef(func=lambda d: ValResult(data=d, cls=ValSlotIndexFail)),
+            'implant_slot_index': AttrHookDef(func=lambda d: ValSlotIndexFail(data=d)),
+            'booster_slot_index': AttrHookDef(func=lambda d: ValSlotIndexFail(data=d)),
             # Shared between mod-alike items
-            'cpu': AttrHookDef(func=lambda d: ValResult(data=d, cls=ValResourceFail)),
-            'powergrid': AttrHookDef(func=lambda d: ValResult(data=d, cls=ValResourceFail)),
-            'ship_limit': AttrHookDef(func=lambda d: ValResult(data=d, cls=ValShipLimitFail)),
-            'max_group_fitted': AttrHookDef(func=lambda d: ValResult(data=d, cls=ValMaxGroupFail)),
-            'max_group_online': AttrHookDef(func=lambda d: ValResult(data=d, cls=ValMaxGroupFail)),
-            'max_group_active': AttrHookDef(func=lambda d: ValResult(data=d, cls=ValMaxGroupFail)),
-            'max_type_fitted': AttrHookDef(func=lambda d: ValResult(data=d, cls=ValMaxTypeFail)),
-            'item_vs_ship_kind': AttrHookDef(func=lambda d: ValResult(data=d, cls=ValItemVsShipKindFail)),
+            'cpu': AttrHookDef(func=lambda d: ValResourceFail(data=d)),
+            'powergrid': AttrHookDef(func=lambda d: ValResourceFail(data=d)),
+            'ship_limit': AttrHookDef(func=lambda d: ValShipLimitFail(data=d)),
+            'max_group_fitted': AttrHookDef(func=lambda d: ValMaxGroupFail(data=d)),
+            'max_group_online': AttrHookDef(func=lambda d: ValMaxGroupFail(data=d)),
+            'max_group_active': AttrHookDef(func=lambda d: ValMaxGroupFail(data=d)),
+            'max_type_fitted': AttrHookDef(func=lambda d: ValMaxTypeFail(data=d)),
+            'item_vs_ship_kind': AttrHookDef(func=lambda d: ValItemVsShipKindFail(data=d)),
             # Modules
-            'high_slot_count': AttrHookDef(func=lambda d: ValResult(data=d, cls=ValSlotCountFail)),
-            'mid_slot_count': AttrHookDef(func=lambda d: ValResult(data=d, cls=ValSlotCountFail)),
-            'low_slot_count': AttrHookDef(func=lambda d: ValResult(data=d, cls=ValSlotCountFail)),
-            'turret_slot_count': AttrHookDef(func=lambda d: ValResult(data=d, cls=ValSlotCountFail)),
-            'launcher_slot_count': AttrHookDef(func=lambda d: ValResult(data=d, cls=ValSlotCountFail)),
-            'module_state': AttrHookDef(func=lambda d: ValResult(data=d, cls=ValModuleStateFail)),
-            'capital_module': AttrHookDef(func=lambda d: ValResult(data=d, cls=ValCapModuleFail)),
-            'overload_skill': AttrHookDef(func=lambda d: ValResult(data=d, cls=ValOverloadSkillFail)),
-            'unusable_cap': AttrHookDef(func=lambda d: ValResult(data=d, cls=ValUnusableCapFail)),
+            'high_slot_count': AttrHookDef(func=lambda d: ValSlotCountFail(data=d)),
+            'mid_slot_count': AttrHookDef(func=lambda d: ValSlotCountFail(data=d)),
+            'low_slot_count': AttrHookDef(func=lambda d: ValSlotCountFail(data=d)),
+            'turret_slot_count': AttrHookDef(func=lambda d: ValSlotCountFail(data=d)),
+            'launcher_slot_count': AttrHookDef(func=lambda d: ValSlotCountFail(data=d)),
+            'module_state': AttrHookDef(func=lambda d: ValModuleStateFail(data=d)),
+            'capital_module': AttrHookDef(func=lambda d: ValCapModuleFail(data=d)),
+            'overload_skill': AttrHookDef(func=lambda d: ValOverloadSkillFail(data=d)),
+            'unusable_cap': AttrHookDef(func=lambda d: ValUnusableCapFail(data=d)),
             # Charges
-            'charge_group': AttrHookDef(func=lambda d: ValResult(data=d, cls=ValChargeGroupFail)),
-            'charge_size': AttrHookDef(func=lambda d: ValResult(data=d, cls=ValChargeSizeFail)),
-            'charge_volume': AttrHookDef(func=lambda d: ValResult(data=d, cls=ValChargeVolumeFail)),
+            'charge_group': AttrHookDef(func=lambda d: ValChargeGroupFail(data=d)),
+            'charge_size': AttrHookDef(func=lambda d: ValChargeSizeFail(data=d)),
+            'charge_volume': AttrHookDef(func=lambda d: ValChargeVolumeFail(data=d)),
             # Rigs
-            'rig_slot_count': AttrHookDef(func=lambda d: ValResult(data=d, cls=ValSlotCountFail)),
-            'calibration': AttrHookDef(func=lambda d: ValResult(data=d, cls=ValResourceFail)),
-            'rig_size': AttrHookDef(func=lambda d: ValResult(data=d, cls=ValRigSizeFail)),
+            'rig_slot_count': AttrHookDef(func=lambda d: ValSlotCountFail(data=d)),
+            'calibration': AttrHookDef(func=lambda d: ValResourceFail(data=d)),
+            'rig_size': AttrHookDef(func=lambda d: ValRigSizeFail(data=d)),
             # Services
-            'service_slot_count': AttrHookDef(func=lambda d: ValResult(data=d, cls=ValSlotCountFail)),
+            'service_slot_count': AttrHookDef(func=lambda d: ValSlotCountFail(data=d)),
             # T3 subsystems/stances
-            'subsystem_slot_count': AttrHookDef(func=lambda d: ValResult(data=d, cls=ValSlotCountFail)),
-            'subsystem_slot_index': AttrHookDef(func=lambda d: ValResult(data=d, cls=ValSlotIndexFail)),
-            'ship_stance': AttrHookDef(func=lambda d: ValResult(data=d, cls=ValShipStanceFail)),
+            'subsystem_slot_count': AttrHookDef(func=lambda d: ValSlotCountFail(data=d)),
+            'subsystem_slot_index': AttrHookDef(func=lambda d: ValSlotIndexFail(data=d)),
+            'ship_stance': AttrHookDef(func=lambda d: ValShipStanceFail(data=d)),
             # Drones
-            'drone_bay_volume': AttrHookDef(func=lambda d: ValResult(data=d, cls=ValResourceFail)),
-            'launched_drone_count': AttrHookDef(func=lambda d: ValResult(data=d, cls=ValSlotCountFail)),
-            'drone_bandwidth': AttrHookDef(func=lambda d: ValResult(data=d, cls=ValResourceFail)),
-            'unlaunchable_drone_slot': AttrHookDef(func=lambda d: ValResult(data=d, cls=ValUnusableSlotFail)),
-            'unlaunchable_drone_bandwidth': AttrHookDef(func=lambda d: ValResult(data=d, cls=ValUnusableResFail)),
-            'drone_group': AttrHookDef(func=lambda d: ValResult(data=d, cls=ValDroneGroupFail)),
+            'drone_bay_volume': AttrHookDef(func=lambda d: ValResourceFail(data=d)),
+            'launched_drone_count': AttrHookDef(func=lambda d: ValSlotCountFail(data=d)),
+            'drone_bandwidth': AttrHookDef(func=lambda d: ValResourceFail(data=d)),
+            'unlaunchable_drone_slot': AttrHookDef(func=lambda d: ValUnusableSlotFail(data=d)),
+            'unlaunchable_drone_bandwidth': AttrHookDef(func=lambda d: ValUnusableResFail(data=d)),
+            'drone_group': AttrHookDef(func=lambda d: ValDroneGroupFail(data=d)),
             # Fighters
-            'fighter_bay_volume': AttrHookDef(func=lambda d: ValResult(data=d, cls=ValResourceFail)),
-            'launched_fighter_count': AttrHookDef(func=lambda d: ValResult(data=d, cls=ValSlotCountFail)),
-            'launched_light_fighter_count': AttrHookDef(func=lambda d: ValResult(data=d, cls=ValSlotCountFail)),
-            'launched_heavy_fighter_count': AttrHookDef(func=lambda d: ValResult(data=d, cls=ValSlotCountFail)),
-            'launched_support_fighter_count': AttrHookDef(func=lambda d: ValResult(data=d, cls=ValSlotCountFail)),
-            'launched_st_light_fighter_count': AttrHookDef(func=lambda d: ValResult(data=d, cls=ValSlotCountFail)),
-            'launched_st_heavy_fighter_count': AttrHookDef(func=lambda d: ValResult(data=d, cls=ValSlotCountFail)),
-            'launched_st_support_fighter_count': AttrHookDef(func=lambda d: ValResult(data=d, cls=ValSlotCountFail)),
-            'unlaunchable_fighter': AttrHookDef(func=lambda d: ValResult(data=d, cls=ValUnusableSlotFail)),
-            'unlaunchable_light_fighter': AttrHookDef(func=lambda d: ValResult(data=d, cls=ValUnusableSlotFail)),
-            'unlaunchable_heavy_fighter': AttrHookDef(func=lambda d: ValResult(data=d, cls=ValUnusableSlotFail)),
-            'unlaunchable_support_fighter': AttrHookDef(func=lambda d: ValResult(data=d, cls=ValUnusableSlotFail)),
-            'unlaunchable_st_light_fighter': AttrHookDef(func=lambda d: ValResult(data=d, cls=ValUnusableSlotFail)),
-            'unlaunchable_st_heavy_fighter': AttrHookDef(func=lambda d: ValResult(data=d, cls=ValUnusableSlotFail)),
-            'unlaunchable_st_support_fighter': AttrHookDef(func=lambda d: ValResult(data=d, cls=ValUnusableSlotFail)),
-            'fighter_squad_size': AttrHookDef(func=lambda d: ValResult(data=d, cls=ValFighterSquadSizeFail)),
+            'fighter_bay_volume': AttrHookDef(func=lambda d: ValResourceFail(data=d)),
+            'launched_fighter_count': AttrHookDef(func=lambda d: ValSlotCountFail(data=d)),
+            'launched_light_fighter_count': AttrHookDef(func=lambda d: ValSlotCountFail(data=d)),
+            'launched_heavy_fighter_count': AttrHookDef(func=lambda d: ValSlotCountFail(data=d)),
+            'launched_support_fighter_count': AttrHookDef(func=lambda d: ValSlotCountFail(data=d)),
+            'launched_st_light_fighter_count': AttrHookDef(func=lambda d: ValSlotCountFail(data=d)),
+            'launched_st_heavy_fighter_count': AttrHookDef(func=lambda d: ValSlotCountFail(data=d)),
+            'launched_st_support_fighter_count': AttrHookDef(func=lambda d: ValSlotCountFail(data=d)),
+            'unlaunchable_fighter': AttrHookDef(func=lambda d: ValUnusableSlotFail(data=d)),
+            'unlaunchable_light_fighter': AttrHookDef(func=lambda d: ValUnusableSlotFail(data=d)),
+            'unlaunchable_heavy_fighter': AttrHookDef(func=lambda d: ValUnusableSlotFail(data=d)),
+            'unlaunchable_support_fighter': AttrHookDef(func=lambda d: ValUnusableSlotFail(data=d)),
+            'unlaunchable_st_light_fighter': AttrHookDef(func=lambda d: ValUnusableSlotFail(data=d)),
+            'unlaunchable_st_heavy_fighter': AttrHookDef(func=lambda d: ValUnusableSlotFail(data=d)),
+            'unlaunchable_st_support_fighter': AttrHookDef(func=lambda d: ValUnusableSlotFail(data=d)),
+            'fighter_squad_size': AttrHookDef(func=lambda d: ValFighterSquadSizeFail(data=d)),
             # Projection, destination side
-            'activation_blocked': AttrHookDef(func=lambda d: ValResult(data=d, cls=ValActivationBlockedFail)),
-            'effect_stopper': AttrHookDef(func=lambda d: ValResult(data=d, cls=ValEffectStopperFail)),
-            'cloaking_blocked': AttrHookDef(func=lambda d: ValResult(data=d, cls=ValCloakingBlockedFail)),
+            'activation_blocked': AttrHookDef(func=lambda d: ValActivationBlockedFail(data=d)),
+            'effect_stopper': AttrHookDef(func=lambda d: ValEffectStopperFail(data=d)),
             # Projection, source side
-            'projectee_filter': AttrHookDef(func=lambda d: ValResult(data=d, cls=ValProjFilterFail)),
-            'assist_immunity': AttrHookDef(func=lambda d: ValResult(data=d, cls=ValProjImmunityFail)),
-            'offense_immunity': AttrHookDef(func=lambda d: ValResult(data=d, cls=ValProjImmunityFail)),
-            'resist_immunity': AttrHookDef(func=lambda d: ValResult(data=d, cls=ValProjImmunityFail)),
+            'projectee_filter': AttrHookDef(func=lambda d: ValProjFilterFail(data=d)),
+            'assist_immunity': AttrHookDef(func=lambda d: ValProjImmunityFail(data=d)),
+            'offense_immunity': AttrHookDef(func=lambda d: ValProjImmunityFail(data=d)),
+            'resist_immunity': AttrHookDef(func=lambda d: ValProjImmunityFail(data=d)),
             # Sec zone
-            'sec_zone_fitted': AttrHookDef(func=lambda d: ValResult(data=d, cls=ValItemSecZoneFail)),
-            'sec_zone_online': AttrHookDef(func=lambda d: ValResult(data=d, cls=ValItemSecZoneFail)),
-            'sec_zone_active': AttrHookDef(func=lambda d: ValResult(data=d, cls=ValItemSecZoneFail)),
-            'sec_zone_unonlineable': AttrHookDef(func=lambda d: ValResult(data=d, cls=ValItemSecZoneFail)),
-            'sec_zone_unactivable': AttrHookDef(func=lambda d: ValResult(data=d, cls=ValItemSecZoneFail)),
-            'sec_zone_effect': AttrHookDef(func=lambda d: ValResult(data=d, cls=ValEffectSecZoneFail))})
+            'sec_zone_fitted': AttrHookDef(func=lambda d: ValItemSecZoneFail(data=d)),
+            'sec_zone_online': AttrHookDef(func=lambda d: ValItemSecZoneFail(data=d)),
+            'sec_zone_active': AttrHookDef(func=lambda d: ValItemSecZoneFail(data=d)),
+            'sec_zone_unonlineable': AttrHookDef(func=lambda d: ValItemSecZoneFail(data=d)),
+            'sec_zone_unactivable': AttrHookDef(func=lambda d: ValItemSecZoneFail(data=d)),
+            'sec_zone_effect': AttrHookDef(func=lambda d: ValEffectSecZoneFail(data=d))})

@@ -1,9 +1,7 @@
-from collections import UserDict
-
-from fw.consts import ApiValItemStatus
+from collections import UserList
 
 
-class ValNotLoadedItemFail(UserDict):
+class ValNotLoadedItemFail(UserList):
 
-    def __init__(self, *, data: dict) -> None:
-        super().__init__({k: ApiValItemStatus(v) for k, v in data.items()})
+    def __init__(self, *, data: list | tuple) -> None:
+        super().__init__(sorted(data))

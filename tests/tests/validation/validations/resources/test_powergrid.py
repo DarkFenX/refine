@@ -17,10 +17,9 @@ def test_fail_single(client, consts):
     assert api_stats.powergrid.one() == (150, 125)
     api_val = api_fit.validate(options=ValOptions(powergrid=True))
     assert api_val.passed is False
-    assert api_val.details.powergrid.status == consts.ApiValStatus.failed
-    assert api_val.details.powergrid.fail.used == 150
-    assert api_val.details.powergrid.fail.max == 125
-    assert api_val.details.powergrid.fail.users == {api_module.id: (consts.ApiValItemStatus.failed, 150)}
+    assert api_val.details.powergrid.used == 150
+    assert api_val.details.powergrid.max == 125
+    assert api_val.details.powergrid.users == {api_module.id: 150}
 
 
 def test_fail_multiple_ship(client, consts):
@@ -40,12 +39,9 @@ def test_fail_multiple_ship(client, consts):
     assert api_stats.powergrid.one() == (150, 125)
     api_val = api_fit.validate(options=ValOptions(powergrid=True))
     assert api_val.passed is False
-    assert api_val.details.powergrid.status == consts.ApiValStatus.failed
-    assert api_val.details.powergrid.fail.used == 150
-    assert api_val.details.powergrid.fail.max == 125
-    assert api_val.details.powergrid.fail.users == {
-        api_module1.id: (consts.ApiValItemStatus.failed, 50),
-        api_module2.id: (consts.ApiValItemStatus.failed, 100)}
+    assert api_val.details.powergrid.used == 150
+    assert api_val.details.powergrid.max == 125
+    assert api_val.details.powergrid.users == {api_module1.id: 50, api_module2.id: 100}
 
 
 def test_fail_multiple_struct(client, consts):
@@ -66,12 +62,9 @@ def test_fail_multiple_struct(client, consts):
     assert api_stats.powergrid.one() == (150, 125)
     api_val = api_fit.validate(options=ValOptions(powergrid=True))
     assert api_val.passed is False
-    assert api_val.details.powergrid.status == consts.ApiValStatus.failed
-    assert api_val.details.powergrid.fail.used == 150
-    assert api_val.details.powergrid.fail.max == 125
-    assert api_val.details.powergrid.fail.users == {
-        api_module.id: (consts.ApiValItemStatus.failed, 50),
-        api_service.id: (consts.ApiValItemStatus.failed, 100)}
+    assert api_val.details.powergrid.used == 150
+    assert api_val.details.powergrid.max == 125
+    assert api_val.details.powergrid.users == {api_module.id: 50, api_service.id: 100}
 
 
 def test_equal(client, consts):
@@ -89,7 +82,8 @@ def test_equal(client, consts):
     assert api_stats.powergrid.one() == (150, 150)
     api_val = api_fit.validate(options=ValOptions(powergrid=True))
     assert api_val.passed is True
-    assert api_val.details.powergrid.status == consts.ApiValStatus.passed
+    with check_no_field():
+        api_val.details  # ruff:ignore[useless-expression]
 
 
 def test_known_failures(client, consts):
@@ -113,10 +107,8 @@ def test_known_failures(client, consts):
     assert api_stats.powergrid.one() == (150, 125)
     api_val = api_fit.validate(options=ValOptions(powergrid=[api_module1.id]))
     assert api_val.passed is True
-    assert api_val.details.powergrid.status == consts.ApiValStatus.passed_kfs
-    assert api_val.details.powergrid.fail.used == 150
-    assert api_val.details.powergrid.fail.max == 125
-    assert api_val.details.powergrid.fail.users == {api_module1.id: (consts.ApiValItemStatus.kf, 150)}
+    with check_no_field():
+        api_val.details  # ruff:ignore[useless-expression]
     # Action
     api_module2 = api_fit.add_module(type_id=eve_module2_id, state=consts.ApiModuleState.online)
     # Verification
@@ -124,36 +116,22 @@ def test_known_failures(client, consts):
     assert api_stats.powergrid.one() == (250, 125)
     api_val = api_fit.validate(options=ValOptions(powergrid=[api_module1.id]))
     assert api_val.passed is False
-    assert api_val.details.powergrid.status == consts.ApiValStatus.failed
-    assert api_val.details.powergrid.fail.used == 250
-    assert api_val.details.powergrid.fail.max == 125
-    assert api_val.details.powergrid.fail.users == {
-        api_module1.id: (consts.ApiValItemStatus.kf, 150),
-        api_module2.id: (consts.ApiValItemStatus.failed, 100)}
+    assert api_val.details.powergrid.used == 250
+    assert api_val.details.powergrid.max == 125
+    assert api_val.details.powergrid.users == {api_module2.id: 100}
     api_val = api_fit.validate(options=ValOptions(powergrid=[api_module2.id]))
     assert api_val.passed is False
-    assert api_val.details.powergrid.status == consts.ApiValStatus.failed
-    assert api_val.details.powergrid.fail.used == 250
-    assert api_val.details.powergrid.fail.max == 125
-    assert api_val.details.powergrid.fail.users == {
-        api_module1.id: (consts.ApiValItemStatus.failed, 150),
-        api_module2.id: (consts.ApiValItemStatus.kf, 100)}
+    assert api_val.details.powergrid.used == 250
+    assert api_val.details.powergrid.max == 125
+    assert api_val.details.powergrid.users == {api_module1.id: 150}
     api_val = api_fit.validate(options=ValOptions(powergrid=[api_module1.id, api_module2.id]))
     assert api_val.passed is True
-    assert api_val.details.powergrid.status == consts.ApiValStatus.passed_kfs
-    assert api_val.details.powergrid.fail.used == 250
-    assert api_val.details.powergrid.fail.max == 125
-    assert api_val.details.powergrid.fail.users == {
-        api_module1.id: (consts.ApiValItemStatus.kf, 150),
-        api_module2.id: (consts.ApiValItemStatus.kf, 100)}
+    with check_no_field():
+        api_val.details  # ruff:ignore[useless-expression]
     api_val = api_fit.validate(options=ValOptions(powergrid=[api_module1.id, api_other.id, api_module2.id]))
     assert api_val.passed is True
-    assert api_val.details.powergrid.status == consts.ApiValStatus.passed_kfs
-    assert api_val.details.powergrid.fail.used == 250
-    assert api_val.details.powergrid.fail.max == 125
-    assert api_val.details.powergrid.fail.users == {
-        api_module1.id: (consts.ApiValItemStatus.kf, 150),
-        api_module2.id: (consts.ApiValItemStatus.kf, 100)}
+    with check_no_field():
+        api_val.details  # ruff:ignore[useless-expression]
     # Action
     api_module3 = api_fit.add_module(type_id=eve_module3_id, state=consts.ApiModuleState.online)
     # Verification
@@ -161,12 +139,8 @@ def test_known_failures(client, consts):
     assert api_stats.powergrid.one() == (240, 125)
     api_val = api_fit.validate(options=ValOptions(powergrid=[api_module1.id, api_module2.id]))
     assert api_val.passed is True
-    assert api_val.details.powergrid.status == consts.ApiValStatus.passed_kfs
-    assert api_val.details.powergrid.fail.used == 240
-    assert api_val.details.powergrid.fail.max == 125
-    assert api_val.details.powergrid.fail.users == {
-        api_module1.id: (consts.ApiValItemStatus.kf, 150),
-        api_module2.id: (consts.ApiValItemStatus.kf, 100)}
+    with check_no_field():
+        api_val.details  # ruff:ignore[useless-expression]
     # Action
     api_module3.remove()
     api_module4 = api_fit.add_module(type_id=eve_module4_id, state=consts.ApiModuleState.online)
@@ -175,12 +149,8 @@ def test_known_failures(client, consts):
     assert api_stats.powergrid.one() == (250, 125)
     api_val = api_fit.validate(options=ValOptions(powergrid=[api_module1.id, api_module2.id]))
     assert api_val.passed is True
-    assert api_val.details.powergrid.status == consts.ApiValStatus.passed_kfs
-    assert api_val.details.powergrid.fail.used == 250
-    assert api_val.details.powergrid.fail.max == 125
-    assert api_val.details.powergrid.fail.users == {
-        api_module1.id: (consts.ApiValItemStatus.kf, 150),
-        api_module2.id: (consts.ApiValItemStatus.kf, 100)}
+    with check_no_field():
+        api_val.details  # ruff:ignore[useless-expression]
     # Action
     api_module4.remove()
     api_module5 = api_fit.add_module(type_id=eve_module5_id, state=consts.ApiModuleState.online)
@@ -189,13 +159,9 @@ def test_known_failures(client, consts):
     assert api_stats.powergrid.one() == (250.5, 125)
     api_val = api_fit.validate(options=ValOptions(powergrid=[api_module1.id, api_module2.id]))
     assert api_val.passed is False
-    assert api_val.details.powergrid.status == consts.ApiValStatus.failed
-    assert api_val.details.powergrid.fail.used == 250.5
-    assert api_val.details.powergrid.fail.max == 125
-    assert api_val.details.powergrid.fail.users == {
-        api_module1.id: (consts.ApiValItemStatus.kf, 150),
-        api_module2.id: (consts.ApiValItemStatus.kf, 100),
-        api_module5.id: (consts.ApiValItemStatus.failed, 0.5)}
+    assert api_val.details.powergrid.used == 250.5
+    assert api_val.details.powergrid.max == 125
+    assert api_val.details.powergrid.users == {api_module5.id: 0.5}
 
 
 def test_modified_use(client, consts):
@@ -223,10 +189,9 @@ def test_modified_use(client, consts):
     assert api_stats.powergrid.one() == (150, 125)
     api_val = api_fit.validate(options=ValOptions(powergrid=True))
     assert api_val.passed is False
-    assert api_val.details.powergrid.status == consts.ApiValStatus.failed
-    assert api_val.details.powergrid.fail.used == 150
-    assert api_val.details.powergrid.fail.max == 125
-    assert api_val.details.powergrid.fail.users == {api_module.id: (consts.ApiValItemStatus.failed, 150)}
+    assert api_val.details.powergrid.used == 150
+    assert api_val.details.powergrid.max == 125
+    assert api_val.details.powergrid.users == {api_module.id: 150}
     # Action
     api_fit.add_implant(type_id=eve_implant_id)
     # Verification
@@ -235,7 +200,8 @@ def test_modified_use(client, consts):
     assert api_stats.powergrid.one() == (75, 125)
     api_val = api_fit.validate(options=ValOptions(powergrid=True))
     assert api_val.passed is True
-    assert api_val.details.powergrid.status == consts.ApiValStatus.passed
+    with check_no_field():
+        api_val.details  # ruff:ignore[useless-expression]
 
 
 def test_modified_max(client, consts):
@@ -263,10 +229,9 @@ def test_modified_max(client, consts):
     assert api_stats.powergrid.one() == (150, 120)
     api_val = api_fit.validate(options=ValOptions(powergrid=True))
     assert api_val.passed is False
-    assert api_val.details.powergrid.status == consts.ApiValStatus.failed
-    assert api_val.details.powergrid.fail.used == 150
-    assert api_val.details.powergrid.fail.max == 120
-    assert api_val.details.powergrid.fail.users == {api_module.id: (consts.ApiValItemStatus.failed, 150)}
+    assert api_val.details.powergrid.used == 150
+    assert api_val.details.powergrid.max == 120
+    assert api_val.details.powergrid.users == {api_module.id: 150}
     # Action
     api_fit.add_implant(type_id=eve_implant_id)
     # Verification
@@ -275,7 +240,8 @@ def test_modified_max(client, consts):
     assert api_stats.powergrid.one() == (150, 180)
     api_val = api_fit.validate(options=ValOptions(powergrid=True))
     assert api_val.passed is True
-    assert api_val.details.powergrid.status == consts.ApiValStatus.passed
+    with check_no_field():
+        api_val.details  # ruff:ignore[useless-expression]
 
 
 def test_mutation_use(client, consts):
@@ -298,7 +264,8 @@ def test_mutation_use(client, consts):
     assert api_stats.powergrid.one() == (120, 125)
     api_val = api_fit.validate(options=ValOptions(powergrid=True))
     assert api_val.passed is True
-    assert api_val.details.powergrid.status == consts.ApiValStatus.passed
+    with check_no_field():
+        api_val.details  # ruff:ignore[useless-expression]
     # Action
     api_module.change_module(mutation=(eve_mutator_id, {eve_use_attr_id: Muta.roll_to_api(val=0.7)}))
     # Verification
@@ -307,10 +274,9 @@ def test_mutation_use(client, consts):
     assert api_stats.powergrid.one() == (129.6, 125)
     api_val = api_fit.validate(options=ValOptions(powergrid=True))
     assert api_val.passed is False
-    assert api_val.details.powergrid.status == consts.ApiValStatus.failed
-    assert api_val.details.powergrid.fail.used == 129.6
-    assert api_val.details.powergrid.fail.max == 125
-    assert api_val.details.powergrid.fail.users == {api_module.id: (consts.ApiValItemStatus.failed, 129.6)}
+    assert api_val.details.powergrid.used == 129.6
+    assert api_val.details.powergrid.max == 125
+    assert api_val.details.powergrid.users == {api_module.id: 129.6}
     # Action
     api_module.change_module(mutation={eve_use_attr_id: Muta.roll_to_api(val=0.8)})
     # Verification
@@ -319,10 +285,9 @@ def test_mutation_use(client, consts):
     assert api_stats.powergrid.one() == (134.4, 125)
     api_val = api_fit.validate(options=ValOptions(powergrid=True))
     assert api_val.passed is False
-    assert api_val.details.powergrid.status == consts.ApiValStatus.failed
-    assert api_val.details.powergrid.fail.used == 134.4
-    assert api_val.details.powergrid.fail.max == 125
-    assert api_val.details.powergrid.fail.users == {api_module.id: (consts.ApiValItemStatus.failed, 134.4)}
+    assert api_val.details.powergrid.used == 134.4
+    assert api_val.details.powergrid.max == 125
+    assert api_val.details.powergrid.users == {api_module.id: 134.4}
     # Action
     api_module.change_module(mutation=None)
     # Verification
@@ -331,7 +296,8 @@ def test_mutation_use(client, consts):
     assert api_stats.powergrid.one() == (120, 125)
     api_val = api_fit.validate(options=ValOptions(powergrid=True))
     assert api_val.passed is True
-    assert api_val.details.powergrid.status == consts.ApiValStatus.passed
+    with check_no_field():
+        api_val.details  # ruff:ignore[useless-expression]
 
 
 def test_rounding(client, consts):
@@ -351,12 +317,9 @@ def test_rounding(client, consts):
     assert api_stats.powergrid.one() == (5.24, 5.23)
     api_val = api_fit.validate(options=ValOptions(powergrid=True))
     assert api_val.passed is False
-    assert api_val.details.powergrid.status == consts.ApiValStatus.failed
-    assert api_val.details.powergrid.fail.used == 5.24
-    assert api_val.details.powergrid.fail.max == 5.23
-    assert api_val.details.powergrid.fail.users == {
-        api_module1.id: (consts.ApiValItemStatus.failed, 0.01),
-        api_module2.id: (consts.ApiValItemStatus.failed, 5.23)}
+    assert api_val.details.powergrid.used == 5.24
+    assert api_val.details.powergrid.max == 5.23
+    assert api_val.details.powergrid.users == {api_module1.id: 0.01, api_module2.id: 5.23}
 
 
 def test_sum_rounding(client, consts):
@@ -381,10 +344,9 @@ def test_sum_rounding(client, consts):
         assert api_stats.powergrid.one() == (round(i / 10, 1), 0.15)
         api_val = api_fit.validate(options=ValOptions(powergrid=True))
         assert api_val.passed is False
-        assert api_val.details.powergrid.status == consts.ApiValStatus.failed
-        assert api_val.details.powergrid.fail.used == round(i / 10, 1)
-        assert api_val.details.powergrid.fail.max == 0.15
-        assert len(api_val.details.powergrid.fail.users) == i
+        assert api_val.details.powergrid.used == round(i / 10, 1)
+        assert api_val.details.powergrid.max == 0.15
+        assert len(api_val.details.powergrid.users) == i
 
 
 def test_no_ship(client, consts):
@@ -400,10 +362,9 @@ def test_no_ship(client, consts):
     assert api_stats.powergrid.one() == (5, None)
     api_val = api_fit.validate(options=ValOptions(powergrid=True))
     assert api_val.passed is False
-    assert api_val.details.powergrid.status == consts.ApiValStatus.failed
-    assert api_val.details.powergrid.fail.used == 5
-    assert api_val.details.powergrid.fail.max is None
-    assert api_val.details.powergrid.fail.users == {api_module.id: (consts.ApiValItemStatus.failed, 5)}
+    assert api_val.details.powergrid.used == 5
+    assert api_val.details.powergrid.max is None
+    assert api_val.details.powergrid.users == {api_module.id: 5}
 
 
 def test_not_loaded_ship(client, consts):
@@ -421,10 +382,9 @@ def test_not_loaded_ship(client, consts):
     assert api_stats.powergrid.one() == (5, None)
     api_val = api_fit.validate(options=ValOptions(powergrid=True))
     assert api_val.passed is False
-    assert api_val.details.powergrid.status == consts.ApiValStatus.failed
-    assert api_val.details.powergrid.fail.used == 5
-    assert api_val.details.powergrid.fail.max is None
-    assert api_val.details.powergrid.fail.users == {api_module.id: (consts.ApiValItemStatus.failed, 5)}
+    assert api_val.details.powergrid.used == 5
+    assert api_val.details.powergrid.max is None
+    assert api_val.details.powergrid.users == {api_module.id: 5}
 
 
 def test_not_loaded_user(client, consts):
@@ -443,7 +403,8 @@ def test_not_loaded_user(client, consts):
     assert api_stats.powergrid.one() == (0, 125)
     api_val = api_fit.validate(options=ValOptions(powergrid=True))
     assert api_val.passed is True
-    assert api_val.details.powergrid.status == consts.ApiValStatus.passed
+    with check_no_field():
+        api_val.details  # ruff:ignore[useless-expression]
 
 
 def test_non_positive(client, consts):
@@ -465,10 +426,9 @@ def test_non_positive(client, consts):
     assert api_stats.powergrid.one() == (140, 125)
     api_val = api_fit.validate(options=ValOptions(powergrid=True))
     assert api_val.passed is False
-    assert api_val.details.powergrid.status == consts.ApiValStatus.failed
-    assert api_val.details.powergrid.fail.used == 140
-    assert api_val.details.powergrid.fail.max == 125
-    assert api_val.details.powergrid.fail.users == {api_module2.id: (consts.ApiValItemStatus.failed, 150)}
+    assert api_val.details.powergrid.used == 140
+    assert api_val.details.powergrid.max == 125
+    assert api_val.details.powergrid.users == {api_module2.id: 150}
 
 
 def test_no_value_use(client, consts):
@@ -488,10 +448,9 @@ def test_no_value_use(client, consts):
     assert api_stats.powergrid.one() == (150, 125)
     api_val = api_fit.validate(options=ValOptions(powergrid=True))
     assert api_val.passed is False
-    assert api_val.details.powergrid.status == consts.ApiValStatus.failed
-    assert api_val.details.powergrid.fail.used == 150
-    assert api_val.details.powergrid.fail.max == 125
-    assert api_val.details.powergrid.fail.users == {api_module1.id: (consts.ApiValItemStatus.failed, 150)}
+    assert api_val.details.powergrid.used == 150
+    assert api_val.details.powergrid.max == 125
+    assert api_val.details.powergrid.users == {api_module1.id: 150}
 
 
 def test_no_value_max(client, consts):
@@ -509,10 +468,9 @@ def test_no_value_max(client, consts):
     assert api_stats.powergrid.one() == (150, 0)
     api_val = api_fit.validate(options=ValOptions(powergrid=True))
     assert api_val.passed is False
-    assert api_val.details.powergrid.status == consts.ApiValStatus.failed
-    assert api_val.details.powergrid.fail.used == 150
-    assert api_val.details.powergrid.fail.max == 0
-    assert api_val.details.powergrid.fail.users == {api_module.id: (consts.ApiValItemStatus.failed, 150)}
+    assert api_val.details.powergrid.used == 150
+    assert api_val.details.powergrid.max == 0
+    assert api_val.details.powergrid.users == {api_module.id: 150}
 
 
 def test_no_attr_use(client, consts):
@@ -528,7 +486,8 @@ def test_no_attr_use(client, consts):
     # Verification - users are assumed to take no resource when attribute does not exist
     api_val = api_fit.validate(options=ValOptions(powergrid=True))
     assert api_val.passed is True
-    assert api_val.details.powergrid.status == consts.ApiValStatus.passed
+    with check_no_field():
+        api_val.details  # ruff:ignore[useless-expression]
 
 
 def test_no_attr_max(client, consts):
@@ -544,10 +503,9 @@ def test_no_attr_max(client, consts):
     # Verification - when output attr does not exist, it is assumed to be 0
     api_val = api_fit.validate(options=ValOptions(powergrid=True))
     assert api_val.passed is False
-    assert api_val.details.powergrid.status == consts.ApiValStatus.failed
-    assert api_val.details.powergrid.fail.used == 50
-    assert api_val.details.powergrid.fail.max == 0
-    assert api_val.details.powergrid.fail.users == {api_module.id: (consts.ApiValItemStatus.failed, 50)}
+    assert api_val.details.powergrid.used == 50
+    assert api_val.details.powergrid.max == 0
+    assert api_val.details.powergrid.users == {api_module.id: 50}
 
 
 def test_criterion_module_state(client, consts):
@@ -565,7 +523,8 @@ def test_criterion_module_state(client, consts):
     assert api_stats.powergrid.one() == (0, 125)
     api_val = api_fit.validate(options=ValOptions(powergrid=True))
     assert api_val.passed is True
-    assert api_val.details.powergrid.status == consts.ApiValStatus.passed
+    with check_no_field():
+        api_val.details  # ruff:ignore[useless-expression]
     # Action
     api_module.change_module(state=consts.ApiModuleState.online)
     # Verification
@@ -573,10 +532,9 @@ def test_criterion_module_state(client, consts):
     assert api_stats.powergrid.one() == (150, 125)
     api_val = api_fit.validate(options=ValOptions(powergrid=True))
     assert api_val.passed is False
-    assert api_val.details.powergrid.status == consts.ApiValStatus.failed
-    assert api_val.details.powergrid.fail.used == 150
-    assert api_val.details.powergrid.fail.max == 125
-    assert api_val.details.powergrid.fail.users == {api_module.id: (consts.ApiValItemStatus.failed, 150)}
+    assert api_val.details.powergrid.used == 150
+    assert api_val.details.powergrid.max == 125
+    assert api_val.details.powergrid.users == {api_module.id: 150}
     # Action
     api_module.change_module(state=consts.ApiModuleState.offline)
     # Verification
@@ -584,7 +542,8 @@ def test_criterion_module_state(client, consts):
     assert api_stats.powergrid.one() == (0, 125)
     api_val = api_fit.validate(options=ValOptions(powergrid=True))
     assert api_val.passed is True
-    assert api_val.details.powergrid.status == consts.ApiValStatus.passed
+    with check_no_field():
+        api_val.details  # ruff:ignore[useless-expression]
 
 
 def test_criterion_item_kind(client, consts):
@@ -622,7 +581,8 @@ def test_criterion_item_kind(client, consts):
     assert api_stats.powergrid.one() == (0, 125)
     api_val = api_fit.validate(options=ValOptions(powergrid=True))
     assert api_val.passed is True
-    assert api_val.details.powergrid.status == consts.ApiValStatus.passed
+    with check_no_field():
+        api_val.details  # ruff:ignore[useless-expression]
 
 
 def test_stat_not_requested(client, consts):

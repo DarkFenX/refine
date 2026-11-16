@@ -2,8 +2,6 @@ import dataclasses
 import typing
 from collections import UserDict
 
-from fw.consts import ApiValItemStatus
-
 
 class ValModuleStateFail(UserDict):
 
@@ -14,13 +12,11 @@ class ValModuleStateFail(UserDict):
 @dataclasses.dataclass
 class ValModuleStateInfo:
 
-    status: ApiValItemStatus
     state: str
     max_state: str
 
     def __init__(self, *, data: list | tuple) -> None:
-        status, self.state, self.max_state = data
-        self.status = ApiValItemStatus(status)
+        self.state, self.max_state = data
 
     def __getitem__(self, item: int) -> typing.Any:
         field = dataclasses.fields(self)[item]
@@ -29,4 +25,4 @@ class ValModuleStateInfo:
     def __eq__(self, other: list | tuple) -> bool:
         if isinstance(other, tuple):
             other = list(other)
-        return [self.status, self.state, self.max_state] == other
+        return [self.state, self.max_state] == other

@@ -2,7 +2,7 @@ use kinds::ValKind;
 use options::ValOptionInt;
 pub use options::{ValEnabled, ValOptions, ValOptionsSol};
 pub(crate) use options::{ValOptionsInt, ValOptionsSolInt};
-pub use result::{ValItemInfo, ValItemStatus, ValResult, ValResultFit, ValResultSol};
+pub use result::{ValResult, ValResultFit, ValResultSol};
 pub(in crate::svc::vast) use validators::{
     EffectSecZoneInfo, ValFighterSquadSizeFighterStored, ValItemKindItemStored, ValModuleStateModuleStored,
     ValSrqSkillStored, get_fit_ship_rig_size, get_fit_ship_type_group, get_item_vs_ship_kind_mismatch,

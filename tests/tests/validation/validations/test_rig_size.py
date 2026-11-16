@@ -1,4 +1,4 @@
-from fw import approx
+from fw import approx, check_no_field
 from fw.api import ValOptions
 
 
@@ -16,15 +16,15 @@ def test_ship(client, consts):
     # Verification
     api_val = api_fit.validate(options=ValOptions(rig_size=True))
     assert api_val.passed is False
-    assert api_val.details.rig_size.status == consts.ApiValStatus.failed
-    assert api_val.details.rig_size.fail.allowed_size == 3
-    assert api_val.details.rig_size.fail.rig_sizes == {api_rig1.id: (consts.ApiValItemStatus.failed, 1)}
+    assert api_val.details.rig_size.allowed_size == 3
+    assert api_val.details.rig_size.rig_sizes == {api_rig1.id: 1}
     # Action
     api_rig1.remove()
     # Verification
     api_val = api_fit.validate(options=ValOptions(rig_size=True))
     assert api_val.passed is True
-    assert api_val.details.rig_size.status == consts.ApiValStatus.passed
+    with check_no_field():
+        api_val.details  # ruff:ignore[useless-expression]
 
 
 def test_struct(client, consts):
@@ -41,15 +41,15 @@ def test_struct(client, consts):
     # Verification
     api_val = api_fit.validate(options=ValOptions(rig_size=True))
     assert api_val.passed is False
-    assert api_val.details.rig_size.status == consts.ApiValStatus.failed
-    assert api_val.details.rig_size.fail.allowed_size == 3
-    assert api_val.details.rig_size.fail.rig_sizes == {api_rig1.id: (consts.ApiValItemStatus.failed, 1)}
+    assert api_val.details.rig_size.allowed_size == 3
+    assert api_val.details.rig_size.rig_sizes == {api_rig1.id: 1}
     # Action
     api_rig1.remove()
     # Verification
     api_val = api_fit.validate(options=ValOptions(rig_size=True))
     assert api_val.passed is True
-    assert api_val.details.rig_size.status == consts.ApiValStatus.passed
+    with check_no_field():
+        api_val.details  # ruff:ignore[useless-expression]
 
 
 def test_known_failures(client, consts):
@@ -67,25 +67,16 @@ def test_known_failures(client, consts):
     # Verification
     api_val = api_fit.validate(options=ValOptions(rig_size=[api_rig1.id]))
     assert api_val.passed is False
-    assert api_val.details.rig_size.status == consts.ApiValStatus.failed
-    assert api_val.details.rig_size.fail.allowed_size == 3
-    assert api_val.details.rig_size.fail.rig_sizes == {
-        api_rig1.id: (consts.ApiValItemStatus.kf, 1),
-        api_rig2.id: (consts.ApiValItemStatus.failed, 1)}
+    assert api_val.details.rig_size.allowed_size == 3
+    assert api_val.details.rig_size.rig_sizes == {api_rig2.id: 1}
     api_val = api_fit.validate(options=ValOptions(rig_size=[api_rig2.id]))
     assert api_val.passed is False
-    assert api_val.details.rig_size.status == consts.ApiValStatus.failed
-    assert api_val.details.rig_size.fail.allowed_size == 3
-    assert api_val.details.rig_size.fail.rig_sizes == {
-        api_rig1.id: (consts.ApiValItemStatus.failed, 1),
-        api_rig2.id: (consts.ApiValItemStatus.kf, 1)}
+    assert api_val.details.rig_size.allowed_size == 3
+    assert api_val.details.rig_size.rig_sizes == {api_rig1.id: 1}
     api_val = api_fit.validate(options=ValOptions(rig_size=[api_rig1.id, api_rig2.id]))
     assert api_val.passed is True
-    assert api_val.details.rig_size.status == consts.ApiValStatus.passed_kfs
-    assert api_val.details.rig_size.fail.allowed_size == 3
-    assert api_val.details.rig_size.fail.rig_sizes == {
-        api_rig1.id: (consts.ApiValItemStatus.kf, 1),
-        api_rig2.id: (consts.ApiValItemStatus.kf, 1)}
+    with check_no_field():
+        api_val.details  # ruff:ignore[useless-expression]
 
 
 def test_rounding(client, consts):
@@ -104,11 +95,8 @@ def test_rounding(client, consts):
     # Verification
     api_val = api_fit.validate(options=ValOptions(rig_size=True))
     assert api_val.passed is False
-    assert api_val.details.rig_size.status == consts.ApiValStatus.failed
-    assert api_val.details.rig_size.fail.allowed_size == 2.95
-    assert api_val.details.rig_size.fail.rig_sizes == {
-        api_rig1.id: (consts.ApiValItemStatus.failed, 1.2),
-        api_rig2.id: (consts.ApiValItemStatus.failed, 2.9)}
+    assert api_val.details.rig_size.allowed_size == 2.95
+    assert api_val.details.rig_size.rig_sizes == {api_rig1.id: 1.2, api_rig2.id: 2.9}
 
 
 def test_modified(client, consts):
@@ -146,9 +134,8 @@ def test_modified(client, consts):
     assert api_rig2.update().attrs[eve_attr_id].modified == approx(2)
     api_val = api_fit.validate(options=ValOptions(rig_size=True))
     assert api_val.passed is False
-    assert api_val.details.rig_size.status == consts.ApiValStatus.failed
-    assert api_val.details.rig_size.fail.allowed_size == 3
-    assert api_val.details.rig_size.fail.rig_sizes == {api_rig1.id: (consts.ApiValItemStatus.failed, 1)}
+    assert api_val.details.rig_size.allowed_size == 3
+    assert api_val.details.rig_size.rig_sizes == {api_rig1.id: 1}
 
 
 def test_ship_absent(client, consts):
@@ -161,7 +148,8 @@ def test_ship_absent(client, consts):
     # Verification
     api_val = api_fit.validate(options=ValOptions(rig_size=True))
     assert api_val.passed is True
-    assert api_val.details.rig_size.status == consts.ApiValStatus.passed
+    with check_no_field():
+        api_val.details  # ruff:ignore[useless-expression]
 
 
 def test_non_positive(client, consts):
@@ -179,17 +167,15 @@ def test_non_positive(client, consts):
     # Verification
     api_val = api_fit.validate(options=ValOptions(rig_size=True))
     assert api_val.passed is False
-    assert api_val.details.rig_size.status == consts.ApiValStatus.failed
-    assert api_val.details.rig_size.fail.allowed_size == 0
-    assert api_val.details.rig_size.fail.rig_sizes == {api_rig2.id: (consts.ApiValItemStatus.failed, -3)}
+    assert api_val.details.rig_size.allowed_size == 0
+    assert api_val.details.rig_size.rig_sizes == {api_rig2.id: -3}
     # Action
     api_fit.set_ship(type_id=eve_ship2_id)
     # Verification
     api_val = api_fit.validate(options=ValOptions(rig_size=True))
     assert api_val.passed is False
-    assert api_val.details.rig_size.status == consts.ApiValStatus.failed
-    assert api_val.details.rig_size.fail.allowed_size == -3
-    assert api_val.details.rig_size.fail.rig_sizes == {api_rig1.id: (consts.ApiValItemStatus.failed, 0)}
+    assert api_val.details.rig_size.allowed_size == -3
+    assert api_val.details.rig_size.rig_sizes == {api_rig1.id: 0}
 
 
 def test_no_value_ship(client, consts):
@@ -204,7 +190,8 @@ def test_no_value_ship(client, consts):
     # Verification
     api_val = api_fit.validate(options=ValOptions(rig_size=True))
     assert api_val.passed is True
-    assert api_val.details.rig_size.status == consts.ApiValStatus.passed
+    with check_no_field():
+        api_val.details  # ruff:ignore[useless-expression]
 
 
 def test_no_value_rig(client, consts):
@@ -219,9 +206,8 @@ def test_no_value_rig(client, consts):
     # Verification
     api_val = api_fit.validate(options=ValOptions(rig_size=True))
     assert api_val.passed is False
-    assert api_val.details.rig_size.status == consts.ApiValStatus.failed
-    assert api_val.details.rig_size.fail.allowed_size == 2
-    assert api_val.details.rig_size.fail.rig_sizes == {api_rig.id: (consts.ApiValItemStatus.failed, None)}
+    assert api_val.details.rig_size.allowed_size == 2
+    assert api_val.details.rig_size.rig_sizes == {api_rig.id: None}
 
 
 def test_no_attr(client, consts):
@@ -237,7 +223,8 @@ def test_no_attr(client, consts):
     # validation always passes
     api_val = api_fit.validate(options=ValOptions(rig_size=True))
     assert api_val.passed is True
-    assert api_val.details.rig_size.status == consts.ApiValStatus.passed
+    with check_no_field():
+        api_val.details  # ruff:ignore[useless-expression]
 
 
 def test_ship_not_loaded(client, consts):
@@ -252,7 +239,8 @@ def test_ship_not_loaded(client, consts):
     # Verification
     api_val = api_fit.validate(options=ValOptions(rig_size=True))
     assert api_val.passed is True
-    assert api_val.details.rig_size.status == consts.ApiValStatus.passed
+    with check_no_field():
+        api_val.details  # ruff:ignore[useless-expression]
 
 
 def test_rig_not_loaded(client, consts):
@@ -267,7 +255,8 @@ def test_rig_not_loaded(client, consts):
     # Verification
     api_val = api_fit.validate(options=ValOptions(rig_size=True))
     assert api_val.passed is True
-    assert api_val.details.rig_size.status == consts.ApiValStatus.passed
+    with check_no_field():
+        api_val.details  # ruff:ignore[useless-expression]
 
 
 def test_state(client, consts):
@@ -283,9 +272,8 @@ def test_state(client, consts):
     # Verification
     api_val = api_fit.validate(options=ValOptions(rig_size=True))
     assert api_val.passed is False
-    assert api_val.details.rig_size.status == consts.ApiValStatus.failed
-    assert api_val.details.rig_size.fail.allowed_size == 3
-    assert api_val.details.rig_size.fail.rig_sizes == {api_rig.id: (consts.ApiValItemStatus.failed, 1)}
+    assert api_val.details.rig_size.allowed_size == 3
+    assert api_val.details.rig_size.rig_sizes == {api_rig.id: 1}
 
 
 def test_criterion_item_kind(client, consts):
@@ -329,4 +317,5 @@ def test_criterion_item_kind(client, consts):
     assert len(api_fighter.autocharges) == 1
     api_val = api_fit.validate(options=ValOptions(rig_size=True))
     assert api_val.passed is True
-    assert api_val.details.rig_size.status == consts.ApiValStatus.passed
+    with check_no_field():
+        api_val.details  # ruff:ignore[useless-expression]

@@ -9,17 +9,21 @@ use crate::{
 /// Validation result for a solar system.
 ///
 /// Contains results of all the requested fits, and result for items not belonging to any fit.
-#[cfg_attr(feature = "serde", cfg_eval, serde_with::serde_as, derive(serde::Serialize))]
+///
+/// Serialization notes: fits which have no failed validations are not serialized.
+#[cfg_attr(feature = "serde", derive(serde::Serialize))]
 #[derive(Clone)]
 pub struct ValResultSol {
     #[cfg_attr(
         feature = "serde",
-        serde_as(as = "serde_with::Map<_, _>"),
-        serde(skip_serializing_if = "Vec::is_empty")
+        serde(
+            skip_serializing_if = "custom_serde::skip_fits",
+            serialize_with = "custom_serde::serialize_fits"
+        )
     )]
     pub fits: Vec<(FitId, ValResultFit)>,
     /// Not loaded stand-alone items - i.e. items which do not belong to any fits.
-    #[cfg_attr(feature = "serde", serde(skip_serializing_if = "ValResult::is_not_requested"))]
+    #[cfg_attr(feature = "serde", serde(skip_serializing_if = "ValResult::is_not_failed"))]
     pub not_loaded_item: ValResult<ValNotLoadedItemFail>,
 }
 impl ValResultSol {
@@ -38,5 +42,30 @@ impl ValResultSol {
             fits: Vec::with_capacity(capacity),
             not_loaded_item: ValResult::NotRequested,
         }
+    }
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Custom de/serialization
+////////////////////////////////////////////////////////////////////////////////////////////////////
+#[cfg(feature = "serde")]
+mod custom_serde {
+    use serde::ser::Serializer;
+
+    use super::*;
+
+    pub(super) fn skip_fits(fits: &[(FitId, ValResultFit)]) -> bool {
+        fits.iter().all(|(_, fit_result)| fit_result.all_passed())
+    }
+
+    pub(super) fn serialize_fits<S>(fits: &[(FitId, ValResultFit)], serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: Serializer,
+    {
+        let failed_fits = fits
+            .iter()
+            .filter(|(_, fit_result)| !fit_result.all_passed())
+            .map(|(fit_id, fit_result)| (fit_id, fit_result));
+        serializer.collect_map(failed_fits)
     }
 }

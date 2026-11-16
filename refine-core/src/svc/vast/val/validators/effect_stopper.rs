@@ -1,5 +1,3 @@
-use itertools::Itertools;
-
 use crate::{
     EffectId, ItemId, PValue,
     misc::EffectSpec,
@@ -7,7 +5,7 @@ use crate::{
     svc::{Calc, SvcCtx, funcs, vast::VastFitData},
     ud::UItemId,
     util::{RMap, RSet},
-    val::{ValItemStatus, ValResult},
+    val::ValResult,
 };
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -22,16 +20,17 @@ use crate::{
 )]
 #[derive(Clone)]
 pub struct ValEffectStopperFail {
-    #[cfg_attr(feature = "serde", serde_as(as = "serde_with::KeyValueMap<_>"))]
+    #[cfg_attr(feature = "serde", serde_as(as = "refine_serde::VecAsMap"))]
     pub items: Vec<ValEffectStopperItemInfo>,
 }
 
 /// Item and its running effects which should be stopped.
-#[cfg_attr(feature = "serde", derive(serde_tuple::Serialize_tuple))]
+#[cfg_attr(feature = "serde", derive(refine_serde::VecAsMapEntry))]
 #[derive(Clone)]
 pub struct ValEffectStopperItemInfo {
+    #[cfg_attr(feature = "serde", vec_map(key))]
     pub item_id: ItemId,
-    pub status: ValItemStatus,
+    #[cfg_attr(feature = "serde", vec_map(value))]
     pub effect_ids: Vec<EffectId>,
 }
 
@@ -71,25 +70,24 @@ impl VastFitData {
             if let Some(stopped_reffs) = stopped_u_item.get_reffs()
                 && stopped_reffs.contains(stopped_espec.effect_rid)
                 && is_any_in_effective_range(ctx, calc, stopper_especs.copied(), stopped_espec.item_uid)
+                && !kfs.contains(&stopped_espec.item_uid)
             {
+                let item_id = ctx.u_data.items.ext_id_by_int_id(stopped_espec.item_uid);
                 let effect_aid = ctx.u_data.r_data.get_effect_by_rid(stopped_espec.effect_rid).aid;
                 items
-                    .entry(stopped_espec.item_uid)
+                    .entry(item_id)
                     .or_insert_with(Vec::new)
                     .push(EffectId::from_aid(effect_aid));
             }
         }
-        let items = items
-            .into_iter()
-            .map(|(item_uid, effect_ids)| ValEffectStopperItemInfo {
-                item_id: ctx.u_data.items.ext_id_by_int_id(item_uid),
-                status: ValItemStatus::from_kfs(kfs, item_uid),
-                effect_ids,
-            })
-            .collect_vec();
         match items.is_empty() {
             true => ValResult::Passed,
-            false => ValResult::from_fail(items.iter().all(|v| v.status.is_kf()), ValEffectStopperFail { items }),
+            false => ValResult::Failed(ValEffectStopperFail {
+                items: items
+                    .into_iter()
+                    .map(|(item_id, effect_ids)| ValEffectStopperItemInfo { item_id, effect_ids })
+                    .collect(),
+            }),
         }
     }
 }

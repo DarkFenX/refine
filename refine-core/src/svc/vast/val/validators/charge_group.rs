@@ -4,7 +4,7 @@ use crate::{
     svc::{SvcCtx, vast::VastFitData},
     ud::UItemId,
     util::RSet,
-    val::{ValItemStatus, ValResult},
+    val::ValResult,
 };
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -28,7 +28,6 @@ pub struct ValChargeGroupFail {
 pub struct ValChargeGroupChargeInfo {
     /// Charge item ID.
     pub charge_item_id: ItemId,
-    pub status: ValItemStatus,
     /// Parent module item ID.
     pub parent_item_id: ItemId,
     /// Group ID of current charge.
@@ -55,10 +54,9 @@ impl VastFitData {
         ctx: &SvcCtx,
     ) -> ValResult<ValChargeGroupFail> {
         let mut charges = Vec::new();
-        for (&charge_uid, &cont_uid) in self.charge_group.iter() {
+        for (&charge_uid, &cont_uid) in self.charge_group.difference(kfs) {
             charges.push(ValChargeGroupChargeInfo {
                 charge_item_id: ctx.u_data.items.ext_id_by_int_id(charge_uid),
-                status: ValItemStatus::from_kfs(kfs, charge_uid),
                 parent_item_id: ctx.u_data.items.ext_id_by_int_id(cont_uid),
                 charge_group_id: ItemGrpId::from_aid(
                     ctx.u_data.items.get(charge_uid).get_r_item_base().unwrap().grp_id,
@@ -80,7 +78,7 @@ impl VastFitData {
         }
         match charges.is_empty() {
             true => ValResult::Passed,
-            false => ValResult::from_fail(charges.iter().all(|v| v.status.is_kf()), ValChargeGroupFail { charges }),
+            false => ValResult::Failed(ValChargeGroupFail { charges }),
         }
     }
 }

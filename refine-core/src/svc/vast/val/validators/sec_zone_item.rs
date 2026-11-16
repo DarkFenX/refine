@@ -9,7 +9,7 @@ use crate::{
     },
     ud::UItemId,
     util::{RMap, RSet},
-    val::{ValItemStatus, ValResult},
+    val::ValResult,
 };
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -25,17 +25,18 @@ use crate::{
 pub struct ValItemSecZoneFail {
     /// Solar system security zone.
     pub zone: SecZone,
-    #[cfg_attr(feature = "serde", serde_as(as = "serde_with::KeyValueMap<_>"))]
+    #[cfg_attr(feature = "serde", serde_as(as = "refine_serde::VecAsMap"))]
     pub items: Vec<ValItemSecZoneItemInfo>,
 }
 
-#[cfg_attr(feature = "serde", derive(serde_tuple::Serialize_tuple))]
+#[cfg_attr(feature = "serde", derive(refine_serde::VecAsMapEntry))]
 #[derive(Clone)]
 pub struct ValItemSecZoneItemInfo {
     /// Item which cannot be used in current security zone.
+    #[cfg_attr(feature = "serde", vec_map(key))]
     pub item_id: ItemId,
-    pub status: ValItemStatus,
     /// Security zones the item can be used in.
+    #[cfg_attr(feature = "serde", vec_map(value))]
     pub allowed_zones: Vec<SecZone>,
 }
 
@@ -229,11 +230,16 @@ fn flags_check_verbose(
                 {
                     match corruption {
                         // No corruption in actual security zone - fail
-                        SecZoneCorruption::None => failed_item_uids.push(item_uid),
+                        SecZoneCorruption::None => {
+                            if !kfs.contains(&item_uid) {
+                                failed_item_uids.push(item_uid);
+                            }
+                        }
                         // If corrupted, check if module is allowed in corrupted hisec
                         SecZoneCorruption::C5 => {
                             if !is_oattr_flag_set(ctx, calc, item_uid, ctx.ac().allow_in_fully_corrupted_hisec)
                                 .unwrap_or(false)
+                                && !kfs.contains(&item_uid)
                             {
                                 failed_item_uids.push(item_uid);
                             }
@@ -247,11 +253,16 @@ fn flags_check_verbose(
                 if is_oattr_flag_set(ctx, calc, item_uid, ctx.ac().disallow_in_empire_space).unwrap_or(false) {
                     match corruption {
                         // No corruption in actual security zone - fail
-                        SecZoneCorruption::None => failed_item_uids.push(item_uid),
+                        SecZoneCorruption::None => {
+                            if !kfs.contains(&item_uid) {
+                                failed_item_uids.push(item_uid);
+                            }
+                        }
                         // If corrupted, check if module is allowed in corrupted lowsec
                         SecZoneCorruption::C5 => {
                             if !is_oattr_flag_set(ctx, calc, item_uid, ctx.ac().allow_in_fully_corrupted_lowsec)
                                 .unwrap_or(false)
+                                && !kfs.contains(&item_uid)
                             {
                                 failed_item_uids.push(item_uid);
                             }
@@ -262,7 +273,9 @@ fn flags_check_verbose(
         }
         SecZone::Hazard => {
             for &item_uid in items_main.iter() {
-                if is_oattr_flag_set(ctx, calc, item_uid, ctx.ac().disallow_in_hazard).unwrap_or(false) {
+                if is_oattr_flag_set(ctx, calc, item_uid, ctx.ac().disallow_in_hazard).unwrap_or(false)
+                    && !kfs.contains(&item_uid)
+                {
                     failed_item_uids.push(item_uid);
                 }
             }
@@ -272,27 +285,22 @@ fn flags_check_verbose(
         // Supercap ban for w-space
         SecZone::WSpace => {
             if let Some(items_wspace_banned) = items_wspace_banned {
-                failed_item_uids.extend(items_wspace_banned.iter().copied());
+                failed_item_uids.extend(items_wspace_banned.difference(kfs).copied());
             }
         }
     };
-    let items = failed_item_uids
-        .iter()
-        .map(|&item_uid| ValItemSecZoneItemInfo {
-            item_id: ctx.u_data.items.ext_id_by_int_id(item_uid),
-            status: ValItemStatus::from_kfs(kfs, item_uid),
-            allowed_zones: get_allowed_sec_zones(ctx, calc, item_uid, items_wspace_banned),
-        })
-        .collect_vec();
-    match items.is_empty() {
+    match failed_item_uids.is_empty() {
         true => ValResult::Passed,
-        false => ValResult::from_fail(
-            items.iter().all(|v| v.status.is_kf()),
-            ValItemSecZoneFail {
-                zone: ctx.u_data.sec_zone,
-                items,
-            },
-        ),
+        false => ValResult::Failed(ValItemSecZoneFail {
+            zone: ctx.u_data.sec_zone,
+            items: failed_item_uids
+                .iter()
+                .map(|&item_uid| ValItemSecZoneItemInfo {
+                    item_id: ctx.u_data.items.ext_id_by_int_id(item_uid),
+                    allowed_zones: get_allowed_sec_zones(ctx, calc, item_uid, items_wspace_banned),
+                })
+                .collect(),
+        }),
     }
 }
 fn get_allowed_sec_zones(
@@ -361,24 +369,22 @@ fn class_check_verbose(
     let current_class = zone_to_class(ctx.u_data.sec_zone);
     let items = limitable_items
         .iter()
-        .filter_map(|(item_uid, item_sec_class)| match *item_sec_class < current_class {
-            true => Some(ValItemSecZoneItemInfo {
-                item_id: ctx.u_data.items.ext_id_by_int_id(*item_uid),
-                status: ValItemStatus::from_kfs(kfs, *item_uid),
-                allowed_zones: class_to_allowed_zones(*item_sec_class),
-            }),
-            false => None,
-        })
+        .filter_map(
+            |(item_uid, item_sec_class)| match *item_sec_class < current_class && !kfs.contains(item_uid) {
+                true => Some(ValItemSecZoneItemInfo {
+                    item_id: ctx.u_data.items.ext_id_by_int_id(*item_uid),
+                    allowed_zones: class_to_allowed_zones(*item_sec_class),
+                }),
+                false => None,
+            },
+        )
         .collect_vec();
     match items.is_empty() {
         true => ValResult::Passed,
-        false => ValResult::from_fail(
-            items.iter().all(|v| v.status.is_kf()),
-            ValItemSecZoneFail {
-                zone: ctx.u_data.sec_zone,
-                items,
-            },
-        ),
+        false => ValResult::Failed(ValItemSecZoneFail {
+            zone: ctx.u_data.sec_zone,
+            items,
+        }),
     }
 }
 fn zone_to_class(zone: SecZone) -> Value {

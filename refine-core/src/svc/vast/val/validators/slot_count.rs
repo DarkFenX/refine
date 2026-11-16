@@ -1,7 +1,7 @@
 use itertools::Itertools;
 
 use crate::{
-    Count,
+    Count, ItemId,
     rd::RAttrId,
     svc::{
         Calc, SvcCtx,
@@ -9,18 +9,13 @@ use crate::{
     },
     ud::{UFit, UItemId, UItemVec},
     util::{RMap, RSet},
-    val::{ValItemInfo, ValResult},
+    val::ValResult,
 };
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Result
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-#[cfg_attr(
-    feature = "serde",
-    cfg_eval,
-    serde_with::serde_as,
-    derive(serde_tuple::Serialize_tuple)
-)]
+#[cfg_attr(feature = "serde", derive(serde_tuple::Serialize_tuple))]
 #[derive(Clone)]
 pub struct ValSlotCountFail {
     /// How many slots are taken by all the relevant items.
@@ -29,8 +24,7 @@ pub struct ValSlotCountFail {
     pub max: Option<Count>,
     /// Items which fail the validation. For unordered containers - all items, for ordered
     /// containers - only those which go past the slot limit.
-    #[cfg_attr(feature = "serde", serde_as(as = "refine_serde::VecAsMap"))]
-    pub users: Vec<ValItemInfo>,
+    pub users: Vec<ItemId>,
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -507,13 +501,13 @@ fn validate_verbose_unordered_set(
         return ValResult::Passed;
     }
     let users = users
-        .iter()
-        .map(|&item_uid| ValItemInfo::from_uid(kfs, ctx, item_uid))
+        .difference(kfs)
+        .map(|item_uid| ctx.u_data.items.ext_id_by_int_id(*item_uid))
         .collect_vec();
-    ValResult::from_fail(
-        users.iter().all(|v| v.status.is_kf()),
-        ValSlotCountFail { used, max, users },
-    )
+    match users.is_empty() {
+        true => ValResult::Passed,
+        false => ValResult::Failed(ValSlotCountFail { used, max, users }),
+    }
 }
 fn validate_verbose_unordered_map<T>(
     kfs: &RSet<UItemId>,
@@ -529,13 +523,13 @@ fn validate_verbose_unordered_map<T>(
         return ValResult::Passed;
     }
     let users = users
-        .iter()
-        .map(|(&item_uid, _)| ValItemInfo::from_uid(kfs, ctx, item_uid))
+        .difference(kfs)
+        .map(|(item_uid, _)| ctx.u_data.items.ext_id_by_int_id(*item_uid))
         .collect_vec();
-    ValResult::from_fail(
-        users.iter().all(|v| v.status.is_kf()),
-        ValSlotCountFail { used, max, users },
-    )
+    match users.is_empty() {
+        true => ValResult::Passed,
+        false => ValResult::Failed(ValSlotCountFail { used, max, users }),
+    }
 }
 fn validate_verbose_ordered(
     kfs: &RSet<UItemId>,
@@ -553,13 +547,13 @@ fn validate_verbose_ordered(
     }
     let users = users
         .iter_uids_from_pos(effective_max.into_rack_pos())
-        .map(|item_uid| ValItemInfo::from_uid(kfs, ctx, item_uid))
+        .filter_map(|item_uid| match kfs.contains(&item_uid) {
+            true => None,
+            false => Some(ctx.u_data.items.ext_id_by_int_id(item_uid)),
+        })
         .collect_vec();
     match users.is_empty() {
         true => ValResult::Passed,
-        false => ValResult::from_fail(
-            users.iter().all(|v| v.status.is_kf()),
-            ValSlotCountFail { used, max, users },
-        ),
+        false => ValResult::Failed(ValSlotCountFail { used, max, users }),
     }
 }

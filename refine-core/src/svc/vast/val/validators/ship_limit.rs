@@ -5,7 +5,7 @@ use crate::{
     svc::{SvcCtx, vast::VastFitData},
     ud::{UData, UFit, UFitId, UItemId, UShip},
     util::RSet,
-    val::{ValItemStatus, ValResult},
+    val::ValResult,
 };
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -32,17 +32,15 @@ pub struct ValShipLimitFail {
 pub struct ValShipLimitItemInfo {
     /// Item which cannot be fit to current ship.
     pub item_id: ItemId,
-    pub status: ValItemStatus,
     /// Ship type IDs item can be fit to.
     pub allowed_type_ids: Vec<ItemTypeId>,
     /// Ship group IDs item can be fit to.
     pub allowed_group_ids: Vec<ItemGrpId>,
 }
 impl ValShipLimitItemInfo {
-    fn from_id_and_r_limit(item_id: ItemId, status: ValItemStatus, item_ship_limit: &RItemShipLimit) -> Self {
+    fn from_id_and_r_limit(item_id: ItemId, item_ship_limit: &RItemShipLimit) -> Self {
         Self {
             item_id,
-            status,
             allowed_type_ids: item_ship_limit
                 .type_aids
                 .iter()
@@ -84,21 +82,23 @@ impl VastFitData {
         };
         let mut mismatches = Vec::new();
         for &limited_item_uid in self.ship_limit_mismatches.iter() {
+            if kfs.contains(&limited_item_uid) {
+                continue;
+            }
             let limited_item_rib = ctx.u_data.items.get(limited_item_uid).get_r_item_base().unwrap();
             mismatches.push(ValShipLimitItemInfo::from_id_and_r_limit(
                 ctx.u_data.items.ext_id_by_int_id(limited_item_uid),
-                ValItemStatus::from_kfs(kfs, limited_item_uid),
                 limited_item_rib.ship_limit.as_ref().unwrap(),
             ));
         }
-        ValResult::from_fail(
-            mismatches.iter().all(|v| v.status.is_kf()),
-            ValShipLimitFail {
+        match mismatches.is_empty() {
+            true => ValResult::Passed,
+            false => ValResult::Failed(ValShipLimitFail {
                 ship_type_id: ship_type_aid.map(ItemTypeId::from_aid),
                 ship_group_id: ship_group_aid.map(ItemGrpId::from_aid),
                 items: mismatches,
-            },
-        )
+            }),
+        }
     }
 }
 

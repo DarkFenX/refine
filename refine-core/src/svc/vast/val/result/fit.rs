@@ -15,151 +15,151 @@ use crate::val::{
 #[derive(Clone)]
 pub struct ValResultFit {
     // Generic
-    #[cfg_attr(feature = "serde", serde(skip_serializing_if = "ValResult::is_not_requested"))]
+    #[cfg_attr(feature = "serde", serde(skip_serializing_if = "ValResult::is_not_failed"))]
     pub not_loaded_item: ValResult<ValNotLoadedItemFail> = ValResult::NotRequested,
-    #[cfg_attr(feature = "serde", serde(skip_serializing_if = "ValResult::is_not_requested"))]
+    #[cfg_attr(feature = "serde", serde(skip_serializing_if = "ValResult::is_not_failed"))]
     pub item_kind: ValResult<ValItemKindFail> = ValResult::NotRequested,
-    #[cfg_attr(feature = "serde", serde(skip_serializing_if = "ValResult::is_not_requested"))]
+    #[cfg_attr(feature = "serde", serde(skip_serializing_if = "ValResult::is_not_failed"))]
     pub skill_reqs: ValResult<ValSrqFail> = ValResult::NotRequested,
     // Implants/boosters
-    #[cfg_attr(feature = "serde", serde(skip_serializing_if = "ValResult::is_not_requested"))]
+    #[cfg_attr(feature = "serde", serde(skip_serializing_if = "ValResult::is_not_failed"))]
     pub implant_slot_index: ValResult<ValSlotIndexFail> = ValResult::NotRequested,
-    #[cfg_attr(feature = "serde", serde(skip_serializing_if = "ValResult::is_not_requested"))]
+    #[cfg_attr(feature = "serde", serde(skip_serializing_if = "ValResult::is_not_failed"))]
     pub booster_slot_index: ValResult<ValSlotIndexFail> = ValResult::NotRequested,
     // Shared between mod-alike items
-    #[cfg_attr(feature = "serde", serde(skip_serializing_if = "ValResult::is_not_requested"))]
+    #[cfg_attr(feature = "serde", serde(skip_serializing_if = "ValResult::is_not_failed"))]
     pub cpu: ValResult<ValResourceFail> = ValResult::NotRequested,
-    #[cfg_attr(feature = "serde", serde(skip_serializing_if = "ValResult::is_not_requested"))]
+    #[cfg_attr(feature = "serde", serde(skip_serializing_if = "ValResult::is_not_failed"))]
     pub powergrid: ValResult<ValResourceFail> = ValResult::NotRequested,
-    #[cfg_attr(feature = "serde", serde(skip_serializing_if = "ValResult::is_not_requested"))]
+    #[cfg_attr(feature = "serde", serde(skip_serializing_if = "ValResult::is_not_failed"))]
     pub ship_limit: ValResult<ValShipLimitFail> = ValResult::NotRequested,
-    #[cfg_attr(feature = "serde", serde(skip_serializing_if = "ValResult::is_not_requested"))]
+    #[cfg_attr(feature = "serde", serde(skip_serializing_if = "ValResult::is_not_failed"))]
     pub max_group_fitted: ValResult<ValMaxGroupFail> = ValResult::NotRequested,
-    #[cfg_attr(feature = "serde", serde(skip_serializing_if = "ValResult::is_not_requested"))]
+    #[cfg_attr(feature = "serde", serde(skip_serializing_if = "ValResult::is_not_failed"))]
     pub max_group_online: ValResult<ValMaxGroupFail> = ValResult::NotRequested,
-    #[cfg_attr(feature = "serde", serde(skip_serializing_if = "ValResult::is_not_requested"))]
+    #[cfg_attr(feature = "serde", serde(skip_serializing_if = "ValResult::is_not_failed"))]
     pub max_group_active: ValResult<ValMaxGroupFail> = ValResult::NotRequested,
-    #[cfg_attr(feature = "serde", serde(skip_serializing_if = "ValResult::is_not_requested"))]
+    #[cfg_attr(feature = "serde", serde(skip_serializing_if = "ValResult::is_not_failed"))]
     pub max_type_fitted: ValResult<ValMaxTypeFail> = ValResult::NotRequested,
-    #[cfg_attr(feature = "serde", serde(skip_serializing_if = "ValResult::is_not_requested"))]
+    #[cfg_attr(feature = "serde", serde(skip_serializing_if = "ValResult::is_not_failed"))]
     pub item_vs_ship_kind: ValResult<ValItemVsShipKindFail> = ValResult::NotRequested,
     // Modules
-    #[cfg_attr(feature = "serde", serde(skip_serializing_if = "ValResult::is_not_requested"))]
+    #[cfg_attr(feature = "serde", serde(skip_serializing_if = "ValResult::is_not_failed"))]
     pub high_slot_count: ValResult<ValSlotCountFail> = ValResult::NotRequested,
-    #[cfg_attr(feature = "serde", serde(skip_serializing_if = "ValResult::is_not_requested"))]
+    #[cfg_attr(feature = "serde", serde(skip_serializing_if = "ValResult::is_not_failed"))]
     pub mid_slot_count: ValResult<ValSlotCountFail> = ValResult::NotRequested,
-    #[cfg_attr(feature = "serde", serde(skip_serializing_if = "ValResult::is_not_requested"))]
+    #[cfg_attr(feature = "serde", serde(skip_serializing_if = "ValResult::is_not_failed"))]
     pub low_slot_count: ValResult<ValSlotCountFail> = ValResult::NotRequested,
-    #[cfg_attr(feature = "serde", serde(skip_serializing_if = "ValResult::is_not_requested"))]
+    #[cfg_attr(feature = "serde", serde(skip_serializing_if = "ValResult::is_not_failed"))]
     pub turret_slot_count: ValResult<ValSlotCountFail> = ValResult::NotRequested,
-    #[cfg_attr(feature = "serde", serde(skip_serializing_if = "ValResult::is_not_requested"))]
+    #[cfg_attr(feature = "serde", serde(skip_serializing_if = "ValResult::is_not_failed"))]
     pub launcher_slot_count: ValResult<ValSlotCountFail> = ValResult::NotRequested,
-    #[cfg_attr(feature = "serde", serde(skip_serializing_if = "ValResult::is_not_requested"))]
+    #[cfg_attr(feature = "serde", serde(skip_serializing_if = "ValResult::is_not_failed"))]
     pub module_state: ValResult<ValModuleStateFail> = ValResult::NotRequested,
-    #[cfg_attr(feature = "serde", serde(skip_serializing_if = "ValResult::is_not_requested"))]
+    #[cfg_attr(feature = "serde", serde(skip_serializing_if = "ValResult::is_not_failed"))]
     pub capital_module: ValResult<ValCapitalModFail> = ValResult::NotRequested,
-    #[cfg_attr(feature = "serde", serde(skip_serializing_if = "ValResult::is_not_requested"))]
+    #[cfg_attr(feature = "serde", serde(skip_serializing_if = "ValResult::is_not_failed"))]
     pub overload_skill: ValResult<ValOverloadSkillFail> = ValResult::NotRequested,
-    #[cfg_attr(feature = "serde", serde(skip_serializing_if = "ValResult::is_not_requested"))]
+    #[cfg_attr(feature = "serde", serde(skip_serializing_if = "ValResult::is_not_failed"))]
     pub unusable_cap: ValResult<ValUnusableCapFail> = ValResult::NotRequested,
     // Charges
-    #[cfg_attr(feature = "serde", serde(skip_serializing_if = "ValResult::is_not_requested"))]
+    #[cfg_attr(feature = "serde", serde(skip_serializing_if = "ValResult::is_not_failed"))]
     pub charge_group: ValResult<ValChargeGroupFail> = ValResult::NotRequested,
-    #[cfg_attr(feature = "serde", serde(skip_serializing_if = "ValResult::is_not_requested"))]
+    #[cfg_attr(feature = "serde", serde(skip_serializing_if = "ValResult::is_not_failed"))]
     pub charge_size: ValResult<ValChargeSizeFail> = ValResult::NotRequested,
-    #[cfg_attr(feature = "serde", serde(skip_serializing_if = "ValResult::is_not_requested"))]
+    #[cfg_attr(feature = "serde", serde(skip_serializing_if = "ValResult::is_not_failed"))]
     pub charge_volume: ValResult<ValChargeVolumeFail> = ValResult::NotRequested,
     // Rigs
-    #[cfg_attr(feature = "serde", serde(skip_serializing_if = "ValResult::is_not_requested"))]
+    #[cfg_attr(feature = "serde", serde(skip_serializing_if = "ValResult::is_not_failed"))]
     pub rig_slot_count: ValResult<ValSlotCountFail> = ValResult::NotRequested,
-    #[cfg_attr(feature = "serde", serde(skip_serializing_if = "ValResult::is_not_requested"))]
+    #[cfg_attr(feature = "serde", serde(skip_serializing_if = "ValResult::is_not_failed"))]
     pub calibration: ValResult<ValResourceFail> = ValResult::NotRequested,
-    #[cfg_attr(feature = "serde", serde(skip_serializing_if = "ValResult::is_not_requested"))]
+    #[cfg_attr(feature = "serde", serde(skip_serializing_if = "ValResult::is_not_failed"))]
     pub rig_size: ValResult<ValRigSizeFail> = ValResult::NotRequested,
     // Services
-    #[cfg_attr(feature = "serde", serde(skip_serializing_if = "ValResult::is_not_requested"))]
+    #[cfg_attr(feature = "serde", serde(skip_serializing_if = "ValResult::is_not_failed"))]
     pub service_slot_count: ValResult<ValSlotCountFail> = ValResult::NotRequested,
     // T3 subsystems/stances
-    #[cfg_attr(feature = "serde", serde(skip_serializing_if = "ValResult::is_not_requested"))]
+    #[cfg_attr(feature = "serde", serde(skip_serializing_if = "ValResult::is_not_failed"))]
     pub subsystem_slot_count: ValResult<ValSlotCountFail> = ValResult::NotRequested,
-    #[cfg_attr(feature = "serde", serde(skip_serializing_if = "ValResult::is_not_requested"))]
+    #[cfg_attr(feature = "serde", serde(skip_serializing_if = "ValResult::is_not_failed"))]
     pub subsystem_slot_index: ValResult<ValSlotIndexFail> = ValResult::NotRequested,
-    #[cfg_attr(feature = "serde", serde(skip_serializing_if = "ValResult::is_not_requested"))]
+    #[cfg_attr(feature = "serde", serde(skip_serializing_if = "ValResult::is_not_failed"))]
     pub ship_stance: ValResult<ValShipStanceFail> = ValResult::NotRequested,
     // Drones
-    #[cfg_attr(feature = "serde", serde(skip_serializing_if = "ValResult::is_not_requested"))]
+    #[cfg_attr(feature = "serde", serde(skip_serializing_if = "ValResult::is_not_failed"))]
     pub drone_bay_volume: ValResult<ValResourceFail> = ValResult::NotRequested,
-    #[cfg_attr(feature = "serde", serde(skip_serializing_if = "ValResult::is_not_requested"))]
+    #[cfg_attr(feature = "serde", serde(skip_serializing_if = "ValResult::is_not_failed"))]
     pub launched_drone_count: ValResult<ValSlotCountFail> = ValResult::NotRequested,
-    #[cfg_attr(feature = "serde", serde(skip_serializing_if = "ValResult::is_not_requested"))]
+    #[cfg_attr(feature = "serde", serde(skip_serializing_if = "ValResult::is_not_failed"))]
     pub drone_bandwidth: ValResult<ValResourceFail> = ValResult::NotRequested,
-    #[cfg_attr(feature = "serde", serde(skip_serializing_if = "ValResult::is_not_requested"))]
+    #[cfg_attr(feature = "serde", serde(skip_serializing_if = "ValResult::is_not_failed"))]
     pub unlaunchable_drone_slot: ValResult<ValUnusableSlotFail> = ValResult::NotRequested,
-    #[cfg_attr(feature = "serde", serde(skip_serializing_if = "ValResult::is_not_requested"))]
+    #[cfg_attr(feature = "serde", serde(skip_serializing_if = "ValResult::is_not_failed"))]
     pub unlaunchable_drone_bandwidth: ValResult<ValUnusableResFail> = ValResult::NotRequested,
-    #[cfg_attr(feature = "serde", serde(skip_serializing_if = "ValResult::is_not_requested"))]
+    #[cfg_attr(feature = "serde", serde(skip_serializing_if = "ValResult::is_not_failed"))]
     pub drone_group: ValResult<ValDroneGroupFail> = ValResult::NotRequested,
     // Fighters
-    #[cfg_attr(feature = "serde", serde(skip_serializing_if = "ValResult::is_not_requested"))]
+    #[cfg_attr(feature = "serde", serde(skip_serializing_if = "ValResult::is_not_failed"))]
     pub fighter_bay_volume: ValResult<ValResourceFail> = ValResult::NotRequested,
-    #[cfg_attr(feature = "serde", serde(skip_serializing_if = "ValResult::is_not_requested"))]
+    #[cfg_attr(feature = "serde", serde(skip_serializing_if = "ValResult::is_not_failed"))]
     pub launched_fighter_count: ValResult<ValSlotCountFail> = ValResult::NotRequested,
-    #[cfg_attr(feature = "serde", serde(skip_serializing_if = "ValResult::is_not_requested"))]
+    #[cfg_attr(feature = "serde", serde(skip_serializing_if = "ValResult::is_not_failed"))]
     pub launched_light_fighter_count: ValResult<ValSlotCountFail> = ValResult::NotRequested,
-    #[cfg_attr(feature = "serde", serde(skip_serializing_if = "ValResult::is_not_requested"))]
+    #[cfg_attr(feature = "serde", serde(skip_serializing_if = "ValResult::is_not_failed"))]
     pub launched_heavy_fighter_count: ValResult<ValSlotCountFail> = ValResult::NotRequested,
-    #[cfg_attr(feature = "serde", serde(skip_serializing_if = "ValResult::is_not_requested"))]
+    #[cfg_attr(feature = "serde", serde(skip_serializing_if = "ValResult::is_not_failed"))]
     pub launched_support_fighter_count: ValResult<ValSlotCountFail> = ValResult::NotRequested,
-    #[cfg_attr(feature = "serde", serde(skip_serializing_if = "ValResult::is_not_requested"))]
+    #[cfg_attr(feature = "serde", serde(skip_serializing_if = "ValResult::is_not_failed"))]
     pub launched_st_light_fighter_count: ValResult<ValSlotCountFail> = ValResult::NotRequested,
-    #[cfg_attr(feature = "serde", serde(skip_serializing_if = "ValResult::is_not_requested"))]
+    #[cfg_attr(feature = "serde", serde(skip_serializing_if = "ValResult::is_not_failed"))]
     pub launched_st_heavy_fighter_count: ValResult<ValSlotCountFail> = ValResult::NotRequested,
-    #[cfg_attr(feature = "serde", serde(skip_serializing_if = "ValResult::is_not_requested"))]
+    #[cfg_attr(feature = "serde", serde(skip_serializing_if = "ValResult::is_not_failed"))]
     pub launched_st_support_fighter_count: ValResult<ValSlotCountFail> = ValResult::NotRequested,
-    #[cfg_attr(feature = "serde", serde(skip_serializing_if = "ValResult::is_not_requested"))]
+    #[cfg_attr(feature = "serde", serde(skip_serializing_if = "ValResult::is_not_failed"))]
     pub unlaunchable_fighter: ValResult<ValUnusableSlotFail> = ValResult::NotRequested,
-    #[cfg_attr(feature = "serde", serde(skip_serializing_if = "ValResult::is_not_requested"))]
+    #[cfg_attr(feature = "serde", serde(skip_serializing_if = "ValResult::is_not_failed"))]
     pub unlaunchable_light_fighter: ValResult<ValUnusableSlotFail> = ValResult::NotRequested,
-    #[cfg_attr(feature = "serde", serde(skip_serializing_if = "ValResult::is_not_requested"))]
+    #[cfg_attr(feature = "serde", serde(skip_serializing_if = "ValResult::is_not_failed"))]
     pub unlaunchable_heavy_fighter: ValResult<ValUnusableSlotFail> = ValResult::NotRequested,
-    #[cfg_attr(feature = "serde", serde(skip_serializing_if = "ValResult::is_not_requested"))]
+    #[cfg_attr(feature = "serde", serde(skip_serializing_if = "ValResult::is_not_failed"))]
     pub unlaunchable_support_fighter: ValResult<ValUnusableSlotFail> = ValResult::NotRequested,
-    #[cfg_attr(feature = "serde", serde(skip_serializing_if = "ValResult::is_not_requested"))]
+    #[cfg_attr(feature = "serde", serde(skip_serializing_if = "ValResult::is_not_failed"))]
     pub unlaunchable_st_light_fighter: ValResult<ValUnusableSlotFail> = ValResult::NotRequested,
-    #[cfg_attr(feature = "serde", serde(skip_serializing_if = "ValResult::is_not_requested"))]
+    #[cfg_attr(feature = "serde", serde(skip_serializing_if = "ValResult::is_not_failed"))]
     pub unlaunchable_st_heavy_fighter: ValResult<ValUnusableSlotFail> = ValResult::NotRequested,
-    #[cfg_attr(feature = "serde", serde(skip_serializing_if = "ValResult::is_not_requested"))]
+    #[cfg_attr(feature = "serde", serde(skip_serializing_if = "ValResult::is_not_failed"))]
     pub unlaunchable_st_support_fighter: ValResult<ValUnusableSlotFail> = ValResult::NotRequested,
-    #[cfg_attr(feature = "serde", serde(skip_serializing_if = "ValResult::is_not_requested"))]
+    #[cfg_attr(feature = "serde", serde(skip_serializing_if = "ValResult::is_not_failed"))]
     pub fighter_squad_size: ValResult<ValFighterSquadSizeFail> = ValResult::NotRequested,
     // Projection, destination side
-    #[cfg_attr(feature = "serde", serde(skip_serializing_if = "ValResult::is_not_requested"))]
+    #[cfg_attr(feature = "serde", serde(skip_serializing_if = "ValResult::is_not_failed"))]
     pub activation_blocked: ValResult<ValActivationBlockedFail> = ValResult::NotRequested,
-    #[cfg_attr(feature = "serde", serde(skip_serializing_if = "ValResult::is_not_requested"))]
+    #[cfg_attr(feature = "serde", serde(skip_serializing_if = "ValResult::is_not_failed"))]
     pub effect_stopper: ValResult<ValEffectStopperFail> = ValResult::NotRequested,
-    #[cfg_attr(feature = "serde", serde(skip_serializing_if = "ValResult::is_not_requested"))]
+    #[cfg_attr(feature = "serde", serde(skip_serializing_if = "ValResult::is_not_failed"))]
     pub cloaking_blocked: ValResult<ValCloakingBlockedFail> = ValResult::NotRequested,
     // Projection, source side
-    #[cfg_attr(feature = "serde", serde(skip_serializing_if = "ValResult::is_not_requested"))]
+    #[cfg_attr(feature = "serde", serde(skip_serializing_if = "ValResult::is_not_failed"))]
     pub projectee_filter: ValResult<ValProjFilterFail> = ValResult::NotRequested,
-    #[cfg_attr(feature = "serde", serde(skip_serializing_if = "ValResult::is_not_requested"))]
+    #[cfg_attr(feature = "serde", serde(skip_serializing_if = "ValResult::is_not_failed"))]
     pub assist_immunity: ValResult<ValProjImmunityFail> = ValResult::NotRequested,
-    #[cfg_attr(feature = "serde", serde(skip_serializing_if = "ValResult::is_not_requested"))]
+    #[cfg_attr(feature = "serde", serde(skip_serializing_if = "ValResult::is_not_failed"))]
     pub offense_immunity: ValResult<ValProjImmunityFail> = ValResult::NotRequested,
-    #[cfg_attr(feature = "serde", serde(skip_serializing_if = "ValResult::is_not_requested"))]
+    #[cfg_attr(feature = "serde", serde(skip_serializing_if = "ValResult::is_not_failed"))]
     pub resist_immunity: ValResult<ValProjImmunityFail> = ValResult::NotRequested,
     // Sec zone
-    #[cfg_attr(feature = "serde", serde(skip_serializing_if = "ValResult::is_not_requested"))]
+    #[cfg_attr(feature = "serde", serde(skip_serializing_if = "ValResult::is_not_failed"))]
     pub sec_zone_fitted: ValResult<ValItemSecZoneFail> = ValResult::NotRequested,
-    #[cfg_attr(feature = "serde", serde(skip_serializing_if = "ValResult::is_not_requested"))]
+    #[cfg_attr(feature = "serde", serde(skip_serializing_if = "ValResult::is_not_failed"))]
     pub sec_zone_online: ValResult<ValItemSecZoneFail> = ValResult::NotRequested,
-    #[cfg_attr(feature = "serde", serde(skip_serializing_if = "ValResult::is_not_requested"))]
+    #[cfg_attr(feature = "serde", serde(skip_serializing_if = "ValResult::is_not_failed"))]
     pub sec_zone_active: ValResult<ValItemSecZoneFail> = ValResult::NotRequested,
-    #[cfg_attr(feature = "serde", serde(skip_serializing_if = "ValResult::is_not_requested"))]
+    #[cfg_attr(feature = "serde", serde(skip_serializing_if = "ValResult::is_not_failed"))]
     pub sec_zone_unonlineable: ValResult<ValItemSecZoneFail> = ValResult::NotRequested,
-    #[cfg_attr(feature = "serde", serde(skip_serializing_if = "ValResult::is_not_requested"))]
+    #[cfg_attr(feature = "serde", serde(skip_serializing_if = "ValResult::is_not_failed"))]
     pub sec_zone_unactivable: ValResult<ValItemSecZoneFail> = ValResult::NotRequested,
-    #[cfg_attr(feature = "serde", serde(skip_serializing_if = "ValResult::is_not_requested"))]
+    #[cfg_attr(feature = "serde", serde(skip_serializing_if = "ValResult::is_not_failed"))]
     pub sec_zone_effect: ValResult<ValEffectSecZoneFail> = ValResult::NotRequested,
 }
 impl ValResultFit {

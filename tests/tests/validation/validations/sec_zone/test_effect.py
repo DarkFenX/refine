@@ -1,3 +1,4 @@
+from fw import check_no_field
 from fw.api import ValOptions
 
 
@@ -12,33 +13,31 @@ def test_state(client, consts):
     # Verification
     api_val = api_fit.validate(options=ValOptions(sec_zone_effect=True))
     assert api_val.passed is True
-    assert api_val.details.sec_zone_effect.status == consts.ApiValStatus.passed
+    with check_no_field():
+        api_val.details  # ruff:ignore[useless-expression]
     # Action
     api_fighter.change_fighter(abilities={eve_abil_id: True})
     # Verification
     api_val = api_fit.validate(options=ValOptions(sec_zone_effect=True))
     assert api_val.passed is False
-    assert api_val.details.sec_zone_effect.status == consts.ApiValStatus.failed
-    assert api_val.details.sec_zone_effect.fail.zone == consts.ApiSecZone.hisec
-    assert api_val.details.sec_zone_effect.fail.items == {
-        api_fighter.id: (consts.ApiValItemStatus.failed, {
-            eve_effect_id: sorted([consts.ApiSecZone.nullsec, consts.ApiSecZone.wspace, consts.ApiSecZone.hazard])})}
+    assert api_val.details.sec_zone_effect.zone == consts.ApiSecZone.hisec
+    assert api_val.details.sec_zone_effect.items == {api_fighter.id: {
+        eve_effect_id: sorted([consts.ApiSecZone.nullsec, consts.ApiSecZone.wspace, consts.ApiSecZone.hazard])}}
     # Action
     api_fighter.change_fighter(state=consts.ApiMinionState.in_bay)
     # Verification
     api_val = api_fit.validate(options=ValOptions(sec_zone_effect=True))
     assert api_val.passed is True
-    assert api_val.details.sec_zone_effect.status == consts.ApiValStatus.passed
+    with check_no_field():
+        api_val.details  # ruff:ignore[useless-expression]
     # Action
     api_fighter.change_fighter(effect_modes={eve_effect_id: consts.ApiEffMode.force_run})
     # Verification
     api_val = api_fit.validate(options=ValOptions(sec_zone_effect=True))
     assert api_val.passed is False
-    assert api_val.details.sec_zone_effect.status == consts.ApiValStatus.failed
-    assert api_val.details.sec_zone_effect.fail.zone == consts.ApiSecZone.hisec
-    assert api_val.details.sec_zone_effect.fail.items == {
-        api_fighter.id: (consts.ApiValItemStatus.failed, {
-            eve_effect_id: sorted([consts.ApiSecZone.nullsec, consts.ApiSecZone.wspace, consts.ApiSecZone.hazard])})}
+    assert api_val.details.sec_zone_effect.zone == consts.ApiSecZone.hisec
+    assert api_val.details.sec_zone_effect.items == {api_fighter.id: {
+        eve_effect_id: sorted([consts.ApiSecZone.nullsec, consts.ApiSecZone.wspace, consts.ApiSecZone.hazard])}}
 
 
 def test_sec_zones(client, consts):
@@ -64,79 +63,86 @@ def test_sec_zones(client, consts):
     # Verification
     api_val = api_fit.validate(options=ValOptions(sec_zone_effect=True))
     assert api_val.passed is False
-    assert api_val.details.sec_zone_effect.status == consts.ApiValStatus.failed
-    assert api_val.details.sec_zone_effect.fail.zone == consts.ApiSecZone.hisec
-    assert api_val.details.sec_zone_effect.fail.items == {
-        api_fighter.id: (consts.ApiValItemStatus.failed, {
-            eve_effect1_id: sorted([consts.ApiSecZone.nullsec, consts.ApiSecZone.wspace, consts.ApiSecZone.hazard]),
-            eve_effect2_id: sorted([
-                consts.ApiSecZone.lowsec,
-                consts.ApiSecZone.nullsec,
-                consts.ApiSecZone.wspace,
-                consts.ApiSecZone.hazard])})}
+    assert api_val.details.sec_zone_effect.zone == consts.ApiSecZone.hisec
+    assert api_val.details.sec_zone_effect.items == {api_fighter.id: {
+        eve_effect1_id: sorted([
+            consts.ApiSecZone.nullsec,
+            consts.ApiSecZone.wspace,
+            consts.ApiSecZone.hazard]),
+        eve_effect2_id: sorted([
+            consts.ApiSecZone.lowsec,
+            consts.ApiSecZone.nullsec,
+            consts.ApiSecZone.wspace,
+            consts.ApiSecZone.hazard])}}
     # Action
     api_sol.change(sec_zone=consts.ApiSecZone.hisec_c5)
     # Verification
     api_val = api_fit.validate(options=ValOptions(sec_zone_effect=True))
     assert api_val.passed is False
-    assert api_val.details.sec_zone_effect.status == consts.ApiValStatus.failed
-    assert api_val.details.sec_zone_effect.fail.zone == consts.ApiSecZone.hisec_c5
-    assert api_val.details.sec_zone_effect.fail.items == {
-        api_fighter.id: (consts.ApiValItemStatus.failed, {
-            eve_effect1_id: sorted([consts.ApiSecZone.nullsec, consts.ApiSecZone.wspace, consts.ApiSecZone.hazard]),
-            eve_effect2_id: sorted([
-                consts.ApiSecZone.lowsec,
-                consts.ApiSecZone.nullsec,
-                consts.ApiSecZone.wspace,
-                consts.ApiSecZone.hazard])})}
+    assert api_val.details.sec_zone_effect.zone == consts.ApiSecZone.hisec_c5
+    assert api_val.details.sec_zone_effect.items == {api_fighter.id: {
+        eve_effect1_id: sorted([
+            consts.ApiSecZone.nullsec,
+            consts.ApiSecZone.wspace,
+            consts.ApiSecZone.hazard]),
+        eve_effect2_id: sorted([
+            consts.ApiSecZone.lowsec,
+            consts.ApiSecZone.nullsec,
+            consts.ApiSecZone.wspace,
+            consts.ApiSecZone.hazard])}}
     # Action
     api_sol.change(sec_zone=consts.ApiSecZone.lowsec)
     # Verification
     api_val = api_fit.validate(options=ValOptions(sec_zone_effect=True))
     assert api_val.passed is False
-    assert api_val.details.sec_zone_effect.status == consts.ApiValStatus.failed
-    assert api_val.details.sec_zone_effect.fail.zone == consts.ApiSecZone.lowsec
-    assert api_val.details.sec_zone_effect.fail.items == {
-        api_fighter.id: (consts.ApiValItemStatus.failed, {
-            eve_effect1_id: sorted([consts.ApiSecZone.nullsec, consts.ApiSecZone.wspace, consts.ApiSecZone.hazard]),
-            eve_effect3_id: sorted([
-                consts.ApiSecZone.hisec,
-                consts.ApiSecZone.nullsec,
-                consts.ApiSecZone.wspace,
-                consts.ApiSecZone.hazard])})}
+    assert api_val.details.sec_zone_effect.zone == consts.ApiSecZone.lowsec
+    assert api_val.details.sec_zone_effect.items == {api_fighter.id: {
+        eve_effect1_id: sorted([
+            consts.ApiSecZone.nullsec,
+            consts.ApiSecZone.wspace,
+            consts.ApiSecZone.hazard]),
+        eve_effect3_id: sorted([
+            consts.ApiSecZone.hisec,
+            consts.ApiSecZone.nullsec,
+            consts.ApiSecZone.wspace,
+            consts.ApiSecZone.hazard])}}
     # Action
     api_sol.change(sec_zone=consts.ApiSecZone.lowsec_c5)
     # Verification
     api_val = api_fit.validate(options=ValOptions(sec_zone_effect=True))
     assert api_val.passed is False
-    assert api_val.details.sec_zone_effect.status == consts.ApiValStatus.failed
-    assert api_val.details.sec_zone_effect.fail.zone == consts.ApiSecZone.lowsec_c5
-    assert api_val.details.sec_zone_effect.fail.items == {
-        api_fighter.id: (consts.ApiValItemStatus.failed, {
-            eve_effect1_id: sorted([consts.ApiSecZone.nullsec, consts.ApiSecZone.wspace, consts.ApiSecZone.hazard]),
-            eve_effect3_id: sorted([
-                consts.ApiSecZone.hisec,
-                consts.ApiSecZone.nullsec,
-                consts.ApiSecZone.wspace,
-                consts.ApiSecZone.hazard])})}
+    assert api_val.details.sec_zone_effect.zone == consts.ApiSecZone.lowsec_c5
+    assert api_val.details.sec_zone_effect.items == {api_fighter.id: {
+        eve_effect1_id: sorted([
+            consts.ApiSecZone.nullsec,
+            consts.ApiSecZone.wspace,
+            consts.ApiSecZone.hazard]),
+        eve_effect3_id: sorted([
+            consts.ApiSecZone.hisec,
+            consts.ApiSecZone.nullsec,
+            consts.ApiSecZone.wspace,
+            consts.ApiSecZone.hazard])}}
     # Action
     api_sol.change(sec_zone=consts.ApiSecZone.nullsec)
     # Verification
     api_val = api_fit.validate(options=ValOptions(sec_zone_effect=True))
     assert api_val.passed is True
-    assert api_val.details.sec_zone_effect.status == consts.ApiValStatus.passed
+    with check_no_field():
+        api_val.details  # ruff:ignore[useless-expression]
     # Action
     api_sol.change(sec_zone=consts.ApiSecZone.wspace)
     # Verification
     api_val = api_fit.validate(options=ValOptions(sec_zone_effect=True))
     assert api_val.passed is True
-    assert api_val.details.sec_zone_effect.status == consts.ApiValStatus.passed
+    with check_no_field():
+        api_val.details  # ruff:ignore[useless-expression]
     # Action
     api_sol.change(sec_zone=consts.ApiSecZone.hazard)
     # Verification
     api_val = api_fit.validate(options=ValOptions(sec_zone_effect=True))
     assert api_val.passed is True
-    assert api_val.details.sec_zone_effect.status == consts.ApiValStatus.passed
+    with check_no_field():
+        api_val.details  # ruff:ignore[useless-expression]
 
 
 def test_known_failures(client, consts):
@@ -169,48 +175,24 @@ def test_known_failures(client, consts):
     # Verification
     api_val = api_fit.validate(options=ValOptions(sec_zone_effect=[api_fighter1.id]))
     assert api_val.passed is False
-    assert api_val.details.sec_zone_effect.status == consts.ApiValStatus.failed
-    assert api_val.details.sec_zone_effect.fail.zone == consts.ApiSecZone.hisec
-    assert api_val.details.sec_zone_effect.fail.items == {
-        api_fighter1.id: (consts.ApiValItemStatus.kf, {
-            eve_effect1_id: sorted([consts.ApiSecZone.nullsec, consts.ApiSecZone.wspace, consts.ApiSecZone.hazard])}),
-        api_fighter2.id: (consts.ApiValItemStatus.failed, {
-            eve_effect1_id: sorted([consts.ApiSecZone.nullsec, consts.ApiSecZone.wspace, consts.ApiSecZone.hazard]),
-            eve_effect2_id: sorted([consts.ApiSecZone.nullsec, consts.ApiSecZone.wspace, consts.ApiSecZone.hazard]),
-            eve_effect3_id: sorted([consts.ApiSecZone.nullsec, consts.ApiSecZone.wspace, consts.ApiSecZone.hazard])})}
+    assert api_val.details.sec_zone_effect.zone == consts.ApiSecZone.hisec
+    assert api_val.details.sec_zone_effect.items == {api_fighter2.id: {
+        eve_effect1_id: sorted([consts.ApiSecZone.nullsec, consts.ApiSecZone.wspace, consts.ApiSecZone.hazard]),
+        eve_effect2_id: sorted([consts.ApiSecZone.nullsec, consts.ApiSecZone.wspace, consts.ApiSecZone.hazard]),
+        eve_effect3_id: sorted([consts.ApiSecZone.nullsec, consts.ApiSecZone.wspace, consts.ApiSecZone.hazard])}}
     api_val = api_fit.validate(options=ValOptions(sec_zone_effect=[api_fighter2.id]))
     assert api_val.passed is False
-    assert api_val.details.sec_zone_effect.status == consts.ApiValStatus.failed
-    assert api_val.details.sec_zone_effect.fail.zone == consts.ApiSecZone.hisec
-    assert api_val.details.sec_zone_effect.fail.items == {
-        api_fighter1.id: (consts.ApiValItemStatus.failed, {
-            eve_effect1_id: sorted([consts.ApiSecZone.nullsec, consts.ApiSecZone.wspace, consts.ApiSecZone.hazard])}),
-        api_fighter2.id: (consts.ApiValItemStatus.kf, {
-            eve_effect1_id: sorted([consts.ApiSecZone.nullsec, consts.ApiSecZone.wspace, consts.ApiSecZone.hazard]),
-            eve_effect2_id: sorted([consts.ApiSecZone.nullsec, consts.ApiSecZone.wspace, consts.ApiSecZone.hazard]),
-            eve_effect3_id: sorted([consts.ApiSecZone.nullsec, consts.ApiSecZone.wspace, consts.ApiSecZone.hazard])})}
+    assert api_val.details.sec_zone_effect.zone == consts.ApiSecZone.hisec
+    assert api_val.details.sec_zone_effect.items == {api_fighter1.id: {
+        eve_effect1_id: sorted([consts.ApiSecZone.nullsec, consts.ApiSecZone.wspace, consts.ApiSecZone.hazard])}}
     api_val = api_fit.validate(options=ValOptions(sec_zone_effect=[api_fighter1.id, api_fighter2.id]))
     assert api_val.passed is True
-    assert api_val.details.sec_zone_effect.status == consts.ApiValStatus.passed_kfs
-    assert api_val.details.sec_zone_effect.fail.zone == consts.ApiSecZone.hisec
-    assert api_val.details.sec_zone_effect.fail.items == {
-        api_fighter1.id: (consts.ApiValItemStatus.kf, {
-            eve_effect1_id: sorted([consts.ApiSecZone.nullsec, consts.ApiSecZone.wspace, consts.ApiSecZone.hazard])}),
-        api_fighter2.id: (consts.ApiValItemStatus.kf, {
-            eve_effect1_id: sorted([consts.ApiSecZone.nullsec, consts.ApiSecZone.wspace, consts.ApiSecZone.hazard]),
-            eve_effect2_id: sorted([consts.ApiSecZone.nullsec, consts.ApiSecZone.wspace, consts.ApiSecZone.hazard]),
-            eve_effect3_id: sorted([consts.ApiSecZone.nullsec, consts.ApiSecZone.wspace, consts.ApiSecZone.hazard])})}
+    with check_no_field():
+        api_val.details  # ruff:ignore[useless-expression]
     api_val = api_fit.validate(options=ValOptions(sec_zone_effect=[api_fighter1.id, api_other.id, api_fighter2.id]))
     assert api_val.passed is True
-    assert api_val.details.sec_zone_effect.status == consts.ApiValStatus.passed_kfs
-    assert api_val.details.sec_zone_effect.fail.zone == consts.ApiSecZone.hisec
-    assert api_val.details.sec_zone_effect.fail.items == {
-        api_fighter1.id: (consts.ApiValItemStatus.kf, {
-            eve_effect1_id: sorted([consts.ApiSecZone.nullsec, consts.ApiSecZone.wspace, consts.ApiSecZone.hazard])}),
-        api_fighter2.id: (consts.ApiValItemStatus.kf, {
-            eve_effect1_id: sorted([consts.ApiSecZone.nullsec, consts.ApiSecZone.wspace, consts.ApiSecZone.hazard]),
-            eve_effect2_id: sorted([consts.ApiSecZone.nullsec, consts.ApiSecZone.wspace, consts.ApiSecZone.hazard]),
-            eve_effect3_id: sorted([consts.ApiSecZone.nullsec, consts.ApiSecZone.wspace, consts.ApiSecZone.hazard])})}
+    with check_no_field():
+        api_val.details  # ruff:ignore[useless-expression]
 
 
 def test_not_loaded(client, consts):
@@ -222,4 +204,5 @@ def test_not_loaded(client, consts):
     # Verification
     api_val = api_fit.validate(options=ValOptions(sec_zone_effect=True))
     assert api_val.passed is True
-    assert api_val.details.sec_zone_effect.status == consts.ApiValStatus.passed
+    with check_no_field():
+        api_val.details  # ruff:ignore[useless-expression]

@@ -3,7 +3,7 @@ Main use-case of this validation is not to allow cap-restricted modules on some 
 or ewar modules on sieged FAXes.
 """
 
-from fw import Muta, approx
+from fw import Muta, approx, check_no_field
 from fw.api import ValOptions
 
 
@@ -25,15 +25,14 @@ def test_state(client, consts):
     # Verification - validation checks even modules which are not active
     api_val = api_fit.validate(options=ValOptions(unusable_cap=True))
     assert api_val.passed is False
-    assert api_val.details.unusable_cap.status == consts.ApiValStatus.failed
-    assert api_val.details.unusable_cap.fail == (approx(750), {
-        api_module1.id: (consts.ApiValItemStatus.failed, approx(1000))})
+    assert api_val.details.unusable_cap == (approx(750), {api_module1.id: approx(1000)})
     # Action
     api_module1.remove()
     # Verification
     api_val = api_fit.validate(options=ValOptions(unusable_cap=True))
     assert api_val.passed is True
-    assert api_val.details.unusable_cap.status == consts.ApiValStatus.passed
+    with check_no_field():
+        api_val.details  # ruff:ignore[useless-expression]
 
 
 def test_multiple_items(client, consts):
@@ -52,10 +51,7 @@ def test_multiple_items(client, consts):
     # Verification
     api_val = api_fit.validate(options=ValOptions(unusable_cap=True))
     assert api_val.passed is False
-    assert api_val.details.unusable_cap.status == consts.ApiValStatus.failed
-    assert api_val.details.unusable_cap.fail == (approx(750), {
-        api_module1.id: (consts.ApiValItemStatus.failed, approx(1000)),
-        api_module2.id: (consts.ApiValItemStatus.failed, approx(1200))})
+    assert api_val.details.unusable_cap == (approx(750), {api_module1.id: approx(1000), api_module2.id: approx(1200)})
 
 
 def test_multiple_effects(client, consts):
@@ -77,9 +73,7 @@ def test_multiple_effects(client, consts):
     # Verification - highest value is used
     api_val = api_fit.validate(options=ValOptions(unusable_cap=True))
     assert api_val.passed is False
-    assert api_val.details.unusable_cap.status == consts.ApiValStatus.failed
-    assert api_val.details.unusable_cap.fail == (approx(750), {
-        api_module.id: (consts.ApiValItemStatus.failed, approx(1200))})
+    assert api_val.details.unusable_cap == (approx(750), {api_module.id: approx(1200)})
 
 
 def test_asb(client, consts):
@@ -116,15 +110,14 @@ def test_asb(client, consts):
     # Verification - validation passes even if non-charged cap use is more than ship has
     api_val = api_fit.validate(options=ValOptions(unusable_cap=True))
     assert api_val.passed is True
-    assert api_val.details.unusable_cap.status == consts.ApiValStatus.passed
+    with check_no_field():
+        api_val.details  # ruff:ignore[useless-expression]
     # Action
     api_module.change_module(charge_type_id=None)
     # Verification - without charge validation fails
     api_val = api_fit.validate(options=ValOptions(unusable_cap=True))
     assert api_val.passed is False
-    assert api_val.details.unusable_cap.status == consts.ApiValStatus.failed
-    assert api_val.details.unusable_cap.fail == (approx(750), {
-        api_module.id: (consts.ApiValItemStatus.failed, approx(1320))})
+    assert api_val.details.unusable_cap == (approx(750), {api_module.id: approx(1320)})
 
 
 def test_known_failures(client, consts):
@@ -145,28 +138,18 @@ def test_known_failures(client, consts):
     # Verification
     api_val = api_fit.validate(options=ValOptions(unusable_cap=[api_module1.id]))
     assert api_val.passed is False
-    assert api_val.details.unusable_cap.status == consts.ApiValStatus.failed
-    assert api_val.details.unusable_cap.fail == (approx(750), {
-        api_module1.id: (consts.ApiValItemStatus.kf, approx(1000)),
-        api_module2.id: (consts.ApiValItemStatus.failed, approx(1200))})
+    assert api_val.details.unusable_cap == (approx(750), {api_module2.id: approx(1200)})
     api_val = api_fit.validate(options=ValOptions(unusable_cap=[api_module2.id]))
     assert api_val.passed is False
-    assert api_val.details.unusable_cap.status == consts.ApiValStatus.failed
-    assert api_val.details.unusable_cap.fail == (approx(750), {
-        api_module1.id: (consts.ApiValItemStatus.failed, approx(1000)),
-        api_module2.id: (consts.ApiValItemStatus.kf, approx(1200))})
+    assert api_val.details.unusable_cap == (approx(750), {api_module1.id: approx(1000)})
     api_val = api_fit.validate(options=ValOptions(unusable_cap=[api_module1.id, api_module2.id]))
     assert api_val.passed is True
-    assert api_val.details.unusable_cap.status == consts.ApiValStatus.passed_kfs
-    assert api_val.details.unusable_cap.fail == (approx(750), {
-        api_module1.id: (consts.ApiValItemStatus.kf, approx(1000)),
-        api_module2.id: (consts.ApiValItemStatus.kf, approx(1200))})
+    with check_no_field():
+        api_val.details  # ruff:ignore[useless-expression]
     api_val = api_fit.validate(options=ValOptions(unusable_cap=[api_module1.id, api_other.id, api_module2.id]))
     assert api_val.passed is True
-    assert api_val.details.unusable_cap.status == consts.ApiValStatus.passed_kfs
-    assert api_val.details.unusable_cap.fail == (approx(750), {
-        api_module1.id: (consts.ApiValItemStatus.kf, approx(1000)),
-        api_module2.id: (consts.ApiValItemStatus.kf, approx(1200))})
+    with check_no_field():
+        api_val.details  # ruff:ignore[useless-expression]
 
 
 def test_negative_use(client, consts):
@@ -183,7 +166,8 @@ def test_negative_use(client, consts):
     # Verification
     api_val = api_fit.validate(options=ValOptions(unusable_cap=True))
     assert api_val.passed is True
-    assert api_val.details.unusable_cap.status == consts.ApiValStatus.passed
+    with check_no_field():
+        api_val.details  # ruff:ignore[useless-expression]
 
 
 def test_modified_use(client, consts):
@@ -212,23 +196,20 @@ def test_modified_use(client, consts):
     # Verification
     api_val = api_fit.validate(options=ValOptions(unusable_cap=True))
     assert api_val.passed is False
-    assert api_val.details.unusable_cap.status == consts.ApiValStatus.failed
-    assert api_val.details.unusable_cap.fail == (approx(750), {
-        api_module.id: (consts.ApiValItemStatus.failed, approx(1000))})
+    assert api_val.details.unusable_cap == (approx(750), {api_module.id: approx(1000)})
     # Action
     api_implant = api_fit.add_implant(type_id=eve_implant_id)
     # Verification
     api_val = api_fit.validate(options=ValOptions(unusable_cap=True))
     assert api_val.passed is True
-    assert api_val.details.unusable_cap.status == consts.ApiValStatus.passed
+    with check_no_field():
+        api_val.details  # ruff:ignore[useless-expression]
     # Action
     api_implant.remove()
     # Verification
     api_val = api_fit.validate(options=ValOptions(unusable_cap=True))
     assert api_val.passed is False
-    assert api_val.details.unusable_cap.status == consts.ApiValStatus.failed
-    assert api_val.details.unusable_cap.fail == (approx(750), {
-        api_module.id: (consts.ApiValItemStatus.failed, approx(1000))})
+    assert api_val.details.unusable_cap == (approx(750), {api_module.id: approx(1000)})
 
 
 def test_modified_max(client, consts):
@@ -257,23 +238,20 @@ def test_modified_max(client, consts):
     # Verification
     api_val = api_fit.validate(options=ValOptions(unusable_cap=True))
     assert api_val.passed is False
-    assert api_val.details.unusable_cap.status == consts.ApiValStatus.failed
-    assert api_val.details.unusable_cap.fail == (approx(750), {
-        api_module.id: (consts.ApiValItemStatus.failed, approx(1000))})
+    assert api_val.details.unusable_cap == (approx(750), {api_module.id: approx(1000)})
     # Action
     api_implant = api_fit.add_implant(type_id=eve_implant_id)
     # Verification
     api_val = api_fit.validate(options=ValOptions(unusable_cap=True))
     assert api_val.passed is True
-    assert api_val.details.unusable_cap.status == consts.ApiValStatus.passed
+    with check_no_field():
+        api_val.details  # ruff:ignore[useless-expression]
     # Action
     api_implant.remove()
     # Verification
     api_val = api_fit.validate(options=ValOptions(unusable_cap=True))
     assert api_val.passed is False
-    assert api_val.details.unusable_cap.status == consts.ApiValStatus.failed
-    assert api_val.details.unusable_cap.fail == (approx(750), {
-        api_module.id: (consts.ApiValItemStatus.failed, approx(1000))})
+    assert api_val.details.unusable_cap == (approx(750), {api_module.id: approx(1000)})
 
 
 def test_mutation_attr(client, consts):
@@ -301,31 +279,26 @@ def test_mutation_attr(client, consts):
     # Verification
     api_val = api_fit.validate(options=ValOptions(unusable_cap=True))
     assert api_val.passed is False
-    assert api_val.details.unusable_cap.status == consts.ApiValStatus.failed
-    assert api_val.details.unusable_cap.fail == (approx(750), {
-        api_module.id: (consts.ApiValItemStatus.failed, approx(1200))})
+    assert api_val.details.unusable_cap == (approx(750), {api_module.id: approx(1200)})
     # Action
     api_module.change_module(mutation=(eve_mutator_id, {eve_use_attr_id: Muta.roll_to_api(val=0.9)}))
     # Verification
     api_val = api_fit.validate(options=ValOptions(unusable_cap=True))
     assert api_val.passed is False
-    assert api_val.details.unusable_cap.status == consts.ApiValStatus.failed
-    assert api_val.details.unusable_cap.fail == (approx(750), {
-        api_module.id: (consts.ApiValItemStatus.failed, approx(1620))})
+    assert api_val.details.unusable_cap == (approx(750), {api_module.id: approx(1620)})
     # Action
     api_module.change_module(mutation={eve_use_attr_id: Muta.roll_to_api(val=0.2)})
     # Verification
     api_val = api_fit.validate(options=ValOptions(unusable_cap=True))
     assert api_val.passed is True
-    assert api_val.details.unusable_cap.status == consts.ApiValStatus.passed
+    with check_no_field():
+        api_val.details  # ruff:ignore[useless-expression]
     # Action
     api_module.change_module(mutation=None)
     # Verification
     api_val = api_fit.validate(options=ValOptions(unusable_cap=True))
     assert api_val.passed is False
-    assert api_val.details.unusable_cap.status == consts.ApiValStatus.failed
-    assert api_val.details.unusable_cap.fail == (approx(750), {
-        api_module.id: (consts.ApiValItemStatus.failed, approx(1200))})
+    assert api_val.details.unusable_cap == (approx(750), {api_module.id: approx(1200)})
 
 
 def test_mutation_effect(client, consts):
@@ -347,21 +320,21 @@ def test_mutation_effect(client, consts):
     # Verification
     api_val = api_fit.validate(options=ValOptions(unusable_cap=True))
     assert api_val.passed is True
-    assert api_val.details.unusable_cap.status == consts.ApiValStatus.passed
+    with check_no_field():
+        api_val.details  # ruff:ignore[useless-expression]
     # Action
     api_module.change_module(mutation=eve_mutator_id)
     # Verification
     api_val = api_fit.validate(options=ValOptions(unusable_cap=True))
     assert api_val.passed is False
-    assert api_val.details.unusable_cap.status == consts.ApiValStatus.failed
-    assert api_val.details.unusable_cap.fail == (approx(750), {
-        api_module.id: (consts.ApiValItemStatus.failed, approx(1000))})
+    assert api_val.details.unusable_cap == (approx(750), {api_module.id: approx(1000)})
     # Action
     api_module.change_module(mutation=None)
     # Verification
     api_val = api_fit.validate(options=ValOptions(unusable_cap=True))
     assert api_val.passed is True
-    assert api_val.details.unusable_cap.status == consts.ApiValStatus.passed
+    with check_no_field():
+        api_val.details  # ruff:ignore[useless-expression]
 
 
 def test_no_ship(client, consts):
@@ -376,7 +349,8 @@ def test_no_ship(client, consts):
     # Verification
     api_val = api_fit.validate(options=ValOptions(unusable_cap=True))
     assert api_val.passed is True
-    assert api_val.details.unusable_cap.status == consts.ApiValStatus.passed
+    with check_no_field():
+        api_val.details  # ruff:ignore[useless-expression]
 
 
 def test_no_attr_use(client, consts):
@@ -393,7 +367,8 @@ def test_no_attr_use(client, consts):
     # Verification - when use attribute doesn't exist, use is assumed to be 0
     api_val = api_fit.validate(options=ValOptions(unusable_cap=True))
     assert api_val.passed is True
-    assert api_val.details.unusable_cap.status == consts.ApiValStatus.passed
+    with check_no_field():
+        api_val.details  # ruff:ignore[useless-expression]
 
 
 def test_no_attr_max(client, consts):
@@ -410,9 +385,7 @@ def test_no_attr_max(client, consts):
     # Verification - no cap amount attribute is considered as its value of 0
     api_val = api_fit.validate(options=ValOptions(unusable_cap=True))
     assert api_val.passed is False
-    assert api_val.details.unusable_cap.status == consts.ApiValStatus.failed
-    assert api_val.details.unusable_cap.fail == (approx(0), {
-        api_module.id: (consts.ApiValItemStatus.failed, approx(100))})
+    assert api_val.details.unusable_cap == (approx(0), {api_module.id: approx(100)})
 
 
 def test_not_loaded_ship(client, consts):
@@ -429,7 +402,8 @@ def test_not_loaded_ship(client, consts):
     # Verification
     api_val = api_fit.validate(options=ValOptions(unusable_cap=True))
     assert api_val.passed is True
-    assert api_val.details.unusable_cap.status == consts.ApiValStatus.passed
+    with check_no_field():
+        api_val.details  # ruff:ignore[useless-expression]
 
 
 def test_not_loaded_item(client, consts):
@@ -444,7 +418,8 @@ def test_not_loaded_item(client, consts):
     # Verification
     api_val = api_fit.validate(options=ValOptions(unusable_cap=True))
     assert api_val.passed is True
-    assert api_val.details.unusable_cap.status == consts.ApiValStatus.passed
+    with check_no_field():
+        api_val.details  # ruff:ignore[useless-expression]
 
 
 def test_criterion_item_kind(client, consts):
@@ -484,4 +459,5 @@ def test_criterion_item_kind(client, consts):
     assert len(api_fighter.autocharges) == 1
     api_val = api_fit.validate(options=ValOptions(unusable_cap=True))
     assert api_val.passed is True
-    assert api_val.details.unusable_cap.status == consts.ApiValStatus.passed
+    with check_no_field():
+        api_val.details  # ruff:ignore[useless-expression]

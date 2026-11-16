@@ -1,4 +1,4 @@
-from fw import approx
+from fw import approx, check_no_field
 from fw.api import ValOptions
 
 
@@ -14,27 +14,28 @@ def test_bundled(client, consts):
     # Verification
     api_val = api_fit.validate(options=ValOptions(charge_size=True))
     assert api_val.passed is True
-    assert api_val.details.charge_size.status == consts.ApiValStatus.passed
+    with check_no_field():
+        api_val.details  # ruff:ignore[useless-expression]
     # Action
     api_module1.remove()
     # Verification
     api_val = api_fit.validate(options=ValOptions(charge_size=True))
     assert api_val.passed is True
-    assert api_val.details.charge_size.status == consts.ApiValStatus.passed
+    with check_no_field():
+        api_val.details  # ruff:ignore[useless-expression]
     # Action
     api_module2 = api_fit.add_module(type_id=eve_module_id, charge_type_id=eve_charge2_id)
     # Verification
     api_val = api_fit.validate(options=ValOptions(charge_size=True))
     assert api_val.passed is False
-    assert api_val.details.charge_size.status == consts.ApiValStatus.failed
-    assert api_val.details.charge_size.fail == {
-        api_module2.charge.id: (consts.ApiValItemStatus.failed, api_module2.id, 3, 2)}
+    assert api_val.details.charge_size == {api_module2.charge.id: (api_module2.id, 3, 2)}
     # Action
     api_module2.remove()
     # Verification
     api_val = api_fit.validate(options=ValOptions(charge_size=True))
     assert api_val.passed is True
-    assert api_val.details.charge_size.status == consts.ApiValStatus.passed
+    with check_no_field():
+        api_val.details  # ruff:ignore[useless-expression]
 
 
 def test_separate(client, consts):
@@ -49,27 +50,28 @@ def test_separate(client, consts):
     # Verification
     api_val = api_fit.validate(options=ValOptions(charge_size=True))
     assert api_val.passed is True
-    assert api_val.details.charge_size.status == consts.ApiValStatus.passed
+    with check_no_field():
+        api_val.details  # ruff:ignore[useless-expression]
     # Action
     api_module.change_module(charge_type_id=eve_charge1_id)
     # Verification
     api_val = api_fit.validate(options=ValOptions(charge_size=True))
     assert api_val.passed is True
-    assert api_val.details.charge_size.status == consts.ApiValStatus.passed
+    with check_no_field():
+        api_val.details  # ruff:ignore[useless-expression]
     # Action
     api_module.change_module(charge_type_id=eve_charge2_id)
     # Verification
     api_val = api_fit.validate(options=ValOptions(charge_size=True))
     assert api_val.passed is False
-    assert api_val.details.charge_size.status == consts.ApiValStatus.failed
-    assert api_val.details.charge_size.fail == {
-        api_module.charge.id: (consts.ApiValItemStatus.failed, api_module.id, 3, 2)}
+    assert api_val.details.charge_size == {api_module.charge.id: (api_module.id, 3, 2)}
     # Action
     api_module.change_module(charge_type_id=None)
     # Verification
     api_val = api_fit.validate(options=ValOptions(charge_size=True))
     assert api_val.passed is True
-    assert api_val.details.charge_size.status == consts.ApiValStatus.passed
+    with check_no_field():
+        api_val.details  # ruff:ignore[useless-expression]
 
 
 def test_known_failures(client, consts):
@@ -88,29 +90,19 @@ def test_known_failures(client, consts):
     # Verification
     api_val = api_fit.validate(options=ValOptions(charge_size=[api_module2.charge.id]))
     assert api_val.passed is False
-    assert api_val.details.charge_size.status == consts.ApiValStatus.failed
-    assert api_val.details.charge_size.fail == {
-        api_module2.charge.id: (consts.ApiValItemStatus.kf, api_module2.id, 3, 2),
-        api_module3.charge.id: (consts.ApiValItemStatus.failed, api_module3.id, 3, 2)}
+    assert api_val.details.charge_size == {api_module3.charge.id: (api_module3.id, 3, 2)}
     api_val = api_fit.validate(options=ValOptions(charge_size=[api_module3.charge.id]))
     assert api_val.passed is False
-    assert api_val.details.charge_size.status == consts.ApiValStatus.failed
-    assert api_val.details.charge_size.fail == {
-        api_module2.charge.id: (consts.ApiValItemStatus.failed, api_module2.id, 3, 2),
-        api_module3.charge.id: (consts.ApiValItemStatus.kf, api_module3.id, 3, 2)}
+    assert api_val.details.charge_size == {api_module2.charge.id: (api_module2.id, 3, 2)}
     api_val = api_fit.validate(options=ValOptions(charge_size=[api_module2.charge.id, api_module3.charge.id]))
     assert api_val.passed is True
-    assert api_val.details.charge_size.status == consts.ApiValStatus.passed_kfs
-    assert api_val.details.charge_size.fail == {
-        api_module2.charge.id: (consts.ApiValItemStatus.kf, api_module2.id, 3, 2),
-        api_module3.charge.id: (consts.ApiValItemStatus.kf, api_module3.id, 3, 2)}
+    with check_no_field():
+        api_val.details  # ruff:ignore[useless-expression]
     api_val = api_fit.validate(options=ValOptions(
         charge_size=[api_module2.charge.id, api_other.id, api_module3.charge.id]))
     assert api_val.passed is True
-    assert api_val.details.charge_size.status == consts.ApiValStatus.passed_kfs
-    assert api_val.details.charge_size.fail == {
-        api_module2.charge.id: (consts.ApiValItemStatus.kf, api_module2.id, 3, 2),
-        api_module3.charge.id: (consts.ApiValItemStatus.kf, api_module3.id, 3, 2)}
+    with check_no_field():
+        api_val.details  # ruff:ignore[useless-expression]
 
 
 def test_rounding(client, consts):
@@ -125,9 +117,7 @@ def test_rounding(client, consts):
     # Verification
     api_val = api_fit.validate(options=ValOptions(charge_size=True))
     assert api_val.passed is False
-    assert api_val.details.charge_size.status == consts.ApiValStatus.failed
-    assert api_val.details.charge_size.fail == {
-        api_module.charge.id: (consts.ApiValItemStatus.failed, api_module.id, 2.01, 2)}
+    assert api_val.details.charge_size == {api_module.charge.id: (api_module.id, 2.01, 2)}
 
 
 def test_switch_type_id_module(client, consts):
@@ -143,29 +133,27 @@ def test_switch_type_id_module(client, consts):
     # Verification
     api_val = api_fit.validate(options=ValOptions(charge_size=True))
     assert api_val.passed is True
-    assert api_val.details.charge_size.status == consts.ApiValStatus.passed
+    with check_no_field():
+        api_val.details  # ruff:ignore[useless-expression]
     # Action
     api_module.change_module(type_id=eve_module2_id)
     # Verification
     api_val = api_fit.validate(options=ValOptions(charge_size=True))
     assert api_val.passed is False
-    assert api_val.details.charge_size.status == consts.ApiValStatus.failed
-    assert api_val.details.charge_size.fail == {
-        api_module.charge.id: (consts.ApiValItemStatus.failed, api_module.id, 2, 3)}
+    assert api_val.details.charge_size == {api_module.charge.id: (api_module.id, 2, 3)}
     # Action
     api_module.change_module(type_id=eve_module3_id)
     # Verification
     api_val = api_fit.validate(options=ValOptions(charge_size=True))
     assert api_val.passed is True
-    assert api_val.details.charge_size.status == consts.ApiValStatus.passed
+    with check_no_field():
+        api_val.details  # ruff:ignore[useless-expression]
     # Action
     api_module.change_module(type_id=eve_module2_id)
     # Verification
     api_val = api_fit.validate(options=ValOptions(charge_size=True))
     assert api_val.passed is False
-    assert api_val.details.charge_size.status == consts.ApiValStatus.failed
-    assert api_val.details.charge_size.fail == {
-        api_module.charge.id: (consts.ApiValItemStatus.failed, api_module.id, 2, 3)}
+    assert api_val.details.charge_size == {api_module.charge.id: (api_module.id, 2, 3)}
 
 
 def test_switch_type_id_charge(client, consts):
@@ -181,29 +169,27 @@ def test_switch_type_id_charge(client, consts):
     # Verification
     api_val = api_fit.validate(options=ValOptions(charge_size=True))
     assert api_val.passed is True
-    assert api_val.details.charge_size.status == consts.ApiValStatus.passed
+    with check_no_field():
+        api_val.details  # ruff:ignore[useless-expression]
     # Action
     api_module.charge.change_charge(type_id=eve_charge2_id)
     # Verification
     api_val = api_fit.validate(options=ValOptions(charge_size=True))
     assert api_val.passed is False
-    assert api_val.details.charge_size.status == consts.ApiValStatus.failed
-    assert api_val.details.charge_size.fail == {
-        api_module.charge.id: (consts.ApiValItemStatus.failed, api_module.id, 3, 2)}
+    assert api_val.details.charge_size == {api_module.charge.id: (api_module.id, 3, 2)}
     # Action
     api_module.charge.change_charge(type_id=eve_charge3_id)
     # Verification
     api_val = api_fit.validate(options=ValOptions(charge_size=True))
     assert api_val.passed is True
-    assert api_val.details.charge_size.status == consts.ApiValStatus.passed
+    with check_no_field():
+        api_val.details  # ruff:ignore[useless-expression]
     # Action
     api_module.charge.change_charge(type_id=eve_charge2_id)
     # Verification
     api_val = api_fit.validate(options=ValOptions(charge_size=True))
     assert api_val.passed is False
-    assert api_val.details.charge_size.status == consts.ApiValStatus.failed
-    assert api_val.details.charge_size.fail == {
-        api_module.charge.id: (consts.ApiValItemStatus.failed, api_module.id, 3, 2)}
+    assert api_val.details.charge_size == {api_module.charge.id: (api_module.id, 3, 2)}
 
 
 def test_modified_module(client, consts):
@@ -231,32 +217,30 @@ def test_modified_module(client, consts):
     assert api_module.update().attrs[eve_size_attr_id].modified == approx(2)
     api_val = api_fit.validate(options=ValOptions(charge_size=True))
     assert api_val.passed is False
-    assert api_val.details.charge_size.status == consts.ApiValStatus.failed
-    assert api_val.details.charge_size.fail == {
-        api_module.charge.id: (consts.ApiValItemStatus.failed, api_module.id, 2, 1)}
+    assert api_val.details.charge_size == {api_module.charge.id: (api_module.id, 2, 1)}
     # Action
     api_module.change_module(charge_type_id=eve_charge2_id)
     # Verification
     assert api_module.update().attrs[eve_size_attr_id].modified == approx(2)
     api_val = api_fit.validate(options=ValOptions(charge_size=True))
     assert api_val.passed is True
-    assert api_val.details.charge_size.status == consts.ApiValStatus.passed
+    with check_no_field():
+        api_val.details  # ruff:ignore[useless-expression]
     # Action
     api_implant.remove()
     # Verification
     assert api_module.update().attrs[eve_size_attr_id].modified == approx(1)
     api_val = api_fit.validate(options=ValOptions(charge_size=True))
     assert api_val.passed is True
-    assert api_val.details.charge_size.status == consts.ApiValStatus.passed
+    with check_no_field():
+        api_val.details  # ruff:ignore[useless-expression]
     # Action
     api_module.change_module(charge_type_id=eve_charge1_id)
     # Verification
     assert api_module.update().attrs[eve_size_attr_id].modified == approx(1)
     api_val = api_fit.validate(options=ValOptions(charge_size=True))
     assert api_val.passed is False
-    assert api_val.details.charge_size.status == consts.ApiValStatus.failed
-    assert api_val.details.charge_size.fail == {
-        api_module.charge.id: (consts.ApiValItemStatus.failed, api_module.id, 2, 1)}
+    assert api_val.details.charge_size == {api_module.charge.id: (api_module.id, 2, 1)}
 
 
 def test_modified_charge(client, consts):
@@ -284,32 +268,30 @@ def test_modified_charge(client, consts):
     assert api_module.charge.update().attrs[eve_size_attr_id].modified == approx(1)
     api_val = api_fit.validate(options=ValOptions(charge_size=True))
     assert api_val.passed is False
-    assert api_val.details.charge_size.status == consts.ApiValStatus.failed
-    assert api_val.details.charge_size.fail == {
-        api_module.charge.id: (consts.ApiValItemStatus.failed, api_module.id, 2, 1)}
+    assert api_val.details.charge_size == {api_module.charge.id: (api_module.id, 2, 1)}
     # Action
     api_module.change_module(charge_type_id=eve_charge2_id)
     # Verification
     assert api_module.charge.update().attrs[eve_size_attr_id].modified == approx(1)
     api_val = api_fit.validate(options=ValOptions(charge_size=True))
     assert api_val.passed is True
-    assert api_val.details.charge_size.status == consts.ApiValStatus.passed
+    with check_no_field():
+        api_val.details  # ruff:ignore[useless-expression]
     # Action
     api_implant.remove()
     # Verification
     assert api_module.charge.update().attrs[eve_size_attr_id].modified == approx(1)
     api_val = api_fit.validate(options=ValOptions(charge_size=True))
     assert api_val.passed is True
-    assert api_val.details.charge_size.status == consts.ApiValStatus.passed
+    with check_no_field():
+        api_val.details  # ruff:ignore[useless-expression]
     # Action
     api_module.change_module(charge_type_id=eve_charge1_id)
     # Verification
     assert api_module.charge.update().attrs[eve_size_attr_id].modified == approx(2)
     api_val = api_fit.validate(options=ValOptions(charge_size=True))
     assert api_val.passed is False
-    assert api_val.details.charge_size.status == consts.ApiValStatus.failed
-    assert api_val.details.charge_size.fail == {
-        api_module.charge.id: (consts.ApiValItemStatus.failed, api_module.id, 2, 1)}
+    assert api_val.details.charge_size == {api_module.charge.id: (api_module.id, 2, 1)}
 
 
 def test_mutation_module(client, consts):
@@ -326,30 +308,28 @@ def test_mutation_module(client, consts):
     # Verification
     api_val = api_fit.validate(options=ValOptions(charge_size=True))
     assert api_val.passed is True
-    assert api_val.details.charge_size.status == consts.ApiValStatus.passed
+    with check_no_field():
+        api_val.details  # ruff:ignore[useless-expression]
     # Action
     api_module.change_module(mutation=eve_mutator_id)
     # Verification
     api_val = api_fit.validate(options=ValOptions(charge_size=True))
     assert api_val.passed is False
-    assert api_val.details.charge_size.status == consts.ApiValStatus.failed
-    assert api_val.details.charge_size.fail == {
-        api_module.charge.id: (consts.ApiValItemStatus.failed, api_module.id, 1, 2)}
+    assert api_val.details.charge_size == {api_module.charge.id: (api_module.id, 1, 2)}
     # Action
     api_module.change_module(charge_type_id=eve_charge2_id)
     # Verification
     api_val = api_fit.validate(options=ValOptions(charge_size=True))
     assert api_val.passed is True
-    assert api_val.details.charge_size.status == consts.ApiValStatus.passed
+    with check_no_field():
+        api_val.details  # ruff:ignore[useless-expression]
     api_module.change_module(mutation=eve_mutator_id)
     # Action
     api_module.change_module(mutation=None)
     # Verification
     api_val = api_fit.validate(options=ValOptions(charge_size=True))
     assert api_val.passed is False
-    assert api_val.details.charge_size.status == consts.ApiValStatus.failed
-    assert api_val.details.charge_size.fail == {
-        api_module.charge.id: (consts.ApiValItemStatus.failed, api_module.id, 2, 1)}
+    assert api_val.details.charge_size == {api_module.charge.id: (api_module.id, 2, 1)}
 
 
 def test_no_charge(client, consts):
@@ -362,7 +342,8 @@ def test_no_charge(client, consts):
     # Verification
     api_val = api_fit.validate(options=ValOptions(charge_size=True))
     assert api_val.passed is True
-    assert api_val.details.charge_size.status == consts.ApiValStatus.passed
+    with check_no_field():
+        api_val.details  # ruff:ignore[useless-expression]
 
 
 def test_non_positive(client, consts):
@@ -380,17 +361,17 @@ def test_non_positive(client, consts):
     # Verification
     api_val = api_fit.validate(options=ValOptions(charge_size=True))
     assert api_val.passed is False
-    assert api_val.details.charge_size.status == consts.ApiValStatus.failed
-    assert api_val.details.charge_size.fail == {
-        api_module1.charge.id: (consts.ApiValItemStatus.failed, api_module1.id, -3, 0),
-        api_module2.charge.id: (consts.ApiValItemStatus.failed, api_module2.id, 0, -3)}
+    assert api_val.details.charge_size == {
+        api_module1.charge.id: (api_module1.id, -3, 0),
+        api_module2.charge.id: (api_module2.id, 0, -3)}
     # Action
     api_module1.change_module(charge_type_id=eve_charge1_id)
     api_module2.change_module(charge_type_id=eve_charge2_id)
     # Verification
     api_val = api_fit.validate(options=ValOptions(charge_size=True))
     assert api_val.passed is True
-    assert api_val.details.charge_size.status == consts.ApiValStatus.passed
+    with check_no_field():
+        api_val.details  # ruff:ignore[useless-expression]
 
 
 def test_no_value_module(client, consts):
@@ -404,7 +385,8 @@ def test_no_value_module(client, consts):
     # Verification
     api_val = api_fit.validate(options=ValOptions(charge_size=True))
     assert api_val.passed is True
-    assert api_val.details.charge_size.status == consts.ApiValStatus.passed
+    with check_no_field():
+        api_val.details  # ruff:ignore[useless-expression]
 
 
 def test_no_value_charge(client, consts):
@@ -418,9 +400,7 @@ def test_no_value_charge(client, consts):
     # Verification
     api_val = api_fit.validate(options=ValOptions(charge_size=True))
     assert api_val.passed is False
-    assert api_val.details.charge_size.status == consts.ApiValStatus.failed
-    assert api_val.details.charge_size.fail == {
-        api_module.charge.id: (consts.ApiValItemStatus.failed, api_module.id, None, 2)}
+    assert api_val.details.charge_size == {api_module.charge.id: (api_module.id, None, 2)}
 
 
 def test_no_attr(client, consts):
@@ -434,7 +414,8 @@ def test_no_attr(client, consts):
     # Verification - validation is ignored if attribute does not exist
     api_val = api_fit.validate(options=ValOptions(charge_size=True))
     assert api_val.passed is True
-    assert api_val.details.charge_size.status == consts.ApiValStatus.passed
+    with check_no_field():
+        api_val.details  # ruff:ignore[useless-expression]
 
 
 def test_not_loaded_module(client, consts):
@@ -448,7 +429,8 @@ def test_not_loaded_module(client, consts):
     # Verification
     api_val = api_fit.validate(options=ValOptions(charge_size=True))
     assert api_val.passed is True
-    assert api_val.details.charge_size.status == consts.ApiValStatus.passed
+    with check_no_field():
+        api_val.details  # ruff:ignore[useless-expression]
 
 
 def test_not_loaded_charge(client, consts):
@@ -462,7 +444,8 @@ def test_not_loaded_charge(client, consts):
     # Verification
     api_val = api_fit.validate(options=ValOptions(charge_size=True))
     assert api_val.passed is True
-    assert api_val.details.charge_size.status == consts.ApiValStatus.passed
+    with check_no_field():
+        api_val.details  # ruff:ignore[useless-expression]
 
 
 def test_state(client, consts):
@@ -479,18 +462,14 @@ def test_state(client, consts):
     # Verification
     api_val = api_fit.validate(options=ValOptions(charge_size=True))
     assert api_val.passed is False
-    assert api_val.details.charge_size.status == consts.ApiValStatus.failed
-    assert api_val.details.charge_size.fail == {
-        api_module.charge.id: (consts.ApiValItemStatus.failed, api_module.id, 1, 2)}
+    assert api_val.details.charge_size == {api_module.charge.id: (api_module.id, 1, 2)}
     # Action
     api_module.change_module(state=consts.ApiModuleState.online)
     api_module.charge.change_charge(state=False)
     # Verification
     api_val = api_fit.validate(options=ValOptions(charge_size=True))
     assert api_val.passed is False
-    assert api_val.details.charge_size.status == consts.ApiValStatus.failed
-    assert api_val.details.charge_size.fail == {
-        api_module.charge.id: (consts.ApiValItemStatus.failed, api_module.id, 1, 2)}
+    assert api_val.details.charge_size == {api_module.charge.id: (api_module.id, 1, 2)}
 
 
 def test_criterion_item_kind(client, consts):
@@ -536,4 +515,5 @@ def test_criterion_item_kind(client, consts):
     assert len(api_fighter.autocharges) == 1
     api_val = api_fit.validate(options=ValOptions(charge_size=True))
     assert api_val.passed is True
-    assert api_val.details.charge_size.status == consts.ApiValStatus.passed
+    with check_no_field():
+        api_val.details  # ruff:ignore[useless-expression]

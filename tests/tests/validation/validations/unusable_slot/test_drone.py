@@ -1,4 +1,4 @@
-from fw import approx
+from fw import approx, check_no_field
 from fw.api import ValOptions
 
 
@@ -14,9 +14,8 @@ def test_fail_single(client, consts):
     # Verification
     api_val = api_fit.validate(options=ValOptions(unlaunchable_drone_slot=True))
     assert api_val.passed is False
-    assert api_val.details.unlaunchable_drone_slot.status == consts.ApiValStatus.failed
-    assert api_val.details.unlaunchable_drone_slot.fail.max == 0
-    assert api_val.details.unlaunchable_drone_slot.fail.users == {api_drone.id: consts.ApiValItemStatus.failed}
+    assert api_val.details.unlaunchable_drone_slot.max == 0
+    assert api_val.details.unlaunchable_drone_slot.users == [api_drone.id]
 
 
 def test_fail_multiple(client, consts):
@@ -32,11 +31,8 @@ def test_fail_multiple(client, consts):
     # Verification
     api_val = api_fit.validate(options=ValOptions(unlaunchable_drone_slot=True))
     assert api_val.passed is False
-    assert api_val.details.unlaunchable_drone_slot.status == consts.ApiValStatus.failed
-    assert api_val.details.unlaunchable_drone_slot.fail.max == 0
-    assert api_val.details.unlaunchable_drone_slot.fail.users == {
-        api_drone1.id: consts.ApiValItemStatus.failed,
-        api_drone2.id: consts.ApiValItemStatus.failed}
+    assert api_val.details.unlaunchable_drone_slot.max == 0
+    assert api_val.details.unlaunchable_drone_slot.users == sorted([api_drone1.id, api_drone2.id])
 
 
 def test_one(client, consts):
@@ -52,7 +48,8 @@ def test_one(client, consts):
     # Verification
     api_val = api_fit.validate(options=ValOptions(unlaunchable_drone_slot=True))
     assert api_val.passed is True
-    assert api_val.details.unlaunchable_drone_slot.status == consts.ApiValStatus.passed
+    with check_no_field():
+        api_val.details  # ruff:ignore[useless-expression]
 
 
 def test_known_failures(client, consts):
@@ -70,32 +67,20 @@ def test_known_failures(client, consts):
     # Verification
     api_val = api_fit.validate(options=ValOptions(unlaunchable_drone_slot=[api_drone1.id]))
     assert api_val.passed is False
-    assert api_val.details.unlaunchable_drone_slot.status == consts.ApiValStatus.failed
-    assert api_val.details.unlaunchable_drone_slot.fail.max == 0
-    assert api_val.details.unlaunchable_drone_slot.fail.users == {
-        api_drone1.id: consts.ApiValItemStatus.kf,
-        api_drone2.id: consts.ApiValItemStatus.failed}
+    assert api_val.details.unlaunchable_drone_slot.max == 0
+    assert api_val.details.unlaunchable_drone_slot.users == [api_drone2.id]
     api_val = api_fit.validate(options=ValOptions(unlaunchable_drone_slot=[api_drone2.id]))
     assert api_val.passed is False
-    assert api_val.details.unlaunchable_drone_slot.status == consts.ApiValStatus.failed
-    assert api_val.details.unlaunchable_drone_slot.fail.max == 0
-    assert api_val.details.unlaunchable_drone_slot.fail.users == {
-        api_drone1.id: consts.ApiValItemStatus.failed,
-        api_drone2.id: consts.ApiValItemStatus.kf}
+    assert api_val.details.unlaunchable_drone_slot.max == 0
+    assert api_val.details.unlaunchable_drone_slot.users == [api_drone1.id]
     api_val = api_fit.validate(options=ValOptions(unlaunchable_drone_slot=[api_drone1.id, api_drone2.id]))
     assert api_val.passed is True
-    assert api_val.details.unlaunchable_drone_slot.status == consts.ApiValStatus.passed_kfs
-    assert api_val.details.unlaunchable_drone_slot.fail.max == 0
-    assert api_val.details.unlaunchable_drone_slot.fail.users == {
-        api_drone1.id: consts.ApiValItemStatus.kf,
-        api_drone2.id: consts.ApiValItemStatus.kf}
+    with check_no_field():
+        api_val.details  # ruff:ignore[useless-expression]
     api_val = api_fit.validate(options=ValOptions(unlaunchable_drone_slot=[api_drone1.id, api_other.id, api_drone2.id]))
     assert api_val.passed is True
-    assert api_val.details.unlaunchable_drone_slot.status == consts.ApiValStatus.passed_kfs
-    assert api_val.details.unlaunchable_drone_slot.fail.max == 0
-    assert api_val.details.unlaunchable_drone_slot.fail.users == {
-        api_drone1.id: consts.ApiValItemStatus.kf,
-        api_drone2.id: consts.ApiValItemStatus.kf}
+    with check_no_field():
+        api_val.details  # ruff:ignore[useless-expression]
 
 
 def test_modified_max(client, consts):
@@ -120,16 +105,16 @@ def test_modified_max(client, consts):
     assert api_char.update().attrs[eve_max_attr_id].modified == approx(0)
     api_val = api_fit.validate(options=ValOptions(unlaunchable_drone_slot=True))
     assert api_val.passed is False
-    assert api_val.details.unlaunchable_drone_slot.status == consts.ApiValStatus.failed
-    assert api_val.details.unlaunchable_drone_slot.fail.max == 0
-    assert api_val.details.unlaunchable_drone_slot.fail.users == {api_drone.id: consts.ApiValItemStatus.failed}
+    assert api_val.details.unlaunchable_drone_slot.max == 0
+    assert api_val.details.unlaunchable_drone_slot.users == [api_drone.id]
     # Action
     api_fit.add_implant(type_id=eve_implant_id)
     # Verification
     assert api_char.update().attrs[eve_max_attr_id].modified == approx(1)
     api_val = api_fit.validate(options=ValOptions(unlaunchable_drone_slot=True))
     assert api_val.passed is True
-    assert api_val.details.unlaunchable_drone_slot.status == consts.ApiValStatus.passed
+    with check_no_field():
+        api_val.details  # ruff:ignore[useless-expression]
 
 
 def test_fractional_max(client, consts):
@@ -145,15 +130,15 @@ def test_fractional_max(client, consts):
     # Verification
     api_val = api_fit.validate(options=ValOptions(unlaunchable_drone_slot=True))
     assert api_val.passed is False
-    assert api_val.details.unlaunchable_drone_slot.status == consts.ApiValStatus.failed
-    assert api_val.details.unlaunchable_drone_slot.fail.max == 0
-    assert api_val.details.unlaunchable_drone_slot.fail.users == {api_drone.id: consts.ApiValItemStatus.failed}
+    assert api_val.details.unlaunchable_drone_slot.max == 0
+    assert api_val.details.unlaunchable_drone_slot.users == [api_drone.id]
     # Action
     api_fit.set_character(type_id=eve_char2_id)
     # Verification
     api_val = api_fit.validate(options=ValOptions(unlaunchable_drone_slot=True))
     assert api_val.passed is True
-    assert api_val.details.unlaunchable_drone_slot.status == consts.ApiValStatus.passed
+    with check_no_field():
+        api_val.details  # ruff:ignore[useless-expression]
 
 
 def test_no_char(client, consts):
@@ -166,9 +151,8 @@ def test_no_char(client, consts):
     # Verification
     api_val = api_fit.validate(options=ValOptions(unlaunchable_drone_slot=True))
     assert api_val.passed is False
-    assert api_val.details.unlaunchable_drone_slot.status == consts.ApiValStatus.failed
-    assert api_val.details.unlaunchable_drone_slot.fail.max is None
-    assert api_val.details.unlaunchable_drone_slot.fail.users == {api_drone.id: consts.ApiValItemStatus.failed}
+    assert api_val.details.unlaunchable_drone_slot.max is None
+    assert api_val.details.unlaunchable_drone_slot.users == [api_drone.id]
 
 
 def test_no_value_max(client, consts):
@@ -183,9 +167,8 @@ def test_no_value_max(client, consts):
     # Verification
     api_val = api_fit.validate(options=ValOptions(unlaunchable_drone_slot=True))
     assert api_val.passed is False
-    assert api_val.details.unlaunchable_drone_slot.status == consts.ApiValStatus.failed
-    assert api_val.details.unlaunchable_drone_slot.fail.max == 0
-    assert api_val.details.unlaunchable_drone_slot.fail.users == {api_drone.id: consts.ApiValItemStatus.failed}
+    assert api_val.details.unlaunchable_drone_slot.max == 0
+    assert api_val.details.unlaunchable_drone_slot.users == [api_drone.id]
 
 
 def test_no_attr_max(client, consts):
@@ -200,9 +183,8 @@ def test_no_attr_max(client, consts):
     # Verification - when output attr does not exist, it is assumed to be 0
     api_val = api_fit.validate(options=ValOptions(unlaunchable_drone_slot=True))
     assert api_val.passed is False
-    assert api_val.details.unlaunchable_drone_slot.status == consts.ApiValStatus.failed
-    assert api_val.details.unlaunchable_drone_slot.fail.max == 0
-    assert api_val.details.unlaunchable_drone_slot.fail.users == {api_drone.id: consts.ApiValItemStatus.failed}
+    assert api_val.details.unlaunchable_drone_slot.max == 0
+    assert api_val.details.unlaunchable_drone_slot.users == [api_drone.id]
 
 
 def test_not_loaded_user(client, consts):
@@ -218,9 +200,8 @@ def test_not_loaded_user(client, consts):
     # Verification
     api_val = api_fit.validate(options=ValOptions(unlaunchable_drone_slot=True))
     assert api_val.passed is False
-    assert api_val.details.unlaunchable_drone_slot.status == consts.ApiValStatus.failed
-    assert api_val.details.unlaunchable_drone_slot.fail.max == 0
-    assert api_val.details.unlaunchable_drone_slot.fail.users == {api_drone.id: consts.ApiValItemStatus.failed}
+    assert api_val.details.unlaunchable_drone_slot.max == 0
+    assert api_val.details.unlaunchable_drone_slot.users == [api_drone.id]
 
 
 def test_not_loaded_char(client, consts):
@@ -235,9 +216,8 @@ def test_not_loaded_char(client, consts):
     # Verification
     api_val = api_fit.validate(options=ValOptions(unlaunchable_drone_slot=True))
     assert api_val.passed is False
-    assert api_val.details.unlaunchable_drone_slot.status == consts.ApiValStatus.failed
-    assert api_val.details.unlaunchable_drone_slot.fail.max is None
-    assert api_val.details.unlaunchable_drone_slot.fail.users == {api_drone.id: consts.ApiValItemStatus.failed}
+    assert api_val.details.unlaunchable_drone_slot.max is None
+    assert api_val.details.unlaunchable_drone_slot.users == [api_drone.id]
 
 
 def test_criterion_item_kind(client, consts):
@@ -267,4 +247,5 @@ def test_criterion_item_kind(client, consts):
     assert len(api_fighter.autocharges) == 1
     api_val = api_fit.validate(options=ValOptions(unlaunchable_drone_slot=True))
     assert api_val.passed is True
-    assert api_val.details.unlaunchable_drone_slot.status == consts.ApiValStatus.passed
+    with check_no_field():
+        api_val.details  # ruff:ignore[useless-expression]

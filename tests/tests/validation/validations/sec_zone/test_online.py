@@ -19,103 +19,78 @@ def test_main(client, consts):
     # Verification
     api_val = api_fit.validate(options=ValOptions(sec_zone_online=True))
     assert api_val.passed is False
-    assert api_val.details.sec_zone_online.status == consts.ApiValStatus.failed
-    assert api_val.details.sec_zone_online.fail.zone == consts.ApiSecZone.hisec
-    assert api_val.details.sec_zone_online.fail.items == {
-        api_lowsec_module.id: (consts.ApiValItemStatus.failed, sorted([
+    assert api_val.details.sec_zone_online.zone == consts.ApiSecZone.hisec
+    assert api_val.details.sec_zone_online.items == {
+        api_lowsec_module.id: sorted([
             consts.ApiSecZone.lowsec,
             consts.ApiSecZone.nullsec,
             consts.ApiSecZone.wspace,
-            consts.ApiSecZone.hazard])),
-        api_nullsec_module.id: (consts.ApiValItemStatus.failed, sorted([
-            consts.ApiSecZone.nullsec,
-            consts.ApiSecZone.wspace,
-            consts.ApiSecZone.hazard])),
-        api_lowsec_service.id: (consts.ApiValItemStatus.failed, sorted([
+            consts.ApiSecZone.hazard]),
+        api_nullsec_module.id: sorted([consts.ApiSecZone.nullsec, consts.ApiSecZone.wspace, consts.ApiSecZone.hazard]),
+        api_lowsec_service.id: sorted([
             consts.ApiSecZone.lowsec,
             consts.ApiSecZone.nullsec,
             consts.ApiSecZone.wspace,
-            consts.ApiSecZone.hazard])),
-        api_nullsec_service.id: (consts.ApiValItemStatus.failed, sorted([
-            consts.ApiSecZone.nullsec,
-            consts.ApiSecZone.wspace,
-            consts.ApiSecZone.hazard]))}
+            consts.ApiSecZone.hazard]),
+        api_nullsec_service.id: sorted([consts.ApiSecZone.nullsec, consts.ApiSecZone.wspace, consts.ApiSecZone.hazard])}
     # Action
     api_sol.change(sec_zone=consts.ApiSecZone.hisec_c5)
     # Verification
     api_val = api_fit.validate(options=ValOptions(sec_zone_online=True))
     assert api_val.passed is False
-    assert api_val.details.sec_zone_online.status == consts.ApiValStatus.failed
-    assert api_val.details.sec_zone_online.fail.zone == consts.ApiSecZone.hisec_c5
-    assert api_val.details.sec_zone_online.fail.items == {
-        api_lowsec_module.id: (consts.ApiValItemStatus.failed, sorted([
+    assert api_val.details.sec_zone_online.zone == consts.ApiSecZone.hisec_c5
+    assert api_val.details.sec_zone_online.items == {
+        api_lowsec_module.id: sorted([
             consts.ApiSecZone.lowsec,
             consts.ApiSecZone.nullsec,
             consts.ApiSecZone.wspace,
-            consts.ApiSecZone.hazard])),
-        api_nullsec_module.id: (consts.ApiValItemStatus.failed, sorted([
-            consts.ApiSecZone.nullsec,
-            consts.ApiSecZone.wspace,
-            consts.ApiSecZone.hazard])),
-        api_lowsec_service.id: (consts.ApiValItemStatus.failed, sorted([
+            consts.ApiSecZone.hazard]),
+        api_nullsec_module.id: sorted([consts.ApiSecZone.nullsec, consts.ApiSecZone.wspace, consts.ApiSecZone.hazard]),
+        api_lowsec_service.id: sorted([
             consts.ApiSecZone.lowsec,
             consts.ApiSecZone.nullsec,
             consts.ApiSecZone.wspace,
-            consts.ApiSecZone.hazard])),
-        api_nullsec_service.id: (consts.ApiValItemStatus.failed, sorted([
-            consts.ApiSecZone.nullsec,
-            consts.ApiSecZone.wspace,
-            consts.ApiSecZone.hazard]))}
+            consts.ApiSecZone.hazard]),
+        api_nullsec_service.id: sorted([consts.ApiSecZone.nullsec, consts.ApiSecZone.wspace, consts.ApiSecZone.hazard])}
     # Action
     api_sol.change(sec_zone=consts.ApiSecZone.lowsec)
     # Verification
     api_val = api_fit.validate(options=ValOptions(sec_zone_online=True))
     assert api_val.passed is False
-    assert api_val.details.sec_zone_online.status == consts.ApiValStatus.failed
-    assert api_val.details.sec_zone_online.fail.zone == consts.ApiSecZone.lowsec
-    assert api_val.details.sec_zone_online.fail.items == {
-        api_nullsec_module.id: (consts.ApiValItemStatus.failed, sorted([
-            consts.ApiSecZone.nullsec,
-            consts.ApiSecZone.wspace,
-            consts.ApiSecZone.hazard])),
-        api_nullsec_service.id: (consts.ApiValItemStatus.failed, sorted([
-            consts.ApiSecZone.nullsec,
-            consts.ApiSecZone.wspace,
-            consts.ApiSecZone.hazard]))}
+    assert api_val.details.sec_zone_online.zone == consts.ApiSecZone.lowsec
+    assert api_val.details.sec_zone_online.items == {
+        api_nullsec_module.id: sorted([consts.ApiSecZone.nullsec, consts.ApiSecZone.wspace, consts.ApiSecZone.hazard]),
+        api_nullsec_service.id: sorted([consts.ApiSecZone.nullsec, consts.ApiSecZone.wspace, consts.ApiSecZone.hazard])}
     # Action
     api_sol.change(sec_zone=consts.ApiSecZone.lowsec_c5)
     # Verification
     api_val = api_fit.validate(options=ValOptions(sec_zone_online=True))
     assert api_val.passed is False
-    assert api_val.details.sec_zone_online.status == consts.ApiValStatus.failed
-    assert api_val.details.sec_zone_online.fail.zone == consts.ApiSecZone.lowsec_c5
-    assert api_val.details.sec_zone_online.fail.items == {
-        api_nullsec_module.id: (consts.ApiValItemStatus.failed, sorted([
-            consts.ApiSecZone.nullsec,
-            consts.ApiSecZone.wspace,
-            consts.ApiSecZone.hazard])),
-        api_nullsec_service.id: (consts.ApiValItemStatus.failed, sorted([
-            consts.ApiSecZone.nullsec,
-            consts.ApiSecZone.wspace,
-            consts.ApiSecZone.hazard]))}
+    assert api_val.details.sec_zone_online.zone == consts.ApiSecZone.lowsec_c5
+    assert api_val.details.sec_zone_online.items == {
+        api_nullsec_module.id: sorted([consts.ApiSecZone.nullsec, consts.ApiSecZone.wspace, consts.ApiSecZone.hazard]),
+        api_nullsec_service.id: sorted([consts.ApiSecZone.nullsec, consts.ApiSecZone.wspace, consts.ApiSecZone.hazard])}
     # Action
     api_sol.change(sec_zone=consts.ApiSecZone.nullsec)
     # Verification
     api_val = api_fit.validate(options=ValOptions(sec_zone_online=True))
     assert api_val.passed is True
-    assert api_val.details.sec_zone_online.status == consts.ApiValStatus.passed
+    with check_no_field():
+        api_val.details  # ruff:ignore[useless-expression]
     # Action
     api_sol.change(sec_zone=consts.ApiSecZone.wspace)
     # Verification
     api_val = api_fit.validate(options=ValOptions(sec_zone_online=True))
     assert api_val.passed is True
-    assert api_val.details.sec_zone_online.status == consts.ApiValStatus.passed
+    with check_no_field():
+        api_val.details  # ruff:ignore[useless-expression]
     # Action
     api_sol.change(sec_zone=consts.ApiSecZone.hazard)
     # Verification
     api_val = api_fit.validate(options=ValOptions(sec_zone_online=True))
     assert api_val.passed is True
-    assert api_val.details.sec_zone_online.status == consts.ApiValStatus.passed
+    with check_no_field():
+        api_val.details  # ruff:ignore[useless-expression]
 
 
 def test_known_failures(client, consts):
@@ -134,61 +109,26 @@ def test_known_failures(client, consts):
     # Verification
     api_val = api_fit.validate(options=ValOptions(sec_zone_online=[api_lowsec_service.id]))
     assert api_val.passed is False
-    assert api_val.details.sec_zone_online.status == consts.ApiValStatus.failed
-    assert api_val.details.sec_zone_online.fail.zone == consts.ApiSecZone.hisec
-    assert api_val.details.sec_zone_online.fail.items == {
-        api_lowsec_service.id: (consts.ApiValItemStatus.kf, sorted([
-            consts.ApiSecZone.lowsec,
-            consts.ApiSecZone.nullsec,
-            consts.ApiSecZone.wspace,
-            consts.ApiSecZone.hazard])),
-        api_nullsec_service.id: (consts.ApiValItemStatus.failed, sorted([
-            consts.ApiSecZone.nullsec,
-            consts.ApiSecZone.wspace,
-            consts.ApiSecZone.hazard]))}
+    assert api_val.details.sec_zone_online.zone == consts.ApiSecZone.hisec
+    assert api_val.details.sec_zone_online.items == {
+        api_nullsec_service.id: sorted([consts.ApiSecZone.nullsec, consts.ApiSecZone.wspace, consts.ApiSecZone.hazard])}
     api_val = api_fit.validate(options=ValOptions(sec_zone_online=[api_nullsec_service.id]))
     assert api_val.passed is False
-    assert api_val.details.sec_zone_online.status == consts.ApiValStatus.failed
-    assert api_val.details.sec_zone_online.fail.zone == consts.ApiSecZone.hisec
-    assert api_val.details.sec_zone_online.fail.items == {
-        api_lowsec_service.id: (consts.ApiValItemStatus.failed, sorted([
-            consts.ApiSecZone.lowsec,
-            consts.ApiSecZone.nullsec,
-            consts.ApiSecZone.wspace,
-            consts.ApiSecZone.hazard])),
-        api_nullsec_service.id: (consts.ApiValItemStatus.kf, sorted([
-            consts.ApiSecZone.nullsec,
-            consts.ApiSecZone.wspace,
-            consts.ApiSecZone.hazard]))}
+    assert api_val.details.sec_zone_online.zone == consts.ApiSecZone.hisec
+    assert api_val.details.sec_zone_online.items == {api_lowsec_service.id: sorted([
+        consts.ApiSecZone.lowsec,
+        consts.ApiSecZone.nullsec,
+        consts.ApiSecZone.wspace,
+        consts.ApiSecZone.hazard])}
     api_val = api_fit.validate(options=ValOptions(sec_zone_online=[api_lowsec_service.id, api_nullsec_service.id]))
     assert api_val.passed is True
-    assert api_val.details.sec_zone_online.status == consts.ApiValStatus.passed_kfs
-    assert api_val.details.sec_zone_online.fail.zone == consts.ApiSecZone.hisec
-    assert api_val.details.sec_zone_online.fail.items == {
-        api_lowsec_service.id: (consts.ApiValItemStatus.kf, sorted([
-            consts.ApiSecZone.lowsec,
-            consts.ApiSecZone.nullsec,
-            consts.ApiSecZone.wspace,
-            consts.ApiSecZone.hazard])),
-        api_nullsec_service.id: (consts.ApiValItemStatus.kf, sorted([
-            consts.ApiSecZone.nullsec,
-            consts.ApiSecZone.wspace,
-            consts.ApiSecZone.hazard]))}
+    with check_no_field():
+        api_val.details  # ruff:ignore[useless-expression]
     api_val = api_fit.validate(options=ValOptions(
         sec_zone_online=[api_lowsec_service.id, api_other.id, api_nullsec_service.id, api_hisec_service.id]))
     assert api_val.passed is True
-    assert api_val.details.sec_zone_online.status == consts.ApiValStatus.passed_kfs
-    assert api_val.details.sec_zone_online.fail.zone == consts.ApiSecZone.hisec
-    assert api_val.details.sec_zone_online.fail.items == {
-        api_lowsec_service.id: (consts.ApiValItemStatus.kf, sorted([
-            consts.ApiSecZone.lowsec,
-            consts.ApiSecZone.nullsec,
-            consts.ApiSecZone.wspace,
-            consts.ApiSecZone.hazard])),
-        api_nullsec_service.id: (consts.ApiValItemStatus.kf, sorted([
-            consts.ApiSecZone.nullsec,
-            consts.ApiSecZone.wspace,
-            consts.ApiSecZone.hazard]))}
+    with check_no_field():
+        api_val.details  # ruff:ignore[useless-expression]
 
 
 def test_rounding(client, consts):
@@ -205,30 +145,22 @@ def test_rounding(client, consts):
     # Verification
     api_val = api_fit.validate(options=ValOptions(sec_zone_online=True))
     assert api_val.passed is False
-    assert api_val.details.sec_zone_online.status == consts.ApiValStatus.failed
-    assert api_val.details.sec_zone_online.fail.zone == consts.ApiSecZone.hisec
-    assert api_val.details.sec_zone_online.fail.items == {
-        api_higher_service.id: (consts.ApiValItemStatus.failed, sorted([
+    assert api_val.details.sec_zone_online.zone == consts.ApiSecZone.hisec
+    assert api_val.details.sec_zone_online.items == {
+        api_higher_service.id: sorted([
             consts.ApiSecZone.lowsec,
             consts.ApiSecZone.nullsec,
             consts.ApiSecZone.wspace,
-            consts.ApiSecZone.hazard])),
-        api_lower_service.id: (consts.ApiValItemStatus.failed, sorted([
-            consts.ApiSecZone.nullsec,
-            consts.ApiSecZone.wspace,
-            consts.ApiSecZone.hazard]))}
+            consts.ApiSecZone.hazard]),
+        api_lower_service.id: sorted([consts.ApiSecZone.nullsec, consts.ApiSecZone.wspace, consts.ApiSecZone.hazard])}
     # Action
     api_sol.change(sec_zone=consts.ApiSecZone.lowsec)
     # Verification
     api_val = api_fit.validate(options=ValOptions(sec_zone_online=True))
     assert api_val.passed is False
-    assert api_val.details.sec_zone_online.status == consts.ApiValStatus.failed
-    assert api_val.details.sec_zone_online.fail.zone == consts.ApiSecZone.lowsec
-    assert api_val.details.sec_zone_online.fail.items == {
-        api_lower_service.id: (consts.ApiValItemStatus.failed, sorted([
-            consts.ApiSecZone.nullsec,
-            consts.ApiSecZone.wspace,
-            consts.ApiSecZone.hazard]))}
+    assert api_val.details.sec_zone_online.zone == consts.ApiSecZone.lowsec
+    assert api_val.details.sec_zone_online.items == {
+        api_lower_service.id: sorted([consts.ApiSecZone.nullsec, consts.ApiSecZone.wspace, consts.ApiSecZone.hazard])}
 
 
 def test_modified(client, consts):
@@ -255,14 +187,12 @@ def test_modified(client, consts):
     assert api_service.update().attrs[eve_attr_id].modified == approx(2)
     api_val = api_fit.validate(options=ValOptions(sec_zone_online=True))
     assert api_val.passed is False
-    assert api_val.details.sec_zone_online.status == consts.ApiValStatus.failed
-    assert api_val.details.sec_zone_online.fail.zone == consts.ApiSecZone.hisec
-    assert api_val.details.sec_zone_online.fail.items == {
-        api_service.id: (consts.ApiValItemStatus.failed, sorted([
-            consts.ApiSecZone.lowsec,
-            consts.ApiSecZone.nullsec,
-            consts.ApiSecZone.wspace,
-            consts.ApiSecZone.hazard]))}
+    assert api_val.details.sec_zone_online.zone == consts.ApiSecZone.hisec
+    assert api_val.details.sec_zone_online.items == {api_service.id: sorted([
+        consts.ApiSecZone.lowsec,
+        consts.ApiSecZone.nullsec,
+        consts.ApiSecZone.wspace,
+        consts.ApiSecZone.hazard])}
 
 
 def test_mutation_limit_priority(client, consts):
@@ -284,27 +214,23 @@ def test_mutation_limit_priority(client, consts):
     assert api_module.update().attrs[eve_attr_id].modified == approx(3)
     api_val = api_fit.validate(options=ValOptions(sec_zone_online=True))
     assert api_val.passed is False
-    assert api_val.details.sec_zone_online.status == consts.ApiValStatus.failed
-    assert api_val.details.sec_zone_online.fail.zone == consts.ApiSecZone.hisec
-    assert api_val.details.sec_zone_online.fail.items == {
-        api_module.id: (consts.ApiValItemStatus.failed, sorted([
-            consts.ApiSecZone.nullsec,
-            consts.ApiSecZone.wspace,
-            consts.ApiSecZone.hazard]))}
+    assert api_val.details.sec_zone_online.zone == consts.ApiSecZone.hisec
+    assert api_val.details.sec_zone_online.items == {api_module.id: sorted([
+        consts.ApiSecZone.nullsec,
+        consts.ApiSecZone.wspace,
+        consts.ApiSecZone.hazard])}
     # Action
     api_module.change_module(mutation=None)
     # Verification
     assert api_module.update().attrs[eve_attr_id].modified == approx(1)
     api_val = api_fit.validate(options=ValOptions(sec_zone_online=True))
     assert api_val.passed is False
-    assert api_val.details.sec_zone_online.status == consts.ApiValStatus.failed
-    assert api_val.details.sec_zone_online.fail.zone == consts.ApiSecZone.hisec
-    assert api_val.details.sec_zone_online.fail.items == {
-        api_module.id: (consts.ApiValItemStatus.failed, sorted([
-            consts.ApiSecZone.lowsec,
-            consts.ApiSecZone.nullsec,
-            consts.ApiSecZone.wspace,
-            consts.ApiSecZone.hazard]))}
+    assert api_val.details.sec_zone_online.zone == consts.ApiSecZone.hisec
+    assert api_val.details.sec_zone_online.items == {api_module.id: sorted([
+        consts.ApiSecZone.lowsec,
+        consts.ApiSecZone.nullsec,
+        consts.ApiSecZone.wspace,
+        consts.ApiSecZone.hazard])}
 
 
 def test_mutation_limit_inheritance(client, consts):
@@ -326,14 +252,12 @@ def test_mutation_limit_inheritance(client, consts):
     assert api_module.update().attrs[eve_attr_id].modified == approx(3)
     api_val = api_fit.validate(options=ValOptions(sec_zone_online=True))
     assert api_val.passed is False
-    assert api_val.details.sec_zone_online.status == consts.ApiValStatus.failed
-    assert api_val.details.sec_zone_online.fail.zone == consts.ApiSecZone.hisec
-    assert api_val.details.sec_zone_online.fail.items == {
-        api_module.id: (consts.ApiValItemStatus.failed, sorted([
-            consts.ApiSecZone.lowsec,
-            consts.ApiSecZone.nullsec,
-            consts.ApiSecZone.wspace,
-            consts.ApiSecZone.hazard]))}
+    assert api_val.details.sec_zone_online.zone == consts.ApiSecZone.hisec
+    assert api_val.details.sec_zone_online.items == {api_module.id: sorted([
+        consts.ApiSecZone.lowsec,
+        consts.ApiSecZone.nullsec,
+        consts.ApiSecZone.wspace,
+        consts.ApiSecZone.hazard])}
     # Action
     api_module.change_module(mutation=None)
     # Verification
@@ -342,7 +266,8 @@ def test_mutation_limit_inheritance(client, consts):
         api_module.attrs  # ruff:ignore[useless-expression]
     api_val = api_fit.validate(options=ValOptions(sec_zone_online=True))
     assert api_val.passed is True
-    assert api_val.details.sec_zone_online.status == consts.ApiValStatus.passed
+    with check_no_field():
+        api_val.details  # ruff:ignore[useless-expression]
 
 
 def test_no_value(client, consts):
@@ -355,7 +280,8 @@ def test_no_value(client, consts):
     # Verification
     api_val = api_fit.validate(options=ValOptions(sec_zone_online=True))
     assert api_val.passed is True
-    assert api_val.details.sec_zone_online.status == consts.ApiValStatus.passed
+    with check_no_field():
+        api_val.details  # ruff:ignore[useless-expression]
 
 
 def test_no_attr(client, consts):
@@ -369,7 +295,8 @@ def test_no_attr(client, consts):
     # Verification - when attribute can't be fetched, it's assumed to be non-limited in any sec zone
     api_val = api_fit.validate(options=ValOptions(sec_zone_online=True))
     assert api_val.passed is True
-    assert api_val.details.sec_zone_online.status == consts.ApiValStatus.passed
+    with check_no_field():
+        api_val.details  # ruff:ignore[useless-expression]
 
 
 def test_not_loaded(client, consts):
@@ -382,7 +309,8 @@ def test_not_loaded(client, consts):
     # Verification
     api_val = api_fit.validate(options=ValOptions(sec_zone_online=True))
     assert api_val.passed is True
-    assert api_val.details.sec_zone_online.status == consts.ApiValStatus.passed
+    with check_no_field():
+        api_val.details  # ruff:ignore[useless-expression]
 
 
 def test_criterion_service_state(client, consts):
@@ -396,7 +324,8 @@ def test_criterion_service_state(client, consts):
     # Verification
     api_val = api_fit.validate(options=ValOptions(sec_zone_online=True))
     assert api_val.passed is True
-    assert api_val.details.sec_zone_online.status == consts.ApiValStatus.passed
+    with check_no_field():
+        api_val.details  # ruff:ignore[useless-expression]
 
 
 def test_criterion_item_kind(client, consts):
@@ -430,4 +359,5 @@ def test_criterion_item_kind(client, consts):
     assert len(api_fighter.autocharges) == 1
     api_val = api_fit.validate(options=ValOptions(sec_zone_online=True))
     assert api_val.passed is True
-    assert api_val.details.sec_zone_online.status == consts.ApiValStatus.passed
+    with check_no_field():
+        api_val.details  # ruff:ignore[useless-expression]

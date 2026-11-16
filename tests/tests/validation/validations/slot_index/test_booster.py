@@ -1,4 +1,4 @@
-from fw import approx
+from fw import approx, check_no_field
 from fw.api import ValOptions
 
 
@@ -12,21 +12,21 @@ def test_multiple(client, consts):
     # Verification
     api_val = api_fit.validate(options=ValOptions(booster_slot_index=True))
     assert api_val.passed is True
-    assert api_val.details.booster_slot_index.status == consts.ApiValStatus.passed
+    with check_no_field():
+        api_val.details  # ruff:ignore[useless-expression]
     # Action
     api_booster2 = api_fit.add_booster(type_id=eve_booster_id)
     # Verification
     api_val = api_fit.validate(options=ValOptions(booster_slot_index=True))
     assert api_val.passed is False
-    assert api_val.details.booster_slot_index.status == consts.ApiValStatus.failed
-    assert api_val.details.booster_slot_index.fail == {
-        1: {api_booster1.id: consts.ApiValItemStatus.failed, api_booster2.id: consts.ApiValItemStatus.failed}}
+    assert api_val.details.booster_slot_index == {1: sorted([api_booster1.id, api_booster2.id])}
     # Action
     api_booster1.remove()
     # Verification
     api_val = api_fit.validate(options=ValOptions(booster_slot_index=True))
     assert api_val.passed is True
-    assert api_val.details.booster_slot_index.status == consts.ApiValStatus.passed
+    with check_no_field():
+        api_val.details  # ruff:ignore[useless-expression]
 
 
 def test_different_slots(client, consts):
@@ -41,15 +41,14 @@ def test_different_slots(client, consts):
     # Verification
     api_val = api_fit.validate(options=ValOptions(booster_slot_index=True))
     assert api_val.passed is True
-    assert api_val.details.booster_slot_index.status == consts.ApiValStatus.passed
+    with check_no_field():
+        api_val.details  # ruff:ignore[useless-expression]
     # Action
     api_booster3 = api_fit.add_booster(type_id=eve_booster1_id)
     # Verification
     api_val = api_fit.validate(options=ValOptions(booster_slot_index=True))
     assert api_val.passed is False
-    assert api_val.details.booster_slot_index.status == consts.ApiValStatus.failed
-    assert api_val.details.booster_slot_index.fail == {
-        1: {api_booster1.id: consts.ApiValItemStatus.failed, api_booster3.id: consts.ApiValItemStatus.failed}}
+    assert api_val.details.booster_slot_index == {1: sorted([api_booster1.id, api_booster3.id])}
 
 
 def test_known_failures(client, consts):
@@ -67,33 +66,24 @@ def test_known_failures(client, consts):
     # Verification
     api_val = api_fit.validate(options=ValOptions(booster_slot_index=[api_booster1.id]))
     assert api_val.passed is False
-    assert api_val.details.booster_slot_index.status == consts.ApiValStatus.failed
-    assert api_val.details.booster_slot_index.fail == {
-        1: {api_booster1.id: consts.ApiValItemStatus.kf, api_booster3.id: consts.ApiValItemStatus.failed}}
+    assert api_val.details.booster_slot_index == {1: [api_booster3.id]}
     api_val = api_fit.validate(options=ValOptions(booster_slot_index=[api_booster3.id]))
     assert api_val.passed is False
-    assert api_val.details.booster_slot_index.status == consts.ApiValStatus.failed
-    assert api_val.details.booster_slot_index.fail == {
-        1: {api_booster1.id: consts.ApiValItemStatus.failed, api_booster3.id: consts.ApiValItemStatus.kf}}
+    assert api_val.details.booster_slot_index == {1: [api_booster1.id]}
     api_val = api_fit.validate(options=ValOptions(booster_slot_index=[api_booster1.id, api_booster3.id]))
     assert api_val.passed is True
-    assert api_val.details.booster_slot_index.status == consts.ApiValStatus.passed_kfs
-    assert api_val.details.booster_slot_index.fail == {
-        1: {api_booster1.id: consts.ApiValItemStatus.kf, api_booster3.id: consts.ApiValItemStatus.kf}}
+    with check_no_field():
+        api_val.details  # ruff:ignore[useless-expression]
     api_val = api_fit.validate(options=ValOptions(booster_slot_index=[api_booster1.id, api_other.id, api_booster3.id]))
     assert api_val.passed is True
-    assert api_val.details.booster_slot_index.status == consts.ApiValStatus.passed_kfs
-    assert api_val.details.booster_slot_index.fail == {
-        1: {api_booster1.id: consts.ApiValItemStatus.kf, api_booster3.id: consts.ApiValItemStatus.kf}}
+    with check_no_field():
+        api_val.details  # ruff:ignore[useless-expression]
     # Action
     api_booster4 = api_fit.add_booster(type_id=eve_booster2_id)
     # Verification
     api_val = api_fit.validate(options=ValOptions(booster_slot_index=[api_booster1.id, api_booster3.id]))
     assert api_val.passed is False
-    assert api_val.details.booster_slot_index.status == consts.ApiValStatus.failed
-    assert api_val.details.booster_slot_index.fail == {
-        1: {api_booster1.id: consts.ApiValItemStatus.kf, api_booster3.id: consts.ApiValItemStatus.kf},
-        2: {api_booster2.id: consts.ApiValItemStatus.failed, api_booster4.id: consts.ApiValItemStatus.failed}}
+    assert api_val.details.booster_slot_index == {2: sorted([api_booster2.id, api_booster4.id])}
 
 
 def test_rounding(client, consts):
@@ -110,9 +100,7 @@ def test_rounding(client, consts):
     # Verification
     api_val = api_fit.validate(options=ValOptions(booster_slot_index=True))
     assert api_val.passed is False
-    assert api_val.details.booster_slot_index.status == consts.ApiValStatus.failed
-    assert api_val.details.booster_slot_index.fail == {
-        1: {api_booster1.id: consts.ApiValItemStatus.failed, api_booster2.id: consts.ApiValItemStatus.failed}}
+    assert api_val.details.booster_slot_index == {1: sorted([api_booster1.id, api_booster2.id])}
 
 
 def test_modified_index(client, consts):
@@ -139,9 +127,7 @@ def test_modified_index(client, consts):
     assert api_booster2.update().attrs[eve_slot_attr_id].modified == approx(2)
     api_val = api_fit.validate(options=ValOptions(booster_slot_index=True))
     assert api_val.passed is False
-    assert api_val.details.booster_slot_index.status == consts.ApiValStatus.failed
-    assert api_val.details.booster_slot_index.fail == {
-        2: {api_booster1.id: consts.ApiValItemStatus.failed, api_booster2.id: consts.ApiValItemStatus.failed}}
+    assert api_val.details.booster_slot_index == {2: sorted([api_booster1.id, api_booster2.id])}
     # Action
     api_fit.add_rig(type_id=eve_rig_id)
     # Verification - attribute is modified, but not for purposes of validation
@@ -149,9 +135,7 @@ def test_modified_index(client, consts):
     assert api_booster2.update().attrs[eve_slot_attr_id].modified == approx(3)
     api_val = api_fit.validate(options=ValOptions(booster_slot_index=True))
     assert api_val.passed is False
-    assert api_val.details.booster_slot_index.status == consts.ApiValStatus.failed
-    assert api_val.details.booster_slot_index.fail == {
-        2: {api_booster1.id: consts.ApiValItemStatus.failed, api_booster2.id: consts.ApiValItemStatus.failed}}
+    assert api_val.details.booster_slot_index == {2: sorted([api_booster1.id, api_booster2.id])}
 
 
 def test_no_value(client, consts):
@@ -165,7 +149,8 @@ def test_no_value(client, consts):
     # Verification
     api_val = api_fit.validate(options=ValOptions(booster_slot_index=True))
     assert api_val.passed is True
-    assert api_val.details.booster_slot_index.status == consts.ApiValStatus.passed
+    with check_no_field():
+        api_val.details  # ruff:ignore[useless-expression]
 
 
 def test_no_attr(client, consts):
@@ -179,7 +164,8 @@ def test_no_attr(client, consts):
     # Verification - validation passes if attr does not exist
     api_val = api_fit.validate(options=ValOptions(booster_slot_index=True))
     assert api_val.passed is True
-    assert api_val.details.booster_slot_index.status == consts.ApiValStatus.passed
+    with check_no_field():
+        api_val.details  # ruff:ignore[useless-expression]
 
 
 def test_not_loaded(client, consts):
@@ -193,7 +179,8 @@ def test_not_loaded(client, consts):
     # Verification
     api_val = api_fit.validate(options=ValOptions(booster_slot_index=True))
     assert api_val.passed is True
-    assert api_val.details.booster_slot_index.status == consts.ApiValStatus.passed
+    with check_no_field():
+        api_val.details  # ruff:ignore[useless-expression]
 
 
 def test_criterion_booster_state(client, consts):
@@ -208,9 +195,7 @@ def test_criterion_booster_state(client, consts):
     # Verification
     api_val = api_fit.validate(options=ValOptions(booster_slot_index=True))
     assert api_val.passed is False
-    assert api_val.details.booster_slot_index.status == consts.ApiValStatus.failed
-    assert api_val.details.booster_slot_index.fail == {
-        1: {api_booster1.id: consts.ApiValItemStatus.failed, api_booster2.id: consts.ApiValItemStatus.failed}}
+    assert api_val.details.booster_slot_index == {1: sorted([api_booster1.id, api_booster2.id])}
 
 
 def test_criterion_item_kind(client, consts):
@@ -253,4 +238,5 @@ def test_criterion_item_kind(client, consts):
     assert len(api_fighter2.autocharges) == 1
     api_val = api_fit.validate(options=ValOptions(booster_slot_index=True))
     assert api_val.passed is True
-    assert api_val.details.booster_slot_index.status == consts.ApiValStatus.passed
+    with check_no_field():
+        api_val.details  # ruff:ignore[useless-expression]

@@ -1,3 +1,4 @@
+from fw import check_no_field
 from fw.api import ValOptions
 
 
@@ -18,7 +19,8 @@ def test_kind_autocharge(client, consts):
     assert len(api_fighter.autocharges) == 1
     api_val = api_fit.validate(options=ValOptions(item_kind=True))
     assert api_val.passed is True
-    assert api_val.details.item_kind.status == consts.ApiValStatus.passed
+    with check_no_field():
+        api_val.details  # ruff:ignore[useless-expression]
 
 
 def test_kind_booster(client, consts):
@@ -32,17 +34,17 @@ def test_kind_booster(client, consts):
     # Verification
     api_val = api_fit.validate(options=ValOptions(item_kind=True))
     assert api_val.passed is True
-    assert api_val.details.item_kind.status == consts.ApiValStatus.passed
+    with check_no_field():
+        api_val.details  # ruff:ignore[useless-expression]
     # Action
     api_other1 = api_fit.add_booster(type_id=eve_other_id)
     api_other2 = api_fit.add_implant(type_id=eve_booster_id)
     # Verification
     api_val = api_fit.validate(options=ValOptions(item_kind=True))
     assert api_val.passed is False
-    assert api_val.details.item_kind.status == consts.ApiValStatus.failed
-    assert api_val.details.item_kind.fail == {
-        api_other1.id: (consts.ApiValItemStatus.failed, consts.ApiValItemType.drone, consts.ApiValItemType.booster),
-        api_other2.id: (consts.ApiValItemStatus.failed, consts.ApiValItemType.booster, consts.ApiValItemType.implant)}
+    assert api_val.details.item_kind == {
+        api_other1.id: (consts.ApiValItemType.drone, consts.ApiValItemType.booster),
+        api_other2.id: (consts.ApiValItemType.booster, consts.ApiValItemType.implant)}
 
 
 def test_kind_character(client, consts):
@@ -55,17 +57,17 @@ def test_kind_character(client, consts):
     # Verification
     api_val = api_fit.validate(options=ValOptions(item_kind=True))
     assert api_val.passed is True
-    assert api_val.details.item_kind.status == consts.ApiValStatus.passed
+    with check_no_field():
+        api_val.details  # ruff:ignore[useless-expression]
     # Action
     api_other1 = api_fit.set_character(type_id=eve_other_id)
     api_other2 = api_fit.add_implant(type_id=eve_character_id)
     # Verification
     api_val = api_fit.validate(options=ValOptions(item_kind=True))
     assert api_val.passed is False
-    assert api_val.details.item_kind.status == consts.ApiValStatus.failed
-    assert api_val.details.item_kind.fail == {
-        api_other1.id: (consts.ApiValItemStatus.failed, consts.ApiValItemType.ship, consts.ApiValItemType.character),
-        api_other2.id: (consts.ApiValItemStatus.failed, consts.ApiValItemType.character, consts.ApiValItemType.implant)}
+    assert api_val.details.item_kind == {
+        api_other1.id: (consts.ApiValItemType.ship, consts.ApiValItemType.character),
+        api_other2.id: (consts.ApiValItemType.character, consts.ApiValItemType.implant)}
 
 
 def test_kind_charge(client, consts):
@@ -80,20 +82,17 @@ def test_kind_charge(client, consts):
     # Verification
     api_val = api_fit.validate(options=ValOptions(item_kind=True))
     assert api_val.passed is True
-    assert api_val.details.item_kind.status == consts.ApiValStatus.passed
+    with check_no_field():
+        api_val.details  # ruff:ignore[useless-expression]
     # Action
     api_module = api_fit.add_module(type_id=eve_module_id, rack=consts.Rack.high, charge_type_id=eve_other_id)
     api_other = api_fit.add_implant(type_id=eve_charge_id)
     # Verification
     api_val = api_fit.validate(options=ValOptions(item_kind=True))
     assert api_val.passed is False
-    assert api_val.details.item_kind.status == consts.ApiValStatus.failed
-    assert api_val.details.item_kind.fail == {
-        api_module.charge.id: (
-            consts.ApiValItemStatus.failed,
-            consts.ApiValItemType.ship,
-            consts.ApiValItemType.charge),
-        api_other.id: (consts.ApiValItemStatus.failed, consts.ApiValItemType.charge, consts.ApiValItemType.implant)}
+    assert api_val.details.item_kind == {
+        api_module.charge.id: (consts.ApiValItemType.ship, consts.ApiValItemType.charge),
+        api_other.id: (consts.ApiValItemType.charge, consts.ApiValItemType.implant)}
 
 
 def test_kind_drone(client, consts):
@@ -106,17 +105,17 @@ def test_kind_drone(client, consts):
     # Verification
     api_val = api_fit.validate(options=ValOptions(item_kind=True))
     assert api_val.passed is True
-    assert api_val.details.item_kind.status == consts.ApiValStatus.passed
+    with check_no_field():
+        api_val.details  # ruff:ignore[useless-expression]
     # Action
     api_other1 = api_fit.add_drone(type_id=eve_other_id)
     api_other2 = api_fit.add_implant(type_id=eve_drone_id)
     # Verification
     api_val = api_fit.validate(options=ValOptions(item_kind=True))
     assert api_val.passed is False
-    assert api_val.details.item_kind.status == consts.ApiValStatus.failed
-    assert api_val.details.item_kind.fail == {
-        api_other1.id: (consts.ApiValItemStatus.failed, consts.ApiValItemType.charge, consts.ApiValItemType.drone),
-        api_other2.id: (consts.ApiValItemStatus.failed, consts.ApiValItemType.drone, consts.ApiValItemType.implant)}
+    assert api_val.details.item_kind == {
+        api_other1.id: (consts.ApiValItemType.charge, consts.ApiValItemType.drone),
+        api_other2.id: (consts.ApiValItemType.drone, consts.ApiValItemType.implant)}
 
 
 def test_kind_fighter(client, consts):
@@ -129,17 +128,17 @@ def test_kind_fighter(client, consts):
     # Verification
     api_val = api_fit.validate(options=ValOptions(item_kind=True))
     assert api_val.passed is True
-    assert api_val.details.item_kind.status == consts.ApiValStatus.passed
+    with check_no_field():
+        api_val.details  # ruff:ignore[useless-expression]
     # Action
     api_other1 = api_fit.add_fighter(type_id=eve_other_id)
     api_other2 = api_fit.add_implant(type_id=eve_fighter_id)
     # Verification
     api_val = api_fit.validate(options=ValOptions(item_kind=True))
     assert api_val.passed is False
-    assert api_val.details.item_kind.status == consts.ApiValStatus.failed
-    assert api_val.details.item_kind.fail == {
-        api_other1.id: (consts.ApiValItemStatus.failed, consts.ApiValItemType.charge, consts.ApiValItemType.fighter),
-        api_other2.id: (consts.ApiValItemStatus.failed, consts.ApiValItemType.fighter, consts.ApiValItemType.implant)}
+    assert api_val.details.item_kind == {
+        api_other1.id: (consts.ApiValItemType.charge, consts.ApiValItemType.fighter),
+        api_other2.id: (consts.ApiValItemType.fighter, consts.ApiValItemType.implant)}
 
 
 def test_kind_implant(client, consts):
@@ -153,17 +152,17 @@ def test_kind_implant(client, consts):
     # Verification
     api_val = api_fit.validate(options=ValOptions(item_kind=True))
     assert api_val.passed is True
-    assert api_val.details.item_kind.status == consts.ApiValStatus.passed
+    with check_no_field():
+        api_val.details  # ruff:ignore[useless-expression]
     # Action
     api_other1 = api_fit.add_implant(type_id=eve_other_id)
     api_other2 = api_fit.add_booster(type_id=eve_implant_id)
     # Verification
     api_val = api_fit.validate(options=ValOptions(item_kind=True))
     assert api_val.passed is False
-    assert api_val.details.item_kind.status == consts.ApiValStatus.failed
-    assert api_val.details.item_kind.fail == {
-        api_other1.id: (consts.ApiValItemStatus.failed, consts.ApiValItemType.drone, consts.ApiValItemType.implant),
-        api_other2.id: (consts.ApiValItemStatus.failed, consts.ApiValItemType.implant, consts.ApiValItemType.booster)}
+    assert api_val.details.item_kind == {
+        api_other1.id: (consts.ApiValItemType.drone, consts.ApiValItemType.implant),
+        api_other2.id: (consts.ApiValItemType.implant, consts.ApiValItemType.booster)}
 
 
 def test_kind_module_high(client, consts):
@@ -179,7 +178,8 @@ def test_kind_module_high(client, consts):
     # Verification
     api_val = api_fit.validate(options=ValOptions(item_kind=True))
     assert api_val.passed is True
-    assert api_val.details.item_kind.status == consts.ApiValStatus.passed
+    with check_no_field():
+        api_val.details  # ruff:ignore[useless-expression]
     # Action
     api_other1 = api_fit.add_module(type_id=eve_other_id, rack=consts.Rack.high)
     api_other2 = api_fit.add_module(type_id=eve_ship_module_id, rack=consts.Rack.low)
@@ -189,25 +189,12 @@ def test_kind_module_high(client, consts):
     # Verification
     api_val = api_fit.validate(options=ValOptions(item_kind=True))
     assert api_val.passed is False
-    assert api_val.details.item_kind.status == consts.ApiValStatus.failed
-    assert api_val.details.item_kind.fail == {
-        api_other1.id: (consts.ApiValItemStatus.failed, consts.ApiValItemType.ship, consts.ApiValItemType.module_high),
-        api_other2.id: (
-            consts.ApiValItemStatus.failed,
-            consts.ApiValItemType.module_high,
-            consts.ApiValItemType.module_low),
-        api_other3.id: (
-            consts.ApiValItemStatus.failed,
-            consts.ApiValItemType.module_high,
-            consts.ApiValItemType.module_low),
-        api_other4.id: (
-            consts.ApiValItemStatus.failed,
-            consts.ApiValItemType.module_high,
-            consts.ApiValItemType.implant),
-        api_other5.id: (
-            consts.ApiValItemStatus.failed,
-            consts.ApiValItemType.module_high,
-            consts.ApiValItemType.implant)}
+    assert api_val.details.item_kind == {
+        api_other1.id: (consts.ApiValItemType.ship, consts.ApiValItemType.module_high),
+        api_other2.id: (consts.ApiValItemType.module_high, consts.ApiValItemType.module_low),
+        api_other3.id: (consts.ApiValItemType.module_high, consts.ApiValItemType.module_low),
+        api_other4.id: (consts.ApiValItemType.module_high, consts.ApiValItemType.implant),
+        api_other5.id: (consts.ApiValItemType.module_high, consts.ApiValItemType.implant)}
 
 
 def test_kind_module_mid(client, consts):
@@ -223,7 +210,8 @@ def test_kind_module_mid(client, consts):
     # Verification
     api_val = api_fit.validate(options=ValOptions(item_kind=True))
     assert api_val.passed is True
-    assert api_val.details.item_kind.status == consts.ApiValStatus.passed
+    with check_no_field():
+        api_val.details  # ruff:ignore[useless-expression]
     # Action
     api_other1 = api_fit.add_module(type_id=eve_other_id, rack=consts.Rack.mid)
     api_other2 = api_fit.add_module(type_id=eve_ship_module_id, rack=consts.Rack.high)
@@ -233,25 +221,12 @@ def test_kind_module_mid(client, consts):
     # Verification
     api_val = api_fit.validate(options=ValOptions(item_kind=True))
     assert api_val.passed is False
-    assert api_val.details.item_kind.status == consts.ApiValStatus.failed
-    assert api_val.details.item_kind.fail == {
-        api_other1.id: (consts.ApiValItemStatus.failed, consts.ApiValItemType.ship, consts.ApiValItemType.module_mid),
-        api_other2.id: (
-            consts.ApiValItemStatus.failed,
-            consts.ApiValItemType.module_mid,
-            consts.ApiValItemType.module_high),
-        api_other3.id: (
-            consts.ApiValItemStatus.failed,
-            consts.ApiValItemType.module_mid,
-            consts.ApiValItemType.module_high),
-        api_other4.id: (
-            consts.ApiValItemStatus.failed,
-            consts.ApiValItemType.module_mid,
-            consts.ApiValItemType.implant),
-        api_other5.id: (
-            consts.ApiValItemStatus.failed,
-            consts.ApiValItemType.module_mid,
-            consts.ApiValItemType.implant)}
+    assert api_val.details.item_kind == {
+        api_other1.id: (consts.ApiValItemType.ship, consts.ApiValItemType.module_mid),
+        api_other2.id: (consts.ApiValItemType.module_mid, consts.ApiValItemType.module_high),
+        api_other3.id: (consts.ApiValItemType.module_mid, consts.ApiValItemType.module_high),
+        api_other4.id: (consts.ApiValItemType.module_mid, consts.ApiValItemType.implant),
+        api_other5.id: (consts.ApiValItemType.module_mid, consts.ApiValItemType.implant)}
 
 
 def test_kind_module_low(client, consts):
@@ -267,7 +242,8 @@ def test_kind_module_low(client, consts):
     # Verification
     api_val = api_fit.validate(options=ValOptions(item_kind=True))
     assert api_val.passed is True
-    assert api_val.details.item_kind.status == consts.ApiValStatus.passed
+    with check_no_field():
+        api_val.details  # ruff:ignore[useless-expression]
     # Action
     api_other1 = api_fit.add_module(type_id=eve_other_id, rack=consts.Rack.low)
     api_other2 = api_fit.add_module(type_id=eve_ship_module_id, rack=consts.Rack.mid)
@@ -277,25 +253,12 @@ def test_kind_module_low(client, consts):
     # Verification
     api_val = api_fit.validate(options=ValOptions(item_kind=True))
     assert api_val.passed is False
-    assert api_val.details.item_kind.status == consts.ApiValStatus.failed
-    assert api_val.details.item_kind.fail == {
-        api_other1.id: (consts.ApiValItemStatus.failed, consts.ApiValItemType.ship, consts.ApiValItemType.module_low),
-        api_other2.id: (
-            consts.ApiValItemStatus.failed,
-            consts.ApiValItemType.module_low,
-            consts.ApiValItemType.module_mid),
-        api_other3.id: (
-            consts.ApiValItemStatus.failed,
-            consts.ApiValItemType.module_low,
-            consts.ApiValItemType.module_mid),
-        api_other4.id: (
-            consts.ApiValItemStatus.failed,
-            consts.ApiValItemType.module_low,
-            consts.ApiValItemType.implant),
-        api_other5.id: (
-            consts.ApiValItemStatus.failed,
-            consts.ApiValItemType.module_low,
-            consts.ApiValItemType.implant)}
+    assert api_val.details.item_kind == {
+        api_other1.id: (consts.ApiValItemType.ship, consts.ApiValItemType.module_low),
+        api_other2.id: (consts.ApiValItemType.module_low, consts.ApiValItemType.module_mid),
+        api_other3.id: (consts.ApiValItemType.module_low, consts.ApiValItemType.module_mid),
+        api_other4.id: (consts.ApiValItemType.module_low, consts.ApiValItemType.implant),
+        api_other5.id: (consts.ApiValItemType.module_low, consts.ApiValItemType.implant)}
 
 
 def test_kind_rig(client, consts):
@@ -311,7 +274,8 @@ def test_kind_rig(client, consts):
     # Verification
     api_val = api_fit.validate(options=ValOptions(item_kind=True))
     assert api_val.passed is True
-    assert api_val.details.item_kind.status == consts.ApiValStatus.passed
+    with check_no_field():
+        api_val.details  # ruff:ignore[useless-expression]
     # Action
     api_other1 = api_fit.add_rig(type_id=eve_other_id)
     api_other2 = api_fit.add_implant(type_id=eve_ship_rig_id)
@@ -319,11 +283,10 @@ def test_kind_rig(client, consts):
     # Verification
     api_val = api_fit.validate(options=ValOptions(item_kind=True))
     assert api_val.passed is False
-    assert api_val.details.item_kind.status == consts.ApiValStatus.failed
-    assert api_val.details.item_kind.fail == {
-        api_other1.id: (consts.ApiValItemStatus.failed, consts.ApiValItemType.character, consts.ApiValItemType.rig),
-        api_other2.id: (consts.ApiValItemStatus.failed, consts.ApiValItemType.rig, consts.ApiValItemType.implant),
-        api_other3.id: (consts.ApiValItemStatus.failed, consts.ApiValItemType.rig, consts.ApiValItemType.implant)}
+    assert api_val.details.item_kind == {
+        api_other1.id: (consts.ApiValItemType.character, consts.ApiValItemType.rig),
+        api_other2.id: (consts.ApiValItemType.rig, consts.ApiValItemType.implant),
+        api_other3.id: (consts.ApiValItemType.rig, consts.ApiValItemType.implant)}
 
 
 def test_kind_service(client, consts):
@@ -339,7 +302,8 @@ def test_kind_service(client, consts):
     # Verification
     api_val = api_fit.validate(options=ValOptions(item_kind=True))
     assert api_val.passed is True
-    assert api_val.details.item_kind.status == consts.ApiValStatus.passed
+    with check_no_field():
+        api_val.details  # ruff:ignore[useless-expression]
     # Action
     api_other1 = api_fit.add_service(type_id=eve_other_id)
     api_other2 = api_fit.add_implant(type_id=eve_ship_service_id)
@@ -347,11 +311,10 @@ def test_kind_service(client, consts):
     # Verification
     api_val = api_fit.validate(options=ValOptions(item_kind=True))
     assert api_val.passed is False
-    assert api_val.details.item_kind.status == consts.ApiValStatus.failed
-    assert api_val.details.item_kind.fail == {
-        api_other1.id: (consts.ApiValItemStatus.failed, consts.ApiValItemType.character, consts.ApiValItemType.service),
-        api_other2.id: (consts.ApiValItemStatus.failed, consts.ApiValItemType.service, consts.ApiValItemType.implant),
-        api_other3.id: (consts.ApiValItemStatus.failed, consts.ApiValItemType.service, consts.ApiValItemType.implant)}
+    assert api_val.details.item_kind == {
+        api_other1.id: (consts.ApiValItemType.character, consts.ApiValItemType.service),
+        api_other2.id: (consts.ApiValItemType.service, consts.ApiValItemType.implant),
+        api_other3.id: (consts.ApiValItemType.service, consts.ApiValItemType.implant)}
 
 
 def test_kind_ship(client, consts):
@@ -364,17 +327,17 @@ def test_kind_ship(client, consts):
     # Verification
     api_val = api_fit.validate(options=ValOptions(item_kind=True))
     assert api_val.passed is True
-    assert api_val.details.item_kind.status == consts.ApiValStatus.passed
+    with check_no_field():
+        api_val.details  # ruff:ignore[useless-expression]
     # Action
     api_other1 = api_fit.set_ship(type_id=eve_other_id)
     api_other2 = api_fit.add_implant(type_id=eve_ship_id)
     # Verification
     api_val = api_fit.validate(options=ValOptions(item_kind=True))
     assert api_val.passed is False
-    assert api_val.details.item_kind.status == consts.ApiValStatus.failed
-    assert api_val.details.item_kind.fail == {
-        api_other1.id: (consts.ApiValItemStatus.failed, consts.ApiValItemType.drone, consts.ApiValItemType.ship),
-        api_other2.id: (consts.ApiValItemStatus.failed, consts.ApiValItemType.ship, consts.ApiValItemType.implant)}
+    assert api_val.details.item_kind == {
+        api_other1.id: (consts.ApiValItemType.drone, consts.ApiValItemType.ship),
+        api_other2.id: (consts.ApiValItemType.ship, consts.ApiValItemType.implant)}
 
 
 def test_kind_skill(client, consts):
@@ -387,17 +350,17 @@ def test_kind_skill(client, consts):
     # Verification
     api_val = api_fit.validate(options=ValOptions(item_kind=True))
     assert api_val.passed is True
-    assert api_val.details.item_kind.status == consts.ApiValStatus.passed
+    with check_no_field():
+        api_val.details  # ruff:ignore[useless-expression]
     # Action
     api_other1 = api_fit.add_skill(type_id=eve_other_id, level=1)
     api_other2 = api_fit.add_implant(type_id=eve_skill_id)
     # Verification
     api_val = api_fit.validate(options=ValOptions(item_kind=True))
     assert api_val.passed is False
-    assert api_val.details.item_kind.status == consts.ApiValStatus.failed
-    assert api_val.details.item_kind.fail == {
-        api_other1.id: (consts.ApiValItemStatus.failed, consts.ApiValItemType.charge, consts.ApiValItemType.skill),
-        api_other2.id: (consts.ApiValItemStatus.failed, consts.ApiValItemType.skill, consts.ApiValItemType.implant)}
+    assert api_val.details.item_kind == {
+        api_other1.id: (consts.ApiValItemType.charge, consts.ApiValItemType.skill),
+        api_other2.id: (consts.ApiValItemType.skill, consts.ApiValItemType.implant)}
 
 
 def test_kind_stance(client, consts):
@@ -410,17 +373,17 @@ def test_kind_stance(client, consts):
     # Verification
     api_val = api_fit.validate(options=ValOptions(item_kind=True))
     assert api_val.passed is True
-    assert api_val.details.item_kind.status == consts.ApiValStatus.passed
+    with check_no_field():
+        api_val.details  # ruff:ignore[useless-expression]
     # Action
     api_other1 = api_fit.set_stance(type_id=eve_other_id)
     api_other2 = api_fit.add_implant(type_id=eve_stance_id)
     # Verification
     api_val = api_fit.validate(options=ValOptions(item_kind=True))
     assert api_val.passed is False
-    assert api_val.details.item_kind.status == consts.ApiValStatus.failed
-    assert api_val.details.item_kind.fail == {
-        api_other1.id: (consts.ApiValItemStatus.failed, consts.ApiValItemType.drone, consts.ApiValItemType.stance),
-        api_other2.id: (consts.ApiValItemStatus.failed, consts.ApiValItemType.stance, consts.ApiValItemType.implant)}
+    assert api_val.details.item_kind == {
+        api_other1.id: (consts.ApiValItemType.drone, consts.ApiValItemType.stance),
+        api_other2.id: (consts.ApiValItemType.stance, consts.ApiValItemType.implant)}
 
 
 def test_kind_subsystem(client, consts):
@@ -433,20 +396,17 @@ def test_kind_subsystem(client, consts):
     # Verification
     api_val = api_fit.validate(options=ValOptions(item_kind=True))
     assert api_val.passed is True
-    assert api_val.details.item_kind.status == consts.ApiValStatus.passed
+    with check_no_field():
+        api_val.details  # ruff:ignore[useless-expression]
     # Action
     api_other1 = api_fit.add_subsystem(type_id=eve_other_id)
     api_other2 = api_fit.add_implant(type_id=eve_subsystem_id)
     # Verification
     api_val = api_fit.validate(options=ValOptions(item_kind=True))
     assert api_val.passed is False
-    assert api_val.details.item_kind.status == consts.ApiValStatus.failed
-    assert api_val.details.item_kind.fail == {
-        api_other1.id: (
-            consts.ApiValItemStatus.failed,
-            consts.ApiValItemType.character,
-            consts.ApiValItemType.subsystem),
-        api_other2.id: (consts.ApiValItemStatus.failed, consts.ApiValItemType.subsystem, consts.ApiValItemType.implant)}
+    assert api_val.details.item_kind == {
+        api_other1.id: (consts.ApiValItemType.character, consts.ApiValItemType.subsystem),
+        api_other2.id: (consts.ApiValItemType.subsystem, consts.ApiValItemType.implant)}
 
 
 def test_no_matches(client, consts):
@@ -458,9 +418,7 @@ def test_no_matches(client, consts):
     # Verification
     api_val = api_fit.validate(options=ValOptions(item_kind=True))
     assert api_val.passed is False
-    assert api_val.details.item_kind.status == consts.ApiValStatus.failed
-    assert api_val.details.item_kind.fail == {
-        api_item.id: (consts.ApiValItemStatus.failed, None, consts.ApiValItemType.rig)}
+    assert api_val.details.item_kind == {api_item.id: (None, consts.ApiValItemType.rig)}
 
 
 def test_multiple_matches_implant(client, consts):
@@ -477,10 +435,9 @@ def test_multiple_matches_implant(client, consts):
     # Verification
     api_val = api_fit.validate(options=ValOptions(item_kind=True))
     assert api_val.passed is False
-    assert api_val.details.item_kind.status == consts.ApiValStatus.failed
-    assert api_val.details.item_kind.fail == {
-        api_booster.id: (consts.ApiValItemStatus.failed, None, consts.ApiValItemType.booster),
-        api_implant.id: (consts.ApiValItemStatus.failed, None, consts.ApiValItemType.implant)}
+    assert api_val.details.item_kind == {
+        api_booster.id: (None, consts.ApiValItemType.booster),
+        api_implant.id: (None, consts.ApiValItemType.implant)}
 
 
 def test_multiple_matches_module(client, consts):
@@ -509,12 +466,11 @@ def test_multiple_matches_module(client, consts):
     # Verification
     api_val = api_fit.validate(options=ValOptions(item_kind=True))
     assert api_val.passed is False
-    assert api_val.details.item_kind.status == consts.ApiValStatus.failed
-    assert api_val.details.item_kind.fail == {
-        api_ship_module1.id: (consts.ApiValItemStatus.failed, None, consts.ApiValItemType.module_high),
-        api_ship_module2.id: (consts.ApiValItemStatus.failed, None, consts.ApiValItemType.module_high),
-        api_struct_module1.id: (consts.ApiValItemStatus.failed, None, consts.ApiValItemType.module_high),
-        api_struct_module2.id: (consts.ApiValItemStatus.failed, None, consts.ApiValItemType.module_high)}
+    assert api_val.details.item_kind == {
+        api_ship_module1.id: (None, consts.ApiValItemType.module_high),
+        api_ship_module2.id: (None, consts.ApiValItemType.module_high),
+        api_struct_module1.id: (None, consts.ApiValItemType.module_high),
+        api_struct_module2.id: (None, consts.ApiValItemType.module_high)}
 
 
 def test_known_failures(client, consts):
@@ -531,28 +487,20 @@ def test_known_failures(client, consts):
     # Verification
     api_val = api_fit.validate(options=ValOptions(item_kind=[api_booster1.id]))
     assert api_val.passed is False
-    assert api_val.details.item_kind.status == consts.ApiValStatus.failed
-    assert api_val.details.item_kind.fail == {
-        api_booster1.id: (consts.ApiValItemStatus.kf, consts.ApiValItemType.implant, consts.ApiValItemType.booster),
-        api_booster2.id: (consts.ApiValItemStatus.failed, consts.ApiValItemType.implant, consts.ApiValItemType.booster)}
+    assert api_val.details.item_kind == {
+        api_booster2.id: (consts.ApiValItemType.implant, consts.ApiValItemType.booster)}
     api_val = api_fit.validate(options=ValOptions(item_kind=[api_booster2.id]))
     assert api_val.passed is False
-    assert api_val.details.item_kind.status == consts.ApiValStatus.failed
-    assert api_val.details.item_kind.fail == {
-        api_booster1.id: (consts.ApiValItemStatus.failed, consts.ApiValItemType.implant, consts.ApiValItemType.booster),
-        api_booster2.id: (consts.ApiValItemStatus.kf, consts.ApiValItemType.implant, consts.ApiValItemType.booster)}
+    assert api_val.details.item_kind == {
+        api_booster1.id: (consts.ApiValItemType.implant, consts.ApiValItemType.booster)}
     api_val = api_fit.validate(options=ValOptions(item_kind=[api_booster1.id, api_booster2.id]))
     assert api_val.passed is True
-    assert api_val.details.item_kind.status == consts.ApiValStatus.passed_kfs
-    assert api_val.details.item_kind.fail == {
-        api_booster1.id: (consts.ApiValItemStatus.kf, consts.ApiValItemType.implant, consts.ApiValItemType.booster),
-        api_booster2.id: (consts.ApiValItemStatus.kf, consts.ApiValItemType.implant, consts.ApiValItemType.booster)}
+    with check_no_field():
+        api_val.details  # ruff:ignore[useless-expression]
     api_val = api_fit.validate(options=ValOptions(item_kind=[api_booster1.id, api_other.id, api_booster2.id]))
     assert api_val.passed is True
-    assert api_val.details.item_kind.status == consts.ApiValStatus.passed_kfs
-    assert api_val.details.item_kind.fail == {
-        api_booster1.id: (consts.ApiValItemStatus.kf, consts.ApiValItemType.implant, consts.ApiValItemType.booster),
-        api_booster2.id: (consts.ApiValItemStatus.kf, consts.ApiValItemType.implant, consts.ApiValItemType.booster)}
+    with check_no_field():
+        api_val.details  # ruff:ignore[useless-expression]
 
 
 def test_mutation_effect(client, consts):
@@ -572,41 +520,30 @@ def test_mutation_effect(client, consts):
     # Verification
     api_val = api_fit.validate(options=ValOptions(item_kind=True))
     assert api_val.passed is False
-    assert api_val.details.item_kind.status == consts.ApiValStatus.failed
-    assert api_val.details.item_kind.fail == {
-        api_mid_module.id: (
-            consts.ApiValItemStatus.failed,
-            consts.ApiValItemType.module_high,
-            consts.ApiValItemType.module_mid)}
+    assert api_val.details.item_kind == {
+        api_mid_module.id: (consts.ApiValItemType.module_high, consts.ApiValItemType.module_mid)}
     # Action
     api_mid_module.change_module(mutation=eve_mutator_id)
     # Verification
     api_val = api_fit.validate(options=ValOptions(item_kind=True))
     assert api_val.passed is True
-    assert api_val.details.item_kind.status == consts.ApiValStatus.passed
+    with check_no_field():
+        api_val.details  # ruff:ignore[useless-expression]
     # Action
     api_high_module.change_module(mutation=eve_mutator_id)
     # Verification
     api_val = api_fit.validate(options=ValOptions(item_kind=True))
     assert api_val.passed is False
-    assert api_val.details.item_kind.status == consts.ApiValStatus.failed
-    assert api_val.details.item_kind.fail == {
-        api_high_module.id: (
-            consts.ApiValItemStatus.failed,
-            consts.ApiValItemType.module_mid,
-            consts.ApiValItemType.module_high)}
+    assert api_val.details.item_kind == {
+        api_high_module.id: (consts.ApiValItemType.module_mid, consts.ApiValItemType.module_high)}
     # Action
     api_high_module.change_module(mutation=None)
     api_mid_module.change_module(mutation=None)
     # Verification
     api_val = api_fit.validate(options=ValOptions(item_kind=True))
     assert api_val.passed is False
-    assert api_val.details.item_kind.status == consts.ApiValStatus.failed
-    assert api_val.details.item_kind.fail == {
-        api_mid_module.id: (
-            consts.ApiValItemStatus.failed,
-            consts.ApiValItemType.module_high,
-            consts.ApiValItemType.module_mid)}
+    assert api_val.details.item_kind == {
+        api_mid_module.id: (consts.ApiValItemType.module_high, consts.ApiValItemType.module_mid)}
 
 
 def test_mutation_attr(client, consts):
@@ -625,25 +562,22 @@ def test_mutation_attr(client, consts):
     # Verification
     api_val = api_fit.validate(options=ValOptions(item_kind=True))
     assert api_val.passed is False
-    assert api_val.details.item_kind.status == consts.ApiValStatus.failed
-    assert api_val.details.item_kind.fail == {
-        api_item.id: (consts.ApiValItemStatus.failed, consts.ApiValItemType.booster, consts.ApiValItemType.module_high)}
+    assert api_val.details.item_kind == {
+        api_item.id: (consts.ApiValItemType.booster, consts.ApiValItemType.module_high)}
     # Action
     api_item.change_module(mutation=eve_mutator_id)
     # Verification - mutated item type is used; contribution of base item attributes is ignored
     api_val = api_fit.validate(options=ValOptions(item_kind=True))
     assert api_val.passed is False
-    assert api_val.details.item_kind.status == consts.ApiValStatus.failed
-    assert api_val.details.item_kind.fail == {
-        api_item.id: (consts.ApiValItemStatus.failed, consts.ApiValItemType.implant, consts.ApiValItemType.module_high)}
+    assert api_val.details.item_kind == {
+        api_item.id: (consts.ApiValItemType.implant, consts.ApiValItemType.module_high)}
     # Action
     api_item.change_module(mutation=None)
     # Verification
     api_val = api_fit.validate(options=ValOptions(item_kind=True))
     assert api_val.passed is False
-    assert api_val.details.item_kind.status == consts.ApiValStatus.failed
-    assert api_val.details.item_kind.fail == {
-        api_item.id: (consts.ApiValItemStatus.failed, consts.ApiValItemType.booster, consts.ApiValItemType.module_high)}
+    assert api_val.details.item_kind == {
+        api_item.id: (consts.ApiValItemType.booster, consts.ApiValItemType.module_high)}
 
 
 def test_no_attr_implant(client, consts):
@@ -656,12 +590,10 @@ def test_no_attr_implant(client, consts):
     # Verification - when attribute doesn't exist, item kind detection can't rely on it
     api_val = api_fit.validate(options=ValOptions(item_kind=True))
     assert api_val.passed is False
-    assert api_val.details.item_kind.status == consts.ApiValStatus.failed
-    assert api_val.details.item_kind.fail == {
-        api_implant.id: (consts.ApiValItemStatus.failed, None, consts.ApiValItemType.implant)}
+    assert api_val.details.item_kind == {api_implant.id: (None, consts.ApiValItemType.implant)}
 
 
-def test_not_loaded(client, consts):
+def test_not_loaded(client):
     # Not loaded items are not subjects for validation
     eve_item_id = client.alloc_item_id()
     client.create_sources()
@@ -671,4 +603,5 @@ def test_not_loaded(client, consts):
     # Verification
     api_val = api_fit.validate(options=ValOptions(item_kind=True))
     assert api_val.passed is True
-    assert api_val.details.item_kind.status == consts.ApiValStatus.passed
+    with check_no_field():
+        api_val.details  # ruff:ignore[useless-expression]

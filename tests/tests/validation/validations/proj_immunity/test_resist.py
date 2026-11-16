@@ -17,30 +17,33 @@ def test_src_module_tgt_ship_project_unproject(client, consts):
     # Verification
     api_val = api_src_fit.validate(options=ValOptions(resist_immunity=True))
     assert api_val.passed is True
-    assert api_val.details.resist_immunity.status == consts.ApiValStatus.passed
+    with check_no_field():
+        api_val.details  # ruff:ignore[useless-expression]
     api_val = api_tgt_fit.validate(options=ValOptions(resist_immunity=True))
     assert api_val.passed is True
-    assert api_val.details.resist_immunity.status == consts.ApiValStatus.passed
+    with check_no_field():
+        api_val.details  # ruff:ignore[useless-expression]
     # Action
     api_src_item.change_module(add_proj_item_ids=[api_tgt_item.id])
     # Verification
     api_val = api_src_fit.validate(options=ValOptions(resist_immunity=True))
     assert api_val.passed is False
-    assert api_val.details.resist_immunity.status == consts.ApiValStatus.failed
-    assert api_val.details.resist_immunity.fail == {
-        api_src_item.id: (consts.ApiValItemStatus.failed, [api_tgt_item.id])}
+    assert api_val.details.resist_immunity == {api_src_item.id: [api_tgt_item.id]}
     api_val = api_tgt_fit.validate(options=ValOptions(resist_immunity=True))
     assert api_val.passed is True
-    assert api_val.details.resist_immunity.status == consts.ApiValStatus.passed
+    with check_no_field():
+        api_val.details  # ruff:ignore[useless-expression]
     # Action
     api_src_item.change_module(rm_proj_item_ids=[api_tgt_item.id])
     # Verification
     api_val = api_src_fit.validate(options=ValOptions(resist_immunity=True))
     assert api_val.passed is True
-    assert api_val.details.resist_immunity.status == consts.ApiValStatus.passed
+    with check_no_field():
+        api_val.details  # ruff:ignore[useless-expression]
     api_val = api_tgt_fit.validate(options=ValOptions(resist_immunity=True))
     assert api_val.passed is True
-    assert api_val.details.resist_immunity.status == consts.ApiValStatus.passed
+    with check_no_field():
+        api_val.details  # ruff:ignore[useless-expression]
 
 
 def test_src_drone_fighter_with_attr_def(client, consts):
@@ -72,32 +75,28 @@ def test_src_drone_fighter_with_attr_def(client, consts):
     # Verification
     api_val = api_src_fit.validate(options=ValOptions(resist_immunity=True))
     assert api_val.passed is False
-    assert api_val.details.resist_immunity.status == consts.ApiValStatus.failed
-    assert api_val.details.resist_immunity.fail == {
-        api_src_drone.id: (consts.ApiValItemStatus.failed, [api_tgt_item.id])}
+    assert api_val.details.resist_immunity == {api_src_drone.id: [api_tgt_item.id]}
     # Action
     api_src_fighter.change_fighter(add_proj_item_ids=[api_tgt_item.id])
     # Verification
     api_val = api_src_fit.validate(options=ValOptions(resist_immunity=True))
     assert api_val.passed is False
-    assert api_val.details.resist_immunity.status == consts.ApiValStatus.failed
-    assert api_val.details.resist_immunity.fail == {
-        api_src_drone.id: (consts.ApiValItemStatus.failed, [api_tgt_item.id]),
-        api_src_fighter.id: (consts.ApiValItemStatus.failed, [api_tgt_item.id])}
+    assert api_val.details.resist_immunity == {
+        api_src_drone.id: [api_tgt_item.id],
+        api_src_fighter.id: [api_tgt_item.id]}
     # Action
     api_src_drone.remove()
     # Verification
     api_val = api_src_fit.validate(options=ValOptions(resist_immunity=True))
     assert api_val.passed is False
-    assert api_val.details.resist_immunity.status == consts.ApiValStatus.failed
-    assert api_val.details.resist_immunity.fail == {
-        api_src_fighter.id: (consts.ApiValItemStatus.failed, [api_tgt_item.id])}
+    assert api_val.details.resist_immunity == {api_src_fighter.id: [api_tgt_item.id]}
     # Action
     api_src_fighter.remove()
     # Verification
     api_val = api_src_fit.validate(options=ValOptions(resist_immunity=True))
     assert api_val.passed is True
-    assert api_val.details.resist_immunity.status == consts.ApiValStatus.passed
+    with check_no_field():
+        api_val.details  # ruff:ignore[useless-expression]
 
 
 def test_src_proj_effect(client, consts):
@@ -117,7 +116,8 @@ def test_src_proj_effect(client, consts):
     # Verification
     api_val = api_sol.validate(fit_ids=[api_src_fit.id], options=ValOptions(resist_immunity=True))
     assert api_val.passed is True
-    assert api_val.details.fits[api_src_fit.id].resist_immunity.status == consts.ApiValStatus.passed
+    with check_no_field():
+        api_val.details  # ruff:ignore[useless-expression]
 
 
 def test_tgt_drone_fighter(client, consts):
@@ -137,9 +137,7 @@ def test_tgt_drone_fighter(client, consts):
     # Verification
     api_val = api_src_fit.validate(options=ValOptions(resist_immunity=True))
     assert api_val.passed is False
-    assert api_val.details.resist_immunity.status == consts.ApiValStatus.failed
-    assert api_val.details.resist_immunity.fail == {
-        api_src_item.id: (consts.ApiValItemStatus.failed, sorted([api_tgt_drone.id, api_tgt_fighter.id]))}
+    assert api_val.details.resist_immunity == {api_src_item.id: sorted([api_tgt_drone.id, api_tgt_fighter.id])}
 
 
 def test_multiple_src_effects(client, consts):
@@ -157,37 +155,33 @@ def test_multiple_src_effects(client, consts):
     # Verification
     api_val = api_src_fit.validate(options=ValOptions(resist_immunity=True))
     assert api_val.passed is True
-    assert api_val.details.resist_immunity.status == consts.ApiValStatus.passed
+    with check_no_field():
+        api_val.details  # ruff:ignore[useless-expression]
     # Action
     api_src_item.change_module(add_proj_item_ids=[api_tgt_item.id])
     # Verification
     api_val = api_src_fit.validate(options=ValOptions(resist_immunity=True))
     assert api_val.passed is False
-    assert api_val.details.resist_immunity.status == consts.ApiValStatus.failed
-    assert api_val.details.resist_immunity.fail == {
-        api_src_item.id: (consts.ApiValItemStatus.failed, [api_tgt_item.id])}
+    assert api_val.details.resist_immunity == {api_src_item.id: [api_tgt_item.id]}
     # Action
     api_src_item.change_module(effect_modes={eve_src_effect2_id: consts.ApiEffMode.state_compliance})
     # Verification
     api_val = api_src_fit.validate(options=ValOptions(resist_immunity=True))
     assert api_val.passed is False
-    assert api_val.details.resist_immunity.status == consts.ApiValStatus.failed
-    assert api_val.details.resist_immunity.fail == {
-        api_src_item.id: (consts.ApiValItemStatus.failed, [api_tgt_item.id])}
+    assert api_val.details.resist_immunity == {api_src_item.id: [api_tgt_item.id]}
     # Action
     api_src_item.change_module(effect_modes={eve_src_effect1_id: consts.ApiEffMode.force_stop})
     # Verification
     api_val = api_src_fit.validate(options=ValOptions(resist_immunity=True))
     assert api_val.passed is False
-    assert api_val.details.resist_immunity.status == consts.ApiValStatus.failed
-    assert api_val.details.resist_immunity.fail == {
-        api_src_item.id: (consts.ApiValItemStatus.failed, [api_tgt_item.id])}
+    assert api_val.details.resist_immunity == {api_src_item.id: [api_tgt_item.id]}
     # Action
     api_src_item.change_module(effect_modes={eve_src_effect2_id: consts.ApiEffMode.force_stop})
     # Verification
     api_val = api_src_fit.validate(options=ValOptions(resist_immunity=True))
     assert api_val.passed is True
-    assert api_val.details.resist_immunity.status == consts.ApiValStatus.passed
+    with check_no_field():
+        api_val.details  # ruff:ignore[useless-expression]
 
 
 def test_resist_values(client, consts):
@@ -216,9 +210,7 @@ def test_resist_values(client, consts):
     # Verification - any value below threshold fails validation
     api_val = api_src_fit.validate(options=ValOptions(resist_immunity=True))
     assert api_val.passed is False
-    assert api_val.details.resist_immunity.status == consts.ApiValStatus.failed
-    assert api_val.details.resist_immunity.fail == {
-        api_src_item.id: (consts.ApiValItemStatus.failed, [api_tgt_item1.id, api_tgt_item2.id, api_tgt_item3.id])}
+    assert api_val.details.resist_immunity == {api_src_item.id: [api_tgt_item1.id, api_tgt_item2.id, api_tgt_item3.id]}
 
 
 def test_tgt_modified(client, consts):
@@ -246,23 +238,23 @@ def test_tgt_modified(client, consts):
     assert api_tgt_item.update().attrs[eve_resist_attr_id].modified == approx(0.1)
     api_val = api_src_fit.validate(options=ValOptions(resist_immunity=True))
     assert api_val.passed is True
-    assert api_val.details.resist_immunity.status == consts.ApiValStatus.passed
+    with check_no_field():
+        api_val.details  # ruff:ignore[useless-expression]
     # Action
     api_mod_item = api_tgt_fit.add_module(type_id=eve_mod_item_id)
     # Verification
     assert api_tgt_item.update().attrs[eve_resist_attr_id].modified == approx(0)
     api_val = api_src_fit.validate(options=ValOptions(resist_immunity=True))
     assert api_val.passed is False
-    assert api_val.details.resist_immunity.status == consts.ApiValStatus.failed
-    assert api_val.details.resist_immunity.fail == {
-        api_src_item.id: (consts.ApiValItemStatus.failed, [api_tgt_item.id])}
+    assert api_val.details.resist_immunity == {api_src_item.id: [api_tgt_item.id]}
     # Action
     api_mod_item.remove()
     # Verification
     assert api_tgt_item.update().attrs[eve_resist_attr_id].modified == approx(0.1)
     api_val = api_src_fit.validate(options=ValOptions(resist_immunity=True))
     assert api_val.passed is True
-    assert api_val.details.resist_immunity.status == consts.ApiValStatus.passed
+    with check_no_field():
+        api_val.details  # ruff:ignore[useless-expression]
 
 
 def test_src_modified(client, consts):
@@ -307,9 +299,7 @@ def test_src_modified(client, consts):
     assert api_src_item2.update().attrs[eve_resist_def_attr_id].modified == approx(eve_resist_attr3_id)
     api_val = api_src_fit.validate(options=ValOptions(resist_immunity=True))
     assert api_val.passed is False
-    assert api_val.details.resist_immunity.status == consts.ApiValStatus.failed
-    assert api_val.details.resist_immunity.fail == {
-        api_src_item1.id: (consts.ApiValItemStatus.failed, [api_tgt_item.id])}
+    assert api_val.details.resist_immunity == {api_src_item1.id: [api_tgt_item.id]}
     # Action
     api_mod_item.remove()
     # Verification
@@ -317,9 +307,7 @@ def test_src_modified(client, consts):
     assert api_src_item2.update().attrs[eve_resist_def_attr_id].modified == approx(eve_resist_attr2_id)
     api_val = api_src_fit.validate(options=ValOptions(resist_immunity=True))
     assert api_val.passed is False
-    assert api_val.details.resist_immunity.status == consts.ApiValStatus.failed
-    assert api_val.details.resist_immunity.fail == {
-        api_src_item1.id: (consts.ApiValItemStatus.failed, [api_tgt_item.id])}
+    assert api_val.details.resist_immunity == {api_src_item1.id: [api_tgt_item.id]}
 
 
 def test_tgt_mutation(client, consts):
@@ -342,37 +330,39 @@ def test_tgt_mutation(client, consts):
     assert api_tgt_item.update().attrs[eve_resist_attr_id].modified == approx(1)
     api_val = api_src_fit.validate(options=ValOptions(resist_immunity=True))
     assert api_val.passed is True
-    assert api_val.details.resist_immunity.status == consts.ApiValStatus.passed
+    with check_no_field():
+        api_val.details  # ruff:ignore[useless-expression]
     # Action
     api_tgt_item.change_drone(mutation=eve_tgt_mutator_id)
     # Verification
     assert api_tgt_item.update().attrs[eve_resist_attr_id].modified == approx(1)
     api_val = api_src_fit.validate(options=ValOptions(resist_immunity=True))
     assert api_val.passed is True
-    assert api_val.details.resist_immunity.status == consts.ApiValStatus.passed
+    with check_no_field():
+        api_val.details  # ruff:ignore[useless-expression]
     # Action
     api_tgt_item.change_drone(mutation={eve_resist_attr_id: Muta.roll_to_api(val=0)})
     # Verification
     assert api_tgt_item.update().attrs[eve_resist_attr_id].modified == approx(0)
     api_val = api_src_fit.validate(options=ValOptions(resist_immunity=True))
     assert api_val.passed is False
-    assert api_val.details.resist_immunity.status == consts.ApiValStatus.failed
-    assert api_val.details.resist_immunity.fail == {
-        api_src_item.id: (consts.ApiValItemStatus.failed, [api_tgt_item.id])}
+    assert api_val.details.resist_immunity == {api_src_item.id: [api_tgt_item.id]}
     # Action
     api_tgt_item.change_drone(mutation={eve_resist_attr_id: Muta.roll_to_api(val=0.1)})
     # Verification
     assert api_tgt_item.update().attrs[eve_resist_attr_id].modified == approx(0.2)
     api_val = api_src_fit.validate(options=ValOptions(resist_immunity=True))
     assert api_val.passed is True
-    assert api_val.details.resist_immunity.status == consts.ApiValStatus.passed
+    with check_no_field():
+        api_val.details  # ruff:ignore[useless-expression]
     # Action
     api_tgt_item.change_drone(mutation=None)
     # Verification
     assert api_tgt_item.update().attrs[eve_resist_attr_id].modified == approx(1)
     api_val = api_src_fit.validate(options=ValOptions(resist_immunity=True))
     assert api_val.passed is True
-    assert api_val.details.resist_immunity.status == consts.ApiValStatus.passed
+    with check_no_field():
+        api_val.details  # ruff:ignore[useless-expression]
 
 
 def test_src_mutation(client, consts):
@@ -427,10 +417,7 @@ def test_src_mutation(client, consts):
     assert api_src_item2.update().attrs[eve_resist_def_attr_id].modified == approx(0)
     api_val = api_src_fit.validate(options=ValOptions(resist_immunity=True))
     assert api_val.passed is False
-    assert api_val.details.resist_immunity.status == consts.ApiValStatus.failed
-    assert api_val.details.resist_immunity.fail == {
-        api_src_item1.id: (consts.ApiValItemStatus.failed, [api_tgt_item.id]),
-        api_src_item2.id: (consts.ApiValItemStatus.failed, [api_tgt_item.id])}
+    assert api_val.details.resist_immunity == {api_src_item1.id: [api_tgt_item.id], api_src_item2.id: [api_tgt_item.id]}
     # Action
     api_src_item1.change_module(mutation=None)
     api_src_item2.change_module(mutation=None)
@@ -441,9 +428,7 @@ def test_src_mutation(client, consts):
         api_src_item2.attrs  # ruff:ignore[useless-expression]
     api_val = api_src_fit.validate(options=ValOptions(resist_immunity=True))
     assert api_val.passed is False
-    assert api_val.details.resist_immunity.status == consts.ApiValStatus.failed
-    assert api_val.details.resist_immunity.fail == {
-        api_src_item1.id: (consts.ApiValItemStatus.failed, [api_tgt_item.id])}
+    assert api_val.details.resist_immunity == {api_src_item1.id: [api_tgt_item.id]}
 
 
 def test_src_mutation_base_change(client, consts):
@@ -483,25 +468,22 @@ def test_src_mutation_base_change(client, consts):
     # Verification
     api_val = api_src_fit.validate(options=ValOptions(resist_immunity=True))
     assert api_val.passed is False
-    assert api_val.details.resist_immunity.status == consts.ApiValStatus.failed
-    assert api_val.details.resist_immunity.fail == {
-        api_src_item.id: (consts.ApiValItemStatus.failed, [api_tgt_item.id])}
+    assert api_val.details.resist_immunity == {api_src_item.id: [api_tgt_item.id]}
     # Action
     api_src_item.change_module(type_id=eve_src_base_item2_id)
     # Verification
     assert api_src_item.update().type_id == eve_src_mutated_item_id
     api_val = api_src_fit.validate(options=ValOptions(resist_immunity=True))
     assert api_val.passed is True
-    assert api_val.details.resist_immunity.status == consts.ApiValStatus.passed
+    with check_no_field():
+        api_val.details  # ruff:ignore[useless-expression]
     # Action
     api_src_item.change_module(type_id=eve_src_base_item1_id)
     # Verification
     assert api_src_item.update().type_id == eve_src_mutated_item_id
     api_val = api_src_fit.validate(options=ValOptions(resist_immunity=True))
     assert api_val.passed is False
-    assert api_val.details.resist_immunity.status == consts.ApiValStatus.failed
-    assert api_val.details.resist_immunity.fail == {
-        api_src_item.id: (consts.ApiValItemStatus.failed, [api_tgt_item.id])}
+    assert api_val.details.resist_immunity == {api_src_item.id: [api_tgt_item.id]}
 
 
 def test_criterion_effect_cat(client, consts):
@@ -525,7 +507,8 @@ def test_criterion_effect_cat(client, consts):
     # Verification
     api_val = api_src_fit.validate(options=ValOptions(resist_immunity=True))
     assert api_val.passed is True
-    assert api_val.details.resist_immunity.status == consts.ApiValStatus.passed
+    with check_no_field():
+        api_val.details  # ruff:ignore[useless-expression]
 
 
 def test_no_attr(client, consts):
@@ -544,7 +527,8 @@ def test_no_attr(client, consts):
     # modifications
     api_val = api_src_fit.validate(options=ValOptions(resist_immunity=True))
     assert api_val.passed is True
-    assert api_val.details.resist_immunity.status == consts.ApiValStatus.passed
+    with check_no_field():
+        api_val.details  # ruff:ignore[useless-expression]
 
 
 def test_known_failures(client, consts):
@@ -567,29 +551,19 @@ def test_known_failures(client, consts):
     # Verification
     api_val = api_src_fit.validate(options=ValOptions(resist_immunity=[api_src_item1.id]))
     assert api_val.passed is False
-    assert api_val.details.resist_immunity.status == consts.ApiValStatus.failed
-    assert api_val.details.resist_immunity.fail == {
-        api_src_item1.id: (consts.ApiValItemStatus.kf, [api_tgt_item.id]),
-        api_src_item2.id: (consts.ApiValItemStatus.failed, [api_tgt_item.id])}
+    assert api_val.details.resist_immunity == {api_src_item2.id: [api_tgt_item.id]}
     api_val = api_src_fit.validate(options=ValOptions(resist_immunity=[api_src_item2.id]))
     assert api_val.passed is False
-    assert api_val.details.resist_immunity.status == consts.ApiValStatus.failed
-    assert api_val.details.resist_immunity.fail == {
-        api_src_item1.id: (consts.ApiValItemStatus.failed, [api_tgt_item.id]),
-        api_src_item2.id: (consts.ApiValItemStatus.kf, [api_tgt_item.id])}
+    assert api_val.details.resist_immunity == {api_src_item1.id: [api_tgt_item.id]}
     api_val = api_src_fit.validate(options=ValOptions(resist_immunity=[api_src_item1.id, api_src_item2.id]))
     assert api_val.passed is True
-    assert api_val.details.resist_immunity.status == consts.ApiValStatus.passed_kfs
-    assert api_val.details.resist_immunity.fail == {
-        api_src_item1.id: (consts.ApiValItemStatus.kf, [api_tgt_item.id]),
-        api_src_item2.id: (consts.ApiValItemStatus.kf, [api_tgt_item.id])}
+    with check_no_field():
+        api_val.details  # ruff:ignore[useless-expression]
     api_val = api_src_fit.validate(options=ValOptions(
         resist_immunity=[api_src_item1.id, api_src_other.id, api_src_item2.id]))
     assert api_val.passed is True
-    assert api_val.details.resist_immunity.status == consts.ApiValStatus.passed_kfs
-    assert api_val.details.resist_immunity.fail == {
-        api_src_item1.id: (consts.ApiValItemStatus.kf, [api_tgt_item.id]),
-        api_src_item2.id: (consts.ApiValItemStatus.kf, [api_tgt_item.id])}
+    with check_no_field():
+        api_val.details  # ruff:ignore[useless-expression]
 
 
 def test_not_loaded_src(client, consts):
@@ -605,7 +579,8 @@ def test_not_loaded_src(client, consts):
     # Verification
     api_val = api_src_fit.validate(options=ValOptions(resist_immunity=True))
     assert api_val.passed is True
-    assert api_val.details.resist_immunity.status == consts.ApiValStatus.passed
+    with check_no_field():
+        api_val.details  # ruff:ignore[useless-expression]
 
 
 def test_not_loaded_tgt(client, consts):
@@ -623,4 +598,5 @@ def test_not_loaded_tgt(client, consts):
     # Verification
     api_val = api_src_fit.validate(options=ValOptions(resist_immunity=True))
     assert api_val.passed is True
-    assert api_val.details.resist_immunity.status == consts.ApiValStatus.passed
+    with check_no_field():
+        api_val.details  # ruff:ignore[useless-expression]

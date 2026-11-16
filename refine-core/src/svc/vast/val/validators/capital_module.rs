@@ -7,7 +7,7 @@ use crate::{
     svc::{SvcCtx, vast::VastFitData},
     ud::{UItemId, UShip},
     util::RSet,
-    val::{ValItemStatus, ValResult},
+    val::ValResult,
 };
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -23,16 +23,17 @@ use crate::{
 pub struct ValCapitalModFail {
     /// Modules up to and including this volume are not considered capital.
     pub max_subcap_volume: PValue,
-    #[cfg_attr(feature = "serde", serde_as(as = "serde_with::KeyValueMap<_>"))]
+    #[cfg_attr(feature = "serde", serde_as(as = "refine_serde::VecAsMap"))]
     pub module_volumes: Vec<ValCapitalModInfo>,
 }
 
 /// Module which breaks the validation and its volume.
-#[cfg_attr(feature = "serde", derive(serde_tuple::Serialize_tuple))]
+#[cfg_attr(feature = "serde", derive(refine_serde::VecAsMapEntry))]
 #[derive(Copy, Clone)]
 pub struct ValCapitalModInfo {
+    #[cfg_attr(feature = "serde", vec_map(key))]
     pub module_id: ItemId,
-    pub status: ValItemStatus,
+    #[cfg_attr(feature = "serde", vec_map(value))]
     pub volume: PValue,
 }
 
@@ -67,21 +68,20 @@ impl VastFitData {
         let module_volumes = self
             .mods_capital
             .iter()
-            .map(|(module_uid, module_volume)| ValCapitalModInfo {
-                module_id: ctx.u_data.items.ext_id_by_int_id(*module_uid),
-                status: ValItemStatus::from_kfs(kfs, *module_uid),
-                volume: *module_volume,
+            .filter_map(|(module_uid, module_volume)| match kfs.contains(module_uid) {
+                true => None,
+                false => Some(ValCapitalModInfo {
+                    module_id: ctx.u_data.items.ext_id_by_int_id(*module_uid),
+                    volume: *module_volume,
+                }),
             })
             .collect_vec();
         match module_volumes.is_empty() {
             true => ValResult::Passed,
-            false => ValResult::from_fail(
-                module_volumes.iter().all(|v| v.status.is_kf()),
-                ValCapitalModFail {
-                    max_subcap_volume: PValue::from_finite_f64_clamped(MAX_SUBCAP_MODULE_VOLUME),
-                    module_volumes,
-                },
-            ),
+            false => ValResult::Failed(ValCapitalModFail {
+                max_subcap_volume: PValue::from_finite_f64_clamped(MAX_SUBCAP_MODULE_VOLUME),
+                module_volumes,
+            }),
         }
     }
 }

@@ -2,8 +2,6 @@ import dataclasses
 import typing
 from collections import UserDict
 
-from fw.consts import ApiValItemStatus
-
 
 class ValItemKindFail(UserDict):
 
@@ -14,13 +12,11 @@ class ValItemKindFail(UserDict):
 @dataclasses.dataclass
 class ValItemKindInfo:
 
-    status: ApiValItemStatus
     kind: str | None
     expected_kind: str
 
     def __init__(self, *, data: list | tuple) -> None:
-        status, self.kind, self.expected_kind = data
-        self.status = ApiValItemStatus(status)
+        self.kind, self.expected_kind = data
 
     def __getitem__(self, item: int) -> typing.Any:
         field = dataclasses.fields(self)[item]
@@ -29,4 +25,4 @@ class ValItemKindInfo:
     def __eq__(self, other: list | tuple) -> bool:
         if isinstance(other, tuple):
             other = list(other)
-        return [self.status, self.kind, self.expected_kind] == other
+        return [self.kind, self.expected_kind] == other

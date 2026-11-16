@@ -48,21 +48,20 @@ impl VastFitData {
         let Some(stance_uid) = fit.stance else {
             return ValResult::Passed;
         };
-        // Stance is the only item which can fail, so it has no status - validation result tells if
-        // it is a known failure. Without ship, known failures are not considered
-        let is_kf = match ship {
-            Some(ship) => match stanceable_matcher(ship) {
-                true => return ValResult::Passed,
-                false => kfs.contains(&stance_uid),
-            },
-            None => false,
-        };
-        ValResult::from_fail(
-            is_kf,
-            ValShipStanceFail {
+        let Some(ship) = ship else {
+            return ValResult::Failed(ValShipStanceFail {
                 stance_item_id: ctx.u_data.items.ext_id_by_int_id(stance_uid),
-            },
-        )
+            });
+        };
+        if stanceable_matcher(ship) {
+            return ValResult::Passed;
+        }
+        if kfs.contains(&stance_uid) {
+            return ValResult::Passed;
+        }
+        ValResult::Failed(ValShipStanceFail {
+            stance_item_id: ctx.u_data.items.ext_id_by_int_id(stance_uid),
+        })
     }
 }
 

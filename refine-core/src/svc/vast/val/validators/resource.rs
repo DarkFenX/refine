@@ -5,7 +5,7 @@ use crate::{
     svc::{Calc, SvcCtx, vast::VastFitData},
     ud::{UFit, UItemId},
     util::RSet,
-    val::{ValItemStatus, ValResult},
+    val::ValResult,
 };
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -24,17 +24,18 @@ pub struct ValResourceFail {
     /// Max available resource (e.g. amount of CPU produced by ship).
     pub max: Option<Value>,
     /// Consumer items and amount consumed.
-    #[cfg_attr(feature = "serde", serde_as(as = "serde_with::KeyValueMap<_>"))]
+    #[cfg_attr(feature = "serde", serde_as(as = "refine_serde::VecAsMap"))]
     pub users: Vec<ValResourceItemInfo>,
 }
 
-#[cfg_attr(feature = "serde", derive(serde_tuple::Serialize_tuple))]
+#[cfg_attr(feature = "serde", derive(refine_serde::VecAsMapEntry))]
 #[derive(Copy, Clone)]
 pub struct ValResourceItemInfo {
     /// Item which consumes the resource.
+    #[cfg_attr(feature = "serde", vec_map(key))]
     pub item_id: ItemId,
-    pub status: ValItemStatus,
     /// How much resource is used by the item.
+    #[cfg_attr(feature = "serde", vec_map(value))]
     pub used: Value,
 }
 
@@ -303,10 +304,9 @@ fn validate_verbose_fitting(
     for item_uid in items {
         let item_use = calc.get_item_oattr_ffb_extra(ctx, item_uid, use_attr_rid, Value::ZERO);
         total_use += item_use;
-        if item_use > Value::FLOAT_TOLERANCE {
+        if item_use > Value::FLOAT_TOLERANCE && !kfs.contains(&item_uid) {
             let user = ValResourceItemInfo {
                 item_id: ctx.u_data.items.ext_id_by_int_id(item_uid),
-                status: ValItemStatus::from_kfs(kfs, item_uid),
                 used: item_use,
             };
             users.push(user);
@@ -320,14 +320,11 @@ fn validate_verbose_fitting(
     if total_use <= max.unwrap_or(Value::ZERO) {
         return ValResult::Passed;
     }
-    ValResult::from_fail(
-        users.iter().all(|v| v.status.is_kf()),
-        ValResourceFail {
-            used: total_use,
-            max,
-            users,
-        },
-    )
+    ValResult::Failed(ValResourceFail {
+        used: total_use,
+        max,
+        users,
+    })
 }
 fn validate_verbose_other(
     kfs: &RSet<UItemId>,
@@ -341,10 +338,9 @@ fn validate_verbose_other(
     let mut users = Vec::with_capacity(items.len());
     for (item_uid, item_use) in items {
         total_use += item_use;
-        if item_use > Value::FLOAT_TOLERANCE {
+        if item_use > Value::FLOAT_TOLERANCE && !kfs.contains(&item_uid) {
             let user = ValResourceItemInfo {
                 item_id: ctx.u_data.items.ext_id_by_int_id(item_uid),
-                status: ValItemStatus::from_kfs(kfs, item_uid),
                 used: item_use,
             };
             users.push(user);
@@ -357,12 +353,9 @@ fn validate_verbose_other(
     if total_use <= max.unwrap_or(Value::ZERO) {
         return ValResult::Passed;
     }
-    ValResult::from_fail(
-        users.iter().all(|v| v.status.is_kf()),
-        ValResourceFail {
-            used: total_use,
-            max,
-            users,
-        },
-    )
+    ValResult::Failed(ValResourceFail {
+        used: total_use,
+        max,
+        users,
+    })
 }

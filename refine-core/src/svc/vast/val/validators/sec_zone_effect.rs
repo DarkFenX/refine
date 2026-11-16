@@ -4,7 +4,7 @@ use crate::{
     svc::{SvcCtx, vast::VastFitData},
     ud::{UData, UItemId},
     util::RSet,
-    val::{ValItemStatus, ValResult},
+    val::ValResult,
 };
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -22,23 +22,18 @@ pub struct ValEffectSecZoneFail {
     pub zone: SecZone,
     /// Map between IDs of items+effects which cannot be used in current security zone, and a list
     /// of security zones they can be used in.
-    #[cfg_attr(feature = "serde", serde_as(as = "serde_with::KeyValueMap<_>"))]
+    #[cfg_attr(feature = "serde", serde_as(as = "refine_serde::VecAsMap"))]
     pub items: Vec<ValEffectSecZoneItemInfo>,
 }
 
-#[cfg_attr(
-    feature = "serde",
-    cfg_eval,
-    serde_with::serde_as,
-    derive(serde_tuple::Serialize_tuple)
-)]
+#[cfg_attr(feature = "serde", derive(refine_serde::VecAsMapEntry))]
 #[derive(Clone)]
 pub struct ValEffectSecZoneItemInfo {
     /// Item which fails validation.
+    #[cfg_attr(feature = "serde", vec_map(key))]
     pub item_id: ItemId,
-    pub status: ValItemStatus,
     /// Effects which fail validation with extra info.
-    #[cfg_attr(feature = "serde", serde_as(as = "refine_serde::VecAsMap"))]
+    #[cfg_attr(feature = "serde", vec_map(value, serialize_as = "refine_serde::VecAsMap"))]
     pub effects: Vec<ValEffectSecZoneEffectInfo>,
 }
 
@@ -104,36 +99,36 @@ impl VastFitData {
         let mut items = Vec::new();
         match ctx.u_data.sec_zone {
             SecZone::HiSec(..) => {
-                for (&item_uid, item_data) in self.sec_zone_effect.iter() {
+                'items: for (&item_uid, item_data) in self.sec_zone_effect.iter() {
                     let mut effects = Vec::new();
                     for (&effect_rid, sec_zone_info) in item_data.iter() {
                         if sec_zone_info.banned_in_hisec {
-                            add_failed_effect(ctx.u_data, &mut effects, effect_rid, *sec_zone_info);
+                            match kfs.contains(&item_uid) {
+                                true => continue 'items,
+                                false => add_failed_effect(ctx.u_data, &mut effects, effect_rid, *sec_zone_info),
+                            }
                         }
                     }
                     if !effects.is_empty() {
-                        items.push(ValEffectSecZoneItemInfo {
-                            item_id: ctx.u_data.items.ext_id_by_int_id(item_uid),
-                            status: ValItemStatus::from_kfs(kfs, item_uid),
-                            effects,
-                        });
+                        let item_id = ctx.u_data.items.ext_id_by_int_id(item_uid);
+                        items.push(ValEffectSecZoneItemInfo { item_id, effects });
                     }
                 }
             }
             SecZone::LowSec(..) => {
-                for (&item_uid, item_data) in self.sec_zone_effect.iter() {
+                'items: for (&item_uid, item_data) in self.sec_zone_effect.iter() {
                     let mut effects = Vec::new();
                     for (&effect_rid, sec_zone_info) in item_data.iter() {
                         if sec_zone_info.banned_in_lowsec {
-                            add_failed_effect(ctx.u_data, &mut effects, effect_rid, *sec_zone_info);
+                            match kfs.contains(&item_uid) {
+                                true => continue 'items,
+                                false => add_failed_effect(ctx.u_data, &mut effects, effect_rid, *sec_zone_info),
+                            }
                         }
                     }
                     if !effects.is_empty() {
-                        items.push(ValEffectSecZoneItemInfo {
-                            item_id: ctx.u_data.items.ext_id_by_int_id(item_uid),
-                            status: ValItemStatus::from_kfs(kfs, item_uid),
-                            effects,
-                        });
+                        let item_id = ctx.u_data.items.ext_id_by_int_id(item_uid);
+                        items.push(ValEffectSecZoneItemInfo { item_id, effects });
                     }
                 }
             }
@@ -141,13 +136,10 @@ impl VastFitData {
         }
         match items.is_empty() {
             true => ValResult::Passed,
-            false => ValResult::from_fail(
-                items.iter().all(|v| v.status.is_kf()),
-                ValEffectSecZoneFail {
-                    zone: ctx.u_data.sec_zone,
-                    items,
-                },
-            ),
+            false => ValResult::Failed(ValEffectSecZoneFail {
+                zone: ctx.u_data.sec_zone,
+                items,
+            }),
         }
     }
 }

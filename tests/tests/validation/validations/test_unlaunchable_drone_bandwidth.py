@@ -1,4 +1,4 @@
-from fw import Muta, approx
+from fw import Muta, approx, check_no_field
 from fw.api import ValOptions
 
 
@@ -15,10 +15,8 @@ def test_fail_single(client, consts):
     # Verification
     api_val = api_fit.validate(options=ValOptions(unlaunchable_drone_bandwidth=True))
     assert api_val.passed is False
-    assert api_val.details.unlaunchable_drone_bandwidth.status == consts.ApiValStatus.failed
-    assert api_val.details.unlaunchable_drone_bandwidth.fail.max == approx(25)
-    assert api_val.details.unlaunchable_drone_bandwidth.fail.users == {
-        api_drone.id: (consts.ApiValItemStatus.failed, 50)}
+    assert api_val.details.unlaunchable_drone_bandwidth.max == approx(25)
+    assert api_val.details.unlaunchable_drone_bandwidth.users == {api_drone.id: 50}
 
 
 def test_fail_multiple_ship(client, consts):
@@ -38,11 +36,8 @@ def test_fail_multiple_ship(client, consts):
     # Verification
     api_val = api_fit.validate(options=ValOptions(unlaunchable_drone_bandwidth=True))
     assert api_val.passed is False
-    assert api_val.details.unlaunchable_drone_bandwidth.status == consts.ApiValStatus.failed
-    assert api_val.details.unlaunchable_drone_bandwidth.fail.max == approx(20)
-    assert api_val.details.unlaunchable_drone_bandwidth.fail.users == {
-        api_drone2.id: (consts.ApiValItemStatus.failed, 25),
-        api_drone3.id: (consts.ApiValItemStatus.failed, 50)}
+    assert api_val.details.unlaunchable_drone_bandwidth.max == approx(20)
+    assert api_val.details.unlaunchable_drone_bandwidth.users == {api_drone2.id: 25, api_drone3.id: 50}
 
 
 def test_fail_multiple_struct(client, consts):
@@ -62,11 +57,8 @@ def test_fail_multiple_struct(client, consts):
     # Verification
     api_val = api_fit.validate(options=ValOptions(unlaunchable_drone_bandwidth=True))
     assert api_val.passed is False
-    assert api_val.details.unlaunchable_drone_bandwidth.status == consts.ApiValStatus.failed
-    assert api_val.details.unlaunchable_drone_bandwidth.fail.max == approx(20)
-    assert api_val.details.unlaunchable_drone_bandwidth.fail.users == {
-        api_drone2.id: (consts.ApiValItemStatus.failed, 25),
-        api_drone3.id: (consts.ApiValItemStatus.failed, 50)}
+    assert api_val.details.unlaunchable_drone_bandwidth.max == approx(20)
+    assert api_val.details.unlaunchable_drone_bandwidth.users == {api_drone2.id: 25, api_drone3.id: 50}
 
 
 def test_eqial_below_max(client, consts):
@@ -86,7 +78,8 @@ def test_eqial_below_max(client, consts):
     # Verification
     api_val = api_fit.validate(options=ValOptions(unlaunchable_drone_bandwidth=True))
     assert api_val.passed is True
-    assert api_val.details.unlaunchable_drone_bandwidth.status == consts.ApiValStatus.passed
+    with check_no_field():
+        api_val.details  # ruff:ignore[useless-expression]
 
 
 def test_known_failures(client, consts):
@@ -107,41 +100,28 @@ def test_known_failures(client, consts):
     # Verification
     api_val = api_fit.validate(options=ValOptions(unlaunchable_drone_bandwidth=[api_drone2.id]))
     assert api_val.passed is True
-    assert api_val.details.unlaunchable_drone_bandwidth.status == consts.ApiValStatus.passed_kfs
-    assert api_val.details.unlaunchable_drone_bandwidth.fail.max == approx(20)
-    assert api_val.details.unlaunchable_drone_bandwidth.fail.users == {api_drone2.id: (consts.ApiValItemStatus.kf, 25)}
+    with check_no_field():
+        api_val.details  # ruff:ignore[useless-expression]
     # Action
     api_drone3 = api_fit.add_drone(type_id=eve_drone3_id, state=consts.ApiMinionState.in_bay)
     # Verification
     api_val = api_fit.validate(options=ValOptions(unlaunchable_drone_bandwidth=[api_drone2.id]))
     assert api_val.passed is False
-    assert api_val.details.unlaunchable_drone_bandwidth.status == consts.ApiValStatus.failed
-    assert api_val.details.unlaunchable_drone_bandwidth.fail.max == approx(20)
-    assert api_val.details.unlaunchable_drone_bandwidth.fail.users == {
-        api_drone2.id: (consts.ApiValItemStatus.kf, 25),
-        api_drone3.id: (consts.ApiValItemStatus.failed, 50)}
+    assert api_val.details.unlaunchable_drone_bandwidth.max == approx(20)
+    assert api_val.details.unlaunchable_drone_bandwidth.users == {api_drone3.id: 50}
     api_val = api_fit.validate(options=ValOptions(unlaunchable_drone_bandwidth=[api_drone3.id]))
     assert api_val.passed is False
-    assert api_val.details.unlaunchable_drone_bandwidth.status == consts.ApiValStatus.failed
-    assert api_val.details.unlaunchable_drone_bandwidth.fail.max == approx(20)
-    assert api_val.details.unlaunchable_drone_bandwidth.fail.users == {
-        api_drone2.id: (consts.ApiValItemStatus.failed, 25),
-        api_drone3.id: (consts.ApiValItemStatus.kf, 50)}
+    assert api_val.details.unlaunchable_drone_bandwidth.max == approx(20)
+    assert api_val.details.unlaunchable_drone_bandwidth.users == {api_drone2.id: 25}
     api_val = api_fit.validate(options=ValOptions(unlaunchable_drone_bandwidth=[api_drone2.id, api_drone3.id]))
     assert api_val.passed is True
-    assert api_val.details.unlaunchable_drone_bandwidth.status == consts.ApiValStatus.passed_kfs
-    assert api_val.details.unlaunchable_drone_bandwidth.fail.max == approx(20)
-    assert api_val.details.unlaunchable_drone_bandwidth.fail.users == {
-        api_drone2.id: (consts.ApiValItemStatus.kf, 25),
-        api_drone3.id: (consts.ApiValItemStatus.kf, 50)}
+    with check_no_field():
+        api_val.details  # ruff:ignore[useless-expression]
     api_val = api_fit.validate(options=ValOptions(
         unlaunchable_drone_bandwidth=[api_drone2.id, api_other.id, api_drone3.id]))
     assert api_val.passed is True
-    assert api_val.details.unlaunchable_drone_bandwidth.status == consts.ApiValStatus.passed_kfs
-    assert api_val.details.unlaunchable_drone_bandwidth.fail.max == approx(20)
-    assert api_val.details.unlaunchable_drone_bandwidth.fail.users == {
-        api_drone2.id: (consts.ApiValItemStatus.kf, 25),
-        api_drone3.id: (consts.ApiValItemStatus.kf, 50)}
+    with check_no_field():
+        api_val.details  # ruff:ignore[useless-expression]
 
 
 def test_modified_use(client, consts):
@@ -172,20 +152,16 @@ def test_modified_use(client, consts):
     assert api_drone.update().attrs[eve_use_attr_id].modified == approx(20)
     api_val = api_fit.validate(options=ValOptions(unlaunchable_drone_bandwidth=True))
     assert api_val.passed is False
-    assert api_val.details.unlaunchable_drone_bandwidth.status == consts.ApiValStatus.failed
-    assert api_val.details.unlaunchable_drone_bandwidth.fail.max == approx(25)
-    assert api_val.details.unlaunchable_drone_bandwidth.fail.users == {
-        api_drone.id: (consts.ApiValItemStatus.failed, 40)}
+    assert api_val.details.unlaunchable_drone_bandwidth.max == approx(25)
+    assert api_val.details.unlaunchable_drone_bandwidth.users == {api_drone.id: 40}
     # Action
     api_implant.remove()
     # Verification
     assert api_drone.update().attrs[eve_use_attr_id].modified == approx(40)
     api_val = api_fit.validate(options=ValOptions(unlaunchable_drone_bandwidth=True))
     assert api_val.passed is False
-    assert api_val.details.unlaunchable_drone_bandwidth.status == consts.ApiValStatus.failed
-    assert api_val.details.unlaunchable_drone_bandwidth.fail.max == approx(25)
-    assert api_val.details.unlaunchable_drone_bandwidth.fail.users == {
-        api_drone.id: (consts.ApiValItemStatus.failed, 40)}
+    assert api_val.details.unlaunchable_drone_bandwidth.max == approx(25)
+    assert api_val.details.unlaunchable_drone_bandwidth.users == {api_drone.id: 40}
 
 
 def test_modified_max(client, consts):
@@ -211,17 +187,16 @@ def test_modified_max(client, consts):
     assert api_ship.update().attrs[eve_max_attr_id].modified == approx(40)
     api_val = api_fit.validate(options=ValOptions(unlaunchable_drone_bandwidth=True))
     assert api_val.passed is False
-    assert api_val.details.unlaunchable_drone_bandwidth.status == consts.ApiValStatus.failed
-    assert api_val.details.unlaunchable_drone_bandwidth.fail.max == approx(40)
-    assert api_val.details.unlaunchable_drone_bandwidth.fail.users == {
-        api_drone.id: (consts.ApiValItemStatus.failed, 50)}
+    assert api_val.details.unlaunchable_drone_bandwidth.max == approx(40)
+    assert api_val.details.unlaunchable_drone_bandwidth.users == {api_drone.id: 50}
     # Action
     api_fit.add_implant(type_id=eve_implant_id)
     # Verification
     assert api_ship.update().attrs[eve_max_attr_id].modified == approx(60)
     api_val = api_fit.validate(options=ValOptions(unlaunchable_drone_bandwidth=True))
     assert api_val.passed is True
-    assert api_val.details.unlaunchable_drone_bandwidth.status == consts.ApiValStatus.passed
+    with check_no_field():
+        api_val.details  # ruff:ignore[useless-expression]
 
 
 def test_mutation_use(client, consts):
@@ -242,30 +217,24 @@ def test_mutation_use(client, consts):
     assert api_drone.update().attrs[eve_use_attr_id].modified == approx(50)
     api_val = api_fit.validate(options=ValOptions(unlaunchable_drone_bandwidth=True))
     assert api_val.passed is False
-    assert api_val.details.unlaunchable_drone_bandwidth.status == consts.ApiValStatus.failed
-    assert api_val.details.unlaunchable_drone_bandwidth.fail.max == approx(25)
-    assert api_val.details.unlaunchable_drone_bandwidth.fail.users == {
-        api_drone.id: (consts.ApiValItemStatus.failed, approx(50))}
+    assert api_val.details.unlaunchable_drone_bandwidth.max == approx(25)
+    assert api_val.details.unlaunchable_drone_bandwidth.users == {api_drone.id: approx(50)}
     # Action
     api_drone.change_drone(mutation=(eve_mutator_id, {eve_use_attr_id: Muta.roll_to_api(val=0.8)}))
     # Verification
     assert api_drone.update().attrs[eve_use_attr_id].modified == approx(56)
     api_val = api_fit.validate(options=ValOptions(unlaunchable_drone_bandwidth=True))
     assert api_val.passed is False
-    assert api_val.details.unlaunchable_drone_bandwidth.status == consts.ApiValStatus.failed
-    assert api_val.details.unlaunchable_drone_bandwidth.fail.max == approx(25)
-    assert api_val.details.unlaunchable_drone_bandwidth.fail.users == {
-        api_drone.id: (consts.ApiValItemStatus.failed, approx(50))}
+    assert api_val.details.unlaunchable_drone_bandwidth.max == approx(25)
+    assert api_val.details.unlaunchable_drone_bandwidth.users == {api_drone.id: approx(50)}
     # Action
     api_drone.change_drone(mutation={eve_use_attr_id: None})
     # Verification
     assert api_drone.update().attrs[eve_use_attr_id].modified == approx(50)
     api_val = api_fit.validate(options=ValOptions(unlaunchable_drone_bandwidth=True))
     assert api_val.passed is False
-    assert api_val.details.unlaunchable_drone_bandwidth.status == consts.ApiValStatus.failed
-    assert api_val.details.unlaunchable_drone_bandwidth.fail.max == approx(25)
-    assert api_val.details.unlaunchable_drone_bandwidth.fail.users == {
-        api_drone.id: (consts.ApiValItemStatus.failed, approx(50))}
+    assert api_val.details.unlaunchable_drone_bandwidth.max == approx(25)
+    assert api_val.details.unlaunchable_drone_bandwidth.users == {api_drone.id: approx(50)}
 
 
 def test_rounding(client, consts):
@@ -284,10 +253,8 @@ def test_rounding(client, consts):
     # Verification
     api_val = api_fit.validate(options=ValOptions(unlaunchable_drone_bandwidth=True))
     assert api_val.passed is False
-    assert api_val.details.unlaunchable_drone_bandwidth.status == consts.ApiValStatus.failed
-    assert api_val.details.unlaunchable_drone_bandwidth.fail.max == approx(5.226)
-    assert api_val.details.unlaunchable_drone_bandwidth.fail.users == {
-        api_drone2.id: (consts.ApiValItemStatus.failed, 5.227)}
+    assert api_val.details.unlaunchable_drone_bandwidth.max == approx(5.226)
+    assert api_val.details.unlaunchable_drone_bandwidth.users == {api_drone2.id: 5.227}
 
 
 def test_no_ship(client, consts):
@@ -301,10 +268,8 @@ def test_no_ship(client, consts):
     # Verification
     api_val = api_fit.validate(options=ValOptions(unlaunchable_drone_bandwidth=True))
     assert api_val.passed is False
-    assert api_val.details.unlaunchable_drone_bandwidth.status == consts.ApiValStatus.failed
-    assert api_val.details.unlaunchable_drone_bandwidth.fail.max is None
-    assert api_val.details.unlaunchable_drone_bandwidth.fail.users == {
-        api_drone.id: (consts.ApiValItemStatus.failed, 5)}
+    assert api_val.details.unlaunchable_drone_bandwidth.max is None
+    assert api_val.details.unlaunchable_drone_bandwidth.users == {api_drone.id: 5}
 
 
 def test_no_value_use(client, consts):
@@ -321,16 +286,15 @@ def test_no_value_use(client, consts):
     # Verification
     api_val = api_fit.validate(options=ValOptions(unlaunchable_drone_bandwidth=True))
     assert api_val.passed is True
-    assert api_val.details.unlaunchable_drone_bandwidth.status == consts.ApiValStatus.passed
+    with check_no_field():
+        api_val.details  # ruff:ignore[useless-expression]
     # Action
     api_drone2 = api_fit.add_drone(type_id=eve_drone2_id, state=consts.ApiMinionState.in_bay)
     # Verification
     api_val = api_fit.validate(options=ValOptions(unlaunchable_drone_bandwidth=True))
     assert api_val.passed is False
-    assert api_val.details.unlaunchable_drone_bandwidth.status == consts.ApiValStatus.failed
-    assert api_val.details.unlaunchable_drone_bandwidth.fail.max == approx(25)
-    assert api_val.details.unlaunchable_drone_bandwidth.fail.users == {
-        api_drone2.id: (consts.ApiValItemStatus.failed, 50)}
+    assert api_val.details.unlaunchable_drone_bandwidth.max == approx(25)
+    assert api_val.details.unlaunchable_drone_bandwidth.users == {api_drone2.id: 50}
 
 
 def test_no_value_max(client, consts):
@@ -346,10 +310,8 @@ def test_no_value_max(client, consts):
     # Verification
     api_val = api_fit.validate(options=ValOptions(unlaunchable_drone_bandwidth=True))
     assert api_val.passed is False
-    assert api_val.details.unlaunchable_drone_bandwidth.status == consts.ApiValStatus.failed
-    assert api_val.details.unlaunchable_drone_bandwidth.fail.max == approx(0)
-    assert api_val.details.unlaunchable_drone_bandwidth.fail.users == {
-        api_drone.id: (consts.ApiValItemStatus.failed, 150)}
+    assert api_val.details.unlaunchable_drone_bandwidth.max == approx(0)
+    assert api_val.details.unlaunchable_drone_bandwidth.users == {api_drone.id: 150}
 
 
 def test_no_attr_use(client, consts):
@@ -365,7 +327,8 @@ def test_no_attr_use(client, consts):
     # Verification - users are assumed to take no resource when attribute does not exist
     api_val = api_fit.validate(options=ValOptions(unlaunchable_drone_bandwidth=True))
     assert api_val.passed is True
-    assert api_val.details.unlaunchable_drone_bandwidth.status == consts.ApiValStatus.passed
+    with check_no_field():
+        api_val.details  # ruff:ignore[useless-expression]
 
 
 def test_no_attr_max(client, consts):
@@ -381,10 +344,8 @@ def test_no_attr_max(client, consts):
     # Verification - when output attr does not exist, it is assumed to be 0
     api_val = api_fit.validate(options=ValOptions(unlaunchable_drone_bandwidth=True))
     assert api_val.passed is False
-    assert api_val.details.unlaunchable_drone_bandwidth.status == consts.ApiValStatus.failed
-    assert api_val.details.unlaunchable_drone_bandwidth.fail.max == approx(0)
-    assert api_val.details.unlaunchable_drone_bandwidth.fail.users == {
-        api_drone.id: (consts.ApiValItemStatus.failed, 50)}
+    assert api_val.details.unlaunchable_drone_bandwidth.max == approx(0)
+    assert api_val.details.unlaunchable_drone_bandwidth.users == {api_drone.id: 50}
 
 
 def test_not_loaded_ship(client, consts):
@@ -400,10 +361,8 @@ def test_not_loaded_ship(client, consts):
     # Verification
     api_val = api_fit.validate(options=ValOptions(unlaunchable_drone_bandwidth=True))
     assert api_val.passed is False
-    assert api_val.details.unlaunchable_drone_bandwidth.status == consts.ApiValStatus.failed
-    assert api_val.details.unlaunchable_drone_bandwidth.fail.max is None
-    assert api_val.details.unlaunchable_drone_bandwidth.fail.users == {
-        api_drone.id: (consts.ApiValItemStatus.failed, 5)}
+    assert api_val.details.unlaunchable_drone_bandwidth.max is None
+    assert api_val.details.unlaunchable_drone_bandwidth.users == {api_drone.id: 5}
 
 
 def test_not_loaded_user(client, consts):
@@ -420,7 +379,8 @@ def test_not_loaded_user(client, consts):
     # Verification
     api_val = api_fit.validate(options=ValOptions(unlaunchable_drone_bandwidth=True))
     assert api_val.passed is True
-    assert api_val.details.unlaunchable_drone_bandwidth.status == consts.ApiValStatus.passed
+    with check_no_field():
+        api_val.details  # ruff:ignore[useless-expression]
 
 
 def test_non_positive(client, consts):
@@ -442,12 +402,9 @@ def test_non_positive(client, consts):
     # Verification
     api_val = api_fit.validate(options=ValOptions(unlaunchable_drone_bandwidth=True))
     assert api_val.passed is False
-    assert api_val.details.unlaunchable_drone_bandwidth.status == consts.ApiValStatus.failed
-    assert api_val.details.unlaunchable_drone_bandwidth.fail.max == approx(-15)
-    assert api_val.details.unlaunchable_drone_bandwidth.fail.users == {
-        api_drone1.id: (consts.ApiValItemStatus.failed, 0),
-        api_drone2.id: (consts.ApiValItemStatus.failed, 5),
-        api_drone3.id: (consts.ApiValItemStatus.failed, -10)}
+    assert api_val.details.unlaunchable_drone_bandwidth.max == approx(-15)
+    assert api_val.details.unlaunchable_drone_bandwidth.users == {
+        api_drone1.id: 0, api_drone2.id: 5, api_drone3.id: -10}
 
 
 def test_criterion_item_kind(client, consts):
@@ -481,4 +438,5 @@ def test_criterion_item_kind(client, consts):
     assert len(api_fighter.autocharges) == 1
     api_val = api_fit.validate(options=ValOptions(unlaunchable_drone_bandwidth=True))
     assert api_val.passed is True
-    assert api_val.details.unlaunchable_drone_bandwidth.status == consts.ApiValStatus.passed
+    with check_no_field():
+        api_val.details  # ruff:ignore[useless-expression]

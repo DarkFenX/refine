@@ -1,3 +1,4 @@
+from fw import check_no_field
 from fw.api import ValOptions
 
 
@@ -20,30 +21,33 @@ def test_module_project_unproject(client, consts):
     # Verification
     api_val = api_tgt_fit.validate(options=ValOptions(effect_stopper=True))
     assert api_val.passed is True
-    assert api_val.details.effect_stopper.status == consts.ApiValStatus.passed
+    with check_no_field():
+        api_val.details  # ruff:ignore[useless-expression]
     api_val = api_src_fit.validate(options=ValOptions(effect_stopper=True))
     assert api_val.passed is True
-    assert api_val.details.effect_stopper.status == consts.ApiValStatus.passed
+    with check_no_field():
+        api_val.details  # ruff:ignore[useless-expression]
     # Action
     api_src_item.change_module(add_proj_item_ids=[api_tgt_item.id])
     # Verification
     api_val = api_tgt_fit.validate(options=ValOptions(effect_stopper=True))
     assert api_val.passed is False
-    assert api_val.details.effect_stopper.status == consts.ApiValStatus.failed
-    assert api_val.details.effect_stopper.fail == {
-        api_tgt_item.id: (consts.ApiValItemStatus.failed, [eve_tgt_effect_id])}
+    assert api_val.details.effect_stopper == {api_tgt_item.id: [eve_tgt_effect_id]}
     api_val = api_src_fit.validate(options=ValOptions(effect_stopper=True))
     assert api_val.passed is True
-    assert api_val.details.effect_stopper.status == consts.ApiValStatus.passed
+    with check_no_field():
+        api_val.details  # ruff:ignore[useless-expression]
     # Action
     api_src_item.change_module(rm_proj_item_ids=[api_tgt_item.id])
     # Verification
     api_val = api_tgt_fit.validate(options=ValOptions(effect_stopper=True))
     assert api_val.passed is True
-    assert api_val.details.effect_stopper.status == consts.ApiValStatus.passed
+    with check_no_field():
+        api_val.details  # ruff:ignore[useless-expression]
     api_val = api_src_fit.validate(options=ValOptions(effect_stopper=True))
     assert api_val.passed is True
-    assert api_val.details.effect_stopper.status == consts.ApiValStatus.passed
+    with check_no_field():
+        api_val.details  # ruff:ignore[useless-expression]
 
 
 def test_drone_fighter(client, consts):
@@ -66,23 +70,20 @@ def test_drone_fighter(client, consts):
     # Verification
     api_val = api_tgt_fit.validate(options=ValOptions(effect_stopper=True))
     assert api_val.passed is False
-    assert api_val.details.effect_stopper.status == consts.ApiValStatus.failed
-    assert api_val.details.effect_stopper.fail == {
-        api_tgt_item.id: (consts.ApiValItemStatus.failed, [eve_tgt_effect_id])}
+    assert api_val.details.effect_stopper == {api_tgt_item.id: [eve_tgt_effect_id]}
     # Action
     api_src_item1.remove()
     # Verification
     api_val = api_tgt_fit.validate(options=ValOptions(effect_stopper=True))
     assert api_val.passed is True
-    assert api_val.details.effect_stopper.status == consts.ApiValStatus.passed
+    with check_no_field():
+        api_val.details  # ruff:ignore[useless-expression]
     # Action
     api_src_item2.change_fighter(add_proj_item_ids=[api_tgt_item.id])
     # Verification
     api_val = api_tgt_fit.validate(options=ValOptions(effect_stopper=True))
     assert api_val.passed is False
-    assert api_val.details.effect_stopper.status == consts.ApiValStatus.failed
-    assert api_val.details.effect_stopper.fail == {
-        api_tgt_item.id: (consts.ApiValItemStatus.failed, [eve_tgt_effect_id])}
+    assert api_val.details.effect_stopper == {api_tgt_item.id: [eve_tgt_effect_id]}
 
 
 def test_proj_effect(client, consts):
@@ -104,7 +105,8 @@ def test_proj_effect(client, consts):
     # Verification
     api_val = api_tgt_fit.validate(options=ValOptions(effect_stopper=True))
     assert api_val.passed is True
-    assert api_val.details.effect_stopper.status == consts.ApiValStatus.passed
+    with check_no_field():
+        api_val.details  # ruff:ignore[useless-expression]
 
 
 def test_range(client, consts):
@@ -146,49 +148,40 @@ def test_range(client, consts):
     # Verification
     api_val = api_tgt_fit.validate(options=ValOptions(effect_stopper=True))
     assert api_val.passed is False
-    assert api_val.details.effect_stopper.status == consts.ApiValStatus.failed
-    assert api_val.details.effect_stopper.fail == {
-        api_tgt_item.id: (consts.ApiValItemStatus.failed, [eve_tgt_effect_id])}
+    assert api_val.details.effect_stopper == {api_tgt_item.id: [eve_tgt_effect_id]}
     # Action
     api_src_ship1.change_ship(coordinates=(1000, 0, 0))
     api_src_ship2.change_ship(coordinates=(1000, 0, 0))
     # Verification
     api_val = api_tgt_fit.validate(options=ValOptions(effect_stopper=True))
     assert api_val.passed is False
-    assert api_val.details.effect_stopper.status == consts.ApiValStatus.failed
-    assert api_val.details.effect_stopper.fail == {
-        api_tgt_item.id: (consts.ApiValItemStatus.failed, [eve_tgt_effect_id])}
+    assert api_val.details.effect_stopper == {api_tgt_item.id: [eve_tgt_effect_id]}
     # Action
     api_src_ship1.change_ship(coordinates=(1500, 0, 0))
     api_src_ship2.change_ship(coordinates=(1500, 0, 0))
     # Verification - still fails in falloff
     api_val = api_tgt_fit.validate(options=ValOptions(effect_stopper=True))
     assert api_val.passed is False
-    assert api_val.details.effect_stopper.status == consts.ApiValStatus.failed
-    assert api_val.details.effect_stopper.fail == {
-        api_tgt_item.id: (consts.ApiValItemStatus.failed, [eve_tgt_effect_id])}
+    assert api_val.details.effect_stopper == {api_tgt_item.id: [eve_tgt_effect_id]}
     # Action
     api_src_ship1.change_ship(coordinates=(300000, 0, 0))
     # Verification - once range multiplier reaches 0, validation passes, but here only 1/2 have it
     api_val = api_tgt_fit.validate(options=ValOptions(effect_stopper=True))
     assert api_val.passed is False
-    assert api_val.details.effect_stopper.status == consts.ApiValStatus.failed
-    assert api_val.details.effect_stopper.fail == {
-        api_tgt_item.id: (consts.ApiValItemStatus.failed, [eve_tgt_effect_id])}
+    assert api_val.details.effect_stopper == {api_tgt_item.id: [eve_tgt_effect_id]}
     # Action
     api_src_ship2.change_ship(coordinates=(300000, 0, 0))
     # Verification - both projectors have multipliers of 0
     api_val = api_tgt_fit.validate(options=ValOptions(effect_stopper=True))
     assert api_val.passed is True
-    assert api_val.details.effect_stopper.status == consts.ApiValStatus.passed
+    with check_no_field():
+        api_val.details  # ruff:ignore[useless-expression]
     # Action
     api_src_ship1.change_ship(coordinates=(1500, 0, 0))
     # Verification - back to 1/2
     api_val = api_tgt_fit.validate(options=ValOptions(effect_stopper=True))
     assert api_val.passed is False
-    assert api_val.details.effect_stopper.status == consts.ApiValStatus.failed
-    assert api_val.details.effect_stopper.fail == {
-        api_tgt_item.id: (consts.ApiValItemStatus.failed, [eve_tgt_effect_id])}
+    assert api_val.details.effect_stopper == {api_tgt_item.id: [eve_tgt_effect_id]}
 
 
 def test_multiple_src_items(client, consts):
@@ -210,37 +203,33 @@ def test_multiple_src_items(client, consts):
     # Verification
     api_val = api_tgt_fit.validate(options=ValOptions(effect_stopper=True))
     assert api_val.passed is True
-    assert api_val.details.effect_stopper.status == consts.ApiValStatus.passed
+    with check_no_field():
+        api_val.details  # ruff:ignore[useless-expression]
     # Action
     api_src_item1.change_module(add_proj_item_ids=[api_tgt_item.id])
     # Verification
     api_val = api_tgt_fit.validate(options=ValOptions(effect_stopper=True))
     assert api_val.passed is False
-    assert api_val.details.effect_stopper.status == consts.ApiValStatus.failed
-    assert api_val.details.effect_stopper.fail == {
-        api_tgt_item.id: (consts.ApiValItemStatus.failed, [eve_tgt_effect_id])}
+    assert api_val.details.effect_stopper == {api_tgt_item.id: [eve_tgt_effect_id]}
     # Action
     api_src_item2.change_module(add_proj_item_ids=[api_tgt_item.id])
     # Verification
     api_val = api_tgt_fit.validate(options=ValOptions(effect_stopper=True))
     assert api_val.passed is False
-    assert api_val.details.effect_stopper.status == consts.ApiValStatus.failed
-    assert api_val.details.effect_stopper.fail == {
-        api_tgt_item.id: (consts.ApiValItemStatus.failed, [eve_tgt_effect_id])}
+    assert api_val.details.effect_stopper == {api_tgt_item.id: [eve_tgt_effect_id]}
     # Action
     api_src_item1.change_module(rm_proj_item_ids=[api_tgt_item.id])
     # Verification
     api_val = api_tgt_fit.validate(options=ValOptions(effect_stopper=True))
     assert api_val.passed is False
-    assert api_val.details.effect_stopper.status == consts.ApiValStatus.failed
-    assert api_val.details.effect_stopper.fail == {
-        api_tgt_item.id: (consts.ApiValItemStatus.failed, [eve_tgt_effect_id])}
+    assert api_val.details.effect_stopper == {api_tgt_item.id: [eve_tgt_effect_id]}
     # Action
     api_src_item2.change_module(rm_proj_item_ids=[api_tgt_item.id])
     # Verification
     api_val = api_tgt_fit.validate(options=ValOptions(effect_stopper=True))
     assert api_val.passed is True
-    assert api_val.details.effect_stopper.status == consts.ApiValStatus.passed
+    with check_no_field():
+        api_val.details  # ruff:ignore[useless-expression]
 
 
 def test_multiple_src_effects(client, consts):
@@ -262,37 +251,33 @@ def test_multiple_src_effects(client, consts):
     # Verification
     api_val = api_tgt_fit.validate(options=ValOptions(effect_stopper=True))
     assert api_val.passed is True
-    assert api_val.details.effect_stopper.status == consts.ApiValStatus.passed
+    with check_no_field():
+        api_val.details  # ruff:ignore[useless-expression]
     # Action
     api_src_item.change_module(add_proj_item_ids=[api_tgt_item.id])
     # Verification
     api_val = api_tgt_fit.validate(options=ValOptions(effect_stopper=True))
     assert api_val.passed is False
-    assert api_val.details.effect_stopper.status == consts.ApiValStatus.failed
-    assert api_val.details.effect_stopper.fail == {
-        api_tgt_item.id: (consts.ApiValItemStatus.failed, [eve_tgt_effect_id])}
+    assert api_val.details.effect_stopper == {api_tgt_item.id: [eve_tgt_effect_id]}
     # Action
     api_src_item.change_module(effect_modes={eve_src_effect2_id: consts.ApiEffMode.state_compliance})
     # Verification
     api_val = api_tgt_fit.validate(options=ValOptions(effect_stopper=True))
     assert api_val.passed is False
-    assert api_val.details.effect_stopper.status == consts.ApiValStatus.failed
-    assert api_val.details.effect_stopper.fail == {
-        api_tgt_item.id: (consts.ApiValItemStatus.failed, [eve_tgt_effect_id])}
+    assert api_val.details.effect_stopper == {api_tgt_item.id: [eve_tgt_effect_id]}
     # Action
     api_src_item.change_module(effect_modes={eve_src_effect1_id: consts.ApiEffMode.force_stop})
     # Verification
     api_val = api_tgt_fit.validate(options=ValOptions(effect_stopper=True))
     assert api_val.passed is False
-    assert api_val.details.effect_stopper.status == consts.ApiValStatus.failed
-    assert api_val.details.effect_stopper.fail == {
-        api_tgt_item.id: (consts.ApiValItemStatus.failed, [eve_tgt_effect_id])}
+    assert api_val.details.effect_stopper == {api_tgt_item.id: [eve_tgt_effect_id]}
     # Action
     api_src_item.change_module(effect_modes={eve_src_effect2_id: consts.ApiEffMode.force_stop})
     # Verification
     api_val = api_tgt_fit.validate(options=ValOptions(effect_stopper=True))
     assert api_val.passed is True
-    assert api_val.details.effect_stopper.status == consts.ApiValStatus.passed
+    with check_no_field():
+        api_val.details  # ruff:ignore[useless-expression]
 
 
 def test_known_failures(client, consts):
@@ -317,35 +302,24 @@ def test_known_failures(client, consts):
     # Verification
     api_val = api_tgt_fit.validate(options=ValOptions(effect_stopper=[api_src_item.id]))
     assert api_val.passed is False
-    assert api_val.details.effect_stopper.status == consts.ApiValStatus.failed
-    assert api_val.details.effect_stopper.fail == {
-        api_tgt_item1.id: (consts.ApiValItemStatus.failed, [eve_tgt_effect_id]),
-        api_tgt_item2.id: (consts.ApiValItemStatus.failed, [eve_tgt_effect_id])}
+    assert api_val.details.effect_stopper == {
+        api_tgt_item1.id: [eve_tgt_effect_id],
+        api_tgt_item2.id: [eve_tgt_effect_id]}
     api_val = api_tgt_fit.validate(options=ValOptions(effect_stopper=[api_tgt_item1.id]))
     assert api_val.passed is False
-    assert api_val.details.effect_stopper.status == consts.ApiValStatus.failed
-    assert api_val.details.effect_stopper.fail == {
-        api_tgt_item1.id: (consts.ApiValItemStatus.kf, [eve_tgt_effect_id]),
-        api_tgt_item2.id: (consts.ApiValItemStatus.failed, [eve_tgt_effect_id])}
+    assert api_val.details.effect_stopper == {api_tgt_item2.id: [eve_tgt_effect_id]}
     api_val = api_tgt_fit.validate(options=ValOptions(effect_stopper=[api_tgt_item2.id]))
     assert api_val.passed is False
-    assert api_val.details.effect_stopper.status == consts.ApiValStatus.failed
-    assert api_val.details.effect_stopper.fail == {
-        api_tgt_item1.id: (consts.ApiValItemStatus.failed, [eve_tgt_effect_id]),
-        api_tgt_item2.id: (consts.ApiValItemStatus.kf, [eve_tgt_effect_id])}
+    assert api_val.details.effect_stopper == {api_tgt_item1.id: [eve_tgt_effect_id]}
     api_val = api_tgt_fit.validate(options=ValOptions(effect_stopper=[api_tgt_item1.id, api_tgt_item2.id]))
     assert api_val.passed is True
-    assert api_val.details.effect_stopper.status == consts.ApiValStatus.passed_kfs
-    assert api_val.details.effect_stopper.fail == {
-        api_tgt_item1.id: (consts.ApiValItemStatus.kf, [eve_tgt_effect_id]),
-        api_tgt_item2.id: (consts.ApiValItemStatus.kf, [eve_tgt_effect_id])}
+    with check_no_field():
+        api_val.details  # ruff:ignore[useless-expression]
     api_val = api_tgt_fit.validate(options=ValOptions(
         effect_stopper=[api_tgt_item1.id, api_tgt_other.id, api_tgt_item2.id]))
     assert api_val.passed is True
-    assert api_val.details.effect_stopper.status == consts.ApiValStatus.passed_kfs
-    assert api_val.details.effect_stopper.fail == {
-        api_tgt_item1.id: (consts.ApiValItemStatus.kf, [eve_tgt_effect_id]),
-        api_tgt_item2.id: (consts.ApiValItemStatus.kf, [eve_tgt_effect_id])}
+    with check_no_field():
+        api_val.details  # ruff:ignore[useless-expression]
 
 
 def test_not_loaded_src(client, consts):
@@ -361,19 +335,22 @@ def test_not_loaded_src(client, consts):
     # Verification
     api_val = api_tgt_fit.validate(options=ValOptions(effect_stopper=True))
     assert api_val.passed is True
-    assert api_val.details.effect_stopper.status == consts.ApiValStatus.passed
+    with check_no_field():
+        api_val.details  # ruff:ignore[useless-expression]
     # Action
     api_src_item.change_module(add_proj_item_ids=[api_tgt_item.id])
     # Verification
     api_val = api_tgt_fit.validate(options=ValOptions(effect_stopper=True))
     assert api_val.passed is True
-    assert api_val.details.effect_stopper.status == consts.ApiValStatus.passed
+    with check_no_field():
+        api_val.details  # ruff:ignore[useless-expression]
     # Action
     api_src_item.change_module(rm_proj_item_ids=[api_tgt_item.id])
     # Verification
     api_val = api_tgt_fit.validate(options=ValOptions(effect_stopper=True))
     assert api_val.passed is True
-    assert api_val.details.effect_stopper.status == consts.ApiValStatus.passed
+    with check_no_field():
+        api_val.details  # ruff:ignore[useless-expression]
 
 
 def test_not_loaded_tgt(client, consts):
@@ -394,19 +371,22 @@ def test_not_loaded_tgt(client, consts):
     # Verification
     api_val = api_tgt_fit.validate(options=ValOptions(effect_stopper=True))
     assert api_val.passed is True
-    assert api_val.details.effect_stopper.status == consts.ApiValStatus.passed
+    with check_no_field():
+        api_val.details  # ruff:ignore[useless-expression]
     # Action
     api_src_item.change_module(add_proj_item_ids=[api_tgt_item.id])
     # Verification
     api_val = api_tgt_fit.validate(options=ValOptions(effect_stopper=True))
     assert api_val.passed is True
-    assert api_val.details.effect_stopper.status == consts.ApiValStatus.passed
+    with check_no_field():
+        api_val.details  # ruff:ignore[useless-expression]
     # Action
     api_src_item.change_module(rm_proj_item_ids=[api_tgt_item.id])
     # Verification
     api_val = api_tgt_fit.validate(options=ValOptions(effect_stopper=True))
     assert api_val.passed is True
-    assert api_val.details.effect_stopper.status == consts.ApiValStatus.passed
+    with check_no_field():
+        api_val.details  # ruff:ignore[useless-expression]
 
 
 def test_criterion_effect_cat(client, consts):
@@ -429,7 +409,9 @@ def test_criterion_effect_cat(client, consts):
     # Verification
     api_val = api_tgt_fit.validate(options=ValOptions(effect_stopper=True))
     assert api_val.passed is True
-    assert api_val.details.effect_stopper.status == consts.ApiValStatus.passed
+    with check_no_field():
+        api_val.details  # ruff:ignore[useless-expression]
     api_val = api_src_fit.validate(options=ValOptions(effect_stopper=True))
     assert api_val.passed is True
-    assert api_val.details.effect_stopper.status == consts.ApiValStatus.passed
+    with check_no_field():
+        api_val.details  # ruff:ignore[useless-expression]

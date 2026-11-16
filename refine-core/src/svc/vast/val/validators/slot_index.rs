@@ -1,9 +1,11 @@
+use itertools::Itertools;
+
 use crate::{
-    SlotIndex,
+    ItemId, SlotIndex,
     svc::{SvcCtx, vast::VastFitData},
     ud::UItemId,
     util::{RMapRSet, RSet},
-    val::{ValItemInfo, ValResult},
+    val::ValResult,
 };
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -30,8 +32,8 @@ pub struct ValSlotIndexSlotInfo {
     #[cfg_attr(feature = "serde", vec_map(key))]
     pub slot: SlotIndex,
     /// Multiple items attempting to use one slot.
-    #[cfg_attr(feature = "serde", vec_map(value, serialize_as = "refine_serde::VecAsMap"))]
-    pub items: Vec<ValItemInfo>,
+    #[cfg_attr(feature = "serde", vec_map(value))]
+    pub item_ids: Vec<ItemId>,
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -84,20 +86,23 @@ fn validate_slot_index_verbose(
     let mut slot_users = Vec::new();
     for (&slot_index, users) in data.iter() {
         if users.len() >= 2 {
-            slot_users.push(ValSlotIndexSlotInfo {
-                slot: slot_index,
-                items: users
-                    .map(|&item_uid| ValItemInfo::from_uid(kfs, ctx, item_uid))
-                    .collect(),
-            });
+            let users = users
+                .filter_map(|item_uid| match kfs.contains(item_uid) {
+                    true => None,
+                    false => Some(ctx.u_data.items.ext_id_by_int_id(*item_uid)),
+                })
+                .collect_vec();
+            if !users.is_empty() {
+                slot_users.push(ValSlotIndexSlotInfo {
+                    slot: slot_index,
+                    item_ids: users,
+                });
+            }
         }
     }
     match slot_users.is_empty() {
         true => ValResult::Passed,
-        false => ValResult::from_fail(
-            slot_users.iter().flat_map(|v| v.items.iter()).all(|v| v.status.is_kf()),
-            ValSlotIndexFail { slot_users },
-        ),
+        false => ValResult::Failed(ValSlotIndexFail { slot_users }),
     }
 }
 

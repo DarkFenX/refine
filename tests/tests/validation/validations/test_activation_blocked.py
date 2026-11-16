@@ -1,4 +1,4 @@
-from fw import Muta, approx
+from fw import Muta, approx, check_no_field
 from fw.api import ValOptions
 
 
@@ -13,20 +13,21 @@ def test_add_remove(client, consts):
     # Verification
     api_val = api_fit.validate(options=ValOptions(activation_blocked=True))
     assert api_val.passed is True
-    assert api_val.details.activation_blocked.status == consts.ApiValStatus.passed
+    with check_no_field():
+        api_val.details  # ruff:ignore[useless-expression]
     # Action
     api_module2 = api_fit.add_module(type_id=eve_module2_id, state=consts.ApiModuleState.active)
     # Verification
     api_val = api_fit.validate(options=ValOptions(activation_blocked=True))
     assert api_val.passed is False
-    assert api_val.details.activation_blocked.status == consts.ApiValStatus.failed
-    assert api_val.details.activation_blocked.fail == {api_module2.id: consts.ApiValItemStatus.failed}
+    assert api_val.details.activation_blocked == [api_module2.id]
     # Action
     api_module2.remove()
     # Verification
     api_val = api_fit.validate(options=ValOptions(activation_blocked=True))
     assert api_val.passed is True
-    assert api_val.details.activation_blocked.status == consts.ApiValStatus.passed
+    with check_no_field():
+        api_val.details  # ruff:ignore[useless-expression]
 
 
 def test_state_switch(client, consts):
@@ -39,27 +40,27 @@ def test_state_switch(client, consts):
     # Verification
     api_val = api_fit.validate(options=ValOptions(activation_blocked=True))
     assert api_val.passed is True
-    assert api_val.details.activation_blocked.status == consts.ApiValStatus.passed
+    with check_no_field():
+        api_val.details  # ruff:ignore[useless-expression]
     # Action
     api_module.change_module(state=consts.ApiModuleState.overload)
     # Verification
     api_val = api_fit.validate(options=ValOptions(activation_blocked=True))
     assert api_val.passed is False
-    assert api_val.details.activation_blocked.status == consts.ApiValStatus.failed
-    assert api_val.details.activation_blocked.fail == {api_module.id: consts.ApiValItemStatus.failed}
+    assert api_val.details.activation_blocked == [api_module.id]
     # Action
     api_module.change_module(state=consts.ApiModuleState.active)
     # Verification
     api_val = api_fit.validate(options=ValOptions(activation_blocked=True))
     assert api_val.passed is False
-    assert api_val.details.activation_blocked.status == consts.ApiValStatus.failed
-    assert api_val.details.activation_blocked.fail == {api_module.id: consts.ApiValItemStatus.failed}
+    assert api_val.details.activation_blocked == [api_module.id]
     # Action
     api_module.change_module(state=consts.ApiModuleState.offline)
     # Verification
     api_val = api_fit.validate(options=ValOptions(activation_blocked=True))
     assert api_val.passed is True
-    assert api_val.details.activation_blocked.status == consts.ApiValStatus.passed
+    with check_no_field():
+        api_val.details  # ruff:ignore[useless-expression]
 
 
 def test_known_failures(client, consts):
@@ -75,28 +76,18 @@ def test_known_failures(client, consts):
     # Verification
     api_val = api_fit.validate(options=ValOptions(activation_blocked=[api_module1.id]))
     assert api_val.passed is False
-    assert api_val.details.activation_blocked.status == consts.ApiValStatus.failed
-    assert api_val.details.activation_blocked.fail == {
-        api_module1.id: consts.ApiValItemStatus.kf,
-        api_module2.id: consts.ApiValItemStatus.failed}
+    assert api_val.details.activation_blocked == [api_module2.id]
     api_val = api_fit.validate(options=ValOptions(activation_blocked=[api_module2.id]))
     assert api_val.passed is False
-    assert api_val.details.activation_blocked.status == consts.ApiValStatus.failed
-    assert api_val.details.activation_blocked.fail == {
-        api_module1.id: consts.ApiValItemStatus.failed,
-        api_module2.id: consts.ApiValItemStatus.kf}
+    assert api_val.details.activation_blocked == [api_module1.id]
     api_val = api_fit.validate(options=ValOptions(activation_blocked=[api_module1.id, api_module2.id]))
     assert api_val.passed is True
-    assert api_val.details.activation_blocked.status == consts.ApiValStatus.passed_kfs
-    assert api_val.details.activation_blocked.fail == {
-        api_module1.id: consts.ApiValItemStatus.kf,
-        api_module2.id: consts.ApiValItemStatus.kf}
+    with check_no_field():
+        api_val.details  # ruff:ignore[useless-expression]
     api_val = api_fit.validate(options=ValOptions(activation_blocked=[api_module1.id, api_other.id, api_module2.id]))
     assert api_val.passed is True
-    assert api_val.details.activation_blocked.status == consts.ApiValStatus.passed_kfs
-    assert api_val.details.activation_blocked.fail == {
-        api_module1.id: consts.ApiValItemStatus.kf,
-        api_module2.id: consts.ApiValItemStatus.kf}
+    with check_no_field():
+        api_val.details  # ruff:ignore[useless-expression]
 
 
 def test_modified(client, consts):
@@ -135,27 +126,27 @@ def test_modified(client, consts):
     # Verification
     api_val = api_affectee_fit.validate(options=ValOptions(activation_blocked=True))
     assert api_val.passed is True
-    assert api_val.details.activation_blocked.status == consts.ApiValStatus.passed
+    with check_no_field():
+        api_val.details  # ruff:ignore[useless-expression]
     # Action
     api_affector_module.change_module(add_proj_item_ids=[api_affectee_ship.id])
     # Verification
     api_val = api_affectee_fit.validate(options=ValOptions(activation_blocked=True))
     assert api_val.passed is False
-    assert api_val.details.activation_blocked.status == consts.ApiValStatus.failed
-    assert api_val.details.activation_blocked.fail == {api_module.id: consts.ApiValItemStatus.failed}
+    assert api_val.details.activation_blocked == [api_module.id]
     # Action
     api_affectee_ship.change_ship(coordinates=(10001, 0, 0))
     # Verification
     api_val = api_affectee_fit.validate(options=ValOptions(activation_blocked=True))
     assert api_val.passed is True
-    assert api_val.details.activation_blocked.status == consts.ApiValStatus.passed
+    with check_no_field():
+        api_val.details  # ruff:ignore[useless-expression]
     # Action
     api_affectee_ship.change_ship(coordinates=(10000, 0, 0))
     # Verification
     api_val = api_affectee_fit.validate(options=ValOptions(activation_blocked=True))
     assert api_val.passed is False
-    assert api_val.details.activation_blocked.status == consts.ApiValStatus.failed
-    assert api_val.details.activation_blocked.fail == {api_module.id: consts.ApiValItemStatus.failed}
+    assert api_val.details.activation_blocked == [api_module.id]
 
 
 def test_mutation(client, consts):
@@ -175,45 +166,45 @@ def test_mutation(client, consts):
     assert api_module.update().attrs[eve_attr_id].modified == approx(1)
     api_val = api_fit.validate(options=ValOptions(activation_blocked=True))
     assert api_val.passed is False
-    assert api_val.details.activation_blocked.status == consts.ApiValStatus.failed
-    assert api_val.details.activation_blocked.fail == {api_module.id: consts.ApiValItemStatus.failed}
+    assert api_val.details.activation_blocked == [api_module.id]
     # Action
     api_module.change_module(mutation=eve_mutator_id)
     # Verification
     assert api_module.update().attrs[eve_attr_id].modified == approx(1)
     api_val = api_fit.validate(options=ValOptions(activation_blocked=True))
     assert api_val.passed is False
-    assert api_val.details.activation_blocked.status == consts.ApiValStatus.failed
-    assert api_val.details.activation_blocked.fail == {api_module.id: consts.ApiValItemStatus.failed}
+    assert api_val.details.activation_blocked == [api_module.id]
     # Action
     api_module.change_module(mutation={eve_attr_id: Muta.roll_to_api(val=0)})
     # Verification
     assert api_module.update().attrs[eve_attr_id].modified == approx(0)
     api_val = api_fit.validate(options=ValOptions(activation_blocked=True))
     assert api_val.passed is True
-    assert api_val.details.activation_blocked.status == consts.ApiValStatus.passed
+    with check_no_field():
+        api_val.details  # ruff:ignore[useless-expression]
     # Action
     api_module.change_module(mutation={eve_attr_id: Muta.roll_to_api(val=1)})
     # Verification
     assert api_module.update().attrs[eve_attr_id].modified == approx(1)
     api_val = api_fit.validate(options=ValOptions(activation_blocked=True))
     assert api_val.passed is False
-    assert api_val.details.activation_blocked.status == consts.ApiValStatus.failed
-    assert api_val.details.activation_blocked.fail == {api_module.id: consts.ApiValItemStatus.failed}
+    assert api_val.details.activation_blocked == [api_module.id]
     # Action
     api_module.change_module(type_id=eve_base_module2_id)
     # Verification
     assert api_module.update().attrs[eve_attr_id].modified == approx(0)
     api_val = api_fit.validate(options=ValOptions(activation_blocked=True))
     assert api_val.passed is True
-    assert api_val.details.activation_blocked.status == consts.ApiValStatus.passed
+    with check_no_field():
+        api_val.details  # ruff:ignore[useless-expression]
     # Action
     api_module.change_module(mutation=None)
     # Verification
     assert api_module.update().attrs[eve_attr_id].modified == approx(0)
     api_val = api_fit.validate(options=ValOptions(activation_blocked=True))
     assert api_val.passed is True
-    assert api_val.details.activation_blocked.status == consts.ApiValStatus.passed
+    with check_no_field():
+        api_val.details  # ruff:ignore[useless-expression]
 
 
 def test_values(client, consts):
@@ -236,12 +227,8 @@ def test_values(client, consts):
     # Verification
     api_val = api_fit.validate(options=ValOptions(activation_blocked=True))
     assert api_val.passed is False
-    assert api_val.details.activation_blocked.status == consts.ApiValStatus.failed
-    assert api_val.details.activation_blocked.fail == {
-        api_module3.id: consts.ApiValItemStatus.failed,
-        api_module4.id: consts.ApiValItemStatus.failed,
-        api_module5.id: consts.ApiValItemStatus.failed,
-        api_module6.id: consts.ApiValItemStatus.failed}
+    assert api_val.details.activation_blocked == sorted([
+        api_module3.id, api_module4.id, api_module5.id, api_module6.id])
 
 
 def test_no_attr(client, consts):
@@ -256,7 +243,8 @@ def test_no_attr(client, consts):
     # Verification - validation passes if attr does not exist
     api_val = api_fit.validate(options=ValOptions(activation_blocked=True))
     assert api_val.passed is True
-    assert api_val.details.activation_blocked.status == consts.ApiValStatus.passed
+    with check_no_field():
+        api_val.details  # ruff:ignore[useless-expression]
 
 
 def test_not_loaded(client, consts):
@@ -269,7 +257,8 @@ def test_not_loaded(client, consts):
     # Verification
     api_val = api_fit.validate(options=ValOptions(activation_blocked=True))
     assert api_val.passed is True
-    assert api_val.details.activation_blocked.status == consts.ApiValStatus.passed
+    with check_no_field():
+        api_val.details  # ruff:ignore[useless-expression]
 
 
 def test_criterion_item_kind(client, consts):
@@ -303,4 +292,5 @@ def test_criterion_item_kind(client, consts):
     assert len(api_fighter.autocharges) == 1
     api_val = api_fit.validate(options=ValOptions(activation_blocked=True))
     assert api_val.passed is True
-    assert api_val.details.activation_blocked.status == consts.ApiValStatus.passed
+    with check_no_field():
+        api_val.details  # ruff:ignore[useless-expression]

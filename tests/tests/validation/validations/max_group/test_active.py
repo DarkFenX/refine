@@ -1,4 +1,4 @@
-from fw import Muta, approx
+from fw import Muta, approx, check_no_field
 from fw.api import ValOptions
 
 
@@ -15,11 +15,8 @@ def test_same_value_module(client, consts):
     # Verification
     api_val = api_fit.validate(options=ValOptions(max_group_active=True))
     assert api_val.passed is False
-    assert api_val.details.max_group_active.status == consts.ApiValStatus.failed
-    assert api_val.details.max_group_active.fail == {
-        eve_grp_id: [sorted([api_module1.id, api_module2.id]), {
-            api_module1.id: (consts.ApiValItemStatus.failed, 1),
-            api_module2.id: (consts.ApiValItemStatus.failed, 1)}]}
+    assert api_val.details.max_group_active == {
+        eve_grp_id: [sorted([api_module1.id, api_module2.id]), {api_module1.id: 1, api_module2.id: 1}]}
 
 
 def test_different_values(client, consts):
@@ -39,16 +36,15 @@ def test_different_values(client, consts):
     # Verification
     api_val = api_fit.validate(options=ValOptions(max_group_active=True))
     assert api_val.passed is False
-    assert api_val.details.max_group_active.status == consts.ApiValStatus.failed
-    assert api_val.details.max_group_active.fail == {
-        eve_grp_id: [sorted([api_module1.id, api_module2.id, api_module3.id]), {
-            api_module2.id: (consts.ApiValItemStatus.failed, 2)}]}
+    assert api_val.details.max_group_active == {
+        eve_grp_id: [sorted([api_module1.id, api_module2.id, api_module3.id]), {api_module2.id: 2}]}
     # Action
     api_module1.remove()
     # Verification
     api_val = api_fit.validate(options=ValOptions(max_group_active=True))
     assert api_val.passed is True
-    assert api_val.details.max_group_active.status == consts.ApiValStatus.passed
+    with check_no_field():
+        api_val.details  # ruff:ignore[useless-expression]
 
 
 def test_known_failures(client, consts):
@@ -65,32 +61,20 @@ def test_known_failures(client, consts):
     # Verification
     api_val = api_fit.validate(options=ValOptions(max_group_active=[api_module1.id]))
     assert api_val.passed is False
-    assert api_val.details.max_group_active.status == consts.ApiValStatus.failed
-    assert api_val.details.max_group_active.fail == {
-        eve_grp_id: [sorted([api_module1.id, api_module2.id]), {
-            api_module1.id: (consts.ApiValItemStatus.kf, 1),
-            api_module2.id: (consts.ApiValItemStatus.failed, 1)}]}
+    assert api_val.details.max_group_active == {
+        eve_grp_id: [sorted([api_module1.id, api_module2.id]), {api_module2.id: 1}]}
     api_val = api_fit.validate(options=ValOptions(max_group_active=[api_module2.id]))
     assert api_val.passed is False
-    assert api_val.details.max_group_active.status == consts.ApiValStatus.failed
-    assert api_val.details.max_group_active.fail == {
-        eve_grp_id: [sorted([api_module1.id, api_module2.id]), {
-            api_module1.id: (consts.ApiValItemStatus.failed, 1),
-            api_module2.id: (consts.ApiValItemStatus.kf, 1)}]}
+    assert api_val.details.max_group_active == {
+        eve_grp_id: [sorted([api_module1.id, api_module2.id]), {api_module1.id: 1}]}
     api_val = api_fit.validate(options=ValOptions(max_group_active=[api_module1.id, api_module2.id]))
     assert api_val.passed is True
-    assert api_val.details.max_group_active.status == consts.ApiValStatus.passed_kfs
-    assert api_val.details.max_group_active.fail == {
-        eve_grp_id: [sorted([api_module1.id, api_module2.id]), {
-            api_module1.id: (consts.ApiValItemStatus.kf, 1),
-            api_module2.id: (consts.ApiValItemStatus.kf, 1)}]}
+    with check_no_field():
+        api_val.details  # ruff:ignore[useless-expression]
     api_val = api_fit.validate(options=ValOptions(max_group_active=[api_module1.id, api_other.id, api_module2.id]))
     assert api_val.passed is True
-    assert api_val.details.max_group_active.status == consts.ApiValStatus.passed_kfs
-    assert api_val.details.max_group_active.fail == {
-        eve_grp_id: [sorted([api_module1.id, api_module2.id]), {
-            api_module1.id: (consts.ApiValItemStatus.kf, 1),
-            api_module2.id: (consts.ApiValItemStatus.kf, 1)}]}
+    with check_no_field():
+        api_val.details  # ruff:ignore[useless-expression]
 
 
 def test_modified(client, consts):
@@ -120,11 +104,8 @@ def test_modified(client, consts):
     assert api_module2.update().attrs[eve_limit_attr_id].modified == approx(1.4)
     api_val = api_fit.validate(options=ValOptions(max_group_active=True))
     assert api_val.passed is False
-    assert api_val.details.max_group_active.status == consts.ApiValStatus.failed
-    assert api_val.details.max_group_active.fail == {
-        eve_grp_id: [sorted([api_module1.id, api_module2.id]), {
-            api_module1.id: (consts.ApiValItemStatus.failed, 1),
-            api_module2.id: (consts.ApiValItemStatus.failed, 1)}]}
+    assert api_val.details.max_group_active == {
+        eve_grp_id: [sorted([api_module1.id, api_module2.id]), {api_module1.id: 1, api_module2.id: 1}]}
     # Action
     api_rig = api_fit.add_rig(type_id=eve_rig_id)
     # Verification
@@ -132,7 +113,8 @@ def test_modified(client, consts):
     assert api_module2.update().attrs[eve_limit_attr_id].modified == approx(2.4)
     api_val = api_fit.validate(options=ValOptions(max_group_active=True))
     assert api_val.passed is True
-    assert api_val.details.max_group_active.status == consts.ApiValStatus.passed
+    with check_no_field():
+        api_val.details  # ruff:ignore[useless-expression]
     # Action
     api_rig.remove()
     # Verification
@@ -140,11 +122,8 @@ def test_modified(client, consts):
     assert api_module2.update().attrs[eve_limit_attr_id].modified == approx(1.4)
     api_val = api_fit.validate(options=ValOptions(max_group_active=True))
     assert api_val.passed is False
-    assert api_val.details.max_group_active.status == consts.ApiValStatus.failed
-    assert api_val.details.max_group_active.fail == {
-        eve_grp_id: [sorted([api_module1.id, api_module2.id]), {
-            api_module1.id: (consts.ApiValItemStatus.failed, 1),
-            api_module2.id: (consts.ApiValItemStatus.failed, 1)}]}
+    assert api_val.details.max_group_active == {
+        eve_grp_id: [sorted([api_module1.id, api_module2.id]), {api_module1.id: 1, api_module2.id: 1}]}
 
 
 def test_mutation_limit_priority(client, consts):
@@ -164,30 +143,32 @@ def test_mutation_limit_priority(client, consts):
     assert api_module2.update().attrs[eve_limit_attr_id].modified == approx(2)
     api_val = api_fit.validate(options=ValOptions(max_group_active=True))
     assert api_val.passed is True
-    assert api_val.details.max_group_active.status == consts.ApiValStatus.passed
+    with check_no_field():
+        api_val.details  # ruff:ignore[useless-expression]
     # Action
     api_module2.change_module(mutation=eve_mutator_id)
     # Verification
     assert api_module2.update().attrs[eve_limit_attr_id].modified == approx(2)
     api_val = api_fit.validate(options=ValOptions(max_group_active=True))
     assert api_val.passed is True
-    assert api_val.details.max_group_active.status == consts.ApiValStatus.passed
+    with check_no_field():
+        api_val.details  # ruff:ignore[useless-expression]
     # Action
     api_module2.change_module(mutation=None)
     # Verification
     assert api_module2.update().attrs[eve_limit_attr_id].modified == approx(2)
     api_val = api_fit.validate(options=ValOptions(max_group_active=True))
     assert api_val.passed is True
-    assert api_val.details.max_group_active.status == consts.ApiValStatus.passed
+    with check_no_field():
+        api_val.details  # ruff:ignore[useless-expression]
     # Action
     api_module2.change_module(mutation=(eve_mutator_id, {eve_limit_attr_id: Muta.abs_to_api(val=1)}))
     # Verification
     assert api_module2.update().attrs[eve_limit_attr_id].modified == approx(1)
     api_val = api_fit.validate(options=ValOptions(max_group_active=True))
     assert api_val.passed is False
-    assert api_val.details.max_group_active.status == consts.ApiValStatus.failed
-    assert api_val.details.max_group_active.fail == {
-        eve_grp_id: [sorted([api_module1.id, api_module2.id]), {api_module2.id: (consts.ApiValItemStatus.failed, 1)}]}
+    assert api_val.details.max_group_active == {
+        eve_grp_id: [sorted([api_module1.id, api_module2.id]), {api_module2.id: 1}]}
 
 
 def test_mutation_limit_inheritance(client, consts):
@@ -209,30 +190,32 @@ def test_mutation_limit_inheritance(client, consts):
     assert api_module2.update().attrs[eve_limit_attr_id].modified == approx(1)
     api_val = api_fit.validate(options=ValOptions(max_group_active=True))
     assert api_val.passed is True
-    assert api_val.details.max_group_active.status == consts.ApiValStatus.passed
+    with check_no_field():
+        api_val.details  # ruff:ignore[useless-expression]
     # Action
     api_module2.change_module(mutation=eve_mutator_id)
     # Verification
     assert api_module2.update().attrs[eve_limit_attr_id].modified == approx(1)
     api_val = api_fit.validate(options=ValOptions(max_group_active=True))
     assert api_val.passed is False
-    assert api_val.details.max_group_active.status == consts.ApiValStatus.failed
-    assert api_val.details.max_group_active.fail == {
-        eve_grp2_id: [sorted([api_module1.id, api_module2.id]), {api_module2.id: (consts.ApiValItemStatus.failed, 1)}]}
+    assert api_val.details.max_group_active == {
+        eve_grp2_id: [sorted([api_module1.id, api_module2.id]), {api_module2.id: 1}]}
     # Action
     api_module2.change_module(mutation=None)
     # Verification
     assert api_module2.update().attrs[eve_limit_attr_id].modified == approx(1)
     api_val = api_fit.validate(options=ValOptions(max_group_active=True))
     assert api_val.passed is True
-    assert api_val.details.max_group_active.status == consts.ApiValStatus.passed
+    with check_no_field():
+        api_val.details  # ruff:ignore[useless-expression]
     # Action
     api_module2.change_module(mutation=(eve_mutator_id, {eve_limit_attr_id: Muta.abs_to_api(val=2)}))
     # Verification
     assert api_module2.update().attrs[eve_limit_attr_id].modified == approx(2)
     api_val = api_fit.validate(options=ValOptions(max_group_active=True))
     assert api_val.passed is True
-    assert api_val.details.max_group_active.status == consts.ApiValStatus.passed
+    with check_no_field():
+        api_val.details  # ruff:ignore[useless-expression]
 
 
 def test_mutation_limit_mutated_type(client, consts):
@@ -252,22 +235,23 @@ def test_mutation_limit_mutated_type(client, consts):
     # Verification
     api_val = api_fit.validate(options=ValOptions(max_group_active=True))
     assert api_val.passed is True
-    assert api_val.details.max_group_active.status == consts.ApiValStatus.passed
+    with check_no_field():
+        api_val.details  # ruff:ignore[useless-expression]
     # Action
     api_module2.change_module(mutation=eve_mutator_id)
     # Verification
     assert api_module2.update().attrs[eve_limit_attr_id].modified == approx(1)
     api_val = api_fit.validate(options=ValOptions(max_group_active=True))
     assert api_val.passed is False
-    assert api_val.details.max_group_active.status == consts.ApiValStatus.failed
-    assert api_val.details.max_group_active.fail == {
-        eve_grp2_id: [sorted([api_module1.id, api_module2.id]), {api_module2.id: (consts.ApiValItemStatus.failed, 1)}]}
+    assert api_val.details.max_group_active == {
+        eve_grp2_id: [sorted([api_module1.id, api_module2.id]), {api_module2.id: 1}]}
     # Action
     api_module2.change_module(mutation=None)
     # Verification
     api_val = api_fit.validate(options=ValOptions(max_group_active=True))
     assert api_val.passed is True
-    assert api_val.details.max_group_active.status == consts.ApiValStatus.passed
+    with check_no_field():
+        api_val.details  # ruff:ignore[useless-expression]
 
 
 def test_mutation_limit_base_change(client, consts):
@@ -292,25 +276,24 @@ def test_mutation_limit_base_change(client, consts):
     # Verification
     api_val = api_fit.validate(options=ValOptions(max_group_active=True))
     assert api_val.passed is False
-    assert api_val.details.max_group_active.status == consts.ApiValStatus.failed
-    assert api_val.details.max_group_active.fail == {
-        eve_grp2_id: [sorted([api_module1.id, api_module2.id]), {api_module2.id: (consts.ApiValItemStatus.failed, 1)}]}
+    assert api_val.details.max_group_active == {
+        eve_grp2_id: [sorted([api_module1.id, api_module2.id]), {api_module2.id: 1}]}
     # Action
     api_module2.change_module(type_id=eve_base_module2_id)
     # Verification
     assert api_module2.update().type_id == eve_mutated_module_id
     api_val = api_fit.validate(options=ValOptions(max_group_active=True))
     assert api_val.passed is True
-    assert api_val.details.max_group_active.status == consts.ApiValStatus.passed
+    with check_no_field():
+        api_val.details  # ruff:ignore[useless-expression]
     # Action
     api_module2.change_module(type_id=eve_base_module1_id)
     # Verification
     assert api_module2.update().type_id == eve_mutated_module_id
     api_val = api_fit.validate(options=ValOptions(max_group_active=True))
     assert api_val.passed is False
-    assert api_val.details.max_group_active.status == consts.ApiValStatus.failed
-    assert api_val.details.max_group_active.fail == {
-        eve_grp2_id: [sorted([api_module1.id, api_module2.id]), {api_module2.id: (consts.ApiValItemStatus.failed, 1)}]}
+    assert api_val.details.max_group_active == {
+        eve_grp2_id: [sorted([api_module1.id, api_module2.id]), {api_module2.id: 1}]}
 
 
 def test_no_attr(client, consts):
@@ -327,7 +310,8 @@ def test_no_attr(client, consts):
     # Verification - when attribute is not available, validation passes
     api_val = api_fit.validate(options=ValOptions(max_group_active=True))
     assert api_val.passed is True
-    assert api_val.details.max_group_active.status == consts.ApiValStatus.passed
+    with check_no_field():
+        api_val.details  # ruff:ignore[useless-expression]
 
 
 def test_not_loaded(client, consts):
@@ -341,7 +325,8 @@ def test_not_loaded(client, consts):
     # Verification
     api_val = api_fit.validate(options=ValOptions(max_group_active=True))
     assert api_val.passed is True
-    assert api_val.details.max_group_active.status == consts.ApiValStatus.passed
+    with check_no_field():
+        api_val.details  # ruff:ignore[useless-expression]
 
 
 def test_criterion_module_state(client, consts):
@@ -356,27 +341,22 @@ def test_criterion_module_state(client, consts):
     # Verification
     api_val = api_fit.validate(options=ValOptions(max_group_active=True))
     assert api_val.passed is False
-    assert api_val.details.max_group_active.status == consts.ApiValStatus.failed
-    assert api_val.details.max_group_active.fail == {
-        eve_grp_id: [sorted([api_module1.id, api_module2.id]), {
-            api_module1.id: (consts.ApiValItemStatus.failed, 1),
-            api_module2.id: (consts.ApiValItemStatus.failed, 1)}]}
+    assert api_val.details.max_group_active == {
+        eve_grp_id: [sorted([api_module1.id, api_module2.id]), {api_module1.id: 1, api_module2.id: 1}]}
     # Action
     api_module2.change_module(state=consts.ApiModuleState.online)
     # Verification
     api_val = api_fit.validate(options=ValOptions(max_group_active=True))
     assert api_val.passed is True
-    assert api_val.details.max_group_active.status == consts.ApiValStatus.passed
+    with check_no_field():
+        api_val.details  # ruff:ignore[useless-expression]
     # Action
     api_module2.change_module(state=consts.ApiModuleState.active)
     # Verification
     api_val = api_fit.validate(options=ValOptions(max_group_active=True))
     assert api_val.passed is False
-    assert api_val.details.max_group_active.status == consts.ApiValStatus.failed
-    assert api_val.details.max_group_active.fail == {
-        eve_grp_id: [sorted([api_module1.id, api_module2.id]), {
-            api_module1.id: (consts.ApiValItemStatus.failed, 1),
-            api_module2.id: (consts.ApiValItemStatus.failed, 1)}]}
+    assert api_val.details.max_group_active == {
+        eve_grp_id: [sorted([api_module1.id, api_module2.id]), {api_module1.id: 1, api_module2.id: 1}]}
 
 
 def test_criterion_item_kind(client, consts):
@@ -410,4 +390,5 @@ def test_criterion_item_kind(client, consts):
     assert len(api_fighter.autocharges) == 1
     api_val = api_fit.validate(options=ValOptions(max_group_active=True))
     assert api_val.passed is True
-    assert api_val.details.max_group_active.status == consts.ApiValStatus.passed
+    with check_no_field():
+        api_val.details  # ruff:ignore[useless-expression]

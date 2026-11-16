@@ -16,8 +16,7 @@ def test_sol(client, consts):
             info_mode=consts.ApiValInfoMode.simple)
     # Verification
     assert api_val1.passed is False
-    assert api_val1.details.not_loaded_item.status == consts.ApiValStatus.failed
-    assert api_val1.details.not_loaded_item.fail == {api_item.id: consts.ApiValItemStatus.failed}
+    assert api_val1.details.not_loaded_item == [api_item.id]
     assert api_val2.passed is False
     with check_no_field():
         api_val2.details  # ruff:ignore[useless-expression]
@@ -39,13 +38,10 @@ def test_sol_fit_ids(client, consts):
             info_mode=consts.ApiValInfoMode.detailed)
     # Verification
     assert api_val1.passed is False
-    assert api_val1.details.not_loaded_item.status == consts.ApiValStatus.passed
-    assert api_val1.details.fits[api_fit.id].not_loaded_item.status == consts.ApiValStatus.failed
-    assert api_val1.details.fits[api_fit.id].not_loaded_item.fail == {api_item.id: consts.ApiValItemStatus.failed}
+    assert api_val1.details.fits[api_fit.id].not_loaded_item == [api_item.id]
     assert api_val2.passed is True
-    assert api_val2.details.not_loaded_item.status == consts.ApiValStatus.passed
     with check_no_field():
-        api_val2.details.fits  # ruff:ignore[useless-expression]
+        api_val2.details  # ruff:ignore[useless-expression]
 
 
 def test_sol_fit_ids_backref(client, consts):
@@ -65,13 +61,10 @@ def test_sol_fit_ids_backref(client, consts):
             info_mode=consts.ApiValInfoMode.detailed)
     # Verification
     assert api_val1.passed is True
-    assert api_val1.details.not_loaded_item.status == consts.ApiValStatus.passed
     with check_no_field():
-        api_val1.details.fits  # ruff:ignore[useless-expression]
+        api_val1.details  # ruff:ignore[useless-expression]
     assert api_val2.passed is False
-    assert api_val2.details.not_loaded_item.status == consts.ApiValStatus.passed
-    assert api_val2.details.fits[api_fit.id].not_loaded_item.status == consts.ApiValStatus.failed
-    assert api_val2.details.fits[api_fit.id].not_loaded_item.fail == {api_item.id: consts.ApiValItemStatus.failed}
+    assert api_val2.details.fits[api_fit.id].not_loaded_item == [api_item.id]
 
 
 def test_sol_kfs(client, consts):
@@ -88,11 +81,10 @@ def test_sol_kfs(client, consts):
             info_mode=consts.ApiValInfoMode.detailed)
     # Verification
     assert api_val1.passed is False
-    assert api_val1.details.not_loaded_item.status == consts.ApiValStatus.failed
-    assert api_val1.details.not_loaded_item.fail == {api_item.id: consts.ApiValItemStatus.failed}
+    assert api_val1.details.not_loaded_item == [api_item.id]
     assert api_val2.passed is True
-    assert api_val2.details.not_loaded_item.status == consts.ApiValStatus.passed_kfs
-    assert api_val2.details.not_loaded_item.fail == {api_item.id: consts.ApiValItemStatus.kf}
+    with check_no_field():
+        api_val2.details  # ruff:ignore[useless-expression]
 
 
 def test_sol_kfs_backref(client, consts):
@@ -110,11 +102,10 @@ def test_sol_kfs_backref(client, consts):
             info_mode=consts.ApiValInfoMode.detailed)
     # Verification
     assert api_val1.passed is False
-    assert api_val1.details.not_loaded_item.status == consts.ApiValStatus.failed
-    assert api_val1.details.not_loaded_item.fail == {api_item.id: consts.ApiValItemStatus.failed}
+    assert api_val1.details.not_loaded_item == [api_item.id]
     assert api_val2.passed is True
-    assert api_val2.details.not_loaded_item.status == consts.ApiValStatus.passed_kfs
-    assert api_val2.details.not_loaded_item.fail == {api_item.id: consts.ApiValItemStatus.kf}
+    with check_no_field():
+        api_val2.details  # ruff:ignore[useless-expression]
 
 
 def test_fit(client, consts):
@@ -134,8 +125,7 @@ def test_fit(client, consts):
             info_mode=consts.ApiValInfoMode.simple)
     # Verification
     assert api_val1.passed is False
-    assert api_val1.details.not_loaded_item.status == consts.ApiValStatus.failed
-    assert api_val1.details.not_loaded_item.fail == {api_item.id: consts.ApiValItemStatus.failed}
+    assert api_val1.details.not_loaded_item == [api_item.id]
     assert api_val2.passed is False
     with check_no_field():
         api_val2.details  # ruff:ignore[useless-expression]
@@ -158,8 +148,7 @@ def test_fit_backref(client, consts):
             info_mode=consts.ApiValInfoMode.simple)
     # Verification
     assert api_val1.passed is False
-    assert api_val1.details.not_loaded_item.status == consts.ApiValStatus.failed
-    assert api_val1.details.not_loaded_item.fail == {api_item.id: consts.ApiValItemStatus.failed}
+    assert api_val1.details.not_loaded_item == [api_item.id]
     assert api_val2.passed is False
     with check_no_field():
         api_val2.details  # ruff:ignore[useless-expression]
@@ -223,11 +212,10 @@ def test_fit_kfs(client, consts):
             info_mode=consts.ApiValInfoMode.detailed)
     # Verification
     assert api_val1.passed is False
-    assert api_val1.details.not_loaded_item.status == consts.ApiValStatus.failed
-    assert api_val1.details.not_loaded_item.fail == {api_item.id: consts.ApiValItemStatus.failed}
+    assert api_val1.details.not_loaded_item == [api_item.id]
     assert api_val2.passed is True
-    assert api_val2.details.not_loaded_item.status == consts.ApiValStatus.passed_kfs
-    assert api_val2.details.not_loaded_item.fail == {api_item.id: consts.ApiValItemStatus.kf}
+    with check_no_field():
+        api_val2.details  # ruff:ignore[useless-expression]
 
 
 def test_fit_kfs_backref(client, consts):
@@ -247,8 +235,7 @@ def test_fit_kfs_backref(client, consts):
             info_mode=consts.ApiValInfoMode.detailed)
     # Verification
     assert api_val1.passed is False
-    assert api_val1.details.not_loaded_item.status == consts.ApiValStatus.failed
-    assert api_val1.details.not_loaded_item.fail == {api_item.id: consts.ApiValItemStatus.failed}
+    assert api_val1.details.not_loaded_item == [api_item.id]
     assert api_val2.passed is True
-    assert api_val2.details.not_loaded_item.status == consts.ApiValStatus.passed_kfs
-    assert api_val2.details.not_loaded_item.fail == {api_item.id: consts.ApiValItemStatus.kf}
+    with check_no_field():
+        api_val2.details  # ruff:ignore[useless-expression]

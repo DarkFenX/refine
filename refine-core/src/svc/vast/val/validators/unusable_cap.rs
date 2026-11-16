@@ -5,7 +5,7 @@ use crate::{
     svc::{Calc, SvcCtx, vast::VastFitData},
     ud::{UItem, UItemId},
     util::RSet,
-    val::{ValItemStatus, ValResult},
+    val::ValResult,
 };
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -21,17 +21,18 @@ use crate::{
 pub struct ValUnusableCapFail {
     /// Cap use of any item can't exceed this value.
     pub max_cap: PValue,
-    #[cfg_attr(feature = "serde", serde_as(as = "serde_with::KeyValueMap<_>"))]
+    #[cfg_attr(feature = "serde", serde_as(as = "refine_serde::VecAsMap"))]
     pub items: Vec<ValUnusableCapItemInfo>,
 }
 
-#[cfg_attr(feature = "serde", derive(serde_tuple::Serialize_tuple))]
+#[cfg_attr(feature = "serde", derive(refine_serde::VecAsMapEntry))]
 #[derive(Copy, Clone)]
 pub struct ValUnusableCapItemInfo {
     /// Item which fails the validation.
+    #[cfg_attr(feature = "serde", vec_map(key))]
     pub item_id: ItemId,
-    pub status: ValItemStatus,
     /// Cap amount this item takes per cycle.
+    #[cfg_attr(feature = "serde", vec_map(value))]
     pub cap_use: PValue,
 }
 
@@ -102,20 +103,16 @@ impl VastFitData {
             else {
                 continue;
             };
-            if max_item_use > max_cap {
+            if max_item_use > max_cap && !kfs.contains(&item_uid) {
                 items.push(ValUnusableCapItemInfo {
                     item_id: ctx.u_data.items.ext_id_by_int_id(item_uid),
-                    status: ValItemStatus::from_kfs(kfs, item_uid),
                     cap_use: max_item_use,
                 });
             }
         }
         match items.is_empty() {
             true => ValResult::Passed,
-            false => ValResult::from_fail(
-                items.iter().all(|v| v.status.is_kf()),
-                ValUnusableCapFail { max_cap, items },
-            ),
+            false => ValResult::Failed(ValUnusableCapFail { max_cap, items }),
         }
     }
 }

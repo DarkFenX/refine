@@ -1,4 +1,4 @@
-from fw import approx
+from fw import approx, check_no_field
 from fw.api import ValOptions
 
 
@@ -16,17 +16,16 @@ def test_type_single(client, consts):
     # Verification
     api_val = api_fit.validate(options=ValOptions(ship_limit=True))
     assert api_val.passed is False
-    assert api_val.details.ship_limit.status == consts.ApiValStatus.failed
-    assert api_val.details.ship_limit.fail.ship_type_id == eve_disallowed_ship_id
-    assert api_val.details.ship_limit.fail.ship_group_id == eve_ship_grp_id
-    assert api_val.details.ship_limit.fail.items == {
-        api_module.id: (consts.ApiValItemStatus.failed, [eve_allowed_ship_id], [])}
+    assert api_val.details.ship_limit.ship_type_id == eve_disallowed_ship_id
+    assert api_val.details.ship_limit.ship_group_id == eve_ship_grp_id
+    assert api_val.details.ship_limit.items == {api_module.id: ([eve_allowed_ship_id], [])}
     # Action
     api_fit.set_ship(type_id=eve_allowed_ship_id)
     # Verification
     api_val = api_fit.validate(options=ValOptions(ship_limit=True))
     assert api_val.passed is True
-    assert api_val.details.ship_limit.status == consts.ApiValStatus.passed
+    with check_no_field():
+        api_val.details  # ruff:ignore[useless-expression]
 
 
 def test_type_multiple_different(client, consts):
@@ -46,17 +45,17 @@ def test_type_multiple_different(client, consts):
     # Verification
     api_val = api_fit.validate(options=ValOptions(ship_limit=True))
     assert api_val.passed is False
-    assert api_val.details.ship_limit.status == consts.ApiValStatus.failed
-    assert api_val.details.ship_limit.fail.ship_type_id == eve_disallowed_ship_id
-    assert api_val.details.ship_limit.fail.ship_group_id == eve_ship_grp_id
-    assert api_val.details.ship_limit.fail.items == {
-        api_module.id: (consts.ApiValItemStatus.failed, sorted([eve_allowed_ship1_id, eve_allowed_ship2_id]), [])}
+    assert api_val.details.ship_limit.ship_type_id == eve_disallowed_ship_id
+    assert api_val.details.ship_limit.ship_group_id == eve_ship_grp_id
+    assert api_val.details.ship_limit.items == {
+        api_module.id: (sorted([eve_allowed_ship1_id, eve_allowed_ship2_id]), [])}
     # Action
     api_fit.set_ship(type_id=eve_allowed_ship2_id)
     # Verification
     api_val = api_fit.validate(options=ValOptions(ship_limit=True))
     assert api_val.passed is True
-    assert api_val.details.ship_limit.status == consts.ApiValStatus.passed
+    with check_no_field():
+        api_val.details  # ruff:ignore[useless-expression]
 
 
 def test_type_multiple_same_rounding(client, consts):
@@ -79,17 +78,17 @@ def test_type_multiple_same_rounding(client, consts):
     # Verification
     api_val = api_fit.validate(options=ValOptions(ship_limit=True))
     assert api_val.passed is False
-    assert api_val.details.ship_limit.status == consts.ApiValStatus.failed
-    assert api_val.details.ship_limit.fail.ship_type_id == eve_disallowed_ship_id
-    assert api_val.details.ship_limit.fail.ship_group_id == eve_ship_grp_id
-    assert api_val.details.ship_limit.fail.items == {
-        api_module.id: (consts.ApiValItemStatus.failed, sorted([eve_allowed_ship1_id, eve_allowed_ship2_id]), [])}
+    assert api_val.details.ship_limit.ship_type_id == eve_disallowed_ship_id
+    assert api_val.details.ship_limit.ship_group_id == eve_ship_grp_id
+    assert api_val.details.ship_limit.items == {
+        api_module.id: (sorted([eve_allowed_ship1_id, eve_allowed_ship2_id]), [])}
     # Action
     api_fit.set_ship(type_id=eve_allowed_ship1_id)
     # Verification
     api_val = api_fit.validate(options=ValOptions(ship_limit=True))
     assert api_val.passed is True
-    assert api_val.details.ship_limit.status == consts.ApiValStatus.passed
+    with check_no_field():
+        api_val.details  # ruff:ignore[useless-expression]
 
 
 def test_group_single(client, consts):
@@ -107,17 +106,16 @@ def test_group_single(client, consts):
     # Verification
     api_val = api_fit.validate(options=ValOptions(ship_limit=True))
     assert api_val.passed is False
-    assert api_val.details.ship_limit.status == consts.ApiValStatus.failed
-    assert api_val.details.ship_limit.fail.ship_type_id == eve_disallowed_ship_id
-    assert api_val.details.ship_limit.fail.ship_group_id == eve_disallowed_grp_id
-    assert api_val.details.ship_limit.fail.items == {
-        api_module.id: (consts.ApiValItemStatus.failed, [], [eve_allowed_grp_id])}
+    assert api_val.details.ship_limit.ship_type_id == eve_disallowed_ship_id
+    assert api_val.details.ship_limit.ship_group_id == eve_disallowed_grp_id
+    assert api_val.details.ship_limit.items == {api_module.id: ([], [eve_allowed_grp_id])}
     # Action
     api_fit.set_ship(type_id=eve_allowed_ship_id)
     # Verification
     api_val = api_fit.validate(options=ValOptions(ship_limit=True))
     assert api_val.passed is True
-    assert api_val.details.ship_limit.status == consts.ApiValStatus.passed
+    with check_no_field():
+        api_val.details  # ruff:ignore[useless-expression]
 
 
 def test_group_multiple_different(client, consts):
@@ -138,17 +136,16 @@ def test_group_multiple_different(client, consts):
     # Verification
     api_val = api_fit.validate(options=ValOptions(ship_limit=True))
     assert api_val.passed is False
-    assert api_val.details.ship_limit.status == consts.ApiValStatus.failed
-    assert api_val.details.ship_limit.fail.ship_type_id == eve_disallowed_ship_id
-    assert api_val.details.ship_limit.fail.ship_group_id == eve_disallowed_grp_id
-    assert api_val.details.ship_limit.fail.items == {
-        api_module.id: (consts.ApiValItemStatus.failed, [], sorted([eve_allowed_grp1_id, eve_allowed_grp2_id]))}
+    assert api_val.details.ship_limit.ship_type_id == eve_disallowed_ship_id
+    assert api_val.details.ship_limit.ship_group_id == eve_disallowed_grp_id
+    assert api_val.details.ship_limit.items == {api_module.id: ([], sorted([eve_allowed_grp1_id, eve_allowed_grp2_id]))}
     # Action
     api_fit.set_ship(type_id=eve_allowed_ship_id)
     # Verification
     api_val = api_fit.validate(options=ValOptions(ship_limit=True))
     assert api_val.passed is True
-    assert api_val.details.ship_limit.status == consts.ApiValStatus.passed
+    with check_no_field():
+        api_val.details  # ruff:ignore[useless-expression]
 
 
 def test_group_multiple_same_rounding(client, consts):
@@ -172,17 +169,16 @@ def test_group_multiple_same_rounding(client, consts):
     # Verification
     api_val = api_fit.validate(options=ValOptions(ship_limit=True))
     assert api_val.passed is False
-    assert api_val.details.ship_limit.status == consts.ApiValStatus.failed
-    assert api_val.details.ship_limit.fail.ship_type_id == eve_disallowed_ship_id
-    assert api_val.details.ship_limit.fail.ship_group_id == eve_disallowed_grp_id
-    assert api_val.details.ship_limit.fail.items == {
-        api_module.id: (consts.ApiValItemStatus.failed, [], sorted([eve_allowed_grp1_id, eve_allowed_grp2_id]))}
+    assert api_val.details.ship_limit.ship_type_id == eve_disallowed_ship_id
+    assert api_val.details.ship_limit.ship_group_id == eve_disallowed_grp_id
+    assert api_val.details.ship_limit.items == {api_module.id: ([], sorted([eve_allowed_grp1_id, eve_allowed_grp2_id]))}
     # Action
     api_fit.set_ship(type_id=eve_allowed_ship_id)
     # Verification
     api_val = api_fit.validate(options=ValOptions(ship_limit=True))
     assert api_val.passed is True
-    assert api_val.details.ship_limit.status == consts.ApiValStatus.passed
+    with check_no_field():
+        api_val.details  # ruff:ignore[useless-expression]
 
 
 def test_combined(client, consts):
@@ -210,32 +206,32 @@ def test_combined(client, consts):
     # Verification
     api_val = api_fit.validate(options=ValOptions(ship_limit=True))
     assert api_val.passed is False
-    assert api_val.details.ship_limit.status == consts.ApiValStatus.failed
-    assert api_val.details.ship_limit.fail.ship_type_id == eve_disallowed_ship_id
-    assert api_val.details.ship_limit.fail.ship_group_id == eve_disallowed_grp_id
-    assert api_val.details.ship_limit.fail.items == {
-        api_module.id: (
-            consts.ApiValItemStatus.failed,
-            sorted([eve_allowed_type_ship_id, eve_allowed_both_ship_id]),
-            sorted([eve_allowed_grp1_id, eve_allowed_grp2_id]))}
+    assert api_val.details.ship_limit.ship_type_id == eve_disallowed_ship_id
+    assert api_val.details.ship_limit.ship_group_id == eve_disallowed_grp_id
+    assert api_val.details.ship_limit.items == {api_module.id: (
+        sorted([eve_allowed_type_ship_id, eve_allowed_both_ship_id]),
+        sorted([eve_allowed_grp1_id, eve_allowed_grp2_id]))}
     # Action
     api_fit.set_ship(type_id=eve_allowed_type_ship_id)
     # Verification
     api_val = api_fit.validate(options=ValOptions(ship_limit=True))
     assert api_val.passed is True
-    assert api_val.details.ship_limit.status == consts.ApiValStatus.passed
+    with check_no_field():
+        api_val.details  # ruff:ignore[useless-expression]
     # Action
     api_fit.set_ship(type_id=eve_allowed_group_ship_id)
     # Verification
     api_val = api_fit.validate(options=ValOptions(ship_limit=True))
     assert api_val.passed is True
-    assert api_val.details.ship_limit.status == consts.ApiValStatus.passed
+    with check_no_field():
+        api_val.details  # ruff:ignore[useless-expression]
     # Action
     api_fit.set_ship(type_id=eve_allowed_both_ship_id)
     # Verification
     api_val = api_fit.validate(options=ValOptions(ship_limit=True))
     assert api_val.passed is True
-    assert api_val.details.ship_limit.status == consts.ApiValStatus.passed
+    with check_no_field():
+        api_val.details  # ruff:ignore[useless-expression]
 
 
 def test_struct(client, consts):
@@ -252,17 +248,16 @@ def test_struct(client, consts):
     # Verification
     api_val = api_fit.validate(options=ValOptions(ship_limit=True))
     assert api_val.passed is False
-    assert api_val.details.ship_limit.status == consts.ApiValStatus.failed
-    assert api_val.details.ship_limit.fail.ship_type_id == eve_disallowed_struct_id
-    assert api_val.details.ship_limit.fail.ship_group_id == eve_struct_grp_id
-    assert api_val.details.ship_limit.fail.items == {
-        api_module.id: (consts.ApiValItemStatus.failed, [eve_allowed_struct_id], [])}
+    assert api_val.details.ship_limit.ship_type_id == eve_disallowed_struct_id
+    assert api_val.details.ship_limit.ship_group_id == eve_struct_grp_id
+    assert api_val.details.ship_limit.items == {api_module.id: ([eve_allowed_struct_id], [])}
     # Action
     api_fit.set_ship(type_id=eve_allowed_struct_id)
     # Verification
     api_val = api_fit.validate(options=ValOptions(ship_limit=True))
     assert api_val.passed is True
-    assert api_val.details.ship_limit.status == consts.ApiValStatus.passed
+    with check_no_field():
+        api_val.details  # ruff:ignore[useless-expression]
 
 
 def test_rig(client, consts):
@@ -279,17 +274,16 @@ def test_rig(client, consts):
     # Verification
     api_val = api_fit.validate(options=ValOptions(ship_limit=True))
     assert api_val.passed is False
-    assert api_val.details.ship_limit.status == consts.ApiValStatus.failed
-    assert api_val.details.ship_limit.fail.ship_type_id == eve_disallowed_ship_id
-    assert api_val.details.ship_limit.fail.ship_group_id == eve_ship_grp_id
-    assert api_val.details.ship_limit.fail.items == {
-        api_rig.id: (consts.ApiValItemStatus.failed, [eve_allowed_ship_id], [])}
+    assert api_val.details.ship_limit.ship_type_id == eve_disallowed_ship_id
+    assert api_val.details.ship_limit.ship_group_id == eve_ship_grp_id
+    assert api_val.details.ship_limit.items == {api_rig.id: ([eve_allowed_ship_id], [])}
     # Action
     api_fit.set_ship(type_id=eve_allowed_ship_id)
     # Verification
     api_val = api_fit.validate(options=ValOptions(ship_limit=True))
     assert api_val.passed is True
-    assert api_val.details.ship_limit.status == consts.ApiValStatus.passed
+    with check_no_field():
+        api_val.details  # ruff:ignore[useless-expression]
 
 
 def test_service(client, consts):
@@ -306,17 +300,16 @@ def test_service(client, consts):
     # Verification
     api_val = api_fit.validate(options=ValOptions(ship_limit=True))
     assert api_val.passed is False
-    assert api_val.details.ship_limit.status == consts.ApiValStatus.failed
-    assert api_val.details.ship_limit.fail.ship_type_id == eve_disallowed_struct_id
-    assert api_val.details.ship_limit.fail.ship_group_id == eve_struct_grp_id
-    assert api_val.details.ship_limit.fail.items == {
-        api_service.id: (consts.ApiValItemStatus.failed, [eve_allowed_struct_id], [])}
+    assert api_val.details.ship_limit.ship_type_id == eve_disallowed_struct_id
+    assert api_val.details.ship_limit.ship_group_id == eve_struct_grp_id
+    assert api_val.details.ship_limit.items == {api_service.id: ([eve_allowed_struct_id], [])}
     # Action
     api_fit.set_ship(type_id=eve_allowed_struct_id)
     # Verification
     api_val = api_fit.validate(options=ValOptions(ship_limit=True))
     assert api_val.passed is True
-    assert api_val.details.ship_limit.status == consts.ApiValStatus.passed
+    with check_no_field():
+        api_val.details  # ruff:ignore[useless-expression]
 
 
 def test_subsystem(client, consts):
@@ -334,17 +327,16 @@ def test_subsystem(client, consts):
     # Verification
     api_val = api_fit.validate(options=ValOptions(ship_limit=True))
     assert api_val.passed is False
-    assert api_val.details.ship_limit.status == consts.ApiValStatus.failed
-    assert api_val.details.ship_limit.fail.ship_type_id == eve_disallowed_ship_id
-    assert api_val.details.ship_limit.fail.ship_group_id == eve_ship_grp_id
-    assert api_val.details.ship_limit.fail.items == {
-        api_subsystem.id: (consts.ApiValItemStatus.failed, [eve_allowed_ship_id], [])}
+    assert api_val.details.ship_limit.ship_type_id == eve_disallowed_ship_id
+    assert api_val.details.ship_limit.ship_group_id == eve_ship_grp_id
+    assert api_val.details.ship_limit.items == {api_subsystem.id: ([eve_allowed_ship_id], [])}
     # Action
     api_fit.set_ship(type_id=eve_allowed_ship_id)
     # Verification
     api_val = api_fit.validate(options=ValOptions(ship_limit=True))
     assert api_val.passed is True
-    assert api_val.details.ship_limit.status == consts.ApiValStatus.passed
+    with check_no_field():
+        api_val.details  # ruff:ignore[useless-expression]
 
 
 def test_t3d_confessor(client, consts):
@@ -363,49 +355,46 @@ def test_t3d_confessor(client, consts):
     # Verification
     api_val = api_fit.validate(options=ValOptions(ship_limit=True))
     assert api_val.passed is False
-    assert api_val.details.ship_limit.status == consts.ApiValStatus.failed
-    assert api_val.details.ship_limit.fail.ship_type_id == eve_other_id
-    assert api_val.details.ship_limit.fail.ship_group_id == eve_ship_grp_id
-    assert api_val.details.ship_limit.fail.items == {
-        api_defensive.id: (consts.ApiValItemStatus.failed, [eve_t3d_id], [])}
+    assert api_val.details.ship_limit.ship_type_id == eve_other_id
+    assert api_val.details.ship_limit.ship_group_id == eve_ship_grp_id
+    assert api_val.details.ship_limit.items == {api_defensive.id: ([eve_t3d_id], [])}
     # Action
     api_propulsion = api_fit.set_stance(type_id=eve_propulsion_id)
     # Verification
     api_val = api_fit.validate(options=ValOptions(ship_limit=True))
     assert api_val.passed is False
-    assert api_val.details.ship_limit.status == consts.ApiValStatus.failed
-    assert api_val.details.ship_limit.fail.ship_type_id == eve_other_id
-    assert api_val.details.ship_limit.fail.ship_group_id == eve_ship_grp_id
-    assert api_val.details.ship_limit.fail.items == {
-        api_propulsion.id: (consts.ApiValItemStatus.failed, [eve_t3d_id], [])}
+    assert api_val.details.ship_limit.ship_type_id == eve_other_id
+    assert api_val.details.ship_limit.ship_group_id == eve_ship_grp_id
+    assert api_val.details.ship_limit.items == {api_propulsion.id: ([eve_t3d_id], [])}
     # Action
     api_sharpshooter = api_fit.set_stance(type_id=eve_sharpshooter_id)
     # Verification
     api_val = api_fit.validate(options=ValOptions(ship_limit=True))
     assert api_val.passed is False
-    assert api_val.details.ship_limit.status == consts.ApiValStatus.failed
-    assert api_val.details.ship_limit.fail.ship_type_id == eve_other_id
-    assert api_val.details.ship_limit.fail.ship_group_id == eve_ship_grp_id
-    assert api_val.details.ship_limit.fail.items == {
-        api_sharpshooter.id: (consts.ApiValItemStatus.failed, [eve_t3d_id], [])}
+    assert api_val.details.ship_limit.ship_type_id == eve_other_id
+    assert api_val.details.ship_limit.ship_group_id == eve_ship_grp_id
+    assert api_val.details.ship_limit.items == {api_sharpshooter.id: ([eve_t3d_id], [])}
     # Action
     api_fit.set_ship(type_id=eve_t3d_id)
     # Verification
     api_val = api_fit.validate(options=ValOptions(ship_limit=True))
     assert api_val.passed is True
-    assert api_val.details.ship_limit.status == consts.ApiValStatus.passed
+    with check_no_field():
+        api_val.details  # ruff:ignore[useless-expression]
     # Action
     api_fit.set_stance(type_id=eve_propulsion_id)
     # Verification
     api_val = api_fit.validate(options=ValOptions(ship_limit=True))
     assert api_val.passed is True
-    assert api_val.details.ship_limit.status == consts.ApiValStatus.passed
+    with check_no_field():
+        api_val.details  # ruff:ignore[useless-expression]
     # Action
     api_fit.set_stance(type_id=eve_defensive_id)
     # Verification
     api_val = api_fit.validate(options=ValOptions(ship_limit=True))
     assert api_val.passed is True
-    assert api_val.details.ship_limit.status == consts.ApiValStatus.passed
+    with check_no_field():
+        api_val.details  # ruff:ignore[useless-expression]
 
 
 def test_t3d_hecate(client, consts):
@@ -424,49 +413,46 @@ def test_t3d_hecate(client, consts):
     # Verification
     api_val = api_fit.validate(options=ValOptions(ship_limit=True))
     assert api_val.passed is False
-    assert api_val.details.ship_limit.status == consts.ApiValStatus.failed
-    assert api_val.details.ship_limit.fail.ship_type_id == eve_other_id
-    assert api_val.details.ship_limit.fail.ship_group_id == eve_ship_grp_id
-    assert api_val.details.ship_limit.fail.items == {
-        api_defensive.id: (consts.ApiValItemStatus.failed, [eve_t3d_id], [])}
+    assert api_val.details.ship_limit.ship_type_id == eve_other_id
+    assert api_val.details.ship_limit.ship_group_id == eve_ship_grp_id
+    assert api_val.details.ship_limit.items == {api_defensive.id: ([eve_t3d_id], [])}
     # Action
     api_propulsion = api_fit.set_stance(type_id=eve_propulsion_id)
     # Verification
     api_val = api_fit.validate(options=ValOptions(ship_limit=True))
     assert api_val.passed is False
-    assert api_val.details.ship_limit.status == consts.ApiValStatus.failed
-    assert api_val.details.ship_limit.fail.ship_type_id == eve_other_id
-    assert api_val.details.ship_limit.fail.ship_group_id == eve_ship_grp_id
-    assert api_val.details.ship_limit.fail.items == {
-        api_propulsion.id: (consts.ApiValItemStatus.failed, [eve_t3d_id], [])}
+    assert api_val.details.ship_limit.ship_type_id == eve_other_id
+    assert api_val.details.ship_limit.ship_group_id == eve_ship_grp_id
+    assert api_val.details.ship_limit.items == {api_propulsion.id: ([eve_t3d_id], [])}
     # Action
     api_sharpshooter = api_fit.set_stance(type_id=eve_sharpshooter_id)
     # Verification
     api_val = api_fit.validate(options=ValOptions(ship_limit=True))
     assert api_val.passed is False
-    assert api_val.details.ship_limit.status == consts.ApiValStatus.failed
-    assert api_val.details.ship_limit.fail.ship_type_id == eve_other_id
-    assert api_val.details.ship_limit.fail.ship_group_id == eve_ship_grp_id
-    assert api_val.details.ship_limit.fail.items == {
-        api_sharpshooter.id: (consts.ApiValItemStatus.failed, [eve_t3d_id], [])}
+    assert api_val.details.ship_limit.ship_type_id == eve_other_id
+    assert api_val.details.ship_limit.ship_group_id == eve_ship_grp_id
+    assert api_val.details.ship_limit.items == {api_sharpshooter.id: ([eve_t3d_id], [])}
     # Action
     api_fit.set_ship(type_id=eve_t3d_id)
     # Verification
     api_val = api_fit.validate(options=ValOptions(ship_limit=True))
     assert api_val.passed is True
-    assert api_val.details.ship_limit.status == consts.ApiValStatus.passed
+    with check_no_field():
+        api_val.details  # ruff:ignore[useless-expression]
     # Action
     api_fit.set_stance(type_id=eve_propulsion_id)
     # Verification
     api_val = api_fit.validate(options=ValOptions(ship_limit=True))
     assert api_val.passed is True
-    assert api_val.details.ship_limit.status == consts.ApiValStatus.passed
+    with check_no_field():
+        api_val.details  # ruff:ignore[useless-expression]
     # Action
     api_fit.set_stance(type_id=eve_defensive_id)
     # Verification
     api_val = api_fit.validate(options=ValOptions(ship_limit=True))
     assert api_val.passed is True
-    assert api_val.details.ship_limit.status == consts.ApiValStatus.passed
+    with check_no_field():
+        api_val.details  # ruff:ignore[useless-expression]
 
 
 def test_t3d_jackdaw(client, consts):
@@ -485,49 +471,46 @@ def test_t3d_jackdaw(client, consts):
     # Verification
     api_val = api_fit.validate(options=ValOptions(ship_limit=True))
     assert api_val.passed is False
-    assert api_val.details.ship_limit.status == consts.ApiValStatus.failed
-    assert api_val.details.ship_limit.fail.ship_type_id == eve_other_id
-    assert api_val.details.ship_limit.fail.ship_group_id == eve_ship_grp_id
-    assert api_val.details.ship_limit.fail.items == {
-        api_defensive.id: (consts.ApiValItemStatus.failed, [eve_t3d_id], [])}
+    assert api_val.details.ship_limit.ship_type_id == eve_other_id
+    assert api_val.details.ship_limit.ship_group_id == eve_ship_grp_id
+    assert api_val.details.ship_limit.items == {api_defensive.id: ([eve_t3d_id], [])}
     # Action
     api_propulsion = api_fit.set_stance(type_id=eve_propulsion_id)
     # Verification
     api_val = api_fit.validate(options=ValOptions(ship_limit=True))
     assert api_val.passed is False
-    assert api_val.details.ship_limit.status == consts.ApiValStatus.failed
-    assert api_val.details.ship_limit.fail.ship_type_id == eve_other_id
-    assert api_val.details.ship_limit.fail.ship_group_id == eve_ship_grp_id
-    assert api_val.details.ship_limit.fail.items == {
-        api_propulsion.id: (consts.ApiValItemStatus.failed, [eve_t3d_id], [])}
+    assert api_val.details.ship_limit.ship_type_id == eve_other_id
+    assert api_val.details.ship_limit.ship_group_id == eve_ship_grp_id
+    assert api_val.details.ship_limit.items == {api_propulsion.id: ([eve_t3d_id], [])}
     # Action
     api_sharpshooter = api_fit.set_stance(type_id=eve_sharpshooter_id)
     # Verification
     api_val = api_fit.validate(options=ValOptions(ship_limit=True))
     assert api_val.passed is False
-    assert api_val.details.ship_limit.status == consts.ApiValStatus.failed
-    assert api_val.details.ship_limit.fail.ship_type_id == eve_other_id
-    assert api_val.details.ship_limit.fail.ship_group_id == eve_ship_grp_id
-    assert api_val.details.ship_limit.fail.items == {
-        api_sharpshooter.id: (consts.ApiValItemStatus.failed, [eve_t3d_id], [])}
+    assert api_val.details.ship_limit.ship_type_id == eve_other_id
+    assert api_val.details.ship_limit.ship_group_id == eve_ship_grp_id
+    assert api_val.details.ship_limit.items == {api_sharpshooter.id: ([eve_t3d_id], [])}
     # Action
     api_fit.set_ship(type_id=eve_t3d_id)
     # Verification
     api_val = api_fit.validate(options=ValOptions(ship_limit=True))
     assert api_val.passed is True
-    assert api_val.details.ship_limit.status == consts.ApiValStatus.passed
+    with check_no_field():
+        api_val.details  # ruff:ignore[useless-expression]
     # Action
     api_fit.set_stance(type_id=eve_propulsion_id)
     # Verification
     api_val = api_fit.validate(options=ValOptions(ship_limit=True))
     assert api_val.passed is True
-    assert api_val.details.ship_limit.status == consts.ApiValStatus.passed
+    with check_no_field():
+        api_val.details  # ruff:ignore[useless-expression]
     # Action
     api_fit.set_stance(type_id=eve_defensive_id)
     # Verification
     api_val = api_fit.validate(options=ValOptions(ship_limit=True))
     assert api_val.passed is True
-    assert api_val.details.ship_limit.status == consts.ApiValStatus.passed
+    with check_no_field():
+        api_val.details  # ruff:ignore[useless-expression]
 
 
 def test_t3d_svipul(client, consts):
@@ -546,49 +529,46 @@ def test_t3d_svipul(client, consts):
     # Verification
     api_val = api_fit.validate(options=ValOptions(ship_limit=True))
     assert api_val.passed is False
-    assert api_val.details.ship_limit.status == consts.ApiValStatus.failed
-    assert api_val.details.ship_limit.fail.ship_type_id == eve_other_id
-    assert api_val.details.ship_limit.fail.ship_group_id == eve_ship_grp_id
-    assert api_val.details.ship_limit.fail.items == {
-        api_defensive.id: (consts.ApiValItemStatus.failed, [eve_t3d_id], [])}
+    assert api_val.details.ship_limit.ship_type_id == eve_other_id
+    assert api_val.details.ship_limit.ship_group_id == eve_ship_grp_id
+    assert api_val.details.ship_limit.items == {api_defensive.id: ([eve_t3d_id], [])}
     # Action
     api_propulsion = api_fit.set_stance(type_id=eve_propulsion_id)
     # Verification
     api_val = api_fit.validate(options=ValOptions(ship_limit=True))
     assert api_val.passed is False
-    assert api_val.details.ship_limit.status == consts.ApiValStatus.failed
-    assert api_val.details.ship_limit.fail.ship_type_id == eve_other_id
-    assert api_val.details.ship_limit.fail.ship_group_id == eve_ship_grp_id
-    assert api_val.details.ship_limit.fail.items == {
-        api_propulsion.id: (consts.ApiValItemStatus.failed, [eve_t3d_id], [])}
+    assert api_val.details.ship_limit.ship_type_id == eve_other_id
+    assert api_val.details.ship_limit.ship_group_id == eve_ship_grp_id
+    assert api_val.details.ship_limit.items == {api_propulsion.id: ([eve_t3d_id], [])}
     # Action
     api_sharpshooter = api_fit.set_stance(type_id=eve_sharpshooter_id)
     # Verification
     api_val = api_fit.validate(options=ValOptions(ship_limit=True))
     assert api_val.passed is False
-    assert api_val.details.ship_limit.status == consts.ApiValStatus.failed
-    assert api_val.details.ship_limit.fail.ship_type_id == eve_other_id
-    assert api_val.details.ship_limit.fail.ship_group_id == eve_ship_grp_id
-    assert api_val.details.ship_limit.fail.items == {
-        api_sharpshooter.id: (consts.ApiValItemStatus.failed, [eve_t3d_id], [])}
+    assert api_val.details.ship_limit.ship_type_id == eve_other_id
+    assert api_val.details.ship_limit.ship_group_id == eve_ship_grp_id
+    assert api_val.details.ship_limit.items == {api_sharpshooter.id: ([eve_t3d_id], [])}
     # Action
     api_fit.set_ship(type_id=eve_t3d_id)
     # Verification
     api_val = api_fit.validate(options=ValOptions(ship_limit=True))
     assert api_val.passed is True
-    assert api_val.details.ship_limit.status == consts.ApiValStatus.passed
+    with check_no_field():
+        api_val.details  # ruff:ignore[useless-expression]
     # Action
     api_fit.set_stance(type_id=eve_propulsion_id)
     # Verification
     api_val = api_fit.validate(options=ValOptions(ship_limit=True))
     assert api_val.passed is True
-    assert api_val.details.ship_limit.status == consts.ApiValStatus.passed
+    with check_no_field():
+        api_val.details  # ruff:ignore[useless-expression]
     # Action
     api_fit.set_stance(type_id=eve_defensive_id)
     # Verification
     api_val = api_fit.validate(options=ValOptions(ship_limit=True))
     assert api_val.passed is True
-    assert api_val.details.ship_limit.status == consts.ApiValStatus.passed
+    with check_no_field():
+        api_val.details  # ruff:ignore[useless-expression]
 
 
 def test_t3d_skua(client, consts):
@@ -607,49 +587,46 @@ def test_t3d_skua(client, consts):
     # Verification
     api_val = api_fit.validate(options=ValOptions(ship_limit=True))
     assert api_val.passed is False
-    assert api_val.details.ship_limit.status == consts.ApiValStatus.failed
-    assert api_val.details.ship_limit.fail.ship_type_id == eve_other_id
-    assert api_val.details.ship_limit.fail.ship_group_id == eve_ship_grp_id
-    assert api_val.details.ship_limit.fail.items == {
-        api_defensive.id: (consts.ApiValItemStatus.failed, [eve_t3d_id], [])}
+    assert api_val.details.ship_limit.ship_type_id == eve_other_id
+    assert api_val.details.ship_limit.ship_group_id == eve_ship_grp_id
+    assert api_val.details.ship_limit.items == {api_defensive.id: ([eve_t3d_id], [])}
     # Action
     api_propulsion = api_fit.set_stance(type_id=eve_propulsion_id)
     # Verification
     api_val = api_fit.validate(options=ValOptions(ship_limit=True))
     assert api_val.passed is False
-    assert api_val.details.ship_limit.status == consts.ApiValStatus.failed
-    assert api_val.details.ship_limit.fail.ship_type_id == eve_other_id
-    assert api_val.details.ship_limit.fail.ship_group_id == eve_ship_grp_id
-    assert api_val.details.ship_limit.fail.items == {
-        api_propulsion.id: (consts.ApiValItemStatus.failed, [eve_t3d_id], [])}
+    assert api_val.details.ship_limit.ship_type_id == eve_other_id
+    assert api_val.details.ship_limit.ship_group_id == eve_ship_grp_id
+    assert api_val.details.ship_limit.items == {api_propulsion.id: ([eve_t3d_id], [])}
     # Action
     api_sharpshooter = api_fit.set_stance(type_id=eve_sharpshooter_id)
     # Verification
     api_val = api_fit.validate(options=ValOptions(ship_limit=True))
     assert api_val.passed is False
-    assert api_val.details.ship_limit.status == consts.ApiValStatus.failed
-    assert api_val.details.ship_limit.fail.ship_type_id == eve_other_id
-    assert api_val.details.ship_limit.fail.ship_group_id == eve_ship_grp_id
-    assert api_val.details.ship_limit.fail.items == {
-        api_sharpshooter.id: (consts.ApiValItemStatus.failed, [eve_t3d_id], [])}
+    assert api_val.details.ship_limit.ship_type_id == eve_other_id
+    assert api_val.details.ship_limit.ship_group_id == eve_ship_grp_id
+    assert api_val.details.ship_limit.items == {api_sharpshooter.id: ([eve_t3d_id], [])}
     # Action
     api_fit.set_ship(type_id=eve_t3d_id)
     # Verification
     api_val = api_fit.validate(options=ValOptions(ship_limit=True))
     assert api_val.passed is True
-    assert api_val.details.ship_limit.status == consts.ApiValStatus.passed
+    with check_no_field():
+        api_val.details  # ruff:ignore[useless-expression]
     # Action
     api_fit.set_stance(type_id=eve_propulsion_id)
     # Verification
     api_val = api_fit.validate(options=ValOptions(ship_limit=True))
     assert api_val.passed is True
-    assert api_val.details.ship_limit.status == consts.ApiValStatus.passed
+    with check_no_field():
+        api_val.details  # ruff:ignore[useless-expression]
     # Action
     api_fit.set_stance(type_id=eve_defensive_id)
     # Verification
     api_val = api_fit.validate(options=ValOptions(ship_limit=True))
     assert api_val.passed is True
-    assert api_val.details.ship_limit.status == consts.ApiValStatus.passed
+    with check_no_field():
+        api_val.details  # ruff:ignore[useless-expression]
 
 
 def test_abc_anhinga(client, consts):
@@ -668,48 +645,46 @@ def test_abc_anhinga(client, consts):
     # Verification
     api_val = api_fit.validate(options=ValOptions(ship_limit=True))
     assert api_val.passed is False
-    assert api_val.details.ship_limit.status == consts.ApiValStatus.failed
-    assert api_val.details.ship_limit.fail.ship_type_id == eve_other_id
-    assert api_val.details.ship_limit.fail.ship_group_id == eve_ship_grp_id
-    assert api_val.details.ship_limit.fail.items == {api_primary.id: (consts.ApiValItemStatus.failed, [eve_t3d_id], [])}
+    assert api_val.details.ship_limit.ship_type_id == eve_other_id
+    assert api_val.details.ship_limit.ship_group_id == eve_ship_grp_id
+    assert api_val.details.ship_limit.items == {api_primary.id: ([eve_t3d_id], [])}
     # Action
     api_secondary = api_fit.set_stance(type_id=eve_secondary_id)
     # Verification
     api_val = api_fit.validate(options=ValOptions(ship_limit=True))
     assert api_val.passed is False
-    assert api_val.details.ship_limit.status == consts.ApiValStatus.failed
-    assert api_val.details.ship_limit.fail.ship_type_id == eve_other_id
-    assert api_val.details.ship_limit.fail.ship_group_id == eve_ship_grp_id
-    assert api_val.details.ship_limit.fail.items == {
-        api_secondary.id: (consts.ApiValItemStatus.failed, [eve_t3d_id], [])}
+    assert api_val.details.ship_limit.ship_type_id == eve_other_id
+    assert api_val.details.ship_limit.ship_group_id == eve_ship_grp_id
+    assert api_val.details.ship_limit.items == {api_secondary.id: ([eve_t3d_id], [])}
     # Action
     api_tertiary = api_fit.set_stance(type_id=eve_tertiary_id)
     # Verification
     api_val = api_fit.validate(options=ValOptions(ship_limit=True))
     assert api_val.passed is False
-    assert api_val.details.ship_limit.status == consts.ApiValStatus.failed
-    assert api_val.details.ship_limit.fail.ship_type_id == eve_other_id
-    assert api_val.details.ship_limit.fail.ship_group_id == eve_ship_grp_id
-    assert api_val.details.ship_limit.fail.items == {
-        api_tertiary.id: (consts.ApiValItemStatus.failed, [eve_t3d_id], [])}
+    assert api_val.details.ship_limit.ship_type_id == eve_other_id
+    assert api_val.details.ship_limit.ship_group_id == eve_ship_grp_id
+    assert api_val.details.ship_limit.items == {api_tertiary.id: ([eve_t3d_id], [])}
     # Action
     api_fit.set_ship(type_id=eve_t3d_id)
     # Verification
     api_val = api_fit.validate(options=ValOptions(ship_limit=True))
     assert api_val.passed is True
-    assert api_val.details.ship_limit.status == consts.ApiValStatus.passed
+    with check_no_field():
+        api_val.details  # ruff:ignore[useless-expression]
     # Action
     api_fit.set_stance(type_id=eve_secondary_id)
     # Verification
     api_val = api_fit.validate(options=ValOptions(ship_limit=True))
     assert api_val.passed is True
-    assert api_val.details.ship_limit.status == consts.ApiValStatus.passed
+    with check_no_field():
+        api_val.details  # ruff:ignore[useless-expression]
     # Action
     api_fit.set_stance(type_id=eve_primary_id)
     # Verification
     api_val = api_fit.validate(options=ValOptions(ship_limit=True))
     assert api_val.passed is True
-    assert api_val.details.ship_limit.status == consts.ApiValStatus.passed
+    with check_no_field():
+        api_val.details  # ruff:ignore[useless-expression]
 
 
 def test_known_failures(client, consts):
@@ -729,71 +704,43 @@ def test_known_failures(client, consts):
     # Verification - no ship case has to be checked as well, since there is no-ship logic
     api_val = api_fit.validate(options=ValOptions(ship_limit=[api_module1.id]))
     assert api_val.passed is False
-    assert api_val.details.ship_limit.status == consts.ApiValStatus.failed
-    assert api_val.details.ship_limit.fail.ship_type_id is None
-    assert api_val.details.ship_limit.fail.ship_group_id is None
-    assert api_val.details.ship_limit.fail.items == {
-        api_module1.id: (consts.ApiValItemStatus.kf, [eve_other_id], [eve_grp2_id]),
-        api_module2.id: (consts.ApiValItemStatus.failed, [eve_other_id], [eve_grp2_id])}
+    assert api_val.details.ship_limit.ship_type_id is None
+    assert api_val.details.ship_limit.ship_group_id is None
+    assert api_val.details.ship_limit.items == {api_module2.id: ([eve_other_id], [eve_grp2_id])}
     api_val = api_fit.validate(options=ValOptions(ship_limit=[api_module2.id]))
     assert api_val.passed is False
-    assert api_val.details.ship_limit.status == consts.ApiValStatus.failed
-    assert api_val.details.ship_limit.fail.ship_type_id is None
-    assert api_val.details.ship_limit.fail.ship_group_id is None
-    assert api_val.details.ship_limit.fail.items == {
-        api_module1.id: (consts.ApiValItemStatus.failed, [eve_other_id], [eve_grp2_id]),
-        api_module2.id: (consts.ApiValItemStatus.kf, [eve_other_id], [eve_grp2_id])}
+    assert api_val.details.ship_limit.ship_type_id is None
+    assert api_val.details.ship_limit.ship_group_id is None
+    assert api_val.details.ship_limit.items == {api_module1.id: ([eve_other_id], [eve_grp2_id])}
     api_val = api_fit.validate(options=ValOptions(ship_limit=[api_module1.id, api_module2.id]))
     assert api_val.passed is True
-    assert api_val.details.ship_limit.status == consts.ApiValStatus.passed_kfs
-    assert api_val.details.ship_limit.fail.ship_type_id is None
-    assert api_val.details.ship_limit.fail.ship_group_id is None
-    assert api_val.details.ship_limit.fail.items == {
-        api_module1.id: (consts.ApiValItemStatus.kf, [eve_other_id], [eve_grp2_id]),
-        api_module2.id: (consts.ApiValItemStatus.kf, [eve_other_id], [eve_grp2_id])}
+    with check_no_field():
+        api_val.details  # ruff:ignore[useless-expression]
     api_val = api_fit.validate(options=ValOptions(ship_limit=[api_module1.id, api_other.id, api_module2.id]))
     assert api_val.passed is True
-    assert api_val.details.ship_limit.status == consts.ApiValStatus.passed_kfs
-    assert api_val.details.ship_limit.fail.ship_type_id is None
-    assert api_val.details.ship_limit.fail.ship_group_id is None
-    assert api_val.details.ship_limit.fail.items == {
-        api_module1.id: (consts.ApiValItemStatus.kf, [eve_other_id], [eve_grp2_id]),
-        api_module2.id: (consts.ApiValItemStatus.kf, [eve_other_id], [eve_grp2_id])}
+    with check_no_field():
+        api_val.details  # ruff:ignore[useless-expression]
     # Action
     api_fit.set_ship(type_id=eve_ship_id)
     # Verification
     api_val = api_fit.validate(options=ValOptions(ship_limit=[api_module1.id]))
     assert api_val.passed is False
-    assert api_val.details.ship_limit.status == consts.ApiValStatus.failed
-    assert api_val.details.ship_limit.fail.ship_type_id == eve_ship_id
-    assert api_val.details.ship_limit.fail.ship_group_id == eve_grp1_id
-    assert api_val.details.ship_limit.fail.items == {
-        api_module1.id: (consts.ApiValItemStatus.kf, [eve_other_id], [eve_grp2_id]),
-        api_module2.id: (consts.ApiValItemStatus.failed, [eve_other_id], [eve_grp2_id])}
+    assert api_val.details.ship_limit.ship_type_id == eve_ship_id
+    assert api_val.details.ship_limit.ship_group_id == eve_grp1_id
+    assert api_val.details.ship_limit.items == {api_module2.id: ([eve_other_id], [eve_grp2_id])}
     api_val = api_fit.validate(options=ValOptions(ship_limit=[api_module2.id]))
     assert api_val.passed is False
-    assert api_val.details.ship_limit.status == consts.ApiValStatus.failed
-    assert api_val.details.ship_limit.fail.ship_type_id == eve_ship_id
-    assert api_val.details.ship_limit.fail.ship_group_id == eve_grp1_id
-    assert api_val.details.ship_limit.fail.items == {
-        api_module1.id: (consts.ApiValItemStatus.failed, [eve_other_id], [eve_grp2_id]),
-        api_module2.id: (consts.ApiValItemStatus.kf, [eve_other_id], [eve_grp2_id])}
+    assert api_val.details.ship_limit.ship_type_id == eve_ship_id
+    assert api_val.details.ship_limit.ship_group_id == eve_grp1_id
+    assert api_val.details.ship_limit.items == {api_module1.id: ([eve_other_id], [eve_grp2_id])}
     api_val = api_fit.validate(options=ValOptions(ship_limit=[api_module1.id, api_module2.id]))
     assert api_val.passed is True
-    assert api_val.details.ship_limit.status == consts.ApiValStatus.passed_kfs
-    assert api_val.details.ship_limit.fail.ship_type_id == eve_ship_id
-    assert api_val.details.ship_limit.fail.ship_group_id == eve_grp1_id
-    assert api_val.details.ship_limit.fail.items == {
-        api_module1.id: (consts.ApiValItemStatus.kf, [eve_other_id], [eve_grp2_id]),
-        api_module2.id: (consts.ApiValItemStatus.kf, [eve_other_id], [eve_grp2_id])}
+    with check_no_field():
+        api_val.details  # ruff:ignore[useless-expression]
     api_val = api_fit.validate(options=ValOptions(ship_limit=[api_module1.id, api_other.id, api_module2.id]))
     assert api_val.passed is True
-    assert api_val.details.ship_limit.status == consts.ApiValStatus.passed_kfs
-    assert api_val.details.ship_limit.fail.ship_type_id == eve_ship_id
-    assert api_val.details.ship_limit.fail.ship_group_id == eve_grp1_id
-    assert api_val.details.ship_limit.fail.items == {
-        api_module1.id: (consts.ApiValItemStatus.kf, [eve_other_id], [eve_grp2_id]),
-        api_module2.id: (consts.ApiValItemStatus.kf, [eve_other_id], [eve_grp2_id])}
+    with check_no_field():
+        api_val.details  # ruff:ignore[useless-expression]
 
 
 def test_modified_type(client, consts):
@@ -823,18 +770,17 @@ def test_modified_type(client, consts):
     assert api_module.update().attrs[eve_type_attr_id].modified == approx(eve_allowed_ship_id)
     api_val = api_fit.validate(options=ValOptions(ship_limit=True))
     assert api_val.passed is False
-    assert api_val.details.ship_limit.status == consts.ApiValStatus.failed
-    assert api_val.details.ship_limit.fail.ship_type_id == eve_disallowed_ship_id
-    assert api_val.details.ship_limit.fail.ship_group_id == eve_ship_grp_id
-    assert api_val.details.ship_limit.fail.items == {
-        api_module.id: (consts.ApiValItemStatus.failed, [eve_allowed_ship_id], [])}
+    assert api_val.details.ship_limit.ship_type_id == eve_disallowed_ship_id
+    assert api_val.details.ship_limit.ship_group_id == eve_ship_grp_id
+    assert api_val.details.ship_limit.items == {api_module.id: ([eve_allowed_ship_id], [])}
     # Action
     api_fit.set_ship(type_id=eve_allowed_ship_id)
     # Verification
     assert api_module.update().attrs[eve_type_attr_id].modified == approx(eve_allowed_ship_id)
     api_val = api_fit.validate(options=ValOptions(ship_limit=True))
     assert api_val.passed is True
-    assert api_val.details.ship_limit.status == consts.ApiValStatus.passed
+    with check_no_field():
+        api_val.details  # ruff:ignore[useless-expression]
 
 
 def test_modified_group(client, consts):
@@ -865,18 +811,17 @@ def test_modified_group(client, consts):
     assert api_module.update().attrs[eve_group_attr_id].modified == approx(eve_allowed_grp_id)
     api_val = api_fit.validate(options=ValOptions(ship_limit=True))
     assert api_val.passed is False
-    assert api_val.details.ship_limit.status == consts.ApiValStatus.failed
-    assert api_val.details.ship_limit.fail.ship_type_id == eve_disallowed_ship_id
-    assert api_val.details.ship_limit.fail.ship_group_id == eve_disallowed_grp_id
-    assert api_val.details.ship_limit.fail.items == {
-        api_module.id: (consts.ApiValItemStatus.failed, [], [eve_allowed_grp_id])}
+    assert api_val.details.ship_limit.ship_type_id == eve_disallowed_ship_id
+    assert api_val.details.ship_limit.ship_group_id == eve_disallowed_grp_id
+    assert api_val.details.ship_limit.items == {api_module.id: ([], [eve_allowed_grp_id])}
     # Action
     api_fit.set_ship(type_id=eve_allowed_ship_id)
     # Verification
     assert api_module.update().attrs[eve_group_attr_id].modified == approx(eve_allowed_grp_id)
     api_val = api_fit.validate(options=ValOptions(ship_limit=True))
     assert api_val.passed is True
-    assert api_val.details.ship_limit.status == consts.ApiValStatus.passed
+    with check_no_field():
+        api_val.details  # ruff:ignore[useless-expression]
 
 
 def test_mutation_type(client, consts):
@@ -902,59 +847,54 @@ def test_mutation_type(client, consts):
     # Verification
     api_val = api_fit.validate(options=ValOptions(ship_limit=True))
     assert api_val.passed is False
-    assert api_val.details.ship_limit.status == consts.ApiValStatus.failed
-    assert api_val.details.ship_limit.fail.ship_type_id == eve_ship3_id
-    assert api_val.details.ship_limit.fail.ship_group_id == eve_ship_grp_id
-    assert api_val.details.ship_limit.fail.items == {
-        api_module.id: (consts.ApiValItemStatus.failed, sorted([eve_ship1_id, eve_ship2_id]), [])}
+    assert api_val.details.ship_limit.ship_type_id == eve_ship3_id
+    assert api_val.details.ship_limit.ship_group_id == eve_ship_grp_id
+    assert api_val.details.ship_limit.items == {api_module.id: (sorted([eve_ship1_id, eve_ship2_id]), [])}
     # Action
     api_module.change_module(mutation=eve_mutator1_id)
     # Verification
     api_val = api_fit.validate(options=ValOptions(ship_limit=True))
     assert api_val.passed is True
-    assert api_val.details.ship_limit.status == consts.ApiValStatus.passed
+    with check_no_field():
+        api_val.details  # ruff:ignore[useless-expression]
     # Action
     api_fit.set_ship(type_id=eve_ship2_id)
     # Verification
     api_val = api_fit.validate(options=ValOptions(ship_limit=True))
     assert api_val.passed is False
-    assert api_val.details.ship_limit.status == consts.ApiValStatus.failed
-    assert api_val.details.ship_limit.fail.ship_type_id == eve_ship2_id
-    assert api_val.details.ship_limit.fail.ship_group_id == eve_ship_grp_id
-    assert api_val.details.ship_limit.fail.items == {
-        api_module.id: (consts.ApiValItemStatus.failed, [eve_ship3_id], [])}
+    assert api_val.details.ship_limit.ship_type_id == eve_ship2_id
+    assert api_val.details.ship_limit.ship_group_id == eve_ship_grp_id
+    assert api_val.details.ship_limit.items == {api_module.id: ([eve_ship3_id], [])}
     # Action
     api_fit.set_ship(type_id=eve_ship1_id)
     # Verification
     api_val = api_fit.validate(options=ValOptions(ship_limit=True))
     assert api_val.passed is False
-    assert api_val.details.ship_limit.status == consts.ApiValStatus.failed
-    assert api_val.details.ship_limit.fail.ship_type_id == eve_ship1_id
-    assert api_val.details.ship_limit.fail.ship_group_id == eve_ship_grp_id
-    assert api_val.details.ship_limit.fail.items == {
-        api_module.id: (consts.ApiValItemStatus.failed, [eve_ship3_id], [])}
+    assert api_val.details.ship_limit.ship_type_id == eve_ship1_id
+    assert api_val.details.ship_limit.ship_group_id == eve_ship_grp_id
+    assert api_val.details.ship_limit.items == {api_module.id: ([eve_ship3_id], [])}
     # Action
     api_module.change_module(mutation=eve_mutator2_id)
     # Verification - no restriction on this mutator whatsoever
     api_val = api_fit.validate(options=ValOptions(ship_limit=True))
     assert api_val.passed is True
-    assert api_val.details.ship_limit.status == consts.ApiValStatus.passed
+    with check_no_field():
+        api_val.details  # ruff:ignore[useless-expression]
     # Action
     api_module.change_module(mutation=None)
     # Verification
     api_val = api_fit.validate(options=ValOptions(ship_limit=True))
     assert api_val.passed is True
-    assert api_val.details.ship_limit.status == consts.ApiValStatus.passed
+    with check_no_field():
+        api_val.details  # ruff:ignore[useless-expression]
     # Action
     api_fit.set_ship(type_id=eve_ship3_id)
     # Verification
     api_val = api_fit.validate(options=ValOptions(ship_limit=True))
     assert api_val.passed is False
-    assert api_val.details.ship_limit.status == consts.ApiValStatus.failed
-    assert api_val.details.ship_limit.fail.ship_type_id == eve_ship3_id
-    assert api_val.details.ship_limit.fail.ship_group_id == eve_ship_grp_id
-    assert api_val.details.ship_limit.fail.items == {
-        api_module.id: (consts.ApiValItemStatus.failed, sorted([eve_ship1_id, eve_ship2_id]), [])}
+    assert api_val.details.ship_limit.ship_type_id == eve_ship3_id
+    assert api_val.details.ship_limit.ship_group_id == eve_ship_grp_id
+    assert api_val.details.ship_limit.items == {api_module.id: (sorted([eve_ship1_id, eve_ship2_id]), [])}
 
 
 def test_mutation_group(client, consts):
@@ -983,59 +923,54 @@ def test_mutation_group(client, consts):
     # Verification
     api_val = api_fit.validate(options=ValOptions(ship_limit=True))
     assert api_val.passed is False
-    assert api_val.details.ship_limit.status == consts.ApiValStatus.failed
-    assert api_val.details.ship_limit.fail.ship_type_id == eve_ship3_id
-    assert api_val.details.ship_limit.fail.ship_group_id == eve_ship_grp3_id
-    assert api_val.details.ship_limit.fail.items == {
-        api_module.id: (consts.ApiValItemStatus.failed, [], sorted([eve_ship_grp1_id, eve_ship_grp2_id]))}
+    assert api_val.details.ship_limit.ship_type_id == eve_ship3_id
+    assert api_val.details.ship_limit.ship_group_id == eve_ship_grp3_id
+    assert api_val.details.ship_limit.items == {api_module.id: ([], sorted([eve_ship_grp1_id, eve_ship_grp2_id]))}
     # Action
     api_module.change_module(mutation=eve_mutator1_id)
     # Verification
     api_val = api_fit.validate(options=ValOptions(ship_limit=True))
     assert api_val.passed is True
-    assert api_val.details.ship_limit.status == consts.ApiValStatus.passed
+    with check_no_field():
+        api_val.details  # ruff:ignore[useless-expression]
     # Action
     api_fit.set_ship(type_id=eve_ship2_id)
     # Verification
     api_val = api_fit.validate(options=ValOptions(ship_limit=True))
     assert api_val.passed is False
-    assert api_val.details.ship_limit.status == consts.ApiValStatus.failed
-    assert api_val.details.ship_limit.fail.ship_type_id == eve_ship2_id
-    assert api_val.details.ship_limit.fail.ship_group_id == eve_ship_grp2_id
-    assert api_val.details.ship_limit.fail.items == {
-        api_module.id: (consts.ApiValItemStatus.failed, [], [eve_ship_grp3_id])}
+    assert api_val.details.ship_limit.ship_type_id == eve_ship2_id
+    assert api_val.details.ship_limit.ship_group_id == eve_ship_grp2_id
+    assert api_val.details.ship_limit.items == {api_module.id: ([], [eve_ship_grp3_id])}
     # Action
     api_fit.set_ship(type_id=eve_ship1_id)
     # Verification
     api_val = api_fit.validate(options=ValOptions(ship_limit=True))
     assert api_val.passed is False
-    assert api_val.details.ship_limit.status == consts.ApiValStatus.failed
-    assert api_val.details.ship_limit.fail.ship_type_id == eve_ship1_id
-    assert api_val.details.ship_limit.fail.ship_group_id == eve_ship_grp1_id
-    assert api_val.details.ship_limit.fail.items == {
-        api_module.id: (consts.ApiValItemStatus.failed, [], [eve_ship_grp3_id])}
+    assert api_val.details.ship_limit.ship_type_id == eve_ship1_id
+    assert api_val.details.ship_limit.ship_group_id == eve_ship_grp1_id
+    assert api_val.details.ship_limit.items == {api_module.id: ([], [eve_ship_grp3_id])}
     # Action
     api_module.change_module(mutation=eve_mutator2_id)
     # Verification - no restriction on this mutator whatsoever
     api_val = api_fit.validate(options=ValOptions(ship_limit=True))
     assert api_val.passed is True
-    assert api_val.details.ship_limit.status == consts.ApiValStatus.passed
+    with check_no_field():
+        api_val.details  # ruff:ignore[useless-expression]
     # Action
     api_module.change_module(mutation=None)
     # Verification
     api_val = api_fit.validate(options=ValOptions(ship_limit=True))
     assert api_val.passed is True
-    assert api_val.details.ship_limit.status == consts.ApiValStatus.passed
+    with check_no_field():
+        api_val.details  # ruff:ignore[useless-expression]
     # Action
     api_fit.set_ship(type_id=eve_ship3_id)
     # Verification
     api_val = api_fit.validate(options=ValOptions(ship_limit=True))
     assert api_val.passed is False
-    assert api_val.details.ship_limit.status == consts.ApiValStatus.failed
-    assert api_val.details.ship_limit.fail.ship_type_id == eve_ship3_id
-    assert api_val.details.ship_limit.fail.ship_group_id == eve_ship_grp3_id
-    assert api_val.details.ship_limit.fail.items == {
-        api_module.id: (consts.ApiValItemStatus.failed, [], sorted([eve_ship_grp1_id, eve_ship_grp2_id]))}
+    assert api_val.details.ship_limit.ship_type_id == eve_ship3_id
+    assert api_val.details.ship_limit.ship_group_id == eve_ship_grp3_id
+    assert api_val.details.ship_limit.items == {api_module.id: ([], sorted([eve_ship_grp1_id, eve_ship_grp2_id]))}
 
 
 def test_no_ship(client, consts):
@@ -1051,17 +986,16 @@ def test_no_ship(client, consts):
     # Verification
     api_val = api_fit.validate(options=ValOptions(ship_limit=True))
     assert api_val.passed is True
-    assert api_val.details.ship_limit.status == consts.ApiValStatus.passed
+    with check_no_field():
+        api_val.details  # ruff:ignore[useless-expression]
     # Action
     api_module = api_fit.add_module(type_id=eve_module_id)
     # Verification
     api_val = api_fit.validate(options=ValOptions(ship_limit=True))
     assert api_val.passed is False
-    assert api_val.details.ship_limit.status == consts.ApiValStatus.failed
-    assert api_val.details.ship_limit.fail.ship_type_id is None
-    assert api_val.details.ship_limit.fail.ship_group_id is None
-    assert api_val.details.ship_limit.fail.items == {
-        api_module.id: (consts.ApiValItemStatus.failed, [eve_ship_id], [eve_ship_grp1_id])}
+    assert api_val.details.ship_limit.ship_type_id is None
+    assert api_val.details.ship_limit.ship_group_id is None
+    assert api_val.details.ship_limit.items == {api_module.id: ([eve_ship_id], [eve_ship_grp1_id])}
 
 
 def test_no_attr(client, consts):
@@ -1081,18 +1015,17 @@ def test_no_attr(client, consts):
     # no ship limit
     api_val = api_fit.validate(options=ValOptions(ship_limit=True))
     assert api_val.passed is True
-    assert api_val.details.ship_limit.status == consts.ApiValStatus.passed
+    with check_no_field():
+        api_val.details  # ruff:ignore[useless-expression]
     # Action
     api_module.change_module(type_id=eve_module2_id)
     # Verification - one attribute not existing doesn't prevent other attributes from defining the
     # ship limit
     api_val = api_fit.validate(options=ValOptions(ship_limit=True))
     assert api_val.passed is False
-    assert api_val.details.ship_limit.status == consts.ApiValStatus.failed
-    assert api_val.details.ship_limit.fail.ship_type_id == eve_ship1_id
-    assert api_val.details.ship_limit.fail.ship_group_id == eve_ship_grp_id
-    assert api_val.details.ship_limit.fail.items == {
-        api_module.id: (consts.ApiValItemStatus.failed, [eve_ship2_id], [])}
+    assert api_val.details.ship_limit.ship_type_id == eve_ship1_id
+    assert api_val.details.ship_limit.ship_group_id == eve_ship_grp_id
+    assert api_val.details.ship_limit.items == {api_module.id: ([eve_ship2_id], [])}
 
 
 def test_not_loaded_ship(client, consts):
@@ -1124,13 +1057,12 @@ def test_not_loaded_ship(client, consts):
     # - Module 5 fails because ship group is not available
     api_val = api_fit.validate(options=ValOptions(ship_limit=True))
     assert api_val.passed is False
-    assert api_val.details.ship_limit.status == consts.ApiValStatus.failed
-    assert api_val.details.ship_limit.fail.ship_type_id == eve_ship2_id
-    assert api_val.details.ship_limit.fail.ship_group_id is None
-    assert api_val.details.ship_limit.fail.items == {
-        api_module1.id: (consts.ApiValItemStatus.failed, [eve_ship1_id], []),
-        api_module3.id: (consts.ApiValItemStatus.failed, [eve_ship1_id], [eve_ship_grp_id]),
-        api_module5.id: (consts.ApiValItemStatus.failed, [], [eve_ship_grp_id])}
+    assert api_val.details.ship_limit.ship_type_id == eve_ship2_id
+    assert api_val.details.ship_limit.ship_group_id is None
+    assert api_val.details.ship_limit.items == {
+        api_module1.id: ([eve_ship1_id], []),
+        api_module3.id: ([eve_ship1_id], [eve_ship_grp_id]),
+        api_module5.id: ([], [eve_ship_grp_id])}
     # Action
     api_module1.remove()
     api_module3.remove()
@@ -1138,7 +1070,8 @@ def test_not_loaded_ship(client, consts):
     # Verification
     api_val = api_fit.validate(options=ValOptions(ship_limit=True))
     assert api_val.passed is True
-    assert api_val.details.ship_limit.status == consts.ApiValStatus.passed
+    with check_no_field():
+        api_val.details  # ruff:ignore[useless-expression]
 
 
 def test_criterion_item_state(client, consts):
@@ -1159,13 +1092,12 @@ def test_criterion_item_state(client, consts):
     # Verification
     api_val = api_fit.validate(options=ValOptions(ship_limit=True))
     assert api_val.passed is False
-    assert api_val.details.ship_limit.status == consts.ApiValStatus.failed
-    assert api_val.details.ship_limit.fail.ship_type_id == eve_disallowed_ship_id
-    assert api_val.details.ship_limit.fail.ship_group_id == eve_ship_grp_id
-    assert api_val.details.ship_limit.fail.items == {
-        api_module.id: (consts.ApiValItemStatus.failed, [eve_allowed_ship_id], []),
-        api_rig.id: (consts.ApiValItemStatus.failed, [eve_allowed_ship_id], []),
-        api_subsystem.id: (consts.ApiValItemStatus.failed, [eve_allowed_ship_id], [])}
+    assert api_val.details.ship_limit.ship_type_id == eve_disallowed_ship_id
+    assert api_val.details.ship_limit.ship_group_id == eve_ship_grp_id
+    assert api_val.details.ship_limit.items == {
+        api_module.id: ([eve_allowed_ship_id], []),
+        api_rig.id: ([eve_allowed_ship_id], []),
+        api_subsystem.id: ([eve_allowed_ship_id], [])}
 
 
 def test_criterion_item_kind(client, consts):
@@ -1196,4 +1128,5 @@ def test_criterion_item_kind(client, consts):
     assert len(api_fighter.autocharges) == 1
     api_val = api_fit.validate(options=ValOptions(ship_limit=True))
     assert api_val.passed is True
-    assert api_val.details.ship_limit.status == consts.ApiValStatus.passed
+    with check_no_field():
+        api_val.details  # ruff:ignore[useless-expression]

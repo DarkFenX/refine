@@ -5,7 +5,7 @@ use crate::{
     svc::{SvcCtx, vast::VastFitData},
     ud::UItemId,
     util::RSet,
-    val::{ValItemStatus, ValResult},
+    val::ValResult,
 };
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -29,7 +29,6 @@ pub struct ValFighterSquadSizeFail {
 #[derive(Copy, Clone)]
 pub struct ValFighterSquadSizeFighterInfo {
     pub fighter_id: ItemId,
-    pub status: ValItemStatus,
     /// Current squad size.
     pub size: CountNz,
     /// Max allowed squad size.
@@ -56,19 +55,18 @@ impl VastFitData {
         let fighters = self
             .fighter_squad_size
             .iter()
-            .map(|(&fighter_uid, fighter_info)| ValFighterSquadSizeFighterInfo {
-                fighter_id: ctx.u_data.items.ext_id_by_int_id(fighter_uid),
-                status: ValItemStatus::from_kfs(kfs, fighter_uid),
-                size: fighter_info.size,
-                max_size: fighter_info.max_size,
+            .filter_map(|(fighter_uid, fighter_info)| match kfs.contains(fighter_uid) {
+                true => None,
+                false => Some(ValFighterSquadSizeFighterInfo {
+                    fighter_id: ctx.u_data.items.ext_id_by_int_id(*fighter_uid),
+                    size: fighter_info.size,
+                    max_size: fighter_info.max_size,
+                }),
             })
             .collect_vec();
         match fighters.is_empty() {
             true => ValResult::Passed,
-            false => ValResult::from_fail(
-                fighters.iter().all(|v| v.status.is_kf()),
-                ValFighterSquadSizeFail { fighters },
-            ),
+            false => ValResult::Failed(ValFighterSquadSizeFail { fighters }),
         }
     }
 }

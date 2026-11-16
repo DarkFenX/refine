@@ -16,10 +16,9 @@ def test_fail_single(client, consts):
     assert api_stats.high_slots.one() == (1, 0)
     api_val = api_fit.validate(options=ValOptions(high_slot_count=True))
     assert api_val.passed is False
-    assert api_val.details.high_slot_count.status == consts.ApiValStatus.failed
-    assert api_val.details.high_slot_count.fail.used == 1
-    assert api_val.details.high_slot_count.fail.max == 0
-    assert api_val.details.high_slot_count.fail.users == {api_module.id: consts.ApiValItemStatus.failed}
+    assert api_val.details.high_slot_count.used == 1
+    assert api_val.details.high_slot_count.max == 0
+    assert api_val.details.high_slot_count.users == [api_module.id]
 
 
 def test_fail_multiple_ship(client, consts):
@@ -39,12 +38,9 @@ def test_fail_multiple_ship(client, consts):
     assert api_stats.high_slots.one() == (3, 1)
     api_val = api_fit.validate(options=ValOptions(high_slot_count=True))
     assert api_val.passed is False
-    assert api_val.details.high_slot_count.status == consts.ApiValStatus.failed
-    assert api_val.details.high_slot_count.fail.used == 3
-    assert api_val.details.high_slot_count.fail.max == 1
-    assert api_val.details.high_slot_count.fail.users == {
-        api_module2.id: consts.ApiValItemStatus.failed,
-        api_module3.id: consts.ApiValItemStatus.failed}
+    assert api_val.details.high_slot_count.used == 3
+    assert api_val.details.high_slot_count.max == 1
+    assert api_val.details.high_slot_count.users == sorted([api_module2.id, api_module3.id])
 
 
 def test_fail_multiple_struct(client, consts):
@@ -64,12 +60,9 @@ def test_fail_multiple_struct(client, consts):
     assert api_stats.high_slots.one() == (3, 1)
     api_val = api_fit.validate(options=ValOptions(high_slot_count=True))
     assert api_val.passed is False
-    assert api_val.details.high_slot_count.status == consts.ApiValStatus.failed
-    assert api_val.details.high_slot_count.fail.used == 3
-    assert api_val.details.high_slot_count.fail.max == 1
-    assert api_val.details.high_slot_count.fail.users == {
-        api_module2.id: consts.ApiValItemStatus.failed,
-        api_module3.id: consts.ApiValItemStatus.failed}
+    assert api_val.details.high_slot_count.used == 3
+    assert api_val.details.high_slot_count.max == 1
+    assert api_val.details.high_slot_count.users == sorted([api_module2.id, api_module3.id])
 
 
 def test_holes(client, consts):
@@ -91,10 +84,9 @@ def test_holes(client, consts):
     assert api_stats.high_slots.one() == (6, 3)
     api_val = api_fit.validate(options=ValOptions(high_slot_count=True))
     assert api_val.passed is False
-    assert api_val.details.high_slot_count.status == consts.ApiValStatus.failed
-    assert api_val.details.high_slot_count.fail.used == 6
-    assert api_val.details.high_slot_count.fail.max == 3
-    assert api_val.details.high_slot_count.fail.users == {api_module1.id: consts.ApiValItemStatus.failed}
+    assert api_val.details.high_slot_count.used == 6
+    assert api_val.details.high_slot_count.max == 3
+    assert api_val.details.high_slot_count.users == [api_module1.id]
     # Action
     api_fit.add_module(
         type_id=eve_module_id,
@@ -106,10 +98,9 @@ def test_holes(client, consts):
     assert api_stats.high_slots.one() == (7, 3)
     api_val = api_fit.validate(options=ValOptions(high_slot_count=True))
     assert api_val.passed is False
-    assert api_val.details.high_slot_count.status == consts.ApiValStatus.failed
-    assert api_val.details.high_slot_count.fail.used == 7
-    assert api_val.details.high_slot_count.fail.max == 3
-    assert api_val.details.high_slot_count.fail.users == {api_module1.id: consts.ApiValItemStatus.failed}
+    assert api_val.details.high_slot_count.used == 7
+    assert api_val.details.high_slot_count.max == 3
+    assert api_val.details.high_slot_count.users == [api_module1.id]
     # Action
     api_module1.remove()
     # Verification
@@ -117,7 +108,8 @@ def test_holes(client, consts):
     assert api_stats.high_slots.one() == (3, 3)
     api_val = api_fit.validate(options=ValOptions(high_slot_count=True))
     assert api_val.passed is True
-    assert api_val.details.high_slot_count.status == consts.ApiValStatus.passed
+    with check_no_field():
+        api_val.details  # ruff:ignore[useless-expression]
 
 
 def test_equal(client, consts):
@@ -134,7 +126,8 @@ def test_equal(client, consts):
     assert api_stats.high_slots.one() == (1, 1)
     api_val = api_fit.validate(options=ValOptions(high_slot_count=True))
     assert api_val.passed is True
-    assert api_val.details.high_slot_count.status == consts.ApiValStatus.passed
+    with check_no_field():
+        api_val.details  # ruff:ignore[useless-expression]
 
 
 def test_known_failures(client, consts):
@@ -157,7 +150,8 @@ def test_known_failures(client, consts):
     assert api_stats.high_slots.one() == (1, 3)
     api_val = api_fit.validate(options=ValOptions(high_slot_count=[api_module1.id]))
     assert api_val.passed is True
-    assert api_val.details.high_slot_count.status == consts.ApiValStatus.passed
+    with check_no_field():
+        api_val.details  # ruff:ignore[useless-expression]
     # Action
     api_module2 = api_fit.add_module(
         type_id=eve_module_id,
@@ -169,7 +163,8 @@ def test_known_failures(client, consts):
     assert api_stats.high_slots.one() == (3, 3)
     api_val = api_fit.validate(options=ValOptions(high_slot_count=[api_module2.id]))
     assert api_val.passed is True
-    assert api_val.details.high_slot_count.status == consts.ApiValStatus.passed
+    with check_no_field():
+        api_val.details  # ruff:ignore[useless-expression]
     # Action
     api_module3 = api_fit.add_module(
         type_id=eve_module_id,
@@ -181,16 +176,13 @@ def test_known_failures(client, consts):
     assert api_stats.high_slots.one() == (7, 3)
     api_val = api_fit.validate(options=ValOptions(high_slot_count=[api_module2.id]))
     assert api_val.passed is False
-    assert api_val.details.high_slot_count.status == consts.ApiValStatus.failed
-    assert api_val.details.high_slot_count.fail.used == 7
-    assert api_val.details.high_slot_count.fail.max == 3
-    assert api_val.details.high_slot_count.fail.users == {api_module3.id: consts.ApiValItemStatus.failed}
+    assert api_val.details.high_slot_count.used == 7
+    assert api_val.details.high_slot_count.max == 3
+    assert api_val.details.high_slot_count.users == [api_module3.id]
     api_val = api_fit.validate(options=ValOptions(high_slot_count=[api_module3.id]))
     assert api_val.passed is True
-    assert api_val.details.high_slot_count.status == consts.ApiValStatus.passed_kfs
-    assert api_val.details.high_slot_count.fail.used == 7
-    assert api_val.details.high_slot_count.fail.max == 3
-    assert api_val.details.high_slot_count.fail.users == {api_module3.id: consts.ApiValItemStatus.kf}
+    with check_no_field():
+        api_val.details  # ruff:ignore[useless-expression]
     # Action
     api_module4 = api_fit.add_module(
         type_id=eve_module_id,
@@ -202,36 +194,22 @@ def test_known_failures(client, consts):
     assert api_stats.high_slots.one() == (7, 3)
     api_val = api_fit.validate(options=ValOptions(high_slot_count=[api_module3.id]))
     assert api_val.passed is False
-    assert api_val.details.high_slot_count.status == consts.ApiValStatus.failed
-    assert api_val.details.high_slot_count.fail.used == 7
-    assert api_val.details.high_slot_count.fail.max == 3
-    assert api_val.details.high_slot_count.fail.users == {
-        api_module3.id: consts.ApiValItemStatus.kf,
-        api_module4.id: consts.ApiValItemStatus.failed}
+    assert api_val.details.high_slot_count.used == 7
+    assert api_val.details.high_slot_count.max == 3
+    assert api_val.details.high_slot_count.users == [api_module4.id]
     api_val = api_fit.validate(options=ValOptions(high_slot_count=[api_module4.id]))
     assert api_val.passed is False
-    assert api_val.details.high_slot_count.status == consts.ApiValStatus.failed
-    assert api_val.details.high_slot_count.fail.used == 7
-    assert api_val.details.high_slot_count.fail.max == 3
-    assert api_val.details.high_slot_count.fail.users == {
-        api_module3.id: consts.ApiValItemStatus.failed,
-        api_module4.id: consts.ApiValItemStatus.kf}
+    assert api_val.details.high_slot_count.used == 7
+    assert api_val.details.high_slot_count.max == 3
+    assert api_val.details.high_slot_count.users == [api_module3.id]
     api_val = api_fit.validate(options=ValOptions(high_slot_count=[api_module3.id, api_module4.id]))
     assert api_val.passed is True
-    assert api_val.details.high_slot_count.status == consts.ApiValStatus.passed_kfs
-    assert api_val.details.high_slot_count.fail.used == 7
-    assert api_val.details.high_slot_count.fail.max == 3
-    assert api_val.details.high_slot_count.fail.users == {
-        api_module3.id: consts.ApiValItemStatus.kf,
-        api_module4.id: consts.ApiValItemStatus.kf}
+    with check_no_field():
+        api_val.details  # ruff:ignore[useless-expression]
     api_val = api_fit.validate(options=ValOptions(high_slot_count=[api_module3.id, api_other.id, api_module4.id]))
     assert api_val.passed is True
-    assert api_val.details.high_slot_count.status == consts.ApiValStatus.passed_kfs
-    assert api_val.details.high_slot_count.fail.used == 7
-    assert api_val.details.high_slot_count.fail.max == 3
-    assert api_val.details.high_slot_count.fail.users == {
-        api_module3.id: consts.ApiValItemStatus.kf,
-        api_module4.id: consts.ApiValItemStatus.kf}
+    with check_no_field():
+        api_val.details  # ruff:ignore[useless-expression]
     # Action
     api_fit.add_module(
         type_id=eve_module_id,
@@ -243,12 +221,8 @@ def test_known_failures(client, consts):
     assert api_stats.high_slots.one() == (7, 3)
     api_val = api_fit.validate(options=ValOptions(high_slot_count=[api_module3.id, api_module4.id]))
     assert api_val.passed is True
-    assert api_val.details.high_slot_count.status == consts.ApiValStatus.passed_kfs
-    assert api_val.details.high_slot_count.fail.used == 7
-    assert api_val.details.high_slot_count.fail.max == 3
-    assert api_val.details.high_slot_count.fail.users == {
-        api_module3.id: consts.ApiValItemStatus.kf,
-        api_module4.id: consts.ApiValItemStatus.kf}
+    with check_no_field():
+        api_val.details  # ruff:ignore[useless-expression]
     # Action
     api_module6 = api_fit.add_module(
         type_id=eve_module_id,
@@ -260,13 +234,9 @@ def test_known_failures(client, consts):
     assert api_stats.high_slots.one() == (7, 3)
     api_val = api_fit.validate(options=ValOptions(high_slot_count=[api_module3.id, api_module4.id]))
     assert api_val.passed is False
-    assert api_val.details.high_slot_count.status == consts.ApiValStatus.failed
-    assert api_val.details.high_slot_count.fail.used == 7
-    assert api_val.details.high_slot_count.fail.max == 3
-    assert api_val.details.high_slot_count.fail.users == {
-        api_module3.id: consts.ApiValItemStatus.kf,
-        api_module4.id: consts.ApiValItemStatus.kf,
-        api_module6.id: consts.ApiValItemStatus.failed}
+    assert api_val.details.high_slot_count.used == 7
+    assert api_val.details.high_slot_count.max == 3
+    assert api_val.details.high_slot_count.users == [api_module6.id]
 
 
 def test_modified_max(client, consts):
@@ -293,10 +263,9 @@ def test_modified_max(client, consts):
     assert api_stats.high_slots.one() == (1, 0)
     api_val = api_fit.validate(options=ValOptions(high_slot_count=True))
     assert api_val.passed is False
-    assert api_val.details.high_slot_count.status == consts.ApiValStatus.failed
-    assert api_val.details.high_slot_count.fail.used == 1
-    assert api_val.details.high_slot_count.fail.max == 0
-    assert api_val.details.high_slot_count.fail.users == {api_module.id: consts.ApiValItemStatus.failed}
+    assert api_val.details.high_slot_count.used == 1
+    assert api_val.details.high_slot_count.max == 0
+    assert api_val.details.high_slot_count.users == [api_module.id]
     # Action
     api_fit.add_implant(type_id=eve_implant_id)
     # Verification
@@ -305,7 +274,8 @@ def test_modified_max(client, consts):
     assert api_stats.high_slots.one() == (1, 1)
     api_val = api_fit.validate(options=ValOptions(high_slot_count=True))
     assert api_val.passed is True
-    assert api_val.details.high_slot_count.status == consts.ApiValStatus.passed
+    with check_no_field():
+        api_val.details  # ruff:ignore[useless-expression]
 
 
 def test_fractional_max(client, consts):
@@ -323,10 +293,9 @@ def test_fractional_max(client, consts):
     assert api_stats.high_slots.one() == (1, 0)
     api_val = api_fit.validate(options=ValOptions(high_slot_count=True))
     assert api_val.passed is False
-    assert api_val.details.high_slot_count.status == consts.ApiValStatus.failed
-    assert api_val.details.high_slot_count.fail.used == 1
-    assert api_val.details.high_slot_count.fail.max == 0
-    assert api_val.details.high_slot_count.fail.users == {api_module.id: consts.ApiValItemStatus.failed}
+    assert api_val.details.high_slot_count.used == 1
+    assert api_val.details.high_slot_count.max == 0
+    assert api_val.details.high_slot_count.users == [api_module.id]
     # Action
     api_fit.set_ship(type_id=eve_ship2_id)
     # Verification
@@ -334,7 +303,8 @@ def test_fractional_max(client, consts):
     assert api_stats.high_slots.one() == (1, 1)
     api_val = api_fit.validate(options=ValOptions(high_slot_count=True))
     assert api_val.passed is True
-    assert api_val.details.high_slot_count.status == consts.ApiValStatus.passed
+    with check_no_field():
+        api_val.details  # ruff:ignore[useless-expression]
 
 
 def test_no_ship(client, consts):
@@ -349,10 +319,9 @@ def test_no_ship(client, consts):
     assert api_stats.high_slots.one() == (1, None)
     api_val = api_fit.validate(options=ValOptions(high_slot_count=True))
     assert api_val.passed is False
-    assert api_val.details.high_slot_count.status == consts.ApiValStatus.failed
-    assert api_val.details.high_slot_count.fail.used == 1
-    assert api_val.details.high_slot_count.fail.max is None
-    assert api_val.details.high_slot_count.fail.users == {api_module.id: consts.ApiValItemStatus.failed}
+    assert api_val.details.high_slot_count.used == 1
+    assert api_val.details.high_slot_count.max is None
+    assert api_val.details.high_slot_count.users == [api_module.id]
 
 
 def test_no_value_max(client, consts):
@@ -369,10 +338,9 @@ def test_no_value_max(client, consts):
     assert api_stats.high_slots.one() == (1, 0)
     api_val = api_fit.validate(options=ValOptions(high_slot_count=True))
     assert api_val.passed is False
-    assert api_val.details.high_slot_count.status == consts.ApiValStatus.failed
-    assert api_val.details.high_slot_count.fail.used == 1
-    assert api_val.details.high_slot_count.fail.max == 0
-    assert api_val.details.high_slot_count.fail.users == {api_module.id: consts.ApiValItemStatus.failed}
+    assert api_val.details.high_slot_count.used == 1
+    assert api_val.details.high_slot_count.max == 0
+    assert api_val.details.high_slot_count.users == [api_module.id]
 
 
 def test_no_attr_max(client, consts):
@@ -387,10 +355,9 @@ def test_no_attr_max(client, consts):
     # Verification - when output attr does not exist, it is assumed to be 0
     api_val = api_fit.validate(options=ValOptions(high_slot_count=True))
     assert api_val.passed is False
-    assert api_val.details.high_slot_count.status == consts.ApiValStatus.failed
-    assert api_val.details.high_slot_count.fail.used == 1
-    assert api_val.details.high_slot_count.fail.max == 0
-    assert api_val.details.high_slot_count.fail.users == {api_module.id: consts.ApiValItemStatus.failed}
+    assert api_val.details.high_slot_count.used == 1
+    assert api_val.details.high_slot_count.max == 0
+    assert api_val.details.high_slot_count.users == [api_module.id]
 
 
 def test_not_loaded_user(client, consts):
@@ -408,10 +375,9 @@ def test_not_loaded_user(client, consts):
     assert api_stats.high_slots.one() == (1, 0)
     api_val = api_fit.validate(options=ValOptions(high_slot_count=True))
     assert api_val.passed is False
-    assert api_val.details.high_slot_count.status == consts.ApiValStatus.failed
-    assert api_val.details.high_slot_count.fail.used == 1
-    assert api_val.details.high_slot_count.fail.max == 0
-    assert api_val.details.high_slot_count.fail.users == {api_module.id: consts.ApiValItemStatus.failed}
+    assert api_val.details.high_slot_count.used == 1
+    assert api_val.details.high_slot_count.max == 0
+    assert api_val.details.high_slot_count.users == [api_module.id]
 
 
 def test_not_loaded_ship(client, consts):
@@ -428,10 +394,9 @@ def test_not_loaded_ship(client, consts):
     assert api_stats.high_slots.one() == (1, None)
     api_val = api_fit.validate(options=ValOptions(high_slot_count=True))
     assert api_val.passed is False
-    assert api_val.details.high_slot_count.status == consts.ApiValStatus.failed
-    assert api_val.details.high_slot_count.fail.used == 1
-    assert api_val.details.high_slot_count.fail.max is None
-    assert api_val.details.high_slot_count.fail.users == {api_module.id: consts.ApiValItemStatus.failed}
+    assert api_val.details.high_slot_count.used == 1
+    assert api_val.details.high_slot_count.max is None
+    assert api_val.details.high_slot_count.users == [api_module.id]
 
 
 def test_criterion_module_state(client, consts):
@@ -449,10 +414,9 @@ def test_criterion_module_state(client, consts):
     assert api_stats.high_slots.one() == (1, 0)
     api_val = api_fit.validate(options=ValOptions(high_slot_count=True))
     assert api_val.passed is False
-    assert api_val.details.high_slot_count.status == consts.ApiValStatus.failed
-    assert api_val.details.high_slot_count.fail.used == 1
-    assert api_val.details.high_slot_count.fail.max == 0
-    assert api_val.details.high_slot_count.fail.users == {api_module.id: consts.ApiValItemStatus.failed}
+    assert api_val.details.high_slot_count.used == 1
+    assert api_val.details.high_slot_count.max == 0
+    assert api_val.details.high_slot_count.users == [api_module.id]
     # Action
     api_module.change_module(state=consts.ApiModuleState.disabled)
     # Verification
@@ -460,10 +424,9 @@ def test_criterion_module_state(client, consts):
     assert api_stats.high_slots.one() == (1, 0)
     api_val = api_fit.validate(options=ValOptions(high_slot_count=True))
     assert api_val.passed is False
-    assert api_val.details.high_slot_count.status == consts.ApiValStatus.failed
-    assert api_val.details.high_slot_count.fail.used == 1
-    assert api_val.details.high_slot_count.fail.max == 0
-    assert api_val.details.high_slot_count.fail.users == {api_module.id: consts.ApiValItemStatus.failed}
+    assert api_val.details.high_slot_count.used == 1
+    assert api_val.details.high_slot_count.max == 0
+    assert api_val.details.high_slot_count.users == [api_module.id]
 
 
 def test_criterion_rack(client, consts):
@@ -482,7 +445,8 @@ def test_criterion_rack(client, consts):
     assert api_stats.high_slots.one() == (0, 0)
     api_val = api_fit.validate(options=ValOptions(high_slot_count=True))
     assert api_val.passed is True
-    assert api_val.details.high_slot_count.status == consts.ApiValStatus.passed
+    with check_no_field():
+        api_val.details  # ruff:ignore[useless-expression]
 
 
 def test_criterion_item_kind(client, consts):
@@ -520,10 +484,8 @@ def test_criterion_item_kind(client, consts):
     assert api_stats.high_slots.one() == (1, 0)
     api_val = api_fit.validate(options=ValOptions(high_slot_count=[api_module.id]))
     assert api_val.passed is True
-    assert api_val.details.high_slot_count.status == consts.ApiValStatus.passed_kfs
-    assert api_val.details.high_slot_count.fail.used == 1
-    assert api_val.details.high_slot_count.fail.max == 0
-    assert api_val.details.high_slot_count.fail.users == {api_module.id: consts.ApiValItemStatus.kf}
+    with check_no_field():
+        api_val.details  # ruff:ignore[useless-expression]
 
 
 def test_stat_not_requested(client, consts):

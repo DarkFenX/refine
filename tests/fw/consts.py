@@ -771,19 +771,6 @@ class ApiValShipType(StrEnum):
 
 
 @unique
-class ApiValStatus(StrEnum):
-    passed = 'passed'
-    passed_kfs = 'passed_kfs'
-    failed = 'failed'
-
-
-@unique
-class ApiValItemStatus(StrEnum):
-    failed = 'failed'
-    kf = 'kf'
-
-
-@unique
 class ApiCtlAffector(StrEnum):
     unmodified = 'unmodified'
     deactivate = 'deactivate'

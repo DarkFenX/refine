@@ -6,7 +6,7 @@ use crate::{
     svc::{SvcCtx, vast::VastFitData},
     ud::{UData, UFit, UFitId, UItemId, UShipKind},
     util::RSet,
-    val::{ValItemStatus, ValResult},
+    val::ValResult,
 };
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -23,17 +23,18 @@ pub struct ValItemVsShipKindFail {
     /// Kind of current ship.
     pub ship_kind: ValShipKind,
     /// Items which need other ship kind, and what kind they need (either ship or structure).
-    #[cfg_attr(feature = "serde", serde_as(as = "serde_with::KeyValueMap<_>"))]
+    #[cfg_attr(feature = "serde", serde_as(as = "refine_serde::VecAsMap"))]
     pub items: Vec<ValItemVsShipKindItemInfo>,
 }
 
-#[cfg_attr(feature = "serde", derive(serde_tuple::Serialize_tuple))]
+#[cfg_attr(feature = "serde", derive(refine_serde::VecAsMapEntry))]
 #[derive(Copy, Clone)]
 pub struct ValItemVsShipKindItemInfo {
     /// Items which need other ship kind.
+    #[cfg_attr(feature = "serde", vec_map(key))]
     pub item_id: ItemId,
-    pub status: ValItemStatus,
     /// Ship kind item needs.
+    #[cfg_attr(feature = "serde", vec_map(value))]
     pub needed_ship_kind: ValShipKind,
 }
 
@@ -74,22 +75,18 @@ impl VastFitData {
     ) -> ValResult<ValItemVsShipKindFail> {
         let items = self
             .mods_rigs_svcs_vs_ship_kind
-            .iter()
-            .map(|(&item_uid, needed_kind)| ValItemVsShipKindItemInfo {
-                item_id: ctx.u_data.items.ext_id_by_int_id(item_uid),
-                status: ValItemStatus::from_kfs(kfs, item_uid),
+            .difference(kfs)
+            .map(|(item_uid, needed_kind)| ValItemVsShipKindItemInfo {
+                item_id: ctx.u_data.items.ext_id_by_int_id(*item_uid),
                 needed_ship_kind: *needed_kind,
             })
             .collect_vec();
         match items.is_empty() {
             true => ValResult::Passed,
-            false => ValResult::from_fail(
-                items.iter().all(|v| v.status.is_kf()),
-                ValItemVsShipKindFail {
-                    ship_kind: ValShipKind::from_u_ship_kind(fit.ship_kind),
-                    items,
-                },
-            ),
+            false => ValResult::Failed(ValItemVsShipKindFail {
+                ship_kind: ValShipKind::from_u_ship_kind(fit.ship_kind),
+                items,
+            }),
         }
     }
 }

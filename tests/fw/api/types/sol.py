@@ -163,7 +163,7 @@ class Sol(AttrDict):
             result_detailed = SolValResult(data=resp_detailed.json())
             assert result_simple.passed is result_detailed.passed
             assert is_subset(smaller=result_simple.get_raw(), larger=result_detailed.get_raw()) is True
-            # Compare results of every fit with per-fit requests
+            # If there are any fit failures, compare results with per-fit requests
             for fit_id, fit_details in result_detailed.fits.items():
                 resp_fit_simple = self.__validate_fit(
                     fit_id=fit_id,
@@ -172,6 +172,7 @@ class Sol(AttrDict):
                     status_code=200,
                     json_predicate=None)
                 result_fit_simple = FitValResult(data=resp_fit_simple.json())
+                assert result_fit_simple.passed is False
                 resp_fit_detailed = self.__validate_fit(
                     fit_id=fit_id,
                     options=options,
@@ -179,7 +180,7 @@ class Sol(AttrDict):
                     status_code=200,
                     json_predicate=None)
                 result_fit_detailed = FitValResult(data=resp_fit_detailed.json())
-                assert result_fit_simple.passed is result_fit_detailed.passed
+                assert result_fit_detailed.passed is False
                 assert fit_details.compare(other=result_fit_detailed.details) is True
             return result_detailed
         return None

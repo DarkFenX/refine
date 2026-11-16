@@ -6,7 +6,7 @@ use crate::{
     svc::{Calc, SvcCtx, vast::VastFitData},
     ud::{UFit, UItemId},
     util::RSet,
-    val::{ValItemStatus, ValResult},
+    val::ValResult,
 };
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -22,17 +22,18 @@ use crate::{
 pub struct ValUnusableResFail {
     /// Max available resource.
     pub max: Option<Value>,
-    #[cfg_attr(feature = "serde", serde_as(as = "serde_with::KeyValueMap<_>"))]
+    #[cfg_attr(feature = "serde", serde_as(as = "refine_serde::VecAsMap"))]
     pub users: Vec<ValUnusableResItemInfo>,
 }
 
-#[cfg_attr(feature = "serde", derive(serde_tuple::Serialize_tuple))]
+#[cfg_attr(feature = "serde", derive(refine_serde::VecAsMapEntry))]
 #[derive(Copy, Clone)]
 pub struct ValUnusableResItemInfo {
     /// Item which consumes the resource.
+    #[cfg_attr(feature = "serde", vec_map(key))]
     pub item_id: ItemId,
-    pub status: ValItemStatus,
     /// How much resource is used by the item.
+    #[cfg_attr(feature = "serde", vec_map(value))]
     pub used: Value,
 }
 
@@ -75,21 +76,19 @@ impl VastFitData {
         let users = self
             .drones_bandwidth
             .iter()
-            .filter_map(|(item_uid, &item_use)| match item_use > effective_max {
-                true => Some(ValUnusableResItemInfo {
-                    item_id: ctx.u_data.items.ext_id_by_int_id(*item_uid),
-                    status: ValItemStatus::from_kfs(kfs, *item_uid),
-                    used: item_use,
-                }),
-                false => None,
-            })
+            .filter_map(
+                |(item_uid, &item_use)| match item_use > effective_max && !kfs.contains(item_uid) {
+                    true => Some(ValUnusableResItemInfo {
+                        item_id: ctx.u_data.items.ext_id_by_int_id(*item_uid),
+                        used: item_use,
+                    }),
+                    false => None,
+                },
+            )
             .collect_vec();
         match users.is_empty() {
             true => ValResult::Passed,
-            false => ValResult::from_fail(
-                users.iter().all(|v| v.status.is_kf()),
-                ValUnusableResFail { max, users },
-            ),
+            false => ValResult::Failed(ValUnusableResFail { max, users }),
         }
     }
 }

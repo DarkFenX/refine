@@ -5,7 +5,7 @@ use crate::{
     svc::{SvcCtx, vast::VastFitData},
     ud::{UItemId, UModule},
     util::RSet,
-    val::{DetectedItemKind, ValItemStatus, ValResult},
+    val::{DetectedItemKind, ValResult},
 };
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -29,7 +29,6 @@ pub struct ValItemKindFail {
 pub struct ValItemKindItemInfo {
     /// Item which failed validation
     pub item_id: ItemId,
-    pub status: ValItemStatus,
     /// Detected item kind.
     pub kind: Option<DetectedItemKind>,
     /// Expected item kind for position it was put in.
@@ -56,19 +55,18 @@ impl VastFitData {
         let item_kinds = self
             .item_kind
             .iter()
-            .map(|(&item_uid, item_info)| ValItemKindItemInfo {
-                item_id: ctx.u_data.items.ext_id_by_int_id(item_uid),
-                status: ValItemStatus::from_kfs(kfs, item_uid),
-                kind: item_info.kind,
-                expected_kind: item_info.expected_kind,
+            .filter_map(|(item_uid, item_info)| match kfs.contains(item_uid) {
+                true => None,
+                false => Some(ValItemKindItemInfo {
+                    item_id: ctx.u_data.items.ext_id_by_int_id(*item_uid),
+                    kind: item_info.kind,
+                    expected_kind: item_info.expected_kind,
+                }),
             })
             .collect_vec();
         match item_kinds.is_empty() {
             true => ValResult::Passed,
-            false => ValResult::from_fail(
-                item_kinds.iter().all(|v| v.status.is_kf()),
-                ValItemKindFail { item_kinds },
-            ),
+            false => ValResult::Failed(ValItemKindFail { item_kinds }),
         }
     }
 }

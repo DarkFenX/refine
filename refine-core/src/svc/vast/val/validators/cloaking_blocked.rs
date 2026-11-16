@@ -1,26 +1,19 @@
 use crate::{
-    Count,
+    Count, ItemId,
     svc::{Calc, SvcCtx, funcs::is_oattr_flag_set, vast::VastFitData},
     ud::{UFit, UItemId},
     util::RSet,
-    val::{ValItemInfo, ValResult},
+    val::ValResult,
 };
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Result
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-#[cfg_attr(
-    feature = "serde",
-    cfg_eval,
-    serde_with::serde_as,
-    derive(serde::Serialize),
-    serde(transparent)
-)]
+#[cfg_attr(feature = "serde", derive(serde::Serialize), serde(transparent))]
 #[derive(Clone)]
 pub struct ValCloakingBlockedFail {
     /// Cloaks which are active, but their activation is blocked by something.
-    #[cfg_attr(feature = "serde", serde_as(as = "refine_serde::VecAsMap"))]
-    pub modules: Vec<ValItemInfo>,
+    pub module_ids: Vec<ItemId>,
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -52,22 +45,19 @@ impl VastFitData {
         calc: &mut Calc,
         fit: &UFit,
     ) -> ValResult<ValCloakingBlockedFail> {
-        let mut module_uids = RSet::new();
+        let mut module_ids = RSet::new();
         if !self.mods_active_cloaks.is_empty() && !self.can_fit_activate_cloaks(ctx, calc, fit.ship) {
             for espec in self.mods_active_cloaks.iter() {
-                module_uids.insert(espec.item_uid);
+                if !kfs.contains(&espec.item_uid) {
+                    module_ids.insert(ctx.u_data.items.ext_id_by_int_id(espec.item_uid));
+                }
             }
         }
-        let modules: Vec<_> = module_uids
-            .into_iter()
-            .map(|module_uid| ValItemInfo::from_uid(kfs, ctx, module_uid))
-            .collect();
-        match modules.is_empty() {
+        match module_ids.is_empty() {
             true => ValResult::Passed,
-            false => ValResult::from_fail(
-                modules.iter().all(|v| v.status.is_kf()),
-                ValCloakingBlockedFail { modules },
-            ),
+            false => ValResult::Failed(ValCloakingBlockedFail {
+                module_ids: module_ids.into_iter().collect(),
+            }),
         }
     }
 }

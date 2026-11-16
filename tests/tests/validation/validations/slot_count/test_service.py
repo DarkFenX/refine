@@ -16,10 +16,9 @@ def test_fail_single(client, consts):
     assert api_stats.service_slots.one() == (1, 0)
     api_val = api_fit.validate(options=ValOptions(service_slot_count=True))
     assert api_val.passed is False
-    assert api_val.details.service_slot_count.status == consts.ApiValStatus.failed
-    assert api_val.details.service_slot_count.fail.used == 1
-    assert api_val.details.service_slot_count.fail.max == 0
-    assert api_val.details.service_slot_count.fail.users == {api_service.id: consts.ApiValItemStatus.failed}
+    assert api_val.details.service_slot_count.used == 1
+    assert api_val.details.service_slot_count.max == 0
+    assert api_val.details.service_slot_count.users == [api_service.id]
 
 
 def test_fail_multiple_ship(client, consts):
@@ -37,12 +36,9 @@ def test_fail_multiple_ship(client, consts):
     assert api_stats.service_slots.one() == (2, 1)
     api_val = api_fit.validate(options=ValOptions(service_slot_count=True))
     assert api_val.passed is False
-    assert api_val.details.service_slot_count.status == consts.ApiValStatus.failed
-    assert api_val.details.service_slot_count.fail.used == 2
-    assert api_val.details.service_slot_count.fail.max == 1
-    assert api_val.details.service_slot_count.fail.users == {
-        api_service1.id: consts.ApiValItemStatus.failed,
-        api_service2.id: consts.ApiValItemStatus.failed}
+    assert api_val.details.service_slot_count.used == 2
+    assert api_val.details.service_slot_count.max == 1
+    assert api_val.details.service_slot_count.users == sorted([api_service1.id, api_service2.id])
 
 
 def test_fail_multiple_struct(client, consts):
@@ -60,12 +56,9 @@ def test_fail_multiple_struct(client, consts):
     assert api_stats.service_slots.one() == (2, 1)
     api_val = api_fit.validate(options=ValOptions(service_slot_count=True))
     assert api_val.passed is False
-    assert api_val.details.service_slot_count.status == consts.ApiValStatus.failed
-    assert api_val.details.service_slot_count.fail.used == 2
-    assert api_val.details.service_slot_count.fail.max == 1
-    assert api_val.details.service_slot_count.fail.users == {
-        api_service1.id: consts.ApiValItemStatus.failed,
-        api_service2.id: consts.ApiValItemStatus.failed}
+    assert api_val.details.service_slot_count.used == 2
+    assert api_val.details.service_slot_count.max == 1
+    assert api_val.details.service_slot_count.users == sorted([api_service1.id, api_service2.id])
 
 
 def test_equal(client, consts):
@@ -82,7 +75,8 @@ def test_equal(client, consts):
     assert api_stats.service_slots.one() == (1, 1)
     api_val = api_fit.validate(options=ValOptions(service_slot_count=True))
     assert api_val.passed is True
-    assert api_val.details.service_slot_count.status == consts.ApiValStatus.passed
+    with check_no_field():
+        api_val.details  # ruff:ignore[useless-expression]
 
 
 def test_known_failures(client, consts):
@@ -102,36 +96,22 @@ def test_known_failures(client, consts):
     assert api_stats.service_slots.one() == (2, 1)
     api_val = api_fit.validate(options=ValOptions(service_slot_count=[api_service1.id]))
     assert api_val.passed is False
-    assert api_val.details.service_slot_count.status == consts.ApiValStatus.failed
-    assert api_val.details.service_slot_count.fail.used == 2
-    assert api_val.details.service_slot_count.fail.max == 1
-    assert api_val.details.service_slot_count.fail.users == {
-        api_service1.id: consts.ApiValItemStatus.kf,
-        api_service2.id: consts.ApiValItemStatus.failed}
+    assert api_val.details.service_slot_count.used == 2
+    assert api_val.details.service_slot_count.max == 1
+    assert api_val.details.service_slot_count.users == [api_service2.id]
     api_val = api_fit.validate(options=ValOptions(service_slot_count=[api_service2.id]))
     assert api_val.passed is False
-    assert api_val.details.service_slot_count.status == consts.ApiValStatus.failed
-    assert api_val.details.service_slot_count.fail.used == 2
-    assert api_val.details.service_slot_count.fail.max == 1
-    assert api_val.details.service_slot_count.fail.users == {
-        api_service1.id: consts.ApiValItemStatus.failed,
-        api_service2.id: consts.ApiValItemStatus.kf}
+    assert api_val.details.service_slot_count.used == 2
+    assert api_val.details.service_slot_count.max == 1
+    assert api_val.details.service_slot_count.users == [api_service1.id]
     api_val = api_fit.validate(options=ValOptions(service_slot_count=[api_service1.id, api_service2.id]))
     assert api_val.passed is True
-    assert api_val.details.service_slot_count.status == consts.ApiValStatus.passed_kfs
-    assert api_val.details.service_slot_count.fail.used == 2
-    assert api_val.details.service_slot_count.fail.max == 1
-    assert api_val.details.service_slot_count.fail.users == {
-        api_service1.id: consts.ApiValItemStatus.kf,
-        api_service2.id: consts.ApiValItemStatus.kf}
+    with check_no_field():
+        api_val.details  # ruff:ignore[useless-expression]
     api_val = api_fit.validate(options=ValOptions(service_slot_count=[api_service1.id, api_other.id, api_service2.id]))
     assert api_val.passed is True
-    assert api_val.details.service_slot_count.status == consts.ApiValStatus.passed_kfs
-    assert api_val.details.service_slot_count.fail.used == 2
-    assert api_val.details.service_slot_count.fail.max == 1
-    assert api_val.details.service_slot_count.fail.users == {
-        api_service1.id: consts.ApiValItemStatus.kf,
-        api_service2.id: consts.ApiValItemStatus.kf}
+    with check_no_field():
+        api_val.details  # ruff:ignore[useless-expression]
 
 
 def test_modified_max(client, consts):
@@ -159,10 +139,9 @@ def test_modified_max(client, consts):
     assert api_stats.service_slots.one() == (1, 0)
     api_val = api_fit.validate(options=ValOptions(service_slot_count=True))
     assert api_val.passed is False
-    assert api_val.details.service_slot_count.status == consts.ApiValStatus.failed
-    assert api_val.details.service_slot_count.fail.used == 1
-    assert api_val.details.service_slot_count.fail.max == 0
-    assert api_val.details.service_slot_count.fail.users == {api_service.id: consts.ApiValItemStatus.failed}
+    assert api_val.details.service_slot_count.used == 1
+    assert api_val.details.service_slot_count.max == 0
+    assert api_val.details.service_slot_count.users == [api_service.id]
     # Action
     api_fit.add_implant(type_id=eve_implant_id)
     # Verification
@@ -171,7 +150,8 @@ def test_modified_max(client, consts):
     assert api_stats.service_slots.one() == (1, 1)
     api_val = api_fit.validate(options=ValOptions(service_slot_count=True))
     assert api_val.passed is True
-    assert api_val.details.service_slot_count.status == consts.ApiValStatus.passed
+    with check_no_field():
+        api_val.details  # ruff:ignore[useless-expression]
 
 
 def test_fractional_max(client, consts):
@@ -189,10 +169,9 @@ def test_fractional_max(client, consts):
     assert api_stats.service_slots.one() == (1, 0)
     api_val = api_fit.validate(options=ValOptions(service_slot_count=True))
     assert api_val.passed is False
-    assert api_val.details.service_slot_count.status == consts.ApiValStatus.failed
-    assert api_val.details.service_slot_count.fail.used == 1
-    assert api_val.details.service_slot_count.fail.max == 0
-    assert api_val.details.service_slot_count.fail.users == {api_service.id: consts.ApiValItemStatus.failed}
+    assert api_val.details.service_slot_count.used == 1
+    assert api_val.details.service_slot_count.max == 0
+    assert api_val.details.service_slot_count.users == [api_service.id]
     # Action
     api_fit.set_ship(type_id=eve_ship2_id)
     # Verification
@@ -200,7 +179,8 @@ def test_fractional_max(client, consts):
     assert api_stats.service_slots.one() == (1, 1)
     api_val = api_fit.validate(options=ValOptions(service_slot_count=True))
     assert api_val.passed is True
-    assert api_val.details.service_slot_count.status == consts.ApiValStatus.passed
+    with check_no_field():
+        api_val.details  # ruff:ignore[useless-expression]
 
 
 def test_no_ship(client, consts):
@@ -215,10 +195,9 @@ def test_no_ship(client, consts):
     assert api_stats.service_slots.one() == (1, None)
     api_val = api_fit.validate(options=ValOptions(service_slot_count=True))
     assert api_val.passed is False
-    assert api_val.details.service_slot_count.status == consts.ApiValStatus.failed
-    assert api_val.details.service_slot_count.fail.used == 1
-    assert api_val.details.service_slot_count.fail.max is None
-    assert api_val.details.service_slot_count.fail.users == {api_service.id: consts.ApiValItemStatus.failed}
+    assert api_val.details.service_slot_count.used == 1
+    assert api_val.details.service_slot_count.max is None
+    assert api_val.details.service_slot_count.users == [api_service.id]
 
 
 def test_no_value_max(client, consts):
@@ -235,10 +214,9 @@ def test_no_value_max(client, consts):
     assert api_stats.service_slots.one() == (1, 0)
     api_val = api_fit.validate(options=ValOptions(service_slot_count=True))
     assert api_val.passed is False
-    assert api_val.details.service_slot_count.status == consts.ApiValStatus.failed
-    assert api_val.details.service_slot_count.fail.used == 1
-    assert api_val.details.service_slot_count.fail.max == 0
-    assert api_val.details.service_slot_count.fail.users == {api_service.id: consts.ApiValItemStatus.failed}
+    assert api_val.details.service_slot_count.used == 1
+    assert api_val.details.service_slot_count.max == 0
+    assert api_val.details.service_slot_count.users == [api_service.id]
 
 
 def test_no_attr_max(client, consts):
@@ -253,10 +231,9 @@ def test_no_attr_max(client, consts):
     # Verification - when output attr does not exist, it is assumed to be 0
     api_val = api_fit.validate(options=ValOptions(service_slot_count=True))
     assert api_val.passed is False
-    assert api_val.details.service_slot_count.status == consts.ApiValStatus.failed
-    assert api_val.details.service_slot_count.fail.used == 1
-    assert api_val.details.service_slot_count.fail.max == 0
-    assert api_val.details.service_slot_count.fail.users == {api_service.id: consts.ApiValItemStatus.failed}
+    assert api_val.details.service_slot_count.used == 1
+    assert api_val.details.service_slot_count.max == 0
+    assert api_val.details.service_slot_count.users == [api_service.id]
 
 
 def test_not_loaded_user(client, consts):
@@ -274,10 +251,9 @@ def test_not_loaded_user(client, consts):
     assert api_stats.service_slots.one() == (1, 0)
     api_val = api_fit.validate(options=ValOptions(service_slot_count=True))
     assert api_val.passed is False
-    assert api_val.details.service_slot_count.status == consts.ApiValStatus.failed
-    assert api_val.details.service_slot_count.fail.used == 1
-    assert api_val.details.service_slot_count.fail.max == 0
-    assert api_val.details.service_slot_count.fail.users == {api_service.id: consts.ApiValItemStatus.failed}
+    assert api_val.details.service_slot_count.used == 1
+    assert api_val.details.service_slot_count.max == 0
+    assert api_val.details.service_slot_count.users == [api_service.id]
 
 
 def test_not_loaded_ship(client, consts):
@@ -294,10 +270,9 @@ def test_not_loaded_ship(client, consts):
     assert api_stats.service_slots.one() == (1, None)
     api_val = api_fit.validate(options=ValOptions(service_slot_count=True))
     assert api_val.passed is False
-    assert api_val.details.service_slot_count.status == consts.ApiValStatus.failed
-    assert api_val.details.service_slot_count.fail.used == 1
-    assert api_val.details.service_slot_count.fail.max is None
-    assert api_val.details.service_slot_count.fail.users == {api_service.id: consts.ApiValItemStatus.failed}
+    assert api_val.details.service_slot_count.used == 1
+    assert api_val.details.service_slot_count.max is None
+    assert api_val.details.service_slot_count.users == [api_service.id]
 
 
 def test_criterion_service_state(client, consts):
@@ -315,10 +290,9 @@ def test_criterion_service_state(client, consts):
     assert api_stats.service_slots.one() == (1, 0)
     api_val = api_fit.validate(options=ValOptions(service_slot_count=True))
     assert api_val.passed is False
-    assert api_val.details.service_slot_count.status == consts.ApiValStatus.failed
-    assert api_val.details.service_slot_count.fail.used == 1
-    assert api_val.details.service_slot_count.fail.max == 0
-    assert api_val.details.service_slot_count.fail.users == {api_service.id: consts.ApiValItemStatus.failed}
+    assert api_val.details.service_slot_count.used == 1
+    assert api_val.details.service_slot_count.max == 0
+    assert api_val.details.service_slot_count.users == [api_service.id]
     # Action
     api_service.change_service(state=consts.ApiServiceState.disabled)
     # Verification
@@ -326,10 +300,9 @@ def test_criterion_service_state(client, consts):
     assert api_stats.service_slots.one() == (1, 0)
     api_val = api_fit.validate(options=ValOptions(service_slot_count=True))
     assert api_val.passed is False
-    assert api_val.details.service_slot_count.status == consts.ApiValStatus.failed
-    assert api_val.details.service_slot_count.fail.used == 1
-    assert api_val.details.service_slot_count.fail.max == 0
-    assert api_val.details.service_slot_count.fail.users == {api_service.id: consts.ApiValItemStatus.failed}
+    assert api_val.details.service_slot_count.used == 1
+    assert api_val.details.service_slot_count.max == 0
+    assert api_val.details.service_slot_count.users == [api_service.id]
 
 
 def test_criterion_item_kind(client, consts):
@@ -361,7 +334,8 @@ def test_criterion_item_kind(client, consts):
     assert api_stats.service_slots.one() == (0, 0)
     api_val = api_fit.validate(options=ValOptions(service_slot_count=True))
     assert api_val.passed is True
-    assert api_val.details.service_slot_count.status == consts.ApiValStatus.passed
+    with check_no_field():
+        api_val.details  # ruff:ignore[useless-expression]
 
 
 def test_stat_not_requested(client, consts):

@@ -1,4 +1,4 @@
-from fw import approx
+from fw import approx, check_no_field
 from fw.api import ValOptions
 
 
@@ -15,10 +15,8 @@ def test_fail_single(client, consts):
     # Verification
     api_val = api_fit.validate(options=ValOptions(unlaunchable_st_support_fighter=True))
     assert api_val.passed is False
-    assert api_val.details.unlaunchable_st_support_fighter.status == consts.ApiValStatus.failed
-    assert api_val.details.unlaunchable_st_support_fighter.fail.max == 0
-    assert api_val.details.unlaunchable_st_support_fighter.fail.users == {
-        api_fighter.id: consts.ApiValItemStatus.failed}
+    assert api_val.details.unlaunchable_st_support_fighter.max == 0
+    assert api_val.details.unlaunchable_st_support_fighter.users == [api_fighter.id]
 
 
 def test_fail_multiple_ship(client, consts):
@@ -35,11 +33,8 @@ def test_fail_multiple_ship(client, consts):
     # Verification
     api_val = api_fit.validate(options=ValOptions(unlaunchable_st_support_fighter=True))
     assert api_val.passed is False
-    assert api_val.details.unlaunchable_st_support_fighter.status == consts.ApiValStatus.failed
-    assert api_val.details.unlaunchable_st_support_fighter.fail.max == 0
-    assert api_val.details.unlaunchable_st_support_fighter.fail.users == {
-        api_fighter1.id: consts.ApiValItemStatus.failed,
-        api_fighter2.id: consts.ApiValItemStatus.failed}
+    assert api_val.details.unlaunchable_st_support_fighter.max == 0
+    assert api_val.details.unlaunchable_st_support_fighter.users == sorted([api_fighter1.id, api_fighter2.id])
 
 
 def test_fail_multiple_struct(client, consts):
@@ -56,11 +51,8 @@ def test_fail_multiple_struct(client, consts):
     # Verification
     api_val = api_fit.validate(options=ValOptions(unlaunchable_st_support_fighter=True))
     assert api_val.passed is False
-    assert api_val.details.unlaunchable_st_support_fighter.status == consts.ApiValStatus.failed
-    assert api_val.details.unlaunchable_st_support_fighter.fail.max == 0
-    assert api_val.details.unlaunchable_st_support_fighter.fail.users == {
-        api_fighter1.id: consts.ApiValItemStatus.failed,
-        api_fighter2.id: consts.ApiValItemStatus.failed}
+    assert api_val.details.unlaunchable_st_support_fighter.max == 0
+    assert api_val.details.unlaunchable_st_support_fighter.users == sorted([api_fighter1.id, api_fighter2.id])
 
 
 def test_one(client, consts):
@@ -77,7 +69,8 @@ def test_one(client, consts):
     # Verification
     api_val = api_fit.validate(options=ValOptions(unlaunchable_st_support_fighter=True))
     assert api_val.passed is True
-    assert api_val.details.unlaunchable_st_support_fighter.status == consts.ApiValStatus.passed
+    with check_no_field():
+        api_val.details  # ruff:ignore[useless-expression]
 
 
 def test_known_failures(client, consts):
@@ -96,33 +89,21 @@ def test_known_failures(client, consts):
     # Verification
     api_val = api_fit.validate(options=ValOptions(unlaunchable_st_support_fighter=[api_fighter1.id]))
     assert api_val.passed is False
-    assert api_val.details.unlaunchable_st_support_fighter.status == consts.ApiValStatus.failed
-    assert api_val.details.unlaunchable_st_support_fighter.fail.max == 0
-    assert api_val.details.unlaunchable_st_support_fighter.fail.users == {
-        api_fighter1.id: consts.ApiValItemStatus.kf,
-        api_fighter2.id: consts.ApiValItemStatus.failed}
+    assert api_val.details.unlaunchable_st_support_fighter.max == 0
+    assert api_val.details.unlaunchable_st_support_fighter.users == [api_fighter2.id]
     api_val = api_fit.validate(options=ValOptions(unlaunchable_st_support_fighter=[api_fighter2.id]))
     assert api_val.passed is False
-    assert api_val.details.unlaunchable_st_support_fighter.status == consts.ApiValStatus.failed
-    assert api_val.details.unlaunchable_st_support_fighter.fail.max == 0
-    assert api_val.details.unlaunchable_st_support_fighter.fail.users == {
-        api_fighter1.id: consts.ApiValItemStatus.failed,
-        api_fighter2.id: consts.ApiValItemStatus.kf}
+    assert api_val.details.unlaunchable_st_support_fighter.max == 0
+    assert api_val.details.unlaunchable_st_support_fighter.users == [api_fighter1.id]
     api_val = api_fit.validate(options=ValOptions(unlaunchable_st_support_fighter=[api_fighter1.id, api_fighter2.id]))
     assert api_val.passed is True
-    assert api_val.details.unlaunchable_st_support_fighter.status == consts.ApiValStatus.passed_kfs
-    assert api_val.details.unlaunchable_st_support_fighter.fail.max == 0
-    assert api_val.details.unlaunchable_st_support_fighter.fail.users == {
-        api_fighter1.id: consts.ApiValItemStatus.kf,
-        api_fighter2.id: consts.ApiValItemStatus.kf}
+    with check_no_field():
+        api_val.details  # ruff:ignore[useless-expression]
     api_val = api_fit.validate(options=ValOptions(
         unlaunchable_st_support_fighter=[api_fighter1.id, api_other.id, api_fighter2.id]))
     assert api_val.passed is True
-    assert api_val.details.unlaunchable_st_support_fighter.status == consts.ApiValStatus.passed_kfs
-    assert api_val.details.unlaunchable_st_support_fighter.fail.max == 0
-    assert api_val.details.unlaunchable_st_support_fighter.fail.users == {
-        api_fighter1.id: consts.ApiValItemStatus.kf,
-        api_fighter2.id: consts.ApiValItemStatus.kf}
+    with check_no_field():
+        api_val.details  # ruff:ignore[useless-expression]
 
 
 def test_modified_fighter_type(client, consts):
@@ -153,20 +134,16 @@ def test_modified_fighter_type(client, consts):
     assert api_fighter.update().attrs[eve_ftr_type_attr_id].modified == approx(0)
     api_val = api_fit.validate(options=ValOptions(unlaunchable_st_support_fighter=True))
     assert api_val.passed is False
-    assert api_val.details.unlaunchable_st_support_fighter.status == consts.ApiValStatus.failed
-    assert api_val.details.unlaunchable_st_support_fighter.fail.max == 0
-    assert api_val.details.unlaunchable_st_support_fighter.fail.users == {
-        api_fighter.id: consts.ApiValItemStatus.failed}
+    assert api_val.details.unlaunchable_st_support_fighter.max == 0
+    assert api_val.details.unlaunchable_st_support_fighter.users == [api_fighter.id]
     # Action
     api_implant.remove()
     # Verification
     assert api_fighter.update().attrs[eve_ftr_type_attr_id].modified == approx(1)
     api_val = api_fit.validate(options=ValOptions(unlaunchable_st_support_fighter=True))
     assert api_val.passed is False
-    assert api_val.details.unlaunchable_st_support_fighter.status == consts.ApiValStatus.failed
-    assert api_val.details.unlaunchable_st_support_fighter.fail.max == 0
-    assert api_val.details.unlaunchable_st_support_fighter.fail.users == {
-        api_fighter.id: consts.ApiValItemStatus.failed}
+    assert api_val.details.unlaunchable_st_support_fighter.max == 0
+    assert api_val.details.unlaunchable_st_support_fighter.users == [api_fighter.id]
 
 
 def test_modified_max(client, consts):
@@ -193,17 +170,16 @@ def test_modified_max(client, consts):
     assert api_ship.update().attrs[eve_max_attr_id].modified == approx(0)
     api_val = api_fit.validate(options=ValOptions(unlaunchable_st_support_fighter=True))
     assert api_val.passed is False
-    assert api_val.details.unlaunchable_st_support_fighter.status == consts.ApiValStatus.failed
-    assert api_val.details.unlaunchable_st_support_fighter.fail.max == 0
-    assert api_val.details.unlaunchable_st_support_fighter.fail.users == {
-        api_fighter.id: consts.ApiValItemStatus.failed}
+    assert api_val.details.unlaunchable_st_support_fighter.max == 0
+    assert api_val.details.unlaunchable_st_support_fighter.users == [api_fighter.id]
     # Action
     api_fit.add_implant(type_id=eve_implant_id)
     # Verification
     assert api_ship.update().attrs[eve_max_attr_id].modified == approx(1)
     api_val = api_fit.validate(options=ValOptions(unlaunchable_st_support_fighter=True))
     assert api_val.passed is True
-    assert api_val.details.unlaunchable_st_support_fighter.status == consts.ApiValStatus.passed
+    with check_no_field():
+        api_val.details  # ruff:ignore[useless-expression]
 
 
 def test_fractional_fighter_type(client, consts):
@@ -223,12 +199,9 @@ def test_fractional_fighter_type(client, consts):
     # Verification
     api_val = api_fit.validate(options=ValOptions(unlaunchable_st_support_fighter=True))
     assert api_val.passed is False
-    assert api_val.details.unlaunchable_st_support_fighter.status == consts.ApiValStatus.failed
-    assert api_val.details.unlaunchable_st_support_fighter.fail.max == 0
-    assert api_val.details.unlaunchable_st_support_fighter.fail.users == {
-        api_fighter1.id: consts.ApiValItemStatus.failed,
-        api_fighter2.id: consts.ApiValItemStatus.failed,
-        api_fighter3.id: consts.ApiValItemStatus.failed}
+    assert api_val.details.unlaunchable_st_support_fighter.max == 0
+    assert api_val.details.unlaunchable_st_support_fighter.users == sorted([
+        api_fighter1.id, api_fighter2.id, api_fighter3.id])
 
 
 def test_fractional_max(client, consts):
@@ -245,16 +218,15 @@ def test_fractional_max(client, consts):
     # Verification
     api_val = api_fit.validate(options=ValOptions(unlaunchable_st_support_fighter=True))
     assert api_val.passed is False
-    assert api_val.details.unlaunchable_st_support_fighter.status == consts.ApiValStatus.failed
-    assert api_val.details.unlaunchable_st_support_fighter.fail.max == 0
-    assert api_val.details.unlaunchable_st_support_fighter.fail.users == {
-        api_fighter.id: consts.ApiValItemStatus.failed}
+    assert api_val.details.unlaunchable_st_support_fighter.max == 0
+    assert api_val.details.unlaunchable_st_support_fighter.users == [api_fighter.id]
     # Action
     api_fit.set_ship(type_id=eve_ship2_id)
     # Verification - value is rounded up to int
     api_val = api_fit.validate(options=ValOptions(unlaunchable_st_support_fighter=True))
     assert api_val.passed is True
-    assert api_val.details.unlaunchable_st_support_fighter.status == consts.ApiValStatus.passed
+    with check_no_field():
+        api_val.details  # ruff:ignore[useless-expression]
 
 
 def test_no_ship(client, consts):
@@ -268,10 +240,8 @@ def test_no_ship(client, consts):
     # Verification
     api_val = api_fit.validate(options=ValOptions(unlaunchable_st_support_fighter=True))
     assert api_val.passed is False
-    assert api_val.details.unlaunchable_st_support_fighter.status == consts.ApiValStatus.failed
-    assert api_val.details.unlaunchable_st_support_fighter.fail.max is None
-    assert api_val.details.unlaunchable_st_support_fighter.fail.users == {
-        api_fighter.id: consts.ApiValItemStatus.failed}
+    assert api_val.details.unlaunchable_st_support_fighter.max is None
+    assert api_val.details.unlaunchable_st_support_fighter.users == [api_fighter.id]
 
 
 def test_no_value_max(client, consts):
@@ -287,10 +257,8 @@ def test_no_value_max(client, consts):
     # Verification
     api_val = api_fit.validate(options=ValOptions(unlaunchable_st_support_fighter=True))
     assert api_val.passed is False
-    assert api_val.details.unlaunchable_st_support_fighter.status == consts.ApiValStatus.failed
-    assert api_val.details.unlaunchable_st_support_fighter.fail.max == 0
-    assert api_val.details.unlaunchable_st_support_fighter.fail.users == {
-        api_fighter.id: consts.ApiValItemStatus.failed}
+    assert api_val.details.unlaunchable_st_support_fighter.max == 0
+    assert api_val.details.unlaunchable_st_support_fighter.users == [api_fighter.id]
 
 
 def test_no_attr_max(client, consts):
@@ -306,10 +274,8 @@ def test_no_attr_max(client, consts):
     # Verification - when output attr does not exist, it is assumed to be 0
     api_val = api_fit.validate(options=ValOptions(unlaunchable_st_support_fighter=True))
     assert api_val.passed is False
-    assert api_val.details.unlaunchable_st_support_fighter.status == consts.ApiValStatus.failed
-    assert api_val.details.unlaunchable_st_support_fighter.fail.max == 0
-    assert api_val.details.unlaunchable_st_support_fighter.fail.users == {
-        api_fighter.id: consts.ApiValItemStatus.failed}
+    assert api_val.details.unlaunchable_st_support_fighter.max == 0
+    assert api_val.details.unlaunchable_st_support_fighter.users == [api_fighter.id]
 
 
 def test_no_attr_fighter_type(client, consts):
@@ -325,7 +291,8 @@ def test_no_attr_fighter_type(client, consts):
     # Verification - when fighter type attribute is not available, it doesn't take a slot
     api_val = api_fit.validate(options=ValOptions(unlaunchable_st_support_fighter=True))
     assert api_val.passed is True
-    assert api_val.details.unlaunchable_st_support_fighter.status == consts.ApiValStatus.passed
+    with check_no_field():
+        api_val.details  # ruff:ignore[useless-expression]
 
 
 def test_not_loaded_user(client, consts):
@@ -340,7 +307,8 @@ def test_not_loaded_user(client, consts):
     # Verification
     api_val = api_fit.validate(options=ValOptions(unlaunchable_st_support_fighter=True))
     assert api_val.passed is True
-    assert api_val.details.unlaunchable_st_support_fighter.status == consts.ApiValStatus.passed
+    with check_no_field():
+        api_val.details  # ruff:ignore[useless-expression]
 
 
 def test_not_loaded_ship(client, consts):
@@ -356,10 +324,8 @@ def test_not_loaded_ship(client, consts):
     # Verification
     api_val = api_fit.validate(options=ValOptions(unlaunchable_st_support_fighter=True))
     assert api_val.passed is False
-    assert api_val.details.unlaunchable_st_support_fighter.status == consts.ApiValStatus.failed
-    assert api_val.details.unlaunchable_st_support_fighter.fail.max is None
-    assert api_val.details.unlaunchable_st_support_fighter.fail.users == {
-        api_fighter.id: consts.ApiValItemStatus.failed}
+    assert api_val.details.unlaunchable_st_support_fighter.max is None
+    assert api_val.details.unlaunchable_st_support_fighter.users == [api_fighter.id]
 
 
 def test_criterion_fighter_type(client, consts):
@@ -380,7 +346,8 @@ def test_criterion_fighter_type(client, consts):
     # Verification
     api_val = api_fit.validate(options=ValOptions(unlaunchable_st_support_fighter=True))
     assert api_val.passed is True
-    assert api_val.details.unlaunchable_st_support_fighter.status == consts.ApiValStatus.passed
+    with check_no_field():
+        api_val.details  # ruff:ignore[useless-expression]
 
 
 def test_criterion_item_kind(client, consts):
@@ -415,6 +382,5 @@ def test_criterion_item_kind(client, consts):
     assert len(api_fighter.autocharges) == 1
     api_val = api_fit.validate(options=ValOptions(unlaunchable_st_support_fighter=[api_fighter.id]))
     assert api_val.passed is True
-    assert api_val.details.unlaunchable_st_support_fighter.status == consts.ApiValStatus.passed_kfs
-    assert api_val.details.unlaunchable_st_support_fighter.fail.max == 0
-    assert api_val.details.unlaunchable_st_support_fighter.fail.users == {api_fighter.id: consts.ApiValItemStatus.kf}
+    with check_no_field():
+        api_val.details  # ruff:ignore[useless-expression]

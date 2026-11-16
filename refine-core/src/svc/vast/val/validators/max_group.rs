@@ -5,7 +5,7 @@ use crate::{
     svc::{Calc, SvcCtx, vast::VastFitData},
     ud::UItemId,
     util::{RMapRMap, RSet},
-    val::{ValItemStatus, ValResult},
+    val::ValResult,
 };
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -38,17 +38,18 @@ pub struct ValMaxGroupGroupInfo {
     /// Items of the group, which are in high enough state to count for validation purposes.
     pub group_item_ids: Vec<ItemId>,
     /// Offending items and their group limits.
-    #[cfg_attr(feature = "serde", serde_as(as = "serde_with::KeyValueMap<_>"))]
+    #[cfg_attr(feature = "serde", serde_as(as = "refine_serde::VecAsMap"))]
     pub items: Vec<ValMaxGroupItemInfo>,
 }
 
-#[cfg_attr(feature = "serde", derive(serde_tuple::Serialize_tuple))]
+#[cfg_attr(feature = "serde", derive(refine_serde::VecAsMapEntry))]
 #[derive(Copy, Clone)]
 pub struct ValMaxGroupItemInfo {
     /// Item which failed validation.
+    #[cfg_attr(feature = "serde", vec_map(key))]
     pub item_id: ItemId,
-    pub status: ValItemStatus,
     /// Max count of items in the group for this item not to fail the validation.
+    #[cfg_attr(feature = "serde", vec_map(value))]
     pub limit: Count,
 }
 
@@ -176,10 +177,9 @@ fn validate_verbose(
                 continue;
             }
             let item_limit = get_max_allowed_item_count(ctx, calc, item_uid, attr_rid);
-            if actual > item_limit {
+            if actual > item_limit && !kfs.contains(&item_uid) {
                 items.push(ValMaxGroupItemInfo {
                     item_id: ctx.u_data.items.ext_id_by_int_id(item_uid),
-                    status: ValItemStatus::from_kfs(kfs, item_uid),
                     limit: item_limit,
                 });
             }
@@ -197,10 +197,7 @@ fn validate_verbose(
     }
     match groups.is_empty() {
         true => ValResult::Passed,
-        false => ValResult::from_fail(
-            groups.iter().flat_map(|v| v.items.iter()).all(|v| v.status.is_kf()),
-            ValMaxGroupFail { groups },
-        ),
+        false => ValResult::Failed(ValMaxGroupFail { groups }),
     }
 }
 

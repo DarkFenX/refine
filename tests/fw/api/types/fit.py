@@ -165,10 +165,14 @@ class Fit(AttrDict):
                 status_code=200,
                 json_predicate=None)
             result_sol_detailed = SolValResult(data=resp_sol_detailed.json())
-            # Data in sol validation should match to data in fit validation
-            assert result_sol_detailed.fits[self.id].compare(other=result_detailed.details) is True
-            # If fit validation failed, fast solar system validation should also fail
-            if not result_detailed.passed:
+            # If fit validation passed, fit shouldn't be in results for detailed sol validation
+            # results.
+            if result_detailed.passed:
+                assert self.id not in result_sol_detailed.fits
+            # If fit validation failed, data in sol validation should match to data in fit
+            # validation, and fast solar system validation should also fail
+            else:
+                assert result_sol_detailed.fits[self.id].compare(other=result_detailed.details) is True
                 resp_sol_simple = self.__validate_sol(
                     fit_ids=[self.id],
                     options=options,

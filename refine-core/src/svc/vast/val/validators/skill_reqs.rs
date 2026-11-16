@@ -5,7 +5,7 @@ use crate::{
     svc::{SvcCtx, vast::VastFitData},
     ud::UItemId,
     util::RSet,
-    val::{ValItemStatus, ValResult},
+    val::ValResult,
 };
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -22,23 +22,18 @@ use crate::{
 pub struct ValSrqFail {
     /// Items and their unsatisfied skill requirements, which are defined as another list of skills
     /// and info about levels.
-    #[cfg_attr(feature = "serde", serde_as(as = "serde_with::KeyValueMap<_>"))]
+    #[cfg_attr(feature = "serde", serde_as(as = "refine_serde::VecAsMap"))]
     pub items: Vec<ValSrqItemInfo>,
 }
 
-#[cfg_attr(
-    feature = "serde",
-    cfg_eval,
-    serde_with::serde_as,
-    derive(serde_tuple::Serialize_tuple)
-)]
+#[cfg_attr(feature = "serde", derive(refine_serde::VecAsMapEntry))]
 #[derive(Clone)]
 pub struct ValSrqItemInfo {
     /// Item with unsatisfied skill requirements
+    #[cfg_attr(feature = "serde", vec_map(key))]
     pub item_id: ItemId,
-    pub status: ValItemStatus,
     /// List of missing skills.
-    #[cfg_attr(feature = "serde", serde_as(as = "serde_with::KeyValueMap<_>"))]
+    #[cfg_attr(feature = "serde", vec_map(value, serialize_as = "serde_with::KeyValueMap<_>"))]
     pub missing_skills: Vec<ValSrqSkillInfo>,
 }
 
@@ -72,22 +67,24 @@ impl VastFitData {
         let items = self
             .srqs_missing
             .iter()
-            .map(|(&item_uid, missing_skills)| ValSrqItemInfo {
-                item_id: ctx.u_data.items.ext_id_by_int_id(item_uid),
-                status: ValItemStatus::from_kfs(kfs, item_uid),
-                missing_skills: missing_skills
-                    .iter()
-                    .map(|(skill_item_aid, skill_info)| ValSrqSkillInfo {
-                        skill_type_id: ItemTypeId::from_aid(*skill_item_aid),
-                        current_lvl: skill_info.current_lvl,
-                        required_lvl: skill_info.required_lvl,
-                    })
-                    .collect_vec(),
+            .filter_map(|(item_uid, missing_skills)| match kfs.contains(item_uid) {
+                true => None,
+                false => Some(ValSrqItemInfo {
+                    item_id: ctx.u_data.items.ext_id_by_int_id(*item_uid),
+                    missing_skills: missing_skills
+                        .iter()
+                        .map(|(skill_item_aid, skill_info)| ValSrqSkillInfo {
+                            skill_type_id: ItemTypeId::from_aid(*skill_item_aid),
+                            current_lvl: skill_info.current_lvl,
+                            required_lvl: skill_info.required_lvl,
+                        })
+                        .collect_vec(),
+                }),
             })
             .collect_vec();
         match items.is_empty() {
             true => ValResult::Passed,
-            false => ValResult::from_fail(items.iter().all(|v| v.status.is_kf()), ValSrqFail { items }),
+            false => ValResult::Failed(ValSrqFail { items }),
         }
     }
 }
