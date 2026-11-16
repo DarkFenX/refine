@@ -1,6 +1,6 @@
 use crate::{
     CmdResps, FitId, FitIdBr, ItemId, ItemIdBr,
-    val::{SolValResult, SolValResultDetails, ValOptions, ValResultMode},
+    val::{SolValResult, ValOptions, ValResultMode},
 };
 
 // Core commands
@@ -65,15 +65,6 @@ impl SolValCmdBr {
             fit_ids: resps.resolve_fit_ids_lossy(self.fit_ids),
             info_mode: self.info_mode,
         }
-    }
-}
-
-////////////////////////////////////////////////////////////////////////////////////////////////////
-// Known failures
-////////////////////////////////////////////////////////////////////////////////////////////////////
-impl SolValCmd {
-    pub(crate) fn extend_kfs(&mut self, details: &SolValResultDetails) {
-        self.options.extend_kfs(details);
     }
 }
 

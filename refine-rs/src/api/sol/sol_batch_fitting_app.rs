@@ -82,11 +82,11 @@ impl Sol<'_> {
     /// Apply changes requested by control commands, and let validation enforcer decide if they
     /// are kept.
     ///
-    /// Enforcer validates pre-change sol to collect failures which will be considered as known.
-    /// After the change, the validation is re-run. Enforcer decides if results are acceptable,
-    /// unacceptable, or sol needs fixing to make it acceptable. If fixes are needed, enforcer emits
-    /// commands which attempt to fix it, and validation is re-run again. This can cycle until sol
-    /// state is deemed acceptable, or fix limit is broken.
+    /// Enforcer validates pre-change sol, and re-runs the same validation after the change.
+    /// Having both results, enforcer decides if the change is acceptable, unacceptable, or sol
+    /// needs fixing to make it acceptable. If fixes are needed, enforcer emits commands which
+    /// attempt to fix it, and validation is re-run again. This can cycle until sol state is deemed
+    /// acceptable, or fix limit is broken.
     #[tracing::instrument(name = "sol-app-enf", level = "error", skip_all)]
     pub async fn fitting_app_enforced_batch<VC, VCE>(
         &mut self,
@@ -110,7 +110,7 @@ impl Sol<'_> {
             // Ensure enforcer validation is running in detailed mode, regardless of what caller
             // specified; details are needed for the enforcer to work
             let enf_val_cmd = enf_val_cmd.with_info_mode(ValResultMode::Detailed);
-            // Collect failures before the change
+            // Validate before the change
             let val_before = enf_val_cmd
                 .clone()
                 .br_resolve(&CmdResps::new())
@@ -127,10 +127,8 @@ impl Sol<'_> {
                     .map_err(|exec_err| SolFittingAppEnforcedError::from_ctl_exec(index, exec_err))?;
                 ctl_cmd_resps.append(ctl_cmd_resp);
             }
-            // Prepare post-change enforcer validation command - add all previously recorded
-            // failures as known
+            // Post-change enforcer validation is the same command, resolved against the changes
             let mut enf_val_cmd = enf_val_cmd.br_resolve(&ctl_cmd_resps);
-            enf_val_cmd.extend_kfs(&val_before);
             // Use provided function to evaluate validation results, and if necessary try to fix sol
             let mut fix_ctl_cmd_resps = CmdResps::new();
             let mut fix_cycle = 0;

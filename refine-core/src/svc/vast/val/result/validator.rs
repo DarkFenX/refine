@@ -29,12 +29,6 @@ impl<T> ValResult<T> {
             false => Self::Failed(fail),
         }
     }
-    pub(in crate::svc::vast::val) fn get_fail(&self) -> Option<&T> {
-        match self {
-            Self::NotRequested | Self::Passed => None,
-            Self::PassedKfs(fail) | Self::Failed(fail) => Some(fail),
-        }
-    }
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////

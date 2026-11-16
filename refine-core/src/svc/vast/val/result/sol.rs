@@ -1,7 +1,6 @@
 use crate::{
     FitId,
-    svc::vast::val::ValKind,
-    val::{ValNotLoadedItemFail, ValOptions, ValResult, ValResultFit},
+    val::{ValNotLoadedItemFail, ValResult, ValResultFit},
 };
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -39,12 +38,5 @@ impl ValResultSol {
             fits: Vec::with_capacity(capacity),
             not_loaded_item: ValResult::NotRequested,
         }
-    }
-    pub(in crate::svc::vast::val) fn add_kfs_to(&self, options: &mut ValOptions) {
-        let Self { fits, not_loaded_item } = self;
-        for (_, fit_result) in fits.iter() {
-            fit_result.add_kfs_to(options);
-        }
-        options.extend_kind_kfs(ValKind::NotLoadedItem, not_loaded_item);
     }
 }

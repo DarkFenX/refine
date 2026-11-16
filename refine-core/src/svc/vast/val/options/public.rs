@@ -1,8 +1,4 @@
-use crate::{
-    FitId, ItemId, OptionExt,
-    svc::vast::val::{ValFail, ValKind},
-    val::{ValResult, ValResultSol},
-};
+use crate::{FitId, ItemId, OptionExt, svc::vast::val::ValKind};
 
 /// Solar system validation options.
 #[cfg_attr(feature = "serde", derive(serde::Deserialize))]
@@ -466,43 +462,6 @@ impl<I1> ValOptions<I1> {
         ValOptions {
             default: self.default,
             overrides: new_overrides,
-        }
-    }
-}
-
-////////////////////////////////////////////////////////////////////////////////////////////////////
-// Known failures
-////////////////////////////////////////////////////////////////////////////////////////////////////
-impl ValOptions {
-    /// Add items which fail validations in passed result to known failures of those validations.
-    pub fn extend_kfs(&mut self, result: &ValResultSol) {
-        result.add_kfs_to(self);
-    }
-    pub(in crate::svc::vast::val) fn extend_kind_kfs<T>(&mut self, kind: ValKind, result: &ValResult<T>)
-    where
-        T: ValFail,
-    {
-        let Some(fail) = result.get_fail() else {
-            return;
-        };
-        // The last override of a validation is the one in effect
-        match self.overrides.iter_mut().rev().find(|(opt_kind, _)| *opt_kind == kind) {
-            Some((_, OptionExt::EnabledExtended(enabled))) => enabled.kfs.extend(fail.iter_item_ids()),
-            Some((_, option @ OptionExt::Enabled)) => {
-                *option = OptionExt::EnabledExtended(ValEnabled {
-                    kfs: fail.iter_item_ids().collect(),
-                });
-            }
-            // Disabled validation is not run, so nothing can fail it
-            Some((_, OptionExt::Disabled)) => (),
-            None => {
-                if self.default {
-                    let option = OptionExt::EnabledExtended(ValEnabled {
-                        kfs: fail.iter_item_ids().collect(),
-                    });
-                    self.overrides.push((kind, option));
-                }
-            }
         }
     }
 }
