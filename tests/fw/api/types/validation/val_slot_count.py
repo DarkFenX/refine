@@ -1,17 +1,19 @@
 import dataclasses
 import typing
 
+from fw.consts import ApiValItemStatus
+
 
 @dataclasses.dataclass
 class ValSlotCountFail:
 
     used: int
     max: int | None
-    users: list[str]
+    users: dict[str, ApiValItemStatus]
 
     def __init__(self, *, data: list | tuple) -> None:
         self.used, self.max, users = data
-        self.users = sorted(users)
+        self.users = {k: ApiValItemStatus(v) for k, v in users.items()}
 
     def __getitem__(self, item: int) -> typing.Any:
         field = dataclasses.fields(self)[item]

@@ -16,9 +16,10 @@ def test_fail_single(client, consts):
     assert api_stats.subsystem_slots.one() == (1, 0)
     api_val = api_fit.validate(options=ValOptions(subsystem_slot_count=True))
     assert api_val.passed is False
-    assert api_val.details.subsystem_slot_count.used == 1
-    assert api_val.details.subsystem_slot_count.max == 0
-    assert api_val.details.subsystem_slot_count.users == [api_subsystem.id]
+    assert api_val.details.subsystem_slot_count.status == consts.ApiValStatus.failed
+    assert api_val.details.subsystem_slot_count.fail.used == 1
+    assert api_val.details.subsystem_slot_count.fail.max == 0
+    assert api_val.details.subsystem_slot_count.fail.users == {api_subsystem.id: consts.ApiValItemStatus.failed}
 
 
 def test_fail_multiple_ship(client, consts):
@@ -36,9 +37,12 @@ def test_fail_multiple_ship(client, consts):
     assert api_stats.subsystem_slots.one() == (2, 1)
     api_val = api_fit.validate(options=ValOptions(subsystem_slot_count=True))
     assert api_val.passed is False
-    assert api_val.details.subsystem_slot_count.used == 2
-    assert api_val.details.subsystem_slot_count.max == 1
-    assert api_val.details.subsystem_slot_count.users == sorted([api_subsystem1.id, api_subsystem2.id])
+    assert api_val.details.subsystem_slot_count.status == consts.ApiValStatus.failed
+    assert api_val.details.subsystem_slot_count.fail.used == 2
+    assert api_val.details.subsystem_slot_count.fail.max == 1
+    assert api_val.details.subsystem_slot_count.fail.users == {
+        api_subsystem1.id: consts.ApiValItemStatus.failed,
+        api_subsystem2.id: consts.ApiValItemStatus.failed}
 
 
 def test_fail_multiple_struct(client, consts):
@@ -56,9 +60,12 @@ def test_fail_multiple_struct(client, consts):
     assert api_stats.subsystem_slots.one() == (2, 1)
     api_val = api_fit.validate(options=ValOptions(subsystem_slot_count=True))
     assert api_val.passed is False
-    assert api_val.details.subsystem_slot_count.used == 2
-    assert api_val.details.subsystem_slot_count.max == 1
-    assert api_val.details.subsystem_slot_count.users == sorted([api_subsystem1.id, api_subsystem2.id])
+    assert api_val.details.subsystem_slot_count.status == consts.ApiValStatus.failed
+    assert api_val.details.subsystem_slot_count.fail.used == 2
+    assert api_val.details.subsystem_slot_count.fail.max == 1
+    assert api_val.details.subsystem_slot_count.fail.users == {
+        api_subsystem1.id: consts.ApiValItemStatus.failed,
+        api_subsystem2.id: consts.ApiValItemStatus.failed}
 
 
 def test_equal(client, consts):
@@ -75,8 +82,7 @@ def test_equal(client, consts):
     assert api_stats.subsystem_slots.one() == (1, 1)
     api_val = api_fit.validate(options=ValOptions(subsystem_slot_count=True))
     assert api_val.passed is True
-    with check_no_field():
-        api_val.details  # ruff:ignore[useless-expression]
+    assert api_val.details.subsystem_slot_count.status == consts.ApiValStatus.passed
 
 
 def test_known_failures(client, consts):
@@ -96,23 +102,37 @@ def test_known_failures(client, consts):
     assert api_stats.subsystem_slots.one() == (2, 1)
     api_val = api_fit.validate(options=ValOptions(subsystem_slot_count=[api_subsystem1.id]))
     assert api_val.passed is False
-    assert api_val.details.subsystem_slot_count.used == 2
-    assert api_val.details.subsystem_slot_count.max == 1
-    assert api_val.details.subsystem_slot_count.users == [api_subsystem2.id]
+    assert api_val.details.subsystem_slot_count.status == consts.ApiValStatus.failed
+    assert api_val.details.subsystem_slot_count.fail.used == 2
+    assert api_val.details.subsystem_slot_count.fail.max == 1
+    assert api_val.details.subsystem_slot_count.fail.users == {
+        api_subsystem1.id: consts.ApiValItemStatus.kf,
+        api_subsystem2.id: consts.ApiValItemStatus.failed}
     api_val = api_fit.validate(options=ValOptions(subsystem_slot_count=[api_subsystem2.id]))
     assert api_val.passed is False
-    assert api_val.details.subsystem_slot_count.used == 2
-    assert api_val.details.subsystem_slot_count.max == 1
-    assert api_val.details.subsystem_slot_count.users == [api_subsystem1.id]
+    assert api_val.details.subsystem_slot_count.status == consts.ApiValStatus.failed
+    assert api_val.details.subsystem_slot_count.fail.used == 2
+    assert api_val.details.subsystem_slot_count.fail.max == 1
+    assert api_val.details.subsystem_slot_count.fail.users == {
+        api_subsystem1.id: consts.ApiValItemStatus.failed,
+        api_subsystem2.id: consts.ApiValItemStatus.kf}
     api_val = api_fit.validate(options=ValOptions(subsystem_slot_count=[api_subsystem1.id, api_subsystem2.id]))
     assert api_val.passed is True
-    with check_no_field():
-        api_val.details  # ruff:ignore[useless-expression]
+    assert api_val.details.subsystem_slot_count.status == consts.ApiValStatus.passed_kfs
+    assert api_val.details.subsystem_slot_count.fail.used == 2
+    assert api_val.details.subsystem_slot_count.fail.max == 1
+    assert api_val.details.subsystem_slot_count.fail.users == {
+        api_subsystem1.id: consts.ApiValItemStatus.kf,
+        api_subsystem2.id: consts.ApiValItemStatus.kf}
     api_val = api_fit.validate(options=ValOptions(
         subsystem_slot_count=[api_subsystem1.id, api_other.id, api_subsystem2.id]))
     assert api_val.passed is True
-    with check_no_field():
-        api_val.details  # ruff:ignore[useless-expression]
+    assert api_val.details.subsystem_slot_count.status == consts.ApiValStatus.passed_kfs
+    assert api_val.details.subsystem_slot_count.fail.used == 2
+    assert api_val.details.subsystem_slot_count.fail.max == 1
+    assert api_val.details.subsystem_slot_count.fail.users == {
+        api_subsystem1.id: consts.ApiValItemStatus.kf,
+        api_subsystem2.id: consts.ApiValItemStatus.kf}
 
 
 def test_modified_max(client, consts):
@@ -140,9 +160,10 @@ def test_modified_max(client, consts):
     assert api_stats.subsystem_slots.one() == (1, 0)
     api_val = api_fit.validate(options=ValOptions(subsystem_slot_count=True))
     assert api_val.passed is False
-    assert api_val.details.subsystem_slot_count.used == 1
-    assert api_val.details.subsystem_slot_count.max == 0
-    assert api_val.details.subsystem_slot_count.users == [api_subsystem.id]
+    assert api_val.details.subsystem_slot_count.status == consts.ApiValStatus.failed
+    assert api_val.details.subsystem_slot_count.fail.used == 1
+    assert api_val.details.subsystem_slot_count.fail.max == 0
+    assert api_val.details.subsystem_slot_count.fail.users == {api_subsystem.id: consts.ApiValItemStatus.failed}
     # Action
     api_fit.add_implant(type_id=eve_implant_id)
     # Verification
@@ -151,8 +172,7 @@ def test_modified_max(client, consts):
     assert api_stats.subsystem_slots.one() == (1, 1)
     api_val = api_fit.validate(options=ValOptions(subsystem_slot_count=True))
     assert api_val.passed is True
-    with check_no_field():
-        api_val.details  # ruff:ignore[useless-expression]
+    assert api_val.details.subsystem_slot_count.status == consts.ApiValStatus.passed
 
 
 def test_fractional_max(client, consts):
@@ -170,9 +190,10 @@ def test_fractional_max(client, consts):
     assert api_stats.subsystem_slots.one() == (1, 0)
     api_val = api_fit.validate(options=ValOptions(subsystem_slot_count=True))
     assert api_val.passed is False
-    assert api_val.details.subsystem_slot_count.used == 1
-    assert api_val.details.subsystem_slot_count.max == 0
-    assert api_val.details.subsystem_slot_count.users == [api_subsystem.id]
+    assert api_val.details.subsystem_slot_count.status == consts.ApiValStatus.failed
+    assert api_val.details.subsystem_slot_count.fail.used == 1
+    assert api_val.details.subsystem_slot_count.fail.max == 0
+    assert api_val.details.subsystem_slot_count.fail.users == {api_subsystem.id: consts.ApiValItemStatus.failed}
     # Action
     api_fit.set_ship(type_id=eve_ship2_id)
     # Verification
@@ -180,8 +201,7 @@ def test_fractional_max(client, consts):
     assert api_stats.subsystem_slots.one() == (1, 1)
     api_val = api_fit.validate(options=ValOptions(subsystem_slot_count=True))
     assert api_val.passed is True
-    with check_no_field():
-        api_val.details  # ruff:ignore[useless-expression]
+    assert api_val.details.subsystem_slot_count.status == consts.ApiValStatus.passed
 
 
 def test_no_ship(client, consts):
@@ -196,9 +216,10 @@ def test_no_ship(client, consts):
     assert api_stats.subsystem_slots.one() == (1, None)
     api_val = api_fit.validate(options=ValOptions(subsystem_slot_count=True))
     assert api_val.passed is False
-    assert api_val.details.subsystem_slot_count.used == 1
-    assert api_val.details.subsystem_slot_count.max is None
-    assert api_val.details.subsystem_slot_count.users == [api_subsystem.id]
+    assert api_val.details.subsystem_slot_count.status == consts.ApiValStatus.failed
+    assert api_val.details.subsystem_slot_count.fail.used == 1
+    assert api_val.details.subsystem_slot_count.fail.max is None
+    assert api_val.details.subsystem_slot_count.fail.users == {api_subsystem.id: consts.ApiValItemStatus.failed}
 
 
 def test_no_value_max(client, consts):
@@ -215,9 +236,10 @@ def test_no_value_max(client, consts):
     assert api_stats.subsystem_slots.one() == (1, 0)
     api_val = api_fit.validate(options=ValOptions(subsystem_slot_count=True))
     assert api_val.passed is False
-    assert api_val.details.subsystem_slot_count.used == 1
-    assert api_val.details.subsystem_slot_count.max == 0
-    assert api_val.details.subsystem_slot_count.users == [api_subsystem.id]
+    assert api_val.details.subsystem_slot_count.status == consts.ApiValStatus.failed
+    assert api_val.details.subsystem_slot_count.fail.used == 1
+    assert api_val.details.subsystem_slot_count.fail.max == 0
+    assert api_val.details.subsystem_slot_count.fail.users == {api_subsystem.id: consts.ApiValItemStatus.failed}
 
 
 def test_no_attr_max(client, consts):
@@ -232,9 +254,10 @@ def test_no_attr_max(client, consts):
     # Verification - when output attr does not exist, it is assumed to be 0
     api_val = api_fit.validate(options=ValOptions(subsystem_slot_count=True))
     assert api_val.passed is False
-    assert api_val.details.subsystem_slot_count.used == 1
-    assert api_val.details.subsystem_slot_count.max == 0
-    assert api_val.details.subsystem_slot_count.users == [api_subsystem.id]
+    assert api_val.details.subsystem_slot_count.status == consts.ApiValStatus.failed
+    assert api_val.details.subsystem_slot_count.fail.used == 1
+    assert api_val.details.subsystem_slot_count.fail.max == 0
+    assert api_val.details.subsystem_slot_count.fail.users == {api_subsystem.id: consts.ApiValItemStatus.failed}
 
 
 def test_not_loaded_user(client, consts):
@@ -252,9 +275,10 @@ def test_not_loaded_user(client, consts):
     assert api_stats.subsystem_slots.one() == (1, 0)
     api_val = api_fit.validate(options=ValOptions(subsystem_slot_count=True))
     assert api_val.passed is False
-    assert api_val.details.subsystem_slot_count.used == 1
-    assert api_val.details.subsystem_slot_count.max == 0
-    assert api_val.details.subsystem_slot_count.users == [api_subsystem.id]
+    assert api_val.details.subsystem_slot_count.status == consts.ApiValStatus.failed
+    assert api_val.details.subsystem_slot_count.fail.used == 1
+    assert api_val.details.subsystem_slot_count.fail.max == 0
+    assert api_val.details.subsystem_slot_count.fail.users == {api_subsystem.id: consts.ApiValItemStatus.failed}
 
 
 def test_not_loaded_ship(client, consts):
@@ -271,9 +295,10 @@ def test_not_loaded_ship(client, consts):
     assert api_stats.subsystem_slots.one() == (1, None)
     api_val = api_fit.validate(options=ValOptions(subsystem_slot_count=True))
     assert api_val.passed is False
-    assert api_val.details.subsystem_slot_count.used == 1
-    assert api_val.details.subsystem_slot_count.max is None
-    assert api_val.details.subsystem_slot_count.users == [api_subsystem.id]
+    assert api_val.details.subsystem_slot_count.status == consts.ApiValStatus.failed
+    assert api_val.details.subsystem_slot_count.fail.used == 1
+    assert api_val.details.subsystem_slot_count.fail.max is None
+    assert api_val.details.subsystem_slot_count.fail.users == {api_subsystem.id: consts.ApiValItemStatus.failed}
 
 
 def test_criterion_subsystem_state(client, consts):
@@ -291,9 +316,10 @@ def test_criterion_subsystem_state(client, consts):
     assert api_stats.subsystem_slots.one() == (1, 0)
     api_val = api_fit.validate(options=ValOptions(subsystem_slot_count=True))
     assert api_val.passed is False
-    assert api_val.details.subsystem_slot_count.used == 1
-    assert api_val.details.subsystem_slot_count.max == 0
-    assert api_val.details.subsystem_slot_count.users == [api_subsystem.id]
+    assert api_val.details.subsystem_slot_count.status == consts.ApiValStatus.failed
+    assert api_val.details.subsystem_slot_count.fail.used == 1
+    assert api_val.details.subsystem_slot_count.fail.max == 0
+    assert api_val.details.subsystem_slot_count.fail.users == {api_subsystem.id: consts.ApiValItemStatus.failed}
     # Action
     api_subsystem.change_subsystem(state=False)
     # Verification
@@ -301,9 +327,10 @@ def test_criterion_subsystem_state(client, consts):
     assert api_stats.subsystem_slots.one() == (1, 0)
     api_val = api_fit.validate(options=ValOptions(subsystem_slot_count=True))
     assert api_val.passed is False
-    assert api_val.details.subsystem_slot_count.used == 1
-    assert api_val.details.subsystem_slot_count.max == 0
-    assert api_val.details.subsystem_slot_count.users == [api_subsystem.id]
+    assert api_val.details.subsystem_slot_count.status == consts.ApiValStatus.failed
+    assert api_val.details.subsystem_slot_count.fail.used == 1
+    assert api_val.details.subsystem_slot_count.fail.max == 0
+    assert api_val.details.subsystem_slot_count.fail.users == {api_subsystem.id: consts.ApiValItemStatus.failed}
 
 
 def test_criterion_item_kind(client, consts):
@@ -335,8 +362,7 @@ def test_criterion_item_kind(client, consts):
     assert api_stats.subsystem_slots.one() == (0, 0)
     api_val = api_fit.validate(options=ValOptions(subsystem_slot_count=True))
     assert api_val.passed is True
-    with check_no_field():
-        api_val.details  # ruff:ignore[useless-expression]
+    assert api_val.details.subsystem_slot_count.status == consts.ApiValStatus.passed
 
 
 def test_t3c_slot_override(client, consts):
@@ -355,9 +381,10 @@ def test_t3c_slot_override(client, consts):
     assert api_stats.subsystem_slots.one() == (5, 4)
     api_val = api_fit.validate(options=ValOptions(subsystem_slot_count=True))
     assert api_val.passed is False
-    assert api_val.details.subsystem_slot_count.used == 5
-    assert api_val.details.subsystem_slot_count.max == 4
-    assert len(api_val.details.subsystem_slot_count.users) == 5
+    assert api_val.details.subsystem_slot_count.status == consts.ApiValStatus.failed
+    assert api_val.details.subsystem_slot_count.fail.used == 5
+    assert api_val.details.subsystem_slot_count.fail.max == 4
+    assert len(api_val.details.subsystem_slot_count.fail.users) == 5
 
 
 def test_stat_not_requested(client, consts):
