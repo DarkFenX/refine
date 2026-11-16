@@ -370,10 +370,10 @@ fn class_check_verbose(
     let items = limitable_items
         .iter()
         .filter_map(
-            |(item_uid, item_sec_class)| match *item_sec_class < current_class && !kfs.contains(item_uid) {
+            |(&item_uid, &item_sec_class)| match item_sec_class < current_class && !kfs.contains(&item_uid) {
                 true => Some(ValItemSecZoneItemInfo {
-                    item_id: ctx.u_data.items.ext_id_by_int_id(*item_uid),
-                    allowed_zones: class_to_allowed_zones(*item_sec_class),
+                    item_id: ctx.u_data.items.ext_id_by_int_id(item_uid),
+                    allowed_zones: class_to_allowed_zones(item_sec_class),
                 }),
                 false => None,
             },

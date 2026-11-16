@@ -69,12 +69,12 @@ impl VastFitData {
         let module_reqs = self
             .overload_td_lvl
             .iter()
-            .filter_map(|(item_uid, req_lvl)| {
-                match td_lvl.map(|td_lvl| td_lvl >= *req_lvl).unwrap_or(false) || kfs.contains(item_uid) {
+            .filter_map(|(&item_uid, &req_lvl)| {
+                match td_lvl.map(|td_lvl| td_lvl >= req_lvl).unwrap_or(false) || kfs.contains(&item_uid) {
                     true => None,
                     false => Some(ValOverloadSkillItemInfo {
-                        item_id: ctx.u_data.items.ext_id_by_int_id(*item_uid),
-                        level_req: *req_lvl,
+                        item_id: ctx.u_data.items.ext_id_by_int_id(item_uid),
+                        level_req: req_lvl,
                     }),
                 }
             })

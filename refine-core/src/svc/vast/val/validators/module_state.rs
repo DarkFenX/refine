@@ -55,10 +55,10 @@ impl VastFitData {
         let modules = self
             .mods_state
             .iter()
-            .filter_map(|(module_uid, module_info)| match kfs.contains(module_uid) {
+            .filter_map(|(&module_uid, module_info)| match kfs.contains(&module_uid) {
                 true => None,
                 false => Some(ValModuleStateModuleInfo {
-                    module_id: ctx.u_data.items.ext_id_by_int_id(*module_uid),
+                    module_id: ctx.u_data.items.ext_id_by_int_id(module_uid),
                     state: module_info.state,
                     max_state: module_info.max_state,
                 }),

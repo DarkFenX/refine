@@ -44,12 +44,12 @@ impl ValShipLimitItemInfo {
             allowed_type_ids: item_ship_limit
                 .type_aids
                 .iter()
-                .map(|type_aid| ItemTypeId::from_aid(*type_aid))
+                .map(|&type_aid| ItemTypeId::from_aid(type_aid))
                 .collect(),
             allowed_group_ids: item_ship_limit
                 .group_aids
                 .iter()
-                .map(|item_grp_aid| ItemGrpId::from_aid(*item_grp_aid))
+                .map(|&item_grp_aid| ItemGrpId::from_aid(item_grp_aid))
                 .collect(),
         }
     }

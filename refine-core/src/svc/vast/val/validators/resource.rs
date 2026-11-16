@@ -90,7 +90,7 @@ impl VastFitData {
             ctx,
             calc,
             fit,
-            self.rigs_offline_calibration.iter().map(|(k, v)| (*k, *v)),
+            self.rigs_offline_calibration.iter().map(|(&k, &v)| (k, v)),
             ctx.ac().upgrade_capacity,
         )
     }
@@ -106,7 +106,7 @@ impl VastFitData {
             ctx,
             calc,
             fit,
-            self.drones_volume.iter().map(|(k, v)| (*k, v.into_value())),
+            self.drones_volume.iter().map(|(&k, v)| (k, v.into_value())),
             ctx.ac().drone_capacity,
         )
     }
@@ -122,7 +122,7 @@ impl VastFitData {
             ctx,
             calc,
             fit,
-            self.drones_online_bandwidth.iter().map(|(k, v)| (*k, *v)),
+            self.drones_online_bandwidth.iter().map(|(&k, &v)| (k, v)),
             ctx.ac().drone_bandwidth,
         )
     }
@@ -138,7 +138,7 @@ impl VastFitData {
             ctx,
             calc,
             fit,
-            self.fighters_volume.iter().map(|(k, v)| (*k, v.into_value())),
+            self.fighters_volume.iter().map(|(&k, v)| (k, v.into_value())),
             ctx.ac().ftr_capacity,
         )
     }
@@ -189,7 +189,7 @@ impl VastFitData {
             ctx,
             calc,
             fit,
-            self.rigs_offline_calibration.iter().map(|(k, v)| (*k, *v)),
+            self.rigs_offline_calibration.iter().map(|(&k, &v)| (k, v)),
             ctx.ac().upgrade_capacity,
         )
     }
@@ -205,7 +205,7 @@ impl VastFitData {
             ctx,
             calc,
             fit,
-            self.drones_volume.iter().map(|(k, v)| (*k, v.into_value())),
+            self.drones_volume.iter().map(|(&k, v)| (k, v.into_value())),
             ctx.ac().drone_capacity,
         )
     }
@@ -221,7 +221,7 @@ impl VastFitData {
             ctx,
             calc,
             fit,
-            self.drones_online_bandwidth.iter().map(|(k, v)| (*k, *v)),
+            self.drones_online_bandwidth.iter().map(|(&k, &v)| (k, v)),
             ctx.ac().drone_bandwidth,
         )
     }
@@ -237,7 +237,7 @@ impl VastFitData {
             ctx,
             calc,
             fit,
-            self.fighters_volume.iter().map(|(k, v)| (*k, v.into_value())),
+            self.fighters_volume.iter().map(|(&k, v)| (k, v.into_value())),
             ctx.ac().ftr_capacity,
         )
     }

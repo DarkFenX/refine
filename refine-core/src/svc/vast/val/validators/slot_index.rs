@@ -87,9 +87,9 @@ fn validate_slot_index_verbose(
     for (&slot_index, users) in data.iter() {
         if users.len() >= 2 {
             let users = users
-                .filter_map(|item_uid| match kfs.contains(item_uid) {
+                .filter_map(|&item_uid| match kfs.contains(&item_uid) {
                     true => None,
-                    false => Some(ctx.u_data.items.ext_id_by_int_id(*item_uid)),
+                    false => Some(ctx.u_data.items.ext_id_by_int_id(item_uid)),
                 })
                 .collect_vec();
             if !users.is_empty() {

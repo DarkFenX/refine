@@ -55,10 +55,10 @@ impl VastFitData {
         let item_kinds = self
             .item_kind
             .iter()
-            .filter_map(|(item_uid, item_info)| match kfs.contains(item_uid) {
+            .filter_map(|(&item_uid, item_info)| match kfs.contains(&item_uid) {
                 true => None,
                 false => Some(ValItemKindItemInfo {
-                    item_id: ctx.u_data.items.ext_id_by_int_id(*item_uid),
+                    item_id: ctx.u_data.items.ext_id_by_int_id(item_uid),
                     kind: item_info.kind,
                     expected_kind: item_info.expected_kind,
                 }),

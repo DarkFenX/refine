@@ -55,10 +55,10 @@ impl VastFitData {
         let fighters = self
             .fighter_squad_size
             .iter()
-            .filter_map(|(fighter_uid, fighter_info)| match kfs.contains(fighter_uid) {
+            .filter_map(|(&fighter_uid, fighter_info)| match kfs.contains(&fighter_uid) {
                 true => None,
                 false => Some(ValFighterSquadSizeFighterInfo {
-                    fighter_id: ctx.u_data.items.ext_id_by_int_id(*fighter_uid),
+                    fighter_id: ctx.u_data.items.ext_id_by_int_id(fighter_uid),
                     size: fighter_info.size,
                     max_size: fighter_info.max_size,
                 }),

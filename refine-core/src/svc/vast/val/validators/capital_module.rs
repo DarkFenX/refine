@@ -68,11 +68,11 @@ impl VastFitData {
         let module_volumes = self
             .mods_capital
             .iter()
-            .filter_map(|(module_uid, module_volume)| match kfs.contains(module_uid) {
+            .filter_map(|(&module_uid, &module_volume)| match kfs.contains(&module_uid) {
                 true => None,
                 false => Some(ValCapitalModInfo {
-                    module_id: ctx.u_data.items.ext_id_by_int_id(*module_uid),
-                    volume: *module_volume,
+                    module_id: ctx.u_data.items.ext_id_by_int_id(module_uid),
+                    volume: module_volume,
                 }),
             })
             .collect_vec();

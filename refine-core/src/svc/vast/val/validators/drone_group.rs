@@ -61,11 +61,11 @@ impl VastFitData {
         let drone_groups = self
             .drone_groups
             .iter()
-            .filter_map(|(drone_uid, drone_group_aid)| match kfs.contains(drone_uid) {
+            .filter_map(|(&drone_uid, &drone_group_aid)| match kfs.contains(&drone_uid) {
                 true => None,
                 false => Some(ValDroneGroupInfo {
-                    drone_id: ctx.u_data.items.ext_id_by_int_id(*drone_uid),
-                    group_id: ItemGrpId::from_aid(*drone_group_aid),
+                    drone_id: ctx.u_data.items.ext_id_by_int_id(drone_uid),
+                    group_id: ItemGrpId::from_aid(drone_group_aid),
                 }),
             })
             .collect_vec();
@@ -75,7 +75,7 @@ impl VastFitData {
                 allowed_group_ids: self
                     .drone_group_limit
                     .iter()
-                    .map(|grp_aid| ItemGrpId::from_aid(*grp_aid))
+                    .map(|&grp_aid| ItemGrpId::from_aid(grp_aid))
                     .collect(),
                 drone_groups,
             }),

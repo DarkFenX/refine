@@ -1,3 +1,5 @@
+use itertools::Itertools;
+
 use crate::{
     Count, ItemId,
     rd::RAttrId,
@@ -262,10 +264,10 @@ fn validate_verbose(
     if max.unwrap_or(Count::ZERO) > Count::ZERO {
         return ValResult::Passed;
     }
-    let users: Vec<_> = users
+    let users = users
         .difference(kfs)
-        .map(|item_uid| ctx.u_data.items.ext_id_by_int_id(*item_uid))
-        .collect();
+        .map(|&item_uid| ctx.u_data.items.ext_id_by_int_id(item_uid))
+        .collect_vec();
     match users.is_empty() {
         true => ValResult::Passed,
         false => ValResult::Failed(ValUnusableSlotFail { max, users }),

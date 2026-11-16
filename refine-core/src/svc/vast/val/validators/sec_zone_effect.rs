@@ -101,11 +101,11 @@ impl VastFitData {
             SecZone::HiSec(..) => {
                 'items: for (&item_uid, item_data) in self.sec_zone_effect.iter() {
                     let mut effects = Vec::new();
-                    for (&effect_rid, sec_zone_info) in item_data.iter() {
+                    for (&effect_rid, &sec_zone_info) in item_data.iter() {
                         if sec_zone_info.banned_in_hisec {
                             match kfs.contains(&item_uid) {
                                 true => continue 'items,
-                                false => add_failed_effect(ctx.u_data, &mut effects, effect_rid, *sec_zone_info),
+                                false => add_failed_effect(ctx.u_data, &mut effects, effect_rid, sec_zone_info),
                             }
                         }
                     }
@@ -118,11 +118,11 @@ impl VastFitData {
             SecZone::LowSec(..) => {
                 'items: for (&item_uid, item_data) in self.sec_zone_effect.iter() {
                     let mut effects = Vec::new();
-                    for (&effect_rid, sec_zone_info) in item_data.iter() {
+                    for (&effect_rid, &sec_zone_info) in item_data.iter() {
                         if sec_zone_info.banned_in_lowsec {
                             match kfs.contains(&item_uid) {
                                 true => continue 'items,
-                                false => add_failed_effect(ctx.u_data, &mut effects, effect_rid, *sec_zone_info),
+                                false => add_failed_effect(ctx.u_data, &mut effects, effect_rid, sec_zone_info),
                             }
                         }
                     }

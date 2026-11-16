@@ -76,9 +76,9 @@ impl VastFitData {
         let items = self
             .mods_rigs_svcs_vs_ship_kind
             .difference(kfs)
-            .map(|(item_uid, needed_kind)| ValItemVsShipKindItemInfo {
-                item_id: ctx.u_data.items.ext_id_by_int_id(*item_uid),
-                needed_ship_kind: *needed_kind,
+            .map(|(&item_uid, &needed_kind)| ValItemVsShipKindItemInfo {
+                item_id: ctx.u_data.items.ext_id_by_int_id(item_uid),
+                needed_ship_kind: needed_kind,
             })
             .collect_vec();
         match items.is_empty() {

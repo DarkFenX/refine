@@ -502,7 +502,7 @@ fn validate_verbose_unordered_set(
     }
     let users = users
         .difference(kfs)
-        .map(|item_uid| ctx.u_data.items.ext_id_by_int_id(*item_uid))
+        .map(|&item_uid| ctx.u_data.items.ext_id_by_int_id(item_uid))
         .collect_vec();
     match users.is_empty() {
         true => ValResult::Passed,
@@ -524,7 +524,7 @@ fn validate_verbose_unordered_map<T>(
     }
     let users = users
         .difference(kfs)
-        .map(|(item_uid, _)| ctx.u_data.items.ext_id_by_int_id(*item_uid))
+        .map(|(&item_uid, _)| ctx.u_data.items.ext_id_by_int_id(item_uid))
         .collect_vec();
     match users.is_empty() {
         true => ValResult::Passed,

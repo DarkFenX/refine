@@ -77,9 +77,9 @@ impl VastFitData {
             .drones_bandwidth
             .iter()
             .filter_map(
-                |(item_uid, &item_use)| match item_use > effective_max && !kfs.contains(item_uid) {
+                |(&item_uid, &item_use)| match item_use > effective_max && !kfs.contains(&item_uid) {
                     true => Some(ValUnusableResItemInfo {
-                        item_id: ctx.u_data.items.ext_id_by_int_id(*item_uid),
+                        item_id: ctx.u_data.items.ext_id_by_int_id(item_uid),
                         used: item_use,
                     }),
                     false => None,
