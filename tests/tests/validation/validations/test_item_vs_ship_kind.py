@@ -1,4 +1,3 @@
-from fw import check_no_field
 from fw.api import ValOptions
 
 
@@ -30,63 +29,63 @@ def test_ship_kind_switching(client, consts):
     # Verification
     api_val = api_fit.validate(options=ValOptions(item_vs_ship_kind=True))
     assert api_val.passed is True
-    with check_no_field():
-        api_val.details  # ruff:ignore[useless-expression]
+    assert api_val.details.item_vs_ship_kind.status == consts.ApiValStatus.passed
     # Action
     api_fit.set_ship(type_id=eve_ship_id)
     # Verification
     api_val = api_fit.validate(options=ValOptions(item_vs_ship_kind=True))
     assert api_val.passed is False
-    assert api_val.details.item_vs_ship_kind.ship_kind == consts.ApiValShipType.ship
-    assert api_val.details.item_vs_ship_kind.items == {
-        api_struct_module_high.id: consts.ApiValShipType.structure,
-        api_struct_module_mid.id: consts.ApiValShipType.structure,
-        api_struct_module_low.id: consts.ApiValShipType.structure,
-        api_struct_rig.id: consts.ApiValShipType.structure,
-        api_struct_service.id: consts.ApiValShipType.structure}
+    assert api_val.details.item_vs_ship_kind.status == consts.ApiValStatus.failed
+    assert api_val.details.item_vs_ship_kind.fail.ship_kind == consts.ApiValShipType.ship
+    assert api_val.details.item_vs_ship_kind.fail.items == {
+        api_struct_module_high.id: (consts.ApiValItemStatus.failed, consts.ApiValShipType.structure),
+        api_struct_module_mid.id: (consts.ApiValItemStatus.failed, consts.ApiValShipType.structure),
+        api_struct_module_low.id: (consts.ApiValItemStatus.failed, consts.ApiValShipType.structure),
+        api_struct_rig.id: (consts.ApiValItemStatus.failed, consts.ApiValShipType.structure),
+        api_struct_service.id: (consts.ApiValItemStatus.failed, consts.ApiValShipType.structure)}
     # Action
     api_fit.unset_ship()
     # Verification
     api_val = api_fit.validate(options=ValOptions(item_vs_ship_kind=True))
     assert api_val.passed is True
-    with check_no_field():
-        api_val.details  # ruff:ignore[useless-expression]
+    assert api_val.details.item_vs_ship_kind.status == consts.ApiValStatus.passed
     # Action
     api_fit.set_ship(type_id=eve_struct_id)
     # Verification
     api_val = api_fit.validate(options=ValOptions(item_vs_ship_kind=True))
     assert api_val.passed is False
-    assert api_val.details.item_vs_ship_kind.ship_kind == consts.ApiValShipType.structure
-    assert api_val.details.item_vs_ship_kind.items == {
-        api_ship_module_high.id: consts.ApiValShipType.ship,
-        api_ship_module_mid.id: consts.ApiValShipType.ship,
-        api_ship_module_low.id: consts.ApiValShipType.ship,
-        api_ship_rig.id: consts.ApiValShipType.ship,
-        api_ship_service.id: consts.ApiValShipType.ship}
+    assert api_val.details.item_vs_ship_kind.status == consts.ApiValStatus.failed
+    assert api_val.details.item_vs_ship_kind.fail.ship_kind == consts.ApiValShipType.structure
+    assert api_val.details.item_vs_ship_kind.fail.items == {
+        api_ship_module_high.id: (consts.ApiValItemStatus.failed, consts.ApiValShipType.ship),
+        api_ship_module_mid.id: (consts.ApiValItemStatus.failed, consts.ApiValShipType.ship),
+        api_ship_module_low.id: (consts.ApiValItemStatus.failed, consts.ApiValShipType.ship),
+        api_ship_rig.id: (consts.ApiValItemStatus.failed, consts.ApiValShipType.ship),
+        api_ship_service.id: (consts.ApiValItemStatus.failed, consts.ApiValShipType.ship)}
     # Action
     api_fit.set_ship(type_id=eve_not_loaded_id)
     # Verification
     api_val = api_fit.validate(options=ValOptions(item_vs_ship_kind=True))
     assert api_val.passed is True
-    with check_no_field():
-        api_val.details  # ruff:ignore[useless-expression]
+    assert api_val.details.item_vs_ship_kind.status == consts.ApiValStatus.passed
     # Action
     api_fit.set_ship(type_id=eve_other_item_id)
     # Verification
     api_val = api_fit.validate(options=ValOptions(item_vs_ship_kind=True))
     assert api_val.passed is False
-    assert api_val.details.item_vs_ship_kind.ship_kind == consts.ApiValShipType.unknown
-    assert api_val.details.item_vs_ship_kind.items == {
-        api_ship_module_high.id: consts.ApiValShipType.ship,
-        api_ship_module_mid.id: consts.ApiValShipType.ship,
-        api_ship_module_low.id: consts.ApiValShipType.ship,
-        api_ship_rig.id: consts.ApiValShipType.ship,
-        api_ship_service.id: consts.ApiValShipType.ship,
-        api_struct_module_high.id: consts.ApiValShipType.structure,
-        api_struct_module_mid.id: consts.ApiValShipType.structure,
-        api_struct_module_low.id: consts.ApiValShipType.structure,
-        api_struct_rig.id: consts.ApiValShipType.structure,
-        api_struct_service.id: consts.ApiValShipType.structure}
+    assert api_val.details.item_vs_ship_kind.status == consts.ApiValStatus.failed
+    assert api_val.details.item_vs_ship_kind.fail.ship_kind == consts.ApiValShipType.unknown
+    assert api_val.details.item_vs_ship_kind.fail.items == {
+        api_ship_module_high.id: (consts.ApiValItemStatus.failed, consts.ApiValShipType.ship),
+        api_ship_module_mid.id: (consts.ApiValItemStatus.failed, consts.ApiValShipType.ship),
+        api_ship_module_low.id: (consts.ApiValItemStatus.failed, consts.ApiValShipType.ship),
+        api_ship_rig.id: (consts.ApiValItemStatus.failed, consts.ApiValShipType.ship),
+        api_ship_service.id: (consts.ApiValItemStatus.failed, consts.ApiValShipType.ship),
+        api_struct_module_high.id: (consts.ApiValItemStatus.failed, consts.ApiValShipType.structure),
+        api_struct_module_mid.id: (consts.ApiValItemStatus.failed, consts.ApiValShipType.structure),
+        api_struct_module_low.id: (consts.ApiValItemStatus.failed, consts.ApiValShipType.structure),
+        api_struct_rig.id: (consts.ApiValItemStatus.failed, consts.ApiValShipType.structure),
+        api_struct_service.id: (consts.ApiValItemStatus.failed, consts.ApiValShipType.structure)}
 
 
 def test_item_add_remove_ship_ship(client, consts):
@@ -116,13 +115,14 @@ def test_item_add_remove_ship_ship(client, consts):
     # Verification
     api_val = api_fit.validate(options=ValOptions(item_vs_ship_kind=True))
     assert api_val.passed is False
-    assert api_val.details.item_vs_ship_kind.ship_kind == consts.ApiValShipType.ship
-    assert api_val.details.item_vs_ship_kind.items == {
-        api_struct_module_high.id: consts.ApiValShipType.structure,
-        api_struct_module_mid.id: consts.ApiValShipType.structure,
-        api_struct_module_low.id: consts.ApiValShipType.structure,
-        api_struct_rig.id: consts.ApiValShipType.structure,
-        api_struct_service.id: consts.ApiValShipType.structure}
+    assert api_val.details.item_vs_ship_kind.status == consts.ApiValStatus.failed
+    assert api_val.details.item_vs_ship_kind.fail.ship_kind == consts.ApiValShipType.ship
+    assert api_val.details.item_vs_ship_kind.fail.items == {
+        api_struct_module_high.id: (consts.ApiValItemStatus.failed, consts.ApiValShipType.structure),
+        api_struct_module_mid.id: (consts.ApiValItemStatus.failed, consts.ApiValShipType.structure),
+        api_struct_module_low.id: (consts.ApiValItemStatus.failed, consts.ApiValShipType.structure),
+        api_struct_rig.id: (consts.ApiValItemStatus.failed, consts.ApiValShipType.structure),
+        api_struct_service.id: (consts.ApiValItemStatus.failed, consts.ApiValShipType.structure)}
     # Action
     api_ship_module_high.remove()
     api_ship_module_mid.remove()
@@ -142,8 +142,7 @@ def test_item_add_remove_ship_ship(client, consts):
     # Verification
     api_val = api_fit.validate(options=ValOptions(item_vs_ship_kind=True))
     assert api_val.passed is True
-    with check_no_field():
-        api_val.details  # ruff:ignore[useless-expression]
+    assert api_val.details.item_vs_ship_kind.status == consts.ApiValStatus.passed
 
 
 def test_item_add_remove_ship_struct(client, consts):
@@ -173,13 +172,14 @@ def test_item_add_remove_ship_struct(client, consts):
     # Verification
     api_val = api_fit.validate(options=ValOptions(item_vs_ship_kind=True))
     assert api_val.passed is False
-    assert api_val.details.item_vs_ship_kind.ship_kind == consts.ApiValShipType.structure
-    assert api_val.details.item_vs_ship_kind.items == {
-        api_ship_module_high.id: consts.ApiValShipType.ship,
-        api_ship_module_mid.id: consts.ApiValShipType.ship,
-        api_ship_module_low.id: consts.ApiValShipType.ship,
-        api_ship_rig.id: consts.ApiValShipType.ship,
-        api_ship_service.id: consts.ApiValShipType.ship}
+    assert api_val.details.item_vs_ship_kind.status == consts.ApiValStatus.failed
+    assert api_val.details.item_vs_ship_kind.fail.ship_kind == consts.ApiValShipType.structure
+    assert api_val.details.item_vs_ship_kind.fail.items == {
+        api_ship_module_high.id: (consts.ApiValItemStatus.failed, consts.ApiValShipType.ship),
+        api_ship_module_mid.id: (consts.ApiValItemStatus.failed, consts.ApiValShipType.ship),
+        api_ship_module_low.id: (consts.ApiValItemStatus.failed, consts.ApiValShipType.ship),
+        api_ship_rig.id: (consts.ApiValItemStatus.failed, consts.ApiValShipType.ship),
+        api_ship_service.id: (consts.ApiValItemStatus.failed, consts.ApiValShipType.ship)}
     # Action
     api_ship_module_high.remove()
     api_ship_module_mid.remove()
@@ -199,8 +199,7 @@ def test_item_add_remove_ship_struct(client, consts):
     # Verification
     api_val = api_fit.validate(options=ValOptions(item_vs_ship_kind=True))
     assert api_val.passed is True
-    with check_no_field():
-        api_val.details  # ruff:ignore[useless-expression]
+    assert api_val.details.item_vs_ship_kind.status == consts.ApiValStatus.passed
 
 
 def test_item_add_remove_ship_unknown(client, consts):
@@ -230,18 +229,19 @@ def test_item_add_remove_ship_unknown(client, consts):
     # Verification
     api_val = api_fit.validate(options=ValOptions(item_vs_ship_kind=True))
     assert api_val.passed is False
-    assert api_val.details.item_vs_ship_kind.ship_kind == consts.ApiValShipType.unknown
-    assert api_val.details.item_vs_ship_kind.items == {
-        api_ship_module_high.id: consts.ApiValShipType.ship,
-        api_ship_module_mid.id: consts.ApiValShipType.ship,
-        api_ship_module_low.id: consts.ApiValShipType.ship,
-        api_ship_rig.id: consts.ApiValShipType.ship,
-        api_ship_service.id: consts.ApiValShipType.ship,
-        api_struct_module_high.id: consts.ApiValShipType.structure,
-        api_struct_module_mid.id: consts.ApiValShipType.structure,
-        api_struct_module_low.id: consts.ApiValShipType.structure,
-        api_struct_rig.id: consts.ApiValShipType.structure,
-        api_struct_service.id: consts.ApiValShipType.structure}
+    assert api_val.details.item_vs_ship_kind.status == consts.ApiValStatus.failed
+    assert api_val.details.item_vs_ship_kind.fail.ship_kind == consts.ApiValShipType.unknown
+    assert api_val.details.item_vs_ship_kind.fail.items == {
+        api_ship_module_high.id: (consts.ApiValItemStatus.failed, consts.ApiValShipType.ship),
+        api_ship_module_mid.id: (consts.ApiValItemStatus.failed, consts.ApiValShipType.ship),
+        api_ship_module_low.id: (consts.ApiValItemStatus.failed, consts.ApiValShipType.ship),
+        api_ship_rig.id: (consts.ApiValItemStatus.failed, consts.ApiValShipType.ship),
+        api_ship_service.id: (consts.ApiValItemStatus.failed, consts.ApiValShipType.ship),
+        api_struct_module_high.id: (consts.ApiValItemStatus.failed, consts.ApiValShipType.structure),
+        api_struct_module_mid.id: (consts.ApiValItemStatus.failed, consts.ApiValShipType.structure),
+        api_struct_module_low.id: (consts.ApiValItemStatus.failed, consts.ApiValShipType.structure),
+        api_struct_rig.id: (consts.ApiValItemStatus.failed, consts.ApiValShipType.structure),
+        api_struct_service.id: (consts.ApiValItemStatus.failed, consts.ApiValShipType.structure)}
     # Action
     api_ship_module_high.remove()
     api_ship_module_mid.remove()
@@ -261,8 +261,7 @@ def test_item_add_remove_ship_unknown(client, consts):
     # Verification
     api_val = api_fit.validate(options=ValOptions(item_vs_ship_kind=True))
     assert api_val.passed is True
-    with check_no_field():
-        api_val.details  # ruff:ignore[useless-expression]
+    assert api_val.details.item_vs_ship_kind.status == consts.ApiValStatus.passed
 
 
 def test_item_add_remove_ship_none(client, consts):
@@ -290,8 +289,7 @@ def test_item_add_remove_ship_none(client, consts):
     # Verification
     api_val = api_fit.validate(options=ValOptions(item_vs_ship_kind=True))
     assert api_val.passed is True
-    with check_no_field():
-        api_val.details  # ruff:ignore[useless-expression]
+    assert api_val.details.item_vs_ship_kind.status == consts.ApiValStatus.passed
     # Action
     api_ship_module_high.remove()
     api_ship_module_mid.remove()
@@ -311,8 +309,7 @@ def test_item_add_remove_ship_none(client, consts):
     # Verification
     api_val = api_fit.validate(options=ValOptions(item_vs_ship_kind=True))
     assert api_val.passed is True
-    with check_no_field():
-        api_val.details  # ruff:ignore[useless-expression]
+    assert api_val.details.item_vs_ship_kind.status == consts.ApiValStatus.passed
 
 
 def test_item_add_remove_ship_not_loaded(client, consts):
@@ -342,8 +339,7 @@ def test_item_add_remove_ship_not_loaded(client, consts):
     # Verification
     api_val = api_fit.validate(options=ValOptions(item_vs_ship_kind=True))
     assert api_val.passed is True
-    with check_no_field():
-        api_val.details  # ruff:ignore[useless-expression]
+    assert api_val.details.item_vs_ship_kind.status == consts.ApiValStatus.passed
     # Action
     api_ship_module_high.remove()
     api_ship_module_mid.remove()
@@ -363,8 +359,7 @@ def test_item_add_remove_ship_not_loaded(client, consts):
     # Verification
     api_val = api_fit.validate(options=ValOptions(item_vs_ship_kind=True))
     assert api_val.passed is True
-    with check_no_field():
-        api_val.details  # ruff:ignore[useless-expression]
+    assert api_val.details.item_vs_ship_kind.status == consts.ApiValStatus.passed
 
 
 def test_known_failures(client, consts):
@@ -382,35 +377,55 @@ def test_known_failures(client, consts):
     # Verification
     api_val = api_fit.validate(options=ValOptions(item_vs_ship_kind=[api_ship_module.id]))
     assert api_val.passed is False
-    assert api_val.details.item_vs_ship_kind.ship_kind == consts.ApiValShipType.structure
-    assert api_val.details.item_vs_ship_kind.items == {
-        api_ship_rig.id: consts.ApiValShipType.ship,
-        api_ship_service.id: consts.ApiValShipType.ship}
+    assert api_val.details.item_vs_ship_kind.status == consts.ApiValStatus.failed
+    assert api_val.details.item_vs_ship_kind.fail.ship_kind == consts.ApiValShipType.structure
+    assert api_val.details.item_vs_ship_kind.fail.items == {
+        api_ship_module.id: (consts.ApiValItemStatus.kf, consts.ApiValShipType.ship),
+        api_ship_rig.id: (consts.ApiValItemStatus.failed, consts.ApiValShipType.ship),
+        api_ship_service.id: (consts.ApiValItemStatus.failed, consts.ApiValShipType.ship)}
     api_val = api_fit.validate(options=ValOptions(item_vs_ship_kind=[api_ship_rig.id]))
     assert api_val.passed is False
-    assert api_val.details.item_vs_ship_kind.ship_kind == consts.ApiValShipType.structure
-    assert api_val.details.item_vs_ship_kind.items == {
-        api_ship_module.id: consts.ApiValShipType.ship,
-        api_ship_service.id: consts.ApiValShipType.ship}
+    assert api_val.details.item_vs_ship_kind.status == consts.ApiValStatus.failed
+    assert api_val.details.item_vs_ship_kind.fail.ship_kind == consts.ApiValShipType.structure
+    assert api_val.details.item_vs_ship_kind.fail.items == {
+        api_ship_module.id: (consts.ApiValItemStatus.failed, consts.ApiValShipType.ship),
+        api_ship_rig.id: (consts.ApiValItemStatus.kf, consts.ApiValShipType.ship),
+        api_ship_service.id: (consts.ApiValItemStatus.failed, consts.ApiValShipType.ship)}
     api_val = api_fit.validate(options=ValOptions(item_vs_ship_kind=[api_ship_module.id, api_ship_service.id]))
     assert api_val.passed is False
-    assert api_val.details.item_vs_ship_kind.ship_kind == consts.ApiValShipType.structure
-    assert api_val.details.item_vs_ship_kind.items == {api_ship_rig.id: consts.ApiValShipType.ship}
+    assert api_val.details.item_vs_ship_kind.status == consts.ApiValStatus.failed
+    assert api_val.details.item_vs_ship_kind.fail.ship_kind == consts.ApiValShipType.structure
+    assert api_val.details.item_vs_ship_kind.fail.items == {
+        api_ship_module.id: (consts.ApiValItemStatus.kf, consts.ApiValShipType.ship),
+        api_ship_rig.id: (consts.ApiValItemStatus.failed, consts.ApiValShipType.ship),
+        api_ship_service.id: (consts.ApiValItemStatus.kf, consts.ApiValShipType.ship)}
     api_val = api_fit.validate(options=ValOptions(
         item_vs_ship_kind=[api_ship_module.id, api_other.id, api_ship_service.id]))
     assert api_val.passed is False
-    assert api_val.details.item_vs_ship_kind.ship_kind == consts.ApiValShipType.structure
-    assert api_val.details.item_vs_ship_kind.items == {api_ship_rig.id: consts.ApiValShipType.ship}
+    assert api_val.details.item_vs_ship_kind.status == consts.ApiValStatus.failed
+    assert api_val.details.item_vs_ship_kind.fail.ship_kind == consts.ApiValShipType.structure
+    assert api_val.details.item_vs_ship_kind.fail.items == {
+        api_ship_module.id: (consts.ApiValItemStatus.kf, consts.ApiValShipType.ship),
+        api_ship_rig.id: (consts.ApiValItemStatus.failed, consts.ApiValShipType.ship),
+        api_ship_service.id: (consts.ApiValItemStatus.kf, consts.ApiValShipType.ship)}
     api_val = api_fit.validate(options=ValOptions(
         item_vs_ship_kind=[api_ship_module.id, api_ship_rig.id, api_ship_service.id]))
     assert api_val.passed is True
-    with check_no_field():
-        api_val.details  # ruff:ignore[useless-expression]
+    assert api_val.details.item_vs_ship_kind.status == consts.ApiValStatus.passed_kfs
+    assert api_val.details.item_vs_ship_kind.fail.ship_kind == consts.ApiValShipType.structure
+    assert api_val.details.item_vs_ship_kind.fail.items == {
+        api_ship_module.id: (consts.ApiValItemStatus.kf, consts.ApiValShipType.ship),
+        api_ship_rig.id: (consts.ApiValItemStatus.kf, consts.ApiValShipType.ship),
+        api_ship_service.id: (consts.ApiValItemStatus.kf, consts.ApiValShipType.ship)}
     api_val = api_fit.validate(options=ValOptions(
         item_vs_ship_kind=[api_ship_module.id, api_ship_rig.id, api_other.id, api_ship_service.id]))
     assert api_val.passed is True
-    with check_no_field():
-        api_val.details  # ruff:ignore[useless-expression]
+    assert api_val.details.item_vs_ship_kind.status == consts.ApiValStatus.passed_kfs
+    assert api_val.details.item_vs_ship_kind.fail.ship_kind == consts.ApiValShipType.structure
+    assert api_val.details.item_vs_ship_kind.fail.items == {
+        api_ship_module.id: (consts.ApiValItemStatus.kf, consts.ApiValShipType.ship),
+        api_ship_rig.id: (consts.ApiValItemStatus.kf, consts.ApiValShipType.ship),
+        api_ship_service.id: (consts.ApiValItemStatus.kf, consts.ApiValShipType.ship)}
 
 
 def test_mutation(client, consts):
@@ -427,39 +442,43 @@ def test_mutation(client, consts):
     # Verification
     api_val = api_fit.validate(options=ValOptions(item_vs_ship_kind=True))
     assert api_val.passed is False
-    assert api_val.details.item_vs_ship_kind.ship_kind == consts.ApiValShipType.structure
-    assert api_val.details.item_vs_ship_kind.items == {api_module.id: consts.ApiValShipType.ship}
+    assert api_val.details.item_vs_ship_kind.status == consts.ApiValStatus.failed
+    assert api_val.details.item_vs_ship_kind.fail.ship_kind == consts.ApiValShipType.structure
+    assert api_val.details.item_vs_ship_kind.fail.items == {
+        api_module.id: (consts.ApiValItemStatus.failed, consts.ApiValShipType.ship)}
     # Action
     api_fit.set_ship(type_id=eve_ship_id)
     # Verification
     api_val = api_fit.validate(options=ValOptions(item_vs_ship_kind=True))
     assert api_val.passed is True
-    with check_no_field():
-        api_val.details  # ruff:ignore[useless-expression]
+    assert api_val.details.item_vs_ship_kind.status == consts.ApiValStatus.passed
     # Action
     api_module.change_module(mutation=eve_mutator_id)
     # Verification
     api_val = api_fit.validate(options=ValOptions(item_vs_ship_kind=True))
     assert api_val.passed is False
-    assert api_val.details.item_vs_ship_kind.ship_kind == consts.ApiValShipType.ship
-    assert api_val.details.item_vs_ship_kind.items == {api_module.id: consts.ApiValShipType.structure}
+    assert api_val.details.item_vs_ship_kind.status == consts.ApiValStatus.failed
+    assert api_val.details.item_vs_ship_kind.fail.ship_kind == consts.ApiValShipType.ship
+    assert api_val.details.item_vs_ship_kind.fail.items == {
+        api_module.id: (consts.ApiValItemStatus.failed, consts.ApiValShipType.structure)}
     # Action
     api_fit.set_ship(type_id=eve_struct_id)
     # Verification
     api_val = api_fit.validate(options=ValOptions(item_vs_ship_kind=True))
     assert api_val.passed is True
-    with check_no_field():
-        api_val.details  # ruff:ignore[useless-expression]
+    assert api_val.details.item_vs_ship_kind.status == consts.ApiValStatus.passed
     # Action
     api_module.change_module(mutation=None)
     # Verification
     api_val = api_fit.validate(options=ValOptions(item_vs_ship_kind=True))
     assert api_val.passed is False
-    assert api_val.details.item_vs_ship_kind.ship_kind == consts.ApiValShipType.structure
-    assert api_val.details.item_vs_ship_kind.items == {api_module.id: consts.ApiValShipType.ship}
+    assert api_val.details.item_vs_ship_kind.status == consts.ApiValStatus.failed
+    assert api_val.details.item_vs_ship_kind.fail.ship_kind == consts.ApiValShipType.structure
+    assert api_val.details.item_vs_ship_kind.fail.items == {
+        api_module.id: (consts.ApiValItemStatus.failed, consts.ApiValShipType.ship)}
 
 
-def test_not_loaded_item(client):
+def test_not_loaded_item(client, consts):
     eve_item_id = client.alloc_item_id()
     eve_ship_id = client.mk_eve_item()
     client.create_sources()
@@ -472,8 +491,7 @@ def test_not_loaded_item(client):
     # Verification
     api_val = api_fit.validate(options=ValOptions(item_vs_ship_kind=True))
     assert api_val.passed is True
-    with check_no_field():
-        api_val.details  # ruff:ignore[useless-expression]
+    assert api_val.details.item_vs_ship_kind.status == consts.ApiValStatus.passed
     # Action
     api_module.remove()
     api_rig.remove()
@@ -481,8 +499,7 @@ def test_not_loaded_item(client):
     # Verification
     api_val = api_fit.validate(options=ValOptions(item_vs_ship_kind=True))
     assert api_val.passed is True
-    with check_no_field():
-        api_val.details  # ruff:ignore[useless-expression]
+    assert api_val.details.item_vs_ship_kind.status == consts.ApiValStatus.passed
 
 
 def test_criterion_item_category(client, consts):
@@ -498,22 +515,19 @@ def test_criterion_item_category(client, consts):
     # Verification
     api_val = api_fit.validate(options=ValOptions(item_vs_ship_kind=True))
     assert api_val.passed is True
-    with check_no_field():
-        api_val.details  # ruff:ignore[useless-expression]
+    assert api_val.details.item_vs_ship_kind.status == consts.ApiValStatus.passed
     # Action
     api_fit.set_ship(type_id=eve_ship_id)
     # Verification
     api_val = api_fit.validate(options=ValOptions(item_vs_ship_kind=True))
     assert api_val.passed is True
-    with check_no_field():
-        api_val.details  # ruff:ignore[useless-expression]
+    assert api_val.details.item_vs_ship_kind.status == consts.ApiValStatus.passed
     # Action
     api_fit.set_ship(type_id=eve_struct_id)
     # Verification
     api_val = api_fit.validate(options=ValOptions(item_vs_ship_kind=True))
     assert api_val.passed is True
-    with check_no_field():
-        api_val.details  # ruff:ignore[useless-expression]
+    assert api_val.details.item_vs_ship_kind.status == consts.ApiValStatus.passed
 
 
 def test_criterion_item_state(client, consts):
@@ -529,11 +543,12 @@ def test_criterion_item_state(client, consts):
     # Verification
     api_val = api_fit.validate(options=ValOptions(item_vs_ship_kind=True))
     assert api_val.passed is False
-    assert api_val.details.item_vs_ship_kind.ship_kind == consts.ApiValShipType.structure
-    assert api_val.details.item_vs_ship_kind.items == {
-        api_ship_module.id: consts.ApiValShipType.ship,
-        api_ship_rig.id: consts.ApiValShipType.ship,
-        api_ship_service.id: consts.ApiValShipType.ship}
+    assert api_val.details.item_vs_ship_kind.status == consts.ApiValStatus.failed
+    assert api_val.details.item_vs_ship_kind.fail.ship_kind == consts.ApiValShipType.structure
+    assert api_val.details.item_vs_ship_kind.fail.items == {
+        api_ship_module.id: (consts.ApiValItemStatus.failed, consts.ApiValShipType.ship),
+        api_ship_rig.id: (consts.ApiValItemStatus.failed, consts.ApiValShipType.ship),
+        api_ship_service.id: (consts.ApiValItemStatus.failed, consts.ApiValShipType.ship)}
 
 
 def test_criterion_item_kind(client, consts):
@@ -572,5 +587,4 @@ def test_criterion_item_kind(client, consts):
     assert len(api_fighter2.autocharges) == 1
     api_val = api_fit.validate(options=ValOptions(item_vs_ship_kind=True))
     assert api_val.passed is True
-    with check_no_field():
-        api_val.details  # ruff:ignore[useless-expression]
+    assert api_val.details.item_vs_ship_kind.status == consts.ApiValStatus.passed

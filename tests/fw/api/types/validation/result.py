@@ -4,6 +4,7 @@ from .val_capital_module import ValCapModuleFail
 from .val_charge_group import ValChargeGroupFail
 from .val_charge_size import ValChargeSizeFail
 from .val_charge_volume import ValChargeVolumeFail
+from .val_cloaking_blocked import ValCloakingBlockedFail
 from .val_drone_group import ValDroneGroupFail
 from .val_effect_stopper import ValEffectStopperFail
 from .val_fighter_squad_size import ValFighterSquadSizeFail
@@ -127,6 +128,7 @@ class FitValDetails(AttrDict):
             # Projection, destination side
             'activation_blocked': AttrHookDef(func=lambda d: ValResult(data=d, cls=ValActivationBlockedFail)),
             'effect_stopper': AttrHookDef(func=lambda d: ValResult(data=d, cls=ValEffectStopperFail)),
+            'cloaking_blocked': AttrHookDef(func=lambda d: ValResult(data=d, cls=ValCloakingBlockedFail)),
             # Projection, source side
             'projectee_filter': AttrHookDef(func=lambda d: ValResult(data=d, cls=ValProjFilterFail)),
             'assist_immunity': AttrHookDef(func=lambda d: ValResult(data=d, cls=ValProjImmunityFail)),

@@ -1,4 +1,4 @@
-from fw import Muta, approx, check_no_field
+from fw import Muta, approx
 from fw.api import ValOptions
 
 
@@ -24,33 +24,30 @@ def test_offense_src_module_tgt_ship_project_unproject(client, consts):
     # Verification
     api_val = api_src_fit.validate(options=ValOptions(offense_immunity=True))
     assert api_val.passed is True
-    with check_no_field():
-        api_val.details  # ruff:ignore[useless-expression]
+    assert api_val.details.offense_immunity.status == consts.ApiValStatus.passed
     api_val = api_tgt_fit.validate(options=ValOptions(offense_immunity=True))
     assert api_val.passed is True
-    with check_no_field():
-        api_val.details  # ruff:ignore[useless-expression]
+    assert api_val.details.offense_immunity.status == consts.ApiValStatus.passed
     # Action
     api_src_item.change_module(add_proj_item_ids=[api_tgt_item.id])
     # Verification
     api_val = api_src_fit.validate(options=ValOptions(offense_immunity=True))
     assert api_val.passed is False
-    assert api_val.details.offense_immunity == {api_src_item.id: [api_tgt_item.id]}
+    assert api_val.details.offense_immunity.status == consts.ApiValStatus.failed
+    assert api_val.details.offense_immunity.fail == {
+        api_src_item.id: (consts.ApiValItemStatus.failed, [api_tgt_item.id])}
     api_val = api_tgt_fit.validate(options=ValOptions(offense_immunity=True))
     assert api_val.passed is True
-    with check_no_field():
-        api_val.details  # ruff:ignore[useless-expression]
+    assert api_val.details.offense_immunity.status == consts.ApiValStatus.passed
     # Action
     api_src_item.change_module(rm_proj_item_ids=[api_tgt_item.id])
     # Verification
     api_val = api_src_fit.validate(options=ValOptions(offense_immunity=True))
     assert api_val.passed is True
-    with check_no_field():
-        api_val.details  # ruff:ignore[useless-expression]
+    assert api_val.details.offense_immunity.status == consts.ApiValStatus.passed
     api_val = api_tgt_fit.validate(options=ValOptions(offense_immunity=True))
     assert api_val.passed is True
-    with check_no_field():
-        api_val.details  # ruff:ignore[useless-expression]
+    assert api_val.details.offense_immunity.status == consts.ApiValStatus.passed
 
 
 def test_offense_src_drone_fighter(client, consts):
@@ -77,28 +74,32 @@ def test_offense_src_drone_fighter(client, consts):
     # Verification
     api_val = api_src_fit.validate(options=ValOptions(offense_immunity=True))
     assert api_val.passed is False
-    assert api_val.details.offense_immunity == {api_src_drone.id: [api_tgt_item.id]}
+    assert api_val.details.offense_immunity.status == consts.ApiValStatus.failed
+    assert api_val.details.offense_immunity.fail == {
+        api_src_drone.id: (consts.ApiValItemStatus.failed, [api_tgt_item.id])}
     # Action
     api_src_fighter.change_fighter(add_proj_item_ids=[api_tgt_item.id])
     # Verification
     api_val = api_src_fit.validate(options=ValOptions(offense_immunity=True))
     assert api_val.passed is False
-    assert api_val.details.offense_immunity == {
-        api_src_drone.id: [api_tgt_item.id],
-        api_src_fighter.id: [api_tgt_item.id]}
+    assert api_val.details.offense_immunity.status == consts.ApiValStatus.failed
+    assert api_val.details.offense_immunity.fail == {
+        api_src_drone.id: (consts.ApiValItemStatus.failed, [api_tgt_item.id]),
+        api_src_fighter.id: (consts.ApiValItemStatus.failed, [api_tgt_item.id])}
     # Action
     api_src_drone.remove()
     # Verification
     api_val = api_src_fit.validate(options=ValOptions(offense_immunity=True))
     assert api_val.passed is False
-    assert api_val.details.offense_immunity == {api_src_fighter.id: [api_tgt_item.id]}
+    assert api_val.details.offense_immunity.status == consts.ApiValStatus.failed
+    assert api_val.details.offense_immunity.fail == {
+        api_src_fighter.id: (consts.ApiValItemStatus.failed, [api_tgt_item.id])}
     # Action
     api_src_fighter.remove()
     # Verification
     api_val = api_src_fit.validate(options=ValOptions(offense_immunity=True))
     assert api_val.passed is True
-    with check_no_field():
-        api_val.details  # ruff:ignore[useless-expression]
+    assert api_val.details.offense_immunity.status == consts.ApiValStatus.passed
 
 
 def test_offense_src_proj_effect(client, consts):
@@ -125,8 +126,7 @@ def test_offense_src_proj_effect(client, consts):
     # Verification
     api_val = api_sol.validate(fit_ids=[api_src_fit.id], options=ValOptions(offense_immunity=True))
     assert api_val.passed is True
-    with check_no_field():
-        api_val.details  # ruff:ignore[useless-expression]
+    assert api_val.details.fits[api_src_fit.id].offense_immunity.status == consts.ApiValStatus.passed
 
 
 def test_offense_tgt_drone_fighter(client, consts):
@@ -153,7 +153,9 @@ def test_offense_tgt_drone_fighter(client, consts):
     # Verification
     api_val = api_src_fit.validate(options=ValOptions(offense_immunity=True))
     assert api_val.passed is False
-    assert api_val.details.offense_immunity == {api_src_item.id: sorted([api_tgt_drone.id, api_tgt_fighter.id])}
+    assert api_val.details.offense_immunity.status == consts.ApiValStatus.failed
+    assert api_val.details.offense_immunity.fail == {
+        api_src_item.id: (consts.ApiValItemStatus.failed, sorted([api_tgt_drone.id, api_tgt_fighter.id]))}
 
 
 def test_offense_multiple_src_effects(client, consts):
@@ -178,33 +180,37 @@ def test_offense_multiple_src_effects(client, consts):
     # Verification
     api_val = api_src_fit.validate(options=ValOptions(offense_immunity=True))
     assert api_val.passed is True
-    with check_no_field():
-        api_val.details  # ruff:ignore[useless-expression]
+    assert api_val.details.offense_immunity.status == consts.ApiValStatus.passed
     # Action
     api_src_item.change_module(add_proj_item_ids=[api_tgt_item.id])
     # Verification
     api_val = api_src_fit.validate(options=ValOptions(offense_immunity=True))
     assert api_val.passed is False
-    assert api_val.details.offense_immunity == {api_src_item.id: [api_tgt_item.id]}
+    assert api_val.details.offense_immunity.status == consts.ApiValStatus.failed
+    assert api_val.details.offense_immunity.fail == {
+        api_src_item.id: (consts.ApiValItemStatus.failed, [api_tgt_item.id])}
     # Action
     api_src_item.change_module(effect_modes={eve_src_effect2_id: consts.ApiEffMode.state_compliance})
     # Verification
     api_val = api_src_fit.validate(options=ValOptions(offense_immunity=True))
     assert api_val.passed is False
-    assert api_val.details.offense_immunity == {api_src_item.id: [api_tgt_item.id]}
+    assert api_val.details.offense_immunity.status == consts.ApiValStatus.failed
+    assert api_val.details.offense_immunity.fail == {
+        api_src_item.id: (consts.ApiValItemStatus.failed, [api_tgt_item.id])}
     # Action
     api_src_item.change_module(effect_modes={eve_src_effect1_id: consts.ApiEffMode.force_stop})
     # Verification
     api_val = api_src_fit.validate(options=ValOptions(offense_immunity=True))
     assert api_val.passed is False
-    assert api_val.details.offense_immunity == {api_src_item.id: [api_tgt_item.id]}
+    assert api_val.details.offense_immunity.status == consts.ApiValStatus.failed
+    assert api_val.details.offense_immunity.fail == {
+        api_src_item.id: (consts.ApiValItemStatus.failed, [api_tgt_item.id])}
     # Action
     api_src_item.change_module(effect_modes={eve_src_effect2_id: consts.ApiEffMode.force_stop})
     # Verification
     api_val = api_src_fit.validate(options=ValOptions(offense_immunity=True))
     assert api_val.passed is True
-    with check_no_field():
-        api_val.details  # ruff:ignore[useless-expression]
+    assert api_val.details.offense_immunity.status == consts.ApiValStatus.passed
 
 
 def test_offense_buff(client, consts):
@@ -235,8 +241,7 @@ def test_offense_buff(client, consts):
     assert api_tgt_ship.attrs[eve_immunity_attr_id].modified == approx(1)
     api_val = api_src_fit.validate(options=ValOptions(offense_immunity=True))
     assert api_val.passed is True
-    with check_no_field():
-        api_val.details  # ruff:ignore[useless-expression]
+    assert api_val.details.offense_immunity.status == consts.ApiValStatus.passed
 
 
 def test_offense_flag_values(client, consts):
@@ -270,7 +275,9 @@ def test_offense_flag_values(client, consts):
     # Verification - no attr or value 0 doesn't fail validation
     api_val = api_src_fit.validate(options=ValOptions(offense_immunity=True))
     assert api_val.passed is False
-    assert api_val.details.offense_immunity == {api_src_item.id: [api_tgt_item1.id, api_tgt_item3.id, api_tgt_item4.id]}
+    assert api_val.details.offense_immunity.status == consts.ApiValStatus.failed
+    assert api_val.details.offense_immunity.fail == {
+        api_src_item.id: (consts.ApiValItemStatus.failed, [api_tgt_item1.id, api_tgt_item3.id, api_tgt_item4.id])}
 
 
 def test_offense_tgt_modified(client, consts):
@@ -305,23 +312,23 @@ def test_offense_tgt_modified(client, consts):
     assert api_tgt_item.update().attrs[eve_immunity_attr_id].modified == approx(0)
     api_val = api_src_fit.validate(options=ValOptions(offense_immunity=True))
     assert api_val.passed is True
-    with check_no_field():
-        api_val.details  # ruff:ignore[useless-expression]
+    assert api_val.details.offense_immunity.status == consts.ApiValStatus.passed
     # Action
     api_mod_item = api_tgt_fit.add_module(type_id=eve_mod_item_id)
     # Verification
     assert api_tgt_item.update().attrs[eve_immunity_attr_id].modified == approx(1)
     api_val = api_src_fit.validate(options=ValOptions(offense_immunity=True))
     assert api_val.passed is False
-    assert api_val.details.offense_immunity == {api_src_item.id: [api_tgt_item.id]}
+    assert api_val.details.offense_immunity.status == consts.ApiValStatus.failed
+    assert api_val.details.offense_immunity.fail == {
+        api_src_item.id: (consts.ApiValItemStatus.failed, [api_tgt_item.id])}
     # Action
     api_mod_item.remove()
     # Verification
     assert api_tgt_item.update().attrs[eve_immunity_attr_id].modified == approx(0)
     api_val = api_src_fit.validate(options=ValOptions(offense_immunity=True))
     assert api_val.passed is True
-    with check_no_field():
-        api_val.details  # ruff:ignore[useless-expression]
+    assert api_val.details.offense_immunity.status == consts.ApiValStatus.passed
 
 
 def test_offense_tgt_mutation(client, consts):
@@ -351,36 +358,43 @@ def test_offense_tgt_mutation(client, consts):
     assert api_tgt_item.update().attrs[eve_immunity_attr_id].modified == approx(1)
     api_val = api_src_fit.validate(options=ValOptions(offense_immunity=True))
     assert api_val.passed is False
-    assert api_val.details.offense_immunity == {api_src_item.id: [api_tgt_item.id]}
+    assert api_val.details.offense_immunity.status == consts.ApiValStatus.failed
+    assert api_val.details.offense_immunity.fail == {
+        api_src_item.id: (consts.ApiValItemStatus.failed, [api_tgt_item.id])}
     # Action
     api_tgt_item.change_drone(mutation=eve_tgt_mutator_id)
     # Verification
     assert api_tgt_item.update().attrs[eve_immunity_attr_id].modified == approx(1)
     api_val = api_src_fit.validate(options=ValOptions(offense_immunity=True))
     assert api_val.passed is False
-    assert api_val.details.offense_immunity == {api_src_item.id: [api_tgt_item.id]}
+    assert api_val.details.offense_immunity.status == consts.ApiValStatus.failed
+    assert api_val.details.offense_immunity.fail == {
+        api_src_item.id: (consts.ApiValItemStatus.failed, [api_tgt_item.id])}
     # Action
     api_tgt_item.change_drone(mutation={eve_immunity_attr_id: Muta.roll_to_api(val=0)})
     # Verification
     assert api_tgt_item.update().attrs[eve_immunity_attr_id].modified == approx(0)
     api_val = api_src_fit.validate(options=ValOptions(offense_immunity=True))
     assert api_val.passed is True
-    with check_no_field():
-        api_val.details  # ruff:ignore[useless-expression]
+    assert api_val.details.offense_immunity.status == consts.ApiValStatus.passed
     # Action
     api_tgt_item.change_drone(mutation={eve_immunity_attr_id: Muta.roll_to_api(val=0.1)})
     # Verification
     assert api_tgt_item.update().attrs[eve_immunity_attr_id].modified == approx(0.2)
     api_val = api_src_fit.validate(options=ValOptions(offense_immunity=True))
     assert api_val.passed is False
-    assert api_val.details.offense_immunity == {api_src_item.id: [api_tgt_item.id]}
+    assert api_val.details.offense_immunity.status == consts.ApiValStatus.failed
+    assert api_val.details.offense_immunity.fail == {
+        api_src_item.id: (consts.ApiValItemStatus.failed, [api_tgt_item.id])}
     # Action
     api_tgt_item.change_drone(mutation=None)
     # Verification
     assert api_tgt_item.update().attrs[eve_immunity_attr_id].modified == approx(1)
     api_val = api_src_fit.validate(options=ValOptions(offense_immunity=True))
     assert api_val.passed is False
-    assert api_val.details.offense_immunity == {api_src_item.id: [api_tgt_item.id]}
+    assert api_val.details.offense_immunity.status == consts.ApiValStatus.failed
+    assert api_val.details.offense_immunity.fail == {
+        api_src_item.id: (consts.ApiValItemStatus.failed, [api_tgt_item.id])}
 
 
 def test_offense_src_mutation(client, consts):
@@ -414,21 +428,21 @@ def test_offense_src_mutation(client, consts):
     # Verification
     api_val = api_src_fit.validate(options=ValOptions(offense_immunity=True))
     assert api_val.passed is True
-    with check_no_field():
-        api_val.details  # ruff:ignore[useless-expression]
+    assert api_val.details.offense_immunity.status == consts.ApiValStatus.passed
     # Action
     api_src_item.change_module(mutation=eve_src_mutator_id)
     # Verification
     api_val = api_src_fit.validate(options=ValOptions(offense_immunity=True))
     assert api_val.passed is False
-    assert api_val.details.offense_immunity == {api_src_item.id: [api_tgt_item.id]}
+    assert api_val.details.offense_immunity.status == consts.ApiValStatus.failed
+    assert api_val.details.offense_immunity.fail == {
+        api_src_item.id: (consts.ApiValItemStatus.failed, [api_tgt_item.id])}
     # Action
     api_src_item.change_module(mutation=None)
     # Verification
     api_val = api_src_fit.validate(options=ValOptions(offense_immunity=True))
     assert api_val.passed is True
-    with check_no_field():
-        api_val.details  # ruff:ignore[useless-expression]
+    assert api_val.details.offense_immunity.status == consts.ApiValStatus.passed
 
 
 def test_offense_no_attr(client, consts):
@@ -453,8 +467,7 @@ def test_offense_no_attr(client, consts):
     # Verification - if attribute cannot be found, the validation passes regardless of defined value
     api_val = api_src_fit.validate(options=ValOptions(offense_immunity=True))
     assert api_val.passed is True
-    with check_no_field():
-        api_val.details  # ruff:ignore[useless-expression]
+    assert api_val.details.offense_immunity.status == consts.ApiValStatus.passed
 
 
 def test_offense_criterion_no_modifiers(client, consts):
@@ -472,8 +485,7 @@ def test_offense_criterion_no_modifiers(client, consts):
     # Verification
     api_val = api_src_fit.validate(options=ValOptions(offense_immunity=True))
     assert api_val.passed is True
-    with check_no_field():
-        api_val.details  # ruff:ignore[useless-expression]
+    assert api_val.details.offense_immunity.status == consts.ApiValStatus.passed
 
 
 def test_offense_criterion_not_offense(client, consts):
@@ -498,8 +510,7 @@ def test_offense_criterion_not_offense(client, consts):
     # Verification
     api_val = api_src_fit.validate(options=ValOptions(offense_immunity=True))
     assert api_val.passed is True
-    with check_no_field():
-        api_val.details  # ruff:ignore[useless-expression]
+    assert api_val.details.offense_immunity.status == consts.ApiValStatus.passed
 
 
 def test_offense_criterion_effect_cat(client, consts):
@@ -531,8 +542,7 @@ def test_offense_criterion_effect_cat(client, consts):
     # Verification
     api_val = api_src_fit.validate(options=ValOptions(offense_immunity=True))
     assert api_val.passed is True
-    with check_no_field():
-        api_val.details  # ruff:ignore[useless-expression]
+    assert api_val.details.offense_immunity.status == consts.ApiValStatus.passed
 
 
 def test_assist(client, consts):
@@ -571,8 +581,7 @@ def test_assist(client, consts):
     # Verification
     api_val = api_src_fit.validate(options=ValOptions(offense_immunity=True))
     assert api_val.passed is True
-    with check_no_field():
-        api_val.details  # ruff:ignore[useless-expression]
+    assert api_val.details.offense_immunity.status == consts.ApiValStatus.passed
     # Action
     api_src_item1.change_module(add_proj_item_ids=[api_tgt_item.id])
     api_src_item2.change_module(add_proj_item_ids=[api_tgt_item.id])
@@ -582,10 +591,11 @@ def test_assist(client, consts):
     # Verification
     api_val = api_src_fit.validate(options=ValOptions(offense_immunity=True))
     assert api_val.passed is False
-    assert api_val.details.offense_immunity == {
-        api_src_item1.id: [api_tgt_item.id],
-        api_src_item3.id: [api_tgt_item.id],
-        api_src_item4.id: [api_tgt_item.id]}
+    assert api_val.details.offense_immunity.status == consts.ApiValStatus.failed
+    assert api_val.details.offense_immunity.fail == {
+        api_src_item1.id: (consts.ApiValItemStatus.failed, [api_tgt_item.id]),
+        api_src_item3.id: (consts.ApiValItemStatus.failed, [api_tgt_item.id]),
+        api_src_item4.id: (consts.ApiValItemStatus.failed, [api_tgt_item.id])}
 
 
 def test_assist_switch_src_type_id(client, consts):
@@ -611,20 +621,23 @@ def test_assist_switch_src_type_id(client, consts):
     # Verification
     api_val = api_src_fit.validate(options=ValOptions(offense_immunity=True))
     assert api_val.passed is False
-    assert api_val.details.offense_immunity == {api_src_item.id: [api_tgt_item.id]}
+    assert api_val.details.offense_immunity.status == consts.ApiValStatus.failed
+    assert api_val.details.offense_immunity.fail == {
+        api_src_item.id: (consts.ApiValItemStatus.failed, [api_tgt_item.id])}
     # Action
     api_src_item.change_module(type_id=eve_src_item2_id)
     # Verification
     api_val = api_src_fit.validate(options=ValOptions(offense_immunity=True))
     assert api_val.passed is True
-    with check_no_field():
-        api_val.details  # ruff:ignore[useless-expression]
+    assert api_val.details.offense_immunity.status == consts.ApiValStatus.passed
     # Action
     api_src_item.change_module(type_id=eve_src_item1_id)
     # Verification
     api_val = api_src_fit.validate(options=ValOptions(offense_immunity=True))
     assert api_val.passed is False
-    assert api_val.details.offense_immunity == {api_src_item.id: [api_tgt_item.id]}
+    assert api_val.details.offense_immunity.status == consts.ApiValStatus.failed
+    assert api_val.details.offense_immunity.fail == {
+        api_src_item.id: (consts.ApiValItemStatus.failed, [api_tgt_item.id])}
 
 
 def test_assist_src_mutation_add(client, consts):
@@ -658,7 +671,9 @@ def test_assist_src_mutation_add(client, consts):
     assert api_src_item.update().attrs[eve_assist_attr_id].modified == approx(0)
     api_val = api_src_fit.validate(options=ValOptions(offense_immunity=True))
     assert api_val.passed is False
-    assert api_val.details.offense_immunity == {api_src_item.id: [api_tgt_item.id]}
+    assert api_val.details.offense_immunity.status == consts.ApiValStatus.failed
+    assert api_val.details.offense_immunity.fail == {
+        api_src_item.id: (consts.ApiValItemStatus.failed, [api_tgt_item.id])}
 
 
 def test_assist_src_mutation_change(client, consts):
@@ -690,28 +705,36 @@ def test_assist_src_mutation_change(client, consts):
     assert api_src_item.update().attrs[eve_assist_attr_id].modified == approx(1)
     api_val = api_src_fit.validate(options=ValOptions(offense_immunity=True))
     assert api_val.passed is False
-    assert api_val.details.offense_immunity == {api_src_item.id: [api_tgt_item.id]}
+    assert api_val.details.offense_immunity.status == consts.ApiValStatus.failed
+    assert api_val.details.offense_immunity.fail == {
+        api_src_item.id: (consts.ApiValItemStatus.failed, [api_tgt_item.id])}
     # Action
     api_src_item.change_module(mutation=(eve_src_mutator_id, {eve_assist_attr_id: Muta.roll_to_api(val=0)}))
     # Verification
     assert api_src_item.update().attrs[eve_assist_attr_id].modified == approx(0)
     api_val = api_src_fit.validate(options=ValOptions(offense_immunity=True))
     assert api_val.passed is False
-    assert api_val.details.offense_immunity == {api_src_item.id: [api_tgt_item.id]}
+    assert api_val.details.offense_immunity.status == consts.ApiValStatus.failed
+    assert api_val.details.offense_immunity.fail == {
+        api_src_item.id: (consts.ApiValItemStatus.failed, [api_tgt_item.id])}
     # Action
     api_src_item.change_module(mutation=(eve_src_mutator_id, {eve_assist_attr_id: Muta.roll_to_api(val=0.5)}))
     # Verification
     assert api_src_item.update().attrs[eve_assist_attr_id].modified == approx(1)
     api_val = api_src_fit.validate(options=ValOptions(offense_immunity=True))
     assert api_val.passed is False
-    assert api_val.details.offense_immunity == {api_src_item.id: [api_tgt_item.id]}
+    assert api_val.details.offense_immunity.status == consts.ApiValStatus.failed
+    assert api_val.details.offense_immunity.fail == {
+        api_src_item.id: (consts.ApiValItemStatus.failed, [api_tgt_item.id])}
     # Action
     api_src_item.change_module(mutation=None)
     # Verification
     assert api_src_item.update().attrs[eve_assist_attr_id].modified == approx(1)
     api_val = api_src_fit.validate(options=ValOptions(offense_immunity=True))
     assert api_val.passed is False
-    assert api_val.details.offense_immunity == {api_src_item.id: [api_tgt_item.id]}
+    assert api_val.details.offense_immunity.status == consts.ApiValStatus.failed
+    assert api_val.details.offense_immunity.fail == {
+        api_src_item.id: (consts.ApiValItemStatus.failed, [api_tgt_item.id])}
 
 
 def test_assist_no_attr(client, consts):
@@ -734,8 +757,7 @@ def test_assist_no_attr(client, consts):
     # be found, assume assistance can be applied to such target
     api_val = api_src_fit.validate(options=ValOptions(offense_immunity=True))
     assert api_val.passed is True
-    with check_no_field():
-        api_val.details  # ruff:ignore[useless-expression]
+    assert api_val.details.offense_immunity.status == consts.ApiValStatus.passed
 
 
 def test_known_failures(client, consts):
@@ -778,19 +800,29 @@ def test_known_failures(client, consts):
     # Verification
     api_val = api_src_fit.validate(options=ValOptions(offense_immunity=[api_src_offense.id]))
     assert api_val.passed is False
-    assert api_val.details.offense_immunity == {api_src_assist.id: [api_tgt_item.id]}
+    assert api_val.details.offense_immunity.status == consts.ApiValStatus.failed
+    assert api_val.details.offense_immunity.fail == {
+        api_src_assist.id: (consts.ApiValItemStatus.failed, [api_tgt_item.id]),
+        api_src_offense.id: (consts.ApiValItemStatus.kf, [api_tgt_item.id])}
     api_val = api_src_fit.validate(options=ValOptions(offense_immunity=[api_src_assist.id]))
     assert api_val.passed is False
-    assert api_val.details.offense_immunity == {api_src_offense.id: [api_tgt_item.id]}
+    assert api_val.details.offense_immunity.status == consts.ApiValStatus.failed
+    assert api_val.details.offense_immunity.fail == {
+        api_src_assist.id: (consts.ApiValItemStatus.kf, [api_tgt_item.id]),
+        api_src_offense.id: (consts.ApiValItemStatus.failed, [api_tgt_item.id])}
     api_val = api_src_fit.validate(options=ValOptions(offense_immunity=[api_src_offense.id, api_src_assist.id]))
     assert api_val.passed is True
-    with check_no_field():
-        api_val.details  # ruff:ignore[useless-expression]
+    assert api_val.details.offense_immunity.status == consts.ApiValStatus.passed_kfs
+    assert api_val.details.offense_immunity.fail == {
+        api_src_assist.id: (consts.ApiValItemStatus.kf, [api_tgt_item.id]),
+        api_src_offense.id: (consts.ApiValItemStatus.kf, [api_tgt_item.id])}
     api_val = api_src_fit.validate(options=ValOptions(
         offense_immunity=[api_src_offense.id, api_src_other.id, api_src_assist.id]))
     assert api_val.passed is True
-    with check_no_field():
-        api_val.details  # ruff:ignore[useless-expression]
+    assert api_val.details.offense_immunity.status == consts.ApiValStatus.passed_kfs
+    assert api_val.details.offense_immunity.fail == {
+        api_src_assist.id: (consts.ApiValItemStatus.kf, [api_tgt_item.id]),
+        api_src_offense.id: (consts.ApiValItemStatus.kf, [api_tgt_item.id])}
 
 
 def test_assist_immunity(client, consts):
@@ -834,8 +866,7 @@ def test_assist_immunity(client, consts):
     # Verification
     api_val = api_src_fit.validate(options=ValOptions(offense_immunity=True))
     assert api_val.passed is True
-    with check_no_field():
-        api_val.details  # ruff:ignore[useless-expression]
+    assert api_val.details.offense_immunity.status == consts.ApiValStatus.passed
 
 
 def test_not_loaded_src(client, consts):
@@ -852,8 +883,7 @@ def test_not_loaded_src(client, consts):
     # Verification
     api_val = api_src_fit.validate(options=ValOptions(offense_immunity=True))
     assert api_val.passed is True
-    with check_no_field():
-        api_val.details  # ruff:ignore[useless-expression]
+    assert api_val.details.offense_immunity.status == consts.ApiValStatus.passed
 
 
 def test_not_loaded_tgt(client, consts):
@@ -894,5 +924,4 @@ def test_not_loaded_tgt(client, consts):
     # Verification
     api_val = api_src_fit.validate(options=ValOptions(offense_immunity=True))
     assert api_val.passed is True
-    with check_no_field():
-        api_val.details  # ruff:ignore[useless-expression]
+    assert api_val.details.offense_immunity.status == consts.ApiValStatus.passed

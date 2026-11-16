@@ -2,6 +2,8 @@ import dataclasses
 import typing
 from collections import UserDict
 
+from fw.consts import ApiValItemStatus
+
 
 class ValFighterSquadSizeFail(UserDict):
 
@@ -12,11 +14,13 @@ class ValFighterSquadSizeFail(UserDict):
 @dataclasses.dataclass
 class ValFighterSquadSizeInfo:
 
+    status: ApiValItemStatus
     size: int
     max_size: int
 
     def __init__(self, *, data: list | tuple) -> None:
-        self.size, self.max_size = data
+        status, self.size, self.max_size = data
+        self.status = ApiValItemStatus(status)
 
     def __getitem__(self, item: int) -> typing.Any:
         field = dataclasses.fields(self)[item]
@@ -25,4 +29,4 @@ class ValFighterSquadSizeInfo:
     def __eq__(self, other: list | tuple) -> bool:
         if isinstance(other, tuple):
             other = list(other)
-        return [self.size, self.max_size] == other
+        return [self.status, self.size, self.max_size] == other

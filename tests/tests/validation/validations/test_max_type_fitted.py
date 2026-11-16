@@ -1,4 +1,4 @@
-from fw import Muta, approx, check_no_field
+from fw import Muta, approx
 from fw.api import ValOptions
 
 
@@ -14,7 +14,11 @@ def test_same_value_module(client, consts):
     # Verification
     api_val = api_fit.validate(options=ValOptions(max_type_fitted=True))
     assert api_val.passed is False
-    assert api_val.details.max_type_fitted == {eve_module_id: [2, {api_module1.id: 1, api_module2.id: 1}]}
+    assert api_val.details.max_type_fitted.status == consts.ApiValStatus.failed
+    assert api_val.details.max_type_fitted.fail == {
+        eve_module_id: [2, {
+            api_module1.id: (consts.ApiValItemStatus.failed, 1),
+            api_module2.id: (consts.ApiValItemStatus.failed, 1)}]}
 
 
 def test_same_value_service(client, consts):
@@ -28,7 +32,11 @@ def test_same_value_service(client, consts):
     # Verification
     api_val = api_fit.validate(options=ValOptions(max_type_fitted=True))
     assert api_val.passed is False
-    assert api_val.details.max_type_fitted == {eve_service_id: [2, {api_service1.id: 1, api_service2.id: 1}]}
+    assert api_val.details.max_type_fitted.status == consts.ApiValStatus.failed
+    assert api_val.details.max_type_fitted.fail == {
+        eve_service_id: [2, {
+            api_service1.id: (consts.ApiValItemStatus.failed, 1),
+            api_service2.id: (consts.ApiValItemStatus.failed, 1)}]}
 
 
 def test_known_failures(client, consts):
@@ -44,18 +52,32 @@ def test_known_failures(client, consts):
     # Verification
     api_val = api_fit.validate(options=ValOptions(max_type_fitted=[api_service1.id]))
     assert api_val.passed is False
-    assert api_val.details.max_type_fitted == {eve_service_id: [2, {api_service2.id: 1}]}
+    assert api_val.details.max_type_fitted.status == consts.ApiValStatus.failed
+    assert api_val.details.max_type_fitted.fail == {
+        eve_service_id: [2, {
+            api_service1.id: (consts.ApiValItemStatus.kf, 1),
+            api_service2.id: (consts.ApiValItemStatus.failed, 1)}]}
     api_val = api_fit.validate(options=ValOptions(max_type_fitted=[api_service2.id]))
     assert api_val.passed is False
-    assert api_val.details.max_type_fitted == {eve_service_id: [2, {api_service1.id: 1}]}
+    assert api_val.details.max_type_fitted.status == consts.ApiValStatus.failed
+    assert api_val.details.max_type_fitted.fail == {
+        eve_service_id: [2, {
+            api_service1.id: (consts.ApiValItemStatus.failed, 1),
+            api_service2.id: (consts.ApiValItemStatus.kf, 1)}]}
     api_val = api_fit.validate(options=ValOptions(max_type_fitted=[api_service1.id, api_service2.id]))
     assert api_val.passed is True
-    with check_no_field():
-        api_val.details  # ruff:ignore[useless-expression]
+    assert api_val.details.max_type_fitted.status == consts.ApiValStatus.passed_kfs
+    assert api_val.details.max_type_fitted.fail == {
+        eve_service_id: [2, {
+            api_service1.id: (consts.ApiValItemStatus.kf, 1),
+            api_service2.id: (consts.ApiValItemStatus.kf, 1)}]}
     api_val = api_fit.validate(options=ValOptions(max_type_fitted=[api_service1.id, api_other.id, api_service2.id]))
     assert api_val.passed is True
-    with check_no_field():
-        api_val.details  # ruff:ignore[useless-expression]
+    assert api_val.details.max_type_fitted.status == consts.ApiValStatus.passed_kfs
+    assert api_val.details.max_type_fitted.fail == {
+        eve_service_id: [2, {
+            api_service1.id: (consts.ApiValItemStatus.kf, 1),
+            api_service2.id: (consts.ApiValItemStatus.kf, 1)}]}
 
 
 def test_switch_type_id(client, consts):
@@ -70,20 +92,27 @@ def test_switch_type_id(client, consts):
     # Verification
     api_val = api_fit.validate(options=ValOptions(max_type_fitted=True))
     assert api_val.passed is False
-    assert api_val.details.max_type_fitted == {eve_module1_id: [2, {api_module1.id: 1, api_module2.id: 1}]}
+    assert api_val.details.max_type_fitted.status == consts.ApiValStatus.failed
+    assert api_val.details.max_type_fitted.fail == {
+        eve_module1_id: [2, {
+            api_module1.id: (consts.ApiValItemStatus.failed, 1),
+            api_module2.id: (consts.ApiValItemStatus.failed, 1)}]}
     # Action
     api_module2.change_module(type_id=eve_module2_id)
     # Verification
     api_val = api_fit.validate(options=ValOptions(max_type_fitted=True))
     assert api_val.passed is True
-    with check_no_field():
-        api_val.details  # ruff:ignore[useless-expression]
+    assert api_val.details.max_type_fitted.status == consts.ApiValStatus.passed
     # Action
     api_module2.change_module(type_id=eve_module1_id)
     # Verification
     api_val = api_fit.validate(options=ValOptions(max_type_fitted=True))
     assert api_val.passed is False
-    assert api_val.details.max_type_fitted == {eve_module1_id: [2, {api_module1.id: 1, api_module2.id: 1}]}
+    assert api_val.details.max_type_fitted.status == consts.ApiValStatus.failed
+    assert api_val.details.max_type_fitted.fail == {
+        eve_module1_id: [2, {
+            api_module1.id: (consts.ApiValItemStatus.failed, 1),
+            api_module2.id: (consts.ApiValItemStatus.failed, 1)}]}
 
 
 def test_rounding(client, consts):
@@ -100,9 +129,14 @@ def test_rounding(client, consts):
     # Verification
     api_val = api_fit.validate(options=ValOptions(max_type_fitted=True))
     assert api_val.passed is False
-    assert api_val.details.max_type_fitted == {
-        eve_service1_id: [2, {api_service1.id: 1, api_service2.id: 1}],
-        eve_service2_id: [2, {api_service3.id: 1, api_service4.id: 1}]}
+    assert api_val.details.max_type_fitted.status == consts.ApiValStatus.failed
+    assert api_val.details.max_type_fitted.fail == {
+        eve_service2_id: [2, {
+            api_service3.id: (consts.ApiValItemStatus.failed, 1),
+            api_service4.id: (consts.ApiValItemStatus.failed, 1)}],
+        eve_service1_id: [2, {
+            api_service1.id: (consts.ApiValItemStatus.failed, 1),
+            api_service2.id: (consts.ApiValItemStatus.failed, 1)}]}
 
 
 def test_non_positive(client, consts):
@@ -117,22 +151,24 @@ def test_non_positive(client, consts):
     # Verification
     api_val = api_fit.validate(options=ValOptions(max_type_fitted=True))
     assert api_val.passed is False
-    assert api_val.details.max_type_fitted == {
-        eve_service1_id: [1, {api_service1.id: 0}],
-        eve_service2_id: [1, {api_service2.id: 0}]}
+    assert api_val.details.max_type_fitted.status == consts.ApiValStatus.failed
+    assert api_val.details.max_type_fitted.fail == {
+        eve_service2_id: [1, {api_service2.id: (consts.ApiValItemStatus.failed, 0)}],
+        eve_service1_id: [1, {api_service1.id: (consts.ApiValItemStatus.failed, 0)}]}
     # Action
     api_service1.remove()
     # Verification
     api_val = api_fit.validate(options=ValOptions(max_type_fitted=True))
     assert api_val.passed is False
-    assert api_val.details.max_type_fitted == {eve_service2_id: [1, {api_service2.id: 0}]}
+    assert api_val.details.max_type_fitted.status == consts.ApiValStatus.failed
+    assert api_val.details.max_type_fitted.fail == {
+        eve_service2_id: [1, {api_service2.id: (consts.ApiValItemStatus.failed, 0)}]}
     # Action
     api_service2.remove()
     # Verification
     api_val = api_fit.validate(options=ValOptions(max_type_fitted=True))
     assert api_val.passed is True
-    with check_no_field():
-        api_val.details  # ruff:ignore[useless-expression]
+    assert api_val.details.max_type_fitted.status == consts.ApiValStatus.passed
 
 
 def test_modified(client, consts):
@@ -156,7 +192,11 @@ def test_modified(client, consts):
     assert api_service2.update().attrs[eve_limit_attr_id].modified == approx(2)
     api_val = api_fit.validate(options=ValOptions(max_type_fitted=True))
     assert api_val.passed is False
-    assert api_val.details.max_type_fitted == {eve_service_id: [2, {api_service1.id: 1, api_service2.id: 1}]}
+    assert api_val.details.max_type_fitted.status == consts.ApiValStatus.failed
+    assert api_val.details.max_type_fitted.fail == {
+        eve_service_id: [2, {
+            api_service1.id: (consts.ApiValItemStatus.failed, 1),
+            api_service2.id: (consts.ApiValItemStatus.failed, 1)}]}
 
 
 def test_mutation_limit_priority(client, consts):
@@ -183,7 +223,11 @@ def test_mutation_limit_priority(client, consts):
     assert api_module2.update().attrs[eve_limit_attr_id].modified == approx(10)
     api_val = api_fit.validate(options=ValOptions(max_type_fitted=True))
     assert api_val.passed is False
-    assert api_val.details.max_type_fitted == {eve_mutated_module_id: [2, {api_module1.id: 1, api_module2.id: 1}]}
+    assert api_val.details.max_type_fitted.status == consts.ApiValStatus.failed
+    assert api_val.details.max_type_fitted.fail == {
+        eve_mutated_module_id: [2, {
+            api_module1.id: (consts.ApiValItemStatus.failed, 1),
+            api_module2.id: (consts.ApiValItemStatus.failed, 1)}]}
     # Action
     api_module2.change_module(mutation=None)
     # Verification
@@ -191,8 +235,7 @@ def test_mutation_limit_priority(client, consts):
     assert api_module2.update().attrs[eve_limit_attr_id].modified == approx(2)
     api_val = api_fit.validate(options=ValOptions(max_type_fitted=True))
     assert api_val.passed is True
-    with check_no_field():
-        api_val.details  # ruff:ignore[useless-expression]
+    assert api_val.details.max_type_fitted.status == consts.ApiValStatus.passed
     # Action
     api_module1.change_module(mutation=None)
     # Verification
@@ -200,8 +243,7 @@ def test_mutation_limit_priority(client, consts):
     assert api_module2.update().attrs[eve_limit_attr_id].modified == approx(2)
     api_val = api_fit.validate(options=ValOptions(max_type_fitted=True))
     assert api_val.passed is True
-    with check_no_field():
-        api_val.details  # ruff:ignore[useless-expression]
+    assert api_val.details.max_type_fitted.status == consts.ApiValStatus.passed
 
 
 def test_mutation_limit_inheritance(client, consts):
@@ -228,8 +270,7 @@ def test_mutation_limit_inheritance(client, consts):
     assert api_module2.update().attrs[eve_limit_attr_id].modified == approx(5)
     api_val = api_fit.validate(options=ValOptions(max_type_fitted=True))
     assert api_val.passed is True
-    with check_no_field():
-        api_val.details  # ruff:ignore[useless-expression]
+    assert api_val.details.max_type_fitted.status == consts.ApiValStatus.passed
     # Action
     api_module2.change_module(mutation=None)
     # Verification
@@ -237,8 +278,7 @@ def test_mutation_limit_inheritance(client, consts):
     assert api_module2.update().attrs[eve_limit_attr_id].modified == approx(1)
     api_val = api_fit.validate(options=ValOptions(max_type_fitted=True))
     assert api_val.passed is True
-    with check_no_field():
-        api_val.details  # ruff:ignore[useless-expression]
+    assert api_val.details.max_type_fitted.status == consts.ApiValStatus.passed
     # Action
     api_module1.change_module(mutation=None)
     # Verification
@@ -246,7 +286,11 @@ def test_mutation_limit_inheritance(client, consts):
     assert api_module2.update().attrs[eve_limit_attr_id].modified == approx(1)
     api_val = api_fit.validate(options=ValOptions(max_type_fitted=True))
     assert api_val.passed is False
-    assert api_val.details.max_type_fitted == {eve_base_module_id: [2, {api_module1.id: 1, api_module2.id: 1}]}
+    assert api_val.details.max_type_fitted.status == consts.ApiValStatus.failed
+    assert api_val.details.max_type_fitted.fail == {
+        eve_base_module_id: [2, {
+            api_module1.id: (consts.ApiValItemStatus.failed, 1),
+            api_module2.id: (consts.ApiValItemStatus.failed, 1)}]}
 
 
 def test_no_attr(client, consts):
@@ -260,8 +304,7 @@ def test_no_attr(client, consts):
     # Verification - when attribute is not available, validation passes
     api_val = api_fit.validate(options=ValOptions(max_type_fitted=True))
     assert api_val.passed is True
-    with check_no_field():
-        api_val.details  # ruff:ignore[useless-expression]
+    assert api_val.details.max_type_fitted.status == consts.ApiValStatus.passed
 
 
 def test_not_loaded(client, consts):
@@ -275,8 +318,7 @@ def test_not_loaded(client, consts):
     # Verification
     api_val = api_fit.validate(options=ValOptions(max_type_fitted=True))
     assert api_val.passed is True
-    with check_no_field():
-        api_val.details  # ruff:ignore[useless-expression]
+    assert api_val.details.max_type_fitted.status == consts.ApiValStatus.passed
 
 
 def test_criterion_item_state(client, consts):
@@ -291,7 +333,11 @@ def test_criterion_item_state(client, consts):
     # Verification
     api_val = api_fit.validate(options=ValOptions(max_type_fitted=True))
     assert api_val.passed is False
-    assert api_val.details.max_type_fitted == {eve_item_id: [2, {api_module.id: 1, api_service.id: 1}]}
+    assert api_val.details.max_type_fitted.status == consts.ApiValStatus.failed
+    assert api_val.details.max_type_fitted.fail == {
+        eve_item_id: [2, {
+            api_module.id: (consts.ApiValItemStatus.failed, 1),
+            api_service.id: (consts.ApiValItemStatus.failed, 1)}]}
 
 
 def test_criterion_item_kind(client, consts):
@@ -323,5 +369,4 @@ def test_criterion_item_kind(client, consts):
     assert len(api_fighter.autocharges) == 1
     api_val = api_fit.validate(options=ValOptions(max_type_fitted=True))
     assert api_val.passed is True
-    with check_no_field():
-        api_val.details  # ruff:ignore[useless-expression]
+    assert api_val.details.max_type_fitted.status == consts.ApiValStatus.passed

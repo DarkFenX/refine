@@ -1,4 +1,4 @@
-from fw import approx, check_no_field
+from fw import approx
 from fw.api import ValOptions
 
 
@@ -12,21 +12,21 @@ def test_multiple(client, consts):
     # Verification
     api_val = api_fit.validate(options=ValOptions(subsystem_slot_index=True))
     assert api_val.passed is True
-    with check_no_field():
-        api_val.details  # ruff:ignore[useless-expression]
+    assert api_val.details.subsystem_slot_index.status == consts.ApiValStatus.passed
     # Action
     api_subsystem2 = api_fit.add_subsystem(type_id=eve_subsystem_id)
     # Verification
     api_val = api_fit.validate(options=ValOptions(subsystem_slot_index=True))
     assert api_val.passed is False
-    assert api_val.details.subsystem_slot_index == {1: sorted([api_subsystem1.id, api_subsystem2.id])}
+    assert api_val.details.subsystem_slot_index.status == consts.ApiValStatus.failed
+    assert api_val.details.subsystem_slot_index.fail == {
+        1: {api_subsystem1.id: consts.ApiValItemStatus.failed, api_subsystem2.id: consts.ApiValItemStatus.failed}}
     # Action
     api_subsystem1.remove()
     # Verification
     api_val = api_fit.validate(options=ValOptions(subsystem_slot_index=True))
     assert api_val.passed is True
-    with check_no_field():
-        api_val.details  # ruff:ignore[useless-expression]
+    assert api_val.details.subsystem_slot_index.status == consts.ApiValStatus.passed
 
 
 def test_different_slots(client, consts):
@@ -41,14 +41,15 @@ def test_different_slots(client, consts):
     # Verification
     api_val = api_fit.validate(options=ValOptions(subsystem_slot_index=True))
     assert api_val.passed is True
-    with check_no_field():
-        api_val.details  # ruff:ignore[useless-expression]
+    assert api_val.details.subsystem_slot_index.status == consts.ApiValStatus.passed
     # Action
     api_subsystem3 = api_fit.add_subsystem(type_id=eve_subsystem1_id)
     # Verification
     api_val = api_fit.validate(options=ValOptions(subsystem_slot_index=True))
     assert api_val.passed is False
-    assert api_val.details.subsystem_slot_index == {1: sorted([api_subsystem1.id, api_subsystem3.id])}
+    assert api_val.details.subsystem_slot_index.status == consts.ApiValStatus.failed
+    assert api_val.details.subsystem_slot_index.fail == {
+        1: {api_subsystem1.id: consts.ApiValItemStatus.failed, api_subsystem3.id: consts.ApiValItemStatus.failed}}
 
 
 def test_known_failures(client, consts):
@@ -66,25 +67,34 @@ def test_known_failures(client, consts):
     # Verification
     api_val = api_fit.validate(options=ValOptions(subsystem_slot_index=[api_subsystem1.id]))
     assert api_val.passed is False
-    assert api_val.details.subsystem_slot_index == {1: [api_subsystem3.id]}
+    assert api_val.details.subsystem_slot_index.status == consts.ApiValStatus.failed
+    assert api_val.details.subsystem_slot_index.fail == {
+        1: {api_subsystem1.id: consts.ApiValItemStatus.kf, api_subsystem3.id: consts.ApiValItemStatus.failed}}
     api_val = api_fit.validate(options=ValOptions(subsystem_slot_index=[api_subsystem3.id]))
     assert api_val.passed is False
-    assert api_val.details.subsystem_slot_index == {1: [api_subsystem1.id]}
+    assert api_val.details.subsystem_slot_index.status == consts.ApiValStatus.failed
+    assert api_val.details.subsystem_slot_index.fail == {
+        1: {api_subsystem1.id: consts.ApiValItemStatus.failed, api_subsystem3.id: consts.ApiValItemStatus.kf}}
     api_val = api_fit.validate(options=ValOptions(subsystem_slot_index=[api_subsystem1.id, api_subsystem3.id]))
     assert api_val.passed is True
-    with check_no_field():
-        api_val.details  # ruff:ignore[useless-expression]
+    assert api_val.details.subsystem_slot_index.status == consts.ApiValStatus.passed_kfs
+    assert api_val.details.subsystem_slot_index.fail == {
+        1: {api_subsystem1.id: consts.ApiValItemStatus.kf, api_subsystem3.id: consts.ApiValItemStatus.kf}}
     api_val = api_fit.validate(options=ValOptions(
         subsystem_slot_index=[api_subsystem1.id, api_other.id, api_subsystem3.id]))
     assert api_val.passed is True
-    with check_no_field():
-        api_val.details  # ruff:ignore[useless-expression]
+    assert api_val.details.subsystem_slot_index.status == consts.ApiValStatus.passed_kfs
+    assert api_val.details.subsystem_slot_index.fail == {
+        1: {api_subsystem1.id: consts.ApiValItemStatus.kf, api_subsystem3.id: consts.ApiValItemStatus.kf}}
     # Action
     api_subsystem4 = api_fit.add_subsystem(type_id=eve_subsystem2_id)
     # Verification
     api_val = api_fit.validate(options=ValOptions(subsystem_slot_index=[api_subsystem1.id, api_subsystem3.id]))
     assert api_val.passed is False
-    assert api_val.details.subsystem_slot_index == {2: sorted([api_subsystem2.id, api_subsystem4.id])}
+    assert api_val.details.subsystem_slot_index.status == consts.ApiValStatus.failed
+    assert api_val.details.subsystem_slot_index.fail == {
+        1: {api_subsystem1.id: consts.ApiValItemStatus.kf, api_subsystem3.id: consts.ApiValItemStatus.kf},
+        2: {api_subsystem2.id: consts.ApiValItemStatus.failed, api_subsystem4.id: consts.ApiValItemStatus.failed}}
 
 
 def test_rounding(client, consts):
@@ -101,7 +111,9 @@ def test_rounding(client, consts):
     # Verification
     api_val = api_fit.validate(options=ValOptions(subsystem_slot_index=True))
     assert api_val.passed is False
-    assert api_val.details.subsystem_slot_index == {1: sorted([api_subsystem1.id, api_subsystem2.id])}
+    assert api_val.details.subsystem_slot_index.status == consts.ApiValStatus.failed
+    assert api_val.details.subsystem_slot_index.fail == {
+        1: {api_subsystem1.id: consts.ApiValItemStatus.failed, api_subsystem2.id: consts.ApiValItemStatus.failed}}
 
 
 def test_modified_index(client, consts):
@@ -128,7 +140,9 @@ def test_modified_index(client, consts):
     assert api_subsystem2.update().attrs[eve_slot_attr_id].modified == approx(2)
     api_val = api_fit.validate(options=ValOptions(subsystem_slot_index=True))
     assert api_val.passed is False
-    assert api_val.details.subsystem_slot_index == {2: sorted([api_subsystem1.id, api_subsystem2.id])}
+    assert api_val.details.subsystem_slot_index.status == consts.ApiValStatus.failed
+    assert api_val.details.subsystem_slot_index.fail == {
+        2: {api_subsystem1.id: consts.ApiValItemStatus.failed, api_subsystem2.id: consts.ApiValItemStatus.failed}}
     # Action
     api_fit.add_rig(type_id=eve_rig_id)
     # Verification - attribute is modified, but not for purposes of validation
@@ -136,7 +150,9 @@ def test_modified_index(client, consts):
     assert api_subsystem2.update().attrs[eve_slot_attr_id].modified == approx(3)
     api_val = api_fit.validate(options=ValOptions(subsystem_slot_index=True))
     assert api_val.passed is False
-    assert api_val.details.subsystem_slot_index == {2: sorted([api_subsystem1.id, api_subsystem2.id])}
+    assert api_val.details.subsystem_slot_index.status == consts.ApiValStatus.failed
+    assert api_val.details.subsystem_slot_index.fail == {
+        2: {api_subsystem1.id: consts.ApiValItemStatus.failed, api_subsystem2.id: consts.ApiValItemStatus.failed}}
 
 
 def test_no_value(client, consts):
@@ -150,8 +166,7 @@ def test_no_value(client, consts):
     # Verification
     api_val = api_fit.validate(options=ValOptions(subsystem_slot_index=True))
     assert api_val.passed is True
-    with check_no_field():
-        api_val.details  # ruff:ignore[useless-expression]
+    assert api_val.details.subsystem_slot_index.status == consts.ApiValStatus.passed
 
 
 def test_no_attr(client, consts):
@@ -165,8 +180,7 @@ def test_no_attr(client, consts):
     # Verification - validation passes if attr does not exist
     api_val = api_fit.validate(options=ValOptions(subsystem_slot_index=True))
     assert api_val.passed is True
-    with check_no_field():
-        api_val.details  # ruff:ignore[useless-expression]
+    assert api_val.details.subsystem_slot_index.status == consts.ApiValStatus.passed
 
 
 def test_not_loaded(client, consts):
@@ -180,8 +194,7 @@ def test_not_loaded(client, consts):
     # Verification
     api_val = api_fit.validate(options=ValOptions(subsystem_slot_index=True))
     assert api_val.passed is True
-    with check_no_field():
-        api_val.details  # ruff:ignore[useless-expression]
+    assert api_val.details.subsystem_slot_index.status == consts.ApiValStatus.passed
 
 
 def test_criterion_subsystem_state(client, consts):
@@ -196,7 +209,9 @@ def test_criterion_subsystem_state(client, consts):
     # Verification
     api_val = api_fit.validate(options=ValOptions(subsystem_slot_index=True))
     assert api_val.passed is False
-    assert api_val.details.subsystem_slot_index == {1: sorted([api_subsystem1.id, api_subsystem2.id])}
+    assert api_val.details.subsystem_slot_index.status == consts.ApiValStatus.failed
+    assert api_val.details.subsystem_slot_index.fail == {
+        1: {api_subsystem1.id: consts.ApiValItemStatus.failed, api_subsystem2.id: consts.ApiValItemStatus.failed}}
 
 
 def test_criterion_item_kind(client, consts):
@@ -239,5 +254,4 @@ def test_criterion_item_kind(client, consts):
     assert len(api_fighter2.autocharges) == 1
     api_val = api_fit.validate(options=ValOptions(subsystem_slot_index=True))
     assert api_val.passed is True
-    with check_no_field():
-        api_val.details  # ruff:ignore[useless-expression]
+    assert api_val.details.subsystem_slot_index.status == consts.ApiValStatus.passed

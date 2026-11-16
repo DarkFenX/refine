@@ -1,8 +1,7 @@
-from fw import check_no_field
 from fw.api import ValOptions
 
 
-def test_skill_add_remove_lower(client):
+def test_skill_add_remove_lower(client, consts):
     eve_skill1_id = client.mk_eve_item()
     eve_skill2_id = client.mk_eve_item()
     eve_module1_id = client.mk_eve_item(srqs={eve_skill1_id: 3})
@@ -15,28 +14,31 @@ def test_skill_add_remove_lower(client):
     # Verification
     api_val = api_fit.validate(options=ValOptions(skill_reqs=True))
     assert api_val.passed is False
-    assert api_val.details.skill_reqs == {
-        api_module1.id: {eve_skill1_id: (None, 3)},
-        api_module2.id: {eve_skill1_id: (None, 3), eve_skill2_id: (None, 5)}}
+    assert api_val.details.skill_reqs.status == consts.ApiValStatus.failed
+    assert api_val.details.skill_reqs.fail == {
+        api_module1.id: (consts.ApiValItemStatus.failed, {eve_skill1_id: (None, 3)}),
+        api_module2.id: (consts.ApiValItemStatus.failed, {eve_skill1_id: (None, 3), eve_skill2_id: (None, 5)})}
     # Action
     api_skill = api_fit.add_skill(type_id=eve_skill1_id, level=2)
     # Verification
     api_val = api_fit.validate(options=ValOptions(skill_reqs=True))
     assert api_val.passed is False
-    assert api_val.details.skill_reqs == {
-        api_module1.id: {eve_skill1_id: (2, 3)},
-        api_module2.id: {eve_skill1_id: (2, 3), eve_skill2_id: (None, 5)}}
+    assert api_val.details.skill_reqs.status == consts.ApiValStatus.failed
+    assert api_val.details.skill_reqs.fail == {
+        api_module1.id: (consts.ApiValItemStatus.failed, {eve_skill1_id: (2, 3)}),
+        api_module2.id: (consts.ApiValItemStatus.failed, {eve_skill1_id: (2, 3), eve_skill2_id: (None, 5)})}
     # Action
     api_skill.remove()
     # Verification
     api_val = api_fit.validate(options=ValOptions(skill_reqs=True))
     assert api_val.passed is False
-    assert api_val.details.skill_reqs == {
-        api_module1.id: {eve_skill1_id: (None, 3)},
-        api_module2.id: {eve_skill1_id: (None, 3), eve_skill2_id: (None, 5)}}
+    assert api_val.details.skill_reqs.status == consts.ApiValStatus.failed
+    assert api_val.details.skill_reqs.fail == {
+        api_module1.id: (consts.ApiValItemStatus.failed, {eve_skill1_id: (None, 3)}),
+        api_module2.id: (consts.ApiValItemStatus.failed, {eve_skill1_id: (None, 3), eve_skill2_id: (None, 5)})}
 
 
-def test_skill_add_remove_equal(client):
+def test_skill_add_remove_equal(client, consts):
     eve_skill1_id = client.mk_eve_item()
     eve_skill2_id = client.mk_eve_item()
     eve_module1_id = client.mk_eve_item(srqs={eve_skill1_id: 3})
@@ -49,26 +51,30 @@ def test_skill_add_remove_equal(client):
     # Verification
     api_val = api_fit.validate(options=ValOptions(skill_reqs=True))
     assert api_val.passed is False
-    assert api_val.details.skill_reqs == {
-        api_module1.id: {eve_skill1_id: (None, 3)},
-        api_module2.id: {eve_skill1_id: (None, 3), eve_skill2_id: (None, 5)}}
+    assert api_val.details.skill_reqs.status == consts.ApiValStatus.failed
+    assert api_val.details.skill_reqs.fail == {
+        api_module1.id: (consts.ApiValItemStatus.failed, {eve_skill1_id: (None, 3)}),
+        api_module2.id: (consts.ApiValItemStatus.failed, {eve_skill1_id: (None, 3), eve_skill2_id: (None, 5)})}
     # Action
     api_skill = api_fit.add_skill(type_id=eve_skill1_id, level=3)
     # Verification
     api_val = api_fit.validate(options=ValOptions(skill_reqs=True))
     assert api_val.passed is False
-    assert api_val.details.skill_reqs == {api_module2.id: {eve_skill2_id: (None, 5)}}
+    assert api_val.details.skill_reqs.status == consts.ApiValStatus.failed
+    assert api_val.details.skill_reqs.fail == {
+        api_module2.id: (consts.ApiValItemStatus.failed, {eve_skill2_id: (None, 5)})}
     # Action
     api_skill.remove()
     # Verification
     api_val = api_fit.validate(options=ValOptions(skill_reqs=True))
     assert api_val.passed is False
-    assert api_val.details.skill_reqs == {
-        api_module1.id: {eve_skill1_id: (None, 3)},
-        api_module2.id: {eve_skill1_id: (None, 3), eve_skill2_id: (None, 5)}}
+    assert api_val.details.skill_reqs.status == consts.ApiValStatus.failed
+    assert api_val.details.skill_reqs.fail == {
+        api_module1.id: (consts.ApiValItemStatus.failed, {eve_skill1_id: (None, 3)}),
+        api_module2.id: (consts.ApiValItemStatus.failed, {eve_skill1_id: (None, 3), eve_skill2_id: (None, 5)})}
 
 
-def test_skill_add_remove_higher(client):
+def test_skill_add_remove_higher(client, consts):
     eve_skill1_id = client.mk_eve_item()
     eve_skill2_id = client.mk_eve_item()
     eve_module1_id = client.mk_eve_item(srqs={eve_skill1_id: 3})
@@ -81,26 +87,30 @@ def test_skill_add_remove_higher(client):
     # Verification
     api_val = api_fit.validate(options=ValOptions(skill_reqs=True))
     assert api_val.passed is False
-    assert api_val.details.skill_reqs == {
-        api_module1.id: {eve_skill1_id: (None, 3)},
-        api_module2.id: {eve_skill1_id: (None, 3), eve_skill2_id: (None, 5)}}
+    assert api_val.details.skill_reqs.status == consts.ApiValStatus.failed
+    assert api_val.details.skill_reqs.fail == {
+        api_module1.id: (consts.ApiValItemStatus.failed, {eve_skill1_id: (None, 3)}),
+        api_module2.id: (consts.ApiValItemStatus.failed, {eve_skill1_id: (None, 3), eve_skill2_id: (None, 5)})}
     # Action
     api_skill = api_fit.add_skill(type_id=eve_skill1_id, level=4)
     # Verification
     api_val = api_fit.validate(options=ValOptions(skill_reqs=True))
     assert api_val.passed is False
-    assert api_val.details.skill_reqs == {api_module2.id: {eve_skill2_id: (None, 5)}}
+    assert api_val.details.skill_reqs.status == consts.ApiValStatus.failed
+    assert api_val.details.skill_reqs.fail == {
+        api_module2.id: (consts.ApiValItemStatus.failed, {eve_skill2_id: (None, 5)})}
     # Action
     api_skill.remove()
     # Verification
     api_val = api_fit.validate(options=ValOptions(skill_reqs=True))
     assert api_val.passed is False
-    assert api_val.details.skill_reqs == {
-        api_module1.id: {eve_skill1_id: (None, 3)},
-        api_module2.id: {eve_skill1_id: (None, 3), eve_skill2_id: (None, 5)}}
+    assert api_val.details.skill_reqs.status == consts.ApiValStatus.failed
+    assert api_val.details.skill_reqs.fail == {
+        api_module1.id: (consts.ApiValItemStatus.failed, {eve_skill1_id: (None, 3)}),
+        api_module2.id: (consts.ApiValItemStatus.failed, {eve_skill1_id: (None, 3), eve_skill2_id: (None, 5)})}
 
 
-def test_skill_add_remove_zero(client):
+def test_skill_add_remove_zero(client, consts):
     eve_skill1_id = client.mk_eve_item()
     eve_skill2_id = client.mk_eve_item()
     eve_module1_id = client.mk_eve_item(srqs={eve_skill1_id: 0})
@@ -115,26 +125,30 @@ def test_skill_add_remove_zero(client):
     # hardeners if they were not trained, and turned it to 0% at lvl 0.
     api_val = api_fit.validate(options=ValOptions(skill_reqs=True))
     assert api_val.passed is False
-    assert api_val.details.skill_reqs == {
-        api_module1.id: {eve_skill1_id: (None, 0)},
-        api_module2.id: {eve_skill1_id: (None, 0), eve_skill2_id: (None, 5)}}
+    assert api_val.details.skill_reqs.status == consts.ApiValStatus.failed
+    assert api_val.details.skill_reqs.fail == {
+        api_module1.id: (consts.ApiValItemStatus.failed, {eve_skill1_id: (None, 0)}),
+        api_module2.id: (consts.ApiValItemStatus.failed, {eve_skill1_id: (None, 0), eve_skill2_id: (None, 5)})}
     # Action
     api_skill = api_fit.add_skill(type_id=eve_skill1_id, level=0)
     # Verification
     api_val = api_fit.validate(options=ValOptions(skill_reqs=True))
     assert api_val.passed is False
-    assert api_val.details.skill_reqs == {api_module2.id: {eve_skill2_id: (None, 5)}}
+    assert api_val.details.skill_reqs.status == consts.ApiValStatus.failed
+    assert api_val.details.skill_reqs.fail == {
+        api_module2.id: (consts.ApiValItemStatus.failed, {eve_skill2_id: (None, 5)})}
     # Action
     api_skill.remove()
     # Verification
     api_val = api_fit.validate(options=ValOptions(skill_reqs=True))
     assert api_val.passed is False
-    assert api_val.details.skill_reqs == {
-        api_module1.id: {eve_skill1_id: (None, 0)},
-        api_module2.id: {eve_skill1_id: (None, 0), eve_skill2_id: (None, 5)}}
+    assert api_val.details.skill_reqs.status == consts.ApiValStatus.failed
+    assert api_val.details.skill_reqs.fail == {
+        api_module1.id: (consts.ApiValItemStatus.failed, {eve_skill1_id: (None, 0)}),
+        api_module2.id: (consts.ApiValItemStatus.failed, {eve_skill1_id: (None, 0), eve_skill2_id: (None, 5)})}
 
 
-def test_item_add_remove(client):
+def test_item_add_remove(client, consts):
     eve_skill1_id = client.mk_eve_item()
     eve_skill2_id = client.mk_eve_item()
     eve_module1_id = client.mk_eve_item(srqs={eve_skill1_id: 0})
@@ -148,71 +162,76 @@ def test_item_add_remove(client):
     # Verification
     api_val = api_fit.validate(options=ValOptions(skill_reqs=True))
     assert api_val.passed is True
-    with check_no_field():
-        api_val.details  # ruff:ignore[useless-expression]
+    assert api_val.details.skill_reqs.status == consts.ApiValStatus.passed
     # Action
     api_module1 = api_fit.add_module(type_id=eve_module1_id)
     # Verification
     api_val = api_fit.validate(options=ValOptions(skill_reqs=True))
     assert api_val.passed is True
-    with check_no_field():
-        api_val.details  # ruff:ignore[useless-expression]
+    assert api_val.details.skill_reqs.status == consts.ApiValStatus.passed
     # Action
     api_module2 = api_fit.add_module(type_id=eve_module2_id)
     # Verification
     api_val = api_fit.validate(options=ValOptions(skill_reqs=True))
     assert api_val.passed is False
-    assert api_val.details.skill_reqs == {api_module2.id: {eve_skill2_id: (None, 5)}}
+    assert api_val.details.skill_reqs.status == consts.ApiValStatus.failed
+    assert api_val.details.skill_reqs.fail == {
+        api_module2.id: (consts.ApiValItemStatus.failed, {eve_skill2_id: (None, 5)})}
     # Action
     api_module3 = api_fit.add_module(type_id=eve_module3_id)
     # Verification
     api_val = api_fit.validate(options=ValOptions(skill_reqs=True))
     assert api_val.passed is False
-    assert api_val.details.skill_reqs == {
-        api_module2.id: {eve_skill2_id: (None, 5)},
-        api_module3.id: {eve_skill1_id: (0, 3)}}
+    assert api_val.details.skill_reqs.status == consts.ApiValStatus.failed
+    assert api_val.details.skill_reqs.fail == {
+        api_module2.id: (consts.ApiValItemStatus.failed, {eve_skill2_id: (None, 5)}),
+        api_module3.id: (consts.ApiValItemStatus.failed, {eve_skill1_id: (0, 3)})}
     # Action
     api_module4 = api_fit.add_module(type_id=eve_module4_id)
     # Verification
     api_val = api_fit.validate(options=ValOptions(skill_reqs=True))
     assert api_val.passed is False
-    assert api_val.details.skill_reqs == {
-        api_module2.id: {eve_skill2_id: (None, 5)},
-        api_module3.id: {eve_skill1_id: (0, 3)},
-        api_module4.id: {eve_skill1_id: (0, 3), eve_skill2_id: (None, 5)}}
+    assert api_val.details.skill_reqs.status == consts.ApiValStatus.failed
+    assert api_val.details.skill_reqs.fail == {
+        api_module2.id: (consts.ApiValItemStatus.failed, {eve_skill2_id: (None, 5)}),
+        api_module3.id: (consts.ApiValItemStatus.failed, {eve_skill1_id: (0, 3)}),
+        api_module4.id: (consts.ApiValItemStatus.failed, {eve_skill1_id: (0, 3), eve_skill2_id: (None, 5)})}
     # Action
     api_module1.remove()
     # Verification
     api_val = api_fit.validate(options=ValOptions(skill_reqs=True))
     assert api_val.passed is False
-    assert api_val.details.skill_reqs == {
-        api_module2.id: {eve_skill2_id: (None, 5)},
-        api_module3.id: {eve_skill1_id: (0, 3)},
-        api_module4.id: {eve_skill1_id: (0, 3), eve_skill2_id: (None, 5)}}
+    assert api_val.details.skill_reqs.status == consts.ApiValStatus.failed
+    assert api_val.details.skill_reqs.fail == {
+        api_module2.id: (consts.ApiValItemStatus.failed, {eve_skill2_id: (None, 5)}),
+        api_module3.id: (consts.ApiValItemStatus.failed, {eve_skill1_id: (0, 3)}),
+        api_module4.id: (consts.ApiValItemStatus.failed, {eve_skill1_id: (0, 3), eve_skill2_id: (None, 5)})}
     # Action
     api_module2.remove()
     # Verification
     api_val = api_fit.validate(options=ValOptions(skill_reqs=True))
     assert api_val.passed is False
-    assert api_val.details.skill_reqs == {
-        api_module3.id: {eve_skill1_id: (0, 3)},
-        api_module4.id: {eve_skill1_id: (0, 3), eve_skill2_id: (None, 5)}}
+    assert api_val.details.skill_reqs.status == consts.ApiValStatus.failed
+    assert api_val.details.skill_reqs.fail == {
+        api_module3.id: (consts.ApiValItemStatus.failed, {eve_skill1_id: (0, 3)}),
+        api_module4.id: (consts.ApiValItemStatus.failed, {eve_skill1_id: (0, 3), eve_skill2_id: (None, 5)})}
     # Action
     api_module3.remove()
     # Verification
     api_val = api_fit.validate(options=ValOptions(skill_reqs=True))
     assert api_val.passed is False
-    assert api_val.details.skill_reqs == {api_module4.id: {eve_skill1_id: (0, 3), eve_skill2_id: (None, 5)}}
+    assert api_val.details.skill_reqs.status == consts.ApiValStatus.failed
+    assert api_val.details.skill_reqs.fail == {
+        api_module4.id: (consts.ApiValItemStatus.failed, {eve_skill1_id: (0, 3), eve_skill2_id: (None, 5)})}
     # Action
     api_module4.remove()
     # Verification
     api_val = api_fit.validate(options=ValOptions(skill_reqs=True))
     assert api_val.passed is True
-    with check_no_field():
-        api_val.details  # ruff:ignore[useless-expression]
+    assert api_val.details.skill_reqs.status == consts.ApiValStatus.passed
 
 
-def test_skill_level_change(client):
+def test_skill_level_change(client, consts):
     eve_skill1_id = client.mk_eve_item()
     eve_skill2_id = client.mk_eve_item()
     eve_module1_id = client.mk_eve_item(srqs={eve_skill1_id: 3})
@@ -226,66 +245,80 @@ def test_skill_level_change(client):
     # Verification
     api_val = api_fit.validate(options=ValOptions(skill_reqs=True))
     assert api_val.passed is False
-    assert api_val.details.skill_reqs == {
-        api_module1.id: {eve_skill1_id: (2, 3)},
-        api_module2.id: {eve_skill1_id: (2, 3), eve_skill2_id: (None, 5)}}
+    assert api_val.details.skill_reqs.status == consts.ApiValStatus.failed
+    assert api_val.details.skill_reqs.fail == {
+        api_module1.id: (consts.ApiValItemStatus.failed, {eve_skill1_id: (2, 3)}),
+        api_module2.id: (consts.ApiValItemStatus.failed, {eve_skill1_id: (2, 3), eve_skill2_id: (None, 5)})}
     # Action - lower to equal
     api_skill.change_skill(level=3)
     # Verification
     api_val = api_fit.validate(options=ValOptions(skill_reqs=True))
     assert api_val.passed is False
-    assert api_val.details.skill_reqs == {api_module2.id: {eve_skill2_id: (None, 5)}}
+    assert api_val.details.skill_reqs.status == consts.ApiValStatus.failed
+    assert api_val.details.skill_reqs.fail == {
+        api_module2.id: (consts.ApiValItemStatus.failed, {eve_skill2_id: (None, 5)})}
     # Action - equal to higher
     api_skill.change_skill(level=4)
     # Verification
     api_val = api_fit.validate(options=ValOptions(skill_reqs=True))
     assert api_val.passed is False
-    assert api_val.details.skill_reqs == {api_module2.id: {eve_skill2_id: (None, 5)}}
+    assert api_val.details.skill_reqs.status == consts.ApiValStatus.failed
+    assert api_val.details.skill_reqs.fail == {
+        api_module2.id: (consts.ApiValItemStatus.failed, {eve_skill2_id: (None, 5)})}
     # Action - higher to lower
     api_skill.change_skill(level=2)
     # Verification
     api_val = api_fit.validate(options=ValOptions(skill_reqs=True))
     assert api_val.passed is False
-    assert api_val.details.skill_reqs == {
-        api_module1.id: {eve_skill1_id: (2, 3)},
-        api_module2.id: {eve_skill1_id: (2, 3), eve_skill2_id: (None, 5)}}
+    assert api_val.details.skill_reqs.status == consts.ApiValStatus.failed
+    assert api_val.details.skill_reqs.fail == {
+        api_module1.id: (consts.ApiValItemStatus.failed, {eve_skill1_id: (2, 3)}),
+        api_module2.id: (consts.ApiValItemStatus.failed, {eve_skill1_id: (2, 3), eve_skill2_id: (None, 5)})}
     # Action - lower to lower
     api_skill.change_skill(level=0)
     # Verification
     api_val = api_fit.validate(options=ValOptions(skill_reqs=True))
     assert api_val.passed is False
-    assert api_val.details.skill_reqs == {
-        api_module1.id: {eve_skill1_id: (0, 3)},
-        api_module2.id: {eve_skill1_id: (0, 3), eve_skill2_id: (None, 5)}}
+    assert api_val.details.skill_reqs.status == consts.ApiValStatus.failed
+    assert api_val.details.skill_reqs.fail == {
+        api_module1.id: (consts.ApiValItemStatus.failed, {eve_skill1_id: (0, 3)}),
+        api_module2.id: (consts.ApiValItemStatus.failed, {eve_skill1_id: (0, 3), eve_skill2_id: (None, 5)})}
     # Action - lower to higher
     api_skill.change_skill(level=5)
     # Verification
     api_val = api_fit.validate(options=ValOptions(skill_reqs=True))
     assert api_val.passed is False
-    assert api_val.details.skill_reqs == {api_module2.id: {eve_skill2_id: (None, 5)}}
+    assert api_val.details.skill_reqs.status == consts.ApiValStatus.failed
+    assert api_val.details.skill_reqs.fail == {
+        api_module2.id: (consts.ApiValItemStatus.failed, {eve_skill2_id: (None, 5)})}
     # Action - higher to higher
     api_skill.change_skill(level=4)
     # Verification
     api_val = api_fit.validate(options=ValOptions(skill_reqs=True))
     assert api_val.passed is False
-    assert api_val.details.skill_reqs == {api_module2.id: {eve_skill2_id: (None, 5)}}
+    assert api_val.details.skill_reqs.status == consts.ApiValStatus.failed
+    assert api_val.details.skill_reqs.fail == {
+        api_module2.id: (consts.ApiValItemStatus.failed, {eve_skill2_id: (None, 5)})}
     # Action - higher to equal
     api_skill.change_skill(level=3)
     # Verification
     api_val = api_fit.validate(options=ValOptions(skill_reqs=True))
     assert api_val.passed is False
-    assert api_val.details.skill_reqs == {api_module2.id: {eve_skill2_id: (None, 5)}}
+    assert api_val.details.skill_reqs.status == consts.ApiValStatus.failed
+    assert api_val.details.skill_reqs.fail == {
+        api_module2.id: (consts.ApiValItemStatus.failed, {eve_skill2_id: (None, 5)})}
     # Action - equal to lower
     api_skill.change_skill(level=1)
     # Verification
     api_val = api_fit.validate(options=ValOptions(skill_reqs=True))
     assert api_val.passed is False
-    assert api_val.details.skill_reqs == {
-        api_module1.id: {eve_skill1_id: (1, 3)},
-        api_module2.id: {eve_skill1_id: (1, 3), eve_skill2_id: (None, 5)}}
+    assert api_val.details.skill_reqs.status == consts.ApiValStatus.failed
+    assert api_val.details.skill_reqs.fail == {
+        api_module1.id: (consts.ApiValItemStatus.failed, {eve_skill1_id: (1, 3)}),
+        api_module2.id: (consts.ApiValItemStatus.failed, {eve_skill1_id: (1, 3), eve_skill2_id: (None, 5)})}
 
 
-def test_known_failures(client):
+def test_known_failures(client, consts):
     eve_skill_id = client.mk_eve_item()
     eve_module_id = client.mk_eve_item(srqs={eve_skill_id: 3})
     eve_other_id = client.mk_eve_item()
@@ -298,21 +331,31 @@ def test_known_failures(client):
     # Verification
     api_val = api_fit.validate(options=ValOptions(skill_reqs=[api_module1.id]))
     assert api_val.passed is False
-    assert api_val.details.skill_reqs == {api_module2.id: {eve_skill_id: (None, 3)}}
+    assert api_val.details.skill_reqs.status == consts.ApiValStatus.failed
+    assert api_val.details.skill_reqs.fail == {
+        api_module1.id: (consts.ApiValItemStatus.kf, {eve_skill_id: (None, 3)}),
+        api_module2.id: (consts.ApiValItemStatus.failed, {eve_skill_id: (None, 3)})}
     api_val = api_fit.validate(options=ValOptions(skill_reqs=[api_module2.id]))
     assert api_val.passed is False
-    assert api_val.details.skill_reqs == {api_module1.id: {eve_skill_id: (None, 3)}}
+    assert api_val.details.skill_reqs.status == consts.ApiValStatus.failed
+    assert api_val.details.skill_reqs.fail == {
+        api_module1.id: (consts.ApiValItemStatus.failed, {eve_skill_id: (None, 3)}),
+        api_module2.id: (consts.ApiValItemStatus.kf, {eve_skill_id: (None, 3)})}
     api_val = api_fit.validate(options=ValOptions(skill_reqs=[api_module1.id, api_module2.id]))
     assert api_val.passed is True
-    with check_no_field():
-        api_val.details  # ruff:ignore[useless-expression]
+    assert api_val.details.skill_reqs.status == consts.ApiValStatus.passed_kfs
+    assert api_val.details.skill_reqs.fail == {
+        api_module1.id: (consts.ApiValItemStatus.kf, {eve_skill_id: (None, 3)}),
+        api_module2.id: (consts.ApiValItemStatus.kf, {eve_skill_id: (None, 3)})}
     api_val = api_fit.validate(options=ValOptions(skill_reqs=[api_module1.id, api_other.id, api_module2.id]))
     assert api_val.passed is True
-    with check_no_field():
-        api_val.details  # ruff:ignore[useless-expression]
+    assert api_val.details.skill_reqs.status == consts.ApiValStatus.passed_kfs
+    assert api_val.details.skill_reqs.fail == {
+        api_module1.id: (consts.ApiValItemStatus.kf, {eve_skill_id: (None, 3)}),
+        api_module2.id: (consts.ApiValItemStatus.kf, {eve_skill_id: (None, 3)})}
 
 
-def test_skill_switch_type_id(client):
+def test_skill_switch_type_id(client, consts):
     eve_skill1_id = client.mk_eve_item()
     eve_skill2_id = client.mk_eve_item()
     eve_module_id = client.mk_eve_item(srqs={eve_skill1_id: 3})
@@ -324,24 +367,24 @@ def test_skill_switch_type_id(client):
     # Verification
     api_val = api_fit.validate(options=ValOptions(skill_reqs=True))
     assert api_val.passed is True
-    with check_no_field():
-        api_val.details  # ruff:ignore[useless-expression]
+    assert api_val.details.skill_reqs.status == consts.ApiValStatus.passed
     # Action
     api_skill.change_skill(type_id=eve_skill2_id)
     # Verification
     api_val = api_fit.validate(options=ValOptions(skill_reqs=True))
     assert api_val.passed is False
-    assert api_val.details.skill_reqs == {api_module.id: {eve_skill1_id: (None, 3)}}
+    assert api_val.details.skill_reqs.status == consts.ApiValStatus.failed
+    assert api_val.details.skill_reqs.fail == {
+        api_module.id: (consts.ApiValItemStatus.failed, {eve_skill1_id: (None, 3)})}
     # Action
     api_skill.change_skill(type_id=eve_skill1_id)
     # Verification
     api_val = api_fit.validate(options=ValOptions(skill_reqs=True))
     assert api_val.passed is True
-    with check_no_field():
-        api_val.details  # ruff:ignore[useless-expression]
+    assert api_val.details.skill_reqs.status == consts.ApiValStatus.passed
 
 
-def test_module_switch_type_id(client):
+def test_module_switch_type_id(client, consts):
     eve_skill_id = client.mk_eve_item()
     eve_module1_id = client.mk_eve_item(srqs={eve_skill_id: 3})
     eve_module2_id = client.mk_eve_item()
@@ -353,23 +396,24 @@ def test_module_switch_type_id(client):
     # Verification
     api_val = api_fit.validate(options=ValOptions(skill_reqs=True))
     assert api_val.passed is False
-    assert api_val.details.skill_reqs == {api_module.id: {eve_skill_id: (2, 3)}}
+    assert api_val.details.skill_reqs.status == consts.ApiValStatus.failed
+    assert api_val.details.skill_reqs.fail == {api_module.id: (consts.ApiValItemStatus.failed, {eve_skill_id: (2, 3)})}
     # Action
     api_module.change_module(type_id=eve_module2_id)
     # Verification
     api_val = api_fit.validate(options=ValOptions(skill_reqs=True))
     assert api_val.passed is True
-    with check_no_field():
-        api_val.details  # ruff:ignore[useless-expression]
+    assert api_val.details.skill_reqs.status == consts.ApiValStatus.passed
     # Action
     api_module.change_module(type_id=eve_module1_id)
     # Verification
     api_val = api_fit.validate(options=ValOptions(skill_reqs=True))
     assert api_val.passed is False
-    assert api_val.details.skill_reqs == {api_module.id: {eve_skill_id: (2, 3)}}
+    assert api_val.details.skill_reqs.status == consts.ApiValStatus.failed
+    assert api_val.details.skill_reqs.fail == {api_module.id: (consts.ApiValItemStatus.failed, {eve_skill_id: (2, 3)})}
 
 
-def test_mutation(client):
+def test_mutation(client, consts):
     # Actual use-case, mutated drones switch spec skill
     eve_skill1_id = client.mk_eve_item()
     eve_skill2_id = client.mk_eve_item()
@@ -383,37 +427,41 @@ def test_mutation(client):
     # Verification
     api_val = api_fit.validate(options=ValOptions(skill_reqs=True))
     assert api_val.passed is False
-    assert api_val.details.skill_reqs == {api_drone.id: {eve_skill1_id: (None, 2)}}
+    assert api_val.details.skill_reqs.status == consts.ApiValStatus.failed
+    assert api_val.details.skill_reqs.fail == {
+        api_drone.id: (consts.ApiValItemStatus.failed, {eve_skill1_id: (None, 2)})}
     # Action
     api_skill1 = api_fit.add_skill(type_id=eve_skill1_id, level=2)
     # Verification
     api_val = api_fit.validate(options=ValOptions(skill_reqs=True))
     assert api_val.passed is True
-    with check_no_field():
-        api_val.details  # ruff:ignore[useless-expression]
+    assert api_val.details.skill_reqs.status == consts.ApiValStatus.passed
     # Action
     api_drone.change_drone(mutation=eve_mutator_id)
     # Verification
     api_val = api_fit.validate(options=ValOptions(skill_reqs=True))
     assert api_val.passed is False
-    assert api_val.details.skill_reqs == {api_drone.id: {eve_skill2_id: (None, 4)}}
+    assert api_val.details.skill_reqs.status == consts.ApiValStatus.failed
+    assert api_val.details.skill_reqs.fail == {
+        api_drone.id: (consts.ApiValItemStatus.failed, {eve_skill2_id: (None, 4)})}
     # Action
     api_fit.add_skill(type_id=eve_skill2_id, level=4)
     api_skill1.remove()
     # Verification - only 2nd skill is needed, skill requirements are overwritten, not merged
     api_val = api_fit.validate(options=ValOptions(skill_reqs=True))
     assert api_val.passed is True
-    with check_no_field():
-        api_val.details  # ruff:ignore[useless-expression]
+    assert api_val.details.skill_reqs.status == consts.ApiValStatus.passed
     # Action
     api_drone.change_drone(mutation=None)
     # Verification
     api_val = api_fit.validate(options=ValOptions(skill_reqs=True))
     assert api_val.passed is False
-    assert api_val.details.skill_reqs == {api_drone.id: {eve_skill1_id: (None, 2)}}
+    assert api_val.details.skill_reqs.status == consts.ApiValStatus.failed
+    assert api_val.details.skill_reqs.fail == {
+        api_drone.id: (consts.ApiValItemStatus.failed, {eve_skill1_id: (None, 2)})}
 
 
-def test_self_req(client):
+def test_self_req(client, consts):
     # Unrealistic scenario, but check what happens anyway
     eve_skill_id = client.alloc_item_id()
     client.mk_eve_item(id_=eve_skill_id, srqs={eve_skill_id: 3})
@@ -424,23 +472,24 @@ def test_self_req(client):
     # Verification
     api_val = api_fit.validate(options=ValOptions(skill_reqs=True))
     assert api_val.passed is False
-    assert api_val.details.skill_reqs == {api_skill.id: {eve_skill_id: (2, 3)}}
+    assert api_val.details.skill_reqs.status == consts.ApiValStatus.failed
+    assert api_val.details.skill_reqs.fail == {api_skill.id: (consts.ApiValItemStatus.failed, {eve_skill_id: (2, 3)})}
     # Action
     api_skill.change_skill(level=3)
     # Verification
     api_val = api_fit.validate(options=ValOptions(skill_reqs=True))
     assert api_val.passed is True
-    with check_no_field():
-        api_val.details  # ruff:ignore[useless-expression]
+    assert api_val.details.skill_reqs.status == consts.ApiValStatus.passed
     # Action
     api_skill.change_skill(level=0)
     # Verification
     api_val = api_fit.validate(options=ValOptions(skill_reqs=True))
     assert api_val.passed is False
-    assert api_val.details.skill_reqs == {api_skill.id: {eve_skill_id: (0, 3)}}
+    assert api_val.details.skill_reqs.status == consts.ApiValStatus.failed
+    assert api_val.details.skill_reqs.fail == {api_skill.id: (consts.ApiValItemStatus.failed, {eve_skill_id: (0, 3)})}
 
 
-def test_skill_state(client):
+def test_skill_state(client, consts):
     # Disabled skill still satisfies skill requirements
     eve_skill_id = client.mk_eve_item()
     eve_module_id = client.mk_eve_item(srqs={eve_skill_id: 3})
@@ -452,8 +501,7 @@ def test_skill_state(client):
     # Verification
     api_val = api_fit.validate(options=ValOptions(skill_reqs=True))
     assert api_val.passed is True
-    with check_no_field():
-        api_val.details  # ruff:ignore[useless-expression]
+    assert api_val.details.skill_reqs.status == consts.ApiValStatus.passed
 
 
 def test_item_state(client, consts):
@@ -468,8 +516,7 @@ def test_item_state(client, consts):
     # Verification
     api_val = api_fit.validate(options=ValOptions(skill_reqs=True))
     assert api_val.passed is True
-    with check_no_field():
-        api_val.details  # ruff:ignore[useless-expression]
+    assert api_val.details.skill_reqs.status == consts.ApiValStatus.passed
 
 
 def test_item_kinds(client, consts):
@@ -503,23 +550,24 @@ def test_item_kinds(client, consts):
     assert len(api_fighter.autocharges) == 1
     api_val = api_fit.validate(options=ValOptions(skill_reqs=True))
     assert api_val.passed is False
-    assert api_val.details.skill_reqs == {
-        api_skill.id: {eve_skill_id: (None, 3)},
-        api_implant.id: {eve_skill_id: (None, 3)},
-        api_booster.id: {eve_skill_id: (None, 3)},
-        api_ship.id: {eve_skill_id: (None, 3)},
-        api_subsystem.id: {eve_skill_id: (None, 3)},
-        api_module_high.id: {eve_skill_id: (None, 3)},
-        api_module_high.charge.id: {eve_skill_id: (None, 3)},
-        api_module_mid.id: {eve_skill_id: (None, 3)},
-        api_module_mid.charge.id: {eve_skill_id: (None, 3)},
-        api_module_low.id: {eve_skill_id: (None, 3)},
-        api_module_low.charge.id: {eve_skill_id: (None, 3)},
-        api_drone.id: {eve_skill_id: (None, 3)},
-        api_fighter.id: {eve_skill_id: (None, 3)}}
+    assert api_val.details.skill_reqs.status == consts.ApiValStatus.failed
+    assert api_val.details.skill_reqs.fail == {
+        api_skill.id: (consts.ApiValItemStatus.failed, {eve_skill_id: (None, 3)}),
+        api_implant.id: (consts.ApiValItemStatus.failed, {eve_skill_id: (None, 3)}),
+        api_booster.id: (consts.ApiValItemStatus.failed, {eve_skill_id: (None, 3)}),
+        api_ship.id: (consts.ApiValItemStatus.failed, {eve_skill_id: (None, 3)}),
+        api_subsystem.id: (consts.ApiValItemStatus.failed, {eve_skill_id: (None, 3)}),
+        api_module_high.id: (consts.ApiValItemStatus.failed, {eve_skill_id: (None, 3)}),
+        api_module_high.charge.id: (consts.ApiValItemStatus.failed, {eve_skill_id: (None, 3)}),
+        api_module_mid.id: (consts.ApiValItemStatus.failed, {eve_skill_id: (None, 3)}),
+        api_module_mid.charge.id: (consts.ApiValItemStatus.failed, {eve_skill_id: (None, 3)}),
+        api_module_low.id: (consts.ApiValItemStatus.failed, {eve_skill_id: (None, 3)}),
+        api_module_low.charge.id: (consts.ApiValItemStatus.failed, {eve_skill_id: (None, 3)}),
+        api_drone.id: (consts.ApiValItemStatus.failed, {eve_skill_id: (None, 3)}),
+        api_fighter.id: (consts.ApiValItemStatus.failed, {eve_skill_id: (None, 3)})}
 
 
-def test_not_loaded_skill(client):
+def test_not_loaded_skill(client, consts):
     eve_skill_id = client.alloc_item_id()
     eve_module_id = client.mk_eve_item(srqs={eve_skill_id: 3})
     client.create_sources()
@@ -529,35 +577,40 @@ def test_not_loaded_skill(client):
     # Verification
     api_val = api_fit.validate(options=ValOptions(skill_reqs=True))
     assert api_val.passed is False
-    assert api_val.details.skill_reqs == {api_module.id: {eve_skill_id: (None, 3)}}
+    assert api_val.details.skill_reqs.status == consts.ApiValStatus.failed
+    assert api_val.details.skill_reqs.fail == {
+        api_module.id: (consts.ApiValItemStatus.failed, {eve_skill_id: (None, 3)})}
     # Action
     api_skill = api_fit.add_skill(type_id=eve_skill_id, level=2)
     # Verification
     api_val = api_fit.validate(options=ValOptions(skill_reqs=True))
     assert api_val.passed is False
-    assert api_val.details.skill_reqs == {api_module.id: {eve_skill_id: (2, 3)}}
+    assert api_val.details.skill_reqs.status == consts.ApiValStatus.failed
+    assert api_val.details.skill_reqs.fail == {api_module.id: (consts.ApiValItemStatus.failed, {eve_skill_id: (2, 3)})}
     # Action
     api_skill.change_skill(level=3)
     # Verification
     api_val = api_fit.validate(options=ValOptions(skill_reqs=True))
     assert api_val.passed is True
-    with check_no_field():
-        api_val.details  # ruff:ignore[useless-expression]
+    assert api_val.details.skill_reqs.status == consts.ApiValStatus.passed
     # Action
     api_skill.change_skill(level=0)
     # Verification
     api_val = api_fit.validate(options=ValOptions(skill_reqs=True))
     assert api_val.passed is False
-    assert api_val.details.skill_reqs == {api_module.id: {eve_skill_id: (0, 3)}}
+    assert api_val.details.skill_reqs.status == consts.ApiValStatus.failed
+    assert api_val.details.skill_reqs.fail == {api_module.id: (consts.ApiValItemStatus.failed, {eve_skill_id: (0, 3)})}
     # Action
     api_skill.remove()
     # Verification
     api_val = api_fit.validate(options=ValOptions(skill_reqs=True))
     assert api_val.passed is False
-    assert api_val.details.skill_reqs == {api_module.id: {eve_skill_id: (None, 3)}}
+    assert api_val.details.skill_reqs.status == consts.ApiValStatus.failed
+    assert api_val.details.skill_reqs.fail == {
+        api_module.id: (consts.ApiValItemStatus.failed, {eve_skill_id: (None, 3)})}
 
 
-def test_failed_replacement(client):
+def test_failed_replacement(client, consts):
     # Check that failed attempt to replace skill doesn't affect validation
     eve_skill_id = client.mk_eve_item()
     eve_module_id = client.mk_eve_item(srqs={eve_skill_id: 3})
@@ -569,22 +622,22 @@ def test_failed_replacement(client):
     # Verification
     api_val = api_fit.validate(options=ValOptions(skill_reqs=True))
     assert api_val.passed is True
-    with check_no_field():
-        api_val.details  # ruff:ignore[useless-expression]
+    assert api_val.details.skill_reqs.status == consts.ApiValStatus.passed
     # Action & verification
     api_fit.add_skill(type_id=eve_skill_id, level=2, status_code=400)
     api_val = api_fit.validate(options=ValOptions(skill_reqs=True))
     assert api_val.passed is True
-    with check_no_field():
-        api_val.details  # ruff:ignore[useless-expression]
+    assert api_val.details.skill_reqs.status == consts.ApiValStatus.passed
     # Action
     api_skill.change_skill(level=2)
     # Verification
     api_val = api_fit.validate(options=ValOptions(skill_reqs=True))
     assert api_val.passed is False
-    assert api_val.details.skill_reqs == {api_module.id: {eve_skill_id: (2, 3)}}
+    assert api_val.details.skill_reqs.status == consts.ApiValStatus.failed
+    assert api_val.details.skill_reqs.fail == {api_module.id: (consts.ApiValItemStatus.failed, {eve_skill_id: (2, 3)})}
     # Action & verification
     api_fit.add_skill(type_id=eve_skill_id, level=4, status_code=400)
     api_val = api_fit.validate(options=ValOptions(skill_reqs=True))
     assert api_val.passed is False
-    assert api_val.details.skill_reqs == {api_module.id: {eve_skill_id: (2, 3)}}
+    assert api_val.details.skill_reqs.status == consts.ApiValStatus.failed
+    assert api_val.details.skill_reqs.fail == {api_module.id: (consts.ApiValItemStatus.failed, {eve_skill_id: (2, 3)})}

@@ -1,7 +1,9 @@
-from collections import UserList
+from collections import UserDict
+
+from fw.consts import ApiValItemStatus
 
 
-class ValActivationBlockedFail(UserList):
+class ValActivationBlockedFail(UserDict):
 
-    def __init__(self, *, data: list | tuple) -> None:
-        super().__init__(sorted(data))
+    def __init__(self, *, data: dict) -> None:
+        super().__init__({k: ApiValItemStatus(v) for k, v in data.items()})

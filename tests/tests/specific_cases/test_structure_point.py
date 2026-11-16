@@ -1,4 +1,4 @@
-from fw import approx, check_no_field
+from fw import approx
 from fw.api import ItemStatsOptions, ValOptions
 
 
@@ -80,21 +80,20 @@ def test_module_mwd_block(client, consts):
     # Verification
     api_val = api_affectee_fit.validate(options=ValOptions(activation_blocked=True))
     assert api_val.passed is True
-    with check_no_field():
-        api_val.details  # ruff:ignore[useless-expression]
+    assert api_val.details.activation_blocked.status == consts.ApiValStatus.passed
     # Action
     api_point.change_module(charge_type_id=eve_script_id)
     # Verification
     api_val = api_affectee_fit.validate(options=ValOptions(activation_blocked=True))
     assert api_val.passed is False
-    assert api_val.details.activation_blocked == [api_mwd.id]
+    assert api_val.details.activation_blocked.status == consts.ApiValStatus.failed
+    assert api_val.details.activation_blocked.fail == {api_mwd.id: consts.ApiValItemStatus.failed}
     # Action
     api_point.change_module(charge_type_id=None)
     # Verification
     api_val = api_affectee_fit.validate(options=ValOptions(activation_blocked=True))
     assert api_val.passed is True
-    with check_no_field():
-        api_val.details  # ruff:ignore[useless-expression]
+    assert api_val.details.activation_blocked.status == consts.ApiValStatus.passed
 
 
 def test_module_mjd_block(client, consts):
@@ -137,21 +136,22 @@ def test_module_mjd_block(client, consts):
     # Verification
     api_val = api_affectee_fit.validate(options=ValOptions(activation_blocked=True))
     assert api_val.passed is True
-    with check_no_field():
-        api_val.details  # ruff:ignore[useless-expression]
+    assert api_val.details.activation_blocked.status == consts.ApiValStatus.passed
     # Action
     api_point.change_module(charge_type_id=eve_script_id)
     # Verification
     api_val = api_affectee_fit.validate(options=ValOptions(activation_blocked=True))
     assert api_val.passed is False
-    assert api_val.details.activation_blocked == sorted([api_mjd_sub.id, api_mjd_cap.id])
+    assert api_val.details.activation_blocked.status == consts.ApiValStatus.failed
+    assert api_val.details.activation_blocked.fail == {
+        api_mjd_sub.id: consts.ApiValItemStatus.failed,
+        api_mjd_cap.id: consts.ApiValItemStatus.failed}
     # Action
     api_point.change_module(charge_type_id=None)
     # Verification
     api_val = api_affectee_fit.validate(options=ValOptions(activation_blocked=True))
     assert api_val.passed is True
-    with check_no_field():
-        api_val.details  # ruff:ignore[useless-expression]
+    assert api_val.details.activation_blocked.status == consts.ApiValStatus.passed
 
 
 def test_fighter_mwd_mjd_block(client, consts):
@@ -180,16 +180,22 @@ def test_fighter_mwd_mjd_block(client, consts):
     # Verification
     api_val = api_affectee_fit.validate(options=ValOptions(effect_stopper=True))
     assert api_val.passed is False
-    assert api_val.details.effect_stopper == {api_fighter.id: sorted([eve_ftr_mwd_effect_id, eve_ftr_mjd_effect_id])}
+    assert api_val.details.effect_stopper.status == consts.ApiValStatus.failed
+    assert api_val.details.effect_stopper.fail == {
+        api_fighter.id: (consts.ApiValItemStatus.failed, sorted([eve_ftr_mwd_effect_id, eve_ftr_mjd_effect_id]))}
     # Action
     api_point.change_module(charge_type_id=eve_script_id)
     # Verification
     api_val = api_affectee_fit.validate(options=ValOptions(effect_stopper=True))
     assert api_val.passed is False
-    assert api_val.details.effect_stopper == {api_fighter.id: sorted([eve_ftr_mwd_effect_id, eve_ftr_mjd_effect_id])}
+    assert api_val.details.effect_stopper.status == consts.ApiValStatus.failed
+    assert api_val.details.effect_stopper.fail == {
+        api_fighter.id: (consts.ApiValItemStatus.failed, sorted([eve_ftr_mwd_effect_id, eve_ftr_mjd_effect_id]))}
     # Action
     api_point.change_module(charge_type_id=None)
     # Verification
     api_val = api_affectee_fit.validate(options=ValOptions(effect_stopper=True))
     assert api_val.passed is False
-    assert api_val.details.effect_stopper == {api_fighter.id: sorted([eve_ftr_mwd_effect_id, eve_ftr_mjd_effect_id])}
+    assert api_val.details.effect_stopper.status == consts.ApiValStatus.failed
+    assert api_val.details.effect_stopper.fail == {
+        api_fighter.id: (consts.ApiValItemStatus.failed, sorted([eve_ftr_mwd_effect_id, eve_ftr_mjd_effect_id]))}

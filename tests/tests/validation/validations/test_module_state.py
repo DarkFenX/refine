@@ -1,4 +1,3 @@
-from fw import check_no_field
 from fw.api import ValOptions
 
 
@@ -23,8 +22,7 @@ def test_ship_modules(client, consts):
     # Verification
     api_val = api_fit.validate(options=ValOptions(module_state=True))
     assert api_val.passed is True
-    with check_no_field():
-        api_val.details  # ruff:ignore[useless-expression]
+    assert api_val.details.module_state.status == consts.ApiValStatus.passed
     # Action
     api_none_module.change_module(state=consts.ApiModuleState.online)
     api_passive_module.change_module(state=consts.ApiModuleState.online)
@@ -34,9 +32,16 @@ def test_ship_modules(client, consts):
     # Verification
     api_val = api_fit.validate(options=ValOptions(module_state=True))
     assert api_val.passed is False
-    assert api_val.details.module_state == {
-        api_none_module.id: [consts.ApiModuleState.online, consts.ApiModuleState.offline],
-        api_passive_module.id: [consts.ApiModuleState.online, consts.ApiModuleState.offline]}
+    assert api_val.details.module_state.status == consts.ApiValStatus.failed
+    assert api_val.details.module_state.fail == {
+        api_none_module.id: (
+            consts.ApiValItemStatus.failed,
+            consts.ApiModuleState.online,
+            consts.ApiModuleState.offline),
+        api_passive_module.id: (
+            consts.ApiValItemStatus.failed,
+            consts.ApiModuleState.online,
+            consts.ApiModuleState.offline)}
     # Action
     api_none_module.change_module(state=consts.ApiModuleState.active)
     api_passive_module.change_module(state=consts.ApiModuleState.active)
@@ -46,10 +51,20 @@ def test_ship_modules(client, consts):
     # Verification
     api_val = api_fit.validate(options=ValOptions(module_state=True))
     assert api_val.passed is False
-    assert api_val.details.module_state == {
-        api_none_module.id: [consts.ApiModuleState.active, consts.ApiModuleState.offline],
-        api_passive_module.id: [consts.ApiModuleState.active, consts.ApiModuleState.offline],
-        api_online_module.id: [consts.ApiModuleState.active, consts.ApiModuleState.online]}
+    assert api_val.details.module_state.status == consts.ApiValStatus.failed
+    assert api_val.details.module_state.fail == {
+        api_none_module.id: (
+            consts.ApiValItemStatus.failed,
+            consts.ApiModuleState.active,
+            consts.ApiModuleState.offline),
+        api_passive_module.id: (
+            consts.ApiValItemStatus.failed,
+            consts.ApiModuleState.active,
+            consts.ApiModuleState.offline),
+        api_online_module.id: (
+            consts.ApiValItemStatus.failed,
+            consts.ApiModuleState.active,
+            consts.ApiModuleState.online)}
     # Action
     api_none_module.change_module(state=consts.ApiModuleState.overload)
     api_passive_module.change_module(state=consts.ApiModuleState.overload)
@@ -59,11 +74,24 @@ def test_ship_modules(client, consts):
     # Verification
     api_val = api_fit.validate(options=ValOptions(module_state=True))
     assert api_val.passed is False
-    assert api_val.details.module_state == {
-        api_none_module.id: [consts.ApiModuleState.overload, consts.ApiModuleState.offline],
-        api_passive_module.id: [consts.ApiModuleState.overload, consts.ApiModuleState.offline],
-        api_online_module.id: [consts.ApiModuleState.overload, consts.ApiModuleState.online],
-        api_active_module.id: [consts.ApiModuleState.overload, consts.ApiModuleState.active]}
+    assert api_val.details.module_state.status == consts.ApiValStatus.failed
+    assert api_val.details.module_state.fail == {
+        api_none_module.id: (
+            consts.ApiValItemStatus.failed,
+            consts.ApiModuleState.overload,
+            consts.ApiModuleState.offline),
+        api_passive_module.id: (
+            consts.ApiValItemStatus.failed,
+            consts.ApiModuleState.overload,
+            consts.ApiModuleState.offline),
+        api_online_module.id: (
+            consts.ApiValItemStatus.failed,
+            consts.ApiModuleState.overload,
+            consts.ApiModuleState.online),
+        api_active_module.id: (
+            consts.ApiValItemStatus.failed,
+            consts.ApiModuleState.overload,
+            consts.ApiModuleState.active)}
     # Action
     api_none_module.change_module(state=consts.ApiModuleState.active)
     api_passive_module.change_module(state=consts.ApiModuleState.active)
@@ -73,10 +101,20 @@ def test_ship_modules(client, consts):
     # Verification
     api_val = api_fit.validate(options=ValOptions(module_state=True))
     assert api_val.passed is False
-    assert api_val.details.module_state == {
-        api_none_module.id: [consts.ApiModuleState.active, consts.ApiModuleState.offline],
-        api_passive_module.id: [consts.ApiModuleState.active, consts.ApiModuleState.offline],
-        api_online_module.id: [consts.ApiModuleState.active, consts.ApiModuleState.online]}
+    assert api_val.details.module_state.status == consts.ApiValStatus.failed
+    assert api_val.details.module_state.fail == {
+        api_none_module.id: (
+            consts.ApiValItemStatus.failed,
+            consts.ApiModuleState.active,
+            consts.ApiModuleState.offline),
+        api_passive_module.id: (
+            consts.ApiValItemStatus.failed,
+            consts.ApiModuleState.active,
+            consts.ApiModuleState.offline),
+        api_online_module.id: (
+            consts.ApiValItemStatus.failed,
+            consts.ApiModuleState.active,
+            consts.ApiModuleState.online)}
     # Action
     api_none_module.change_module(state=consts.ApiModuleState.online)
     api_passive_module.change_module(state=consts.ApiModuleState.online)
@@ -86,9 +124,16 @@ def test_ship_modules(client, consts):
     # Verification
     api_val = api_fit.validate(options=ValOptions(module_state=True))
     assert api_val.passed is False
-    assert api_val.details.module_state == {
-        api_none_module.id: [consts.ApiModuleState.online, consts.ApiModuleState.offline],
-        api_passive_module.id: [consts.ApiModuleState.online, consts.ApiModuleState.offline]}
+    assert api_val.details.module_state.status == consts.ApiValStatus.failed
+    assert api_val.details.module_state.fail == {
+        api_none_module.id: (
+            consts.ApiValItemStatus.failed,
+            consts.ApiModuleState.online,
+            consts.ApiModuleState.offline),
+        api_passive_module.id: (
+            consts.ApiValItemStatus.failed,
+            consts.ApiModuleState.online,
+            consts.ApiModuleState.offline)}
     # Action
     api_none_module.change_module(state=consts.ApiModuleState.offline)
     api_passive_module.change_module(state=consts.ApiModuleState.offline)
@@ -98,8 +143,7 @@ def test_ship_modules(client, consts):
     # Verification
     api_val = api_fit.validate(options=ValOptions(module_state=True))
     assert api_val.passed is True
-    with check_no_field():
-        api_val.details  # ruff:ignore[useless-expression]
+    assert api_val.details.module_state.status == consts.ApiValStatus.passed
 
 
 def test_structure_modules(client, consts):
@@ -127,8 +171,7 @@ def test_structure_modules(client, consts):
     # Verification
     api_val = api_fit.validate(options=ValOptions(module_state=True))
     assert api_val.passed is True
-    with check_no_field():
-        api_val.details  # ruff:ignore[useless-expression]
+    assert api_val.details.module_state.status == consts.ApiValStatus.passed
     # Action
     api_none_module.change_module(state=consts.ApiModuleState.online)
     api_passive_module.change_module(state=consts.ApiModuleState.online)
@@ -138,9 +181,16 @@ def test_structure_modules(client, consts):
     # Verification
     api_val = api_fit.validate(options=ValOptions(module_state=True))
     assert api_val.passed is False
-    assert api_val.details.module_state == {
-        api_none_module.id: [consts.ApiModuleState.online, consts.ApiModuleState.offline],
-        api_passive_module.id: [consts.ApiModuleState.online, consts.ApiModuleState.offline]}
+    assert api_val.details.module_state.status == consts.ApiValStatus.failed
+    assert api_val.details.module_state.fail == {
+        api_none_module.id: (
+            consts.ApiValItemStatus.failed,
+            consts.ApiModuleState.online,
+            consts.ApiModuleState.offline),
+        api_passive_module.id: (
+            consts.ApiValItemStatus.failed,
+            consts.ApiModuleState.online,
+            consts.ApiModuleState.offline)}
     # Action
     api_none_module.change_module(state=consts.ApiModuleState.active)
     api_passive_module.change_module(state=consts.ApiModuleState.active)
@@ -150,10 +200,20 @@ def test_structure_modules(client, consts):
     # Verification
     api_val = api_fit.validate(options=ValOptions(module_state=True))
     assert api_val.passed is False
-    assert api_val.details.module_state == {
-        api_none_module.id: [consts.ApiModuleState.active, consts.ApiModuleState.offline],
-        api_passive_module.id: [consts.ApiModuleState.active, consts.ApiModuleState.offline],
-        api_online_module.id: [consts.ApiModuleState.active, consts.ApiModuleState.online]}
+    assert api_val.details.module_state.status == consts.ApiValStatus.failed
+    assert api_val.details.module_state.fail == {
+        api_none_module.id: (
+            consts.ApiValItemStatus.failed,
+            consts.ApiModuleState.active,
+            consts.ApiModuleState.offline),
+        api_passive_module.id: (
+            consts.ApiValItemStatus.failed,
+            consts.ApiModuleState.active,
+            consts.ApiModuleState.offline),
+        api_online_module.id: (
+            consts.ApiValItemStatus.failed,
+            consts.ApiModuleState.active,
+            consts.ApiModuleState.online)}
     # Action
     api_none_module.change_module(state=consts.ApiModuleState.overload)
     api_passive_module.change_module(state=consts.ApiModuleState.overload)
@@ -163,11 +223,24 @@ def test_structure_modules(client, consts):
     # Verification
     api_val = api_fit.validate(options=ValOptions(module_state=True))
     assert api_val.passed is False
-    assert api_val.details.module_state == {
-        api_none_module.id: [consts.ApiModuleState.overload, consts.ApiModuleState.offline],
-        api_passive_module.id: [consts.ApiModuleState.overload, consts.ApiModuleState.offline],
-        api_online_module.id: [consts.ApiModuleState.overload, consts.ApiModuleState.online],
-        api_active_module.id: [consts.ApiModuleState.overload, consts.ApiModuleState.active]}
+    assert api_val.details.module_state.status == consts.ApiValStatus.failed
+    assert api_val.details.module_state.fail == {
+        api_none_module.id: (
+            consts.ApiValItemStatus.failed,
+            consts.ApiModuleState.overload,
+            consts.ApiModuleState.offline),
+        api_passive_module.id: (
+            consts.ApiValItemStatus.failed,
+            consts.ApiModuleState.overload,
+            consts.ApiModuleState.offline),
+        api_online_module.id: (
+            consts.ApiValItemStatus.failed,
+            consts.ApiModuleState.overload,
+            consts.ApiModuleState.online),
+        api_active_module.id: (
+            consts.ApiValItemStatus.failed,
+            consts.ApiModuleState.overload,
+            consts.ApiModuleState.active)}
     # Action
     api_none_module.change_module(state=consts.ApiModuleState.active)
     api_passive_module.change_module(state=consts.ApiModuleState.active)
@@ -177,10 +250,20 @@ def test_structure_modules(client, consts):
     # Verification
     api_val = api_fit.validate(options=ValOptions(module_state=True))
     assert api_val.passed is False
-    assert api_val.details.module_state == {
-        api_none_module.id: [consts.ApiModuleState.active, consts.ApiModuleState.offline],
-        api_passive_module.id: [consts.ApiModuleState.active, consts.ApiModuleState.offline],
-        api_online_module.id: [consts.ApiModuleState.active, consts.ApiModuleState.online]}
+    assert api_val.details.module_state.status == consts.ApiValStatus.failed
+    assert api_val.details.module_state.fail == {
+        api_none_module.id: (
+            consts.ApiValItemStatus.failed,
+            consts.ApiModuleState.active,
+            consts.ApiModuleState.offline),
+        api_passive_module.id: (
+            consts.ApiValItemStatus.failed,
+            consts.ApiModuleState.active,
+            consts.ApiModuleState.offline),
+        api_online_module.id: (
+            consts.ApiValItemStatus.failed,
+            consts.ApiModuleState.active,
+            consts.ApiModuleState.online)}
     # Action
     api_none_module.change_module(state=consts.ApiModuleState.online)
     api_passive_module.change_module(state=consts.ApiModuleState.online)
@@ -190,9 +273,16 @@ def test_structure_modules(client, consts):
     # Verification
     api_val = api_fit.validate(options=ValOptions(module_state=True))
     assert api_val.passed is False
-    assert api_val.details.module_state == {
-        api_none_module.id: [consts.ApiModuleState.online, consts.ApiModuleState.offline],
-        api_passive_module.id: [consts.ApiModuleState.online, consts.ApiModuleState.offline]}
+    assert api_val.details.module_state.status == consts.ApiValStatus.failed
+    assert api_val.details.module_state.fail == {
+        api_none_module.id: (
+            consts.ApiValItemStatus.failed,
+            consts.ApiModuleState.online,
+            consts.ApiModuleState.offline),
+        api_passive_module.id: (
+            consts.ApiValItemStatus.failed,
+            consts.ApiModuleState.online,
+            consts.ApiModuleState.offline)}
     # Action
     api_none_module.change_module(state=consts.ApiModuleState.offline)
     api_passive_module.change_module(state=consts.ApiModuleState.offline)
@@ -202,8 +292,7 @@ def test_structure_modules(client, consts):
     # Verification
     api_val = api_fit.validate(options=ValOptions(module_state=True))
     assert api_val.passed is True
-    with check_no_field():
-        api_val.details  # ruff:ignore[useless-expression]
+    assert api_val.details.module_state.status == consts.ApiValStatus.passed
 
 
 def test_multiple_states(client, consts):
@@ -228,8 +317,7 @@ def test_multiple_states(client, consts):
     # Verification
     api_val = api_fit.validate(options=ValOptions(module_state=True))
     assert api_val.passed is True
-    with check_no_field():
-        api_val.details  # ruff:ignore[useless-expression]
+    assert api_val.details.module_state.status == consts.ApiValStatus.passed
     # Action
     api_none_module.change_module(state=consts.ApiModuleState.overload)
     api_passive_module.change_module(state=consts.ApiModuleState.overload)
@@ -239,11 +327,24 @@ def test_multiple_states(client, consts):
     # Verification
     api_val = api_fit.validate(options=ValOptions(module_state=True))
     assert api_val.passed is False
-    assert api_val.details.module_state == {
-        api_none_module.id: [consts.ApiModuleState.overload, consts.ApiModuleState.offline],
-        api_passive_module.id: [consts.ApiModuleState.overload, consts.ApiModuleState.offline],
-        api_online_module.id: [consts.ApiModuleState.overload, consts.ApiModuleState.online],
-        api_active_module.id: [consts.ApiModuleState.overload, consts.ApiModuleState.active]}
+    assert api_val.details.module_state.status == consts.ApiValStatus.failed
+    assert api_val.details.module_state.fail == {
+        api_none_module.id: (
+            consts.ApiValItemStatus.failed,
+            consts.ApiModuleState.overload,
+            consts.ApiModuleState.offline),
+        api_passive_module.id: (
+            consts.ApiValItemStatus.failed,
+            consts.ApiModuleState.overload,
+            consts.ApiModuleState.offline),
+        api_online_module.id: (
+            consts.ApiValItemStatus.failed,
+            consts.ApiModuleState.overload,
+            consts.ApiModuleState.online),
+        api_active_module.id: (
+            consts.ApiValItemStatus.failed,
+            consts.ApiModuleState.overload,
+            consts.ApiModuleState.active)}
     # Action
     api_none_module.change_module(state=consts.ApiModuleState.online)
     api_passive_module.change_module(state=consts.ApiModuleState.online)
@@ -253,9 +354,16 @@ def test_multiple_states(client, consts):
     # Verification
     api_val = api_fit.validate(options=ValOptions(module_state=True))
     assert api_val.passed is False
-    assert api_val.details.module_state == {
-        api_none_module.id: [consts.ApiModuleState.online, consts.ApiModuleState.offline],
-        api_passive_module.id: [consts.ApiModuleState.online, consts.ApiModuleState.offline]}
+    assert api_val.details.module_state.status == consts.ApiValStatus.failed
+    assert api_val.details.module_state.fail == {
+        api_none_module.id: (
+            consts.ApiValItemStatus.failed,
+            consts.ApiModuleState.online,
+            consts.ApiModuleState.offline),
+        api_passive_module.id: (
+            consts.ApiValItemStatus.failed,
+            consts.ApiModuleState.online,
+            consts.ApiModuleState.offline)}
     # Action
     api_none_module.change_module(state=consts.ApiModuleState.overload)
     api_passive_module.change_module(state=consts.ApiModuleState.overload)
@@ -265,11 +373,24 @@ def test_multiple_states(client, consts):
     # Verification
     api_val = api_fit.validate(options=ValOptions(module_state=True))
     assert api_val.passed is False
-    assert api_val.details.module_state == {
-        api_none_module.id: [consts.ApiModuleState.overload, consts.ApiModuleState.offline],
-        api_passive_module.id: [consts.ApiModuleState.overload, consts.ApiModuleState.offline],
-        api_online_module.id: [consts.ApiModuleState.overload, consts.ApiModuleState.online],
-        api_active_module.id: [consts.ApiModuleState.overload, consts.ApiModuleState.active]}
+    assert api_val.details.module_state.status == consts.ApiValStatus.failed
+    assert api_val.details.module_state.fail == {
+        api_none_module.id: (
+            consts.ApiValItemStatus.failed,
+            consts.ApiModuleState.overload,
+            consts.ApiModuleState.offline),
+        api_passive_module.id: (
+            consts.ApiValItemStatus.failed,
+            consts.ApiModuleState.overload,
+            consts.ApiModuleState.offline),
+        api_online_module.id: (
+            consts.ApiValItemStatus.failed,
+            consts.ApiModuleState.overload,
+            consts.ApiModuleState.online),
+        api_active_module.id: (
+            consts.ApiValItemStatus.failed,
+            consts.ApiModuleState.overload,
+            consts.ApiModuleState.active)}
     # Action
     api_none_module.change_module(state=consts.ApiModuleState.offline)
     api_passive_module.change_module(state=consts.ApiModuleState.offline)
@@ -279,8 +400,7 @@ def test_multiple_states(client, consts):
     # Verification
     api_val = api_fit.validate(options=ValOptions(module_state=True))
     assert api_val.passed is True
-    with check_no_field():
-        api_val.details  # ruff:ignore[useless-expression]
+    assert api_val.details.module_state.status == consts.ApiValStatus.passed
     # Action
     api_none_module.change_module(state=consts.ApiModuleState.active)
     api_passive_module.change_module(state=consts.ApiModuleState.active)
@@ -290,10 +410,20 @@ def test_multiple_states(client, consts):
     # Verification
     api_val = api_fit.validate(options=ValOptions(module_state=True))
     assert api_val.passed is False
-    assert api_val.details.module_state == {
-        api_none_module.id: [consts.ApiModuleState.active, consts.ApiModuleState.offline],
-        api_passive_module.id: [consts.ApiModuleState.active, consts.ApiModuleState.offline],
-        api_online_module.id: [consts.ApiModuleState.active, consts.ApiModuleState.online]}
+    assert api_val.details.module_state.status == consts.ApiValStatus.failed
+    assert api_val.details.module_state.fail == {
+        api_none_module.id: (
+            consts.ApiValItemStatus.failed,
+            consts.ApiModuleState.active,
+            consts.ApiModuleState.offline),
+        api_passive_module.id: (
+            consts.ApiValItemStatus.failed,
+            consts.ApiModuleState.active,
+            consts.ApiModuleState.offline),
+        api_online_module.id: (
+            consts.ApiValItemStatus.failed,
+            consts.ApiModuleState.active,
+            consts.ApiModuleState.online)}
     # Action
     api_none_module.change_module(state=consts.ApiModuleState.offline)
     api_passive_module.change_module(state=consts.ApiModuleState.offline)
@@ -303,8 +433,7 @@ def test_multiple_states(client, consts):
     # Verification
     api_val = api_fit.validate(options=ValOptions(module_state=True))
     assert api_val.passed is True
-    with check_no_field():
-        api_val.details  # ruff:ignore[useless-expression]
+    assert api_val.details.module_state.status == consts.ApiValStatus.passed
 
 
 def test_known_failures(client, consts):
@@ -320,20 +449,28 @@ def test_known_failures(client, consts):
     # Verification
     api_val = api_fit.validate(options=ValOptions(module_state=[api_module2.id]))
     assert api_val.passed is False
-    assert api_val.details.module_state == {
-        api_module3.id: [consts.ApiModuleState.online, consts.ApiModuleState.offline]}
+    assert api_val.details.module_state.status == consts.ApiValStatus.failed
+    assert api_val.details.module_state.fail == {
+        api_module2.id: (consts.ApiValItemStatus.kf, consts.ApiModuleState.online, consts.ApiModuleState.offline),
+        api_module3.id: (consts.ApiValItemStatus.failed, consts.ApiModuleState.online, consts.ApiModuleState.offline)}
     api_val = api_fit.validate(options=ValOptions(module_state=[api_module3.id]))
     assert api_val.passed is False
-    assert api_val.details.module_state == {
-        api_module2.id: [consts.ApiModuleState.online, consts.ApiModuleState.offline]}
+    assert api_val.details.module_state.status == consts.ApiValStatus.failed
+    assert api_val.details.module_state.fail == {
+        api_module2.id: (consts.ApiValItemStatus.failed, consts.ApiModuleState.online, consts.ApiModuleState.offline),
+        api_module3.id: (consts.ApiValItemStatus.kf, consts.ApiModuleState.online, consts.ApiModuleState.offline)}
     api_val = api_fit.validate(options=ValOptions(module_state=[api_module2.id, api_module3.id]))
     assert api_val.passed is True
-    with check_no_field():
-        api_val.details  # ruff:ignore[useless-expression]
+    assert api_val.details.module_state.status == consts.ApiValStatus.passed_kfs
+    assert api_val.details.module_state.fail == {
+        api_module2.id: (consts.ApiValItemStatus.kf, consts.ApiModuleState.online, consts.ApiModuleState.offline),
+        api_module3.id: (consts.ApiValItemStatus.kf, consts.ApiModuleState.online, consts.ApiModuleState.offline)}
     api_val = api_fit.validate(options=ValOptions(module_state=[api_module2.id, api_other.id, api_module3.id]))
     assert api_val.passed is True
-    with check_no_field():
-        api_val.details  # ruff:ignore[useless-expression]
+    assert api_val.details.module_state.status == consts.ApiValStatus.passed_kfs
+    assert api_val.details.module_state.fail == {
+        api_module2.id: (consts.ApiValItemStatus.kf, consts.ApiModuleState.online, consts.ApiModuleState.offline),
+        api_module3.id: (consts.ApiValItemStatus.kf, consts.ApiModuleState.online, consts.ApiModuleState.offline)}
 
 
 def test_mutation(client, consts):
@@ -352,22 +489,23 @@ def test_mutation(client, consts):
     # Verification
     api_val = api_fit.validate(options=ValOptions(module_state=True))
     assert api_val.passed is False
-    assert api_val.details.module_state == {
-        api_module.id: [consts.ApiModuleState.online, consts.ApiModuleState.offline]}
+    assert api_val.details.module_state.status == consts.ApiValStatus.failed
+    assert api_val.details.module_state.fail == {
+        api_module.id: (consts.ApiValItemStatus.failed, consts.ApiModuleState.online, consts.ApiModuleState.offline)}
     # Action
     api_module.change_module(mutation=eve_mutator_id)
     # Verification
     api_val = api_fit.validate(options=ValOptions(module_state=True))
     assert api_val.passed is True
-    with check_no_field():
-        api_val.details  # ruff:ignore[useless-expression]
+    assert api_val.details.module_state.status == consts.ApiValStatus.passed
     # Action
     api_module.change_module(mutation=None)
     # Verification
     api_val = api_fit.validate(options=ValOptions(module_state=True))
     assert api_val.passed is False
-    assert api_val.details.module_state == {
-        api_module.id: [consts.ApiModuleState.online, consts.ApiModuleState.offline]}
+    assert api_val.details.module_state.status == consts.ApiValStatus.failed
+    assert api_val.details.module_state.fail == {
+        api_module.id: (consts.ApiValItemStatus.failed, consts.ApiModuleState.online, consts.ApiModuleState.offline)}
 
 
 def test_not_loaded(client, consts):
@@ -382,8 +520,7 @@ def test_not_loaded(client, consts):
     # Verification
     api_val = api_fit.validate(options=ValOptions(module_state=True))
     assert api_val.passed is True
-    with check_no_field():
-        api_val.details  # ruff:ignore[useless-expression]
+    assert api_val.details.module_state.status == consts.ApiValStatus.passed
 
 
 def test_criterion_item_kind(client, consts):
@@ -416,5 +553,6 @@ def test_criterion_item_kind(client, consts):
     assert len(api_fighter.autocharges) == 1
     api_val = api_fit.validate(options=ValOptions(module_state=[api_module.id]))
     assert api_val.passed is True
-    with check_no_field():
-        api_val.details  # ruff:ignore[useless-expression]
+    assert api_val.details.module_state.status == consts.ApiValStatus.passed_kfs
+    assert api_val.details.module_state.fail == {
+        api_module.id: (consts.ApiValItemStatus.kf, consts.ApiModuleState.overload, consts.ApiModuleState.offline)}

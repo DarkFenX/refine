@@ -1,4 +1,4 @@
-from fw import approx, check_no_field
+from fw import approx
 from fw.api import ValOptions
 
 
@@ -20,27 +20,27 @@ def test_main(client, consts):
     # Verification
     api_val = api_fit.validate(options=ValOptions(capital_module=True))
     assert api_val.passed is False
-    assert api_val.details.capital_module == (3500, {api_cap_module.id: 4000})
+    assert api_val.details.capital_module.status == consts.ApiValStatus.failed
+    assert api_val.details.capital_module.fail == (3500, {api_cap_module.id: (consts.ApiValItemStatus.failed, 4000)})
     # Action
     api_fit.set_ship(type_id=eve_cap_ship_id)
     # Verification
     api_val = api_fit.validate(options=ValOptions(capital_module=True))
     assert api_val.passed is True
-    with check_no_field():
-        api_val.details  # ruff:ignore[useless-expression]
+    assert api_val.details.capital_module.status == consts.ApiValStatus.passed
     # Action
     api_fit.set_ship(type_id=eve_struct_id)
     # Verification
     api_val = api_fit.validate(options=ValOptions(capital_module=True))
     assert api_val.passed is True
-    with check_no_field():
-        api_val.details  # ruff:ignore[useless-expression]
+    assert api_val.details.capital_module.status == consts.ApiValStatus.passed
     # Action
     api_fit.set_ship(type_id=eve_subcap_ship_id)
     # Verification
     api_val = api_fit.validate(options=ValOptions(capital_module=True))
     assert api_val.passed is False
-    assert api_val.details.capital_module == (3500, {api_cap_module.id: 4000})
+    assert api_val.details.capital_module.status == consts.ApiValStatus.failed
+    assert api_val.details.capital_module.fail == (3500, {api_cap_module.id: (consts.ApiValItemStatus.failed, 4000)})
 
 
 def test_multiple(client, consts):
@@ -56,7 +56,10 @@ def test_multiple(client, consts):
     # Verification
     api_val = api_fit.validate(options=ValOptions(capital_module=True))
     assert api_val.passed is False
-    assert api_val.details.capital_module == (3500, {api_module1.id: 4000, api_module2.id: 4000})
+    assert api_val.details.capital_module.status == consts.ApiValStatus.failed
+    assert api_val.details.capital_module.fail == (3500, {
+        api_module1.id: (consts.ApiValItemStatus.failed, 4000),
+        api_module2.id: (consts.ApiValItemStatus.failed, 4000)})
 
 
 def test_known_failures(client, consts):
@@ -74,18 +77,28 @@ def test_known_failures(client, consts):
     # Verification
     api_val = api_fit.validate(options=ValOptions(capital_module=[api_module1.id]))
     assert api_val.passed is False
-    assert api_val.details.capital_module == (3500, {api_module2.id: 4000})
+    assert api_val.details.capital_module.status == consts.ApiValStatus.failed
+    assert api_val.details.capital_module.fail == (3500, {
+        api_module1.id: (consts.ApiValItemStatus.kf, 4000),
+        api_module2.id: (consts.ApiValItemStatus.failed, 4000)})
     api_val = api_fit.validate(options=ValOptions(capital_module=[api_module2.id]))
     assert api_val.passed is False
-    assert api_val.details.capital_module == (3500, {api_module1.id: 4000})
+    assert api_val.details.capital_module.status == consts.ApiValStatus.failed
+    assert api_val.details.capital_module.fail == (3500, {
+        api_module1.id: (consts.ApiValItemStatus.failed, 4000),
+        api_module2.id: (consts.ApiValItemStatus.kf, 4000)})
     api_val = api_fit.validate(options=ValOptions(capital_module=[api_module1.id, api_module2.id]))
     assert api_val.passed is True
-    with check_no_field():
-        api_val.details  # ruff:ignore[useless-expression]
+    assert api_val.details.capital_module.status == consts.ApiValStatus.passed_kfs
+    assert api_val.details.capital_module.fail == (3500, {
+        api_module1.id: (consts.ApiValItemStatus.kf, 4000),
+        api_module2.id: (consts.ApiValItemStatus.kf, 4000)})
     api_val = api_fit.validate(options=ValOptions(capital_module=[api_module1.id, api_other.id, api_module2.id]))
     assert api_val.passed is True
-    with check_no_field():
-        api_val.details  # ruff:ignore[useless-expression]
+    assert api_val.details.capital_module.status == consts.ApiValStatus.passed_kfs
+    assert api_val.details.capital_module.fail == (3500, {
+        api_module1.id: (consts.ApiValItemStatus.kf, 4000),
+        api_module2.id: (consts.ApiValItemStatus.kf, 4000)})
 
 
 def test_modified(client, consts):
@@ -112,16 +125,14 @@ def test_modified(client, consts):
     assert api_module.update().attrs[eve_vol_attr_id].modified == approx(4000)
     api_val = api_fit.validate(options=ValOptions(capital_module=True))
     assert api_val.passed is True
-    with check_no_field():
-        api_val.details  # ruff:ignore[useless-expression]
+    assert api_val.details.capital_module.status == consts.ApiValStatus.passed
     # Action
     api_implant.remove()
     # Verification
     assert api_module.update().attrs[eve_vol_attr_id].modified == approx(3000)
     api_val = api_fit.validate(options=ValOptions(capital_module=True))
     assert api_val.passed is True
-    with check_no_field():
-        api_val.details  # ruff:ignore[useless-expression]
+    assert api_val.details.capital_module.status == consts.ApiValStatus.passed
 
 
 def test_mutation(client, consts):
@@ -141,21 +152,20 @@ def test_mutation(client, consts):
     # Verification
     api_val = api_fit.validate(options=ValOptions(capital_module=True))
     assert api_val.passed is True
-    with check_no_field():
-        api_val.details  # ruff:ignore[useless-expression]
+    assert api_val.details.capital_module.status == consts.ApiValStatus.passed
     # Action
     api_module.change_module(mutation=eve_mutator_id)
     # Verification
     api_val = api_fit.validate(options=ValOptions(capital_module=True))
     assert api_val.passed is False
-    assert api_val.details.capital_module == (3500, {api_module.id: 4000})
+    assert api_val.details.capital_module.status == consts.ApiValStatus.failed
+    assert api_val.details.capital_module.fail == (3500, {api_module.id: (consts.ApiValItemStatus.failed, 4000)})
     # Action
     api_module.change_module(mutation=None)
     # Verification
     api_val = api_fit.validate(options=ValOptions(capital_module=True))
     assert api_val.passed is True
-    with check_no_field():
-        api_val.details  # ruff:ignore[useless-expression]
+    assert api_val.details.capital_module.status == consts.ApiValStatus.passed
 
 
 def test_no_ship(client, consts):
@@ -168,8 +178,7 @@ def test_no_ship(client, consts):
     # Verification
     api_val = api_fit.validate(options=ValOptions(capital_module=True))
     assert api_val.passed is True
-    with check_no_field():
-        api_val.details  # ruff:ignore[useless-expression]
+    assert api_val.details.capital_module.status == consts.ApiValStatus.passed
 
 
 def test_no_value(client, consts):
@@ -184,8 +193,7 @@ def test_no_value(client, consts):
     # Verification
     api_val = api_fit.validate(options=ValOptions(capital_module=True))
     assert api_val.passed is True
-    with check_no_field():
-        api_val.details  # ruff:ignore[useless-expression]
+    assert api_val.details.capital_module.status == consts.ApiValStatus.passed
 
 
 def test_no_skill(client, consts):
@@ -201,8 +209,7 @@ def test_no_skill(client, consts):
     # Verification
     api_val = api_fit.validate(options=ValOptions(capital_module=True))
     assert api_val.passed is True
-    with check_no_field():
-        api_val.details  # ruff:ignore[useless-expression]
+    assert api_val.details.capital_module.status == consts.ApiValStatus.passed
 
 
 def test_no_attr(client, consts):
@@ -217,8 +224,7 @@ def test_no_attr(client, consts):
     # Verification - validation passes if volume attribute does not exist
     api_val = api_fit.validate(options=ValOptions(capital_module=True))
     assert api_val.passed is True
-    with check_no_field():
-        api_val.details  # ruff:ignore[useless-expression]
+    assert api_val.details.capital_module.status == consts.ApiValStatus.passed
 
 
 def test_not_loaded_ship(client, consts):
@@ -233,8 +239,7 @@ def test_not_loaded_ship(client, consts):
     # Verification
     api_val = api_fit.validate(options=ValOptions(capital_module=True))
     assert api_val.passed is True
-    with check_no_field():
-        api_val.details  # ruff:ignore[useless-expression]
+    assert api_val.details.capital_module.status == consts.ApiValStatus.passed
 
 
 def test_not_loaded_module(client, consts):
@@ -249,8 +254,7 @@ def test_not_loaded_module(client, consts):
     # Verification
     api_val = api_fit.validate(options=ValOptions(capital_module=True))
     assert api_val.passed is True
-    with check_no_field():
-        api_val.details  # ruff:ignore[useless-expression]
+    assert api_val.details.capital_module.status == consts.ApiValStatus.passed
 
 
 def test_criterion_module_state(client, consts):
@@ -265,7 +269,8 @@ def test_criterion_module_state(client, consts):
     # Verification
     api_val = api_fit.validate(options=ValOptions(capital_module=True))
     assert api_val.passed is False
-    assert api_val.details.capital_module == (3500, {api_module.id: 4000})
+    assert api_val.details.capital_module.status == consts.ApiValStatus.failed
+    assert api_val.details.capital_module.fail == (3500, {api_module.id: (consts.ApiValItemStatus.failed, 4000)})
 
 
 def test_criterion_volume(client, consts):
@@ -284,7 +289,8 @@ def test_criterion_volume(client, consts):
     # Verification
     api_val = api_fit.validate(options=ValOptions(capital_module=True))
     assert api_val.passed is False
-    assert api_val.details.capital_module == (3500, {api_cap_module.id: 3500.1})
+    assert api_val.details.capital_module.status == consts.ApiValStatus.failed
+    assert api_val.details.capital_module.fail == (3500, {api_cap_module.id: (consts.ApiValItemStatus.failed, 3500.1)})
 
 
 def test_criterion_item_category(client, consts):
@@ -299,8 +305,7 @@ def test_criterion_item_category(client, consts):
     # Verification
     api_val = api_fit.validate(options=ValOptions(capital_module=True))
     assert api_val.passed is True
-    with check_no_field():
-        api_val.details  # ruff:ignore[useless-expression]
+    assert api_val.details.capital_module.status == consts.ApiValStatus.passed
 
 
 def test_criterion_item_kind(client, consts):
@@ -335,5 +340,4 @@ def test_criterion_item_kind(client, consts):
     assert len(api_fighter.autocharges) == 1
     api_val = api_fit.validate(options=ValOptions(capital_module=True))
     assert api_val.passed is True
-    with check_no_field():
-        api_val.details  # ruff:ignore[useless-expression]
+    assert api_val.details.capital_module.status == consts.ApiValStatus.passed

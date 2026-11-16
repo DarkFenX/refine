@@ -1,6 +1,8 @@
 import dataclasses
 import typing
 
+from fw.consts import ApiValItemStatus
+
 
 @dataclasses.dataclass
 class ValShipLimitFail:
@@ -26,11 +28,13 @@ class ValShipLimitFail:
 @dataclasses.dataclass
 class ValShipLimitItemInfo:
 
+    status: ApiValItemStatus
     allowed_type_ids: list[int]
     allowed_group_ids: list[int]
 
     def __init__(self, *, data: list | tuple) -> None:
-        allowed_type_ids, allowed_group_ids = data
+        status, allowed_type_ids, allowed_group_ids = data
+        self.status = ApiValItemStatus(status)
         self.allowed_type_ids = sorted(allowed_type_ids)
         self.allowed_group_ids = sorted(allowed_group_ids)
 
@@ -42,8 +46,8 @@ class ValShipLimitItemInfo:
         if isinstance(other, tuple):
             other = list(other)
         if isinstance(other, list):
-            if len(other) >= 1:
-                other[0] = sorted(other[0])
             if len(other) >= 2:
                 other[1] = sorted(other[1])
-        return [self.allowed_type_ids, self.allowed_group_ids] == other
+            if len(other) >= 3:
+                other[2] = sorted(other[2])
+        return [self.status, self.allowed_type_ids, self.allowed_group_ids] == other

@@ -1,4 +1,4 @@
-from fw import approx, check_no_field
+from fw import approx
 from fw.api import ValOptions
 
 
@@ -133,277 +133,390 @@ def test_flags_service(client, consts):
     # Verification
     api_val = api_fit.validate(options=ValOptions(sec_zone_fitted=True))
     assert api_val.passed is False
-    assert api_val.details.sec_zone_fitted.zone == consts.ApiSecZone.hisec
-    assert api_val.details.sec_zone_fitted.items == {
-        api_service2.id: sorted([consts.ApiSecZone.nullsec, consts.ApiSecZone.wspace, consts.ApiSecZone.hazard]),
-        api_service3.id: sorted([
+    assert api_val.details.sec_zone_fitted.status == consts.ApiValStatus.failed
+    assert api_val.details.sec_zone_fitted.fail.zone == consts.ApiSecZone.hisec
+    assert api_val.details.sec_zone_fitted.fail.items == {
+        api_service2.id: (consts.ApiValItemStatus.failed, sorted([
+            consts.ApiSecZone.nullsec,
+            consts.ApiSecZone.wspace,
+            consts.ApiSecZone.hazard])),
+        api_service3.id: (consts.ApiValItemStatus.failed, sorted([
             consts.ApiSecZone.lowsec,
             consts.ApiSecZone.nullsec,
             consts.ApiSecZone.wspace,
-            consts.ApiSecZone.hazard]),
-        api_service7.id: sorted([consts.ApiSecZone.nullsec, consts.ApiSecZone.wspace, consts.ApiSecZone.hazard]),
-        api_service8.id: sorted([consts.ApiSecZone.nullsec, consts.ApiSecZone.wspace.wspace]),
-        api_service9.id: sorted([
+            consts.ApiSecZone.hazard])),
+        api_service7.id: (consts.ApiValItemStatus.failed, sorted([
+            consts.ApiSecZone.nullsec,
+            consts.ApiSecZone.wspace,
+            consts.ApiSecZone.hazard])),
+        api_service8.id: (consts.ApiValItemStatus.failed, sorted([
+            consts.ApiSecZone.nullsec,
+            consts.ApiSecZone.wspace.wspace])),
+        api_service9.id: (consts.ApiValItemStatus.failed, sorted([
             consts.ApiSecZone.hisec_c5,
             consts.ApiSecZone.nullsec,
             consts.ApiSecZone.wspace,
-            consts.ApiSecZone.hazard]),
-        api_service10.id: sorted([
+            consts.ApiSecZone.hazard])),
+        api_service10.id: (consts.ApiValItemStatus.failed, sorted([
             consts.ApiSecZone.lowsec_c5,
             consts.ApiSecZone.nullsec,
             consts.ApiSecZone.wspace,
-            consts.ApiSecZone.hazard]),
-        api_service11.id: sorted([consts.ApiSecZone.lowsec, consts.ApiSecZone.nullsec, consts.ApiSecZone.wspace]),
-        api_service12.id: sorted([
-            consts.ApiSecZone.hisec_c5,
+            consts.ApiSecZone.hazard])),
+        api_service11.id: (consts.ApiValItemStatus.failed, sorted([
             consts.ApiSecZone.lowsec,
             consts.ApiSecZone.nullsec,
-            consts.ApiSecZone.wspace,
-            consts.ApiSecZone.hazard]),
-        api_service13.id: sorted([
-            consts.ApiSecZone.lowsec,
-            consts.ApiSecZone.nullsec,
-            consts.ApiSecZone.wspace,
-            consts.ApiSecZone.hazard]),
-        api_service17.id: sorted([consts.ApiSecZone.nullsec, consts.ApiSecZone.wspace]),
-        api_service18.id: sorted([
-            consts.ApiSecZone.hisec_c5,
-            consts.ApiSecZone.nullsec,
-            consts.ApiSecZone.wspace,
-            consts.ApiSecZone.hazard]),
-        api_service19.id: sorted([
-            consts.ApiSecZone.lowsec_c5,
-            consts.ApiSecZone.nullsec,
-            consts.ApiSecZone.wspace,
-            consts.ApiSecZone.hazard]),
-        api_service20.id: sorted([consts.ApiSecZone.hisec_c5, consts.ApiSecZone.nullsec, consts.ApiSecZone.wspace]),
-        api_service21.id: sorted([consts.ApiSecZone.lowsec_c5, consts.ApiSecZone.nullsec, consts.ApiSecZone.wspace]),
-        api_service22.id: sorted([
-            consts.ApiSecZone.hisec_c5,
-            consts.ApiSecZone.lowsec_c5,
-            consts.ApiSecZone.nullsec,
-            consts.ApiSecZone.wspace,
-            consts.ApiSecZone.hazard]),
-        api_service23.id: sorted([
-            consts.ApiSecZone.hisec_c5,
-            consts.ApiSecZone.lowsec,
-            consts.ApiSecZone.nullsec,
-            consts.ApiSecZone.wspace]),
-        api_service24.id: sorted([consts.ApiSecZone.lowsec, consts.ApiSecZone.nullsec, consts.ApiSecZone.wspace]),
-        api_service25.id: sorted([
+            consts.ApiSecZone.wspace])),
+        api_service12.id: (consts.ApiValItemStatus.failed, sorted([
             consts.ApiSecZone.hisec_c5,
             consts.ApiSecZone.lowsec,
             consts.ApiSecZone.nullsec,
             consts.ApiSecZone.wspace,
-            consts.ApiSecZone.hazard]),
-        api_service27.id: sorted([consts.ApiSecZone.hisec_c5, consts.ApiSecZone.nullsec, consts.ApiSecZone.wspace]),
-        api_service28.id: sorted([consts.ApiSecZone.lowsec_c5, consts.ApiSecZone.nullsec, consts.ApiSecZone.wspace]),
-        api_service29.id: sorted([
+            consts.ApiSecZone.hazard])),
+        api_service13.id: (consts.ApiValItemStatus.failed, sorted([
+            consts.ApiSecZone.lowsec,
+            consts.ApiSecZone.nullsec,
+            consts.ApiSecZone.wspace,
+            consts.ApiSecZone.hazard])),
+        api_service17.id: (consts.ApiValItemStatus.failed, sorted([
+            consts.ApiSecZone.nullsec,
+            consts.ApiSecZone.wspace])),
+        api_service18.id: (consts.ApiValItemStatus.failed, sorted([
+            consts.ApiSecZone.hisec_c5,
+            consts.ApiSecZone.nullsec,
+            consts.ApiSecZone.wspace,
+            consts.ApiSecZone.hazard])),
+        api_service19.id: (consts.ApiValItemStatus.failed, sorted([
+            consts.ApiSecZone.lowsec_c5,
+            consts.ApiSecZone.nullsec,
+            consts.ApiSecZone.wspace,
+            consts.ApiSecZone.hazard])),
+        api_service20.id: (consts.ApiValItemStatus.failed, sorted([
+            consts.ApiSecZone.hisec_c5,
+            consts.ApiSecZone.nullsec,
+            consts.ApiSecZone.wspace])),
+        api_service21.id: (consts.ApiValItemStatus.failed, sorted([
+            consts.ApiSecZone.lowsec_c5,
+            consts.ApiSecZone.nullsec,
+            consts.ApiSecZone.wspace])),
+        api_service22.id: (consts.ApiValItemStatus.failed, sorted([
             consts.ApiSecZone.hisec_c5,
             consts.ApiSecZone.lowsec_c5,
             consts.ApiSecZone.nullsec,
             consts.ApiSecZone.wspace,
-            consts.ApiSecZone.hazard]),
-        api_service30.id: sorted([
-            consts.ApiSecZone.hisec_c5,
-            consts.ApiSecZone.lowsec_c5,
-            consts.ApiSecZone.nullsec,
-            consts.ApiSecZone.wspace]),
-        api_service31.id: sorted([
+            consts.ApiSecZone.hazard])),
+        api_service23.id: (consts.ApiValItemStatus.failed, sorted([
             consts.ApiSecZone.hisec_c5,
             consts.ApiSecZone.lowsec,
             consts.ApiSecZone.nullsec,
-            consts.ApiSecZone.wspace]),
-        api_service32.id: sorted([
+            consts.ApiSecZone.wspace])),
+        api_service24.id: (consts.ApiValItemStatus.failed, sorted([
+            consts.ApiSecZone.lowsec,
+            consts.ApiSecZone.nullsec,
+            consts.ApiSecZone.wspace])),
+        api_service25.id: (consts.ApiValItemStatus.failed, sorted([
+            consts.ApiSecZone.hisec_c5,
+            consts.ApiSecZone.lowsec,
+            consts.ApiSecZone.nullsec,
+            consts.ApiSecZone.wspace,
+            consts.ApiSecZone.hazard])),
+        api_service27.id: (consts.ApiValItemStatus.failed, sorted([
+            consts.ApiSecZone.hisec_c5,
+            consts.ApiSecZone.nullsec,
+            consts.ApiSecZone.wspace])),
+        api_service28.id: (consts.ApiValItemStatus.failed, sorted([
+            consts.ApiSecZone.lowsec_c5,
+            consts.ApiSecZone.nullsec,
+            consts.ApiSecZone.wspace])),
+        api_service29.id: (consts.ApiValItemStatus.failed, sorted([
             consts.ApiSecZone.hisec_c5,
             consts.ApiSecZone.lowsec_c5,
             consts.ApiSecZone.nullsec,
-            consts.ApiSecZone.wspace])}
+            consts.ApiSecZone.wspace,
+            consts.ApiSecZone.hazard])),
+        api_service30.id: (consts.ApiValItemStatus.failed, sorted([
+            consts.ApiSecZone.hisec_c5,
+            consts.ApiSecZone.lowsec_c5,
+            consts.ApiSecZone.nullsec,
+            consts.ApiSecZone.wspace])),
+        api_service31.id: (consts.ApiValItemStatus.failed, sorted([
+            consts.ApiSecZone.hisec_c5,
+            consts.ApiSecZone.lowsec,
+            consts.ApiSecZone.nullsec,
+            consts.ApiSecZone.wspace])),
+        api_service32.id: (consts.ApiValItemStatus.failed, sorted([
+            consts.ApiSecZone.hisec_c5,
+            consts.ApiSecZone.lowsec_c5,
+            consts.ApiSecZone.nullsec,
+            consts.ApiSecZone.wspace]))}
     # Action
     api_sol.change(sec_zone=consts.ApiSecZone.hisec_c5)
     # Verification - same as hisec, but all the items which could be in corrupted hisec are not
     # failing
     api_val = api_fit.validate(options=ValOptions(sec_zone_fitted=True))
     assert api_val.passed is False
-    assert api_val.details.sec_zone_fitted.zone == consts.ApiSecZone.hisec_c5
-    assert api_val.details.sec_zone_fitted.items == {
-        api_service2.id: sorted([consts.ApiSecZone.nullsec, consts.ApiSecZone.wspace, consts.ApiSecZone.hazard]),
-        api_service3.id: sorted([
+    assert api_val.details.sec_zone_fitted.status == consts.ApiValStatus.failed
+    assert api_val.details.sec_zone_fitted.fail.zone == consts.ApiSecZone.hisec_c5
+    assert api_val.details.sec_zone_fitted.fail.items == {
+        api_service2.id: (consts.ApiValItemStatus.failed, sorted([
+            consts.ApiSecZone.nullsec,
+            consts.ApiSecZone.wspace,
+            consts.ApiSecZone.hazard])),
+        api_service3.id: (consts.ApiValItemStatus.failed, sorted([
             consts.ApiSecZone.lowsec,
             consts.ApiSecZone.nullsec,
             consts.ApiSecZone.wspace,
-            consts.ApiSecZone.hazard]),
-        api_service7.id: sorted([consts.ApiSecZone.nullsec, consts.ApiSecZone.wspace, consts.ApiSecZone.hazard]),
-        api_service8.id: sorted([consts.ApiSecZone.nullsec, consts.ApiSecZone.wspace.wspace]),
-        api_service10.id: sorted([
+            consts.ApiSecZone.hazard])),
+        api_service7.id: (consts.ApiValItemStatus.failed, sorted([
+            consts.ApiSecZone.nullsec,
+            consts.ApiSecZone.wspace,
+            consts.ApiSecZone.hazard])),
+        api_service8.id: (consts.ApiValItemStatus.failed, sorted([
+            consts.ApiSecZone.nullsec,
+            consts.ApiSecZone.wspace.wspace])),
+        api_service10.id: (consts.ApiValItemStatus.failed, sorted([
             consts.ApiSecZone.lowsec_c5,
             consts.ApiSecZone.nullsec,
             consts.ApiSecZone.wspace,
-            consts.ApiSecZone.hazard]),
-        api_service11.id: sorted([consts.ApiSecZone.lowsec, consts.ApiSecZone.nullsec, consts.ApiSecZone.wspace]),
-        api_service13.id: sorted([
+            consts.ApiSecZone.hazard])),
+        api_service11.id: (consts.ApiValItemStatus.failed, sorted([
+            consts.ApiSecZone.lowsec,
+            consts.ApiSecZone.nullsec,
+            consts.ApiSecZone.wspace])),
+        api_service13.id: (consts.ApiValItemStatus.failed, sorted([
             consts.ApiSecZone.lowsec,
             consts.ApiSecZone.nullsec,
             consts.ApiSecZone.wspace,
-            consts.ApiSecZone.hazard]),
-        api_service17.id: sorted([consts.ApiSecZone.nullsec, consts.ApiSecZone.wspace]),
-        api_service19.id: sorted([
+            consts.ApiSecZone.hazard])),
+        api_service17.id: (consts.ApiValItemStatus.failed, sorted([
+            consts.ApiSecZone.nullsec,
+            consts.ApiSecZone.wspace])),
+        api_service19.id: (consts.ApiValItemStatus.failed, sorted([
             consts.ApiSecZone.lowsec_c5,
             consts.ApiSecZone.nullsec,
             consts.ApiSecZone.wspace,
-            consts.ApiSecZone.hazard]),
-        api_service21.id: sorted([consts.ApiSecZone.lowsec_c5, consts.ApiSecZone.nullsec, consts.ApiSecZone.wspace]),
-        api_service24.id: sorted([consts.ApiSecZone.lowsec, consts.ApiSecZone.nullsec, consts.ApiSecZone.wspace]),
-        api_service28.id: sorted([consts.ApiSecZone.lowsec_c5, consts.ApiSecZone.nullsec, consts.ApiSecZone.wspace])}
+            consts.ApiSecZone.hazard])),
+        api_service21.id: (consts.ApiValItemStatus.failed, sorted([
+            consts.ApiSecZone.lowsec_c5,
+            consts.ApiSecZone.nullsec,
+            consts.ApiSecZone.wspace])),
+        api_service24.id: (consts.ApiValItemStatus.failed, sorted([
+            consts.ApiSecZone.lowsec,
+            consts.ApiSecZone.nullsec,
+            consts.ApiSecZone.wspace])),
+        api_service28.id: (consts.ApiValItemStatus.failed, sorted([
+            consts.ApiSecZone.lowsec_c5,
+            consts.ApiSecZone.nullsec,
+            consts.ApiSecZone.wspace]))}
     # Action
     api_sol.change(sec_zone=consts.ApiSecZone.lowsec)
     # Verification
     api_val = api_fit.validate(options=ValOptions(sec_zone_fitted=True))
     assert api_val.passed is False
-    assert api_val.details.sec_zone_fitted.zone == consts.ApiSecZone.lowsec
-    assert api_val.details.sec_zone_fitted.items == {
-        api_service2.id: sorted([consts.ApiSecZone.nullsec, consts.ApiSecZone.wspace, consts.ApiSecZone.hazard]),
-        api_service7.id: sorted([consts.ApiSecZone.nullsec, consts.ApiSecZone.wspace, consts.ApiSecZone.hazard]),
-        api_service8.id: sorted([consts.ApiSecZone.nullsec, consts.ApiSecZone.wspace.wspace]),
-        api_service9.id: sorted([
+    assert api_val.details.sec_zone_fitted.status == consts.ApiValStatus.failed
+    assert api_val.details.sec_zone_fitted.fail.zone == consts.ApiSecZone.lowsec
+    assert api_val.details.sec_zone_fitted.fail.items == {
+        api_service2.id: (consts.ApiValItemStatus.failed, sorted([
+            consts.ApiSecZone.nullsec,
+            consts.ApiSecZone.wspace,
+            consts.ApiSecZone.hazard])),
+        api_service7.id: (consts.ApiValItemStatus.failed, sorted([
+            consts.ApiSecZone.nullsec,
+            consts.ApiSecZone.wspace,
+            consts.ApiSecZone.hazard])),
+        api_service8.id: (consts.ApiValItemStatus.failed, sorted([
+            consts.ApiSecZone.nullsec,
+            consts.ApiSecZone.wspace.wspace])),
+        api_service9.id: (consts.ApiValItemStatus.failed, sorted([
             consts.ApiSecZone.hisec_c5,
             consts.ApiSecZone.nullsec,
             consts.ApiSecZone.wspace,
-            consts.ApiSecZone.hazard]),
-        api_service10.id: sorted([
+            consts.ApiSecZone.hazard])),
+        api_service10.id: (consts.ApiValItemStatus.failed, sorted([
             consts.ApiSecZone.lowsec_c5,
             consts.ApiSecZone.nullsec,
             consts.ApiSecZone.wspace,
-            consts.ApiSecZone.hazard]),
-        api_service17.id: sorted([consts.ApiSecZone.nullsec, consts.ApiSecZone.wspace]),
-        api_service18.id: sorted([
+            consts.ApiSecZone.hazard])),
+        api_service17.id: (consts.ApiValItemStatus.failed, sorted([
+            consts.ApiSecZone.nullsec,
+            consts.ApiSecZone.wspace])),
+        api_service18.id: (consts.ApiValItemStatus.failed, sorted([
             consts.ApiSecZone.hisec_c5,
             consts.ApiSecZone.nullsec,
             consts.ApiSecZone.wspace,
-            consts.ApiSecZone.hazard]),
-        api_service19.id: sorted([
+            consts.ApiSecZone.hazard])),
+        api_service19.id: (consts.ApiValItemStatus.failed, sorted([
             consts.ApiSecZone.lowsec_c5,
             consts.ApiSecZone.nullsec,
             consts.ApiSecZone.wspace,
-            consts.ApiSecZone.hazard]),
-        api_service20.id: sorted([consts.ApiSecZone.hisec_c5, consts.ApiSecZone.nullsec, consts.ApiSecZone.wspace]),
-        api_service21.id: sorted([consts.ApiSecZone.lowsec_c5, consts.ApiSecZone.nullsec, consts.ApiSecZone.wspace]),
-        api_service22.id: sorted([
+            consts.ApiSecZone.hazard])),
+        api_service20.id: (consts.ApiValItemStatus.failed, sorted([
             consts.ApiSecZone.hisec_c5,
+            consts.ApiSecZone.nullsec,
+            consts.ApiSecZone.wspace])),
+        api_service21.id: (consts.ApiValItemStatus.failed, sorted([
             consts.ApiSecZone.lowsec_c5,
             consts.ApiSecZone.nullsec,
-            consts.ApiSecZone.wspace,
-            consts.ApiSecZone.hazard]),
-        api_service27.id: sorted([consts.ApiSecZone.hisec_c5, consts.ApiSecZone.nullsec, consts.ApiSecZone.wspace]),
-        api_service28.id: sorted([consts.ApiSecZone.lowsec_c5, consts.ApiSecZone.nullsec, consts.ApiSecZone.wspace]),
-        api_service29.id: sorted([
+            consts.ApiSecZone.wspace])),
+        api_service22.id: (consts.ApiValItemStatus.failed, sorted([
             consts.ApiSecZone.hisec_c5,
             consts.ApiSecZone.lowsec_c5,
             consts.ApiSecZone.nullsec,
             consts.ApiSecZone.wspace,
-            consts.ApiSecZone.hazard]),
-        api_service30.id: sorted([
+            consts.ApiSecZone.hazard])),
+        api_service27.id: (consts.ApiValItemStatus.failed, sorted([
+            consts.ApiSecZone.hisec_c5,
+            consts.ApiSecZone.nullsec,
+            consts.ApiSecZone.wspace])),
+        api_service28.id: (consts.ApiValItemStatus.failed, sorted([
+            consts.ApiSecZone.lowsec_c5,
+            consts.ApiSecZone.nullsec,
+            consts.ApiSecZone.wspace])),
+        api_service29.id: (consts.ApiValItemStatus.failed, sorted([
             consts.ApiSecZone.hisec_c5,
             consts.ApiSecZone.lowsec_c5,
             consts.ApiSecZone.nullsec,
-            consts.ApiSecZone.wspace]),
-        api_service32.id: sorted([
+            consts.ApiSecZone.wspace,
+            consts.ApiSecZone.hazard])),
+        api_service30.id: (consts.ApiValItemStatus.failed, sorted([
             consts.ApiSecZone.hisec_c5,
             consts.ApiSecZone.lowsec_c5,
             consts.ApiSecZone.nullsec,
-            consts.ApiSecZone.wspace])}
+            consts.ApiSecZone.wspace])),
+        api_service32.id: (consts.ApiValItemStatus.failed, sorted([
+            consts.ApiSecZone.hisec_c5,
+            consts.ApiSecZone.lowsec_c5,
+            consts.ApiSecZone.nullsec,
+            consts.ApiSecZone.wspace]))}
     # Action
     api_sol.change(sec_zone=consts.ApiSecZone.lowsec_c5)
     # Verification
     api_val = api_fit.validate(options=ValOptions(sec_zone_fitted=True))
     assert api_val.passed is False
-    assert api_val.details.sec_zone_fitted.zone == consts.ApiSecZone.lowsec_c5
-    assert api_val.details.sec_zone_fitted.items == {
-        api_service2.id: sorted([consts.ApiSecZone.nullsec, consts.ApiSecZone.wspace, consts.ApiSecZone.hazard]),
-        api_service7.id: sorted([consts.ApiSecZone.nullsec, consts.ApiSecZone.wspace, consts.ApiSecZone.hazard]),
-        api_service8.id: sorted([consts.ApiSecZone.nullsec, consts.ApiSecZone.wspace.wspace]),
-        api_service9.id: sorted([
+    assert api_val.details.sec_zone_fitted.status == consts.ApiValStatus.failed
+    assert api_val.details.sec_zone_fitted.fail.zone == consts.ApiSecZone.lowsec_c5
+    assert api_val.details.sec_zone_fitted.fail.items == {
+        api_service2.id: (consts.ApiValItemStatus.failed, sorted([
+            consts.ApiSecZone.nullsec,
+            consts.ApiSecZone.wspace,
+            consts.ApiSecZone.hazard])),
+        api_service7.id: (consts.ApiValItemStatus.failed, sorted([
+            consts.ApiSecZone.nullsec,
+            consts.ApiSecZone.wspace,
+            consts.ApiSecZone.hazard])),
+        api_service8.id: (consts.ApiValItemStatus.failed, sorted([
+            consts.ApiSecZone.nullsec,
+            consts.ApiSecZone.wspace.wspace])),
+        api_service9.id: (consts.ApiValItemStatus.failed, sorted([
             consts.ApiSecZone.hisec_c5,
             consts.ApiSecZone.nullsec,
             consts.ApiSecZone.wspace,
-            consts.ApiSecZone.hazard]),
-        api_service17.id: sorted([consts.ApiSecZone.nullsec, consts.ApiSecZone.wspace]),
-        api_service18.id: sorted([
+            consts.ApiSecZone.hazard])),
+        api_service17.id: (consts.ApiValItemStatus.failed, sorted([
+            consts.ApiSecZone.nullsec,
+            consts.ApiSecZone.wspace])),
+        api_service18.id: (consts.ApiValItemStatus.failed, sorted([
             consts.ApiSecZone.hisec_c5,
             consts.ApiSecZone.nullsec,
             consts.ApiSecZone.wspace,
-            consts.ApiSecZone.hazard]),
-        api_service20.id: sorted([consts.ApiSecZone.hisec_c5, consts.ApiSecZone.nullsec, consts.ApiSecZone.wspace]),
-        api_service27.id: sorted([consts.ApiSecZone.hisec_c5, consts.ApiSecZone.nullsec, consts.ApiSecZone.wspace])}
+            consts.ApiSecZone.hazard])),
+        api_service20.id: (consts.ApiValItemStatus.failed, sorted([
+            consts.ApiSecZone.hisec_c5,
+            consts.ApiSecZone.nullsec,
+            consts.ApiSecZone.wspace])),
+        api_service27.id: (consts.ApiValItemStatus.failed, sorted([
+            consts.ApiSecZone.hisec_c5,
+            consts.ApiSecZone.nullsec,
+            consts.ApiSecZone.wspace]))}
     # Action
     api_sol.change(sec_zone=consts.ApiSecZone.nullsec)
     # Verification
     api_val = api_fit.validate(options=ValOptions(sec_zone_fitted=True))
     assert api_val.passed is True
-    with check_no_field():
-        api_val.details  # ruff:ignore[useless-expression]
+    assert api_val.details.sec_zone_fitted.status == consts.ApiValStatus.passed
     # Action
     api_sol.change(sec_zone=consts.ApiSecZone.wspace)
     # Verification
     api_val = api_fit.validate(options=ValOptions(sec_zone_fitted=True))
     assert api_val.passed is True
-    with check_no_field():
-        api_val.details  # ruff:ignore[useless-expression]
+    assert api_val.details.sec_zone_fitted.status == consts.ApiValStatus.passed
     # Action
     api_sol.change(sec_zone=consts.ApiSecZone.hazard)
     # Verification
     api_val = api_fit.validate(options=ValOptions(sec_zone_fitted=True))
     assert api_val.passed is False
-    assert api_val.details.sec_zone_fitted.zone == consts.ApiSecZone.hazard
-    assert api_val.details.sec_zone_fitted.items == {
-        api_service4.id: sorted([
+    assert api_val.details.sec_zone_fitted.status == consts.ApiValStatus.failed
+    assert api_val.details.sec_zone_fitted.fail.zone == consts.ApiSecZone.hazard
+    assert api_val.details.sec_zone_fitted.fail.items == {
+        api_service4.id: (consts.ApiValItemStatus.failed, sorted([
             consts.ApiSecZone.hisec,
             consts.ApiSecZone.lowsec,
             consts.ApiSecZone.nullsec,
-            consts.ApiSecZone.wspace]),
-        api_service8.id: sorted([consts.ApiSecZone.nullsec, consts.ApiSecZone.wspace.wspace]),
-        api_service11.id: sorted([consts.ApiSecZone.lowsec, consts.ApiSecZone.nullsec, consts.ApiSecZone.wspace]),
-        api_service14.id: sorted([
+            consts.ApiSecZone.wspace])),
+        api_service8.id: (consts.ApiValItemStatus.failed, sorted([
+            consts.ApiSecZone.nullsec,
+            consts.ApiSecZone.wspace.wspace])),
+        api_service11.id: (consts.ApiValItemStatus.failed, sorted([
+            consts.ApiSecZone.lowsec,
+            consts.ApiSecZone.nullsec,
+            consts.ApiSecZone.wspace])),
+        api_service14.id: (consts.ApiValItemStatus.failed, sorted([
             consts.ApiSecZone.hisec,
             consts.ApiSecZone.lowsec,
             consts.ApiSecZone.nullsec,
-            consts.ApiSecZone.wspace]),
-        api_service15.id: sorted([
+            consts.ApiSecZone.wspace])),
+        api_service15.id: (consts.ApiValItemStatus.failed, sorted([
             consts.ApiSecZone.hisec,
             consts.ApiSecZone.lowsec,
             consts.ApiSecZone.nullsec,
-            consts.ApiSecZone.wspace]),
-        api_service17.id: sorted([consts.ApiSecZone.nullsec, consts.ApiSecZone.wspace]),
-        api_service20.id: sorted([consts.ApiSecZone.hisec_c5, consts.ApiSecZone.nullsec, consts.ApiSecZone.wspace]),
-        api_service21.id: sorted([consts.ApiSecZone.lowsec_c5, consts.ApiSecZone.nullsec, consts.ApiSecZone.wspace]),
-        api_service23.id: sorted([
+            consts.ApiSecZone.wspace])),
+        api_service17.id: (consts.ApiValItemStatus.failed, sorted([
+            consts.ApiSecZone.nullsec,
+            consts.ApiSecZone.wspace])),
+        api_service20.id: (consts.ApiValItemStatus.failed, sorted([
+            consts.ApiSecZone.hisec_c5,
+            consts.ApiSecZone.nullsec,
+            consts.ApiSecZone.wspace])),
+        api_service21.id: (consts.ApiValItemStatus.failed, sorted([
+            consts.ApiSecZone.lowsec_c5,
+            consts.ApiSecZone.nullsec,
+            consts.ApiSecZone.wspace])),
+        api_service23.id: (consts.ApiValItemStatus.failed, sorted([
             consts.ApiSecZone.hisec_c5,
             consts.ApiSecZone.lowsec,
             consts.ApiSecZone.nullsec,
-            consts.ApiSecZone.wspace]),
-        api_service24.id: sorted([consts.ApiSecZone.lowsec, consts.ApiSecZone.nullsec, consts.ApiSecZone.wspace]),
-        api_service26.id: sorted([
+            consts.ApiSecZone.wspace])),
+        api_service24.id: (consts.ApiValItemStatus.failed, sorted([
+            consts.ApiSecZone.lowsec,
+            consts.ApiSecZone.nullsec,
+            consts.ApiSecZone.wspace])),
+        api_service26.id: (consts.ApiValItemStatus.failed, sorted([
             consts.ApiSecZone.hisec,
             consts.ApiSecZone.lowsec,
             consts.ApiSecZone.nullsec,
-            consts.ApiSecZone.wspace]),
-        api_service27.id: sorted([consts.ApiSecZone.hisec_c5, consts.ApiSecZone.nullsec, consts.ApiSecZone.wspace]),
-        api_service28.id: sorted([consts.ApiSecZone.lowsec_c5, consts.ApiSecZone.nullsec, consts.ApiSecZone.wspace]),
-        api_service30.id: sorted([
+            consts.ApiSecZone.wspace])),
+        api_service27.id: (consts.ApiValItemStatus.failed, sorted([
+            consts.ApiSecZone.hisec_c5,
+            consts.ApiSecZone.nullsec,
+            consts.ApiSecZone.wspace])),
+        api_service28.id: (consts.ApiValItemStatus.failed, sorted([
+            consts.ApiSecZone.lowsec_c5,
+            consts.ApiSecZone.nullsec,
+            consts.ApiSecZone.wspace])),
+        api_service30.id: (consts.ApiValItemStatus.failed, sorted([
             consts.ApiSecZone.hisec_c5,
             consts.ApiSecZone.lowsec_c5,
             consts.ApiSecZone.nullsec,
-            consts.ApiSecZone.wspace]),
-        api_service31.id: sorted([
+            consts.ApiSecZone.wspace])),
+        api_service31.id: (consts.ApiValItemStatus.failed, sorted([
             consts.ApiSecZone.hisec_c5,
             consts.ApiSecZone.lowsec,
             consts.ApiSecZone.nullsec,
-            consts.ApiSecZone.wspace]),
-        api_service32.id: sorted([
+            consts.ApiSecZone.wspace])),
+        api_service32.id: (consts.ApiValItemStatus.failed, sorted([
             consts.ApiSecZone.hisec_c5,
             consts.ApiSecZone.lowsec_c5,
             consts.ApiSecZone.nullsec,
-            consts.ApiSecZone.wspace])}
+            consts.ApiSecZone.wspace]))}
 
 
 def test_flags_rig(client, consts):
@@ -416,16 +529,19 @@ def test_flags_rig(client, consts):
     # Verification
     api_val = api_fit.validate(options=ValOptions(sec_zone_fitted=True))
     assert api_val.passed is False
-    assert api_val.details.sec_zone_fitted.zone == consts.ApiSecZone.hisec
-    assert api_val.details.sec_zone_fitted.items == {
-        api_rig.id: sorted([consts.ApiSecZone.nullsec, consts.ApiSecZone.wspace, consts.ApiSecZone.hazard])}
+    assert api_val.details.sec_zone_fitted.status == consts.ApiValStatus.failed
+    assert api_val.details.sec_zone_fitted.fail.zone == consts.ApiSecZone.hisec
+    assert api_val.details.sec_zone_fitted.fail.items == {
+        api_rig.id: (consts.ApiValItemStatus.failed, sorted([
+            consts.ApiSecZone.nullsec,
+            consts.ApiSecZone.wspace,
+            consts.ApiSecZone.hazard]))}
     # Action
     api_sol.change(sec_zone=consts.ApiSecZone.nullsec)
     # Verification
     api_val = api_fit.validate(options=ValOptions(sec_zone_fitted=True))
     assert api_val.passed is True
-    with check_no_field():
-        api_val.details  # ruff:ignore[useless-expression]
+    assert api_val.details.sec_zone_fitted.status == consts.ApiValStatus.passed
 
 
 def test_flags_ship(client, consts):
@@ -438,19 +554,20 @@ def test_flags_ship(client, consts):
     # Verification
     api_val = api_fit.validate(options=ValOptions(sec_zone_fitted=True))
     assert api_val.passed is False
-    assert api_val.details.sec_zone_fitted.zone == consts.ApiSecZone.hisec
-    assert api_val.details.sec_zone_fitted.items == {api_ship.id: sorted([
-        consts.ApiSecZone.lowsec,
-        consts.ApiSecZone.nullsec,
-        consts.ApiSecZone.wspace,
-        consts.ApiSecZone.hazard])}
+    assert api_val.details.sec_zone_fitted.status == consts.ApiValStatus.failed
+    assert api_val.details.sec_zone_fitted.fail.zone == consts.ApiSecZone.hisec
+    assert api_val.details.sec_zone_fitted.fail.items == {
+        api_ship.id: (consts.ApiValItemStatus.failed, sorted([
+            consts.ApiSecZone.lowsec,
+            consts.ApiSecZone.nullsec,
+            consts.ApiSecZone.wspace,
+            consts.ApiSecZone.hazard]))}
     # Action
     api_sol.change(sec_zone=consts.ApiSecZone.nullsec)
     # Verification
     api_val = api_fit.validate(options=ValOptions(sec_zone_fitted=True))
     assert api_val.passed is True
-    with check_no_field():
-        api_val.details  # ruff:ignore[useless-expression]
+    assert api_val.details.sec_zone_fitted.status == consts.ApiValStatus.passed
 
 
 def test_wspace_ban_ship(client, consts):
@@ -468,26 +585,26 @@ def test_wspace_ban_ship(client, consts):
     # Verification
     api_val = api_fit.validate(options=ValOptions(sec_zone_fitted=True))
     assert api_val.passed is True
-    with check_no_field():
-        api_val.details  # ruff:ignore[useless-expression]
+    assert api_val.details.sec_zone_fitted.status == consts.ApiValStatus.passed
     # Action
     api_ship2 = api_fit.set_ship(type_id=eve_ship2_id)
     # Verification
     api_val = api_fit.validate(options=ValOptions(sec_zone_fitted=True))
     assert api_val.passed is False
-    assert api_val.details.sec_zone_fitted.zone == consts.ApiSecZone.wspace
-    assert api_val.details.sec_zone_fitted.items == {api_ship2.id: sorted([
-        consts.ApiSecZone.hisec,
-        consts.ApiSecZone.lowsec,
-        consts.ApiSecZone.nullsec,
-        consts.ApiSecZone.hazard])}
+    assert api_val.details.sec_zone_fitted.status == consts.ApiValStatus.failed
+    assert api_val.details.sec_zone_fitted.fail.zone == consts.ApiSecZone.wspace
+    assert api_val.details.sec_zone_fitted.fail.items == {
+        api_ship2.id: (consts.ApiValItemStatus.failed, sorted([
+            consts.ApiSecZone.hisec,
+            consts.ApiSecZone.lowsec,
+            consts.ApiSecZone.nullsec,
+            consts.ApiSecZone.hazard]))}
     # Action
     api_sol.change(sec_zone=consts.ApiSecZone.lowsec_c5)
     # Verification
     api_val = api_fit.validate(options=ValOptions(sec_zone_fitted=True))
     assert api_val.passed is True
-    with check_no_field():
-        api_val.details  # ruff:ignore[useless-expression]
+    assert api_val.details.sec_zone_fitted.status == consts.ApiValStatus.passed
 
 
 def test_flags_and_wspace_ban_ship(client, consts):
@@ -506,39 +623,44 @@ def test_flags_and_wspace_ban_ship(client, consts):
     # Verification
     api_val = api_fit.validate(options=ValOptions(sec_zone_fitted=True))
     assert api_val.passed is False
-    assert api_val.details.sec_zone_fitted.zone == consts.ApiSecZone.hisec
-    assert api_val.details.sec_zone_fitted.items == {api_ship1.id: sorted([
-        consts.ApiSecZone.lowsec,
-        consts.ApiSecZone.nullsec,
-        consts.ApiSecZone.wspace,
-        consts.ApiSecZone.hazard])}
+    assert api_val.details.sec_zone_fitted.status == consts.ApiValStatus.failed
+    assert api_val.details.sec_zone_fitted.fail.zone == consts.ApiSecZone.hisec
+    assert api_val.details.sec_zone_fitted.fail.items == {
+        api_ship1.id: (consts.ApiValItemStatus.failed, sorted([
+            consts.ApiSecZone.lowsec,
+            consts.ApiSecZone.nullsec,
+            consts.ApiSecZone.wspace,
+            consts.ApiSecZone.hazard]))}
     # Action
     api_ship2 = api_fit.set_ship(type_id=eve_ship2_id)
     # Verification
     api_val = api_fit.validate(options=ValOptions(sec_zone_fitted=True))
     assert api_val.passed is False
-    assert api_val.details.sec_zone_fitted.zone == consts.ApiSecZone.hisec
-    assert api_val.details.sec_zone_fitted.items == {api_ship2.id: sorted([
-        consts.ApiSecZone.lowsec,
-        consts.ApiSecZone.nullsec,
-        consts.ApiSecZone.hazard])}
+    assert api_val.details.sec_zone_fitted.status == consts.ApiValStatus.failed
+    assert api_val.details.sec_zone_fitted.fail.zone == consts.ApiSecZone.hisec
+    assert api_val.details.sec_zone_fitted.fail.items == {
+        api_ship2.id: (consts.ApiValItemStatus.failed, sorted([
+            consts.ApiSecZone.lowsec,
+            consts.ApiSecZone.nullsec,
+            consts.ApiSecZone.hazard]))}
     # Action
     api_sol.change(sec_zone=consts.ApiSecZone.wspace)
     # Verification
     api_val = api_fit.validate(options=ValOptions(sec_zone_fitted=True))
     assert api_val.passed is False
-    assert api_val.details.sec_zone_fitted.zone == consts.ApiSecZone.wspace
-    assert api_val.details.sec_zone_fitted.items == {api_ship2.id: sorted([
-        consts.ApiSecZone.lowsec,
-        consts.ApiSecZone.nullsec,
-        consts.ApiSecZone.hazard])}
+    assert api_val.details.sec_zone_fitted.status == consts.ApiValStatus.failed
+    assert api_val.details.sec_zone_fitted.fail.zone == consts.ApiSecZone.wspace
+    assert api_val.details.sec_zone_fitted.fail.items == {
+        api_ship2.id: (consts.ApiValItemStatus.failed, sorted([
+            consts.ApiSecZone.lowsec,
+            consts.ApiSecZone.nullsec,
+            consts.ApiSecZone.hazard]))}
     # Action
     api_sol.change(sec_zone=consts.ApiSecZone.nullsec)
     # Verification
     api_val = api_fit.validate(options=ValOptions(sec_zone_fitted=True))
     assert api_val.passed is True
-    with check_no_field():
-        api_val.details  # ruff:ignore[useless-expression]
+    assert api_val.details.sec_zone_fitted.status == consts.ApiValStatus.passed
 
 
 def test_known_failures(client, consts):
@@ -563,123 +685,307 @@ def test_known_failures(client, consts):
     # Verification
     api_val = api_fit.validate(options=ValOptions(sec_zone_fitted=[api_service1.id]))
     assert api_val.passed is False
-    assert api_val.details.sec_zone_fitted.zone == consts.ApiSecZone.hisec
-    assert api_val.details.sec_zone_fitted.items == {
-        api_service2.id: sorted([consts.ApiSecZone.nullsec, consts.ApiSecZone.wspace, consts.ApiSecZone.hazard])}
+    assert api_val.details.sec_zone_fitted.status == consts.ApiValStatus.failed
+    assert api_val.details.sec_zone_fitted.fail.zone == consts.ApiSecZone.hisec
+    assert api_val.details.sec_zone_fitted.fail.items == {
+        api_service1.id: (consts.ApiValItemStatus.kf, sorted([
+            consts.ApiSecZone.nullsec,
+            consts.ApiSecZone.wspace,
+            consts.ApiSecZone.hazard])),
+        api_service2.id: (consts.ApiValItemStatus.failed, sorted([
+            consts.ApiSecZone.nullsec,
+            consts.ApiSecZone.wspace,
+            consts.ApiSecZone.hazard]))}
     api_val = api_fit.validate(options=ValOptions(sec_zone_fitted=[api_service2.id]))
     assert api_val.passed is False
-    assert api_val.details.sec_zone_fitted.zone == consts.ApiSecZone.hisec
-    assert api_val.details.sec_zone_fitted.items == {
-        api_service1.id: sorted([consts.ApiSecZone.nullsec, consts.ApiSecZone.wspace, consts.ApiSecZone.hazard])}
+    assert api_val.details.sec_zone_fitted.status == consts.ApiValStatus.failed
+    assert api_val.details.sec_zone_fitted.fail.zone == consts.ApiSecZone.hisec
+    assert api_val.details.sec_zone_fitted.fail.items == {
+        api_service1.id: (consts.ApiValItemStatus.failed, sorted([
+            consts.ApiSecZone.nullsec,
+            consts.ApiSecZone.wspace,
+            consts.ApiSecZone.hazard])),
+        api_service2.id: (consts.ApiValItemStatus.kf, sorted([
+            consts.ApiSecZone.nullsec,
+            consts.ApiSecZone.wspace,
+            consts.ApiSecZone.hazard]))}
     api_val = api_fit.validate(options=ValOptions(sec_zone_fitted=[api_service1.id, api_service2.id]))
     assert api_val.passed is True
-    with check_no_field():
-        api_val.details  # ruff:ignore[useless-expression]
+    assert api_val.details.sec_zone_fitted.status == consts.ApiValStatus.passed_kfs
+    assert api_val.details.sec_zone_fitted.fail.zone == consts.ApiSecZone.hisec
+    assert api_val.details.sec_zone_fitted.fail.items == {
+        api_service1.id: (consts.ApiValItemStatus.kf, sorted([
+            consts.ApiSecZone.nullsec,
+            consts.ApiSecZone.wspace,
+            consts.ApiSecZone.hazard])),
+        api_service2.id: (consts.ApiValItemStatus.kf, sorted([
+            consts.ApiSecZone.nullsec,
+            consts.ApiSecZone.wspace,
+            consts.ApiSecZone.hazard]))}
     api_val = api_fit.validate(options=ValOptions(sec_zone_fitted=[api_service1.id, api_other.id, api_service2.id]))
     assert api_val.passed is True
-    with check_no_field():
-        api_val.details  # ruff:ignore[useless-expression]
+    assert api_val.details.sec_zone_fitted.status == consts.ApiValStatus.passed_kfs
+    assert api_val.details.sec_zone_fitted.fail.zone == consts.ApiSecZone.hisec
+    assert api_val.details.sec_zone_fitted.fail.items == {
+        api_service1.id: (consts.ApiValItemStatus.kf, sorted([
+            consts.ApiSecZone.nullsec,
+            consts.ApiSecZone.wspace,
+            consts.ApiSecZone.hazard])),
+        api_service2.id: (consts.ApiValItemStatus.kf, sorted([
+            consts.ApiSecZone.nullsec,
+            consts.ApiSecZone.wspace,
+            consts.ApiSecZone.hazard]))}
     # Action
     api_sol.change(sec_zone=consts.ApiSecZone.hisec_c5)
     # Verification
     api_val = api_fit.validate(options=ValOptions(sec_zone_fitted=[api_service1.id]))
     assert api_val.passed is False
-    assert api_val.details.sec_zone_fitted.zone == consts.ApiSecZone.hisec_c5
-    assert api_val.details.sec_zone_fitted.items == {
-        api_service2.id: sorted([consts.ApiSecZone.nullsec, consts.ApiSecZone.wspace, consts.ApiSecZone.hazard])}
+    assert api_val.details.sec_zone_fitted.status == consts.ApiValStatus.failed
+    assert api_val.details.sec_zone_fitted.fail.zone == consts.ApiSecZone.hisec_c5
+    assert api_val.details.sec_zone_fitted.fail.items == {
+        api_service1.id: (consts.ApiValItemStatus.kf, sorted([
+            consts.ApiSecZone.nullsec,
+            consts.ApiSecZone.wspace,
+            consts.ApiSecZone.hazard])),
+        api_service2.id: (consts.ApiValItemStatus.failed, sorted([
+            consts.ApiSecZone.nullsec,
+            consts.ApiSecZone.wspace,
+            consts.ApiSecZone.hazard]))}
     api_val = api_fit.validate(options=ValOptions(sec_zone_fitted=[api_service2.id]))
     assert api_val.passed is False
-    assert api_val.details.sec_zone_fitted.zone == consts.ApiSecZone.hisec_c5
-    assert api_val.details.sec_zone_fitted.items == {
-        api_service1.id: sorted([consts.ApiSecZone.nullsec, consts.ApiSecZone.wspace, consts.ApiSecZone.hazard])}
+    assert api_val.details.sec_zone_fitted.status == consts.ApiValStatus.failed
+    assert api_val.details.sec_zone_fitted.fail.zone == consts.ApiSecZone.hisec_c5
+    assert api_val.details.sec_zone_fitted.fail.items == {
+        api_service1.id: (consts.ApiValItemStatus.failed, sorted([
+            consts.ApiSecZone.nullsec,
+            consts.ApiSecZone.wspace,
+            consts.ApiSecZone.hazard])),
+        api_service2.id: (consts.ApiValItemStatus.kf, sorted([
+            consts.ApiSecZone.nullsec,
+            consts.ApiSecZone.wspace,
+            consts.ApiSecZone.hazard]))}
     api_val = api_fit.validate(options=ValOptions(sec_zone_fitted=[api_service1.id, api_service2.id]))
     assert api_val.passed is True
-    with check_no_field():
-        api_val.details  # ruff:ignore[useless-expression]
+    assert api_val.details.sec_zone_fitted.status == consts.ApiValStatus.passed_kfs
+    assert api_val.details.sec_zone_fitted.fail.zone == consts.ApiSecZone.hisec_c5
+    assert api_val.details.sec_zone_fitted.fail.items == {
+        api_service1.id: (consts.ApiValItemStatus.kf, sorted([
+            consts.ApiSecZone.nullsec,
+            consts.ApiSecZone.wspace,
+            consts.ApiSecZone.hazard])),
+        api_service2.id: (consts.ApiValItemStatus.kf, sorted([
+            consts.ApiSecZone.nullsec,
+            consts.ApiSecZone.wspace,
+            consts.ApiSecZone.hazard]))}
     api_val = api_fit.validate(options=ValOptions(sec_zone_fitted=[api_service1.id, api_other.id, api_service2.id]))
     assert api_val.passed is True
-    with check_no_field():
-        api_val.details  # ruff:ignore[useless-expression]
+    assert api_val.details.sec_zone_fitted.status == consts.ApiValStatus.passed_kfs
+    assert api_val.details.sec_zone_fitted.fail.zone == consts.ApiSecZone.hisec_c5
+    assert api_val.details.sec_zone_fitted.fail.items == {
+        api_service1.id: (consts.ApiValItemStatus.kf, sorted([
+            consts.ApiSecZone.nullsec,
+            consts.ApiSecZone.wspace,
+            consts.ApiSecZone.hazard])),
+        api_service2.id: (consts.ApiValItemStatus.kf, sorted([
+            consts.ApiSecZone.nullsec,
+            consts.ApiSecZone.wspace,
+            consts.ApiSecZone.hazard]))}
     # Action
     api_sol.change(sec_zone=consts.ApiSecZone.lowsec)
     # Verification
     api_val = api_fit.validate(options=ValOptions(sec_zone_fitted=[api_service1.id]))
     assert api_val.passed is False
-    assert api_val.details.sec_zone_fitted.zone == consts.ApiSecZone.lowsec
-    assert api_val.details.sec_zone_fitted.items == {
-        api_service2.id: sorted([consts.ApiSecZone.nullsec, consts.ApiSecZone.wspace, consts.ApiSecZone.hazard])}
+    assert api_val.details.sec_zone_fitted.status == consts.ApiValStatus.failed
+    assert api_val.details.sec_zone_fitted.fail.zone == consts.ApiSecZone.lowsec
+    assert api_val.details.sec_zone_fitted.fail.items == {
+        api_service1.id: (consts.ApiValItemStatus.kf, sorted([
+            consts.ApiSecZone.nullsec,
+            consts.ApiSecZone.wspace,
+            consts.ApiSecZone.hazard])),
+        api_service2.id: (consts.ApiValItemStatus.failed, sorted([
+            consts.ApiSecZone.nullsec,
+            consts.ApiSecZone.wspace,
+            consts.ApiSecZone.hazard]))}
     api_val = api_fit.validate(options=ValOptions(sec_zone_fitted=[api_service2.id]))
     assert api_val.passed is False
-    assert api_val.details.sec_zone_fitted.zone == consts.ApiSecZone.lowsec
-    assert api_val.details.sec_zone_fitted.items == {
-        api_service1.id: sorted([consts.ApiSecZone.nullsec, consts.ApiSecZone.wspace, consts.ApiSecZone.hazard])}
+    assert api_val.details.sec_zone_fitted.status == consts.ApiValStatus.failed
+    assert api_val.details.sec_zone_fitted.fail.zone == consts.ApiSecZone.lowsec
+    assert api_val.details.sec_zone_fitted.fail.items == {
+        api_service1.id: (consts.ApiValItemStatus.failed, sorted([
+            consts.ApiSecZone.nullsec,
+            consts.ApiSecZone.wspace,
+            consts.ApiSecZone.hazard])),
+        api_service2.id: (consts.ApiValItemStatus.kf, sorted([
+            consts.ApiSecZone.nullsec,
+            consts.ApiSecZone.wspace,
+            consts.ApiSecZone.hazard]))}
     api_val = api_fit.validate(options=ValOptions(sec_zone_fitted=[api_service1.id, api_service2.id]))
     assert api_val.passed is True
-    with check_no_field():
-        api_val.details  # ruff:ignore[useless-expression]
+    assert api_val.details.sec_zone_fitted.status == consts.ApiValStatus.passed_kfs
+    assert api_val.details.sec_zone_fitted.fail.zone == consts.ApiSecZone.lowsec
+    assert api_val.details.sec_zone_fitted.fail.items == {
+        api_service1.id: (consts.ApiValItemStatus.kf, sorted([
+            consts.ApiSecZone.nullsec,
+            consts.ApiSecZone.wspace,
+            consts.ApiSecZone.hazard])),
+        api_service2.id: (consts.ApiValItemStatus.kf, sorted([
+            consts.ApiSecZone.nullsec,
+            consts.ApiSecZone.wspace,
+            consts.ApiSecZone.hazard]))}
     api_val = api_fit.validate(options=ValOptions(sec_zone_fitted=[api_service1.id, api_other.id, api_service2.id]))
     assert api_val.passed is True
-    with check_no_field():
-        api_val.details  # ruff:ignore[useless-expression]
+    assert api_val.details.sec_zone_fitted.status == consts.ApiValStatus.passed_kfs
+    assert api_val.details.sec_zone_fitted.fail.zone == consts.ApiSecZone.lowsec
+    assert api_val.details.sec_zone_fitted.fail.items == {
+        api_service1.id: (consts.ApiValItemStatus.kf, sorted([
+            consts.ApiSecZone.nullsec,
+            consts.ApiSecZone.wspace,
+            consts.ApiSecZone.hazard])),
+        api_service2.id: (consts.ApiValItemStatus.kf, sorted([
+            consts.ApiSecZone.nullsec,
+            consts.ApiSecZone.wspace,
+            consts.ApiSecZone.hazard]))}
     # Action
     api_sol.change(sec_zone=consts.ApiSecZone.lowsec_c5)
     # Verification
     api_val = api_fit.validate(options=ValOptions(sec_zone_fitted=[api_service1.id]))
     assert api_val.passed is False
-    assert api_val.details.sec_zone_fitted.zone == consts.ApiSecZone.lowsec_c5
-    assert api_val.details.sec_zone_fitted.items == {
-        api_service2.id: sorted([consts.ApiSecZone.nullsec, consts.ApiSecZone.wspace, consts.ApiSecZone.hazard])}
+    assert api_val.details.sec_zone_fitted.status == consts.ApiValStatus.failed
+    assert api_val.details.sec_zone_fitted.fail.zone == consts.ApiSecZone.lowsec_c5
+    assert api_val.details.sec_zone_fitted.fail.items == {
+        api_service1.id: (consts.ApiValItemStatus.kf, sorted([
+            consts.ApiSecZone.nullsec,
+            consts.ApiSecZone.wspace,
+            consts.ApiSecZone.hazard])),
+        api_service2.id: (consts.ApiValItemStatus.failed, sorted([
+            consts.ApiSecZone.nullsec,
+            consts.ApiSecZone.wspace,
+            consts.ApiSecZone.hazard]))}
     api_val = api_fit.validate(options=ValOptions(sec_zone_fitted=[api_service2.id]))
     assert api_val.passed is False
-    assert api_val.details.sec_zone_fitted.zone == consts.ApiSecZone.lowsec_c5
-    assert api_val.details.sec_zone_fitted.items == {
-        api_service1.id: sorted([consts.ApiSecZone.nullsec, consts.ApiSecZone.wspace, consts.ApiSecZone.hazard])}
+    assert api_val.details.sec_zone_fitted.status == consts.ApiValStatus.failed
+    assert api_val.details.sec_zone_fitted.fail.zone == consts.ApiSecZone.lowsec_c5
+    assert api_val.details.sec_zone_fitted.fail.items == {
+        api_service1.id: (consts.ApiValItemStatus.failed, sorted([
+            consts.ApiSecZone.nullsec,
+            consts.ApiSecZone.wspace,
+            consts.ApiSecZone.hazard])),
+        api_service2.id: (consts.ApiValItemStatus.kf, sorted([
+            consts.ApiSecZone.nullsec,
+            consts.ApiSecZone.wspace,
+            consts.ApiSecZone.hazard]))}
     api_val = api_fit.validate(options=ValOptions(sec_zone_fitted=[api_service1.id, api_service2.id]))
     assert api_val.passed is True
-    with check_no_field():
-        api_val.details  # ruff:ignore[useless-expression]
+    assert api_val.details.sec_zone_fitted.status == consts.ApiValStatus.passed_kfs
+    assert api_val.details.sec_zone_fitted.fail.zone == consts.ApiSecZone.lowsec_c5
+    assert api_val.details.sec_zone_fitted.fail.items == {
+        api_service1.id: (consts.ApiValItemStatus.kf, sorted([
+            consts.ApiSecZone.nullsec,
+            consts.ApiSecZone.wspace,
+            consts.ApiSecZone.hazard])),
+        api_service2.id: (consts.ApiValItemStatus.kf, sorted([
+            consts.ApiSecZone.nullsec,
+            consts.ApiSecZone.wspace,
+            consts.ApiSecZone.hazard]))}
     api_val = api_fit.validate(options=ValOptions(sec_zone_fitted=[api_service1.id, api_other.id, api_service2.id]))
     assert api_val.passed is True
-    with check_no_field():
-        api_val.details  # ruff:ignore[useless-expression]
+    assert api_val.details.sec_zone_fitted.status == consts.ApiValStatus.passed_kfs
+    assert api_val.details.sec_zone_fitted.fail.zone == consts.ApiSecZone.lowsec_c5
+    assert api_val.details.sec_zone_fitted.fail.items == {
+        api_service1.id: (consts.ApiValItemStatus.kf, sorted([
+            consts.ApiSecZone.nullsec,
+            consts.ApiSecZone.wspace,
+            consts.ApiSecZone.hazard])),
+        api_service2.id: (consts.ApiValItemStatus.kf, sorted([
+            consts.ApiSecZone.nullsec,
+            consts.ApiSecZone.wspace,
+            consts.ApiSecZone.hazard]))}
     # Action
     api_sol.change(sec_zone=consts.ApiSecZone.hazard)
     # Verification
     api_val = api_fit.validate(options=ValOptions(sec_zone_fitted=[api_service3.id]))
     assert api_val.passed is False
-    assert api_val.details.sec_zone_fitted.zone == consts.ApiSecZone.hazard
-    assert api_val.details.sec_zone_fitted.items == {api_service4.id: sorted([
-        consts.ApiSecZone.hisec,
-        consts.ApiSecZone.lowsec,
-        consts.ApiSecZone.nullsec,
-        consts.ApiSecZone.wspace])}
+    assert api_val.details.sec_zone_fitted.status == consts.ApiValStatus.failed
+    assert api_val.details.sec_zone_fitted.fail.zone == consts.ApiSecZone.hazard
+    assert api_val.details.sec_zone_fitted.fail.items == {
+        api_service3.id: (consts.ApiValItemStatus.kf, sorted([
+            consts.ApiSecZone.hisec,
+            consts.ApiSecZone.lowsec,
+            consts.ApiSecZone.nullsec,
+            consts.ApiSecZone.wspace])),
+        api_service4.id: (consts.ApiValItemStatus.failed, sorted([
+            consts.ApiSecZone.hisec,
+            consts.ApiSecZone.lowsec,
+            consts.ApiSecZone.nullsec,
+            consts.ApiSecZone.wspace]))}
     api_val = api_fit.validate(options=ValOptions(sec_zone_fitted=[api_service4.id]))
     assert api_val.passed is False
-    assert api_val.details.sec_zone_fitted.zone == consts.ApiSecZone.hazard
-    assert api_val.details.sec_zone_fitted.items == {api_service3.id: sorted([
-        consts.ApiSecZone.hisec,
-        consts.ApiSecZone.lowsec,
-        consts.ApiSecZone.nullsec,
-        consts.ApiSecZone.wspace])}
+    assert api_val.details.sec_zone_fitted.status == consts.ApiValStatus.failed
+    assert api_val.details.sec_zone_fitted.fail.zone == consts.ApiSecZone.hazard
+    assert api_val.details.sec_zone_fitted.fail.items == {
+        api_service3.id: (consts.ApiValItemStatus.failed, sorted([
+            consts.ApiSecZone.hisec,
+            consts.ApiSecZone.lowsec,
+            consts.ApiSecZone.nullsec,
+            consts.ApiSecZone.wspace])),
+        api_service4.id: (consts.ApiValItemStatus.kf, sorted([
+            consts.ApiSecZone.hisec,
+            consts.ApiSecZone.lowsec,
+            consts.ApiSecZone.nullsec,
+            consts.ApiSecZone.wspace]))}
     api_val = api_fit.validate(options=ValOptions(sec_zone_fitted=[api_service3.id, api_service4.id]))
     assert api_val.passed is True
-    with check_no_field():
-        api_val.details  # ruff:ignore[useless-expression]
+    assert api_val.details.sec_zone_fitted.status == consts.ApiValStatus.passed_kfs
+    assert api_val.details.sec_zone_fitted.fail.zone == consts.ApiSecZone.hazard
+    assert api_val.details.sec_zone_fitted.fail.items == {
+        api_service3.id: (consts.ApiValItemStatus.kf, sorted([
+            consts.ApiSecZone.hisec,
+            consts.ApiSecZone.lowsec,
+            consts.ApiSecZone.nullsec,
+            consts.ApiSecZone.wspace])),
+        api_service4.id: (consts.ApiValItemStatus.kf, sorted([
+            consts.ApiSecZone.hisec,
+            consts.ApiSecZone.lowsec,
+            consts.ApiSecZone.nullsec,
+            consts.ApiSecZone.wspace]))}
     api_val = api_fit.validate(options=ValOptions(sec_zone_fitted=[api_service3.id, api_other.id, api_service4.id]))
     assert api_val.passed is True
-    with check_no_field():
-        api_val.details  # ruff:ignore[useless-expression]
+    assert api_val.details.sec_zone_fitted.status == consts.ApiValStatus.passed_kfs
+    assert api_val.details.sec_zone_fitted.fail.zone == consts.ApiSecZone.hazard
+    assert api_val.details.sec_zone_fitted.fail.items == {
+        api_service3.id: (consts.ApiValItemStatus.kf, sorted([
+            consts.ApiSecZone.hisec,
+            consts.ApiSecZone.lowsec,
+            consts.ApiSecZone.nullsec,
+            consts.ApiSecZone.wspace])),
+        api_service4.id: (consts.ApiValItemStatus.kf, sorted([
+            consts.ApiSecZone.hisec,
+            consts.ApiSecZone.lowsec,
+            consts.ApiSecZone.nullsec,
+            consts.ApiSecZone.wspace]))}
     # Action
     api_sol.change(sec_zone=consts.ApiSecZone.wspace)
     # Verification
     api_val = api_fit.validate(options=ValOptions(sec_zone_fitted=[api_ship.id]))
     assert api_val.passed is True
-    with check_no_field():
-        api_val.details  # ruff:ignore[useless-expression]
+    assert api_val.details.sec_zone_fitted.status == consts.ApiValStatus.passed_kfs
+    assert api_val.details.sec_zone_fitted.fail.zone == consts.ApiSecZone.wspace
+    assert api_val.details.sec_zone_fitted.fail.items == {
+        api_ship.id: (consts.ApiValItemStatus.kf, sorted([
+            consts.ApiSecZone.hisec,
+            consts.ApiSecZone.lowsec,
+            consts.ApiSecZone.nullsec,
+            consts.ApiSecZone.hazard]))}
     api_val = api_fit.validate(options=ValOptions(sec_zone_fitted=[api_other.id, api_ship.id]))
     assert api_val.passed is True
-    with check_no_field():
-        api_val.details  # ruff:ignore[useless-expression]
+    assert api_val.details.sec_zone_fitted.status == consts.ApiValStatus.passed_kfs
+    assert api_val.details.sec_zone_fitted.fail.zone == consts.ApiSecZone.wspace
+    assert api_val.details.sec_zone_fitted.fail.items == {
+        api_ship.id: (consts.ApiValItemStatus.kf, sorted([
+            consts.ApiSecZone.hisec,
+            consts.ApiSecZone.lowsec,
+            consts.ApiSecZone.nullsec,
+            consts.ApiSecZone.hazard]))}
 
 
 def test_modified(client, consts):
@@ -709,8 +1015,7 @@ def test_modified(client, consts):
     assert api_service2.update().attrs[eve_attr_id].modified == approx(0)
     api_val = api_fit.validate(options=ValOptions(sec_zone_fitted=True))
     assert api_val.passed is True
-    with check_no_field():
-        api_val.details  # ruff:ignore[useless-expression]
+    assert api_val.details.sec_zone_fitted.status == consts.ApiValStatus.passed
     # Action
     api_rig1.remove()
     api_fit.add_rig(type_id=eve_rig2_id)
@@ -719,10 +1024,17 @@ def test_modified(client, consts):
     assert api_service2.update().attrs[eve_attr_id].modified == approx(1)
     api_val = api_fit.validate(options=ValOptions(sec_zone_fitted=True))
     assert api_val.passed is False
-    assert api_val.details.sec_zone_fitted.zone == consts.ApiSecZone.hisec
-    assert api_val.details.sec_zone_fitted.items == {
-        api_service1.id: sorted([consts.ApiSecZone.nullsec, consts.ApiSecZone.wspace, consts.ApiSecZone.hazard]),
-        api_service2.id: sorted([consts.ApiSecZone.nullsec, consts.ApiSecZone.wspace, consts.ApiSecZone.hazard])}
+    assert api_val.details.sec_zone_fitted.status == consts.ApiValStatus.failed
+    assert api_val.details.sec_zone_fitted.fail.zone == consts.ApiSecZone.hisec
+    assert api_val.details.sec_zone_fitted.fail.items == {
+        api_service1.id: (consts.ApiValItemStatus.failed, sorted([
+            consts.ApiSecZone.nullsec,
+            consts.ApiSecZone.wspace,
+            consts.ApiSecZone.hazard])),
+        api_service2.id: (consts.ApiValItemStatus.failed, sorted([
+            consts.ApiSecZone.nullsec,
+            consts.ApiSecZone.wspace,
+            consts.ApiSecZone.hazard]))}
 
 
 def test_values(client, consts):
@@ -746,12 +1058,25 @@ def test_values(client, consts):
     # Verification
     api_val = api_fit.validate(options=ValOptions(sec_zone_fitted=True))
     assert api_val.passed is False
-    assert api_val.details.sec_zone_fitted.zone == consts.ApiSecZone.lowsec
-    assert api_val.details.sec_zone_fitted.items == {
-        api_service3.id: sorted([consts.ApiSecZone.nullsec, consts.ApiSecZone.wspace, consts.ApiSecZone.hazard]),
-        api_service4.id: sorted([consts.ApiSecZone.nullsec, consts.ApiSecZone.wspace, consts.ApiSecZone.hazard]),
-        api_service5.id: sorted([consts.ApiSecZone.nullsec, consts.ApiSecZone.wspace, consts.ApiSecZone.hazard]),
-        api_service6.id: sorted([consts.ApiSecZone.nullsec, consts.ApiSecZone.wspace, consts.ApiSecZone.hazard])}
+    assert api_val.details.sec_zone_fitted.status == consts.ApiValStatus.failed
+    assert api_val.details.sec_zone_fitted.fail.zone == consts.ApiSecZone.lowsec
+    assert api_val.details.sec_zone_fitted.fail.items == {
+        api_service3.id: (consts.ApiValItemStatus.failed, sorted([
+            consts.ApiSecZone.nullsec,
+            consts.ApiSecZone.wspace,
+            consts.ApiSecZone.hazard])),
+        api_service4.id: (consts.ApiValItemStatus.failed, sorted([
+            consts.ApiSecZone.nullsec,
+            consts.ApiSecZone.wspace,
+            consts.ApiSecZone.hazard])),
+        api_service5.id: (consts.ApiValItemStatus.failed, sorted([
+            consts.ApiSecZone.nullsec,
+            consts.ApiSecZone.wspace,
+            consts.ApiSecZone.hazard])),
+        api_service6.id: (consts.ApiValItemStatus.failed, sorted([
+            consts.ApiSecZone.nullsec,
+            consts.ApiSecZone.wspace,
+            consts.ApiSecZone.hazard]))}
 
 
 def test_no_attr(client, consts):
@@ -764,8 +1089,7 @@ def test_no_attr(client, consts):
     # Verification - when attribute can't be fetched, it's assumed to be non-limited in any sec zone
     api_val = api_fit.validate(options=ValOptions(sec_zone_fitted=True))
     assert api_val.passed is True
-    with check_no_field():
-        api_val.details  # ruff:ignore[useless-expression]
+    assert api_val.details.sec_zone_fitted.status == consts.ApiValStatus.passed
 
 
 def test_not_loaded(client, consts):
@@ -778,8 +1102,7 @@ def test_not_loaded(client, consts):
     # Verification
     api_val = api_fit.validate(options=ValOptions(sec_zone_fitted=True))
     assert api_val.passed is True
-    with check_no_field():
-        api_val.details  # ruff:ignore[useless-expression]
+    assert api_val.details.sec_zone_fitted.status == consts.ApiValStatus.passed
 
 
 def test_criterion_item_state(client, consts):
@@ -794,11 +1117,21 @@ def test_criterion_item_state(client, consts):
     # Verification
     api_val = api_fit.validate(options=ValOptions(sec_zone_fitted=True))
     assert api_val.passed is False
-    assert api_val.details.sec_zone_fitted.zone == consts.ApiSecZone.lowsec
-    assert api_val.details.sec_zone_fitted.items == {
-        api_ship.id: sorted([consts.ApiSecZone.nullsec, consts.ApiSecZone.wspace, consts.ApiSecZone.hazard]),
-        api_service.id: sorted([consts.ApiSecZone.nullsec, consts.ApiSecZone.wspace, consts.ApiSecZone.hazard]),
-        api_rig.id: sorted([consts.ApiSecZone.nullsec, consts.ApiSecZone.wspace, consts.ApiSecZone.hazard])}
+    assert api_val.details.sec_zone_fitted.status == consts.ApiValStatus.failed
+    assert api_val.details.sec_zone_fitted.fail.zone == consts.ApiSecZone.lowsec
+    assert api_val.details.sec_zone_fitted.fail.items == {
+        api_ship.id: (consts.ApiValItemStatus.failed, sorted([
+            consts.ApiSecZone.nullsec,
+            consts.ApiSecZone.wspace,
+            consts.ApiSecZone.hazard])),
+        api_service.id: (consts.ApiValItemStatus.failed, sorted([
+            consts.ApiSecZone.nullsec,
+            consts.ApiSecZone.wspace,
+            consts.ApiSecZone.hazard])),
+        api_rig.id: (consts.ApiValItemStatus.failed, sorted([
+            consts.ApiSecZone.nullsec,
+            consts.ApiSecZone.wspace,
+            consts.ApiSecZone.hazard]))}
 
 
 def test_criterion_item_kind(client, consts):
@@ -828,5 +1161,4 @@ def test_criterion_item_kind(client, consts):
     assert len(api_fighter.autocharges) == 1
     api_val = api_fit.validate(options=ValOptions(sec_zone_fitted=True))
     assert api_val.passed is True
-    with check_no_field():
-        api_val.details  # ruff:ignore[useless-expression]
+    assert api_val.details.sec_zone_fitted.status == consts.ApiValStatus.passed

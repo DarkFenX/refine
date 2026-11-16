@@ -1,8 +1,7 @@
-from fw import check_no_field
 from fw.api import ValOptions
 
 
-def test_item_booster(client):
+def test_item_booster(client, consts):
     eve_loaded_id = client.mk_eve_item()
     eve_not_loaded_id = client.alloc_item_id()
     client.create_sources()
@@ -13,10 +12,11 @@ def test_item_booster(client):
     # Verification
     api_val = api_fit.validate(options=ValOptions(not_loaded_item=True))
     assert api_val.passed is False
-    assert api_val.details.not_loaded_item == [api_not_loaded.id]
+    assert api_val.details.not_loaded_item.status == consts.ApiValStatus.failed
+    assert api_val.details.not_loaded_item.fail == {api_not_loaded.id: consts.ApiValItemStatus.failed}
 
 
-def test_item_booster_switch_type_id(client):
+def test_item_booster_switch_type_id(client, consts):
     eve_loaded_id = client.mk_eve_item()
     eve_not_loaded_id = client.alloc_item_id()
     client.create_sources()
@@ -26,24 +26,23 @@ def test_item_booster_switch_type_id(client):
     # Verification
     api_val = api_fit.validate(options=ValOptions(not_loaded_item=True))
     assert api_val.passed is True
-    with check_no_field():
-        api_val.details  # ruff:ignore[useless-expression]
+    assert api_val.details.not_loaded_item.status == consts.ApiValStatus.passed
     # Action
     api_booster.change_booster(type_id=eve_not_loaded_id)
     # Verification
     api_val = api_fit.validate(options=ValOptions(not_loaded_item=True))
     assert api_val.passed is False
-    assert api_val.details.not_loaded_item == [api_booster.id]
+    assert api_val.details.not_loaded_item.status == consts.ApiValStatus.failed
+    assert api_val.details.not_loaded_item.fail == {api_booster.id: consts.ApiValItemStatus.failed}
     # Action
     api_booster.change_booster(type_id=eve_loaded_id)
     # Verification
     api_val = api_fit.validate(options=ValOptions(not_loaded_item=True))
     assert api_val.passed is True
-    with check_no_field():
-        api_val.details  # ruff:ignore[useless-expression]
+    assert api_val.details.not_loaded_item.status == consts.ApiValStatus.passed
 
 
-def test_item_character(client):
+def test_item_character(client, consts):
     eve_loaded_id = client.mk_eve_item()
     eve_not_loaded_id = client.alloc_item_id()
     client.create_sources()
@@ -53,17 +52,17 @@ def test_item_character(client):
     # Verification
     api_val = api_fit.validate(options=ValOptions(not_loaded_item=True))
     assert api_val.passed is True
-    with check_no_field():
-        api_val.details  # ruff:ignore[useless-expression]
+    assert api_val.details.not_loaded_item.status == consts.ApiValStatus.passed
     # Action
     api_char = api_fit.set_character(type_id=eve_not_loaded_id)
     # Verification
     api_val = api_fit.validate(options=ValOptions(not_loaded_item=True))
     assert api_val.passed is False
-    assert api_val.details.not_loaded_item == [api_char.id]
+    assert api_val.details.not_loaded_item.status == consts.ApiValStatus.failed
+    assert api_val.details.not_loaded_item.fail == {api_char.id: consts.ApiValItemStatus.failed}
 
 
-def test_item_character_switch_type_id(client):
+def test_item_character_switch_type_id(client, consts):
     eve_loaded_id = client.mk_eve_item()
     eve_not_loaded_id = client.alloc_item_id()
     client.create_sources()
@@ -73,24 +72,23 @@ def test_item_character_switch_type_id(client):
     # Verification
     api_val = api_fit.validate(options=ValOptions(not_loaded_item=True))
     assert api_val.passed is True
-    with check_no_field():
-        api_val.details  # ruff:ignore[useless-expression]
+    assert api_val.details.not_loaded_item.status == consts.ApiValStatus.passed
     # Action
     api_char.change_character(type_id=eve_not_loaded_id)
     # Verification
     api_val = api_fit.validate(options=ValOptions(not_loaded_item=True))
     assert api_val.passed is False
-    assert api_val.details.not_loaded_item == [api_char.id]
+    assert api_val.details.not_loaded_item.status == consts.ApiValStatus.failed
+    assert api_val.details.not_loaded_item.fail == {api_char.id: consts.ApiValItemStatus.failed}
     # Action
     api_char.change_character(type_id=eve_loaded_id)
     # Verification
     api_val = api_fit.validate(options=ValOptions(not_loaded_item=True))
     assert api_val.passed is True
-    with check_no_field():
-        api_val.details  # ruff:ignore[useless-expression]
+    assert api_val.details.not_loaded_item.status == consts.ApiValStatus.passed
 
 
-def test_item_charge(client):
+def test_item_charge(client, consts):
     eve_module_id = client.mk_eve_item()
     eve_loaded_id = client.mk_eve_item()
     eve_not_loaded_id = client.alloc_item_id()
@@ -102,10 +100,11 @@ def test_item_charge(client):
     # Verification
     api_val = api_fit.validate(options=ValOptions(not_loaded_item=True))
     assert api_val.passed is False
-    assert api_val.details.not_loaded_item == [api_not_loaded.charge.id]
+    assert api_val.details.not_loaded_item.status == consts.ApiValStatus.failed
+    assert api_val.details.not_loaded_item.fail == {api_not_loaded.charge.id: consts.ApiValItemStatus.failed}
 
 
-def test_item_charge_switch_type_id(client):
+def test_item_charge_switch_type_id(client, consts):
     eve_module_id = client.mk_eve_item()
     eve_loaded_id = client.mk_eve_item()
     eve_not_loaded_id = client.alloc_item_id()
@@ -116,24 +115,23 @@ def test_item_charge_switch_type_id(client):
     # Verification
     api_val = api_fit.validate(options=ValOptions(not_loaded_item=True))
     assert api_val.passed is True
-    with check_no_field():
-        api_val.details  # ruff:ignore[useless-expression]
+    assert api_val.details.not_loaded_item.status == consts.ApiValStatus.passed
     # Action
     api_module.charge.change_charge(type_id=eve_not_loaded_id)
     # Verification
     api_val = api_fit.validate(options=ValOptions(not_loaded_item=True))
     assert api_val.passed is False
-    assert api_val.details.not_loaded_item == [api_module.charge.id]
+    assert api_val.details.not_loaded_item.status == consts.ApiValStatus.failed
+    assert api_val.details.not_loaded_item.fail == {api_module.charge.id: consts.ApiValItemStatus.failed}
     # Action
     api_module.charge.change_charge(type_id=eve_loaded_id)
     # Verification
     api_val = api_fit.validate(options=ValOptions(not_loaded_item=True))
     assert api_val.passed is True
-    with check_no_field():
-        api_val.details  # ruff:ignore[useless-expression]
+    assert api_val.details.not_loaded_item.status == consts.ApiValStatus.passed
 
 
-def test_item_drone(client):
+def test_item_drone(client, consts):
     eve_loaded_id = client.mk_eve_item()
     eve_not_loaded_id = client.alloc_item_id()
     client.create_sources()
@@ -144,10 +142,11 @@ def test_item_drone(client):
     # Verification
     api_val = api_fit.validate(options=ValOptions(not_loaded_item=True))
     assert api_val.passed is False
-    assert api_val.details.not_loaded_item == [api_not_loaded.id]
+    assert api_val.details.not_loaded_item.status == consts.ApiValStatus.failed
+    assert api_val.details.not_loaded_item.fail == {api_not_loaded.id: consts.ApiValItemStatus.failed}
 
 
-def test_item_drone_switch_type_id(client):
+def test_item_drone_switch_type_id(client, consts):
     eve_loaded_id = client.mk_eve_item()
     eve_not_loaded_id = client.alloc_item_id()
     client.create_sources()
@@ -157,24 +156,23 @@ def test_item_drone_switch_type_id(client):
     # Verification
     api_val = api_fit.validate(options=ValOptions(not_loaded_item=True))
     assert api_val.passed is True
-    with check_no_field():
-        api_val.details  # ruff:ignore[useless-expression]
+    assert api_val.details.not_loaded_item.status == consts.ApiValStatus.passed
     # Action
     api_drone.change_drone(type_id=eve_not_loaded_id)
     # Verification
     api_val = api_fit.validate(options=ValOptions(not_loaded_item=True))
     assert api_val.passed is False
-    assert api_val.details.not_loaded_item == [api_drone.id]
+    assert api_val.details.not_loaded_item.status == consts.ApiValStatus.failed
+    assert api_val.details.not_loaded_item.fail == {api_drone.id: consts.ApiValItemStatus.failed}
     # Action
     api_drone.change_drone(type_id=eve_loaded_id)
     # Verification
     api_val = api_fit.validate(options=ValOptions(not_loaded_item=True))
     assert api_val.passed is True
-    with check_no_field():
-        api_val.details  # ruff:ignore[useless-expression]
+    assert api_val.details.not_loaded_item.status == consts.ApiValStatus.passed
 
 
-def test_item_fighter(client):
+def test_item_fighter(client, consts):
     eve_loaded_id = client.mk_eve_item()
     eve_not_loaded_id = client.alloc_item_id()
     client.create_sources()
@@ -185,10 +183,11 @@ def test_item_fighter(client):
     # Verification
     api_val = api_fit.validate(options=ValOptions(not_loaded_item=True))
     assert api_val.passed is False
-    assert api_val.details.not_loaded_item == [api_not_loaded.id]
+    assert api_val.details.not_loaded_item.status == consts.ApiValStatus.failed
+    assert api_val.details.not_loaded_item.fail == {api_not_loaded.id: consts.ApiValItemStatus.failed}
 
 
-def test_item_fighter_switch_type_id(client):
+def test_item_fighter_switch_type_id(client, consts):
     eve_loaded_id = client.mk_eve_item()
     eve_not_loaded_id = client.alloc_item_id()
     client.create_sources()
@@ -198,24 +197,23 @@ def test_item_fighter_switch_type_id(client):
     # Verification
     api_val = api_fit.validate(options=ValOptions(not_loaded_item=True))
     assert api_val.passed is True
-    with check_no_field():
-        api_val.details  # ruff:ignore[useless-expression]
+    assert api_val.details.not_loaded_item.status == consts.ApiValStatus.passed
     # Action
     api_fighter.change_fighter(type_id=eve_not_loaded_id)
     # Verification
     api_val = api_fit.validate(options=ValOptions(not_loaded_item=True))
     assert api_val.passed is False
-    assert api_val.details.not_loaded_item == [api_fighter.id]
+    assert api_val.details.not_loaded_item.status == consts.ApiValStatus.failed
+    assert api_val.details.not_loaded_item.fail == {api_fighter.id: consts.ApiValItemStatus.failed}
     # Action
     api_fighter.change_fighter(type_id=eve_loaded_id)
     # Verification
     api_val = api_fit.validate(options=ValOptions(not_loaded_item=True))
     assert api_val.passed is True
-    with check_no_field():
-        api_val.details  # ruff:ignore[useless-expression]
+    assert api_val.details.not_loaded_item.status == consts.ApiValStatus.passed
 
 
-def test_item_fw_effect(client):
+def test_item_fw_effect(client, consts):
     eve_loaded_id = client.mk_eve_item()
     eve_not_loaded_id = client.alloc_item_id()
     client.create_sources()
@@ -226,10 +224,11 @@ def test_item_fw_effect(client):
     # Verification
     api_val = api_fit.validate(options=ValOptions(not_loaded_item=True))
     assert api_val.passed is False
-    assert api_val.details.not_loaded_item == [api_not_loaded.id]
+    assert api_val.details.not_loaded_item.status == consts.ApiValStatus.failed
+    assert api_val.details.not_loaded_item.fail == {api_not_loaded.id: consts.ApiValItemStatus.failed}
 
 
-def test_item_fw_effect_switch_type_id(client):
+def test_item_fw_effect_switch_type_id(client, consts):
     eve_loaded_id = client.mk_eve_item()
     eve_not_loaded_id = client.alloc_item_id()
     client.create_sources()
@@ -239,24 +238,23 @@ def test_item_fw_effect_switch_type_id(client):
     # Verification
     api_val = api_fit.validate(options=ValOptions(not_loaded_item=True))
     assert api_val.passed is True
-    with check_no_field():
-        api_val.details  # ruff:ignore[useless-expression]
+    assert api_val.details.not_loaded_item.status == consts.ApiValStatus.passed
     # Action
     api_fw_effect.change_fw_effect(type_id=eve_not_loaded_id)
     # Verification
     api_val = api_fit.validate(options=ValOptions(not_loaded_item=True))
     assert api_val.passed is False
-    assert api_val.details.not_loaded_item == [api_fw_effect.id]
+    assert api_val.details.not_loaded_item.status == consts.ApiValStatus.failed
+    assert api_val.details.not_loaded_item.fail == {api_fw_effect.id: consts.ApiValItemStatus.failed}
     # Action
     api_fw_effect.change_fw_effect(type_id=eve_loaded_id)
     # Verification
     api_val = api_fit.validate(options=ValOptions(not_loaded_item=True))
     assert api_val.passed is True
-    with check_no_field():
-        api_val.details  # ruff:ignore[useless-expression]
+    assert api_val.details.not_loaded_item.status == consts.ApiValStatus.passed
 
 
-def test_item_implant(client):
+def test_item_implant(client, consts):
     eve_loaded_id = client.mk_eve_item()
     eve_not_loaded_id = client.alloc_item_id()
     client.create_sources()
@@ -267,10 +265,11 @@ def test_item_implant(client):
     # Verification
     api_val = api_fit.validate(options=ValOptions(not_loaded_item=True))
     assert api_val.passed is False
-    assert api_val.details.not_loaded_item == [api_not_loaded.id]
+    assert api_val.details.not_loaded_item.status == consts.ApiValStatus.failed
+    assert api_val.details.not_loaded_item.fail == {api_not_loaded.id: consts.ApiValItemStatus.failed}
 
 
-def test_item_implant_switch_type_id(client):
+def test_item_implant_switch_type_id(client, consts):
     eve_loaded_id = client.mk_eve_item()
     eve_not_loaded_id = client.alloc_item_id()
     client.create_sources()
@@ -280,21 +279,20 @@ def test_item_implant_switch_type_id(client):
     # Verification
     api_val = api_fit.validate(options=ValOptions(not_loaded_item=True))
     assert api_val.passed is True
-    with check_no_field():
-        api_val.details  # ruff:ignore[useless-expression]
+    assert api_val.details.not_loaded_item.status == consts.ApiValStatus.passed
     # Action
     api_implant.change_implant(type_id=eve_not_loaded_id)
     # Verification
     api_val = api_fit.validate(options=ValOptions(not_loaded_item=True))
     assert api_val.passed is False
-    assert api_val.details.not_loaded_item == [api_implant.id]
+    assert api_val.details.not_loaded_item.status == consts.ApiValStatus.failed
+    assert api_val.details.not_loaded_item.fail == {api_implant.id: consts.ApiValItemStatus.failed}
     # Action
     api_implant.change_implant(type_id=eve_loaded_id)
     # Verification
     api_val = api_fit.validate(options=ValOptions(not_loaded_item=True))
     assert api_val.passed is True
-    with check_no_field():
-        api_val.details  # ruff:ignore[useless-expression]
+    assert api_val.details.not_loaded_item.status == consts.ApiValStatus.passed
 
 
 def test_item_module_high(client, consts):
@@ -308,7 +306,8 @@ def test_item_module_high(client, consts):
     # Verification
     api_val = api_fit.validate(options=ValOptions(not_loaded_item=True))
     assert api_val.passed is False
-    assert api_val.details.not_loaded_item == [api_not_loaded.id]
+    assert api_val.details.not_loaded_item.status == consts.ApiValStatus.failed
+    assert api_val.details.not_loaded_item.fail == {api_not_loaded.id: consts.ApiValItemStatus.failed}
 
 
 def test_item_module_high_switch_type_id(client, consts):
@@ -321,21 +320,20 @@ def test_item_module_high_switch_type_id(client, consts):
     # Verification
     api_val = api_fit.validate(options=ValOptions(not_loaded_item=True))
     assert api_val.passed is True
-    with check_no_field():
-        api_val.details  # ruff:ignore[useless-expression]
+    assert api_val.details.not_loaded_item.status == consts.ApiValStatus.passed
     # Action
     api_module.change_module(type_id=eve_not_loaded_id)
     # Verification
     api_val = api_fit.validate(options=ValOptions(not_loaded_item=True))
     assert api_val.passed is False
-    assert api_val.details.not_loaded_item == [api_module.id]
+    assert api_val.details.not_loaded_item.status == consts.ApiValStatus.failed
+    assert api_val.details.not_loaded_item.fail == {api_module.id: consts.ApiValItemStatus.failed}
     # Action
     api_module.change_module(type_id=eve_loaded_id)
     # Verification
     api_val = api_fit.validate(options=ValOptions(not_loaded_item=True))
     assert api_val.passed is True
-    with check_no_field():
-        api_val.details  # ruff:ignore[useless-expression]
+    assert api_val.details.not_loaded_item.status == consts.ApiValStatus.passed
 
 
 def test_item_module_low(client, consts):
@@ -349,7 +347,8 @@ def test_item_module_low(client, consts):
     # Verification
     api_val = api_fit.validate(options=ValOptions(not_loaded_item=True))
     assert api_val.passed is False
-    assert api_val.details.not_loaded_item == [api_not_loaded.id]
+    assert api_val.details.not_loaded_item.status == consts.ApiValStatus.failed
+    assert api_val.details.not_loaded_item.fail == {api_not_loaded.id: consts.ApiValItemStatus.failed}
 
 
 def test_item_module_low_switch_type_id(client, consts):
@@ -362,21 +361,20 @@ def test_item_module_low_switch_type_id(client, consts):
     # Verification
     api_val = api_fit.validate(options=ValOptions(not_loaded_item=True))
     assert api_val.passed is True
-    with check_no_field():
-        api_val.details  # ruff:ignore[useless-expression]
+    assert api_val.details.not_loaded_item.status == consts.ApiValStatus.passed
     # Action
     api_module.change_module(type_id=eve_not_loaded_id)
     # Verification
     api_val = api_fit.validate(options=ValOptions(not_loaded_item=True))
     assert api_val.passed is False
-    assert api_val.details.not_loaded_item == [api_module.id]
+    assert api_val.details.not_loaded_item.status == consts.ApiValStatus.failed
+    assert api_val.details.not_loaded_item.fail == {api_module.id: consts.ApiValItemStatus.failed}
     # Action
     api_module.change_module(type_id=eve_loaded_id)
     # Verification
     api_val = api_fit.validate(options=ValOptions(not_loaded_item=True))
     assert api_val.passed is True
-    with check_no_field():
-        api_val.details  # ruff:ignore[useless-expression]
+    assert api_val.details.not_loaded_item.status == consts.ApiValStatus.passed
 
 
 def test_item_module_mid(client, consts):
@@ -390,7 +388,8 @@ def test_item_module_mid(client, consts):
     # Verification
     api_val = api_fit.validate(options=ValOptions(not_loaded_item=True))
     assert api_val.passed is False
-    assert api_val.details.not_loaded_item == [api_not_loaded.id]
+    assert api_val.details.not_loaded_item.status == consts.ApiValStatus.failed
+    assert api_val.details.not_loaded_item.fail == {api_not_loaded.id: consts.ApiValItemStatus.failed}
 
 
 def test_item_module_mid_switch_type_id(client, consts):
@@ -403,24 +402,23 @@ def test_item_module_mid_switch_type_id(client, consts):
     # Verification
     api_val = api_fit.validate(options=ValOptions(not_loaded_item=True))
     assert api_val.passed is True
-    with check_no_field():
-        api_val.details  # ruff:ignore[useless-expression]
+    assert api_val.details.not_loaded_item.status == consts.ApiValStatus.passed
     # Action
     api_module.change_module(type_id=eve_not_loaded_id)
     # Verification
     api_val = api_fit.validate(options=ValOptions(not_loaded_item=True))
     assert api_val.passed is False
-    assert api_val.details.not_loaded_item == [api_module.id]
+    assert api_val.details.not_loaded_item.status == consts.ApiValStatus.failed
+    assert api_val.details.not_loaded_item.fail == {api_module.id: consts.ApiValItemStatus.failed}
     # Action
     api_module.change_module(type_id=eve_loaded_id)
     # Verification
     api_val = api_fit.validate(options=ValOptions(not_loaded_item=True))
     assert api_val.passed is True
-    with check_no_field():
-        api_val.details  # ruff:ignore[useless-expression]
+    assert api_val.details.not_loaded_item.status == consts.ApiValStatus.passed
 
 
-def test_item_proj_effect(client):
+def test_item_proj_effect(client, consts):
     eve_loaded_id = client.mk_eve_item()
     eve_not_loaded_id = client.alloc_item_id()
     client.create_sources()
@@ -430,10 +428,11 @@ def test_item_proj_effect(client):
     # Verification
     api_val = api_sol.validate(options=ValOptions(not_loaded_item=True))
     assert api_val.passed is False
-    assert api_val.details.not_loaded_item == [api_not_loaded.id]
+    assert api_val.details.not_loaded_item.status == consts.ApiValStatus.failed
+    assert api_val.details.not_loaded_item.fail == {api_not_loaded.id: consts.ApiValItemStatus.failed}
 
 
-def test_item_proj_effect_switch_type_id(client):
+def test_item_proj_effect_switch_type_id(client, consts):
     eve_loaded_id = client.mk_eve_item()
     eve_not_loaded_id = client.alloc_item_id()
     client.create_sources()
@@ -442,24 +441,23 @@ def test_item_proj_effect_switch_type_id(client):
     # Verification
     api_val = api_sol.validate(options=ValOptions(not_loaded_item=True))
     assert api_val.passed is True
-    with check_no_field():
-        api_val.details  # ruff:ignore[useless-expression]
+    assert api_val.details.not_loaded_item.status == consts.ApiValStatus.passed
     # Action
     api_proj_effect.change_proj_effect(type_id=eve_not_loaded_id)
     # Verification
     api_val = api_sol.validate(options=ValOptions(not_loaded_item=True))
     assert api_val.passed is False
-    assert api_val.details.not_loaded_item == [api_proj_effect.id]
+    assert api_val.details.not_loaded_item.status == consts.ApiValStatus.failed
+    assert api_val.details.not_loaded_item.fail == {api_proj_effect.id: consts.ApiValItemStatus.failed}
     # Action
     api_proj_effect.change_proj_effect(type_id=eve_loaded_id)
     # Verification
     api_val = api_sol.validate(options=ValOptions(not_loaded_item=True))
     assert api_val.passed is True
-    with check_no_field():
-        api_val.details  # ruff:ignore[useless-expression]
+    assert api_val.details.not_loaded_item.status == consts.ApiValStatus.passed
 
 
-def test_item_rig(client):
+def test_item_rig(client, consts):
     eve_loaded_id = client.mk_eve_item()
     eve_not_loaded_id = client.alloc_item_id()
     client.create_sources()
@@ -470,10 +468,11 @@ def test_item_rig(client):
     # Verification
     api_val = api_fit.validate(options=ValOptions(not_loaded_item=True))
     assert api_val.passed is False
-    assert api_val.details.not_loaded_item == [api_not_loaded.id]
+    assert api_val.details.not_loaded_item.status == consts.ApiValStatus.failed
+    assert api_val.details.not_loaded_item.fail == {api_not_loaded.id: consts.ApiValItemStatus.failed}
 
 
-def test_item_rig_switch_type_id(client):
+def test_item_rig_switch_type_id(client, consts):
     eve_loaded_id = client.mk_eve_item()
     eve_not_loaded_id = client.alloc_item_id()
     client.create_sources()
@@ -483,24 +482,23 @@ def test_item_rig_switch_type_id(client):
     # Verification
     api_val = api_fit.validate(options=ValOptions(not_loaded_item=True))
     assert api_val.passed is True
-    with check_no_field():
-        api_val.details  # ruff:ignore[useless-expression]
+    assert api_val.details.not_loaded_item.status == consts.ApiValStatus.passed
     # Action
     api_rig.change_rig(type_id=eve_not_loaded_id)
     # Verification
     api_val = api_fit.validate(options=ValOptions(not_loaded_item=True))
     assert api_val.passed is False
-    assert api_val.details.not_loaded_item == [api_rig.id]
+    assert api_val.details.not_loaded_item.status == consts.ApiValStatus.failed
+    assert api_val.details.not_loaded_item.fail == {api_rig.id: consts.ApiValItemStatus.failed}
     # Action
     api_rig.change_rig(type_id=eve_loaded_id)
     # Verification
     api_val = api_fit.validate(options=ValOptions(not_loaded_item=True))
     assert api_val.passed is True
-    with check_no_field():
-        api_val.details  # ruff:ignore[useless-expression]
+    assert api_val.details.not_loaded_item.status == consts.ApiValStatus.passed
 
 
-def test_item_service(client):
+def test_item_service(client, consts):
     eve_loaded_id = client.mk_eve_item()
     eve_not_loaded_id = client.alloc_item_id()
     client.create_sources()
@@ -511,10 +509,11 @@ def test_item_service(client):
     # Verification
     api_val = api_fit.validate(options=ValOptions(not_loaded_item=True))
     assert api_val.passed is False
-    assert api_val.details.not_loaded_item == [api_not_loaded.id]
+    assert api_val.details.not_loaded_item.status == consts.ApiValStatus.failed
+    assert api_val.details.not_loaded_item.fail == {api_not_loaded.id: consts.ApiValItemStatus.failed}
 
 
-def test_item_service_switch_type_id(client):
+def test_item_service_switch_type_id(client, consts):
     eve_loaded_id = client.mk_eve_item()
     eve_not_loaded_id = client.alloc_item_id()
     client.create_sources()
@@ -524,24 +523,23 @@ def test_item_service_switch_type_id(client):
     # Verification
     api_val = api_fit.validate(options=ValOptions(not_loaded_item=True))
     assert api_val.passed is True
-    with check_no_field():
-        api_val.details  # ruff:ignore[useless-expression]
+    assert api_val.details.not_loaded_item.status == consts.ApiValStatus.passed
     # Action
     api_service.change_service(type_id=eve_not_loaded_id)
     # Verification
     api_val = api_fit.validate(options=ValOptions(not_loaded_item=True))
     assert api_val.passed is False
-    assert api_val.details.not_loaded_item == [api_service.id]
+    assert api_val.details.not_loaded_item.status == consts.ApiValStatus.failed
+    assert api_val.details.not_loaded_item.fail == {api_service.id: consts.ApiValItemStatus.failed}
     # Action
     api_service.change_service(type_id=eve_loaded_id)
     # Verification
     api_val = api_fit.validate(options=ValOptions(not_loaded_item=True))
     assert api_val.passed is True
-    with check_no_field():
-        api_val.details  # ruff:ignore[useless-expression]
+    assert api_val.details.not_loaded_item.status == consts.ApiValStatus.passed
 
 
-def test_item_ship(client):
+def test_item_ship(client, consts):
     eve_loaded_id = client.mk_eve_ship()
     eve_not_loaded_id = client.alloc_item_id()
     client.create_sources()
@@ -551,17 +549,17 @@ def test_item_ship(client):
     # Verification
     api_val = api_fit.validate(options=ValOptions(not_loaded_item=True))
     assert api_val.passed is True
-    with check_no_field():
-        api_val.details  # ruff:ignore[useless-expression]
+    assert api_val.details.not_loaded_item.status == consts.ApiValStatus.passed
     # Action
     api_ship = api_fit.set_ship(type_id=eve_not_loaded_id)
     # Verification
     api_val = api_fit.validate(options=ValOptions(not_loaded_item=True))
     assert api_val.passed is False
-    assert api_val.details.not_loaded_item == [api_ship.id]
+    assert api_val.details.not_loaded_item.status == consts.ApiValStatus.failed
+    assert api_val.details.not_loaded_item.fail == {api_ship.id: consts.ApiValItemStatus.failed}
 
 
-def test_item_ship_switch_type_id(client):
+def test_item_ship_switch_type_id(client, consts):
     eve_loaded_id = client.mk_eve_ship()
     eve_not_loaded_id = client.alloc_item_id()
     client.create_sources()
@@ -571,24 +569,23 @@ def test_item_ship_switch_type_id(client):
     # Verification
     api_val = api_fit.validate(options=ValOptions(not_loaded_item=True))
     assert api_val.passed is True
-    with check_no_field():
-        api_val.details  # ruff:ignore[useless-expression]
+    assert api_val.details.not_loaded_item.status == consts.ApiValStatus.passed
     # Action
     api_ship.change_ship(type_id=eve_not_loaded_id)
     # Verification
     api_val = api_fit.validate(options=ValOptions(not_loaded_item=True))
     assert api_val.passed is False
-    assert api_val.details.not_loaded_item == [api_ship.id]
+    assert api_val.details.not_loaded_item.status == consts.ApiValStatus.failed
+    assert api_val.details.not_loaded_item.fail == {api_ship.id: consts.ApiValItemStatus.failed}
     # Action
     api_ship.change_ship(type_id=eve_loaded_id)
     # Verification
     api_val = api_fit.validate(options=ValOptions(not_loaded_item=True))
     assert api_val.passed is True
-    with check_no_field():
-        api_val.details  # ruff:ignore[useless-expression]
+    assert api_val.details.not_loaded_item.status == consts.ApiValStatus.passed
 
 
-def test_item_skill(client):
+def test_item_skill(client, consts):
     eve_loaded_id = client.mk_eve_item()
     eve_not_loaded_id = client.alloc_item_id()
     client.create_sources()
@@ -599,10 +596,11 @@ def test_item_skill(client):
     # Verification
     api_val = api_fit.validate(options=ValOptions(not_loaded_item=True))
     assert api_val.passed is False
-    assert api_val.details.not_loaded_item == [api_not_loaded.id]
+    assert api_val.details.not_loaded_item.status == consts.ApiValStatus.failed
+    assert api_val.details.not_loaded_item.fail == {api_not_loaded.id: consts.ApiValItemStatus.failed}
 
 
-def test_item_skill_switch_type_id(client):
+def test_item_skill_switch_type_id(client, consts):
     eve_loaded_id = client.mk_eve_item()
     eve_not_loaded_id = client.alloc_item_id()
     client.create_sources()
@@ -612,24 +610,23 @@ def test_item_skill_switch_type_id(client):
     # Verification
     api_val = api_fit.validate(options=ValOptions(not_loaded_item=True))
     assert api_val.passed is True
-    with check_no_field():
-        api_val.details  # ruff:ignore[useless-expression]
+    assert api_val.details.not_loaded_item.status == consts.ApiValStatus.passed
     # Action
     api_skill.change_skill(type_id=eve_not_loaded_id)
     # Verification
     api_val = api_fit.validate(options=ValOptions(not_loaded_item=True))
     assert api_val.passed is False
-    assert api_val.details.not_loaded_item == [api_skill.id]
+    assert api_val.details.not_loaded_item.status == consts.ApiValStatus.failed
+    assert api_val.details.not_loaded_item.fail == {api_skill.id: consts.ApiValItemStatus.failed}
     # Action
     api_skill.change_skill(type_id=eve_loaded_id)
     # Verification
     api_val = api_fit.validate(options=ValOptions(not_loaded_item=True))
     assert api_val.passed is True
-    with check_no_field():
-        api_val.details  # ruff:ignore[useless-expression]
+    assert api_val.details.not_loaded_item.status == consts.ApiValStatus.passed
 
 
-def test_item_stance(client):
+def test_item_stance(client, consts):
     eve_loaded_id = client.mk_eve_item()
     eve_not_loaded_id = client.alloc_item_id()
     client.create_sources()
@@ -639,17 +636,17 @@ def test_item_stance(client):
     # Verification
     api_val = api_fit.validate(options=ValOptions(not_loaded_item=True))
     assert api_val.passed is True
-    with check_no_field():
-        api_val.details  # ruff:ignore[useless-expression]
+    assert api_val.details.not_loaded_item.status == consts.ApiValStatus.passed
     # Action
     api_stance = api_fit.set_stance(type_id=eve_not_loaded_id)
     # Verification
     api_val = api_fit.validate(options=ValOptions(not_loaded_item=True))
     assert api_val.passed is False
-    assert api_val.details.not_loaded_item == [api_stance.id]
+    assert api_val.details.not_loaded_item.status == consts.ApiValStatus.failed
+    assert api_val.details.not_loaded_item.fail == {api_stance.id: consts.ApiValItemStatus.failed}
 
 
-def test_item_stance_switch_type_id(client):
+def test_item_stance_switch_type_id(client, consts):
     eve_loaded_id = client.mk_eve_item()
     eve_not_loaded_id = client.alloc_item_id()
     client.create_sources()
@@ -659,24 +656,23 @@ def test_item_stance_switch_type_id(client):
     # Verification
     api_val = api_fit.validate(options=ValOptions(not_loaded_item=True))
     assert api_val.passed is True
-    with check_no_field():
-        api_val.details  # ruff:ignore[useless-expression]
+    assert api_val.details.not_loaded_item.status == consts.ApiValStatus.passed
     # Action
     api_stance.change_stance(type_id=eve_not_loaded_id)
     # Verification
     api_val = api_fit.validate(options=ValOptions(not_loaded_item=True))
     assert api_val.passed is False
-    assert api_val.details.not_loaded_item == [api_stance.id]
+    assert api_val.details.not_loaded_item.status == consts.ApiValStatus.failed
+    assert api_val.details.not_loaded_item.fail == {api_stance.id: consts.ApiValItemStatus.failed}
     # Action
     api_stance.change_stance(type_id=eve_loaded_id)
     # Verification
     api_val = api_fit.validate(options=ValOptions(not_loaded_item=True))
     assert api_val.passed is True
-    with check_no_field():
-        api_val.details  # ruff:ignore[useless-expression]
+    assert api_val.details.not_loaded_item.status == consts.ApiValStatus.passed
 
 
-def test_item_subsystem(client):
+def test_item_subsystem(client, consts):
     eve_loaded_id = client.mk_eve_item()
     eve_not_loaded_id = client.alloc_item_id()
     client.create_sources()
@@ -687,10 +683,11 @@ def test_item_subsystem(client):
     # Verification
     api_val = api_fit.validate(options=ValOptions(not_loaded_item=True))
     assert api_val.passed is False
-    assert api_val.details.not_loaded_item == [api_not_loaded.id]
+    assert api_val.details.not_loaded_item.status == consts.ApiValStatus.failed
+    assert api_val.details.not_loaded_item.fail == {api_not_loaded.id: consts.ApiValItemStatus.failed}
 
 
-def test_item_subsystem_switch_type_id(client):
+def test_item_subsystem_switch_type_id(client, consts):
     eve_loaded_id = client.mk_eve_item()
     eve_not_loaded_id = client.alloc_item_id()
     client.create_sources()
@@ -700,24 +697,23 @@ def test_item_subsystem_switch_type_id(client):
     # Verification
     api_val = api_fit.validate(options=ValOptions(not_loaded_item=True))
     assert api_val.passed is True
-    with check_no_field():
-        api_val.details  # ruff:ignore[useless-expression]
+    assert api_val.details.not_loaded_item.status == consts.ApiValStatus.passed
     # Action
     api_subsystem.change_subsystem(type_id=eve_not_loaded_id)
     # Verification
     api_val = api_fit.validate(options=ValOptions(not_loaded_item=True))
     assert api_val.passed is False
-    assert api_val.details.not_loaded_item == [api_subsystem.id]
+    assert api_val.details.not_loaded_item.status == consts.ApiValStatus.failed
+    assert api_val.details.not_loaded_item.fail == {api_subsystem.id: consts.ApiValItemStatus.failed}
     # Action
     api_subsystem.change_subsystem(type_id=eve_loaded_id)
     # Verification
     api_val = api_fit.validate(options=ValOptions(not_loaded_item=True))
     assert api_val.passed is True
-    with check_no_field():
-        api_val.details  # ruff:ignore[useless-expression]
+    assert api_val.details.not_loaded_item.status == consts.ApiValStatus.passed
 
 
-def test_item_sw_effect(client):
+def test_item_sw_effect(client, consts):
     eve_loaded_id = client.mk_eve_item()
     eve_not_loaded_id = client.alloc_item_id()
     client.create_sources()
@@ -727,10 +723,11 @@ def test_item_sw_effect(client):
     # Verification
     api_val = api_sol.validate(options=ValOptions(not_loaded_item=True))
     assert api_val.passed is False
-    assert api_val.details.not_loaded_item == [api_not_loaded.id]
+    assert api_val.details.not_loaded_item.status == consts.ApiValStatus.failed
+    assert api_val.details.not_loaded_item.fail == {api_not_loaded.id: consts.ApiValItemStatus.failed}
 
 
-def test_item_sw_effect_switch_type_id(client):
+def test_item_sw_effect_switch_type_id(client, consts):
     eve_loaded_id = client.mk_eve_item()
     eve_not_loaded_id = client.alloc_item_id()
     client.create_sources()
@@ -739,24 +736,23 @@ def test_item_sw_effect_switch_type_id(client):
     # Verification
     api_val = api_sol.validate(options=ValOptions(not_loaded_item=True))
     assert api_val.passed is True
-    with check_no_field():
-        api_val.details  # ruff:ignore[useless-expression]
+    assert api_val.details.not_loaded_item.status == consts.ApiValStatus.passed
     # Action
     api_sw_effect.change_sw_effect(type_id=eve_not_loaded_id)
     # Verification
     api_val = api_sol.validate(options=ValOptions(not_loaded_item=True))
     assert api_val.passed is False
-    assert api_val.details.not_loaded_item == [api_sw_effect.id]
+    assert api_val.details.not_loaded_item.status == consts.ApiValStatus.failed
+    assert api_val.details.not_loaded_item.fail == {api_sw_effect.id: consts.ApiValItemStatus.failed}
     # Action
     api_sw_effect.change_sw_effect(type_id=eve_loaded_id)
     # Verification
     api_val = api_sol.validate(options=ValOptions(not_loaded_item=True))
     assert api_val.passed is True
-    with check_no_field():
-        api_val.details  # ruff:ignore[useless-expression]
+    assert api_val.details.not_loaded_item.status == consts.ApiValStatus.passed
 
 
-def test_item_dynamic_bare(client):
+def test_item_dynamic_bare(client, consts):
     # Dynamic types are loaded only as mutated items, not on their own
     eve_base_item_id = client.mk_eve_item()
     eve_mutated_item_id = client.mk_eve_item(is_dynamic=True)
@@ -769,10 +765,11 @@ def test_item_dynamic_bare(client):
     # Verification
     api_val = api_fit.validate(options=ValOptions(not_loaded_item=True))
     assert api_val.passed is False
-    assert api_val.details.not_loaded_item == [api_not_loaded.id]
+    assert api_val.details.not_loaded_item.status == consts.ApiValStatus.failed
+    assert api_val.details.not_loaded_item.fail == {api_not_loaded.id: consts.ApiValItemStatus.failed}
 
 
-def test_item_dynamic_switch_type_id(client):
+def test_item_dynamic_switch_type_id(client, consts):
     eve_base_item_id = client.mk_eve_item()
     eve_mutated_item_id = client.mk_eve_item(is_dynamic=True)
     eve_mutator_id = client.mk_eve_mutator(items=[([eve_base_item_id], eve_mutated_item_id)])
@@ -783,24 +780,23 @@ def test_item_dynamic_switch_type_id(client):
     # Verification
     api_val = api_fit.validate(options=ValOptions(not_loaded_item=True))
     assert api_val.passed is True
-    with check_no_field():
-        api_val.details  # ruff:ignore[useless-expression]
+    assert api_val.details.not_loaded_item.status == consts.ApiValStatus.passed
     # Action
     api_module.change_module(type_id=eve_mutated_item_id)
     # Verification - mutator has no mutation for a dynamic base type, which is not loaded on its own
     api_val = api_fit.validate(options=ValOptions(not_loaded_item=True))
     assert api_val.passed is False
-    assert api_val.details.not_loaded_item == [api_module.id]
+    assert api_val.details.not_loaded_item.status == consts.ApiValStatus.failed
+    assert api_val.details.not_loaded_item.fail == {api_module.id: consts.ApiValItemStatus.failed}
     # Action
     api_module.change_module(type_id=eve_base_item_id)
     # Verification
     api_val = api_fit.validate(options=ValOptions(not_loaded_item=True))
     assert api_val.passed is True
-    with check_no_field():
-        api_val.details  # ruff:ignore[useless-expression]
+    assert api_val.details.not_loaded_item.status == consts.ApiValStatus.passed
 
 
-def test_known_failures(client):
+def test_known_failures(client, consts):
     eve_loaded_id = client.mk_eve_item()
     eve_not_loaded_id = client.alloc_item_id()
     eve_other_id = client.mk_eve_item()
@@ -814,19 +810,29 @@ def test_known_failures(client):
     # Verification
     api_val = api_fit.validate(options=ValOptions(not_loaded_item=[api_not_loaded1.id]))
     assert api_val.passed is False
-    assert api_val.details.not_loaded_item == [api_not_loaded2.id]
+    assert api_val.details.not_loaded_item.status == consts.ApiValStatus.failed
+    assert api_val.details.not_loaded_item.fail == {
+        api_not_loaded1.id: consts.ApiValItemStatus.kf,
+        api_not_loaded2.id: consts.ApiValItemStatus.failed}
     api_val = api_fit.validate(options=ValOptions(not_loaded_item=[api_not_loaded2.id]))
     assert api_val.passed is False
-    assert api_val.details.not_loaded_item == [api_not_loaded1.id]
+    assert api_val.details.not_loaded_item.status == consts.ApiValStatus.failed
+    assert api_val.details.not_loaded_item.fail == {
+        api_not_loaded1.id: consts.ApiValItemStatus.failed,
+        api_not_loaded2.id: consts.ApiValItemStatus.kf}
     api_val = api_fit.validate(options=ValOptions(not_loaded_item=[api_not_loaded1.id, api_not_loaded2.id]))
     assert api_val.passed is True
-    with check_no_field():
-        api_val.details  # ruff:ignore[useless-expression]
+    assert api_val.details.not_loaded_item.status == consts.ApiValStatus.passed_kfs
+    assert api_val.details.not_loaded_item.fail == {
+        api_not_loaded1.id: consts.ApiValItemStatus.kf,
+        api_not_loaded2.id: consts.ApiValItemStatus.kf}
     api_val = api_fit.validate(options=ValOptions(
         not_loaded_item=[api_not_loaded1.id, api_other.id, api_not_loaded2.id]))
     assert api_val.passed is True
-    with check_no_field():
-        api_val.details  # ruff:ignore[useless-expression]
+    assert api_val.details.not_loaded_item.status == consts.ApiValStatus.passed_kfs
+    assert api_val.details.not_loaded_item.fail == {
+        api_not_loaded1.id: consts.ApiValItemStatus.kf,
+        api_not_loaded2.id: consts.ApiValItemStatus.kf}
 
 
 def test_state(client, consts):
@@ -843,4 +849,9 @@ def test_state(client, consts):
     # Verification
     api_val = api_fit.validate(options=ValOptions(not_loaded_item=True))
     assert api_val.passed is False
-    assert api_val.details.not_loaded_item == sorted([api_implant.id, api_ship.id, api_module.id, api_module.charge.id])
+    assert api_val.details.not_loaded_item.status == consts.ApiValStatus.failed
+    assert api_val.details.not_loaded_item.fail == {
+        api_implant.id: consts.ApiValItemStatus.failed,
+        api_ship.id: consts.ApiValItemStatus.failed,
+        api_module.id: consts.ApiValItemStatus.failed,
+        api_module.charge.id: consts.ApiValItemStatus.failed}

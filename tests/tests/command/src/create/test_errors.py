@@ -24,7 +24,7 @@ def test_params_malformed(client):
         json_predicate={'code': 'PRM-001', 'message': 're:.+'})
 
 
-def test_data_types_key_prefix(client, log):
+def test_data_types_key_prefix(client, consts, log):
 
     def hook_data_prim(prim_data: EvePrimitives):
         prim_data.types = {f'str{k}' if k == eve_item1_id else k: v for k, v in prim_data.types.items()}
@@ -42,10 +42,11 @@ def test_data_types_key_prefix(client, log):
     # Verification - item which was failed is not in EVE item database, so it cannot be loaded
     api_val = api_sol.validate(options=ValOptions(not_loaded_item=True))
     assert api_val.passed is False
-    assert api_val.details.not_loaded_item == [api_item1.id]
+    assert api_val.details.not_loaded_item.status == consts.ApiValStatus.failed
+    assert api_val.details.not_loaded_item.fail == {api_item1.id: consts.ApiValItemStatus.failed}
 
 
-def test_data_types_value_array(client, log):
+def test_data_types_value_array(client, consts, log):
 
     def hook_data_prim(prim_data: EvePrimitives):
         prim_data.types[eve_item1_id] = [1, 2, 3]
@@ -63,7 +64,8 @@ def test_data_types_value_array(client, log):
     # Verification - item which was failed is not in EVE item database, so it cannot be loaded
     api_val = api_sol.validate(options=ValOptions(not_loaded_item=True))
     assert api_val.passed is False
-    assert api_val.details.not_loaded_item == [api_item1.id]
+    assert api_val.details.not_loaded_item.status == consts.ApiValStatus.failed
+    assert api_val.details.not_loaded_item.fail == {api_item1.id: consts.ApiValItemStatus.failed}
 
 
 def test_data_types_json_closing_brace_absent(client):

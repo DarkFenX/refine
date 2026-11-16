@@ -5,7 +5,7 @@ implemented as we know them today. Nevertheless, the lib supports this validatio
 ever gets back.
 """
 
-from fw import approx, check_no_field
+from fw import approx
 from fw.api import ValOptions
 
 
@@ -25,21 +25,21 @@ def test_drone_add_remove(client, consts):
     # Verification
     api_val = api_fit.validate(options=ValOptions(drone_group=True))
     assert api_val.passed is True
-    with check_no_field():
-        api_val.details  # ruff:ignore[useless-expression]
+    assert api_val.details.drone_group.status == consts.ApiValStatus.passed
     # Action
     api_drone = api_fit.add_drone(type_id=eve_drone_id, state=consts.ApiMinionState.in_bay)
     # Verification
     api_val = api_fit.validate(options=ValOptions(drone_group=True))
     assert api_val.passed is False
-    assert api_val.details.drone_group == (sorted([eve_group1_id, eve_group2_id]), {api_drone.id: eve_group3_id})
+    assert api_val.details.drone_group.status == consts.ApiValStatus.failed
+    assert api_val.details.drone_group.fail == (sorted([eve_group1_id, eve_group2_id]), {
+        api_drone.id: (consts.ApiValItemStatus.failed, eve_group3_id)})
     # Action
     api_drone.remove()
     # Verification
     api_val = api_fit.validate(options=ValOptions(drone_group=True))
     assert api_val.passed is True
-    with check_no_field():
-        api_val.details  # ruff:ignore[useless-expression]
+    assert api_val.details.drone_group.status == consts.ApiValStatus.passed
 
 
 def test_ship_add_set_remove(client, consts):
@@ -59,34 +59,35 @@ def test_ship_add_set_remove(client, consts):
     # Verification
     api_val = api_fit.validate(options=ValOptions(drone_group=True))
     assert api_val.passed is True
-    with check_no_field():
-        api_val.details  # ruff:ignore[useless-expression]
+    assert api_val.details.drone_group.status == consts.ApiValStatus.passed
     # Action
     api_fit.set_ship(type_id=eve_ship1_id)
     # Verification
     api_val = api_fit.validate(options=ValOptions(drone_group=True))
     assert api_val.passed is False
-    assert api_val.details.drone_group == ([eve_group1_id], {api_drone.id: eve_group3_id})
+    assert api_val.details.drone_group.status == consts.ApiValStatus.failed
+    assert api_val.details.drone_group.fail == ([eve_group1_id], {
+        api_drone.id: (consts.ApiValItemStatus.failed, eve_group3_id)})
     # Action
     api_fit.set_ship(type_id=eve_ship2_id)
     # Verification
     api_val = api_fit.validate(options=ValOptions(drone_group=True))
     assert api_val.passed is True
-    with check_no_field():
-        api_val.details  # ruff:ignore[useless-expression]
+    assert api_val.details.drone_group.status == consts.ApiValStatus.passed
     # Action
     api_fit.set_ship(type_id=eve_ship3_id)
     # Verification
     api_val = api_fit.validate(options=ValOptions(drone_group=True))
     assert api_val.passed is False
-    assert api_val.details.drone_group == ([eve_group2_id], {api_drone.id: eve_group3_id})
+    assert api_val.details.drone_group.status == consts.ApiValStatus.failed
+    assert api_val.details.drone_group.fail == ([eve_group2_id], {
+        api_drone.id: (consts.ApiValItemStatus.failed, eve_group3_id)})
     # Action
     api_fit.unset_ship()
     # Verification
     api_val = api_fit.validate(options=ValOptions(drone_group=True))
     assert api_val.passed is True
-    with check_no_field():
-        api_val.details  # ruff:ignore[useless-expression]
+    assert api_val.details.drone_group.status == consts.ApiValStatus.passed
 
 
 def test_drone_add_remove_non_limited_ship(client, consts):
@@ -103,42 +104,39 @@ def test_drone_add_remove_non_limited_ship(client, consts):
     # Verification
     api_val = api_fit.validate(options=ValOptions(drone_group=True))
     assert api_val.passed is True
-    with check_no_field():
-        api_val.details  # ruff:ignore[useless-expression]
+    assert api_val.details.drone_group.status == consts.ApiValStatus.passed
     # Action
     api_drone = api_fit.add_drone(type_id=eve_drone_id, state=consts.ApiMinionState.in_bay)
     # Verification
     api_val = api_fit.validate(options=ValOptions(drone_group=True))
     assert api_val.passed is True
-    with check_no_field():
-        api_val.details  # ruff:ignore[useless-expression]
+    assert api_val.details.drone_group.status == consts.ApiValStatus.passed
     # Action
     api_fit.set_ship(type_id=eve_ship2_id)
     # Verification
     api_val = api_fit.validate(options=ValOptions(drone_group=True))
     assert api_val.passed is False
-    assert api_val.details.drone_group == ([eve_group1_id], {api_drone.id: eve_group2_id})
+    assert api_val.details.drone_group.status == consts.ApiValStatus.failed
+    assert api_val.details.drone_group.fail == ([eve_group1_id], {
+        api_drone.id: (consts.ApiValItemStatus.failed, eve_group2_id)})
     # Action
     api_fit.set_ship(type_id=eve_ship1_id)
     # Verification
     api_val = api_fit.validate(options=ValOptions(drone_group=True))
     assert api_val.passed is True
-    with check_no_field():
-        api_val.details  # ruff:ignore[useless-expression]
+    assert api_val.details.drone_group.status == consts.ApiValStatus.passed
     # Action
     api_drone.remove()
     # Verification
     api_val = api_fit.validate(options=ValOptions(drone_group=True))
     assert api_val.passed is True
-    with check_no_field():
-        api_val.details  # ruff:ignore[useless-expression]
+    assert api_val.details.drone_group.status == consts.ApiValStatus.passed
     # Action
     api_fit.set_ship(type_id=eve_ship2_id)
     # Verification
     api_val = api_fit.validate(options=ValOptions(drone_group=True))
     assert api_val.passed is True
-    with check_no_field():
-        api_val.details  # ruff:ignore[useless-expression]
+    assert api_val.details.drone_group.status == consts.ApiValStatus.passed
 
 
 def test_rounding(client, consts):
@@ -160,7 +158,9 @@ def test_rounding(client, consts):
     # Verification
     api_val = api_fit.validate(options=ValOptions(drone_group=True))
     assert api_val.passed is False
-    assert api_val.details.drone_group == ([eve_group1_id], {api_drone2.id: eve_group2_id})
+    assert api_val.details.drone_group.status == consts.ApiValStatus.failed
+    assert api_val.details.drone_group.fail == ([eve_group1_id], {
+        api_drone2.id: (consts.ApiValItemStatus.failed, eve_group2_id)})
 
 
 def test_known_failures(client, consts):
@@ -184,18 +184,28 @@ def test_known_failures(client, consts):
     # Verification
     api_val = api_fit.validate(options=ValOptions(drone_group=[api_drone2.id]))
     assert api_val.passed is False
-    assert api_val.details.drone_group == ([eve_group1_id], {api_drone3.id: eve_group3_id})
+    assert api_val.details.drone_group.status == consts.ApiValStatus.failed
+    assert api_val.details.drone_group.fail == ([eve_group1_id], {
+        api_drone2.id: (consts.ApiValItemStatus.kf, eve_group2_id),
+        api_drone3.id: (consts.ApiValItemStatus.failed, eve_group3_id)})
     api_val = api_fit.validate(options=ValOptions(drone_group=[api_drone3.id]))
     assert api_val.passed is False
-    assert api_val.details.drone_group == ([eve_group1_id], {api_drone2.id: eve_group2_id})
+    assert api_val.details.drone_group.status == consts.ApiValStatus.failed
+    assert api_val.details.drone_group.fail == ([eve_group1_id], {
+        api_drone2.id: (consts.ApiValItemStatus.failed, eve_group2_id),
+        api_drone3.id: (consts.ApiValItemStatus.kf, eve_group3_id)})
     api_val = api_fit.validate(options=ValOptions(drone_group=[api_drone2.id, api_drone3.id]))
     assert api_val.passed is True
-    with check_no_field():
-        api_val.details  # ruff:ignore[useless-expression]
+    assert api_val.details.drone_group.status == consts.ApiValStatus.passed_kfs
+    assert api_val.details.drone_group.fail == ([eve_group1_id], {
+        api_drone2.id: (consts.ApiValItemStatus.kf, eve_group2_id),
+        api_drone3.id: (consts.ApiValItemStatus.kf, eve_group3_id)})
     api_val = api_fit.validate(options=ValOptions(drone_group=[api_drone2.id, api_other.id, api_drone3.id]))
     assert api_val.passed is True
-    with check_no_field():
-        api_val.details  # ruff:ignore[useless-expression]
+    assert api_val.details.drone_group.status == consts.ApiValStatus.passed_kfs
+    assert api_val.details.drone_group.fail == ([eve_group1_id], {
+        api_drone2.id: (consts.ApiValItemStatus.kf, eve_group2_id),
+        api_drone3.id: (consts.ApiValItemStatus.kf, eve_group3_id)})
 
 
 def test_modified_limit(client, consts):
@@ -222,14 +232,18 @@ def test_modified_limit(client, consts):
     assert api_ship.update().attrs[eve_limit_attr_id].modified == approx(eve_group1_id)
     api_val = api_fit.validate(options=ValOptions(drone_group=True))
     assert api_val.passed is False
-    assert api_val.details.drone_group == ([eve_group1_id], {api_drone.id: eve_group2_id})
+    assert api_val.details.drone_group.status == consts.ApiValStatus.failed
+    assert api_val.details.drone_group.fail == ([eve_group1_id], {
+        api_drone.id: (consts.ApiValItemStatus.failed, eve_group2_id)})
     # Action
     api_fit.add_rig(type_id=eve_rig_id)
     # Verification - attribute is modified, but not for purposes of validation
     assert api_ship.update().attrs[eve_limit_attr_id].modified == approx(eve_group2_id)
     api_val = api_fit.validate(options=ValOptions(drone_group=True))
     assert api_val.passed is False
-    assert api_val.details.drone_group == ([eve_group1_id], {api_drone.id: eve_group2_id})
+    assert api_val.details.drone_group.status == consts.ApiValStatus.failed
+    assert api_val.details.drone_group.fail == ([eve_group1_id], {
+        api_drone.id: (consts.ApiValItemStatus.failed, eve_group2_id)})
 
 
 def test_mutation_drone_group(client, consts):
@@ -249,33 +263,37 @@ def test_mutation_drone_group(client, consts):
     # Verification
     api_val = api_fit.validate(options=ValOptions(drone_group=True))
     assert api_val.passed is False
-    assert api_val.details.drone_group == ([eve_group1_id], {api_drone.id: eve_group2_id})
+    assert api_val.details.drone_group.status == consts.ApiValStatus.failed
+    assert api_val.details.drone_group.fail == ([eve_group1_id], {
+        api_drone.id: (consts.ApiValItemStatus.failed, eve_group2_id)})
     # Action
     api_fit.set_ship(type_id=eve_ship2_id)
     # Verification
     api_val = api_fit.validate(options=ValOptions(drone_group=True))
     assert api_val.passed is True
-    with check_no_field():
-        api_val.details  # ruff:ignore[useless-expression]
+    assert api_val.details.drone_group.status == consts.ApiValStatus.passed
     # Action
     api_drone.change_drone(mutation=eve_mutator_id)
     # Verification
     api_val = api_fit.validate(options=ValOptions(drone_group=True))
     assert api_val.passed is False
-    assert api_val.details.drone_group == ([eve_group2_id], {api_drone.id: eve_group1_id})
+    assert api_val.details.drone_group.status == consts.ApiValStatus.failed
+    assert api_val.details.drone_group.fail == ([eve_group2_id], {
+        api_drone.id: (consts.ApiValItemStatus.failed, eve_group1_id)})
     # Action
     api_fit.set_ship(type_id=eve_ship1_id)
     # Verification
     api_val = api_fit.validate(options=ValOptions(drone_group=True))
     assert api_val.passed is True
-    with check_no_field():
-        api_val.details  # ruff:ignore[useless-expression]
+    assert api_val.details.drone_group.status == consts.ApiValStatus.passed
     # Action
     api_drone.change_drone(mutation=None)
     # Verification
     api_val = api_fit.validate(options=ValOptions(drone_group=True))
     assert api_val.passed is False
-    assert api_val.details.drone_group == ([eve_group1_id], {api_drone.id: eve_group2_id})
+    assert api_val.details.drone_group.status == consts.ApiValStatus.failed
+    assert api_val.details.drone_group.fail == ([eve_group1_id], {
+        api_drone.id: (consts.ApiValItemStatus.failed, eve_group2_id)})
 
 
 def test_no_attr(client, consts):
@@ -295,18 +313,19 @@ def test_no_attr(client, consts):
     # ship has no limit, so validation passes
     api_val = api_fit.validate(options=ValOptions(drone_group=True))
     assert api_val.passed is True
-    with check_no_field():
-        api_val.details  # ruff:ignore[useless-expression]
+    assert api_val.details.drone_group.status == consts.ApiValStatus.passed
     # Action
     api_ship.change_ship(type_id=eve_ship2_id)
     # Verification - having some attributes which do not exist does not prevent existing attributes
     # from functioning
     api_val = api_fit.validate(options=ValOptions(drone_group=True))
     assert api_val.passed is False
-    assert api_val.details.drone_group == ([eve_group2_id], {api_drone.id: eve_group1_id})
+    assert api_val.details.drone_group.status == consts.ApiValStatus.failed
+    assert api_val.details.drone_group.fail == ([eve_group2_id], {
+        api_drone.id: (consts.ApiValItemStatus.failed, eve_group1_id)})
 
 
-def test_not_loaded_ship(client):
+def test_not_loaded_ship(client, consts):
     eve_ship_id = client.alloc_item_id()
     eve_drone_id = client.mk_eve_item()
     client.create_sources()
@@ -317,8 +336,7 @@ def test_not_loaded_ship(client):
     # Verification
     api_val = api_fit.validate(options=ValOptions(drone_group=True))
     assert api_val.passed is True
-    with check_no_field():
-        api_val.details  # ruff:ignore[useless-expression]
+    assert api_val.details.drone_group.status == consts.ApiValStatus.passed
 
 
 def test_not_loaded_drone(client, consts):
@@ -334,8 +352,7 @@ def test_not_loaded_drone(client, consts):
     # Verification
     api_val = api_fit.validate(options=ValOptions(drone_group=True))
     assert api_val.passed is True
-    with check_no_field():
-        api_val.details  # ruff:ignore[useless-expression]
+    assert api_val.details.drone_group.status == consts.ApiValStatus.passed
 
 
 def test_criterion_item_kind(client, consts):
@@ -372,5 +389,4 @@ def test_criterion_item_kind(client, consts):
     assert len(api_fighter.autocharges) == 1
     api_val = api_fit.validate(options=ValOptions(drone_group=True))
     assert api_val.passed is True
-    with check_no_field():
-        api_val.details  # ruff:ignore[useless-expression]
+    assert api_val.details.drone_group.status == consts.ApiValStatus.passed
