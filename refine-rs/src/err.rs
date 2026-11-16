@@ -2,8 +2,8 @@ pub use rc::err::{FitIdParseError, FleetIdParseError, ItemIdParseError};
 
 pub use crate::{
     api::{
-        FitGetError, FitHybridBatchError, FleetGetError, ItemGetError, SolAddError, SolFittingAppError, SolGetError,
-        SolHybridBatchError, SolIdParseError, SolRemoveError, SolSwitchSrcError,
+        FitGetError, FitHybridBatchError, FleetGetError, ItemGetError, SolAddError, SolFittingAppEnforcedError,
+        SolFittingAppSimpleError, SolGetError, SolHybridBatchError, SolIdParseError, SolRemoveError, SolSwitchSrcError,
     },
     ctl::{
         AutochargeChangeError, BoosterChangeError, CharacterChangeError, ChargeChangeError, DroneAddError,

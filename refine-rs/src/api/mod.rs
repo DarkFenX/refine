@@ -3,8 +3,9 @@ pub use fleet::{Fleet, FleetGetError};
 pub use item::{Item, ItemGetError};
 pub use refine::Refine;
 pub use sol::{
-    Sol, SolAddError, SolFittingAppError, SolFittingAppResp, SolGetError, SolHybridBatchError, SolId, SolIdParseError,
-    SolRemoveError, SolSwitchSrcError, ValCheckerResult,
+    Sol, SolAddError, SolFittingAppEnforcedError, SolFittingAppEnforcedResp, SolFittingAppSimpleError,
+    SolFittingAppSimpleResp, SolGetError, SolHybridBatchError, SolId, SolIdParseError, SolRemoveError,
+    SolSwitchSrcError, ValCheckerInput, ValCheckerResult, ValEnforcer,
 };
 pub use src::{
     Src, SrcAddError, SrcAlias, SrcAliasPruneInitError, SrcAliasStrictInitError, SrcGetError, SrcRemoveError,

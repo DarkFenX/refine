@@ -4,7 +4,7 @@
 #![cfg_attr(feature = "serde", feature(cfg_eval))]
 #![expect(unevaluated_default_field_value)]
 
-pub use api::{Fit, Fleet, Item, Refine, Sol, SolFittingAppResp, SolId};
+pub use api::{Fit, Fleet, Item, Refine, Sol, SolFittingAppEnforcedResp, SolFittingAppSimpleResp, SolId};
 pub use ctl::{
     AddMutation, AddedFitIdResp, AddedFleetIdResp, AddedItemIdsResp, AttrMutation, AutochargeChangeCmd,
     AutochargeItemIds, BoosterAddCmd, BoosterChangeCmd, ChangeMutation, ChangedItemIdsResp, CharacterChangeCmd,

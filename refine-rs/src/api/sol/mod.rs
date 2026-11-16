@@ -2,7 +2,10 @@ pub use id::{SolId, SolIdParseError};
 pub use refine_add_sol::SolAddError;
 pub use refine_get_sol::SolGetError;
 pub use sol::Sol;
-pub use sol_batch_fitting_app::{SolFittingAppError, SolFittingAppResp, ValCheckerResult};
+pub use sol_batch_fitting_app::{
+    SolFittingAppEnforcedError, SolFittingAppEnforcedResp, SolFittingAppSimpleError, SolFittingAppSimpleResp,
+    ValCheckerInput, ValCheckerResult, ValEnforcer,
+};
 pub use sol_batch_hybrid::SolHybridBatchError;
 pub use sol_remove::SolRemoveError;
 pub use sol_switch_src::SolSwitchSrcError;

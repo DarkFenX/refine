@@ -8,7 +8,7 @@ pub use result_mode::ValResultMode;
 pub use sol::{SolValCmd, SolValCmdBr, SolValEnumCmdBr, SolValResult};
 pub(crate) use sol::{SolValCmdGen, SolValEnumCmd};
 
-pub use crate::api::ValCheckerResult;
+pub use crate::api::{ValCheckerInput, ValCheckerResult, ValEnforcer};
 
 mod fit;
 mod result_mode;

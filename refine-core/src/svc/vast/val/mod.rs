@@ -2,6 +2,7 @@ use kinds::ValKind;
 use options::ValOptionInt;
 pub use options::{ValEnabled, ValOptions, ValOptionsSol};
 pub(crate) use options::{ValOptionsInt, ValOptionsSolInt};
+use result::ValFail;
 pub use result::{ValItemInfo, ValItemStatus, ValResult, ValResultFit, ValResultSol};
 pub(in crate::svc::vast) use validators::{
     EffectSecZoneInfo, ValFighterSquadSizeFighterStored, ValItemKindItemStored, ValModuleStateModuleStored,

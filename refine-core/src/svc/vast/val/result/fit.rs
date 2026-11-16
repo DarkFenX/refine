@@ -1,10 +1,13 @@
-use crate::val::{
-    ValActivationBlockedFail, ValCapitalModFail, ValChargeGroupFail, ValChargeSizeFail, ValChargeVolumeFail,
-    ValCloakingBlockedFail, ValDroneGroupFail, ValEffectSecZoneFail, ValEffectStopperFail, ValFighterSquadSizeFail,
-    ValItemKindFail, ValItemSecZoneFail, ValItemVsShipKindFail, ValMaxGroupFail, ValMaxTypeFail, ValModuleStateFail,
-    ValNotLoadedItemFail, ValOverloadSkillFail, ValProjFilterFail, ValProjImmunityFail, ValResourceFail, ValResult,
-    ValRigSizeFail, ValShipLimitFail, ValShipStanceFail, ValSlotCountFail, ValSlotIndexFail, ValSrqFail,
-    ValUnusableCapFail, ValUnusableResFail, ValUnusableSlotFail,
+use crate::{
+    svc::vast::val::ValKind,
+    val::{
+        ValActivationBlockedFail, ValCapitalModFail, ValChargeGroupFail, ValChargeSizeFail, ValChargeVolumeFail,
+        ValCloakingBlockedFail, ValDroneGroupFail, ValEffectSecZoneFail, ValEffectStopperFail, ValFighterSquadSizeFail,
+        ValItemKindFail, ValItemSecZoneFail, ValItemVsShipKindFail, ValMaxGroupFail, ValMaxTypeFail,
+        ValModuleStateFail, ValNotLoadedItemFail, ValOptions, ValOverloadSkillFail, ValProjFilterFail,
+        ValProjImmunityFail, ValResourceFail, ValResult, ValRigSizeFail, ValShipLimitFail, ValShipStanceFail,
+        ValSlotCountFail, ValSlotIndexFail, ValSrqFail, ValUnusableCapFail, ValUnusableResFail, ValUnusableSlotFail,
+    },
 };
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -326,5 +329,178 @@ impl ValResultFit {
             && !sec_zone_unonlineable.is_failed()
             && !sec_zone_unactivable.is_failed()
             && !sec_zone_effect.is_failed()
+    }
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Private
+////////////////////////////////////////////////////////////////////////////////////////////////////
+impl ValResultFit {
+    pub(in crate::svc::vast::val) fn add_kfs_to(&self, options: &mut ValOptions) {
+        let Self {
+            // Generic
+            not_loaded_item,
+            item_kind,
+            skill_reqs,
+            // Implants/boosters
+            implant_slot_index,
+            booster_slot_index,
+            // Shared between mod-alike items
+            cpu,
+            powergrid,
+            ship_limit,
+            max_group_fitted,
+            max_group_online,
+            max_group_active,
+            max_type_fitted,
+            item_vs_ship_kind,
+            // Modules
+            high_slot_count,
+            mid_slot_count,
+            low_slot_count,
+            turret_slot_count,
+            launcher_slot_count,
+            module_state,
+            capital_module,
+            overload_skill,
+            unusable_cap,
+            // Charges
+            charge_group,
+            charge_size,
+            charge_volume,
+            // Rigs
+            rig_slot_count,
+            calibration,
+            rig_size,
+            // Services
+            service_slot_count,
+            // T3 subsystems/stances
+            subsystem_slot_count,
+            subsystem_slot_index,
+            ship_stance,
+            // Drones
+            drone_bay_volume,
+            launched_drone_count,
+            drone_bandwidth,
+            unlaunchable_drone_slot,
+            unlaunchable_drone_bandwidth,
+            drone_group,
+            // Fighters
+            fighter_bay_volume,
+            launched_fighter_count,
+            launched_light_fighter_count,
+            launched_heavy_fighter_count,
+            launched_support_fighter_count,
+            launched_st_light_fighter_count,
+            launched_st_heavy_fighter_count,
+            launched_st_support_fighter_count,
+            unlaunchable_fighter,
+            unlaunchable_light_fighter,
+            unlaunchable_heavy_fighter,
+            unlaunchable_support_fighter,
+            unlaunchable_st_light_fighter,
+            unlaunchable_st_heavy_fighter,
+            unlaunchable_st_support_fighter,
+            fighter_squad_size,
+            // Projection, destination side
+            activation_blocked,
+            effect_stopper,
+            cloaking_blocked,
+            // Projection, source side
+            projectee_filter,
+            assist_immunity,
+            offense_immunity,
+            resist_immunity,
+            // Sec zone
+            sec_zone_fitted,
+            sec_zone_online,
+            sec_zone_active,
+            sec_zone_unonlineable,
+            sec_zone_unactivable,
+            sec_zone_effect,
+        } = self;
+        // Generic
+        options.extend_kind_kfs(ValKind::NotLoadedItem, not_loaded_item);
+        options.extend_kind_kfs(ValKind::ItemKind, item_kind);
+        options.extend_kind_kfs(ValKind::SkillReqs, skill_reqs);
+        // Implants/boosters
+        options.extend_kind_kfs(ValKind::ImplantSlotIndex, implant_slot_index);
+        options.extend_kind_kfs(ValKind::BoosterSlotIndex, booster_slot_index);
+        // Shared between mod-alike items
+        options.extend_kind_kfs(ValKind::Cpu, cpu);
+        options.extend_kind_kfs(ValKind::Powergrid, powergrid);
+        options.extend_kind_kfs(ValKind::ShipLimit, ship_limit);
+        options.extend_kind_kfs(ValKind::MaxGroupFitted, max_group_fitted);
+        options.extend_kind_kfs(ValKind::MaxGroupOnline, max_group_online);
+        options.extend_kind_kfs(ValKind::MaxGroupActive, max_group_active);
+        options.extend_kind_kfs(ValKind::MaxTypeFitted, max_type_fitted);
+        options.extend_kind_kfs(ValKind::ItemVsShipKind, item_vs_ship_kind);
+        // Modules
+        options.extend_kind_kfs(ValKind::HighSlotCount, high_slot_count);
+        options.extend_kind_kfs(ValKind::MidSlotCount, mid_slot_count);
+        options.extend_kind_kfs(ValKind::LowSlotCount, low_slot_count);
+        options.extend_kind_kfs(ValKind::TurretSlotCount, turret_slot_count);
+        options.extend_kind_kfs(ValKind::LauncherSlotCount, launcher_slot_count);
+        options.extend_kind_kfs(ValKind::ModuleState, module_state);
+        options.extend_kind_kfs(ValKind::CapitalModule, capital_module);
+        options.extend_kind_kfs(ValKind::OverloadSkill, overload_skill);
+        options.extend_kind_kfs(ValKind::UnusableCap, unusable_cap);
+        // Charges
+        options.extend_kind_kfs(ValKind::ChargeGroup, charge_group);
+        options.extend_kind_kfs(ValKind::ChargeSize, charge_size);
+        options.extend_kind_kfs(ValKind::ChargeVolume, charge_volume);
+        // Rigs
+        options.extend_kind_kfs(ValKind::RigSlotCount, rig_slot_count);
+        options.extend_kind_kfs(ValKind::Calibration, calibration);
+        options.extend_kind_kfs(ValKind::RigSize, rig_size);
+        // Services
+        options.extend_kind_kfs(ValKind::ServiceSlotCount, service_slot_count);
+        // T3 subsystems/stances
+        options.extend_kind_kfs(ValKind::SubsystemSlotCount, subsystem_slot_count);
+        options.extend_kind_kfs(ValKind::SubsystemSlotIndex, subsystem_slot_index);
+        options.extend_kind_kfs(ValKind::ShipStance, ship_stance);
+        // Drones
+        options.extend_kind_kfs(ValKind::DroneBayVolume, drone_bay_volume);
+        options.extend_kind_kfs(ValKind::LaunchedDroneCount, launched_drone_count);
+        options.extend_kind_kfs(ValKind::DroneBandwidth, drone_bandwidth);
+        options.extend_kind_kfs(ValKind::UnlaunchableDroneSlot, unlaunchable_drone_slot);
+        options.extend_kind_kfs(ValKind::UnlaunchableDroneBandwidth, unlaunchable_drone_bandwidth);
+        options.extend_kind_kfs(ValKind::DroneGroup, drone_group);
+        // Fighters
+        options.extend_kind_kfs(ValKind::FighterBayVolume, fighter_bay_volume);
+        options.extend_kind_kfs(ValKind::LaunchedFighterCount, launched_fighter_count);
+        options.extend_kind_kfs(ValKind::LaunchedLightFighterCount, launched_light_fighter_count);
+        options.extend_kind_kfs(ValKind::LaunchedHeavyFighterCount, launched_heavy_fighter_count);
+        options.extend_kind_kfs(ValKind::LaunchedSupportFighterCount, launched_support_fighter_count);
+        options.extend_kind_kfs(ValKind::LaunchedStLightFighterCount, launched_st_light_fighter_count);
+        options.extend_kind_kfs(ValKind::LaunchedStHeavyFighterCount, launched_st_heavy_fighter_count);
+        options.extend_kind_kfs(
+            ValKind::LaunchedStSupportFighterCount,
+            launched_st_support_fighter_count,
+        );
+        options.extend_kind_kfs(ValKind::UnlaunchableFighter, unlaunchable_fighter);
+        options.extend_kind_kfs(ValKind::UnlaunchableLightFighter, unlaunchable_light_fighter);
+        options.extend_kind_kfs(ValKind::UnlaunchableHeavyFighter, unlaunchable_heavy_fighter);
+        options.extend_kind_kfs(ValKind::UnlaunchableSupportFighter, unlaunchable_support_fighter);
+        options.extend_kind_kfs(ValKind::UnlaunchableStLightFighter, unlaunchable_st_light_fighter);
+        options.extend_kind_kfs(ValKind::UnlaunchableStHeavyFighter, unlaunchable_st_heavy_fighter);
+        options.extend_kind_kfs(ValKind::UnlaunchableStSupportFighter, unlaunchable_st_support_fighter);
+        options.extend_kind_kfs(ValKind::FighterSquadSize, fighter_squad_size);
+        // Projection, destination side
+        options.extend_kind_kfs(ValKind::ActivationBlocked, activation_blocked);
+        options.extend_kind_kfs(ValKind::EffectStopper, effect_stopper);
+        options.extend_kind_kfs(ValKind::CloakingBlocked, cloaking_blocked);
+        // Projection, source side
+        options.extend_kind_kfs(ValKind::ProjecteeFilter, projectee_filter);
+        options.extend_kind_kfs(ValKind::AssistImmunity, assist_immunity);
+        options.extend_kind_kfs(ValKind::OffenseImmunity, offense_immunity);
+        options.extend_kind_kfs(ValKind::ResistImmunity, resist_immunity);
+        // Sec zone
+        options.extend_kind_kfs(ValKind::SecZoneFitted, sec_zone_fitted);
+        options.extend_kind_kfs(ValKind::SecZoneOnline, sec_zone_online);
+        options.extend_kind_kfs(ValKind::SecZoneActive, sec_zone_active);
+        options.extend_kind_kfs(ValKind::SecZoneUnonlineable, sec_zone_unonlineable);
+        options.extend_kind_kfs(ValKind::SecZoneUnactivable, sec_zone_unactivable);
+        options.extend_kind_kfs(ValKind::SecZoneEffect, sec_zone_effect);
     }
 }
