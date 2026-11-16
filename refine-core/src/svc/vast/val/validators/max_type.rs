@@ -34,8 +34,8 @@ pub struct ValMaxTypeFail {
 pub struct ValMaxTypeTypeInfo {
     /// Type ID of an item this fit has too many.
     pub item_type_id: ItemTypeId,
-    /// How many items of this type is fit.
-    pub item_type_count: Count,
+    /// Items of this type which are fit.
+    pub item_type_item_ids: Vec<ItemId>,
     /// Items which break the limit, and what the limit is.
     #[cfg_attr(feature = "serde", serde_as(as = "serde_with::KeyValueMap<_>"))]
     pub items: Vec<ValMaxTypeItemInfo>,
@@ -82,7 +82,10 @@ impl VastFitData {
                         .entry(item_aid)
                         .or_insert_with(|| ValMaxTypeTypeInfo {
                             item_type_id: ItemTypeId::from_aid(item_aid),
-                            item_type_count: fitted,
+                            item_type_item_ids: item_type_data
+                                .keys()
+                                .map(|&type_item_uid| ctx.u_data.items.ext_id_by_int_id(type_item_uid))
+                                .collect(),
                             items: Vec::new(),
                         })
                         .items

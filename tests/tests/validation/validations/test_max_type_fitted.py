@@ -16,7 +16,7 @@ def test_same_value_module(client, consts):
     assert api_val.passed is False
     assert api_val.details.max_type_fitted.status == consts.ApiValStatus.failed
     assert api_val.details.max_type_fitted.fail == {
-        eve_module_id: [2, {
+        eve_module_id: [sorted([api_module1.id, api_module2.id]), {
             api_module1.id: (consts.ApiValItemStatus.failed, 1),
             api_module2.id: (consts.ApiValItemStatus.failed, 1)}]}
 
@@ -34,7 +34,7 @@ def test_same_value_service(client, consts):
     assert api_val.passed is False
     assert api_val.details.max_type_fitted.status == consts.ApiValStatus.failed
     assert api_val.details.max_type_fitted.fail == {
-        eve_service_id: [2, {
+        eve_service_id: [sorted([api_service1.id, api_service2.id]), {
             api_service1.id: (consts.ApiValItemStatus.failed, 1),
             api_service2.id: (consts.ApiValItemStatus.failed, 1)}]}
 
@@ -54,28 +54,28 @@ def test_known_failures(client, consts):
     assert api_val.passed is False
     assert api_val.details.max_type_fitted.status == consts.ApiValStatus.failed
     assert api_val.details.max_type_fitted.fail == {
-        eve_service_id: [2, {
+        eve_service_id: [sorted([api_service1.id, api_service2.id]), {
             api_service1.id: (consts.ApiValItemStatus.kf, 1),
             api_service2.id: (consts.ApiValItemStatus.failed, 1)}]}
     api_val = api_fit.validate(options=ValOptions(max_type_fitted=[api_service2.id]))
     assert api_val.passed is False
     assert api_val.details.max_type_fitted.status == consts.ApiValStatus.failed
     assert api_val.details.max_type_fitted.fail == {
-        eve_service_id: [2, {
+        eve_service_id: [sorted([api_service1.id, api_service2.id]), {
             api_service1.id: (consts.ApiValItemStatus.failed, 1),
             api_service2.id: (consts.ApiValItemStatus.kf, 1)}]}
     api_val = api_fit.validate(options=ValOptions(max_type_fitted=[api_service1.id, api_service2.id]))
     assert api_val.passed is True
     assert api_val.details.max_type_fitted.status == consts.ApiValStatus.passed_kfs
     assert api_val.details.max_type_fitted.fail == {
-        eve_service_id: [2, {
+        eve_service_id: [sorted([api_service1.id, api_service2.id]), {
             api_service1.id: (consts.ApiValItemStatus.kf, 1),
             api_service2.id: (consts.ApiValItemStatus.kf, 1)}]}
     api_val = api_fit.validate(options=ValOptions(max_type_fitted=[api_service1.id, api_other.id, api_service2.id]))
     assert api_val.passed is True
     assert api_val.details.max_type_fitted.status == consts.ApiValStatus.passed_kfs
     assert api_val.details.max_type_fitted.fail == {
-        eve_service_id: [2, {
+        eve_service_id: [sorted([api_service1.id, api_service2.id]), {
             api_service1.id: (consts.ApiValItemStatus.kf, 1),
             api_service2.id: (consts.ApiValItemStatus.kf, 1)}]}
 
@@ -94,7 +94,7 @@ def test_switch_type_id(client, consts):
     assert api_val.passed is False
     assert api_val.details.max_type_fitted.status == consts.ApiValStatus.failed
     assert api_val.details.max_type_fitted.fail == {
-        eve_module1_id: [2, {
+        eve_module1_id: [sorted([api_module1.id, api_module2.id]), {
             api_module1.id: (consts.ApiValItemStatus.failed, 1),
             api_module2.id: (consts.ApiValItemStatus.failed, 1)}]}
     # Action
@@ -110,7 +110,7 @@ def test_switch_type_id(client, consts):
     assert api_val.passed is False
     assert api_val.details.max_type_fitted.status == consts.ApiValStatus.failed
     assert api_val.details.max_type_fitted.fail == {
-        eve_module1_id: [2, {
+        eve_module1_id: [sorted([api_module1.id, api_module2.id]), {
             api_module1.id: (consts.ApiValItemStatus.failed, 1),
             api_module2.id: (consts.ApiValItemStatus.failed, 1)}]}
 
@@ -131,10 +131,10 @@ def test_rounding(client, consts):
     assert api_val.passed is False
     assert api_val.details.max_type_fitted.status == consts.ApiValStatus.failed
     assert api_val.details.max_type_fitted.fail == {
-        eve_service2_id: [2, {
+        eve_service2_id: [sorted([api_service3.id, api_service4.id]), {
             api_service3.id: (consts.ApiValItemStatus.failed, 1),
             api_service4.id: (consts.ApiValItemStatus.failed, 1)}],
-        eve_service1_id: [2, {
+        eve_service1_id: [sorted([api_service1.id, api_service2.id]), {
             api_service1.id: (consts.ApiValItemStatus.failed, 1),
             api_service2.id: (consts.ApiValItemStatus.failed, 1)}]}
 
@@ -153,8 +153,8 @@ def test_non_positive(client, consts):
     assert api_val.passed is False
     assert api_val.details.max_type_fitted.status == consts.ApiValStatus.failed
     assert api_val.details.max_type_fitted.fail == {
-        eve_service2_id: [1, {api_service2.id: (consts.ApiValItemStatus.failed, 0)}],
-        eve_service1_id: [1, {api_service1.id: (consts.ApiValItemStatus.failed, 0)}]}
+        eve_service2_id: [[api_service2.id], {api_service2.id: (consts.ApiValItemStatus.failed, 0)}],
+        eve_service1_id: [[api_service1.id], {api_service1.id: (consts.ApiValItemStatus.failed, 0)}]}
     # Action
     api_service1.remove()
     # Verification
@@ -162,7 +162,7 @@ def test_non_positive(client, consts):
     assert api_val.passed is False
     assert api_val.details.max_type_fitted.status == consts.ApiValStatus.failed
     assert api_val.details.max_type_fitted.fail == {
-        eve_service2_id: [1, {api_service2.id: (consts.ApiValItemStatus.failed, 0)}]}
+        eve_service2_id: [[api_service2.id], {api_service2.id: (consts.ApiValItemStatus.failed, 0)}]}
     # Action
     api_service2.remove()
     # Verification
@@ -194,7 +194,7 @@ def test_modified(client, consts):
     assert api_val.passed is False
     assert api_val.details.max_type_fitted.status == consts.ApiValStatus.failed
     assert api_val.details.max_type_fitted.fail == {
-        eve_service_id: [2, {
+        eve_service_id: [sorted([api_service1.id, api_service2.id]), {
             api_service1.id: (consts.ApiValItemStatus.failed, 1),
             api_service2.id: (consts.ApiValItemStatus.failed, 1)}]}
 
@@ -225,7 +225,7 @@ def test_mutation_limit_priority(client, consts):
     assert api_val.passed is False
     assert api_val.details.max_type_fitted.status == consts.ApiValStatus.failed
     assert api_val.details.max_type_fitted.fail == {
-        eve_mutated_module_id: [2, {
+        eve_mutated_module_id: [sorted([api_module1.id, api_module2.id]), {
             api_module1.id: (consts.ApiValItemStatus.failed, 1),
             api_module2.id: (consts.ApiValItemStatus.failed, 1)}]}
     # Action
@@ -288,7 +288,7 @@ def test_mutation_limit_inheritance(client, consts):
     assert api_val.passed is False
     assert api_val.details.max_type_fitted.status == consts.ApiValStatus.failed
     assert api_val.details.max_type_fitted.fail == {
-        eve_base_module_id: [2, {
+        eve_base_module_id: [sorted([api_module1.id, api_module2.id]), {
             api_module1.id: (consts.ApiValItemStatus.failed, 1),
             api_module2.id: (consts.ApiValItemStatus.failed, 1)}]}
 
@@ -335,7 +335,7 @@ def test_criterion_item_state(client, consts):
     assert api_val.passed is False
     assert api_val.details.max_type_fitted.status == consts.ApiValStatus.failed
     assert api_val.details.max_type_fitted.fail == {
-        eve_item_id: [2, {
+        eve_item_id: [sorted([api_module.id, api_service.id]), {
             api_module.id: (consts.ApiValItemStatus.failed, 1),
             api_service.id: (consts.ApiValItemStatus.failed, 1)}]}
 

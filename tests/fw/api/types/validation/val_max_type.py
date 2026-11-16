@@ -14,11 +14,12 @@ class ValMaxTypeFail(UserDict):
 @dataclasses.dataclass
 class ValMaxTypeType:
 
-    item_type_count: int
+    item_type_item_ids: list[str]
     items: dict[str, ValMaxTypeItemInfo]
 
     def __init__(self, *, data: list | tuple) -> None:
-        self.item_type_count, items = data
+        item_type_item_ids, items = data
+        self.item_type_item_ids = sorted(item_type_item_ids)
         self.items = {k: ValMaxTypeItemInfo(data=v) for k, v in items.items()}
 
     def __getitem__(self, item: int) -> typing.Any:
@@ -28,7 +29,7 @@ class ValMaxTypeType:
     def __eq__(self, other: list | tuple) -> bool:
         if isinstance(other, tuple):
             other = list(other)
-        return [self.item_type_count, self.items] == other
+        return [self.item_type_item_ids, self.items] == other
 
 
 @dataclasses.dataclass
