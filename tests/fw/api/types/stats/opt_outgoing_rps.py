@@ -5,21 +5,21 @@ from fw.util import Absent
 
 if typing.TYPE_CHECKING:
     from fw.consts import ApiStatItemState
-    from .opt_shared import StatTimeBurst, StatTimeSim
+    from .opt_shared import StatTime
 
 
 @dataclasses.dataclass(kw_only=True)
 class StatsOptionFitOutRps:
 
     item_kinds: StatOutRepItemKinds | type[Absent] = Absent
-    time: StatTimeBurst | StatTimeSim | type[Absent] = Absent
+    time: StatTime | type[Absent] = Absent
     projectee_item_id: str | type[Absent] = Absent
 
 
 @dataclasses.dataclass(kw_only=True)
 class StatsOptionItemOutRps:
 
-    time: StatTimeBurst | StatTimeSim | type[Absent] = Absent
+    time: StatTime | type[Absent] = Absent
     state: ApiStatItemState | type[Absent] = Absent
     projectee_item_id: str | type[Absent] = Absent
 

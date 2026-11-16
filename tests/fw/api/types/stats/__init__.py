@@ -19,7 +19,7 @@ from .opt_outgoing_cps import StatsOptionFitOutCps, StatsOptionItemOutCps
 from .opt_outgoing_nps import StatNeutItemKinds, StatsOptionFitOutNps, StatsOptionItemOutNps
 from .opt_outgoing_rps import StatOutRepItemKinds, StatsOptionFitOutRps, StatsOptionItemOutRps
 from .opt_rps import StatsOptionErps, StatsOptionRps
-from .opt_shared import StatTimeBurst, StatTimeSim
+from .opt_shared import StatTime
 from .opts_fit import FitStatsOptions
 from .opts_fleet import FleetStatsOptions
 from .opts_item import ItemStatsOptions

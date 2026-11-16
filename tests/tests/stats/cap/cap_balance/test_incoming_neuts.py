@@ -1,5 +1,5 @@
 from fw import approx
-from fw.api import FitStatsOptions, ItemStatsOptions, StatCapSrcKinds, StatsOptionCapBalance, StatTimeBurst, StatTimeSim
+from fw.api import FitStatsOptions, ItemStatsOptions, StatCapSrcKinds, StatsOptionCapBalance, StatTime
 
 
 def test_state(client, consts):
@@ -329,32 +329,32 @@ def test_time(client, consts):
     assert api_tgt_ship_stats.cap_balance.one() == approx(-46)
     # Burst stats - first cycle of each module
     api_tgt_fit_stats = api_tgt_fit.get_stats(options=FitStatsOptions(
-        cap_balance=[StatsOptionCapBalance(time=StatTimeBurst())]))
+        cap_balance=[StatsOptionCapBalance(time=StatTime.burst())]))
     assert api_tgt_fit_stats.cap_balance.one() == approx(-46)
     api_tgt_ship_stats = api_tgt_ship.get_stats(options=ItemStatsOptions(
-        cap_balance=[StatsOptionCapBalance(time=StatTimeBurst())]))
+        cap_balance=[StatsOptionCapBalance(time=StatTime.burst())]))
     assert api_tgt_ship_stats.cap_balance.one() == approx(-46)
     # Sim without specified time - looped stats
     api_tgt_fit_stats = api_tgt_fit.get_stats(options=FitStatsOptions(
-        cap_balance=[StatsOptionCapBalance(time=StatTimeSim(time=None))]))
+        cap_balance=[StatsOptionCapBalance(time=StatTime.sim(time=None))]))
     assert api_tgt_fit_stats.cap_balance.one() == approx(-46)
     api_tgt_ship_stats = api_tgt_ship.get_stats(options=ItemStatsOptions(
-        cap_balance=[StatsOptionCapBalance(time=StatTimeSim(time=None))]))
+        cap_balance=[StatsOptionCapBalance(time=StatTime.sim(time=None))]))
     assert api_tgt_ship_stats.cap_balance.one() == approx(-46)
     # Sim with time just after neut applied its deduction, and nosf did not (nosf cycle happens at
     # the end of its cycle)
     api_tgt_fit_stats = api_tgt_fit.get_stats(options=FitStatsOptions(
-        cap_balance=[StatsOptionCapBalance(time=StatTimeSim(time=1))]))
+        cap_balance=[StatsOptionCapBalance(time=StatTime.sim(time=1))]))
     assert api_tgt_fit_stats.cap_balance.one() == approx(-600)
     api_tgt_ship_stats = api_tgt_ship.get_stats(options=ItemStatsOptions(
-        cap_balance=[StatsOptionCapBalance(time=StatTimeSim(time=1))]))
+        cap_balance=[StatsOptionCapBalance(time=StatTime.sim(time=1))]))
     assert api_tgt_ship_stats.cap_balance.one() == approx(-600)
     # Sim with time nosf applied its deduction as well
     api_tgt_fit_stats = api_tgt_fit.get_stats(options=FitStatsOptions(
-        cap_balance=[StatsOptionCapBalance(time=StatTimeSim(time=11))]))
+        cap_balance=[StatsOptionCapBalance(time=StatTime.sim(time=11))]))
     assert api_tgt_fit_stats.cap_balance.one() == approx(-73.636364)
     api_tgt_ship_stats = api_tgt_ship.get_stats(options=ItemStatsOptions(
-        cap_balance=[StatsOptionCapBalance(time=StatTimeSim(time=11))]))
+        cap_balance=[StatsOptionCapBalance(time=StatTime.sim(time=11))]))
     assert api_tgt_ship_stats.cap_balance.one() == approx(-73.636364)
 
 

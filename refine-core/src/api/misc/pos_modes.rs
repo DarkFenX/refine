@@ -4,7 +4,11 @@ use crate::RackPos;
 // Public
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 /// Defines how module is added.
-#[cfg_attr(feature = "serde", derive(serde::Deserialize), serde(rename_all = "snake_case"))]
+#[cfg_attr(
+    feature = "serde",
+    derive(serde::Deserialize),
+    serde(tag = "mode", content = "pos", rename_all = "snake_case")
+)]
 #[derive(Copy, Clone)]
 pub enum AddMode {
     /// Add to the end of a rack.
@@ -18,7 +22,11 @@ pub enum AddMode {
 }
 
 /// Defines how module is moved within its rack.
-#[cfg_attr(feature = "serde", derive(serde::Deserialize), serde(rename_all = "snake_case"))]
+#[cfg_attr(
+    feature = "serde",
+    derive(serde::Deserialize),
+    serde(tag = "mode", content = "pos", rename_all = "snake_case")
+)]
 #[derive(Copy, Clone)]
 pub enum MoveMode {
     /// Takes a module and moves it to new position, shifting modules between original and target

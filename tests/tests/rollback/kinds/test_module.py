@@ -1,4 +1,5 @@
 from fw import Muta, Spool, approx, check_no_field
+from fw.api import ModAddMode, ModMoveMode
 from tests.rollback.kinds import rollback_batch, setup_mod_basics
 
 
@@ -24,46 +25,46 @@ def setup_mutation(*, client, basic_info):
         eve_mutator2_id)
 
 
-def test_add_append(client, consts):
+def test_add_append(client):
     eve_module_id = client.mk_eve_item()
     client.create_sources()
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
-    api_module1 = api_fit.add_module(type_id=eve_module_id, add_mode={consts.ApiModAddMode.replace: 0})
-    api_module3 = api_fit.add_module(type_id=eve_module_id, add_mode={consts.ApiModAddMode.replace: 2})
+    api_module1 = api_fit.add_module(type_id=eve_module_id, add_mode=ModAddMode.replace(pos=0))
+    api_module3 = api_fit.add_module(type_id=eve_module_id, add_mode=ModAddMode.replace(pos=2))
     # Action & verification
     with rollback_batch(api_sol=api_sol) as api_sol_batch:
-        api_sol_batch.add_module(fit_id=api_fit.id, type_id=eve_module_id, add_mode=consts.ApiModAddMode.append)
+        api_sol_batch.add_module(fit_id=api_fit.id, type_id=eve_module_id, add_mode=ModAddMode.append())
     assert api_fit.update().modules.high.map(lambda m: m.id) == [api_module1.id, None, api_module3.id]
     assert api_module1.update().pos == 0
     assert api_module3.update().pos == 2
 
 
-def test_add_equip(client, consts):
+def test_add_equip(client):
     eve_module_id = client.mk_eve_item()
     client.create_sources()
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
-    api_module1 = api_fit.add_module(type_id=eve_module_id, add_mode={consts.ApiModAddMode.replace: 0})
-    api_module3 = api_fit.add_module(type_id=eve_module_id, add_mode={consts.ApiModAddMode.replace: 2})
+    api_module1 = api_fit.add_module(type_id=eve_module_id, add_mode=ModAddMode.replace(pos=0))
+    api_module3 = api_fit.add_module(type_id=eve_module_id, add_mode=ModAddMode.replace(pos=2))
     # Action & verification - module takes the free slot
     with rollback_batch(api_sol=api_sol) as api_sol_batch:
-        api_sol_batch.add_module(fit_id=api_fit.id, type_id=eve_module_id, add_mode=consts.ApiModAddMode.equip)
+        api_sol_batch.add_module(fit_id=api_fit.id, type_id=eve_module_id, add_mode=ModAddMode.equip())
     assert api_fit.update().modules.high.map(lambda m: m.id) == [api_module1.id, None, api_module3.id]
     assert api_module1.update().pos == 0
     assert api_module3.update().pos == 2
 
 
-def test_add_insert(client, consts):
+def test_add_insert(client):
     eve_module_id = client.mk_eve_item()
     client.create_sources()
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
-    api_module1 = api_fit.add_module(type_id=eve_module_id, add_mode={consts.ApiModAddMode.replace: 0})
-    api_module3 = api_fit.add_module(type_id=eve_module_id, add_mode={consts.ApiModAddMode.replace: 2})
+    api_module1 = api_fit.add_module(type_id=eve_module_id, add_mode=ModAddMode.replace(pos=0))
+    api_module3 = api_fit.add_module(type_id=eve_module_id, add_mode=ModAddMode.replace(pos=2))
     # Action & verification - module shifts everything after it, hole included
     with rollback_batch(api_sol=api_sol) as api_sol_batch:
-        api_sol_batch.add_module(fit_id=api_fit.id, type_id=eve_module_id, add_mode={consts.ApiModAddMode.insert: 0})
+        api_sol_batch.add_module(fit_id=api_fit.id, type_id=eve_module_id, add_mode=ModAddMode.insert(pos=0))
     assert api_fit.update().modules.high.map(lambda m: m.id) == [api_module1.id, None, api_module3.id]
     assert api_module1.update().pos == 0
     assert api_module3.update().pos == 2
@@ -79,13 +80,13 @@ def test_add_replace(client, consts):
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
     api_ship = api_fit.set_ship(type_id=eve_ship_id)
-    api_module1 = api_fit.add_module(type_id=eve_module1_id, add_mode={consts.ApiModAddMode.replace: 0})
-    api_module3 = api_fit.add_module(type_id=eve_module1_id, add_mode={consts.ApiModAddMode.replace: 2})
+    api_module1 = api_fit.add_module(type_id=eve_module1_id, add_mode=ModAddMode.replace(pos=0))
+    api_module3 = api_fit.add_module(type_id=eve_module1_id, add_mode=ModAddMode.replace(pos=2))
     # Verification
     assert api_ship.update().attrs[eve_basic_info.affectee_attr_id].modified == approx(144)
     # Action & verification - new module removes the old one
     with rollback_batch(api_sol=api_sol) as api_sol_batch:
-        api_sol_batch.add_module(fit_id=api_fit.id, type_id=eve_module2_id, add_mode={consts.ApiModAddMode.replace: 2})
+        api_sol_batch.add_module(fit_id=api_fit.id, type_id=eve_module2_id, add_mode=ModAddMode.replace(pos=2))
     assert api_fit.update().modules.high.map(lambda m: m.id) == [api_module1.id, None, api_module3.id]
     assert api_module1.update().pos == 0
     assert api_module3.update().pos == 2
@@ -101,8 +102,8 @@ def test_remove_remove(client, consts):
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
     api_ship = api_fit.set_ship(type_id=eve_ship_id)
-    api_module1 = api_fit.add_module(type_id=eve_module_id, add_mode={consts.ApiModAddMode.replace: 0})
-    api_module3 = api_fit.add_module(type_id=eve_module_id, add_mode={consts.ApiModAddMode.replace: 2})
+    api_module1 = api_fit.add_module(type_id=eve_module_id, add_mode=ModAddMode.replace(pos=0))
+    api_module3 = api_fit.add_module(type_id=eve_module_id, add_mode=ModAddMode.replace(pos=2))
     # Verification
     assert api_ship.update().attrs[eve_basic_info.affectee_attr_id].modified == approx(144)
     # Action & verification - removal shifts everything after the module, hole included
@@ -123,8 +124,8 @@ def test_remove_free(client, consts):
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
     api_ship = api_fit.set_ship(type_id=eve_ship_id)
-    api_module1 = api_fit.add_module(type_id=eve_module_id, add_mode={consts.ApiModAddMode.replace: 0})
-    api_module3 = api_fit.add_module(type_id=eve_module_id, add_mode={consts.ApiModAddMode.replace: 2})
+    api_module1 = api_fit.add_module(type_id=eve_module_id, add_mode=ModAddMode.replace(pos=0))
+    api_module3 = api_fit.add_module(type_id=eve_module_id, add_mode=ModAddMode.replace(pos=2))
     # Verification
     assert api_ship.update().attrs[eve_basic_info.affectee_attr_id].modified == approx(144)
     # Action & verification - removal of the last module trims the hole before it
@@ -136,34 +137,34 @@ def test_remove_free(client, consts):
     assert api_ship.update().attrs[eve_basic_info.affectee_attr_id].modified == approx(144)
 
 
-def test_move_shift(client, consts):
+def test_move_shift(client):
     eve_module_id = client.mk_eve_item()
     client.create_sources()
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
-    api_module1 = api_fit.add_module(type_id=eve_module_id, add_mode={consts.ApiModAddMode.replace: 0})
-    api_module2 = api_fit.add_module(type_id=eve_module_id, add_mode={consts.ApiModAddMode.replace: 1})
-    api_module4 = api_fit.add_module(type_id=eve_module_id, add_mode={consts.ApiModAddMode.replace: 3})
+    api_module1 = api_fit.add_module(type_id=eve_module_id, add_mode=ModAddMode.replace(pos=0))
+    api_module2 = api_fit.add_module(type_id=eve_module_id, add_mode=ModAddMode.replace(pos=1))
+    api_module4 = api_fit.add_module(type_id=eve_module_id, add_mode=ModAddMode.replace(pos=3))
     # Action & verification - first module goes past the rack end, the rest shift into its place
     with rollback_batch(api_sol=api_sol) as api_sol_batch:
-        api_sol_batch.change_module(item_id=api_module1.id, move={consts.ApiModMvMode.shift: 5})
+        api_sol_batch.change_module(item_id=api_module1.id, move=ModMoveMode.shift(pos=5))
     assert api_fit.update().modules.high.map(lambda m: m.id) == [api_module1.id, api_module2.id, None, api_module4.id]
     assert api_module1.update().pos == 0
     assert api_module2.update().pos == 1
     assert api_module4.update().pos == 3
 
 
-def test_move_swap(client, consts):
+def test_move_swap(client):
     eve_module_id = client.mk_eve_item()
     client.create_sources()
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
-    api_module1 = api_fit.add_module(type_id=eve_module_id, add_mode={consts.ApiModAddMode.replace: 0})
-    api_module3 = api_fit.add_module(type_id=eve_module_id, add_mode={consts.ApiModAddMode.replace: 2})
+    api_module1 = api_fit.add_module(type_id=eve_module_id, add_mode=ModAddMode.replace(pos=0))
+    api_module3 = api_fit.add_module(type_id=eve_module_id, add_mode=ModAddMode.replace(pos=2))
     # Action & verification - modules swap places, then the first module goes past the rack end
     with rollback_batch(api_sol=api_sol) as api_sol_batch:
-        api_sol_batch.change_module(item_id=api_module1.id, move={consts.ApiModMvMode.swap: 2})
-        api_sol_batch.change_module(item_id=api_module1.id, move={consts.ApiModMvMode.swap: 4})
+        api_sol_batch.change_module(item_id=api_module1.id, move=ModMoveMode.swap(pos=2))
+        api_sol_batch.change_module(item_id=api_module1.id, move=ModMoveMode.swap(pos=4))
     assert api_fit.update().modules.high.map(lambda m: m.id) == [api_module1.id, None, api_module3.id]
     assert api_module1.update().pos == 0
     assert api_module3.update().pos == 2

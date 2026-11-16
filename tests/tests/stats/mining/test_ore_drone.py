@@ -6,8 +6,7 @@ from fw.api import (
     StatMiningItemKinds,
     StatsOptionFitMining,
     StatsOptionItemMining,
-    StatTimeBurst,
-    StatTimeSim,
+    StatTime,
 )
 
 
@@ -289,38 +288,38 @@ def test_time(client, consts):
     api_fleet = api_sol.create_fleet(fit_ids=[api_fit.id])
     # Verification - burst stats
     api_fleet_stats = api_fleet.get_stats(options=FleetStatsOptions(
-        mps=[StatsOptionFitMining(time=StatTimeBurst())]))
+        mps=[StatsOptionFitMining(time=StatTime.burst())]))
     assert api_fleet_stats.mps.one().ore == [approx(16.5), approx(26.4)]
-    api_fit_stats = api_fit.get_stats(options=FitStatsOptions(mps=[StatsOptionFitMining(time=StatTimeBurst())]))
+    api_fit_stats = api_fit.get_stats(options=FitStatsOptions(mps=[StatsOptionFitMining(time=StatTime.burst())]))
     assert api_fit_stats.mps.one().ore == [approx(16.5), approx(26.4)]
-    api_drone_stats = api_drone.get_stats(options=ItemStatsOptions(mps=[StatsOptionItemMining(time=StatTimeBurst())]))
+    api_drone_stats = api_drone.get_stats(options=ItemStatsOptions(mps=[StatsOptionItemMining(time=StatTime.burst())]))
     assert api_drone_stats.mps.one().ore == [approx(16.5), approx(26.4)]
     # Sim without specified time - looped stats
     api_fleet_stats = api_fleet.get_stats(options=FleetStatsOptions(
-        mps=[StatsOptionFitMining(time=StatTimeSim(time=None))]))
+        mps=[StatsOptionFitMining(time=StatTime.sim(time=None))]))
     assert api_fleet_stats.mps.one().ore == [approx(16.5), approx(26.4)]
-    api_fit_stats = api_fit.get_stats(options=FitStatsOptions(mps=[StatsOptionFitMining(time=StatTimeSim(time=None))]))
+    api_fit_stats = api_fit.get_stats(options=FitStatsOptions(mps=[StatsOptionFitMining(time=StatTime.sim(time=None))]))
     assert api_fit_stats.mps.one().ore == [approx(16.5), approx(26.4)]
     api_drone_stats = api_drone.get_stats(options=ItemStatsOptions(
-        mps=[StatsOptionItemMining(time=StatTimeSim(time=None))]))
+        mps=[StatsOptionItemMining(time=StatTime.sim(time=None))]))
     assert api_drone_stats.mps.one().ore == [approx(16.5), approx(26.4)]
     # Sim with time at the end of first cycle
     api_fleet_stats = api_fleet.get_stats(options=FleetStatsOptions(
-        mps=[StatsOptionFitMining(time=StatTimeSim(time=59))]))
+        mps=[StatsOptionFitMining(time=StatTime.sim(time=59))]))
     assert api_fleet_stats.mps.one().ore == [0, 0]
-    api_fit_stats = api_fit.get_stats(options=FitStatsOptions(mps=[StatsOptionFitMining(time=StatTimeSim(time=59))]))
+    api_fit_stats = api_fit.get_stats(options=FitStatsOptions(mps=[StatsOptionFitMining(time=StatTime.sim(time=59))]))
     assert api_fit_stats.mps.one().ore == [0, 0]
     api_drone_stats = api_drone.get_stats(options=ItemStatsOptions(
-        mps=[StatsOptionItemMining(time=StatTimeSim(time=59))]))
+        mps=[StatsOptionItemMining(time=StatTime.sim(time=59))]))
     assert api_drone_stats.mps.one().ore == [0, 0]
     # Sim with time just after first cycle was completed
     api_fleet_stats = api_fleet.get_stats(options=FleetStatsOptions(
-        mps=[StatsOptionFitMining(time=StatTimeSim(time=61))]))
+        mps=[StatsOptionFitMining(time=StatTime.sim(time=61))]))
     assert api_fleet_stats.mps.one().ore == [approx(16.229508), approx(25.967213)]
-    api_fit_stats = api_fit.get_stats(options=FitStatsOptions(mps=[StatsOptionFitMining(time=StatTimeSim(time=61))]))
+    api_fit_stats = api_fit.get_stats(options=FitStatsOptions(mps=[StatsOptionFitMining(time=StatTime.sim(time=61))]))
     assert api_fit_stats.mps.one().ore == [approx(16.229508), approx(25.967213)]
     api_drone_stats = api_drone.get_stats(options=ItemStatsOptions(
-        mps=[StatsOptionItemMining(time=StatTimeSim(time=61))]))
+        mps=[StatsOptionItemMining(time=StatTime.sim(time=61))]))
     assert api_drone_stats.mps.one().ore == [approx(16.229508), approx(25.967213)]
 
 

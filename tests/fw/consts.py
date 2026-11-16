@@ -707,20 +707,6 @@ class ApiModOp(StrEnum):
 
 
 @unique
-class ApiModAddMode(StrEnum):
-    append = 'append'
-    equip = 'equip'
-    insert = 'insert'
-    replace = 'replace'
-
-
-@unique
-class ApiModMvMode(StrEnum):
-    shift = 'shift'
-    swap = 'swap'
-
-
-@unique
 class ApiModRmMode(StrEnum):
     remove = 'remove'
     free = 'free'

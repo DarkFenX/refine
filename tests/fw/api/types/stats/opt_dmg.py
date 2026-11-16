@@ -5,14 +5,14 @@ from fw.util import Absent
 
 if typing.TYPE_CHECKING:
     from fw.consts import ApiStatCrits, ApiStatItemCharges, ApiStatItemState
-    from .opt_shared import StatTimeBurst, StatTimeSim
+    from .opt_shared import StatTime
 
 
 @dataclasses.dataclass(kw_only=True)
 class StatsOptionFitDmg:
 
     item_kinds: StatDmgItemKinds | type[Absent] = Absent
-    time: StatTimeBurst | StatTimeSim | type[Absent] = Absent
+    time: StatTime | type[Absent] = Absent
     crits: ApiStatCrits | type[Absent] = Absent
     projectee_item_id: str | type[Absent] = Absent
 
@@ -20,7 +20,7 @@ class StatsOptionFitDmg:
 @dataclasses.dataclass(kw_only=True)
 class StatsOptionItemDmg:
 
-    time: StatTimeBurst | StatTimeSim | type[Absent] = Absent
+    time: StatTime | type[Absent] = Absent
     crits: ApiStatCrits | type[Absent] = Absent
     charges: ApiStatItemCharges | type[Absent] = Absent
     state: ApiStatItemState | type[Absent] = Absent

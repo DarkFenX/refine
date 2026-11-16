@@ -6,8 +6,7 @@ from fw.api import (
     StatDmgItemKinds,
     StatsOptionFitDmg,
     StatsOptionItemDmg,
-    StatTimeBurst,
-    StatTimeSim,
+    StatTime,
 )
 from tests.stats.dmg import make_eve_smartbomb, setup_dmg_basics
 
@@ -126,66 +125,66 @@ def test_time(client, consts):
     api_fleet = api_sol.create_fleet(fit_ids=[api_fit.id])
     # Verification - burst stats
     api_fleet_dmg_stats = api_fleet.get_stats(options=FleetStatsOptions(
-        dmg=[StatsOptionFitDmg(time=StatTimeBurst())])).dmg.one()
+        dmg=[StatsOptionFitDmg(time=StatTime.burst())])).dmg.one()
     assert api_fleet_dmg_stats.dps == [approx(6), approx(6), approx(6), approx(6)]
     assert api_fleet_dmg_stats.volley == [approx(45), approx(45), approx(45), approx(45)]
     api_fit_dmg_stats = api_fit.get_stats(options=FitStatsOptions(
-        dmg=[StatsOptionFitDmg(time=StatTimeBurst())])).dmg.one()
+        dmg=[StatsOptionFitDmg(time=StatTime.burst())])).dmg.one()
     assert api_fit_dmg_stats.dps == [approx(6), approx(6), approx(6), approx(6)]
     assert api_fit_dmg_stats.volley == [approx(45), approx(45), approx(45), approx(45)]
     api_module_dmg_stats = api_module.get_stats(options=ItemStatsOptions(
-        dmg=[StatsOptionItemDmg(time=StatTimeBurst())])).dmg.one()
+        dmg=[StatsOptionItemDmg(time=StatTime.burst())])).dmg.one()
     assert api_module_dmg_stats.dps == [approx(6), approx(6), approx(6), approx(6)]
     assert api_module_dmg_stats.volley == [approx(45), approx(45), approx(45), approx(45)]
     # Verification - sim without time
     api_fleet_dmg_stats = api_fleet.get_stats(options=FleetStatsOptions(
-        dmg=[StatsOptionFitDmg(time=StatTimeSim(time=None))])).dmg.one()
+        dmg=[StatsOptionFitDmg(time=StatTime.sim(time=None))])).dmg.one()
     assert api_fleet_dmg_stats.dps == [approx(6), approx(6), approx(6), approx(6)]
     assert api_fleet_dmg_stats.volley == [approx(45), approx(45), approx(45), approx(45)]
     api_fit_dmg_stats = api_fit.get_stats(options=FitStatsOptions(
-        dmg=[StatsOptionFitDmg(time=StatTimeSim(time=None))])).dmg.one()
+        dmg=[StatsOptionFitDmg(time=StatTime.sim(time=None))])).dmg.one()
     assert api_fit_dmg_stats.dps == [approx(6), approx(6), approx(6), approx(6)]
     assert api_fit_dmg_stats.volley == [approx(45), approx(45), approx(45), approx(45)]
     api_module_dmg_stats = api_module.get_stats(options=ItemStatsOptions(
-        dmg=[StatsOptionItemDmg(time=StatTimeSim(time=None))])).dmg.one()
+        dmg=[StatsOptionItemDmg(time=StatTime.sim(time=None))])).dmg.one()
     assert api_module_dmg_stats.dps == [approx(6), approx(6), approx(6), approx(6)]
     assert api_module_dmg_stats.volley == [approx(45), approx(45), approx(45), approx(45)]
     # Verification - sim with time after first hit
     api_fleet_dmg_stats = api_fleet.get_stats(options=FleetStatsOptions(
-        dmg=[StatsOptionFitDmg(time=StatTimeSim(time=1))])).dmg.one()
+        dmg=[StatsOptionFitDmg(time=StatTime.sim(time=1))])).dmg.one()
     assert api_fleet_dmg_stats.dps == [approx(45), approx(45), approx(45), approx(45)]
     assert api_fleet_dmg_stats.volley == [approx(45), approx(45), approx(45), approx(45)]
     api_fit_dmg_stats = api_fit.get_stats(options=FitStatsOptions(
-        dmg=[StatsOptionFitDmg(time=StatTimeSim(time=1))])).dmg.one()
+        dmg=[StatsOptionFitDmg(time=StatTime.sim(time=1))])).dmg.one()
     assert api_fit_dmg_stats.dps == [approx(45), approx(45), approx(45), approx(45)]
     assert api_fit_dmg_stats.volley == [approx(45), approx(45), approx(45), approx(45)]
     api_module_dmg_stats = api_module.get_stats(options=ItemStatsOptions(
-        dmg=[StatsOptionItemDmg(time=StatTimeSim(time=1))])).dmg.one()
+        dmg=[StatsOptionItemDmg(time=StatTime.sim(time=1))])).dmg.one()
     assert api_module_dmg_stats.dps == [approx(45), approx(45), approx(45), approx(45)]
     assert api_module_dmg_stats.volley == [approx(45), approx(45), approx(45), approx(45)]
     # Verification - sim with time before second hit
     api_fleet_dmg_stats = api_fleet.get_stats(options=FleetStatsOptions(
-        dmg=[StatsOptionFitDmg(time=StatTimeSim(time=7))])).dmg.one()
+        dmg=[StatsOptionFitDmg(time=StatTime.sim(time=7))])).dmg.one()
     assert api_fleet_dmg_stats.dps == [approx(6.428571), approx(6.428571), approx(6.428571), approx(6.428571)]
     assert api_fleet_dmg_stats.volley == [approx(45), approx(45), approx(45), approx(45)]
     api_fit_dmg_stats = api_fit.get_stats(options=FitStatsOptions(
-        dmg=[StatsOptionFitDmg(time=StatTimeSim(time=7))])).dmg.one()
+        dmg=[StatsOptionFitDmg(time=StatTime.sim(time=7))])).dmg.one()
     assert api_fit_dmg_stats.dps == [approx(6.428571), approx(6.428571), approx(6.428571), approx(6.428571)]
     assert api_fit_dmg_stats.volley == [approx(45), approx(45), approx(45), approx(45)]
     api_module_dmg_stats = api_module.get_stats(options=ItemStatsOptions(
-        dmg=[StatsOptionItemDmg(time=StatTimeSim(time=7))])).dmg.one()
+        dmg=[StatsOptionItemDmg(time=StatTime.sim(time=7))])).dmg.one()
     assert api_module_dmg_stats.dps == [approx(6.428571), approx(6.428571), approx(6.428571), approx(6.428571)]
     assert api_module_dmg_stats.volley == [approx(45), approx(45), approx(45), approx(45)]
     # Verification - sim with time after second hit
     api_fleet_dmg_stats = api_fleet.get_stats(options=FleetStatsOptions(
-        dmg=[StatsOptionFitDmg(time=StatTimeSim(time=8))])).dmg.one()
+        dmg=[StatsOptionFitDmg(time=StatTime.sim(time=8))])).dmg.one()
     assert api_fleet_dmg_stats.dps == [approx(11.25), approx(11.25), approx(11.25), approx(11.25)]
     assert api_fleet_dmg_stats.volley == [approx(45), approx(45), approx(45), approx(45)]
     api_fit_dmg_stats = api_fit.get_stats(options=FitStatsOptions(
-        dmg=[StatsOptionFitDmg(time=StatTimeSim(time=8))])).dmg.one()
+        dmg=[StatsOptionFitDmg(time=StatTime.sim(time=8))])).dmg.one()
     assert api_fit_dmg_stats.dps == [approx(11.25), approx(11.25), approx(11.25), approx(11.25)]
     assert api_fit_dmg_stats.volley == [approx(45), approx(45), approx(45), approx(45)]
     api_module_dmg_stats = api_module.get_stats(options=ItemStatsOptions(
-        dmg=[StatsOptionItemDmg(time=StatTimeSim(time=8))])).dmg.one()
+        dmg=[StatsOptionItemDmg(time=StatTime.sim(time=8))])).dmg.one()
     assert api_module_dmg_stats.dps == [approx(11.25), approx(11.25), approx(11.25), approx(11.25)]
     assert api_module_dmg_stats.volley == [approx(45), approx(45), approx(45), approx(45)]

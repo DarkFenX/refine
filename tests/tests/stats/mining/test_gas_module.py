@@ -6,8 +6,7 @@ from fw.api import (
     StatMiningItemKinds,
     StatsOptionFitMining,
     StatsOptionItemMining,
-    StatTimeBurst,
-    StatTimeSim,
+    StatTime,
 )
 
 
@@ -289,38 +288,39 @@ def test_time(client, consts):
     api_fleet = api_sol.create_fleet(fit_ids=[api_fit.id])
     # Verification - burst stats
     api_fleet_stats = api_fleet.get_stats(options=FleetStatsOptions(
-        mps=[StatsOptionFitMining(time=StatTimeBurst())]))
+        mps=[StatsOptionFitMining(time=StatTime.burst())]))
     assert api_fleet_stats.mps.one().gas == [approx(1.333333), approx(1.786667)]
-    api_fit_stats = api_fit.get_stats(options=FitStatsOptions(mps=[StatsOptionFitMining(time=StatTimeBurst())]))
+    api_fit_stats = api_fit.get_stats(options=FitStatsOptions(mps=[StatsOptionFitMining(time=StatTime.burst())]))
     assert api_fit_stats.mps.one().gas == [approx(1.333333), approx(1.786667)]
-    api_module_stats = api_module.get_stats(options=ItemStatsOptions(mps=[StatsOptionItemMining(time=StatTimeBurst())]))
+    api_module_stats = api_module.get_stats(options=ItemStatsOptions(
+        mps=[StatsOptionItemMining(time=StatTime.burst())]))
     assert api_module_stats.mps.one().gas == [approx(1.333333), approx(1.786667)]
     # Sim without specified time - looped stats
     api_fleet_stats = api_fleet.get_stats(options=FleetStatsOptions(
-        mps=[StatsOptionFitMining(time=StatTimeSim(time=None))]))
+        mps=[StatsOptionFitMining(time=StatTime.sim(time=None))]))
     assert api_fleet_stats.mps.one().gas == [approx(1.333333), approx(1.786667)]
-    api_fit_stats = api_fit.get_stats(options=FitStatsOptions(mps=[StatsOptionFitMining(time=StatTimeSim(time=None))]))
+    api_fit_stats = api_fit.get_stats(options=FitStatsOptions(mps=[StatsOptionFitMining(time=StatTime.sim(time=None))]))
     assert api_fit_stats.mps.one().gas == [approx(1.333333), approx(1.786667)]
     api_module_stats = api_module.get_stats(options=ItemStatsOptions(
-        mps=[StatsOptionItemMining(time=StatTimeSim(time=None))]))
+        mps=[StatsOptionItemMining(time=StatTime.sim(time=None))]))
     assert api_module_stats.mps.one().gas == [approx(1.333333), approx(1.786667)]
     # Sim with time at the end of first cycle
     api_fleet_stats = api_fleet.get_stats(options=FleetStatsOptions(
-        mps=[StatsOptionFitMining(time=StatTimeSim(time=29))]))
+        mps=[StatsOptionFitMining(time=StatTime.sim(time=29))]))
     assert api_fleet_stats.mps.one().gas == [0, 0]
-    api_fit_stats = api_fit.get_stats(options=FitStatsOptions(mps=[StatsOptionFitMining(time=StatTimeSim(time=29))]))
+    api_fit_stats = api_fit.get_stats(options=FitStatsOptions(mps=[StatsOptionFitMining(time=StatTime.sim(time=29))]))
     assert api_fit_stats.mps.one().gas == [0, 0]
     api_module_stats = api_module.get_stats(options=ItemStatsOptions(
-        mps=[StatsOptionItemMining(time=StatTimeSim(time=29))]))
+        mps=[StatsOptionItemMining(time=StatTime.sim(time=29))]))
     assert api_module_stats.mps.one().gas == [0, 0]
     # Sim with time just after first cycle was completed
     api_fleet_stats = api_fleet.get_stats(options=FleetStatsOptions(
-        mps=[StatsOptionFitMining(time=StatTimeSim(time=31))]))
+        mps=[StatsOptionFitMining(time=StatTime.sim(time=31))]))
     assert api_fleet_stats.mps.one().gas == [approx(1.290323), approx(1.729032)]
-    api_fit_stats = api_fit.get_stats(options=FitStatsOptions(mps=[StatsOptionFitMining(time=StatTimeSim(time=31))]))
+    api_fit_stats = api_fit.get_stats(options=FitStatsOptions(mps=[StatsOptionFitMining(time=StatTime.sim(time=31))]))
     assert api_fit_stats.mps.one().gas == [approx(1.290323), approx(1.729032)]
     api_module_stats = api_module.get_stats(options=ItemStatsOptions(
-        mps=[StatsOptionItemMining(time=StatTimeSim(time=31))]))
+        mps=[StatsOptionItemMining(time=StatTime.sim(time=31))]))
     assert api_module_stats.mps.one().gas == [approx(1.290323), approx(1.729032)]
 
 

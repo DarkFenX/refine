@@ -4,6 +4,8 @@ from .types import (
     FitStatsOptions,
     FleetStatsOptions,
     ItemStatsOptions,
+    ModAddMode,
+    ModMoveMode,
     StatCapNosfsOptions,
     StatCapRegenOptions,
     StatCapSrcKinds,
@@ -29,7 +31,6 @@ from .types import (
     StatsOptionJump,
     StatsOptionMass,
     StatsOptionRps,
-    StatTimeBurst,
-    StatTimeSim,
+    StatTime,
     ValOptions,
 )

@@ -1,3 +1,4 @@
+from .item import ModAddMode, ModMoveMode
 from .refine import RefineInfo
 from .sol import Sol
 from .src import Src
@@ -30,7 +31,6 @@ from .stats import (
     StatsOptionJump,
     StatsOptionMass,
     StatsOptionRps,
-    StatTimeBurst,
-    StatTimeSim,
+    StatTime,
 )
 from .validation import ValOptions

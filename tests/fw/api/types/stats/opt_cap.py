@@ -5,14 +5,14 @@ from fw.util import Absent
 
 if typing.TYPE_CHECKING:
     from fw.consts import ApiOptionalReload
-    from .opt_shared import StatTimeBurst, StatTimeSim
+    from .opt_shared import StatTime
 
 
 @dataclasses.dataclass(kw_only=True)
 class StatsOptionCapBalance:
 
     src_kinds: StatCapSrcKinds | type[Absent] = Absent
-    time: StatTimeBurst | StatTimeSim | type[Absent] = Absent
+    time: StatTime | type[Absent] = Absent
 
 
 @dataclasses.dataclass(kw_only=True)

@@ -1,4 +1,5 @@
 from fw import check_no_field
+from fw.api import ModAddMode
 
 
 def test_item_booster(client):
@@ -222,8 +223,8 @@ def test_item_module_equip(client, consts):
     client.create_sources()
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
-    api_module1 = api_fit.add_module(type_id=eve_module_id, add_mode={consts.ApiModAddMode.replace: 0})
-    api_module3 = api_fit.add_module(type_id=eve_module_id, add_mode={consts.ApiModAddMode.replace: 2})
+    api_module1 = api_fit.add_module(type_id=eve_module_id, add_mode=ModAddMode.replace(pos=0))
+    api_module3 = api_fit.add_module(type_id=eve_module_id, add_mode=ModAddMode.replace(pos=2))
     # Action
     api_module2 = api_fit.autodetect_add_item(type_id=eve_module_id)
     # Verification - module takes the free slot

@@ -22,21 +22,20 @@ from fw.api.commands import (
 )
 from fw.api.types.batches.fit import FitCmdBatchCtx
 from fw.api.types.dps_profile import DpsProfile
-from fw.api.types.item import Item
+from fw.api.types.item import Item, ModAddMode
 from fw.api.types.stats import FitStats
 from fw.api.types.validation import FitValResult, SolValResult
 from fw.consts import (
     ApiFitInfoMode,
     ApiItemInfoMode,
     ApiMinionState,
-    ApiModAddMode,
     ApiModRmMode,
     ApiModuleState,
     ApiServiceState,
     ApiValInfoMode,
     Rack,
 )
-from fw.util import Absent, AttrDict, AttrHookDef, NttRack, is_subset
+from fw.util import Absent, AttrDict, AttrHookDef, Default, NttRack, is_subset
 
 if typing.TYPE_CHECKING:
     from fw.aliases import JsonPredicate, ReqHook
@@ -510,7 +509,7 @@ class Fit(AttrDict):
             self, *,
             type_id: int,
             rack: Rack = Rack.high,
-            add_mode: ApiModAddMode | dict[ApiModAddMode, int] | type[Absent] = ApiModAddMode.equip,
+            add_mode: ModAddMode | type[Absent | Default] = Default,
             state: ApiModuleState = ApiModuleState.offline,
             mutation: MutaAdd | type[Absent] = Absent,
             charge_type_id: int | type[Absent] = Absent,
@@ -522,6 +521,8 @@ class Fit(AttrDict):
             status_code: int = 201,
             json_predicate: JsonPredicate = None,
     ) -> Item | None:
+        if add_mode is Default:
+            add_mode = ModAddMode.equip()
         command = ItemCtlModuleAddCmd(
             fit_id=self.id,
             type_id=type_id,

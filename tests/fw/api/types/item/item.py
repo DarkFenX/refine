@@ -43,7 +43,6 @@ if typing.TYPE_CHECKING:
     from fw.consts import (
         ApiEffMode,
         ApiMinionState,
-        ApiModMvMode,
         ApiModRmMode,
         ApiModuleState,
         ApiNpcProp,
@@ -51,6 +50,7 @@ if typing.TYPE_CHECKING:
         ApiRearmMinion,
         ApiServiceState,
     )
+    from .pos_modes import ModMoveMode
 
 
 class Item(AttrDict):
@@ -349,7 +349,7 @@ class Item(AttrDict):
     def change_module(
             self, *,
             type_id: int | type[Absent] = Absent,
-            move: ApiModMvMode | dict[ApiModMvMode, int] | type[Absent] = Absent,
+            move: ModMoveMode | type[Absent] = Absent,
             state: ApiModuleState | type[Absent] = Absent,
             mutation: MutaAdd | MutaChange | type[Absent] | None = Absent,
             charge_type_id: int | type[Absent] | None = Absent,

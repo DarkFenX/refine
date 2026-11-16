@@ -1,9 +1,10 @@
 import typing
 
-from fw.util import Absent, cast_to_prefixed_str
+from fw.util import Absent, cast_to_prefixed_str, dc_to_dict
 
 if typing.TYPE_CHECKING:
     from fw.api.aliases import MutaAdd, MutaChange
+    from fw.api.types import ModAddMode, ModMoveMode
 
 
 ####################################################################################################
@@ -36,6 +37,12 @@ def process_muta_change_request(
         return mutation
     mutator_id, attrs = mutation
     return mutator_id, _cast_map(data=attrs)
+
+
+def process_mod_pos_mode_request(*, mode: ModAddMode | ModMoveMode | type[Absent]) -> dict | type[Absent]:
+    if mode is Absent:
+        return mode
+    return dc_to_dict(data=mode)
 
 
 def _cast_map[T](*, data: dict[int | str, T]) -> dict[str, T]:

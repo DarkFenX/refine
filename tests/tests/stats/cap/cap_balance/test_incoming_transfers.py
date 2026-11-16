@@ -1,5 +1,5 @@
 from fw import approx
-from fw.api import FitStatsOptions, ItemStatsOptions, StatCapSrcKinds, StatsOptionCapBalance, StatTimeBurst, StatTimeSim
+from fw.api import FitStatsOptions, ItemStatsOptions, StatCapSrcKinds, StatsOptionCapBalance, StatTime
 
 
 def test_state(client, consts):
@@ -177,31 +177,31 @@ def test_time(client, consts):
     assert api_tgt_ship_stats.cap_balance.one() == approx(70.2)
     # Burst stats - first cycle of the module
     api_tgt_fit_stats = api_tgt_fit.get_stats(options=FitStatsOptions(
-        cap_balance=[StatsOptionCapBalance(time=StatTimeBurst())]))
+        cap_balance=[StatsOptionCapBalance(time=StatTime.burst())]))
     assert api_tgt_fit_stats.cap_balance.one() == approx(70.2)
     api_tgt_ship_stats = api_tgt_ship.get_stats(options=ItemStatsOptions(
-        cap_balance=[StatsOptionCapBalance(time=StatTimeBurst())]))
+        cap_balance=[StatsOptionCapBalance(time=StatTime.burst())]))
     assert api_tgt_ship_stats.cap_balance.one() == approx(70.2)
     # Sim without specified time - looped stats
     api_tgt_fit_stats = api_tgt_fit.get_stats(options=FitStatsOptions(
-        cap_balance=[StatsOptionCapBalance(time=StatTimeSim(time=None))]))
+        cap_balance=[StatsOptionCapBalance(time=StatTime.sim(time=None))]))
     assert api_tgt_fit_stats.cap_balance.one() == approx(70.2)
     api_tgt_ship_stats = api_tgt_ship.get_stats(options=ItemStatsOptions(
-        cap_balance=[StatsOptionCapBalance(time=StatTimeSim(time=None))]))
+        cap_balance=[StatsOptionCapBalance(time=StatTime.sim(time=None))]))
     assert api_tgt_ship_stats.cap_balance.one() == approx(70.2)
     # Sim with time at the end of transfer first cycle
     api_tgt_fit_stats = api_tgt_fit.get_stats(options=FitStatsOptions(
-        cap_balance=[StatsOptionCapBalance(time=StatTimeSim(time=4))]))
+        cap_balance=[StatsOptionCapBalance(time=StatTime.sim(time=4))]))
     assert api_tgt_fit_stats.cap_balance.one() == 0
     api_tgt_ship_stats = api_tgt_ship.get_stats(options=ItemStatsOptions(
-        cap_balance=[StatsOptionCapBalance(time=StatTimeSim(time=4))]))
+        cap_balance=[StatsOptionCapBalance(time=StatTime.sim(time=4))]))
     assert api_tgt_ship_stats.cap_balance.one() == 0
     # Sim with time just after first cycle was completed
     api_tgt_fit_stats = api_tgt_fit.get_stats(options=FitStatsOptions(
-        cap_balance=[StatsOptionCapBalance(time=StatTimeSim(time=6))]))
+        cap_balance=[StatsOptionCapBalance(time=StatTime.sim(time=6))]))
     assert api_tgt_fit_stats.cap_balance.one() == approx(58.5)
     api_tgt_ship_stats = api_tgt_ship.get_stats(options=ItemStatsOptions(
-        cap_balance=[StatsOptionCapBalance(time=StatTimeSim(time=6))]))
+        cap_balance=[StatsOptionCapBalance(time=StatTime.sim(time=6))]))
     assert api_tgt_ship_stats.cap_balance.one() == approx(58.5)
 
 

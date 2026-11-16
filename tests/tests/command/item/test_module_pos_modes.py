@@ -1,4 +1,5 @@
 from fw import Absent, check_no_field
+from fw.api import ModAddMode, ModMoveMode
 
 
 def test_add_append(client, consts):
@@ -6,34 +7,25 @@ def test_add_append(client, consts):
     client.create_sources()
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
-    api_module1 = api_fit.add_module(type_id=eve_module_id, rack=consts.Rack.high, add_mode=consts.ApiModAddMode.append)
+    api_module1 = api_fit.add_module(type_id=eve_module_id, rack=consts.Rack.high, add_mode=ModAddMode.append())
     # Verification
     assert api_fit.update().modules.high.map(lambda m: m.id) == [api_module1.id]
     assert api_module1.update().pos == 0
     # Action
-    api_module2 = api_fit.add_module(
-        type_id=eve_module_id,
-        rack=consts.Rack.high,
-        add_mode=consts.ApiModAddMode.append)
+    api_module2 = api_fit.add_module(type_id=eve_module_id, rack=consts.Rack.high, add_mode=ModAddMode.append())
     # Verification
     assert api_fit.update().modules.high.map(lambda m: m.id) == [api_module1.id, api_module2.id]
     assert api_module1.update().pos == 0
     assert api_module2.update().pos == 1
     # Action
-    api_module3 = api_fit.add_module(
-        type_id=eve_module_id,
-        rack=consts.Rack.high,
-        add_mode={consts.ApiModAddMode.insert: 3})
+    api_module3 = api_fit.add_module(type_id=eve_module_id, rack=consts.Rack.high, add_mode=ModAddMode.insert(pos=3))
     # Verification
     assert api_fit.update().modules.high.map(lambda m: m.id) == [api_module1.id, api_module2.id, None, api_module3.id]
     assert api_module1.update().pos == 0
     assert api_module2.update().pos == 1
     assert api_module3.update().pos == 3
     # Action
-    api_module4 = api_fit.add_module(
-        type_id=eve_module_id,
-        rack=consts.Rack.high,
-        add_mode=consts.ApiModAddMode.append)
+    api_module4 = api_fit.add_module(type_id=eve_module_id, rack=consts.Rack.high, add_mode=ModAddMode.append())
     # Verification
     assert api_fit.update().modules.high.map(lambda m: m.id) == [
         api_module1.id, api_module2.id, None, api_module3.id, api_module4.id]
@@ -48,24 +40,18 @@ def test_add_equip(client, consts):
     client.create_sources()
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
-    api_module1 = api_fit.add_module(type_id=eve_module_id, rack=consts.Rack.high, add_mode=consts.ApiModAddMode.equip)
+    api_module1 = api_fit.add_module(type_id=eve_module_id, rack=consts.Rack.high, add_mode=ModAddMode.equip())
     # Verification
     assert api_fit.update().modules.high.map(lambda m: m.id) == [api_module1.id]
     assert api_module1.update().pos == 0
     # Action
-    api_module2 = api_fit.add_module(
-        type_id=eve_module_id,
-        rack=consts.Rack.high,
-        add_mode=consts.ApiModAddMode.equip)
+    api_module2 = api_fit.add_module(type_id=eve_module_id, rack=consts.Rack.high, add_mode=ModAddMode.equip())
     # Verification
     assert api_fit.update().modules.high.map(lambda m: m.id) == [api_module1.id, api_module2.id]
     assert api_module1.update().pos == 0
     assert api_module2.update().pos == 1
     # Action
-    api_module3 = api_fit.add_module(
-        type_id=eve_module_id,
-        rack=consts.Rack.high,
-        add_mode={consts.ApiModAddMode.insert: 4})
+    api_module3 = api_fit.add_module(type_id=eve_module_id, rack=consts.Rack.high, add_mode=ModAddMode.insert(pos=4))
     # Verification
     assert api_fit.update().modules.high.map(lambda m: m.id) == [
         api_module1.id, api_module2.id, None, None, api_module3.id]
@@ -73,10 +59,7 @@ def test_add_equip(client, consts):
     assert api_module2.update().pos == 1
     assert api_module3.update().pos == 4
     # Action
-    api_module4 = api_fit.add_module(
-        type_id=eve_module_id,
-        rack=consts.Rack.high,
-        add_mode=consts.ApiModAddMode.equip)
+    api_module4 = api_fit.add_module(type_id=eve_module_id, rack=consts.Rack.high, add_mode=ModAddMode.equip())
     # Verification
     assert api_fit.update().modules.high.map(lambda m: m.id) == [
         api_module1.id, api_module2.id, api_module4.id, None, api_module3.id]
@@ -91,27 +74,18 @@ def test_add_insert(client, consts):
     client.create_sources()
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
-    api_module1 = api_fit.add_module(
-        type_id=eve_module_id,
-        rack=consts.Rack.high,
-        add_mode={consts.ApiModAddMode.insert: 0})
+    api_module1 = api_fit.add_module(type_id=eve_module_id, rack=consts.Rack.high, add_mode=ModAddMode.insert(pos=0))
     # Verification
     assert api_fit.update().modules.high.map(lambda m: m.id) == [api_module1.id]
     assert api_module1.update().pos == 0
     # Action
-    api_module2 = api_fit.add_module(
-        type_id=eve_module_id,
-        rack=consts.Rack.high,
-        add_mode={consts.ApiModAddMode.insert: 2})
+    api_module2 = api_fit.add_module(type_id=eve_module_id, rack=consts.Rack.high, add_mode=ModAddMode.insert(pos=2))
     # Verification
     assert api_fit.update().modules.high.map(lambda m: m.id) == [api_module1.id, None, api_module2.id]
     assert api_module1.update().pos == 0
     assert api_module2.update().pos == 2
     # Action
-    api_module3 = api_fit.add_module(
-        type_id=eve_module_id,
-        rack=consts.Rack.high,
-        add_mode={consts.ApiModAddMode.insert: 5})
+    api_module3 = api_fit.add_module(type_id=eve_module_id, rack=consts.Rack.high, add_mode=ModAddMode.insert(pos=5))
     # Verification
     assert api_fit.update().modules.high.map(lambda m: m.id) == [
         api_module1.id, None, api_module2.id, None, None, api_module3.id]
@@ -119,10 +93,7 @@ def test_add_insert(client, consts):
     assert api_module2.update().pos == 2
     assert api_module3.update().pos == 5
     # Action
-    api_module4 = api_fit.add_module(
-        type_id=eve_module_id,
-        rack=consts.Rack.high,
-        add_mode={consts.ApiModAddMode.insert: 2})
+    api_module4 = api_fit.add_module(type_id=eve_module_id, rack=consts.Rack.high, add_mode=ModAddMode.insert(pos=2))
     # Verification
     assert api_fit.update().modules.high.map(lambda m: m.id) == [
         api_module1.id, None, api_module4.id, api_module2.id, None, None, api_module3.id]
@@ -137,27 +108,18 @@ def test_add_replace(client, consts):
     client.create_sources()
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
-    api_module1 = api_fit.add_module(
-        type_id=eve_module_id,
-        rack=consts.Rack.high,
-        add_mode={consts.ApiModAddMode.replace: 0})
+    api_module1 = api_fit.add_module(type_id=eve_module_id, rack=consts.Rack.high, add_mode=ModAddMode.replace(pos=0))
     # Verification
     assert api_fit.update().modules.high.map(lambda m: m.id) == [api_module1.id]
     assert api_module1.update().pos == 0
     # Action
-    api_module2 = api_fit.add_module(
-        type_id=eve_module_id,
-        rack=consts.Rack.high,
-        add_mode={consts.ApiModAddMode.replace: 2})
+    api_module2 = api_fit.add_module(type_id=eve_module_id, rack=consts.Rack.high, add_mode=ModAddMode.replace(pos=2))
     # Verification
     assert api_fit.update().modules.high.map(lambda m: m.id) == [api_module1.id, None, api_module2.id]
     assert api_module1.update().pos == 0
     assert api_module2.update().pos == 2
     # Action
-    api_module3 = api_fit.add_module(
-        type_id=eve_module_id,
-        rack=consts.Rack.high,
-        add_mode={consts.ApiModAddMode.replace: 5})
+    api_module3 = api_fit.add_module(type_id=eve_module_id, rack=consts.Rack.high, add_mode=ModAddMode.replace(pos=5))
     # Verification
     assert api_fit.update().modules.high.map(lambda m: m.id) == [
         api_module1.id, None, api_module2.id, None, None, api_module3.id]
@@ -165,10 +127,7 @@ def test_add_replace(client, consts):
     assert api_module2.update().pos == 2
     assert api_module3.update().pos == 5
     # Action
-    api_module4 = api_fit.add_module(
-        type_id=eve_module_id,
-        rack=consts.Rack.high,
-        add_mode={consts.ApiModAddMode.replace: 3})
+    api_module4 = api_fit.add_module(type_id=eve_module_id, rack=consts.Rack.high, add_mode=ModAddMode.replace(pos=3))
     # Verification
     assert api_fit.update().modules.high.map(lambda m: m.id) == [
         api_module1.id, None, api_module2.id, api_module4.id, None, api_module3.id]
@@ -177,10 +136,7 @@ def test_add_replace(client, consts):
     assert api_module3.update().pos == 5
     assert api_module4.update().pos == 3
     # Action
-    api_module5 = api_fit.add_module(
-        type_id=eve_module_id,
-        rack=consts.Rack.high,
-        add_mode={consts.ApiModAddMode.replace: 2})
+    api_module5 = api_fit.add_module(type_id=eve_module_id, rack=consts.Rack.high, add_mode=ModAddMode.replace(pos=2))
     # Verification
     assert api_fit.update().modules.high.map(lambda m: m.id) == [
         api_module1.id, None, api_module5.id, api_module4.id, None, api_module3.id]
@@ -206,17 +162,30 @@ def test_add_absent(client, consts):
             'message': 'Failed to deserialize the JSON body into the target type: missing field `add_mode`'})
 
 
+def test_add_pos_absent(client, consts):
+    eve_module_id = client.mk_eve_item()
+    client.create_sources()
+    api_sol = client.create_sol()
+    api_fit = api_sol.create_fit()
+    # Action & verification
+    api_fit.add_module(
+        type_id=eve_module_id,
+        rack=consts.Rack.high,
+        add_mode=ModAddMode(mode='insert'),
+        status_code=400,
+        json_predicate={
+            'code': 'JSN-001',
+            'message': 'Failed to deserialize the JSON body into the target type: missing field `pos`'})
+
+
 def test_add_append_limit(client, consts):
     eve_module_id = client.mk_eve_item()
     client.create_sources()
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
-    api_module1 = api_fit.add_module(
-        type_id=eve_module_id,
-        rack=consts.Rack.high,
-        add_mode={consts.ApiModAddMode.replace: 998})
+    api_module1 = api_fit.add_module(type_id=eve_module_id, rack=consts.Rack.high, add_mode=ModAddMode.replace(pos=998))
     # Action
-    api_module2 = api_fit.add_module(type_id=eve_module_id, rack=consts.Rack.high, add_mode=consts.ApiModAddMode.append)
+    api_module2 = api_fit.add_module(type_id=eve_module_id, rack=consts.Rack.high, add_mode=ModAddMode.append())
     # Verification
     assert api_fit.update().modules.high.map(lambda m: m.id) == [None] * 998 + [api_module1.id, api_module2.id]
     assert api_module1.update().pos == 998
@@ -225,7 +194,7 @@ def test_add_append_limit(client, consts):
     api_fit.add_module(
         type_id=eve_module_id,
         rack=consts.Rack.high,
-        add_mode=consts.ApiModAddMode.append,
+        add_mode=ModAddMode.append(),
         status_code=400,
         json_predicate={
             'code': 'MOD-006',
@@ -242,7 +211,7 @@ def test_add_equip_limit(client, consts):
     api_fit = api_sol.create_fit()
     with api_fit.batch() as api_fit_batch:
         api_modules = [
-            api_fit_batch.add_module(type_id=eve_module_id, rack=consts.Rack.high, add_mode=consts.ApiModAddMode.equip)
+            api_fit_batch.add_module(type_id=eve_module_id, rack=consts.Rack.high, add_mode=ModAddMode.equip())
             for _ in range(1000)]
     # Verification
     assert api_fit.update().modules.high.map(lambda m: m.id) == [m.id for m in api_modules]
@@ -250,7 +219,7 @@ def test_add_equip_limit(client, consts):
     api_fit.add_module(
         type_id=eve_module_id,
         rack=consts.Rack.high,
-        add_mode=consts.ApiModAddMode.equip,
+        add_mode=ModAddMode.equip(),
         status_code=400,
         json_predicate={
             'code': 'MOD-006',
@@ -258,7 +227,7 @@ def test_add_equip_limit(client, consts):
     assert api_fit.update().modules.high.map(lambda m: m.id) == [m.id for m in api_modules]
     # Action
     api_modules[500].remove(rm_mode=consts.ApiModRmMode.free)
-    api_module = api_fit.add_module(type_id=eve_module_id, rack=consts.Rack.high, add_mode=consts.ApiModAddMode.equip)
+    api_module = api_fit.add_module(type_id=eve_module_id, rack=consts.Rack.high, add_mode=ModAddMode.equip())
     # Verification
     assert api_module.update().pos == 500
 
@@ -268,19 +237,10 @@ def test_add_insert_limit(client, consts):
     client.create_sources()
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
-    api_module1 = api_fit.add_module(
-        type_id=eve_module_id,
-        rack=consts.Rack.high,
-        add_mode={consts.ApiModAddMode.replace: 0})
-    api_module2 = api_fit.add_module(
-        type_id=eve_module_id,
-        rack=consts.Rack.high,
-        add_mode={consts.ApiModAddMode.replace: 998})
+    api_module1 = api_fit.add_module(type_id=eve_module_id, rack=consts.Rack.high, add_mode=ModAddMode.replace(pos=0))
+    api_module2 = api_fit.add_module(type_id=eve_module_id, rack=consts.Rack.high, add_mode=ModAddMode.replace(pos=998))
     # Action
-    api_module3 = api_fit.add_module(
-        type_id=eve_module_id,
-        rack=consts.Rack.high,
-        add_mode={consts.ApiModAddMode.insert: 0})
+    api_module3 = api_fit.add_module(type_id=eve_module_id, rack=consts.Rack.high, add_mode=ModAddMode.insert(pos=0))
     # Verification
     assert api_fit.update().modules.high.map(lambda m: m.id) == (
         [api_module3.id, api_module1.id] + [None] * 997 + [api_module2.id])
@@ -291,7 +251,7 @@ def test_add_insert_limit(client, consts):
     api_fit.add_module(
         type_id=eve_module_id,
         rack=consts.Rack.high,
-        add_mode={consts.ApiModAddMode.insert: 2},
+        add_mode=ModAddMode.insert(pos=2),
         status_code=400,
         json_predicate={
             'code': 'MOD-006',
@@ -308,21 +268,15 @@ def test_add_limit_batch(client, consts):
     client.create_sources()
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
-    api_module = api_fit.add_module(
-        type_id=eve_module_id,
-        rack=consts.Rack.high,
-        add_mode={consts.ApiModAddMode.replace: 999})
+    api_module = api_fit.add_module(type_id=eve_module_id, rack=consts.Rack.high, add_mode=ModAddMode.replace(pos=999))
     # Action & verification
     with api_fit.batch(status_code=400, json_predicate={
             'code': 'MOD-006',
             'message': f"failed to add module: high rack of fit {api_fit.id} can't have modules past position 999",
             'cmd_index': 1,
     }) as api_fit_batch:
-        api_fit_batch.add_module(
-            type_id=eve_module_id,
-            rack=consts.Rack.high,
-            add_mode={consts.ApiModAddMode.replace: 0})
-        api_fit_batch.add_module(type_id=eve_module_id, rack=consts.Rack.high, add_mode=consts.ApiModAddMode.append)
+        api_fit_batch.add_module(type_id=eve_module_id, rack=consts.Rack.high, add_mode=ModAddMode.replace(pos=0))
+        api_fit_batch.add_module(type_id=eve_module_id, rack=consts.Rack.high, add_mode=ModAddMode.append())
     assert api_fit.update().modules.high.map(lambda m: m.id) == [None] * 999 + [api_module.id]
     # Action & verification
     with api_sol.batch(status_code=400, json_predicate={
@@ -334,12 +288,12 @@ def test_add_limit_batch(client, consts):
             fit_id=api_fit.id,
             type_id=eve_module_id,
             rack=consts.Rack.high,
-            add_mode={consts.ApiModAddMode.replace: 0})
+            add_mode=ModAddMode.replace(pos=0))
         api_sol_batch.add_module(
             fit_id=api_fit.id,
             type_id=eve_module_id,
             rack=consts.Rack.high,
-            add_mode={consts.ApiModAddMode.insert: 0})
+            add_mode=ModAddMode.insert(pos=0))
     assert api_fit.update().modules.high.map(lambda m: m.id) == [None] * 999 + [api_module.id]
 
 
@@ -353,22 +307,19 @@ def test_add_out_of_range(client, consts):
     api_module1 = api_fit.add_module(
         type_id=eve_module_id,
         rack=consts.Rack.high,
-        add_mode={consts.ApiModAddMode.insert: 2 ** 64 - 1})
+        add_mode=ModAddMode.insert(pos=2 ** 64 - 1))
     # Verification
     assert api_module1.update().pos == 999
     # Action
     api_module2 = api_fit.add_module(
         type_id=eve_module_id,
         rack=consts.Rack.high,
-        add_mode={consts.ApiModAddMode.replace: 1000})
+        add_mode=ModAddMode.replace(pos=1000))
     # Verification
     assert api_fit.update().modules.high.map(lambda m: m.id) == [None] * 999 + [api_module2.id]
     assert api_module2.update().pos == 999
     # Action
-    api_module3 = api_fit.add_module(
-        type_id=eve_module_id,
-        rack=consts.Rack.high,
-        add_mode={consts.ApiModAddMode.replace: -5})
+    api_module3 = api_fit.add_module(type_id=eve_module_id, rack=consts.Rack.high, add_mode=ModAddMode.replace(pos=-5))
     # Verification
     assert api_fit.update().modules.high.map(lambda m: m.id) == [api_module3.id] + [None] * 998 + [api_module2.id]
     assert api_module2.update().pos == 999
@@ -382,17 +333,14 @@ def test_add_float(client, consts):
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
     # Action
-    api_module1 = api_fit.add_module(
-        type_id=eve_module_id,
-        rack=consts.Rack.high,
-        add_mode={consts.ApiModAddMode.insert: 2.4})
+    api_module1 = api_fit.add_module(type_id=eve_module_id, rack=consts.Rack.high, add_mode=ModAddMode.insert(pos=2.4))
     # Verification
     assert api_module1.update().pos == 2
     # Action
     api_module2 = api_fit.add_module(
         type_id=eve_module_id,
         rack=consts.Rack.high,
-        add_mode={consts.ApiModAddMode.replace: 2 ** 64})
+        add_mode=ModAddMode.replace(pos=2 ** 64))
     # Verification
     assert api_module2.update().pos == 999
     # Action
@@ -400,7 +348,7 @@ def test_add_float(client, consts):
         api_module3 = api_fit_batch.add_module(
             type_id=eve_module_id,
             rack=consts.Rack.high,
-            add_mode={consts.ApiModAddMode.replace: 4.6})
+            add_mode=ModAddMode.replace(pos=4.6))
     # Verification
     assert api_fit.update().modules.high.map(lambda m: m.id) == (
         [None, None, api_module1.id, None, None, api_module3.id] + [None] * 993 + [api_module2.id])
@@ -414,18 +362,9 @@ def test_move_swap(client, consts):
     client.create_sources()
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
-    api_module1 = api_fit.add_module(
-        type_id=eve_module_id,
-        rack=consts.Rack.high,
-        add_mode={consts.ApiModAddMode.replace: 1})
-    api_module2 = api_fit.add_module(
-        type_id=eve_module_id,
-        rack=consts.Rack.high,
-        add_mode={consts.ApiModAddMode.replace: 3})
-    api_module3 = api_fit.add_module(
-        type_id=eve_module_id,
-        rack=consts.Rack.high,
-        add_mode={consts.ApiModAddMode.replace: 5})
+    api_module1 = api_fit.add_module(type_id=eve_module_id, rack=consts.Rack.high, add_mode=ModAddMode.replace(pos=1))
+    api_module2 = api_fit.add_module(type_id=eve_module_id, rack=consts.Rack.high, add_mode=ModAddMode.replace(pos=3))
+    api_module3 = api_fit.add_module(type_id=eve_module_id, rack=consts.Rack.high, add_mode=ModAddMode.replace(pos=5))
     # Verification
     assert api_fit.update().modules.high.map(lambda m: m.id) == [
         None, api_module1.id, None, api_module2.id, None, api_module3.id]
@@ -433,7 +372,7 @@ def test_move_swap(client, consts):
     assert api_module2.update().pos == 3
     assert api_module3.update().pos == 5
     # Action
-    api_module1.change_module(move={consts.ApiModMvMode.swap: 5})
+    api_module1.change_module(move=ModMoveMode.swap(pos=5))
     # Verification
     assert api_fit.update().modules.high.map(lambda m: m.id) == [
         None, api_module3.id, None, api_module2.id, None, api_module1.id]
@@ -441,7 +380,7 @@ def test_move_swap(client, consts):
     assert api_module2.update().pos == 3
     assert api_module3.update().pos == 1
     # Action
-    api_module1.change_module(move={consts.ApiModMvMode.swap: 0})
+    api_module1.change_module(move=ModMoveMode.swap(pos=0))
     # Verification
     assert api_fit.update().modules.high.map(lambda m: m.id) == [
         api_module1.id, api_module3.id, None, api_module2.id]
@@ -449,7 +388,7 @@ def test_move_swap(client, consts):
     assert api_module2.update().pos == 3
     assert api_module3.update().pos == 1
     # Action
-    api_module1.change_module(move={consts.ApiModMvMode.swap: 2})
+    api_module1.change_module(move=ModMoveMode.swap(pos=2))
     # Verification
     assert api_fit.update().modules.high.map(lambda m: m.id) == [
         None, api_module3.id, api_module1.id, api_module2.id]
@@ -457,7 +396,7 @@ def test_move_swap(client, consts):
     assert api_module2.update().pos == 3
     assert api_module3.update().pos == 1
     # Action
-    api_module1.change_module(move={consts.ApiModMvMode.swap: 6})
+    api_module1.change_module(move=ModMoveMode.swap(pos=6))
     # Verification
     assert api_fit.update().modules.high.map(lambda m: m.id) == [
         None, api_module3.id, None, api_module2.id, None, None, api_module1.id]
@@ -465,7 +404,7 @@ def test_move_swap(client, consts):
     assert api_module2.update().pos == 3
     assert api_module3.update().pos == 1
     # Action
-    api_module1.change_module(move={consts.ApiModMvMode.swap: 6})
+    api_module1.change_module(move=ModMoveMode.swap(pos=6))
     # Verification
     assert api_fit.update().modules.high.map(lambda m: m.id) == [
         None, api_module3.id, None, api_module2.id, None, None, api_module1.id]
@@ -479,26 +418,11 @@ def test_move_shift(client, consts):
     client.create_sources()
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
-    api_module1 = api_fit.add_module(
-        type_id=eve_module_id,
-        rack=consts.Rack.high,
-        add_mode={consts.ApiModAddMode.replace: 0})
-    api_module2 = api_fit.add_module(
-        type_id=eve_module_id,
-        rack=consts.Rack.high,
-        add_mode={consts.ApiModAddMode.replace: 1})
-    api_module3 = api_fit.add_module(
-        type_id=eve_module_id,
-        rack=consts.Rack.high,
-        add_mode={consts.ApiModAddMode.replace: 2})
-    api_module4 = api_fit.add_module(
-        type_id=eve_module_id,
-        rack=consts.Rack.high,
-        add_mode={consts.ApiModAddMode.replace: 3})
-    api_module5 = api_fit.add_module(
-        type_id=eve_module_id,
-        rack=consts.Rack.high,
-        add_mode={consts.ApiModAddMode.replace: 4})
+    api_module1 = api_fit.add_module(type_id=eve_module_id, rack=consts.Rack.high, add_mode=ModAddMode.replace(pos=0))
+    api_module2 = api_fit.add_module(type_id=eve_module_id, rack=consts.Rack.high, add_mode=ModAddMode.replace(pos=1))
+    api_module3 = api_fit.add_module(type_id=eve_module_id, rack=consts.Rack.high, add_mode=ModAddMode.replace(pos=2))
+    api_module4 = api_fit.add_module(type_id=eve_module_id, rack=consts.Rack.high, add_mode=ModAddMode.replace(pos=3))
+    api_module5 = api_fit.add_module(type_id=eve_module_id, rack=consts.Rack.high, add_mode=ModAddMode.replace(pos=4))
     # Verification
     assert api_fit.update().modules.high.map(lambda m: m.id) == [
         api_module1.id, api_module2.id, api_module3.id, api_module4.id, api_module5.id]
@@ -508,7 +432,7 @@ def test_move_shift(client, consts):
     assert api_module4.update().pos == 3
     assert api_module5.update().pos == 4
     # Action
-    api_module4.change_module(move={consts.ApiModMvMode.shift: 1})
+    api_module4.change_module(move=ModMoveMode.shift(pos=1))
     # Verification
     assert api_fit.update().modules.high.map(lambda m: m.id) == [
         api_module1.id, api_module4.id, api_module2.id, api_module3.id, api_module5.id]
@@ -518,7 +442,7 @@ def test_move_shift(client, consts):
     assert api_module4.update().pos == 1
     assert api_module5.update().pos == 4
     # Action
-    api_module4.change_module(move={consts.ApiModMvMode.shift: 3})
+    api_module4.change_module(move=ModMoveMode.shift(pos=3))
     # Verification
     assert api_fit.update().modules.high.map(lambda m: m.id) == [
         api_module1.id, api_module2.id, api_module3.id, api_module4.id, api_module5.id]
@@ -528,7 +452,7 @@ def test_move_shift(client, consts):
     assert api_module4.update().pos == 3
     assert api_module5.update().pos == 4
     # Action
-    api_module4.change_module(move={consts.ApiModMvMode.shift: 0})
+    api_module4.change_module(move=ModMoveMode.shift(pos=0))
     # Verification
     assert api_fit.update().modules.high.map(lambda m: m.id) == [
         api_module4.id, api_module1.id, api_module2.id, api_module3.id, api_module5.id]
@@ -538,7 +462,7 @@ def test_move_shift(client, consts):
     assert api_module4.update().pos == 0
     assert api_module5.update().pos == 4
     # Action
-    api_module4.change_module(move={consts.ApiModMvMode.shift: 6})
+    api_module4.change_module(move=ModMoveMode.shift(pos=6))
     # Verification
     assert api_fit.update().modules.high.map(lambda m: m.id) == [
         api_module1.id, api_module2.id, api_module3.id, api_module5.id, None, None, api_module4.id]
@@ -548,7 +472,7 @@ def test_move_shift(client, consts):
     assert api_module4.update().pos == 6
     assert api_module5.update().pos == 3
     # Action
-    api_module4.change_module(move={consts.ApiModMvMode.shift: 5})
+    api_module4.change_module(move=ModMoveMode.shift(pos=5))
     # Verification
     assert api_fit.update().modules.high.map(lambda m: m.id) == [
         api_module1.id, api_module2.id, api_module3.id, api_module5.id, None, api_module4.id]
@@ -558,7 +482,7 @@ def test_move_shift(client, consts):
     assert api_module4.update().pos == 5
     assert api_module5.update().pos == 3
     # Action
-    api_module4.change_module(move={consts.ApiModMvMode.shift: 3})
+    api_module4.change_module(move=ModMoveMode.shift(pos=3))
     # Verification
     assert api_fit.update().modules.high.map(lambda m: m.id) == [
         api_module1.id, api_module2.id, api_module3.id, api_module4.id, api_module5.id]
@@ -568,7 +492,7 @@ def test_move_shift(client, consts):
     assert api_module4.update().pos == 3
     assert api_module5.update().pos == 4
     # Action
-    api_module4.change_module(move={consts.ApiModMvMode.shift: 3})
+    api_module4.change_module(move=ModMoveMode.shift(pos=3))
     # Verification
     assert api_fit.update().modules.high.map(lambda m: m.id) == [
         api_module1.id, api_module2.id, api_module3.id, api_module4.id, api_module5.id]
@@ -585,22 +509,16 @@ def test_move_out_of_range(client, consts):
     client.create_sources()
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
-    api_module1 = api_fit.add_module(
-        type_id=eve_module_id,
-        rack=consts.Rack.high,
-        add_mode={consts.ApiModAddMode.replace: 0})
-    api_module2 = api_fit.add_module(
-        type_id=eve_module_id,
-        rack=consts.Rack.high,
-        add_mode={consts.ApiModAddMode.replace: 1})
+    api_module1 = api_fit.add_module(type_id=eve_module_id, rack=consts.Rack.high, add_mode=ModAddMode.replace(pos=0))
+    api_module2 = api_fit.add_module(type_id=eve_module_id, rack=consts.Rack.high, add_mode=ModAddMode.replace(pos=1))
     # Action
-    api_module1.change_module(move={consts.ApiModMvMode.shift: 5000})
+    api_module1.change_module(move=ModMoveMode.shift(pos=5000))
     # Verification
     assert api_fit.update().modules.high.map(lambda m: m.id) == [api_module2.id] + [None] * 998 + [api_module1.id]
     assert api_module1.update().pos == 999
     assert api_module2.update().pos == 0
     # Action
-    api_module2.change_module(move={consts.ApiModMvMode.swap: 5000})
+    api_module2.change_module(move=ModMoveMode.swap(pos=5000))
     # Verification
     assert api_fit.update().modules.high.map(lambda m: m.id) == [api_module1.id] + [None] * 998 + [api_module2.id]
     assert api_module1.update().pos == 0
@@ -613,33 +531,43 @@ def test_move_float(client, consts):
     client.create_sources()
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
-    api_module1 = api_fit.add_module(
-        type_id=eve_module_id,
-        rack=consts.Rack.high,
-        add_mode={consts.ApiModAddMode.replace: 0})
-    api_module2 = api_fit.add_module(
-        type_id=eve_module_id,
-        rack=consts.Rack.high,
-        add_mode={consts.ApiModAddMode.replace: 1})
+    api_module1 = api_fit.add_module(type_id=eve_module_id, rack=consts.Rack.high, add_mode=ModAddMode.replace(pos=0))
+    api_module2 = api_fit.add_module(type_id=eve_module_id, rack=consts.Rack.high, add_mode=ModAddMode.replace(pos=1))
     # Action
-    api_module1.change_module(move={consts.ApiModMvMode.shift: 3.4})
+    api_module1.change_module(move=ModMoveMode.shift(pos=3.4))
     # Verification
     assert api_fit.update().modules.high.map(lambda m: m.id) == [api_module2.id, None, None, api_module1.id]
     assert api_module1.update().pos == 3
     assert api_module2.update().pos == 0
     # Action
-    api_module2.change_module(move={consts.ApiModMvMode.swap: 2.6})
+    api_module2.change_module(move=ModMoveMode.swap(pos=2.6))
     # Verification
     assert api_fit.update().modules.high.map(lambda m: m.id) == [api_module1.id, None, None, api_module2.id]
     assert api_module1.update().pos == 0
     assert api_module2.update().pos == 3
     # Action
     with api_fit.batch() as api_fit_batch:
-        api_fit_batch.change_module(item_id=api_module2.id, move={consts.ApiModMvMode.swap: 1e30})
+        api_fit_batch.change_module(item_id=api_module2.id, move=ModMoveMode.swap(pos=1e30))
     # Verification
     assert api_fit.update().modules.high.map(lambda m: m.id) == [api_module1.id] + [None] * 998 + [api_module2.id]
     assert api_module1.update().pos == 0
     assert api_module2.update().pos == 999
+
+
+def test_move_pos_absent(client, consts):
+    eve_module_id = client.mk_eve_item()
+    client.create_sources()
+    api_sol = client.create_sol()
+    api_fit = api_sol.create_fit()
+    api_module = api_fit.add_module(type_id=eve_module_id, rack=consts.Rack.high)
+    # Action & verification
+    api_module.change_module(
+        move=ModMoveMode(mode='shift'),
+        status_code=400,
+        json_predicate={
+            'code': 'JSN-001',
+            'message': 'Failed to deserialize the JSON body into the target type: missing field `pos`'})
+    assert api_module.update().pos == 0
 
 
 def test_remove_remove(client, consts):
@@ -647,26 +575,11 @@ def test_remove_remove(client, consts):
     client.create_sources()
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
-    api_module1 = api_fit.add_module(
-        type_id=eve_module_id,
-        rack=consts.Rack.high,
-        add_mode={consts.ApiModAddMode.replace: 1})
-    api_module2 = api_fit.add_module(
-        type_id=eve_module_id,
-        rack=consts.Rack.high,
-        add_mode={consts.ApiModAddMode.replace: 3})
-    api_module3 = api_fit.add_module(
-        type_id=eve_module_id,
-        rack=consts.Rack.high,
-        add_mode={consts.ApiModAddMode.replace: 5})
-    api_module4 = api_fit.add_module(
-        type_id=eve_module_id,
-        rack=consts.Rack.high,
-        add_mode={consts.ApiModAddMode.replace: 6})
-    api_module5 = api_fit.add_module(
-        type_id=eve_module_id,
-        rack=consts.Rack.high,
-        add_mode={consts.ApiModAddMode.replace: 7})
+    api_module1 = api_fit.add_module(type_id=eve_module_id, rack=consts.Rack.high, add_mode=ModAddMode.replace(pos=1))
+    api_module2 = api_fit.add_module(type_id=eve_module_id, rack=consts.Rack.high, add_mode=ModAddMode.replace(pos=3))
+    api_module3 = api_fit.add_module(type_id=eve_module_id, rack=consts.Rack.high, add_mode=ModAddMode.replace(pos=5))
+    api_module4 = api_fit.add_module(type_id=eve_module_id, rack=consts.Rack.high, add_mode=ModAddMode.replace(pos=6))
+    api_module5 = api_fit.add_module(type_id=eve_module_id, rack=consts.Rack.high, add_mode=ModAddMode.replace(pos=7))
     # Verification
     assert api_fit.update().modules.high.map(lambda m: m.id) == [
         None, api_module1.id, None, api_module2.id, None, api_module3.id, api_module4.id, api_module5.id]
@@ -716,18 +629,9 @@ def test_remove_free(client, consts):
     client.create_sources()
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
-    api_module1 = api_fit.add_module(
-        type_id=eve_module_id,
-        rack=consts.Rack.high,
-        add_mode={consts.ApiModAddMode.replace: 1})
-    api_module2 = api_fit.add_module(
-        type_id=eve_module_id,
-        rack=consts.Rack.high,
-        add_mode={consts.ApiModAddMode.replace: 3})
-    api_module3 = api_fit.add_module(
-        type_id=eve_module_id,
-        rack=consts.Rack.high,
-        add_mode={consts.ApiModAddMode.replace: 5})
+    api_module1 = api_fit.add_module(type_id=eve_module_id, rack=consts.Rack.high, add_mode=ModAddMode.replace(pos=1))
+    api_module2 = api_fit.add_module(type_id=eve_module_id, rack=consts.Rack.high, add_mode=ModAddMode.replace(pos=3))
+    api_module3 = api_fit.add_module(type_id=eve_module_id, rack=consts.Rack.high, add_mode=ModAddMode.replace(pos=5))
     # Verification
     assert api_fit.update().modules.high.map(lambda m: m.id) == [
         None, api_module1.id, None, api_module2.id, None, api_module3.id]
@@ -759,18 +663,9 @@ def test_remove_absent(client, consts):
     client.create_sources()
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
-    api_module1 = api_fit.add_module(
-        type_id=eve_module_id,
-        rack=consts.Rack.high,
-        add_mode={consts.ApiModAddMode.replace: 1})
-    api_module2 = api_fit.add_module(
-        type_id=eve_module_id,
-        rack=consts.Rack.high,
-        add_mode={consts.ApiModAddMode.replace: 3})
-    api_module3 = api_fit.add_module(
-        type_id=eve_module_id,
-        rack=consts.Rack.high,
-        add_mode={consts.ApiModAddMode.replace: 5})
+    api_module1 = api_fit.add_module(type_id=eve_module_id, rack=consts.Rack.high, add_mode=ModAddMode.replace(pos=1))
+    api_module2 = api_fit.add_module(type_id=eve_module_id, rack=consts.Rack.high, add_mode=ModAddMode.replace(pos=3))
+    api_module3 = api_fit.add_module(type_id=eve_module_id, rack=consts.Rack.high, add_mode=ModAddMode.replace(pos=5))
     # Verification
     assert api_fit.update().modules.high.map(lambda m: m.id) == [
         None, api_module1.id, None, api_module2.id, None, api_module3.id]

@@ -1,5 +1,5 @@
 from fw import ANY_VALUE, approx
-from fw.api import FitStatsOptions, ItemStatsOptions, StatsOptionRps, StatTimeBurst, StatTimeSim
+from fw.api import FitStatsOptions, ItemStatsOptions, StatsOptionRps, StatTime
 from tests.stats.tank import (
     make_eve_drone_hull,
     make_eve_local_hr,
@@ -164,30 +164,30 @@ def test_time(client, consts):
     api_drone.change_drone(add_proj_item_ids=[api_tgt_ship.id])
     # Verification - burst stats
     api_tgt_fit_stats = api_tgt_fit.get_stats(options=FitStatsOptions(
-        rps=[StatsOptionRps(time=StatTimeBurst())]))
+        rps=[StatsOptionRps(time=StatTime.burst())]))
     assert api_tgt_fit_stats.rps.one().hull == [approx(5), approx(45.533333), ANY_VALUE]
-    api_tgt_ship_stats = api_tgt_ship.get_stats(options=ItemStatsOptions(rps=[StatsOptionRps(time=StatTimeBurst())]))
+    api_tgt_ship_stats = api_tgt_ship.get_stats(options=ItemStatsOptions(rps=[StatsOptionRps(time=StatTime.burst())]))
     assert api_tgt_ship_stats.rps.one().hull == [approx(5), approx(45.533333), ANY_VALUE]
     # Sim without specified time - looped stats
     api_tgt_fit_stats = api_tgt_fit.get_stats(options=FitStatsOptions(
-        rps=[StatsOptionRps(time=StatTimeSim(time=None))]))
+        rps=[StatsOptionRps(time=StatTime.sim(time=None))]))
     assert api_tgt_fit_stats.rps.one().hull == [approx(5), approx(45.533333), ANY_VALUE]
     api_tgt_ship_stats = api_tgt_ship.get_stats(options=ItemStatsOptions(
-        rps=[StatsOptionRps(time=StatTimeSim(time=None))]))
+        rps=[StatsOptionRps(time=StatTime.sim(time=None))]))
     assert api_tgt_ship_stats.rps.one().hull == [approx(5), approx(45.533333), ANY_VALUE]
     # Sim with time before any of rep cycles complete
     api_tgt_fit_stats = api_tgt_fit.get_stats(options=FitStatsOptions(
-        rps=[StatsOptionRps(time=StatTimeSim(time=4))]))
+        rps=[StatsOptionRps(time=StatTime.sim(time=4))]))
     assert api_tgt_fit_stats.rps.one().hull == [0, 0, ANY_VALUE]
     api_tgt_ship_stats = api_tgt_ship.get_stats(options=ItemStatsOptions(
-        rps=[StatsOptionRps(time=StatTimeSim(time=4))]))
+        rps=[StatsOptionRps(time=StatTime.sim(time=4))]))
     assert api_tgt_ship_stats.rps.one().hull == [0, 0, ANY_VALUE]
     # Sim with time just after first rep cycle has completed for slowest items (some completed more)
     api_tgt_fit_stats = api_tgt_fit.get_stats(options=FitStatsOptions(
-        rps=[StatsOptionRps(time=StatTimeSim(time=25))]))
+        rps=[StatsOptionRps(time=StatTime.sim(time=25))]))
     assert api_tgt_fit_stats.rps.one().hull == [approx(4.8), approx(44), ANY_VALUE]
     api_tgt_ship_stats = api_tgt_ship.get_stats(options=ItemStatsOptions(
-        rps=[StatsOptionRps(time=StatTimeSim(time=25))]))
+        rps=[StatsOptionRps(time=StatTime.sim(time=25))]))
     assert api_tgt_ship_stats.rps.one().hull == [approx(4.8), approx(44), ANY_VALUE]
 
 

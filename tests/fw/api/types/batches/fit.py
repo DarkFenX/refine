@@ -42,10 +42,11 @@ from fw.api.commands import (
     FitTryItemsFitCmd,
     FitValFitCmd,
 )
+from fw.api.types.item import ModAddMode
 from fw.api.types.stats import FitBatchStats, ItemBatchStats
 from fw.api.types.validation import FitValResult
-from fw.consts import ApiMinionState, ApiModAddMode, ApiModuleState, ApiServiceState, Rack
-from fw.util import Absent
+from fw.consts import ApiMinionState, ApiModuleState, ApiServiceState, Rack
+from fw.util import Absent, Default
 from .base import BaseCmdBatchCtx
 
 if typing.TYPE_CHECKING:
@@ -55,14 +56,13 @@ if typing.TYPE_CHECKING:
     from fw.api import ApiClient
     from fw.api.aliases import DpsProfileAlias, InfoMode, MutaAdd, MutaChange, StatsOptions
     from fw.api.types.fit import Fit
-    from fw.api.types.item import Item
+    from fw.api.types.item import Item, ModMoveMode
     from fw.api.types.stats import FitStatsOptions, ItemStatsOptions
     from fw.api.types.validation import ValOptions
     from fw.consts import (
         ApiEffMode,
         ApiFitInfoMode,
         ApiItemInfoMode,
-        ApiModMvMode,
         ApiModRmMode,
         ApiNpcProp,
         ApiOptionalReload,
@@ -397,7 +397,7 @@ class FitCmdBatchCtx(BaseCmdBatchCtx):
             self, *,
             type_id: int,
             rack: Rack = Rack.high,
-            add_mode: ApiModAddMode | dict[ApiModAddMode, int] | type[Absent] = ApiModAddMode.equip,
+            add_mode: ModAddMode | type[Absent | Default] = Default,
             state: ApiModuleState = ApiModuleState.offline,
             mutation: MutaAdd | type[Absent] = Absent,
             charge_type_id: int | type[Absent] = Absent,
@@ -406,6 +406,8 @@ class FitCmdBatchCtx(BaseCmdBatchCtx):
             proj_item_ids: list[str] | type[Absent] = Absent,
             effect_modes: dict[int | str, ApiEffMode] | type[Absent] = Absent,
     ) -> Item:
+        if add_mode is Default:
+            add_mode = ModAddMode.equip()
         command = FitCtlModuleAddCmd(
             type_id=type_id,
             rack=rack,
@@ -424,7 +426,7 @@ class FitCmdBatchCtx(BaseCmdBatchCtx):
             self, *,
             item_id: str,
             type_id: int | type[Absent] = Absent,
-            move: ApiModMvMode | dict[ApiModMvMode, int] | type[Absent] = Absent,
+            move: ModMoveMode | type[Absent] = Absent,
             state: ApiModuleState | type[Absent] = Absent,
             mutation: MutaAdd | MutaChange | type[Absent] | None = Absent,
             charge_type_id: int | type[Absent] | None = Absent,

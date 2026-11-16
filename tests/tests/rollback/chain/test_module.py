@@ -1,4 +1,5 @@
 from fw import Muta, Spool, approx, check_no_field
+from fw.api import ModAddMode, ModMoveMode
 
 
 def test_add_proj_not_found(client, consts):
@@ -50,7 +51,7 @@ def test_add_proj_not_found(client, consts):
     api_fit.add_module(
         type_id=eve_module_id,
         rack=consts.Rack.high,
-        add_mode={consts.ApiModAddMode.insert: 0},
+        add_mode=ModAddMode.insert(pos=0),
         state=consts.ApiModuleState.active,
         charge_type_id=eve_charge_id,
         spool_override=Spool.cycles_to_api(count=5),
@@ -195,7 +196,7 @@ def test_change_proj_add_fail(client, consts):
     api_other_tgt.remove()
     # Action & verification - every part of the change is applied before the second projection fails
     api_module1.change_module(
-        move={consts.ApiModMvMode.swap: 1},
+        move=ModMoveMode.swap(pos=1),
         state=consts.ApiModuleState.online,
         charge_type_id=eve_charge2_id,
         spool_override=None,

@@ -6,8 +6,7 @@ from fw.api import (
     StatDmgItemKinds,
     StatsOptionFitDmg,
     StatsOptionItemDmg,
-    StatTimeBurst,
-    StatTimeSim,
+    StatTime,
 )
 from tests.stats.dmg import make_eve_breacher, make_eve_launcher, setup_dmg_basics
 
@@ -222,20 +221,20 @@ def test_time_reload(client, consts):
     api_fleet = api_sol.create_fleet(fit_ids=[api_fit.id])
     # Verification
     api_fleet_stats = api_fleet.get_stats(options=FleetStatsOptions(dmg=[
-        StatsOptionFitDmg(time=StatTimeBurst()),
-        StatsOptionFitDmg(time=StatTimeSim(time=None))]))
+        StatsOptionFitDmg(time=StatTime.burst()),
+        StatsOptionFitDmg(time=StatTime.sim(time=None))]))
     api_fleet_dmg_burst, api_fleet_dmg_reload = api_fleet_stats.dmg
     assert api_fleet_dmg_burst.dps.breacher == [approx(200), approx(0.0075)]
     assert api_fleet_dmg_reload.dps.breacher == [approx(199.191919), approx(0.007469697)]
     api_fit_stats = api_fit.get_stats(options=FitStatsOptions(dmg=[
-        StatsOptionFitDmg(time=StatTimeBurst()),
-        StatsOptionFitDmg(time=StatTimeSim(time=None))]))
+        StatsOptionFitDmg(time=StatTime.burst()),
+        StatsOptionFitDmg(time=StatTime.sim(time=None))]))
     api_fit_dmg_burst, api_fit_dmg_reload = api_fit_stats.dmg
     assert api_fit_dmg_burst.dps.breacher == [approx(200), approx(0.0075)]
     assert api_fit_dmg_reload.dps.breacher == [approx(199.191919), approx(0.007469697)]
     api_charge_stats = api_module.charge.get_stats(options=ItemStatsOptions(dmg=[
-        StatsOptionItemDmg(time=StatTimeBurst()),
-        StatsOptionItemDmg(time=StatTimeSim(time=None))]))
+        StatsOptionItemDmg(time=StatTime.burst()),
+        StatsOptionItemDmg(time=StatTime.sim(time=None))]))
     api_charge_dmg_burst, api_charge_dmg_reload = api_charge_stats.dmg
     assert api_charge_dmg_burst.dps.breacher == [approx(200), approx(0.0075)]
     assert api_charge_dmg_reload.dps.breacher == [approx(199.191919), approx(0.007469697)]
