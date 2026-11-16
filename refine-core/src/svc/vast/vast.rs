@@ -104,12 +104,9 @@ pub(in crate::svc) struct VastFitData {
     pub(in crate::svc::vast) drone_groups: RMap<UItemId, AItemGrpId>,
     // Validation-related - max type/group
     pub(in crate::svc::vast) mods_svcs_max_type_fitted: RMapRMap<AItemId, UItemId, Option<Count>>,
-    pub(in crate::svc::vast) mods_svcs_rigs_max_group_fitted_all: RMapRSet<AItemGrpId, UItemId>,
-    pub(in crate::svc::vast) mods_svcs_rigs_max_group_fitted_limited: RMap<UItemId, AItemGrpId>,
-    pub(in crate::svc::vast) mods_svcs_max_group_online_all: RMapRSet<AItemGrpId, UItemId>,
-    pub(in crate::svc::vast) mods_svcs_max_group_online_limited: RMap<UItemId, AItemGrpId>,
-    pub(in crate::svc::vast) mods_max_group_active_all: RMapRSet<AItemGrpId, UItemId>,
-    pub(in crate::svc::vast) mods_max_group_active_limited: RMap<UItemId, AItemGrpId>,
+    pub(in crate::svc::vast) mods_svcs_rigs_max_group_fitted: RMapRMap<AItemGrpId, UItemId, bool>,
+    pub(in crate::svc::vast) mods_svcs_max_group_online: RMapRMap<AItemGrpId, UItemId, bool>,
+    pub(in crate::svc::vast) mods_max_group_active: RMapRMap<AItemGrpId, UItemId, bool>,
     // Validation-related - module-charge restrictions
     pub(in crate::svc::vast) charge_group: RMap<UItemId, UItemId>,
     pub(in crate::svc::vast) charge_size: RMap<UItemId, UItemId>,
@@ -225,12 +222,9 @@ impl VastFitData {
             drone_groups: RMap::new(),
             // Validation-related - max type/group
             mods_svcs_max_type_fitted: RMapRMap::new(),
-            mods_svcs_rigs_max_group_fitted_all: RMapRSet::new(),
-            mods_svcs_rigs_max_group_fitted_limited: RMap::new(),
-            mods_svcs_max_group_online_all: RMapRSet::new(),
-            mods_svcs_max_group_online_limited: RMap::new(),
-            mods_max_group_active_all: RMapRSet::new(),
-            mods_max_group_active_limited: RMap::new(),
+            mods_svcs_rigs_max_group_fitted: RMapRMap::new(),
+            mods_svcs_max_group_online: RMapRMap::new(),
+            mods_max_group_active: RMapRMap::new(),
             // Validation-related - module-charge restrictions
             charge_group: RMap::new(),
             charge_size: RMap::new(),
@@ -469,12 +463,9 @@ mod debug {
                 mods_capital,
                 drone_groups,
                 mods_svcs_max_type_fitted,
-                mods_svcs_rigs_max_group_fitted_all,
-                mods_svcs_rigs_max_group_fitted_limited,
-                mods_svcs_max_group_online_all,
-                mods_svcs_max_group_online_limited,
-                mods_max_group_active_all,
-                mods_max_group_active_limited,
+                mods_svcs_rigs_max_group_fitted,
+                mods_svcs_max_group_online,
+                mods_max_group_active,
                 charge_group,
                 charge_size,
                 charge_volume,
@@ -671,29 +662,20 @@ mod debug {
                     item_uid.consistency_check(u_data, true)?;
                 }
             }
-            for item_uids in mods_svcs_rigs_max_group_fitted_all.values() {
-                for item_uid in item_uids {
+            for item_data in mods_svcs_rigs_max_group_fitted.values() {
+                for item_uid in item_data.keys() {
                     item_uid.consistency_check(u_data, true)?;
                 }
             }
-            for item_uid in mods_svcs_rigs_max_group_fitted_limited.keys() {
-                item_uid.consistency_check(u_data, true)?;
-            }
-            for item_uids in mods_svcs_max_group_online_all.values() {
-                for item_uid in item_uids {
+            for item_data in mods_svcs_max_group_online.values() {
+                for item_uid in item_data.keys() {
                     item_uid.consistency_check(u_data, true)?;
                 }
             }
-            for item_uid in mods_svcs_max_group_online_limited.keys() {
-                item_uid.consistency_check(u_data, true)?;
-            }
-            for item_uids in mods_max_group_active_all.values() {
-                for item_uid in item_uids {
+            for item_data in mods_max_group_active.values() {
+                for item_uid in item_data.keys() {
                     item_uid.consistency_check(u_data, true)?;
                 }
-            }
-            for item_uid in mods_max_group_active_limited.keys() {
-                item_uid.consistency_check(u_data, true)?;
             }
             ////////////////////////////////////////////////////////////////////////////////////////
             // Validation-related - module-charge restrictions

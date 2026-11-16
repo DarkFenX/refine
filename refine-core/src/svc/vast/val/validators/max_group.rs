@@ -1,12 +1,10 @@
-use itertools::Itertools;
-
 use crate::{
     Count, ItemGrpId, ItemId,
     ad::AItemGrpId,
     rd::RAttrId,
     svc::{Calc, SvcCtx, vast::VastFitData},
     ud::UItemId,
-    util::{RMap, RMapRSet, RSet},
+    util::{RMapRMap, RSet},
     val::{ValItemStatus, ValResult},
 };
 
@@ -69,8 +67,7 @@ impl VastFitData {
             kfs,
             ctx,
             calc,
-            &self.mods_svcs_rigs_max_group_fitted_all,
-            &self.mods_svcs_rigs_max_group_fitted_limited,
+            &self.mods_svcs_rigs_max_group_fitted,
             ctx.ac().max_group_fitted,
         )
     }
@@ -84,8 +81,7 @@ impl VastFitData {
             kfs,
             ctx,
             calc,
-            &self.mods_svcs_max_group_online_all,
-            &self.mods_svcs_max_group_online_limited,
+            &self.mods_svcs_max_group_online,
             ctx.ac().max_group_online,
         )
     }
@@ -95,14 +91,7 @@ impl VastFitData {
         ctx: &SvcCtx,
         calc: &mut Calc,
     ) -> bool {
-        validate_fast(
-            kfs,
-            ctx,
-            calc,
-            &self.mods_max_group_active_all,
-            &self.mods_max_group_active_limited,
-            ctx.ac().max_group_active,
-        )
+        validate_fast(kfs, ctx, calc, &self.mods_max_group_active, ctx.ac().max_group_active)
     }
     // Verbose validations
     pub(in crate::svc::vast::val) fn validate_max_group_fitted_verbose(
@@ -115,8 +104,7 @@ impl VastFitData {
             kfs,
             ctx,
             calc,
-            &self.mods_svcs_rigs_max_group_fitted_all,
-            &self.mods_svcs_rigs_max_group_fitted_limited,
+            &self.mods_svcs_rigs_max_group_fitted,
             ctx.ac().max_group_fitted,
         )
     }
@@ -130,8 +118,7 @@ impl VastFitData {
             kfs,
             ctx,
             calc,
-            &self.mods_svcs_max_group_online_all,
-            &self.mods_svcs_max_group_online_limited,
+            &self.mods_svcs_max_group_online,
             ctx.ac().max_group_online,
         )
     }
@@ -141,14 +128,7 @@ impl VastFitData {
         ctx: &SvcCtx,
         calc: &mut Calc,
     ) -> ValResult<ValMaxGroupFail> {
-        validate_verbose(
-            kfs,
-            ctx,
-            calc,
-            &self.mods_max_group_active_all,
-            &self.mods_max_group_active_limited,
-            ctx.ac().max_group_active,
-        )
+        validate_verbose(kfs, ctx, calc, &self.mods_max_group_active, ctx.ac().max_group_active)
     }
 }
 
@@ -156,18 +136,22 @@ fn validate_fast(
     kfs: &RSet<UItemId>,
     ctx: &SvcCtx,
     calc: &mut Calc,
-    max_group_all: &RMapRSet<AItemGrpId, UItemId>,
-    max_group_limited: &RMap<UItemId, AItemGrpId>,
+    max_group: &RMapRMap<AItemGrpId, UItemId, bool>,
     attr_rid: Option<RAttrId>,
 ) -> bool {
     let Some(attr_rid) = attr_rid else {
         return true;
     };
-    for (&item_uid, item_grp_aid) in max_group_limited.iter() {
-        let allowed = get_max_allowed_item_count(ctx, calc, item_uid, attr_rid);
-        let actual = get_actual_item_count(max_group_all, item_grp_aid);
-        if actual > allowed && !kfs.contains(&item_uid) {
-            return false;
+    for group_items in max_group.values() {
+        let actual = Count::from_usize(group_items.len());
+        for (&item_uid, &limited) in group_items.iter() {
+            if !limited {
+                continue;
+            }
+            let allowed = get_max_allowed_item_count(ctx, calc, item_uid, attr_rid);
+            if actual > allowed && !kfs.contains(&item_uid) {
+                return false;
+            }
         }
     }
     true
@@ -177,37 +161,40 @@ fn validate_verbose(
     kfs: &RSet<UItemId>,
     ctx: &SvcCtx,
     calc: &mut Calc,
-    max_group_all: &RMapRSet<AItemGrpId, UItemId>,
-    max_group_limited: &RMap<UItemId, AItemGrpId>,
+    max_group: &RMapRMap<AItemGrpId, UItemId, bool>,
     attr_rid: Option<RAttrId>,
 ) -> ValResult<ValMaxGroupFail> {
     let Some(attr_rid) = attr_rid else {
         return ValResult::Passed;
     };
-    let mut groups = RMap::new();
-    for (&item_uid, &item_grp_aid) in max_group_limited.iter() {
-        let item_limit = get_max_allowed_item_count(ctx, calc, item_uid, attr_rid);
-        let actual = get_actual_item_count(max_group_all, &item_grp_aid);
-        if actual > item_limit {
-            groups
-                .entry(item_grp_aid)
-                .or_insert_with(|| ValMaxGroupGroupInfo {
-                    group_id: ItemGrpId::from_aid(item_grp_aid),
-                    group_item_ids: max_group_all
-                        .get(&item_grp_aid)
-                        .map(|&group_item_uid| ctx.u_data.items.ext_id_by_int_id(group_item_uid))
-                        .collect(),
-                    items: Vec::new(),
-                })
-                .items
-                .push(ValMaxGroupItemInfo {
+    let mut groups = Vec::new();
+    for (&item_grp_aid, group_items) in max_group.iter() {
+        let actual = Count::from_usize(group_items.len());
+        let mut items = Vec::new();
+        for (&item_uid, &limited) in group_items.iter() {
+            if !limited {
+                continue;
+            }
+            let item_limit = get_max_allowed_item_count(ctx, calc, item_uid, attr_rid);
+            if actual > item_limit {
+                items.push(ValMaxGroupItemInfo {
                     item_id: ctx.u_data.items.ext_id_by_int_id(item_uid),
                     status: ValItemStatus::from_kfs(kfs, item_uid),
                     limit: item_limit,
                 });
+            }
+        }
+        if !items.is_empty() {
+            groups.push(ValMaxGroupGroupInfo {
+                group_id: ItemGrpId::from_aid(item_grp_aid),
+                group_item_ids: group_items
+                    .keys()
+                    .map(|&group_item_uid| ctx.u_data.items.ext_id_by_int_id(group_item_uid))
+                    .collect(),
+                items,
+            });
         }
     }
-    let groups = groups.into_values().collect_vec();
     match groups.is_empty() {
         true => ValResult::Passed,
         false => ValResult::from_fail(
@@ -222,7 +209,4 @@ fn validate_verbose(
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 fn get_max_allowed_item_count(ctx: &SvcCtx, calc: &mut Calc, item_uid: UItemId, attr_rid: RAttrId) -> Count {
     Count::from_value_rounded(calc.get_item_attr_oextra(ctx, item_uid, attr_rid).unwrap())
-}
-fn get_actual_item_count(max_group_all: &RMapRSet<AItemGrpId, UItemId>, item_grp_aid: &AItemGrpId) -> Count {
-    Count::from_usize(max_group_all.get(item_grp_aid).len())
 }
