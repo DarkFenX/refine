@@ -1,3 +1,5 @@
+use itertools::Itertools;
+
 use crate::{
     Count, ItemGrpId, ItemId,
     ad::AItemGrpId,
@@ -35,8 +37,8 @@ pub struct ValMaxGroupFail {
 pub struct ValMaxGroupGroupInfo {
     /// Group which has failed items.
     pub group_id: ItemGrpId,
-    /// How many items are in the group, in high enough state to count for validation purposes.
-    pub group_item_count: Count,
+    /// Items of the group, which are in high enough state to count for validation purposes.
+    pub group_item_ids: Vec<ItemId>,
     /// Offending items and their group limits.
     #[cfg_attr(feature = "serde", serde_as(as = "serde_with::KeyValueMap<_>"))]
     pub items: Vec<ValMaxGroupItemInfo>,
@@ -191,7 +193,10 @@ fn validate_verbose(
                 .entry(item_grp_aid)
                 .or_insert_with(|| ValMaxGroupGroupInfo {
                     group_id: ItemGrpId::from_aid(item_grp_aid),
-                    group_item_count: actual,
+                    group_item_ids: max_group_all
+                        .get(&item_grp_aid)
+                        .map(|&group_item_uid| ctx.u_data.items.ext_id_by_int_id(group_item_uid))
+                        .collect(),
                     items: Vec::new(),
                 })
                 .items
@@ -202,7 +207,7 @@ fn validate_verbose(
                 });
         }
     }
-    let groups: Vec<_> = groups.into_values().collect();
+    let groups = groups.into_values().collect_vec();
     match groups.is_empty() {
         true => ValResult::Passed,
         false => ValResult::from_fail(

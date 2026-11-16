@@ -17,7 +17,7 @@ def test_same_value_modules(client, consts):
     assert api_val.passed is False
     assert api_val.details.max_group_online.status == consts.ApiValStatus.failed
     assert api_val.details.max_group_online.fail == {
-        eve_grp_id: [2, {
+        eve_grp_id: [sorted([api_module1.id, api_module2.id]), {
             api_module1.id: (consts.ApiValItemStatus.failed, 1),
             api_module2.id: (consts.ApiValItemStatus.failed, 1)}]}
 
@@ -38,7 +38,7 @@ def test_same_value_service(client, consts):
     assert api_val.passed is False
     assert api_val.details.max_group_online.status == consts.ApiValStatus.failed
     assert api_val.details.max_group_online.fail == {
-        eve_grp_id: [2, {
+        eve_grp_id: [sorted([api_service1.id, api_service2.id]), {
             api_service1.id: (consts.ApiValItemStatus.failed, 1),
             api_service2.id: (consts.ApiValItemStatus.failed, 1)}]}
 
@@ -56,13 +56,14 @@ def test_different_values(client, consts):
     api_fit = api_sol.create_fit()
     api_module1 = api_fit.add_module(type_id=eve_module1_id, state=consts.ApiModuleState.online)
     api_module2 = api_fit.add_module(type_id=eve_module2_id, state=consts.ApiModuleState.online)
-    api_fit.add_module(type_id=eve_module3_id, state=consts.ApiModuleState.online)
+    api_module3 = api_fit.add_module(type_id=eve_module3_id, state=consts.ApiModuleState.online)
     # Verification
     api_val = api_fit.validate(options=ValOptions(max_group_online=True))
     assert api_val.passed is False
     assert api_val.details.max_group_online.status == consts.ApiValStatus.failed
     assert api_val.details.max_group_online.fail == {
-        eve_grp_id: [3, {api_module2.id: (consts.ApiValItemStatus.failed, 2)}]}
+        eve_grp_id: [sorted([api_module1.id, api_module2.id, api_module3.id]), {
+            api_module2.id: (consts.ApiValItemStatus.failed, 2)}]}
     # Action
     api_module1.remove()
     # Verification
@@ -87,28 +88,28 @@ def test_known_failures(client, consts):
     assert api_val.passed is False
     assert api_val.details.max_group_online.status == consts.ApiValStatus.failed
     assert api_val.details.max_group_online.fail == {
-        eve_grp_id: [2, {
+        eve_grp_id: [sorted([api_module1.id, api_module2.id]), {
             api_module1.id: (consts.ApiValItemStatus.kf, 1),
             api_module2.id: (consts.ApiValItemStatus.failed, 1)}]}
     api_val = api_fit.validate(options=ValOptions(max_group_online=[api_module2.id]))
     assert api_val.passed is False
     assert api_val.details.max_group_online.status == consts.ApiValStatus.failed
     assert api_val.details.max_group_online.fail == {
-        eve_grp_id: [2, {
+        eve_grp_id: [sorted([api_module1.id, api_module2.id]), {
             api_module1.id: (consts.ApiValItemStatus.failed, 1),
             api_module2.id: (consts.ApiValItemStatus.kf, 1)}]}
     api_val = api_fit.validate(options=ValOptions(max_group_online=[api_module1.id, api_module2.id]))
     assert api_val.passed is True
     assert api_val.details.max_group_online.status == consts.ApiValStatus.passed_kfs
     assert api_val.details.max_group_online.fail == {
-        eve_grp_id: [2, {
+        eve_grp_id: [sorted([api_module1.id, api_module2.id]), {
             api_module1.id: (consts.ApiValItemStatus.kf, 1),
             api_module2.id: (consts.ApiValItemStatus.kf, 1)}]}
     api_val = api_fit.validate(options=ValOptions(max_group_online=[api_module1.id, api_other.id, api_module2.id]))
     assert api_val.passed is True
     assert api_val.details.max_group_online.status == consts.ApiValStatus.passed_kfs
     assert api_val.details.max_group_online.fail == {
-        eve_grp_id: [2, {
+        eve_grp_id: [sorted([api_module1.id, api_module2.id]), {
             api_module1.id: (consts.ApiValItemStatus.kf, 1),
             api_module2.id: (consts.ApiValItemStatus.kf, 1)}]}
 
@@ -142,7 +143,7 @@ def test_modified(client, consts):
     assert api_val.passed is False
     assert api_val.details.max_group_online.status == consts.ApiValStatus.failed
     assert api_val.details.max_group_online.fail == {
-        eve_grp_id: [2, {
+        eve_grp_id: [sorted([api_module1.id, api_module2.id]), {
             api_module1.id: (consts.ApiValItemStatus.failed, 1),
             api_module2.id: (consts.ApiValItemStatus.failed, 1)}]}
     # Action
@@ -162,7 +163,7 @@ def test_modified(client, consts):
     assert api_val.passed is False
     assert api_val.details.max_group_online.status == consts.ApiValStatus.failed
     assert api_val.details.max_group_online.fail == {
-        eve_grp_id: [2, {
+        eve_grp_id: [sorted([api_module1.id, api_module2.id]), {
             api_module1.id: (consts.ApiValItemStatus.failed, 1),
             api_module2.id: (consts.ApiValItemStatus.failed, 1)}]}
 
@@ -178,7 +179,7 @@ def test_mutation_limit_priority(client, consts):
     client.create_sources()
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
-    api_fit.add_module(type_id=eve_base_module_id, state=consts.ApiModuleState.online)
+    api_module1 = api_fit.add_module(type_id=eve_base_module_id, state=consts.ApiModuleState.online)
     api_module2 = api_fit.add_module(type_id=eve_base_module_id, state=consts.ApiModuleState.online)
     # Verification
     assert api_module2.update().attrs[eve_limit_attr_id].modified == approx(2)
@@ -207,7 +208,7 @@ def test_mutation_limit_priority(client, consts):
     assert api_val.passed is False
     assert api_val.details.max_group_online.status == consts.ApiValStatus.failed
     assert api_val.details.max_group_online.fail == {
-        eve_grp_id: [2, {api_module2.id: (consts.ApiValItemStatus.failed, 1)}]}
+        eve_grp_id: [sorted([api_module1.id, api_module2.id]), {api_module2.id: (consts.ApiValItemStatus.failed, 1)}]}
 
 
 def test_mutation_limit_inheritance(client, consts):
@@ -223,7 +224,7 @@ def test_mutation_limit_inheritance(client, consts):
     client.create_sources()
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
-    api_fit.add_module(type_id=eve_other_module_id, state=consts.ApiModuleState.online)
+    api_module1 = api_fit.add_module(type_id=eve_other_module_id, state=consts.ApiModuleState.online)
     api_module2 = api_fit.add_module(type_id=eve_base_module_id, state=consts.ApiModuleState.online)
     # Verification
     assert api_module2.update().attrs[eve_limit_attr_id].modified == approx(1)
@@ -238,7 +239,7 @@ def test_mutation_limit_inheritance(client, consts):
     assert api_val.passed is False
     assert api_val.details.max_group_online.status == consts.ApiValStatus.failed
     assert api_val.details.max_group_online.fail == {
-        eve_grp2_id: [2, {api_module2.id: (consts.ApiValItemStatus.failed, 1)}]}
+        eve_grp2_id: [sorted([api_module1.id, api_module2.id]), {api_module2.id: (consts.ApiValItemStatus.failed, 1)}]}
     # Action
     api_module2.change_module(mutation=None)
     # Verification
@@ -269,7 +270,7 @@ def test_mutation_limit_base_change(client, consts):
     client.create_sources()
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
-    api_fit.add_module(type_id=eve_other_module_id, state=consts.ApiModuleState.online)
+    api_module1 = api_fit.add_module(type_id=eve_other_module_id, state=consts.ApiModuleState.online)
     api_module2 = api_fit.add_module(
         type_id=eve_base_module1_id,
         state=consts.ApiModuleState.online,
@@ -279,7 +280,7 @@ def test_mutation_limit_base_change(client, consts):
     assert api_val.passed is False
     assert api_val.details.max_group_online.status == consts.ApiValStatus.failed
     assert api_val.details.max_group_online.fail == {
-        eve_grp2_id: [2, {api_module2.id: (consts.ApiValItemStatus.failed, 1)}]}
+        eve_grp2_id: [sorted([api_module1.id, api_module2.id]), {api_module2.id: (consts.ApiValItemStatus.failed, 1)}]}
     # Action
     api_module2.change_module(type_id=eve_base_module2_id)
     # Verification
@@ -295,7 +296,7 @@ def test_mutation_limit_base_change(client, consts):
     assert api_val.passed is False
     assert api_val.details.max_group_online.status == consts.ApiValStatus.failed
     assert api_val.details.max_group_online.fail == {
-        eve_grp2_id: [2, {api_module2.id: (consts.ApiValItemStatus.failed, 1)}]}
+        eve_grp2_id: [sorted([api_module1.id, api_module2.id]), {api_module2.id: (consts.ApiValItemStatus.failed, 1)}]}
 
 
 def test_no_attr(client, consts):
@@ -343,7 +344,7 @@ def test_criterion_module_state(client, consts):
     assert api_val.passed is False
     assert api_val.details.max_group_online.status == consts.ApiValStatus.failed
     assert api_val.details.max_group_online.fail == {
-        eve_grp_id: [2, {
+        eve_grp_id: [sorted([api_module1.id, api_module2.id]), {
             api_module1.id: (consts.ApiValItemStatus.failed, 1),
             api_module2.id: (consts.ApiValItemStatus.failed, 1)}]}
     # Action
@@ -359,7 +360,7 @@ def test_criterion_module_state(client, consts):
     assert api_val.passed is False
     assert api_val.details.max_group_online.status == consts.ApiValStatus.failed
     assert api_val.details.max_group_online.fail == {
-        eve_grp_id: [2, {
+        eve_grp_id: [sorted([api_module1.id, api_module2.id]), {
             api_module1.id: (consts.ApiValItemStatus.failed, 1),
             api_module2.id: (consts.ApiValItemStatus.failed, 1)}]}
 
@@ -378,7 +379,7 @@ def test_criterion_service_state(client, consts):
     assert api_val.passed is False
     assert api_val.details.max_group_online.status == consts.ApiValStatus.failed
     assert api_val.details.max_group_online.fail == {
-        eve_grp_id: [2, {
+        eve_grp_id: [sorted([api_service1.id, api_service2.id]), {
             api_service1.id: (consts.ApiValItemStatus.failed, 1),
             api_service2.id: (consts.ApiValItemStatus.failed, 1)}]}
     # Action
@@ -394,7 +395,7 @@ def test_criterion_service_state(client, consts):
     assert api_val.passed is False
     assert api_val.details.max_group_online.status == consts.ApiValStatus.failed
     assert api_val.details.max_group_online.fail == {
-        eve_grp_id: [2, {
+        eve_grp_id: [sorted([api_service1.id, api_service2.id]), {
             api_service1.id: (consts.ApiValItemStatus.failed, 1),
             api_service2.id: (consts.ApiValItemStatus.failed, 1)}]}
 
