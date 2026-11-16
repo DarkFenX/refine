@@ -2,10 +2,11 @@ use super::getters::{
     attr_val::{get_bandwidth_use, get_overload_td_lvl, get_remote_resist_attr_id},
     cycle::{specifies_disallow_repeats, specifies_reactivation_delay},
     max_group::{get_max_group_active_limited, get_max_group_fitted_limited, get_max_group_online_limited},
+    max_type::get_max_type_fitted_count,
     mobility::{get_entity_has_mwd, get_is_mobile},
 };
 use crate::{
-    SkillLevel, Value,
+    Count, SkillLevel, Value,
     ad::{AAttrId, AItem, AItemId},
     rd::{RAttrConsts, RAttrId, RItemBase},
     util::RMap,
@@ -48,6 +49,8 @@ pub(crate) struct RItemFlexData {
     pub(crate) max_group_fitted_limited: bool,
     pub(crate) max_group_online_limited: bool,
     pub(crate) max_group_active_limited: bool,
+    /// Max amount of fit items of the item's type.
+    pub(crate) max_type_fitted: Option<Count>,
     // Derived data - misc
     /// Required thermodynamics level for overheat. Mutated items borrow it from base item, so have
     /// to keep it here.
@@ -112,6 +115,7 @@ impl RItemFlexData {
             max_group_fitted_limited,
             max_group_online_limited,
             max_group_active_limited,
+            max_type_fitted,
             overload_td_lvl,
         } = self;
         // Unmutated and unmodified attribute values
@@ -127,6 +131,7 @@ impl RItemFlexData {
         *max_group_fitted_limited = get_max_group_fitted_limited(attrs, attr_consts);
         *max_group_online_limited = get_max_group_online_limited(attrs, attr_consts);
         *max_group_active_limited = get_max_group_active_limited(attrs, attr_consts);
+        *max_type_fitted = get_max_type_fitted_count(attrs, attr_consts);
         // Misc
         *overload_td_lvl = get_overload_td_lvl(attrs, attr_consts);
     }
@@ -154,6 +159,7 @@ mod debug {
                 max_group_fitted_limited: _,
                 max_group_online_limited: _,
                 max_group_active_limited: _,
+                max_type_fitted: _,
                 overload_td_lvl: _,
             } = self;
             for attr_rid in attrs.keys() {

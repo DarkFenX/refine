@@ -34,7 +34,8 @@ pub struct ValMaxTypeFail {
 pub struct ValMaxTypeTypeInfo {
     /// Type ID of an item this fit has too many.
     pub item_type_id: ItemTypeId,
-    /// Items of this type which are fit.
+    /// Items of this type which are fit. All of them count towards the limit, including items which
+    /// have no limit themselves.
     pub item_type_item_ids: Vec<ItemId>,
     /// Items which break the limit, and what the limit is.
     #[cfg_attr(feature = "serde", serde_as(as = "serde_with::KeyValueMap<_>"))]
@@ -60,7 +61,10 @@ impl VastFitData {
         for item_type_data in self.mods_svcs_max_type_fitted.values() {
             let fitted = Count::from_usize(item_type_data.len());
             for (&item_uid, &allowed) in item_type_data.iter() {
-                if fitted > allowed && !kfs.contains(&item_uid) {
+                if let Some(allowed) = allowed
+                    && fitted > allowed
+                    && !kfs.contains(&item_uid)
+                {
                     return false;
                 }
             }
@@ -77,7 +81,9 @@ impl VastFitData {
         for (&item_aid, item_type_data) in self.mods_svcs_max_type_fitted.iter() {
             let fitted = Count::from_usize(item_type_data.len());
             for (&item_uid, &allowed) in item_type_data.iter() {
-                if fitted > allowed {
+                if let Some(allowed) = allowed
+                    && fitted > allowed
+                {
                     item_types
                         .entry(item_aid)
                         .or_insert_with(|| ValMaxTypeTypeInfo {

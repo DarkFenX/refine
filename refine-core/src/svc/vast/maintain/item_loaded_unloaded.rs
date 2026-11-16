@@ -140,14 +140,14 @@ impl Vast {
                 if let Some(ship_limit) = &module_rib.ship_limit {
                     fit_data.ship_limit_add(u_data, fit_uid, item_uid, ship_limit);
                 }
-                if let Some(item_grp_aid) = module_rib.val_fitted_group_id {
+                if module_rib.val_fitted_group_tracked {
                     fit_data
                         .mods_svcs_rigs_max_group_fitted_all
-                        .add_entry(item_grp_aid, item_uid);
+                        .add_entry(module_rib.grp_id, item_uid);
                     if module_rifd.max_group_fitted_limited {
                         fit_data
                             .mods_svcs_rigs_max_group_fitted_limited
-                            .insert(item_uid, item_grp_aid);
+                            .insert(item_uid, module_rib.grp_id);
                     }
                 }
                 if let Some(charge_uid) = module.get_charge_uid() {
@@ -158,10 +158,12 @@ impl Vast {
                         fit_data.handle_charge_volume_add(item_uid, module_rib, charge_uid, charge_rib);
                     }
                 }
-                if let Some(max_fitted) = module_rib.max_type_fitted {
-                    fit_data
-                        .mods_svcs_max_type_fitted
-                        .add_entry(module.get_rendered_type_aid(), item_uid, max_fitted);
+                if module_rib.val_fitted_type_tracked {
+                    fit_data.mods_svcs_max_type_fitted.add_entry(
+                        module.get_rendered_type_aid(),
+                        item_uid,
+                        module_rifd.max_type_fitted,
+                    );
                 }
                 if is_capital_module(module_rib) {
                     fit_data.mods_capital.insert(item_uid, module_rib.volume);
@@ -191,14 +193,14 @@ impl Vast {
                 if let Some(ship_limit) = &rig_rib.ship_limit {
                     fit_data.ship_limit_add(u_data, fit_uid, item_uid, ship_limit);
                 }
-                if let Some(item_grp_aid) = rig_rib.val_fitted_group_id {
+                if rig_rib.val_fitted_group_tracked {
                     fit_data
                         .mods_svcs_rigs_max_group_fitted_all
-                        .add_entry(item_grp_aid, item_uid);
+                        .add_entry(rig_rib.grp_id, item_uid);
                     if rig_rifd.max_group_fitted_limited {
                         fit_data
                             .mods_svcs_rigs_max_group_fitted_limited
-                            .insert(item_uid, item_grp_aid);
+                            .insert(item_uid, rig_rib.grp_id);
                     }
                 }
                 if rig_rib.sec_zone_limitable {
@@ -213,20 +215,22 @@ impl Vast {
                 if let Some(ship_limit) = &service_rib.ship_limit {
                     fit_data.ship_limit_add(u_data, fit_uid, item_uid, ship_limit);
                 }
-                if let Some(item_grp_aid) = service_rib.val_fitted_group_id {
+                if service_rib.val_fitted_group_tracked {
                     fit_data
                         .mods_svcs_rigs_max_group_fitted_all
-                        .add_entry(item_grp_aid, item_uid);
+                        .add_entry(service_rib.grp_id, item_uid);
                     if service_rifd.max_group_fitted_limited {
                         fit_data
                             .mods_svcs_rigs_max_group_fitted_limited
-                            .insert(item_uid, item_grp_aid);
+                            .insert(item_uid, service_rib.grp_id);
                     }
                 }
-                if let Some(max_fitted) = service_rib.max_type_fitted {
-                    fit_data
-                        .mods_svcs_max_type_fitted
-                        .add_entry(service.get_type_aid(), item_uid, max_fitted);
+                if service_rib.val_fitted_type_tracked {
+                    fit_data.mods_svcs_max_type_fitted.add_entry(
+                        service.get_type_aid(),
+                        item_uid,
+                        service_rifd.max_type_fitted,
+                    );
                 }
                 if service_rib.sec_zone_limitable {
                     fit_data.sec_zone_fitted.insert(item_uid);
@@ -412,10 +416,10 @@ impl Vast {
                     fit_data.ship_limited_items.remove(&item_uid);
                     fit_data.ship_limit_mismatches.remove(&item_uid);
                 }
-                if let Some(item_grp_aid) = module_rib.val_fitted_group_id {
+                if module_rib.val_fitted_group_tracked {
                     fit_data
                         .mods_svcs_rigs_max_group_fitted_all
-                        .remove_entry(item_grp_aid, &item_uid);
+                        .remove_entry(module_rib.grp_id, &item_uid);
                     if module_rifd.max_group_fitted_limited {
                         fit_data.mods_svcs_rigs_max_group_fitted_limited.remove(&item_uid);
                     }
@@ -432,7 +436,7 @@ impl Vast {
                 if is_capital_module(module_rib) {
                     fit_data.mods_capital.remove(&item_uid);
                 }
-                if module_rib.max_type_fitted.is_some() {
+                if module_rib.val_fitted_type_tracked {
                     fit_data
                         .mods_svcs_max_type_fitted
                         .remove_l2(module.get_rendered_type_aid(), &item_uid);
@@ -458,10 +462,10 @@ impl Vast {
                     fit_data.ship_limited_items.remove(&item_uid);
                     fit_data.ship_limit_mismatches.remove(&item_uid);
                 }
-                if let Some(item_grp_aid) = rig_rib.val_fitted_group_id {
+                if rig_rib.val_fitted_group_tracked {
                     fit_data
                         .mods_svcs_rigs_max_group_fitted_all
-                        .remove_entry(item_grp_aid, &item_uid);
+                        .remove_entry(rig_rib.grp_id, &item_uid);
                     if rig_rifd.max_group_fitted_limited {
                         fit_data.mods_svcs_rigs_max_group_fitted_limited.remove(&item_uid);
                     }
@@ -479,15 +483,15 @@ impl Vast {
                     fit_data.ship_limited_items.remove(&item_uid);
                     fit_data.ship_limit_mismatches.remove(&item_uid);
                 }
-                if let Some(item_grp_aid) = service_rib.val_fitted_group_id {
+                if service_rib.val_fitted_group_tracked {
                     fit_data
                         .mods_svcs_rigs_max_group_fitted_all
-                        .remove_entry(item_grp_aid, &item_uid);
+                        .remove_entry(service_rib.grp_id, &item_uid);
                     if service_rifd.max_group_fitted_limited {
                         fit_data.mods_svcs_rigs_max_group_fitted_limited.remove(&item_uid);
                     }
                 }
-                if service_rib.max_type_fitted.is_some() {
+                if service_rib.val_fitted_type_tracked {
                     fit_data
                         .mods_svcs_max_type_fitted
                         .remove_l2(service.get_type_aid(), &item_uid);

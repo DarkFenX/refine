@@ -137,12 +137,18 @@ def test_mutation_limit_priority(client, consts):
     client.create_sources()
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
-    api_module = api_fit.add_module(
+    api_module1 = api_fit.add_module(
         type_id=eve_base_module_id,
         state=consts.ApiModuleState.offline,
         mutation=eve_mutator_id)
-    # Verification - mutated item counts as item of mutated type, and uses its limit
-    assert api_module.update().attrs[eve_limit_attr_id].modified == approx(2)
+    api_module2 = api_fit.add_module(
+        type_id=eve_base_module_id,
+        state=consts.ApiModuleState.offline,
+        mutation=eve_mutator_id)
+    # Verification - mutated items count as items of mutated type, but take limit from their base
+    # item; with limit of mutated type the fit would be invalid already, and nothing would pass
+    assert api_module1.update().attrs[eve_limit_attr_id].modified == approx(2)
+    assert api_module2.update().attrs[eve_limit_attr_id].modified == approx(2)
     api_fit.check_try_fit_items(
         val_options=ValOptions(max_type_fitted=True),
         passing=[eve_base_module_id],

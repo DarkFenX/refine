@@ -200,10 +200,11 @@ def test_modified(client, consts):
 
 
 def test_mutation_limit_priority(client, consts):
-    # Unrealistic scenario, just checking what happens
+    # Unrealistic scenario, just checking what happens: limit of base item has priority over limit
+    # of mutated item, and attribute mutation does not change it
     eve_limit_attr_id = client.mk_eve_attr(id_=consts.EveAttr.max_type_fitted)
-    eve_base_module_id = client.mk_eve_item(attrs={eve_limit_attr_id: 2})
-    eve_mutated_module_id = client.mk_eve_item(is_dynamic=True, attrs={eve_limit_attr_id: 1})
+    eve_base_module_id = client.mk_eve_item(attrs={eve_limit_attr_id: 1})
+    eve_mutated_module_id = client.mk_eve_item(is_dynamic=True, attrs={eve_limit_attr_id: 2})
     eve_mutator_id = client.mk_eve_mutator(
         items=[([eve_base_module_id], eve_mutated_module_id)],
         attrs={eve_limit_attr_id: (1, 5)})
@@ -219,8 +220,8 @@ def test_mutation_limit_priority(client, consts):
         state=consts.ApiServiceState.offline,
         mutation=(eve_mutator_id, {eve_limit_attr_id: Muta.roll_to_api(val=1)}))
     # Verification
-    assert api_module1.update().attrs[eve_limit_attr_id].modified == approx(2)
-    assert api_module2.update().attrs[eve_limit_attr_id].modified == approx(10)
+    assert api_module1.update().attrs[eve_limit_attr_id].modified == approx(1)
+    assert api_module2.update().attrs[eve_limit_attr_id].modified == approx(5)
     api_val = api_fit.validate(options=ValOptions(max_type_fitted=True))
     assert api_val.passed is False
     assert api_val.details.max_type_fitted.status == consts.ApiValStatus.failed
@@ -231,23 +232,27 @@ def test_mutation_limit_priority(client, consts):
     # Action
     api_module2.change_module(mutation=None)
     # Verification
-    assert api_module1.update().attrs[eve_limit_attr_id].modified == approx(2)
-    assert api_module2.update().attrs[eve_limit_attr_id].modified == approx(2)
+    assert api_module1.update().attrs[eve_limit_attr_id].modified == approx(1)
+    assert api_module2.update().attrs[eve_limit_attr_id].modified == approx(1)
     api_val = api_fit.validate(options=ValOptions(max_type_fitted=True))
     assert api_val.passed is True
     assert api_val.details.max_type_fitted.status == consts.ApiValStatus.passed
     # Action
     api_module1.change_module(mutation=None)
     # Verification
-    assert api_module1.update().attrs[eve_limit_attr_id].modified == approx(2)
-    assert api_module2.update().attrs[eve_limit_attr_id].modified == approx(2)
+    assert api_module1.update().attrs[eve_limit_attr_id].modified == approx(1)
+    assert api_module2.update().attrs[eve_limit_attr_id].modified == approx(1)
     api_val = api_fit.validate(options=ValOptions(max_type_fitted=True))
-    assert api_val.passed is True
-    assert api_val.details.max_type_fitted.status == consts.ApiValStatus.passed
+    assert api_val.passed is False
+    assert api_val.details.max_type_fitted.status == consts.ApiValStatus.failed
+    assert api_val.details.max_type_fitted.fail == {
+        eve_base_module_id: [sorted([api_module1.id, api_module2.id]), {
+            api_module1.id: (consts.ApiValItemStatus.failed, 1),
+            api_module2.id: (consts.ApiValItemStatus.failed, 1)}]}
 
 
 def test_mutation_limit_inheritance(client, consts):
-    # Mutated items consider the restriction only when it is defined directly on mutated type
+    # Mutated items inherit the restriction from their base item
     eve_limit_attr_id = client.mk_eve_attr(id_=consts.EveAttr.max_type_fitted)
     eve_base_module_id = client.mk_eve_item(attrs={eve_limit_attr_id: 1})
     eve_mutated_module_id = client.mk_eve_item(is_dynamic=True)
@@ -269,11 +274,15 @@ def test_mutation_limit_inheritance(client, consts):
     assert api_module1.update().attrs[eve_limit_attr_id].modified == approx(1)
     assert api_module2.update().attrs[eve_limit_attr_id].modified == approx(5)
     api_val = api_fit.validate(options=ValOptions(max_type_fitted=True))
-    assert api_val.passed is True
-    assert api_val.details.max_type_fitted.status == consts.ApiValStatus.passed
+    assert api_val.passed is False
+    assert api_val.details.max_type_fitted.status == consts.ApiValStatus.failed
+    assert api_val.details.max_type_fitted.fail == {
+        eve_mutated_module_id: [sorted([api_module1.id, api_module2.id]), {
+            api_module1.id: (consts.ApiValItemStatus.failed, 1),
+            api_module2.id: (consts.ApiValItemStatus.failed, 1)}]}
     # Action
     api_module2.change_module(mutation=None)
-    # Verification
+    # Verification - mutated and unmutated modules are items of different types
     assert api_module1.update().attrs[eve_limit_attr_id].modified == approx(1)
     assert api_module2.update().attrs[eve_limit_attr_id].modified == approx(1)
     api_val = api_fit.validate(options=ValOptions(max_type_fitted=True))
@@ -290,6 +299,156 @@ def test_mutation_limit_inheritance(client, consts):
     assert api_val.details.max_type_fitted.fail == {
         eve_base_module_id: [sorted([api_module1.id, api_module2.id]), {
             api_module1.id: (consts.ApiValItemStatus.failed, 1),
+            api_module2.id: (consts.ApiValItemStatus.failed, 1)}]}
+
+
+def test_mutation_limit_mutated_type(client, consts):
+    # Restriction defined only on mutated type applies to mutated items only
+    eve_limit_attr_id = client.mk_eve_attr(id_=consts.EveAttr.max_type_fitted)
+    eve_base_module_id = client.mk_eve_item()
+    eve_mutated_module_id = client.mk_eve_item(is_dynamic=True, attrs={eve_limit_attr_id: 1})
+    eve_mutator_id = client.mk_eve_mutator(items=[([eve_base_module_id], eve_mutated_module_id)])
+    client.create_sources()
+    api_sol = client.create_sol()
+    api_fit = api_sol.create_fit()
+    api_module1 = api_fit.add_module(
+        type_id=eve_base_module_id,
+        state=consts.ApiModuleState.offline,
+        mutation=eve_mutator_id)
+    api_module2 = api_fit.add_module(
+        type_id=eve_base_module_id,
+        state=consts.ApiModuleState.offline,
+        mutation=eve_mutator_id)
+    # Verification
+    api_val = api_fit.validate(options=ValOptions(max_type_fitted=True))
+    assert api_val.passed is False
+    assert api_val.details.max_type_fitted.status == consts.ApiValStatus.failed
+    assert api_val.details.max_type_fitted.fail == {
+        eve_mutated_module_id: [sorted([api_module1.id, api_module2.id]), {
+            api_module1.id: (consts.ApiValItemStatus.failed, 1),
+            api_module2.id: (consts.ApiValItemStatus.failed, 1)}]}
+    # Action
+    api_module1.change_module(mutation=None)
+    api_module2.change_module(mutation=None)
+    # Verification
+    api_val = api_fit.validate(options=ValOptions(max_type_fitted=True))
+    assert api_val.passed is True
+    assert api_val.details.max_type_fitted.status == consts.ApiValStatus.passed
+
+
+def test_mutation_limit_different_bases(client, consts):
+    # Items of the same mutated type all count towards the limit, but each of them takes the limit
+    # from its base item: it can be different for different items, or absent
+    eve_limit_attr_id = client.mk_eve_attr(id_=consts.EveAttr.max_type_fitted)
+    eve_base_module1_id = client.mk_eve_item(attrs={eve_limit_attr_id: 1})
+    eve_base_module2_id = client.mk_eve_item()
+    eve_base_module3_id = client.mk_eve_item(attrs={eve_limit_attr_id: 3})
+    eve_mutated_module_id = client.mk_eve_item(is_dynamic=True)
+    eve_mutator_id = client.mk_eve_mutator(
+        items=[([eve_base_module1_id, eve_base_module2_id, eve_base_module3_id], eve_mutated_module_id)])
+    client.create_sources()
+    api_sol = client.create_sol()
+    api_fit = api_sol.create_fit()
+    api_module1 = api_fit.add_module(
+        type_id=eve_base_module1_id,
+        state=consts.ApiModuleState.offline,
+        mutation=eve_mutator_id)
+    # Verification
+    assert api_module1.update().type_id == eve_mutated_module_id
+    api_val = api_fit.validate(options=ValOptions(max_type_fitted=True))
+    assert api_val.passed is True
+    assert api_val.details.max_type_fitted.status == consts.ApiValStatus.passed
+    # Action
+    api_module2 = api_fit.add_module(
+        type_id=eve_base_module2_id,
+        state=consts.ApiModuleState.offline,
+        mutation=eve_mutator_id)
+    # Verification - module without limit counts towards limit of the other module
+    assert api_module2.update().type_id == eve_mutated_module_id
+    api_val = api_fit.validate(options=ValOptions(max_type_fitted=True))
+    assert api_val.passed is False
+    assert api_val.details.max_type_fitted.status == consts.ApiValStatus.failed
+    assert api_val.details.max_type_fitted.fail == {
+        eve_mutated_module_id: [sorted([api_module1.id, api_module2.id]), {
+            api_module1.id: (consts.ApiValItemStatus.failed, 1)}]}
+    # Action
+    api_module3 = api_fit.add_module(
+        type_id=eve_base_module3_id,
+        state=consts.ApiModuleState.offline,
+        mutation=eve_mutator_id)
+    # Verification - limit of the 3rd module is not exceeded yet
+    assert api_module3.update().type_id == eve_mutated_module_id
+    api_val = api_fit.validate(options=ValOptions(max_type_fitted=True))
+    assert api_val.passed is False
+    assert api_val.details.max_type_fitted.status == consts.ApiValStatus.failed
+    assert api_val.details.max_type_fitted.fail == {
+        eve_mutated_module_id: [sorted([api_module1.id, api_module2.id, api_module3.id]), {
+            api_module1.id: (consts.ApiValItemStatus.failed, 1)}]}
+    # Action
+    api_module4 = api_fit.add_module(
+        type_id=eve_base_module2_id,
+        state=consts.ApiModuleState.offline,
+        mutation=eve_mutator_id)
+    # Verification
+    assert api_module4.update().type_id == eve_mutated_module_id
+    api_val = api_fit.validate(options=ValOptions(max_type_fitted=True))
+    assert api_val.passed is False
+    assert api_val.details.max_type_fitted.status == consts.ApiValStatus.failed
+    assert api_val.details.max_type_fitted.fail == {
+        eve_mutated_module_id: [sorted([api_module1.id, api_module2.id, api_module3.id, api_module4.id]), {
+            api_module1.id: (consts.ApiValItemStatus.failed, 1),
+            api_module3.id: (consts.ApiValItemStatus.failed, 3)}]}
+    # Action
+    api_module1.remove()
+    api_module3.remove()
+    # Verification - modules which are left have no limit
+    api_val = api_fit.validate(options=ValOptions(max_type_fitted=True))
+    assert api_val.passed is True
+    assert api_val.details.max_type_fitted.status == consts.ApiValStatus.passed
+
+
+def test_mutation_limit_base_change(client, consts):
+    # Limit is taken from base item, so changing base type can change whether the module is limited
+    # even when mutated type stays the same
+    eve_limit_attr_id = client.mk_eve_attr(id_=consts.EveAttr.max_type_fitted)
+    eve_base_module1_id = client.mk_eve_item(attrs={eve_limit_attr_id: 1})
+    eve_base_module2_id = client.mk_eve_item()
+    eve_mutated_module_id = client.mk_eve_item(is_dynamic=True)
+    eve_mutator_id = client.mk_eve_mutator(items=[([eve_base_module1_id, eve_base_module2_id], eve_mutated_module_id)])
+    client.create_sources()
+    api_sol = client.create_sol()
+    api_fit = api_sol.create_fit()
+    api_module1 = api_fit.add_module(
+        type_id=eve_base_module2_id,
+        state=consts.ApiModuleState.offline,
+        mutation=eve_mutator_id)
+    api_module2 = api_fit.add_module(
+        type_id=eve_base_module1_id,
+        state=consts.ApiModuleState.offline,
+        mutation=eve_mutator_id)
+    # Verification
+    api_val = api_fit.validate(options=ValOptions(max_type_fitted=True))
+    assert api_val.passed is False
+    assert api_val.details.max_type_fitted.status == consts.ApiValStatus.failed
+    assert api_val.details.max_type_fitted.fail == {
+        eve_mutated_module_id: [sorted([api_module1.id, api_module2.id]), {
+            api_module2.id: (consts.ApiValItemStatus.failed, 1)}]}
+    # Action
+    api_module2.change_module(type_id=eve_base_module2_id)
+    # Verification
+    assert api_module2.update().type_id == eve_mutated_module_id
+    api_val = api_fit.validate(options=ValOptions(max_type_fitted=True))
+    assert api_val.passed is True
+    assert api_val.details.max_type_fitted.status == consts.ApiValStatus.passed
+    # Action
+    api_module2.change_module(type_id=eve_base_module1_id)
+    # Verification
+    assert api_module2.update().type_id == eve_mutated_module_id
+    api_val = api_fit.validate(options=ValOptions(max_type_fitted=True))
+    assert api_val.passed is False
+    assert api_val.details.max_type_fitted.status == consts.ApiValStatus.failed
+    assert api_val.details.max_type_fitted.fail == {
+        eve_mutated_module_id: [sorted([api_module1.id, api_module2.id]), {
             api_module2.id: (consts.ApiValItemStatus.failed, 1)}]}
 
 

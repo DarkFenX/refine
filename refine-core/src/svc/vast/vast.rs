@@ -103,7 +103,7 @@ pub(in crate::svc) struct VastFitData {
     pub(in crate::svc::vast) drone_group_limit: Vec<AItemGrpId>,
     pub(in crate::svc::vast) drone_groups: RMap<UItemId, AItemGrpId>,
     // Validation-related - max type/group
-    pub(in crate::svc::vast) mods_svcs_max_type_fitted: RMapRMap<AItemId, UItemId, Count>,
+    pub(in crate::svc::vast) mods_svcs_max_type_fitted: RMapRMap<AItemId, UItemId, Option<Count>>,
     pub(in crate::svc::vast) mods_svcs_rigs_max_group_fitted_all: RMapRSet<AItemGrpId, UItemId>,
     pub(in crate::svc::vast) mods_svcs_rigs_max_group_fitted_limited: RMap<UItemId, AItemGrpId>,
     pub(in crate::svc::vast) mods_svcs_max_group_online_all: RMapRSet<AItemGrpId, UItemId>,

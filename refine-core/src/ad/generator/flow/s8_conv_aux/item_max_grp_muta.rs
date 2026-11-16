@@ -13,18 +13,9 @@ impl ADataGenerator {
         let limited_online_grp_aids = self.get_item_grps_with_attr(&grp_mutations, AAttrId::MAX_GROUP_ONLINE);
         let limited_active_grp_aids = self.get_item_grps_with_attr(&grp_mutations, AAttrId::MAX_GROUP_ACTIVE);
         for a_item in self.a_data.items.data.values_mut() {
-            a_item.val_fitted_group_id = match limited_fitted_grp_aids.contains(&a_item.grp_id) {
-                true => Some(a_item.grp_id),
-                false => None,
-            };
-            a_item.val_online_group_id = match limited_online_grp_aids.contains(&a_item.grp_id) {
-                true => Some(a_item.grp_id),
-                false => None,
-            };
-            a_item.val_active_group_id = match limited_active_grp_aids.contains(&a_item.grp_id) {
-                true => Some(a_item.grp_id),
-                false => None,
-            };
+            a_item.val_fitted_group_tracked = limited_fitted_grp_aids.contains(&a_item.grp_id);
+            a_item.val_online_group_tracked = limited_online_grp_aids.contains(&a_item.grp_id);
+            a_item.val_active_group_tracked = limited_active_grp_aids.contains(&a_item.grp_id);
         }
     }
     fn get_grp_mutations(&self) -> RMapRSet<AItemGrpId, AItemGrpId> {

@@ -2,8 +2,7 @@ use super::getters::{
     activation_blocks::{get_activation_blocks_cloak, get_activation_blocks_in_assist},
     attr_val::{
         get_calibration_use, get_capacity, get_charge_rate, get_charge_size, get_fighter_refuel_duration,
-        get_max_fighter_count, get_max_type_fitted_count, get_online_max_sec_class, get_radius, get_rig_size,
-        get_volume,
+        get_max_fighter_count, get_online_max_sec_class, get_radius, get_rig_size, get_volume,
     },
     charge_limit::get_item_charge_limit,
     drone_limit::get_ship_drone_limit,
@@ -55,10 +54,12 @@ pub(crate) struct RItemBase {
     pub(crate) has_online_effect: bool,
     pub(crate) takes_turret_hardpoint: bool,
     pub(crate) takes_launcher_hardpoint: bool,
-    // Derived data - max group ID validation data
-    pub(crate) val_fitted_group_id: Option<AItemGrpId>,
-    pub(crate) val_online_group_id: Option<AItemGrpId>,
-    pub(crate) val_active_group_id: Option<AItemGrpId>,
+    // Derived data - max group/type validation data. Items of this type count towards appropriate
+    // limit of their group/type; which of the items are limited is defined by their flex data
+    pub(crate) val_fitted_group_tracked: bool,
+    pub(crate) val_online_group_tracked: bool,
+    pub(crate) val_active_group_tracked: bool,
+    pub(crate) val_fitted_type_tracked: bool,
     // Derived data - buff item list IDs. Those are intentionally vectors: they are used for
     // iteration, and for membership checks. For cases where it matters (e.g. non-ship items) those
     // do not have more than a couple of entries, so are faster than sets.
@@ -105,8 +106,6 @@ pub(crate) struct RItemBase {
     /// Ship can use those drones
     pub(crate) drone_limit: Option<RShipDroneLimit>,
     // Derived data - self-limits
-    /// Max amount of fit items of this type ID
-    pub(crate) max_type_fitted: Option<Count>,
     /// If item can be sec zone limited altogether
     pub(crate) sec_zone_limitable: bool,
     /// 2 hisec, 1 lowsec, 0 the rest
@@ -147,9 +146,10 @@ impl RItemBase {
             abil_ids,
             srqs,
             max_state,
-            val_fitted_group_id,
-            val_online_group_id,
-            val_active_group_id,
+            val_fitted_group_tracked,
+            val_online_group_tracked,
+            val_active_group_tracked,
+            val_fitted_type_tracked,
             is_cloak,
             is_ice_harvester,
             disallowed_in_wspace,
@@ -176,9 +176,10 @@ impl RItemBase {
             is_cloak: *is_cloak,
             is_ice_harvester: *is_ice_harvester,
             enables_portal: *enables_portal,
-            val_fitted_group_id: *val_fitted_group_id,
-            val_online_group_id: *val_online_group_id,
-            val_active_group_id: *val_active_group_id,
+            val_fitted_group_tracked: *val_fitted_group_tracked,
+            val_online_group_tracked: *val_online_group_tracked,
+            val_active_group_tracked: *val_active_group_tracked,
+            val_fitted_type_tracked: *val_fitted_type_tracked,
             max_state: RState::from_a_state(*max_state),
             disallowed_in_wspace: *disallowed_in_wspace,
             // Fields which depend on data not available on adapted item
@@ -216,7 +217,6 @@ impl RItemBase {
             ship_limit: Default::default(),
             charge_limit: Default::default(),
             drone_limit: Default::default(),
-            max_type_fitted: Default::default(),
             sec_zone_limitable: Default::default(),
             online_max_sec_class: Default::default(),
             disallow_vs_ew_immune_tgt: Default::default(),
@@ -335,7 +335,6 @@ impl RItemBase {
         self.charge_limit = get_item_charge_limit(r_item_attrs, attr_consts);
         self.drone_limit = get_ship_drone_limit(r_item_attrs, attr_consts);
         // Self-limits
-        self.max_type_fitted = get_max_type_fitted_count(r_item_attrs, attr_consts);
         self.sec_zone_limitable = is_sec_zone_limitable(r_item_attrs, attr_consts);
         self.online_max_sec_class = get_online_max_sec_class(r_item_attrs, attr_consts);
         self.disallow_vs_ew_immune_tgt = get_disallow_vs_ew_immune_tgt(r_item_attrs, attr_consts);
