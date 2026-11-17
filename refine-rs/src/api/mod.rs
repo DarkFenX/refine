@@ -5,7 +5,7 @@ pub use refine::Refine;
 pub use sol::{
     Sol, SolAddError, SolFittingAppEnforcedError, SolFittingAppEnforcedResp, SolFittingAppSimpleError,
     SolFittingAppSimpleResp, SolGetError, SolHybridBatchError, SolId, SolIdParseError, SolRemoveError,
-    SolSwitchSrcError, ValCheckerInput, ValCheckerResult, ValEnforcer,
+    SolSwitchSrcError, ValCheckerInput, ValCheckerResult, ValCheckerSol, ValEnforcer,
 };
 pub use src::{
     Src, SrcAddError, SrcAlias, SrcAliasPruneInitError, SrcAliasStrictInitError, SrcGetError, SrcRemoveError,

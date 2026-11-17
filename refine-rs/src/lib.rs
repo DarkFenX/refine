@@ -4,7 +4,7 @@
 #![cfg_attr(feature = "serde", feature(cfg_eval))]
 #![expect(unevaluated_default_field_value)]
 
-pub use api::{Fit, Fleet, Item, Refine, Sol, SolFittingAppEnforcedResp, SolFittingAppSimpleResp, SolId};
+pub use api::{Fit, Fleet, Item, Refine, Sol, SolId};
 pub use ctl::{
     AddMutation, AddedFitIdResp, AddedFleetIdResp, AddedItemIdsResp, AttrMutation, AutochargeChangeCmd,
     AutochargeItemIds, BoosterAddCmd, BoosterChangeCmd, ChangeMutation, ChangedItemIdsResp, CharacterChangeCmd,
@@ -44,6 +44,7 @@ pub use shared::{CmdResp, CmdResps, FitIdBr, FleetIdBr, ItemIdBr, TriStateField}
 pub use src::{Src, SrcAlias};
 
 mod api;
+pub mod app;
 mod ctl;
 #[cfg(feature = "dev")]
 pub mod dev;
