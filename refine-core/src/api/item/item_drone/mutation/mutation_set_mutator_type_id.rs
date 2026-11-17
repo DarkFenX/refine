@@ -35,7 +35,7 @@ impl SolCore {
                 }
                 return Ok(());
             }
-            Err(MutatorInplaceError::NotMutated(_)) => unreachable!("item is checked to be mutated"),
+            Err(MutatorInplaceError::NotMutated(..)) => unreachable!("item is checked to be mutated"),
             Err(MutatorInplaceError::MutatedTypeChange) => (),
         }
         SolCore::util_remove_drone(&mut self.u_data, &mut self.svc, drone_uid, &mut self.reuse.eupdates);

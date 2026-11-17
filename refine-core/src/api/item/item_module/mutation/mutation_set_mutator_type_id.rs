@@ -35,7 +35,7 @@ impl SolCore {
                 }
                 return Ok(());
             }
-            Err(MutatorInplaceError::NotMutated(_)) => unreachable!("item is checked to be mutated"),
+            Err(MutatorInplaceError::NotMutated(..)) => unreachable!("item is checked to be mutated"),
             Err(MutatorInplaceError::MutatedTypeChange) => (),
         }
         SolCore::util_remove_module_with_charge_act(

@@ -13,7 +13,7 @@ pub enum ValResult<T> {
 }
 impl<T> ValResult<T> {
     pub fn is_failed(&self) -> bool {
-        matches!(self, Self::Failed(_))
+        matches!(self, Self::Failed(..))
     }
 }
 

@@ -55,7 +55,7 @@ pub(super) fn get_affector_info(ctx: &SvcCtx, item_uid: UItemId) -> SmallVec<[Ca
 }
 
 pub(super) fn reacts_to_item_add_removal(changed_item: &UItem) -> bool {
-    matches!(changed_item, UItem::Charge(_))
+    matches!(changed_item, UItem::Charge(..))
 }
 
 pub(super) fn revise_on_item_add_removal(

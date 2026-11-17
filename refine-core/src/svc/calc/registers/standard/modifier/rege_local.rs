@@ -82,12 +82,12 @@ impl StandardRegister {
             AffecteeFilter::Direct(Location::Item | Location::Other) => Some(CtxModifier::new(rmod)),
             AffecteeFilter::Direct(loc)
             | AffecteeFilter::Loc(loc)
-            | AffecteeFilter::LocGrp(loc, _)
-            | AffecteeFilter::LocSrq(loc, _) => {
+            | AffecteeFilter::LocGrp(loc, ..)
+            | AffecteeFilter::LocSrq(loc, ..) => {
                 let _: LocationKind = loc.try_into().ok()?;
                 Some(CtxModifier::with_fit(rmod, item.get_fit_uid()?))
             }
-            AffecteeFilter::OwnSrq(_) => Some(CtxModifier::with_fit(rmod, item.get_fit_uid()?)),
+            AffecteeFilter::OwnSrq(..) => Some(CtxModifier::with_fit(rmod, item.get_fit_uid()?)),
         }
     }
 }
