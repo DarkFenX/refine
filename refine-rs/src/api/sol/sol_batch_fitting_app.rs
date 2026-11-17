@@ -138,6 +138,7 @@ impl Sol<'_> {
                     before: &val_before,
                     after: &val_after,
                     ctl: &ctl_cmd_resps,
+                    ctl_fix: &fix_ctl_cmd_resps,
                 };
                 match val_checker(val_checker_input) {
                     ValCheckerResult::Accept => break,
@@ -200,9 +201,10 @@ pub struct ValCheckerInput<'a> {
     /// Results of enforcer's validation after the changes, and after fixes requested so far.
     pub after: &'a SolValResultDetails,
     /// Responses to control commands of the batch.
-    ///
-    /// Responses to fix commands are not recorded here.
     pub ctl: &'a CmdResps,
+    /// Responses to fix commands executed so far, in the order they were requested, across all fix
+    /// cycles.
+    pub ctl_fix: &'a CmdResps,
 }
 
 /// Verdict of a validation checker.
