@@ -185,6 +185,26 @@ def test_no_value_module(client, consts):
     api_fit.check_try_fit_items(val_options=ValOptions(charge_size=True), passing=[eve_charge_id], failing=[])
 
 
+def test_no_value_charge(client, consts):
+    # Charge without size is checked as size 0, like small cap charges in small ancillary shield
+    # boosters
+    eve_size_attr_id = client.mk_eve_attr(id_=consts.EveAttr.charge_size)
+    eve_capacity_attr_id = client.mk_eve_attr(id_=consts.EveAttr.capacity)
+    eve_charge_id = client.mk_eve_charge()
+    eve_module1_id = client.mk_eve_item(attrs={eve_capacity_attr_id: 1, eve_size_attr_id: 2})
+    eve_module2_id = client.mk_eve_item(attrs={eve_capacity_attr_id: 1, eve_size_attr_id: 0})
+    client.create_sources()
+    api_sol = client.create_sol()
+    api_fit = api_sol.create_fit()
+    api_module = api_fit.add_module(type_id=eve_module1_id)
+    # Verification
+    api_fit.check_try_fit_items(val_options=ValOptions(charge_size=True), passing=[], failing=[eve_charge_id])
+    # Action
+    api_module.change_module(type_id=eve_module2_id)
+    # Verification
+    api_fit.check_try_fit_items(val_options=ValOptions(charge_size=True), passing=[eve_charge_id], failing=[])
+
+
 def test_no_attr(client, consts):
     eve_size_attr_id = consts.EveAttr.charge_size
     eve_capacity_attr_id = client.mk_eve_attr(id_=consts.EveAttr.capacity)
