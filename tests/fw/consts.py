@@ -771,7 +771,7 @@ class ApiValShipType(StrEnum):
 
 
 @unique
-class ApiCtlAffector(StrEnum):
+class ApiCtlAffectors(StrEnum):
     unmodified = 'unmodified'
     deactivate = 'deactivate'
     offline = 'offline'

@@ -346,7 +346,7 @@ fn get_drone_bandwidth_stats(
     options: &[StatOptionDroneBandwidth],
 ) -> StatResult<StatResource, !, !> {
     collect_stats_err_inner(options, |option| {
-        Ok(core_fit_stats.get_stat_drone_bandwidth(option.affectors))
+        Ok(core_fit_stats.get_stat_drone_bandwidth(option.decreasers))
     })
 }
 
@@ -418,13 +418,17 @@ fn get_mass_stats(
     core_fit_stats: &mut rc::stats::FitStats,
     options: &[StatOptionMass],
 ) -> StatResult<PValue, StatFitShipError<!>, !> {
-    collect_stats_err_inner(options, |option| core_fit_stats.get_stat_mass(option.affectors))
+    collect_stats_err_inner(options, |option| core_fit_stats.get_stat_mass(option.increasers))
 }
 fn get_jump_stats(
     core_fit_stats: &mut rc::stats::FitStats,
     options: &[StatOptionJump],
 ) -> StatResult<StatJump, StatFitShipError<StatJumpError>, !> {
     collect_stats_err_inner(options, |option| {
-        core_fit_stats.get_stat_jump(option.range, &option.passenger_fit_ids, option.passenger_fuel_affectors)
+        core_fit_stats.get_stat_jump(
+            option.range,
+            &option.passenger_fit_ids,
+            option.passenger_mass_increasers,
+        )
     })
 }

@@ -25,7 +25,7 @@ pub use misc::{
     MinionState, Modification, ModuleState, MoveMode, Movement, Op, ProjRange, RemoveMode, ServiceState,
 };
 use sol_ctl_affectors::AffectionDir;
-pub use sol_ctl_affectors::CtlAffectors;
+pub use sol_ctl_affectors::StatCtlAffectors;
 pub use sol_stats::SolStats;
 pub use util::EntityIter;
 

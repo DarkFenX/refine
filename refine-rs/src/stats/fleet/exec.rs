@@ -101,5 +101,5 @@ fn get_mass_stats(
     core_fleet_stats: &mut rc::stats::FleetStats,
     options: &[StatOptionMass],
 ) -> StatResult<PValue, !, !> {
-    collect_stats_err_inner(options, |option| Ok(core_fleet_stats.get_stat_mass(option.affectors)))
+    collect_stats_err_inner(options, |option| Ok(core_fleet_stats.get_stat_mass(option.increasers)))
 }

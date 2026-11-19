@@ -1,9 +1,7 @@
-use rc::CtlAffectors;
-
 use crate::{
     CmdResps, FitId, FitIdBr,
     shared::BrResolveInfallible,
-    stats::{StatAffectors, StatJumpRange},
+    stats::{StatCtlAffectors, StatJumpRange},
 };
 
 pub type StatOptionJump = StatOptionJumpGen<FitId>;
@@ -22,7 +20,7 @@ pub struct StatOptionJumpGen<F> {
     #[cfg_attr(feature = "serde", serde(default))]
     pub(in crate::stats) passenger_fit_ids: Vec<F> = Vec::new(),
     #[cfg_attr(feature = "serde", serde(default))]
-    pub(in crate::stats) passenger_fuel_affectors: StatAffectors = CtlAffectors::Unmodified,
+    pub(in crate::stats) passenger_mass_increasers: StatCtlAffectors = StatCtlAffectors::Unmodified,
 }
 impl<F> Default for StatOptionJumpGen<F> {
     fn default() -> Self {
@@ -45,8 +43,8 @@ impl<F> StatOptionJumpGen<F> {
         self.passenger_fit_ids.extend(passenger_fit_ids);
         self
     }
-    pub fn with_passenger_fuel_affectors(mut self, passenger_fuel_affectors: StatAffectors) -> Self {
-        self.passenger_fuel_affectors = passenger_fuel_affectors;
+    pub fn with_passenger_mass_increasers(mut self, passenger_mass_increasers: StatCtlAffectors) -> Self {
+        self.passenger_mass_increasers = passenger_mass_increasers;
         self
     }
 }
@@ -60,7 +58,7 @@ impl BrResolveInfallible for StatOptionJumpBr {
         Self::Target {
             range: self.range,
             passenger_fit_ids: resps.resolve_fit_ids_lossy(self.passenger_fit_ids),
-            passenger_fuel_affectors: self.passenger_fuel_affectors,
+            passenger_mass_increasers: self.passenger_mass_increasers,
         }
     }
 }

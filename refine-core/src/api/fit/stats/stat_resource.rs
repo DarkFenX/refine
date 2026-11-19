@@ -1,7 +1,6 @@
 use crate::{
-    CtlAffectors,
     api::AffectionDir,
-    stats::{FitStats, StatResource},
+    stats::{FitStats, StatCtlAffectors, StatResource},
 };
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -26,7 +25,7 @@ impl<'s> FitStats<'s> {
             .svc
             .get_stat_fit_drone_bay_volume(&self.sol.u_data, self.uid, fit)
     }
-    pub fn get_stat_drone_bandwidth(&mut self, affectors: CtlAffectors) -> StatResource {
+    pub fn get_stat_drone_bandwidth(&mut self, decreasers: StatCtlAffectors) -> StatResource {
         let fit_uid = self.uid;
         let sol = &mut *self.sol;
         let savepoint = sol.internal_tx_savepoint();
@@ -34,7 +33,7 @@ impl<'s> FitStats<'s> {
             sol.internal_ctl_affectors_switch(
                 ship_uid,
                 sol.u_data.r_data.get_attr_consts().drone_bandwidth,
-                affectors,
+                decreasers,
                 AffectionDir::Decrease,
             );
         }

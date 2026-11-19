@@ -1,10 +1,10 @@
-use crate::stats::StatAffectors;
+use crate::stats::StatCtlAffectors;
 
 #[cfg_attr(feature = "serde", derive(serde::Deserialize))]
 #[derive(Copy, Clone, Default)]
 pub struct StatOptionDroneBandwidth {
     #[cfg_attr(feature = "serde", serde(default))]
-    pub(in crate::stats) affectors: StatAffectors = StatAffectors::Unmodified,
+    pub(in crate::stats) decreasers: StatCtlAffectors = StatCtlAffectors::Unmodified,
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -14,8 +14,8 @@ impl StatOptionDroneBandwidth {
     pub fn new() -> Self {
         Self::default()
     }
-    pub fn with_affectors(mut self, affectors: StatAffectors) -> Self {
-        self.affectors = affectors;
+    pub fn with_decreasers(mut self, decreasers: StatCtlAffectors) -> Self {
+        self.decreasers = decreasers;
         self
     }
 }

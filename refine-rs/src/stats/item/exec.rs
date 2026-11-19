@@ -366,14 +366,18 @@ fn get_mass_stats(
     core_item_stats: &mut rc::stats::ItemStats,
     options: &[StatOptionMass],
 ) -> StatResult<PValue, StatItemError<!>, !> {
-    collect_stats_err_inner(options, |option| core_item_stats.get_stat_mass(option.affectors))
+    collect_stats_err_inner(options, |option| core_item_stats.get_stat_mass(option.increasers))
 }
 fn get_jump_stats(
     core_item_stats: &mut rc::stats::ItemStats,
     options: &[StatOptionJump],
 ) -> StatResult<StatJump, StatItemError<StatJumpError>, !> {
     collect_stats_err_inner(options, |option| {
-        core_item_stats.get_stat_jump(option.range, &option.passenger_fit_ids, option.passenger_fuel_affectors)
+        core_item_stats.get_stat_jump(
+            option.range,
+            &option.passenger_fit_ids,
+            option.passenger_mass_increasers,
+        )
     })
 }
 

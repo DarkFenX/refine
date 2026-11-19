@@ -2,7 +2,7 @@ from fw import approx, check_no_field
 from fw.api import FitStatsOptions, StatsOptionDroneBandwidth
 
 
-def test_ship_affectors(client, consts):
+def test_ship_decreasers(client, consts):
     # Only modules which lower drone bandwidth are switched, e.g. warp core stabilizers and
     # interdiction nullifiers in EVE
     eve_output_attr_id = client.mk_eve_attr(id_=consts.EveAttr.drone_bandwidth)
@@ -41,9 +41,9 @@ def test_ship_affectors(client, consts):
     # Verification - use is not switched, bonus module stays online
     api_options = [
         StatsOptionDroneBandwidth(),
-        StatsOptionDroneBandwidth(affectors=consts.ApiCtlAffector.offline),
-        StatsOptionDroneBandwidth(affectors=consts.ApiCtlAffector.deactivate),
-        StatsOptionDroneBandwidth(affectors=consts.ApiCtlAffector.unmodified)]
+        StatsOptionDroneBandwidth(decreasers=consts.ApiCtlAffectors.offline),
+        StatsOptionDroneBandwidth(decreasers=consts.ApiCtlAffectors.deactivate),
+        StatsOptionDroneBandwidth(decreasers=consts.ApiCtlAffectors.unmodified)]
     api_stats = api_fit.get_stats(options=FitStatsOptions(drone_bandwidth=api_options))
     assert api_stats.drone_bandwidth == [
         (approx(25), approx(18.75)),
@@ -81,7 +81,7 @@ def test_ship_absent(client, consts):
     api_module = api_fit.add_module(type_id=eve_module_id, state=consts.ApiModuleState.online)
     api_fit.add_drone(type_id=eve_drone_id, state=consts.ApiMinionState.in_space)
     # Verification
-    api_options = [StatsOptionDroneBandwidth(), StatsOptionDroneBandwidth(affectors=consts.ApiCtlAffector.offline)]
+    api_options = [StatsOptionDroneBandwidth(), StatsOptionDroneBandwidth(decreasers=consts.ApiCtlAffectors.offline)]
     api_stats = api_fit.get_stats(options=FitStatsOptions(drone_bandwidth=api_options))
     assert api_stats.drone_bandwidth == [(approx(25), None), (approx(25), None)]
     assert api_module.update().state == consts.ApiModuleState.online

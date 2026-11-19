@@ -1,10 +1,10 @@
 use itertools::Itertools;
 
 use crate::{
-    CtlAffectors, FitId, PValue,
+    FitId, PValue,
     api::AffectionDir,
     stats::{
-        ItemStats, StatJump, StatJumpRange,
+        ItemStats, StatCtlAffectors, StatJump, StatJumpRange,
         err::{StatAgilityError, StatItemError, StatJumpError, StatMaxWarpRangeError, StatWarpSpeedError},
     },
 };
@@ -41,14 +41,14 @@ impl<'s> ItemStats<'s> {
             .get_stat_item_sig_radius(&sol.u_data, item_uid)
             .map_err(|e| StatItemError::from_svc_err(e, &sol.u_data.items))
     }
-    pub fn get_stat_mass(&mut self, affectors: CtlAffectors) -> Result<PValue, StatItemError<!>> {
+    pub fn get_stat_mass(&mut self, increasers: StatCtlAffectors) -> Result<PValue, StatItemError<!>> {
         let item_uid = self.uid;
         let sol = &mut *self.sol;
         let savepoint = sol.internal_tx_savepoint();
         sol.internal_ctl_affectors_switch(
             item_uid,
             sol.u_data.r_data.get_attr_consts().mass,
-            affectors,
+            increasers,
             AffectionDir::Increase,
         );
         let result = sol
@@ -76,7 +76,7 @@ impl<'s> ItemStats<'s> {
         &mut self,
         range: StatJumpRange,
         passenger_fit_ids: &[FitId],
-        passenger_fuel_affectors: CtlAffectors,
+        passenger_mass_increasers: StatCtlAffectors,
     ) -> Result<StatJump, StatItemError<StatJumpError>> {
         let item_uid = self.uid;
         let sol = &mut *self.sol;
@@ -91,7 +91,7 @@ impl<'s> ItemStats<'s> {
             sol.internal_ctl_affectors_switch(
                 passenger_ship_uid,
                 sol.u_data.r_data.get_attr_consts().mass,
-                passenger_fuel_affectors,
+                passenger_mass_increasers,
                 AffectionDir::Increase,
             );
         }

@@ -249,7 +249,7 @@ def test_passenger_status(client, consts):
     assert api_ship_main_psgs[api_fit_psg_disabled.id] == 146
 
 
-def test_passenger_fuel_affectors(client, consts):
+def test_passenger_mass_increasers(client, consts):
     eve_range_attr_id = client.mk_eve_attr(id_=consts.EveAttr.jump_drive_range)
     eve_fuel_type_attr_id = client.mk_eve_attr(id_=consts.EveAttr.jump_drive_consumption_type)
     eve_fuel_use_attr_id = client.mk_eve_attr(id_=consts.EveAttr.jump_drive_consumption_amount)
@@ -296,9 +296,9 @@ def test_passenger_fuel_affectors(client, consts):
     # Verification - more fuel with active prop / online plate, less without them
     api_options = [
         StatsOptionJump(passenger_fit_ids=[api_fit_psg1.id]),
-        StatsOptionJump(passenger_fit_ids=[api_fit_psg1.id], passenger_fuel_affectors=consts.ApiCtlAffector.offline),
-        StatsOptionJump(passenger_fit_ids=[api_fit_psg1.id], passenger_fuel_affectors=consts.ApiCtlAffector.deactivate),
-        StatsOptionJump(passenger_fit_ids=[api_fit_psg1.id], passenger_fuel_affectors=consts.ApiCtlAffector.unmodified)]
+        StatsOptionJump(passenger_fit_ids=[api_fit_psg1.id], passenger_mass_increasers=consts.ApiCtlAffectors.offline),
+        StatsOptionJump(passenger_fit_ids=[api_fit_psg1.id], passenger_mass_increasers=consts.ApiCtlAffectors.deactivate),
+        StatsOptionJump(passenger_fit_ids=[api_fit_psg1.id], passenger_mass_increasers=consts.ApiCtlAffectors.unmodified)]
     api_fit_stats = api_fit_main.get_stats(options=FitStatsOptions(jump=api_options))
     assert api_fit_stats.jump.map(
         lambda i: i.portals[api_portal.id].fuel_use_passengers[api_fit_psg1.id],
@@ -312,9 +312,9 @@ def test_passenger_fuel_affectors(client, consts):
     # Verification
     api_options = [
         StatsOptionJump(passenger_fit_ids=[api_fit_psg1.id]),
-        StatsOptionJump(passenger_fit_ids=[api_fit_psg1.id], passenger_fuel_affectors=consts.ApiCtlAffector.offline),
-        StatsOptionJump(passenger_fit_ids=[api_fit_psg1.id], passenger_fuel_affectors=consts.ApiCtlAffector.deactivate),
-        StatsOptionJump(passenger_fit_ids=[api_fit_psg1.id], passenger_fuel_affectors=consts.ApiCtlAffector.unmodified)]
+        StatsOptionJump(passenger_fit_ids=[api_fit_psg1.id], passenger_mass_increasers=consts.ApiCtlAffectors.offline),
+        StatsOptionJump(passenger_fit_ids=[api_fit_psg1.id], passenger_mass_increasers=consts.ApiCtlAffectors.deactivate),
+        StatsOptionJump(passenger_fit_ids=[api_fit_psg1.id], passenger_mass_increasers=consts.ApiCtlAffectors.unmodified)]
     api_fit_stats = api_fit_main.get_stats(options=FitStatsOptions(jump=api_options))
     assert api_fit_stats.jump.map(
         lambda i: i.portals[api_portal.id].fuel_use_passengers[api_fit_psg1.id],
@@ -328,9 +328,9 @@ def test_passenger_fuel_affectors(client, consts):
     # Verification
     api_options = [
         StatsOptionJump(passenger_fit_ids=[api_fit_psg1.id]),
-        StatsOptionJump(passenger_fit_ids=[api_fit_psg1.id], passenger_fuel_affectors=consts.ApiCtlAffector.offline),
-        StatsOptionJump(passenger_fit_ids=[api_fit_psg1.id], passenger_fuel_affectors=consts.ApiCtlAffector.deactivate),
-        StatsOptionJump(passenger_fit_ids=[api_fit_psg1.id], passenger_fuel_affectors=consts.ApiCtlAffector.unmodified)]
+        StatsOptionJump(passenger_fit_ids=[api_fit_psg1.id], passenger_mass_increasers=consts.ApiCtlAffectors.offline),
+        StatsOptionJump(passenger_fit_ids=[api_fit_psg1.id], passenger_mass_increasers=consts.ApiCtlAffectors.deactivate),
+        StatsOptionJump(passenger_fit_ids=[api_fit_psg1.id], passenger_mass_increasers=consts.ApiCtlAffectors.unmodified)]
     api_fit_stats = api_fit_main.get_stats(options=FitStatsOptions(jump=api_options))
     assert api_fit_stats.jump.map(
         lambda i: i.portals[api_portal.id].fuel_use_passengers[api_fit_psg1.id],
@@ -344,9 +344,9 @@ def test_passenger_fuel_affectors(client, consts):
     # Verification
     api_options = [
         StatsOptionJump(passenger_fit_ids=[api_fit_psg1.id]),
-        StatsOptionJump(passenger_fit_ids=[api_fit_psg1.id], passenger_fuel_affectors=consts.ApiCtlAffector.offline),
-        StatsOptionJump(passenger_fit_ids=[api_fit_psg1.id], passenger_fuel_affectors=consts.ApiCtlAffector.deactivate),
-        StatsOptionJump(passenger_fit_ids=[api_fit_psg1.id], passenger_fuel_affectors=consts.ApiCtlAffector.unmodified)]
+        StatsOptionJump(passenger_fit_ids=[api_fit_psg1.id], passenger_mass_increasers=consts.ApiCtlAffectors.offline),
+        StatsOptionJump(passenger_fit_ids=[api_fit_psg1.id], passenger_mass_increasers=consts.ApiCtlAffectors.deactivate),
+        StatsOptionJump(passenger_fit_ids=[api_fit_psg1.id], passenger_mass_increasers=consts.ApiCtlAffectors.unmodified)]
     api_fit_stats = api_fit_main.get_stats(options=FitStatsOptions(jump=api_options))
     assert api_fit_stats.jump.map(
         lambda i: i.portals[api_portal.id].fuel_use_passengers[api_fit_psg1.id],
@@ -366,9 +366,9 @@ def test_passenger_fuel_affectors(client, consts):
     api_psg_fit_ids = [api_fit_psg1.id, api_fit_psg2.id]
     api_options = [
         StatsOptionJump(passenger_fit_ids=api_psg_fit_ids),
-        StatsOptionJump(passenger_fit_ids=api_psg_fit_ids, passenger_fuel_affectors=consts.ApiCtlAffector.offline),
-        StatsOptionJump(passenger_fit_ids=api_psg_fit_ids, passenger_fuel_affectors=consts.ApiCtlAffector.deactivate),
-        StatsOptionJump(passenger_fit_ids=api_psg_fit_ids, passenger_fuel_affectors=consts.ApiCtlAffector.unmodified)]
+        StatsOptionJump(passenger_fit_ids=api_psg_fit_ids, passenger_mass_increasers=consts.ApiCtlAffectors.offline),
+        StatsOptionJump(passenger_fit_ids=api_psg_fit_ids, passenger_mass_increasers=consts.ApiCtlAffectors.deactivate),
+        StatsOptionJump(passenger_fit_ids=api_psg_fit_ids, passenger_mass_increasers=consts.ApiCtlAffectors.unmodified)]
     api_fit_stats = api_fit_main.get_stats(options=FitStatsOptions(jump=api_options))
     assert api_fit_stats.jump.map(
         lambda i: i.portals[api_portal.id].fuel_use_passengers[api_fit_psg1.id],

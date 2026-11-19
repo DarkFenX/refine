@@ -2,7 +2,7 @@ from fw import approx, check_no_field
 from fw.api import FitStatsOptions, FleetStatsOptions, ItemStatsOptions, StatsOptionMass
 
 
-def test_ship_affectors(client, consts):
+def test_ship_increasers(client, consts):
     eve_mass_attr_id = client.mk_eve_attr(id_=consts.EveAttr.mass)
     eve_mod_attr_id = client.mk_eve_attr()
     eve_mod = client.mk_eve_effect_mod(
@@ -33,9 +33,9 @@ def test_ship_affectors(client, consts):
     # Verification
     api_options = [
         StatsOptionMass(),
-        StatsOptionMass(affectors=consts.ApiCtlAffector.offline),
-        StatsOptionMass(affectors=consts.ApiCtlAffector.deactivate),
-        StatsOptionMass(affectors=consts.ApiCtlAffector.unmodified)]
+        StatsOptionMass(increasers=consts.ApiCtlAffectors.offline),
+        StatsOptionMass(increasers=consts.ApiCtlAffectors.deactivate),
+        StatsOptionMass(increasers=consts.ApiCtlAffectors.unmodified)]
     api_fleet_stats = api_fleet.get_stats(options=FleetStatsOptions(mass=api_options))
     assert api_fleet_stats.mass == [approx(175), approx(100), approx(125), approx(175)]
     api_fit_stats = api_fit1.get_stats(options=FitStatsOptions(mass=api_options))

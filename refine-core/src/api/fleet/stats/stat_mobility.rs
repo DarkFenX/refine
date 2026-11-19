@@ -1,10 +1,14 @@
-use crate::{CtlAffectors, PValue, api::AffectionDir, stats::FleetStats};
+use crate::{
+    PValue,
+    api::AffectionDir,
+    stats::{FleetStats, StatCtlAffectors},
+};
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Public
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl<'s> FleetStats<'s> {
-    pub fn get_stat_mass(&mut self, ctl_affectors: CtlAffectors) -> PValue {
+    pub fn get_stat_mass(&mut self, increasers: StatCtlAffectors) -> PValue {
         let mut fleet_mass = PValue::ZERO;
         let savepoint = self.sol.internal_tx_savepoint();
         let ship_uids = self.sol.u_data.get_fleet_ship_uids(self.uid);
@@ -13,7 +17,7 @@ impl<'s> FleetStats<'s> {
             self.sol.internal_ctl_affectors_switch(
                 ship_uid,
                 self.sol.u_data.r_data.get_attr_consts().mass,
-                ctl_affectors,
+                increasers,
                 AffectionDir::Increase,
             );
         }

@@ -561,7 +561,7 @@ def test_sol_stats_affector_switch_item(client, consts):
             type_id=eve_active_module_id,
             state=consts.ApiModuleState.active)
         api_sol_batch.get_item_stats(item_id=api_ship.id, item_options=ItemStatsOptions(
-            mass=[StatsOptionMass(affectors=consts.ApiCtlAffector.offline)]))
+            mass=[StatsOptionMass(increasers=consts.ApiCtlAffectors.offline)]))
         api_sol_batch.change_module(item_id=api_new_module.id, move=ModMoveMode.swap(pos=0))
         api_sol_batch.remove_item(item_id=api_other_item.id)
     assert api_fit.update().modules.high.map(lambda m: m.id) == [api_module.id]
@@ -613,7 +613,7 @@ def test_sol_stats_affector_switch_fleet(client, consts):
             type_id=eve_active_module_id,
             state=consts.ApiModuleState.active)
         api_sol_batch.get_fleet_stats(fleet_id=api_fleet.id, fleet_options=FleetStatsOptions(
-            mass=[StatsOptionMass(affectors=consts.ApiCtlAffector.offline)]))
+            mass=[StatsOptionMass(increasers=consts.ApiCtlAffectors.offline)]))
         api_sol_batch.change_module(item_id=api_new_module.id, move=ModMoveMode.swap(pos=0))
         api_sol_batch.remove_item(item_id=api_other_item.id)
     assert api_fit.update().modules.high.map(lambda m: m.id) == [api_module.id]
@@ -664,7 +664,7 @@ def test_sol_stats_affector_switch_drone_bandwidth(client, consts):
             type_id=eve_active_module_id,
             state=consts.ApiModuleState.active)
         api_sol_batch.get_fit_stats(fit_id=api_fit.id, fit_options=FitStatsOptions(
-            drone_bandwidth=[StatsOptionDroneBandwidth(affectors=consts.ApiCtlAffector.offline)]))
+            drone_bandwidth=[StatsOptionDroneBandwidth(decreasers=consts.ApiCtlAffectors.offline)]))
         api_sol_batch.change_module(item_id=api_new_module.id, move=ModMoveMode.swap(pos=0))
         api_sol_batch.remove_item(item_id=api_other_item.id)
     assert api_fit.update().modules.high.map(lambda m: m.id) == [api_module.id]
@@ -722,7 +722,7 @@ def test_sol_stats_affector_switch_jump(client, consts):
             state=consts.ApiModuleState.active)
         api_sol_batch.get_item_stats(item_id=api_main_ship.id, item_options=ItemStatsOptions(jump=[StatsOptionJump(
             passenger_fit_ids=[api_psg_fit.id],
-            passenger_fuel_affectors=consts.ApiCtlAffector.offline)]))
+            passenger_mass_increasers=consts.ApiCtlAffectors.offline)]))
         api_sol_batch.change_module(item_id=api_new_module.id, move=ModMoveMode.swap(pos=0))
         api_sol_batch.remove_item(item_id=api_other_item.id)
     assert api_psg_fit.update().modules.high.map(lambda m: m.id) == [api_module.id]

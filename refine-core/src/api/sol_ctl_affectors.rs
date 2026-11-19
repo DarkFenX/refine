@@ -12,14 +12,13 @@ use crate::{
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Public
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-/// When fetching a stat, what to do with controllable affectors impacting that stat in a negative
-/// way.
+/// When fetching a stat, what to do with player-controllable affectors which change it in the
+/// direction the stat option names (its increasers or decreasers).
 ///
-/// Good examples would be a ship mass stat: propulsion modules increase mass while active, and
-/// armor plates increase mass while online.
+/// For example, propulsion modules increase ship mass while active, and armor plates while online.
 #[cfg_attr(feature = "serde", derive(serde::Deserialize), serde(rename_all = "snake_case"))]
 #[derive(Copy, Clone, Default)]
-pub enum CtlAffectors {
+pub enum StatCtlAffectors {
     #[default]
     Unmodified,
     Deactivate,
@@ -51,13 +50,13 @@ impl SolCore {
         &mut self,
         item_uid: UItemId,
         attr_rid: Option<RAttrId>,
-        action: CtlAffectors,
+        action: StatCtlAffectors,
         direction: AffectionDir,
     ) {
         let Some(attr_rid) = attr_rid else {
             return;
         };
-        if matches!(action, CtlAffectors::Unmodified) {
+        if matches!(action, StatCtlAffectors::Unmodified) {
             return;
         }
         // Do nothing for items without fit
@@ -139,16 +138,16 @@ fn needs_switch(mod_info: &CalcModInfo, dir: AffectionDir) -> bool {
     }
 }
 
-fn can_be_switched(u_data: &UData, mod_info: &CalcModInfo, action: CtlAffectors) -> Option<RState> {
+fn can_be_switched(u_data: &UData, mod_info: &CalcModInfo, action: StatCtlAffectors) -> Option<RState> {
     let effect_rid = mod_info.effect_rid?;
     let effect_state = u_data.r_data.get_effect_by_rid(effect_rid).state;
     match action {
-        CtlAffectors::Unmodified => None,
-        CtlAffectors::Deactivate => match effect_state {
+        StatCtlAffectors::Unmodified => None,
+        StatCtlAffectors::Deactivate => match effect_state {
             RState::Overload | RState::Active => Some(RState::Online),
             _ => None,
         },
-        CtlAffectors::Offline => match effect_state {
+        StatCtlAffectors::Offline => match effect_state {
             RState::Overload | RState::Active => Some(RState::Online),
             RState::Online => Some(RState::Offline),
             _ => None,

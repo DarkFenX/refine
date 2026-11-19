@@ -1,7 +1,7 @@
 use crate::{
-    CtlAffectors, FitId, PValue,
+    FitId, PValue,
     stats::{
-        FitStats, StatJump, StatJumpRange,
+        FitStats, StatCtlAffectors, StatJump, StatJumpRange,
         err::{StatAgilityError, StatFitShipError, StatJumpError, StatMaxWarpRangeError, StatWarpSpeedError},
     },
 };
@@ -22,8 +22,8 @@ impl<'s> FitStats<'s> {
     pub fn get_stat_sig_radius(&mut self) -> Result<PValue, StatFitShipError<!>> {
         Ok(self.get_ship_for_stats()?.get_stat_sig_radius()?)
     }
-    pub fn get_stat_mass(&mut self, affectors: CtlAffectors) -> Result<PValue, StatFitShipError<!>> {
-        Ok(self.get_ship_for_stats()?.get_stat_mass(affectors)?)
+    pub fn get_stat_mass(&mut self, increasers: StatCtlAffectors) -> Result<PValue, StatFitShipError<!>> {
+        Ok(self.get_ship_for_stats()?.get_stat_mass(increasers)?)
     }
     pub fn get_stat_warp_speed(&mut self) -> Result<PValue, StatFitShipError<StatWarpSpeedError>> {
         Ok(self.get_ship_for_stats()?.get_stat_warp_speed()?)
@@ -35,10 +35,10 @@ impl<'s> FitStats<'s> {
         &mut self,
         range: StatJumpRange,
         passenger_fit_ids: &[FitId],
-        passenger_fuel_affectors: CtlAffectors,
+        passenger_mass_increasers: StatCtlAffectors,
     ) -> Result<StatJump, StatFitShipError<StatJumpError>> {
         Ok(self
             .get_ship_for_stats()?
-            .get_stat_jump(range, passenger_fit_ids, passenger_fuel_affectors)?)
+            .get_stat_jump(range, passenger_fit_ids, passenger_mass_increasers)?)
     }
 }
