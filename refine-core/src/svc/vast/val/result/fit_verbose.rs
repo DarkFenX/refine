@@ -92,7 +92,9 @@ pub struct ValResultFit {
     #[cfg_attr(feature = "serde", serde(skip_serializing_if = "ValResult::is_not_failed"))]
     pub launched_drone_count: ValResult<ValSlotCountFail> = ValResult::NotRequested,
     #[cfg_attr(feature = "serde", serde(skip_serializing_if = "ValResult::is_not_failed"))]
-    pub drone_bandwidth: ValResult<ValResourceFail> = ValResult::NotRequested,
+    pub drone_bandwidth_current: ValResult<ValResourceFail> = ValResult::NotRequested,
+    #[cfg_attr(feature = "serde", serde(skip_serializing_if = "ValResult::is_not_failed"))]
+    pub drone_bandwidth_potential: ValResult<ValResourceFail> = ValResult::NotRequested,
     #[cfg_attr(feature = "serde", serde(skip_serializing_if = "ValResult::is_not_failed"))]
     pub unlaunchable_drone_slot: ValResult<ValUnusableSlotFail> = ValResult::NotRequested,
     #[cfg_attr(feature = "serde", serde(skip_serializing_if = "ValResult::is_not_failed"))]
@@ -210,7 +212,8 @@ impl ValResultFit {
             // Drones
             drone_bay_volume,
             launched_drone_count,
-            drone_bandwidth,
+            drone_bandwidth_current,
+            drone_bandwidth_potential,
             unlaunchable_drone_slot,
             unlaunchable_drone_bandwidth,
             drone_group,
@@ -292,7 +295,8 @@ impl ValResultFit {
             // Drones
             && !drone_bay_volume.is_failed()
             && !launched_drone_count.is_failed()
-            && !drone_bandwidth.is_failed()
+            && !drone_bandwidth_current.is_failed()
+            && !drone_bandwidth_potential.is_failed()
             && !unlaunchable_drone_slot.is_failed()
             && !unlaunchable_drone_bandwidth.is_failed()
             && !drone_group.is_failed()
@@ -330,5 +334,14 @@ impl ValResultFit {
             && !sec_zone_unonlineable.is_failed()
             && !sec_zone_unactivable.is_failed()
             && !sec_zone_effect.is_failed()
+    }
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Private
+////////////////////////////////////////////////////////////////////////////////////////////////////
+impl ValResultFit {
+    pub(crate) fn potential_drone_bandwidth_passed(&self) -> bool {
+        !self.drone_bandwidth_potential.is_failed() && !self.unlaunchable_drone_bandwidth.is_failed()
     }
 }

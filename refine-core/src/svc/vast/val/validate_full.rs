@@ -1,55 +1,91 @@
+//! Validations are split into groups by solar system state they have to be checked in. Service
+//! layer cannot change the state, so it is caller's responsibility and call appropriate groups.
+//! There are two:
+//! - solar system validations (everything which does not belong to any fit) and most of fit
+//!   validations are checked in the current state;
+//! - fit validations, which are split in two subgroups:
+//!   - normal validations should be run only against current state;
+//!   - validations designed to be run against bandwidth-reducing-items-disabled are executed twice.
+//!     First time on current state, if it passes they shouldn't be requested again. Then, if they
+//!     fail, bandwidth reduction items are disabled, and those validations are run again. If any of
+//!     those runs is passing, the validation is considered passed.
+
 use crate::{
     svc::{
         Calc, SvcCtx, Vast,
         vast::{
-            ValOptionsInt, ValOptionsSolInt,
+            ValOptionsInt, ValOptionsSolInt, ValResultFitFast, VastFitData,
             val::{ValKind, ValOptionInt},
         },
     },
-    ud::UFitId,
+    ud::{UFit, UFitId},
     val::{ValResultFit, ValResultSol},
 };
 
 impl Vast {
-    pub(in crate::svc) fn validate_sol_fast(&self, ctx: &SvcCtx, calc: &mut Calc, options: &ValOptionsSolInt) -> bool {
-        for &fit_uid in options.fit_uids.iter() {
-            if !self.validate_fit_fast(ctx, calc, fit_uid, &options.options) {
-                return false;
-            }
-        }
-        if let ValOptionInt::Enabled(opts) = options.options.get(ValKind::NotLoadedItem)
+    // Solar system validations
+    pub(in crate::svc) fn validate_sol_fast(&self, options: &ValOptionsInt) -> bool {
+        if let ValOptionInt::Enabled(opts) = options.get(ValKind::NotLoadedItem)
             && !self.validate_not_loaded_item_fast(&opts.kfs)
         {
             return false;
         }
         true
     }
-    pub(in crate::svc) fn validate_sol_verbose(
-        &mut self,
-        ctx: &SvcCtx,
-        calc: &mut Calc,
-        options: &ValOptionsSolInt,
-    ) -> ValResultSol {
+    /// Results of fits are to be added by the caller.
+    pub(in crate::svc) fn validate_sol_verbose(&self, ctx: &SvcCtx, options: &ValOptionsSolInt) -> ValResultSol {
         let mut sol_result = ValResultSol::with_fit_capacity(options.fit_uids.len());
-        for &fit_uid in options.fit_uids.iter() {
-            let fit_result = self.validate_fit_verbose(ctx, calc, fit_uid, &options.options);
-            let fit_id = ctx.u_data.fits.ext_id_by_int_id(fit_uid);
-            sol_result.fits.push((fit_id, fit_result));
-        }
         if let ValOptionInt::Enabled(opts) = options.options.get(ValKind::NotLoadedItem) {
             sol_result.not_loaded_item = self.validate_not_loaded_item_verbose(&opts.kfs, ctx);
         }
         sol_result
     }
+    // Fit validations
     pub(in crate::svc) fn validate_fit_fast(
         &self,
         ctx: &SvcCtx,
         calc: &mut Calc,
         fit_uid: UFitId,
         options: &ValOptionsInt,
-    ) -> bool {
+    ) -> ValResultFitFast {
         let fit = ctx.u_data.fits.get(fit_uid);
         let fit_data = self.get_fit_data(fit_uid);
+        if !self.validate_fit_current_fast(ctx, calc, fit, fit_data, options) {
+            return ValResultFitFast::Failed;
+        }
+        // If drone_bandwidth_current passed without any KFs specified, there is no sense to check
+        // drone_bandwidth_potential, it will always pass as well
+        let check_drone_bandwidth_potential = match options.get(ValKind::DroneBandwidthCurrent) {
+            ValOptionInt::Enabled(opts) => !opts.kfs.is_empty(),
+            ValOptionInt::Disabled => true,
+        };
+        match internal_validate_fit_pdbw_fast(ctx, calc, fit, fit_data, options, check_drone_bandwidth_potential) {
+            true => ValResultFitFast::Passed,
+            false => ValResultFitFast::FailedPdbw,
+        }
+    }
+    pub(in crate::svc) fn validate_fit_verbose(
+        &self,
+        ctx: &SvcCtx,
+        calc: &mut Calc,
+        fit_uid: UFitId,
+        options: &ValOptionsInt,
+    ) -> ValResultFit {
+        let fit = ctx.u_data.fits.get(fit_uid);
+        let fit_data = self.get_fit_data(fit_uid);
+        let mut result = self.validate_fit_current_verbose(ctx, calc, fit, fit_data, options);
+        internal_validate_fit_pdbw_verbose(ctx, calc, fit, fit_data, options, &mut result);
+        result
+    }
+    // Fit validations against current state
+    fn validate_fit_current_fast(
+        &self,
+        ctx: &SvcCtx,
+        calc: &mut Calc,
+        fit: &UFit,
+        fit_data: &VastFitData,
+        options: &ValOptionsInt,
+    ) -> bool {
         let ship = fit.ship.map(|v| ctx.u_data.items.get(v).dc_ship().unwrap());
         // Order of validations matters here; the faster validation and the more likely it is to
         // fail, the closer to top it should be. This order was chosen to optimize for market
@@ -205,13 +241,8 @@ impl Vast {
         {
             return false;
         }
-        if let ValOptionInt::Enabled(opts) = options.get(ValKind::UnlaunchableDroneBandwidth)
-            && !fit_data.validate_unlaunchable_drone_bandwidth_fast(&opts.kfs, ctx, calc, fit)
-        {
-            return false;
-        }
         // Unlikely to fail, since drones are not added in in-space+ state
-        if let ValOptionInt::Enabled(opts) = options.get(ValKind::DroneBandwidth)
+        if let ValOptionInt::Enabled(opts) = options.get(ValKind::DroneBandwidthCurrent)
             && !fit_data.validate_drone_bandwidth_fast(&opts.kfs, ctx, calc, fit)
         {
             return false;
@@ -468,15 +499,14 @@ impl Vast {
         }
         true
     }
-    pub(in crate::svc) fn validate_fit_verbose(
+    fn validate_fit_current_verbose(
         &self,
         ctx: &SvcCtx,
         calc: &mut Calc,
-        fit_uid: UFitId,
+        fit: &UFit,
+        fit_data: &VastFitData,
         options: &ValOptionsInt,
     ) -> ValResultFit {
-        let fit = ctx.u_data.fits.get(fit_uid);
-        let fit_data = self.get_fit_data(fit_uid);
         let ship = fit.ship.map(|v| ctx.u_data.items.get(v).dc_ship().unwrap());
         let mut result = ValResultFit { .. };
         let ValResultFit {
@@ -523,9 +553,10 @@ impl Vast {
             // Drones
             drone_bay_volume,
             launched_drone_count,
-            drone_bandwidth,
+            drone_bandwidth_current,
+            drone_bandwidth_potential: _,
             unlaunchable_drone_slot,
-            unlaunchable_drone_bandwidth,
+            unlaunchable_drone_bandwidth: _,
             drone_group,
             // Fighters
             fighter_bay_volume_all,
@@ -691,15 +722,11 @@ impl Vast {
         if let ValOptionInt::Enabled(opts) = options.get(ValKind::LaunchedDroneCount) {
             *launched_drone_count = fit_data.validate_launched_drone_count_verbose(&opts.kfs, ctx, calc, fit);
         }
-        if let ValOptionInt::Enabled(opts) = options.get(ValKind::DroneBandwidth) {
-            *drone_bandwidth = fit_data.validate_drone_bandwidth_verbose(&opts.kfs, ctx, calc, fit);
+        if let ValOptionInt::Enabled(opts) = options.get(ValKind::DroneBandwidthCurrent) {
+            *drone_bandwidth_current = fit_data.validate_drone_bandwidth_verbose(&opts.kfs, ctx, calc, fit);
         }
         if let ValOptionInt::Enabled(opts) = options.get(ValKind::UnlaunchableDroneSlot) {
             *unlaunchable_drone_slot = fit_data.validate_unlaunchable_drone_slot_verbose(&opts.kfs, ctx, calc, fit);
-        }
-        if let ValOptionInt::Enabled(opts) = options.get(ValKind::UnlaunchableDroneBandwidth) {
-            *unlaunchable_drone_bandwidth =
-                fit_data.validate_unlaunchable_drone_bandwidth_verbose(&opts.kfs, ctx, calc, fit);
         }
         if let ValOptionInt::Enabled(opts) = options.get(ValKind::DroneGroup) {
             *drone_group = fit_data.validate_drone_group_verbose(&opts.kfs, ctx);
@@ -819,5 +846,74 @@ impl Vast {
             *sec_zone_effect = fit_data.validate_sec_zone_effect_verbose(&opts.kfs, ctx);
         }
         result
+    }
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Potential drone bandwidth
+////////////////////////////////////////////////////////////////////////////////////////////////////
+impl Vast {
+    // Fit validations against potential drone bandwidth
+    pub(in crate::svc) fn validate_fit_pdbw_fast(
+        &self,
+        ctx: &SvcCtx,
+        calc: &mut Calc,
+        fit_uid: UFitId,
+        options: &ValOptionsInt,
+    ) -> bool {
+        let fit = ctx.u_data.fits.get(fit_uid);
+        let fit_data = self.get_fit_data(fit_uid);
+        internal_validate_fit_pdbw_fast(ctx, calc, fit, fit_data, options, true)
+    }
+    pub(in crate::svc) fn validate_fit_pdbw_verbose(
+        &self,
+        ctx: &SvcCtx,
+        calc: &mut Calc,
+        fit_uid: UFitId,
+        options: &ValOptionsInt,
+        result: &mut ValResultFit,
+    ) {
+        let fit = ctx.u_data.fits.get(fit_uid);
+        let fit_data = self.get_fit_data(fit_uid);
+        internal_validate_fit_pdbw_verbose(ctx, calc, fit, fit_data, options, result);
+    }
+}
+
+fn internal_validate_fit_pdbw_fast(
+    ctx: &SvcCtx,
+    calc: &mut Calc,
+    fit: &UFit,
+    fit_data: &VastFitData,
+    options: &ValOptionsInt,
+    check_drone_bandwidth_potential: bool,
+) -> bool {
+    if let ValOptionInt::Enabled(opts) = options.get(ValKind::UnlaunchableDroneBandwidth)
+        && !fit_data.validate_unlaunchable_drone_bandwidth_fast(&opts.kfs, ctx, calc, fit)
+    {
+        return false;
+    }
+    // Unlikely to fail, since drones are not added in in-space+ state by try-fit-items
+    if check_drone_bandwidth_potential
+        && let ValOptionInt::Enabled(opts) = options.get(ValKind::DroneBandwidthPotential)
+        && !fit_data.validate_drone_bandwidth_fast(&opts.kfs, ctx, calc, fit)
+    {
+        return false;
+    }
+    true
+}
+fn internal_validate_fit_pdbw_verbose(
+    ctx: &SvcCtx,
+    calc: &mut Calc,
+    fit: &UFit,
+    fit_data: &VastFitData,
+    options: &ValOptionsInt,
+    result: &mut ValResultFit,
+) {
+    if let ValOptionInt::Enabled(opts) = options.get(ValKind::DroneBandwidthPotential) {
+        result.drone_bandwidth_potential = fit_data.validate_drone_bandwidth_verbose(&opts.kfs, ctx, calc, fit);
+    }
+    if let ValOptionInt::Enabled(opts) = options.get(ValKind::UnlaunchableDroneBandwidth) {
+        result.unlaunchable_drone_bandwidth =
+            fit_data.validate_unlaunchable_drone_bandwidth_verbose(&opts.kfs, ctx, calc, fit);
     }
 }

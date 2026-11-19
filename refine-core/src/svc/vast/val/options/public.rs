@@ -254,8 +254,16 @@ impl<I> ValOptions<I> {
         self
     }
     /// Fails when in-space drones take more bandwidth than ship provides.
-    pub fn with_drone_bandwidth(mut self, option: OptionExt<ValEnabled<I>>) -> Self {
-        self.overrides.push((ValKind::DroneBandwidth, option));
+    pub fn with_drone_bandwidth_current(mut self, option: OptionExt<ValEnabled<I>>) -> Self {
+        self.overrides.push((ValKind::DroneBandwidthCurrent, option));
+        self
+    }
+    /// Fails when in-space drones take more bandwidth than ship can provide.
+    ///
+    /// It passes when total drone bandwidth is below max in fit's current state, or with player-
+    /// controllable bandwidth reduction items (nullifiers, warp core stabilizers) disabled.
+    pub fn with_drone_bandwidth_potential(mut self, option: OptionExt<ValEnabled<I>>) -> Self {
+        self.overrides.push((ValKind::DroneBandwidthPotential, option));
         self
     }
     /// Fails when fit has any drones when ship supports none.
@@ -263,7 +271,8 @@ impl<I> ValOptions<I> {
         self.overrides.push((ValKind::UnlaunchableDroneSlot, option));
         self
     }
-    /// Fails when fit has any drones which take more bandwidth than ship provides.
+    /// Fails when fit has any drones which take more bandwidth than ship can provide (potential
+    /// bandwidth, like in the potential drone bandwidth validation).
     pub fn with_unlaunchable_drone_bandwidth(mut self, option: OptionExt<ValEnabled<I>>) -> Self {
         self.overrides.push((ValKind::UnlaunchableDroneBandwidth, option));
         self

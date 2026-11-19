@@ -51,7 +51,8 @@ pub(in crate::svc::vast::val) enum ValKind {
     // Drones
     DroneBayVolume,
     LaunchedDroneCount,
-    DroneBandwidth,
+    DroneBandwidthCurrent,
+    DroneBandwidthPotential,
     UnlaunchableDroneSlot,
     UnlaunchableDroneBandwidth,
     DroneGroup,

@@ -61,7 +61,7 @@ def test_fail_multiple_struct(client, consts):
     assert api_val.details.unlaunchable_drone_bandwidth.users == {api_drone2.id: 25, api_drone3.id: 50}
 
 
-def test_eqial_below_max(client, consts):
+def test_equal_below_max(client, consts):
     eve_use_attr_id = client.mk_eve_attr(id_=consts.EveAttr.drone_bandwidth_used)
     eve_max_attr_id = client.mk_eve_attr(id_=consts.EveAttr.drone_bandwidth)
     eve_drone1_id = client.mk_eve_item(attrs={eve_use_attr_id: 5})
@@ -80,6 +80,105 @@ def test_eqial_below_max(client, consts):
     assert api_val.passed is True
     with check_no_field():
         api_val.details  # ruff:ignore[useless-expression]
+
+
+def test_decreasers(client, consts):
+    # Drones are checked against potential bandwidth, i.e. with modules which decrease bandwidth
+    # switched off, e.g. warp core stabilizers and interdiction nullifiers in EVE
+    eve_use_attr_id = client.mk_eve_attr(id_=consts.EveAttr.drone_bandwidth_used)
+    eve_max_attr_id = client.mk_eve_attr(id_=consts.EveAttr.drone_bandwidth)
+    eve_mod_attr_id = client.mk_eve_attr()
+    eve_mod = client.mk_eve_effect_mod(
+        func=consts.EveModFunc.item,
+        loc=consts.EveModLoc.ship,
+        op=consts.EveModOp.post_percent,
+        affector_attr_id=eve_mod_attr_id,
+        affectee_attr_id=eve_max_attr_id)
+    eve_online_effect_id = client.mk_eve_online_effect()
+    eve_mod_online_effect_id = client.mk_eve_effect(cat_id=consts.EveEffCat.online, mod_info=[eve_mod])
+    eve_mod_active_effect_id = client.mk_eve_effect(cat_id=consts.EveEffCat.active, mod_info=[eve_mod])
+    eve_online_penalty_module_id = client.mk_eve_item(
+        attrs={eve_mod_attr_id: -50},
+        eff_ids=[eve_mod_online_effect_id, eve_online_effect_id])
+    eve_active_penalty_module_id = client.mk_eve_item(
+        attrs={eve_mod_attr_id: -50},
+        eff_ids=[eve_mod_active_effect_id],
+        defeff_id=eve_mod_active_effect_id)
+    eve_bonus_module_id = client.mk_eve_item(
+        attrs={eve_mod_attr_id: 50},
+        eff_ids=[eve_mod_online_effect_id, eve_online_effect_id])
+    eve_drone1_id = client.mk_eve_item(attrs={eve_use_attr_id: 100})
+    eve_drone2_id = client.mk_eve_item(attrs={eve_use_attr_id: 160})
+    eve_ship_id = client.mk_eve_ship(attrs={eve_max_attr_id: 100})
+    client.create_sources()
+    api_sol = client.create_sol()
+    api_fit = api_sol.create_fit()
+    api_ship = api_fit.set_ship(type_id=eve_ship_id)
+    api_online_module = api_fit.add_module(type_id=eve_online_penalty_module_id, state=consts.ApiModuleState.online)
+    api_active_module = api_fit.add_module(type_id=eve_active_penalty_module_id, state=consts.ApiModuleState.active)
+    api_overload_module = api_fit.add_module(type_id=eve_active_penalty_module_id, state=consts.ApiModuleState.overload)
+    api_bonus_module = api_fit.add_module(type_id=eve_bonus_module_id, state=consts.ApiModuleState.online)
+    api_fit.add_drone(type_id=eve_drone1_id, state=consts.ApiMinionState.in_bay)
+    # Verification - bonus module stays online, so potential bandwidth is 150
+    assert api_ship.update().attrs[eve_max_attr_id].modified == approx(18.75)
+    api_val = api_fit.validate(options=ValOptions(unlaunchable_drone_bandwidth=True))
+    assert api_val.passed is True
+    with check_no_field():
+        api_val.details  # ruff:ignore[useless-expression]
+    # Action
+    api_drone2 = api_fit.add_drone(type_id=eve_drone2_id, state=consts.ApiMinionState.in_bay)
+    # Verification
+    api_val = api_fit.validate(options=ValOptions(unlaunchable_drone_bandwidth=True))
+    assert api_val.passed is False
+    assert api_val.details.unlaunchable_drone_bandwidth.max == approx(150)
+    assert api_val.details.unlaunchable_drone_bandwidth.users == {api_drone2.id: 160}
+    # Verification - module states are restored after validation
+    assert api_online_module.update().state == consts.ApiModuleState.online
+    assert api_active_module.update().state == consts.ApiModuleState.active
+    assert api_overload_module.update().state == consts.ApiModuleState.overload
+    assert api_bonus_module.update().state == consts.ApiModuleState.online
+    assert api_ship.update().attrs[eve_max_attr_id].modified == approx(18.75)
+
+
+def test_decreasers_no_gain(client, consts):
+    # When switching off a module which decreases bandwidth does not give the ship more of it,
+    # current bandwidth is the potential one
+    eve_use_attr_id = client.mk_eve_attr(id_=consts.EveAttr.drone_bandwidth_used)
+    eve_max_attr_id = client.mk_eve_attr(id_=consts.EveAttr.drone_bandwidth)
+    eve_penalty_attr_id = client.mk_eve_attr()
+    eve_bonus_attr_id = client.mk_eve_attr()
+    eve_penalty_mod = client.mk_eve_effect_mod(
+        func=consts.EveModFunc.item,
+        loc=consts.EveModLoc.ship,
+        op=consts.EveModOp.post_percent,
+        affector_attr_id=eve_penalty_attr_id,
+        affectee_attr_id=eve_max_attr_id)
+    eve_bonus_mod = client.mk_eve_effect_mod(
+        func=consts.EveModFunc.item,
+        loc=consts.EveModLoc.ship,
+        op=consts.EveModOp.post_percent,
+        affector_attr_id=eve_bonus_attr_id,
+        affectee_attr_id=eve_max_attr_id)
+    eve_online_effect_id = client.mk_eve_online_effect()
+    eve_mod_effect_id = client.mk_eve_effect(cat_id=consts.EveEffCat.online, mod_info=[eve_penalty_mod, eve_bonus_mod])
+    eve_module_id = client.mk_eve_item(
+        attrs={eve_penalty_attr_id: -50, eve_bonus_attr_id: 300},
+        eff_ids=[eve_mod_effect_id, eve_online_effect_id])
+    eve_drone_id = client.mk_eve_item(attrs={eve_use_attr_id: 250})
+    eve_ship_id = client.mk_eve_ship(attrs={eve_max_attr_id: 100})
+    client.create_sources()
+    api_sol = client.create_sol()
+    api_fit = api_sol.create_fit()
+    api_ship = api_fit.set_ship(type_id=eve_ship_id)
+    api_module = api_fit.add_module(type_id=eve_module_id, state=consts.ApiModuleState.online)
+    api_drone = api_fit.add_drone(type_id=eve_drone_id, state=consts.ApiMinionState.in_bay)
+    # Verification
+    assert api_ship.update().attrs[eve_max_attr_id].modified == approx(200)
+    api_val = api_fit.validate(options=ValOptions(unlaunchable_drone_bandwidth=True))
+    assert api_val.passed is False
+    assert api_val.details.unlaunchable_drone_bandwidth.max == approx(200)
+    assert api_val.details.unlaunchable_drone_bandwidth.users == {api_drone.id: 250}
+    assert api_module.update().state == consts.ApiModuleState.online
 
 
 def test_known_failures(client, consts):

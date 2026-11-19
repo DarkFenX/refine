@@ -3,24 +3,38 @@ use crate::{
     rd::RItemBase,
     svc::{
         Svc, SvcCtx,
-        vast::{ValOptionsInt, ValOptionsSolInt},
+        vast::{ValOptionsInt, ValOptionsSolInt, ValResultFitFast},
     },
     ud::{UData, UFitId, UItemId},
     val::{DetectedItemKind, ValResultFit, ValResultSol},
 };
 
 impl Svc {
-    pub(crate) fn validate_sol_fast(&mut self, u_data: &UData, options: &ValOptionsSolInt) -> bool {
-        self.vast
-            .validate_sol_fast(&SvcCtx::new(u_data, &self.eff_projs), &mut self.calc, options)
+    ////////////////////////////////////////////////////////////////////////////////////////////////
+    // Sol
+    ////////////////////////////////////////////////////////////////////////////////////////////////
+    pub(crate) fn validate_sol_fast(&self, options: &ValOptionsInt) -> bool {
+        self.vast.validate_sol_fast(options)
     }
-    pub(crate) fn validate_sol_verbose(&mut self, u_data: &UData, options: &ValOptionsSolInt) -> ValResultSol {
+    pub(crate) fn validate_sol_verbose(&self, u_data: &UData, options: &ValOptionsSolInt) -> ValResultSol {
         self.vast
-            .validate_sol_verbose(&SvcCtx::new(u_data, &self.eff_projs), &mut self.calc, options)
+            .validate_sol_verbose(&SvcCtx::new(u_data, &self.eff_projs), options)
     }
-    pub(crate) fn validate_fit_fast(&mut self, u_data: &UData, fit_uid: UFitId, options: &ValOptionsInt) -> bool {
+    ////////////////////////////////////////////////////////////////////////////////////////////////
+    // Fit fast
+    ////////////////////////////////////////////////////////////////////////////////////////////////
+    pub(crate) fn validate_fit_fast(
+        &mut self,
+        u_data: &UData,
+        fit_uid: UFitId,
+        options: &ValOptionsInt,
+    ) -> ValResultFitFast {
         self.vast
             .validate_fit_fast(&SvcCtx::new(u_data, &self.eff_projs), &mut self.calc, fit_uid, options)
+    }
+    pub(crate) fn validate_fit_pdbw_fast(&mut self, u_data: &UData, fit_uid: UFitId, options: &ValOptionsInt) -> bool {
+        self.vast
+            .validate_fit_pdbw_fast(&SvcCtx::new(u_data, &self.eff_projs), &mut self.calc, fit_uid, options)
     }
     pub(crate) fn validate_charge_static_fast(
         &self,
@@ -43,6 +57,9 @@ impl Svc {
         self.vast
             .validate_item_static_fast(u_data, fit_uid, item_rib, item_kind, options)
     }
+    ////////////////////////////////////////////////////////////////////////////////////////////////
+    // Fit verbose
+    ////////////////////////////////////////////////////////////////////////////////////////////////
     pub(crate) fn validate_fit_verbose(
         &mut self,
         u_data: &UData,
@@ -51,5 +68,20 @@ impl Svc {
     ) -> ValResultFit {
         self.vast
             .validate_fit_verbose(&SvcCtx::new(u_data, &self.eff_projs), &mut self.calc, fit_uid, options)
+    }
+    pub(crate) fn validate_fit_pdbw_verbose(
+        &mut self,
+        u_data: &UData,
+        fit_uid: UFitId,
+        options: &ValOptionsInt,
+        result: &mut ValResultFit,
+    ) {
+        self.vast.validate_fit_pdbw_verbose(
+            &SvcCtx::new(u_data, &self.eff_projs),
+            &mut self.calc,
+            fit_uid,
+            options,
+            result,
+        )
     }
 }

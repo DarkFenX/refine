@@ -52,7 +52,8 @@ class ValOptions:
     # Drones
     drone_bay_volume: ValOption = Absent
     launched_drone_count: ValOption = Absent
-    drone_bandwidth: ValOption = Absent
+    drone_bandwidth_current: ValOption = Absent
+    drone_bandwidth_potential: ValOption = Absent
     unlaunchable_drone_slot: ValOption = Absent
     unlaunchable_drone_bandwidth: ValOption = Absent
     drone_group: ValOption = Absent

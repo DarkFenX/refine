@@ -57,7 +57,7 @@ def test_fail_multiple_struct(client, consts):
         failing=[eve_drone2_id, eve_drone3_id])
 
 
-def test_eqial_below_max(client, consts):
+def test_equal_below_max(client, consts):
     eve_use_attr_id = client.mk_eve_attr(id_=consts.EveAttr.drone_bandwidth_used)
     eve_max_attr_id = client.mk_eve_attr(id_=consts.EveAttr.drone_bandwidth)
     eve_drone1_id = client.mk_eve_drone(attrs={eve_use_attr_id: 5})
@@ -73,6 +73,46 @@ def test_eqial_below_max(client, consts):
         val_options=ValOptions(unlaunchable_drone_bandwidth=True),
         passing=[eve_drone1_id, eve_drone2_id, eve_drone3_id],
         failing=[])
+
+
+def test_decreasers(client, consts):
+    # Drones are checked against potential bandwidth, i.e. with modules which decrease bandwidth
+    # switched off; it applies both to fitted and to tried modules
+    eve_use_attr_id = client.mk_eve_attr(id_=consts.EveAttr.drone_bandwidth_used)
+    eve_max_attr_id = client.mk_eve_attr(id_=consts.EveAttr.drone_bandwidth)
+    eve_mod_attr_id = client.mk_eve_attr()
+    eve_mod = client.mk_eve_effect_mod(
+        func=consts.EveModFunc.item,
+        loc=consts.EveModLoc.ship,
+        op=consts.EveModOp.post_percent,
+        affector_attr_id=eve_mod_attr_id,
+        affectee_attr_id=eve_max_attr_id)
+    eve_mod_effect_id = client.mk_eve_effect(cat_id=consts.EveEffCat.online, mod_info=[eve_mod])
+    eve_module_id = client.mk_eve_module(attrs={eve_mod_attr_id: -50}, eff_ids=[eve_mod_effect_id])
+    eve_drone1_id = client.mk_eve_drone(attrs={eve_use_attr_id: 80})
+    eve_drone2_id = client.mk_eve_drone(attrs={eve_use_attr_id: 120})
+    eve_ship_id = client.mk_eve_ship(attrs={eve_max_attr_id: 100})
+    client.create_sources()
+    api_sol = client.create_sol()
+    api_fit = api_sol.create_fit()
+    api_ship = api_fit.set_ship(type_id=eve_ship_id)
+    api_drone = api_fit.add_drone(type_id=eve_drone1_id, state=consts.ApiMinionState.in_bay)
+    # Verification - tried module halves current bandwidth, existing drone still fits potential one
+    api_fit.check_try_fit_items(
+        val_options=ValOptions(unlaunchable_drone_bandwidth=True),
+        passing=[eve_module_id, eve_drone1_id],
+        failing=[eve_drone2_id])
+    # Action
+    api_drone.remove()
+    api_module = api_fit.add_module(type_id=eve_module_id, state=consts.ApiModuleState.online)
+    # Verification - fitted module is switched off for every tried drone, and is online after it
+    assert api_ship.update().attrs[eve_max_attr_id].modified == approx(50)
+    api_fit.check_try_fit_items(
+        val_options=ValOptions(unlaunchable_drone_bandwidth=True),
+        passing=[eve_drone1_id],
+        failing=[eve_drone2_id])
+    assert api_module.update().state == consts.ApiModuleState.online
+    assert api_ship.update().attrs[eve_max_attr_id].modified == approx(50)
 
 
 def test_known_failures(client, consts):

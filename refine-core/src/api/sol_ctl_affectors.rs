@@ -46,25 +46,27 @@ impl SolCore {
     ///   flip sign of its value multiple times)
     /// - it ignores effect mode - it will attempt to deactivate/offline modules even if modifying
     ///   effect is in force-run mode
+    ///
+    /// Returns if state of any module was switched.
     pub(in crate::api) fn internal_ctl_affectors_switch(
         &mut self,
         item_uid: UItemId,
         attr_rid: Option<RAttrId>,
         action: StatCtlAffectors,
         direction: AffectionDir,
-    ) {
+    ) -> bool {
         let Some(attr_rid) = attr_rid else {
-            return;
+            return false;
         };
         if matches!(action, StatCtlAffectors::Unmodified) {
-            return;
+            return false;
         }
         // Do nothing for items without fit
         let Some(fit_uid) = self.u_data.items.get(item_uid).get_fit_uid() else {
-            return;
+            return false;
         };
         let Ok(mod_infos) = self.svc.iter_item_attr_mods(&self.u_data, item_uid, attr_rid) else {
-            return;
+            return false;
         };
         let mut new_states = RMap::new();
         for mod_info in mod_infos {
@@ -105,9 +107,11 @@ impl SolCore {
             }
         }
         // Actually switch states
+        let switched = !new_states.is_empty();
         for (affector_uid, new_state) in new_states.into_iter() {
             self.internal_set_module_state(affector_uid, ModuleState::from_r_state(new_state));
         }
+        switched
     }
 }
 

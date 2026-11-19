@@ -102,7 +102,8 @@ class FitValDetails(AttrDict):
             # Drones
             'drone_bay_volume': AttrHookDef(func=lambda d: ValResourceFail(data=d)),
             'launched_drone_count': AttrHookDef(func=lambda d: ValSlotCountFail(data=d)),
-            'drone_bandwidth': AttrHookDef(func=lambda d: ValResourceFail(data=d)),
+            'drone_bandwidth_current': AttrHookDef(func=lambda d: ValResourceFail(data=d)),
+            'drone_bandwidth_potential': AttrHookDef(func=lambda d: ValResourceFail(data=d)),
             'unlaunchable_drone_slot': AttrHookDef(func=lambda d: ValUnusableSlotFail(data=d)),
             'unlaunchable_drone_bandwidth': AttrHookDef(func=lambda d: ValUnusableResFail(data=d)),
             'drone_group': AttrHookDef(func=lambda d: ValDroneGroupFail(data=d)),

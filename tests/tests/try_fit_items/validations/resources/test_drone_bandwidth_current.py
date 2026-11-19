@@ -14,14 +14,14 @@ def test_known_failures(client, consts):
     api_drone2 = api_fit.add_drone(type_id=eve_drone_id, state=consts.ApiMinionState.in_space)
     # Verification - drones are tried in bay
     api_fit.check_try_fit_items(
-        val_options=ValOptions(drone_bandwidth=[api_drone1.id]),
+        val_options=ValOptions(drone_bandwidth_current=[api_drone1.id]),
         passing=[],
         failing=[eve_drone_id])
     api_fit.check_try_fit_items(
-        val_options=ValOptions(drone_bandwidth=[api_drone2.id]),
+        val_options=ValOptions(drone_bandwidth_current=[api_drone2.id]),
         passing=[],
         failing=[eve_drone_id])
     api_fit.check_try_fit_items(
-        val_options=ValOptions(drone_bandwidth=[api_drone1.id, api_drone2.id]),
+        val_options=ValOptions(drone_bandwidth_current=[api_drone1.id, api_drone2.id]),
         passing=[eve_drone_id],
         failing=[])

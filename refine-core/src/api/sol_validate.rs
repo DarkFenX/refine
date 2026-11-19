@@ -26,9 +26,20 @@ impl Sol {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl SolCore {
     pub(in crate::api) fn internal_validate_fast(&mut self, options: &ValOptionsSolInt) -> bool {
-        self.svc.validate_sol_fast(&self.u_data, options)
+        for &fit_uid in options.fit_uids.iter() {
+            if !self.internal_validate_fit_fast(fit_uid, &options.options) {
+                return false;
+            }
+        }
+        self.svc.validate_sol_fast(&options.options)
     }
     pub(in crate::api) fn internal_validate_verbose(&mut self, options: &ValOptionsSolInt) -> ValResultSol {
-        self.svc.validate_sol_verbose(&self.u_data, options)
+        let mut sol_result = self.svc.validate_sol_verbose(&self.u_data, options);
+        for &fit_uid in options.fit_uids.iter() {
+            let fit_result = self.internal_validate_fit_verbose(fit_uid, &options.options);
+            let fit_id = self.u_data.fits.ext_id_by_int_id(fit_uid);
+            sol_result.fits.push((fit_id, fit_result));
+        }
+        sol_result
     }
 }

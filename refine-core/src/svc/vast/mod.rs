@@ -27,7 +27,7 @@ pub use val::{
     ValSrqItemInfo, ValSrqSkillInfo, ValUnusableCapFail, ValUnusableCapItemInfo, ValUnusableResFail,
     ValUnusableResItemInfo, ValUnusableSlotFail,
 };
-pub(crate) use val::{ValOptionsInt, ValOptionsSolInt};
+pub(crate) use val::{ValOptionsInt, ValOptionsSolInt, ValResultFitFast};
 pub(in crate::svc) use vast::Vast;
 use vast::VastFitData;
 
