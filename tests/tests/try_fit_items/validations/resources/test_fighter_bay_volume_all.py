@@ -480,6 +480,38 @@ def test_no_attr_count(client, consts):
         failing=[eve_fighter1_id])
 
 
+def test_criterion_fighter_state(client, consts):
+    # Fighters which are loaded into tubes or launched take fighter bay volume as well
+    eve_use_attr_id = client.mk_eve_attr(id_=consts.EveAttr.volume)
+    eve_max_attr_id = client.mk_eve_attr(id_=consts.EveAttr.ftr_capacity)
+    eve_count_attr_id = client.mk_eve_attr(id_=consts.EveAttr.ftr_sq_max_size)
+    eve_fighter1_id = client.mk_eve_fighter(attrs={eve_use_attr_id: 1000, eve_count_attr_id: 9})
+    eve_fighter2_id = client.mk_eve_fighter(attrs={eve_use_attr_id: 800, eve_count_attr_id: 12})
+    eve_fighter3_id = client.mk_eve_fighter(attrs={eve_use_attr_id: 600, eve_count_attr_id: 10})
+    eve_ship_id = client.mk_eve_ship(attrs={eve_max_attr_id: 15000})
+    client.create_sources()
+    api_sol = client.create_sol()
+    api_fit = api_sol.create_fit()
+    api_fit.set_ship(type_id=eve_ship_id)
+    api_fighter = api_fit.add_fighter(type_id=eve_fighter1_id, state=consts.ApiMinionState.in_space)
+    # Verification
+    api_stats = api_fit.get_stats(options=FitStatsOptions(fighter_bay_volume=True))
+    assert api_stats.fighter_bay_volume.one() == (approx(0), approx(9000), approx(15000))
+    api_fit.check_try_fit_items(
+        val_options=ValOptions(fighter_bay_volume_all=True),
+        passing=[eve_fighter3_id],
+        failing=[eve_fighter2_id])
+    # Action
+    api_fighter.change_fighter(state=consts.ApiMinionState.in_bay)
+    # Verification
+    api_stats = api_fit.get_stats(options=FitStatsOptions(fighter_bay_volume=True))
+    assert api_stats.fighter_bay_volume.one() == (approx(9000), approx(9000), approx(15000))
+    api_fit.check_try_fit_items(
+        val_options=ValOptions(fighter_bay_volume_all=True),
+        passing=[eve_fighter3_id],
+        failing=[eve_fighter2_id])
+
+
 def test_criterion_item_kind(client, consts):
     # Validation applies only to fighters
     eve_use_attr_id = client.mk_eve_attr(id_=consts.EveAttr.volume)

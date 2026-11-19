@@ -260,8 +260,8 @@ impl<I> ValOptions<I> {
     }
     /// Fails when in-space drones take more bandwidth than ship can provide.
     ///
-    /// It passes when total drone bandwidth is below max in fit's current state, or with player-
-    /// controllable bandwidth reduction items (nullifiers, warp core stabilizers) disabled.
+    /// It passes when total drone bandwidth is not above max in fit's current state, or with
+    /// player-controllable bandwidth reduction items (nullifiers, warp core stabilizers) disabled.
     pub fn with_drone_bandwidth_potential(mut self, option: OptionExt<ValEnabled<I>>) -> Self {
         self.overrides.push((ValKind::DroneBandwidthPotential, option));
         self

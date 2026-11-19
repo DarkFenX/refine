@@ -181,6 +181,49 @@ def test_decreasers_no_gain(client, consts):
     assert api_module.update().state == consts.ApiModuleState.online
 
 
+def test_decreasers_multiple_fits(client, consts):
+    # Modules of a fit are switched off only while that fit is validated
+    eve_use_attr_id = client.mk_eve_attr(id_=consts.EveAttr.drone_bandwidth_used)
+    eve_max_attr_id = client.mk_eve_attr(id_=consts.EveAttr.drone_bandwidth)
+    eve_mod_attr_id = client.mk_eve_attr()
+    eve_mod = client.mk_eve_effect_mod(
+        func=consts.EveModFunc.item,
+        loc=consts.EveModLoc.ship,
+        op=consts.EveModOp.post_percent,
+        affector_attr_id=eve_mod_attr_id,
+        affectee_attr_id=eve_max_attr_id)
+    eve_online_effect_id = client.mk_eve_online_effect()
+    eve_mod_online_effect_id = client.mk_eve_effect(cat_id=consts.EveEffCat.online, mod_info=[eve_mod])
+    eve_module_id = client.mk_eve_item(
+        attrs={eve_mod_attr_id: -50},
+        eff_ids=[eve_mod_online_effect_id, eve_online_effect_id])
+    eve_drone1_id = client.mk_eve_item(attrs={eve_use_attr_id: 80})
+    eve_drone2_id = client.mk_eve_item(attrs={eve_use_attr_id: 120})
+    eve_ship_id = client.mk_eve_ship(attrs={eve_max_attr_id: 100})
+    client.create_sources()
+    api_sol = client.create_sol()
+    api_fit1 = api_sol.create_fit()
+    api_ship1 = api_fit1.set_ship(type_id=eve_ship_id)
+    api_module1 = api_fit1.add_module(type_id=eve_module_id, state=consts.ApiModuleState.online)
+    api_fit1.add_drone(type_id=eve_drone1_id, state=consts.ApiMinionState.in_bay)
+    api_fit2 = api_sol.create_fit()
+    api_ship2 = api_fit2.set_ship(type_id=eve_ship_id)
+    api_module2 = api_fit2.add_module(type_id=eve_module_id, state=consts.ApiModuleState.online)
+    api_drone2 = api_fit2.add_drone(type_id=eve_drone2_id, state=consts.ApiMinionState.in_bay)
+    # Verification
+    api_val = api_sol.validate(
+        fit_ids=[api_fit1.id, api_fit2.id],
+        options=ValOptions(unlaunchable_drone_bandwidth=True))
+    assert api_val.passed is False
+    assert api_val.fits.keys() == {api_fit2.id}
+    assert api_val.fits[api_fit2.id].unlaunchable_drone_bandwidth.max == approx(100)
+    assert api_val.fits[api_fit2.id].unlaunchable_drone_bandwidth.users == {api_drone2.id: 120}
+    assert api_module1.update().state == consts.ApiModuleState.online
+    assert api_module2.update().state == consts.ApiModuleState.online
+    assert api_ship1.update().attrs[eve_max_attr_id].modified == approx(50)
+    assert api_ship2.update().attrs[eve_max_attr_id].modified == approx(50)
+
+
 def test_known_failures(client, consts):
     eve_use_attr_id = client.mk_eve_attr(id_=consts.EveAttr.drone_bandwidth_used)
     eve_max_attr_id = client.mk_eve_attr(id_=consts.EveAttr.drone_bandwidth)

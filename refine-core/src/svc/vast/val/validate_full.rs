@@ -1,8 +1,8 @@
 //! Validations are split into groups by solar system state they have to be checked in. Service
-//! layer cannot change the state, so it is caller's responsibility and call appropriate groups.
-//! There are two:
-//! - solar system validations (everything which does not belong to any fit) and most of fit
-//!   validations are checked in the current state;
+//! layer cannot change the state, so it is caller's responsibility to change it and call
+//! appropriate groups. There are two:
+//! - solar system validations (everything which does not belong to any fit) are checked in the
+//!   current state;
 //! - fit validations, which are split in two subgroups:
 //!   - normal validations should be run only against current state;
 //!   - validations designed to be run against bandwidth-reducing-items-disabled are executed twice.

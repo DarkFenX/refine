@@ -85,43 +85,6 @@ def test_equal(client, consts):
         api_val.details  # ruff:ignore[useless-expression]
 
 
-def test_criterion_item_kind(client, consts):
-    # Validation applies only to drones
-    eve_use_attr_id = client.mk_eve_attr(id_=consts.EveAttr.drone_bandwidth_used)
-    eve_max_attr_id = client.mk_eve_attr(id_=consts.EveAttr.drone_bandwidth)
-    eve_item_id = client.mk_eve_item(attrs={eve_use_attr_id: 150})
-    eve_ship_id = client.mk_eve_ship(attrs={eve_max_attr_id: 125, eve_use_attr_id: 150})
-    eve_autocharge_attr_id = client.mk_eve_attr(id_=consts.EveAttr.ftr_abil_launch_bomb_type)
-    eve_autocharge_effect_id = client.mk_eve_effect(
-        id_=consts.EveEffect.ftr_abil_launch_bomb,
-        cat_id=consts.EveEffCat.active)
-    eve_fighter_id = client.mk_eve_item(
-        attrs={eve_autocharge_attr_id: eve_item_id, eve_use_attr_id: 150},
-        eff_ids=[eve_autocharge_effect_id])
-    client.create_sources()
-    api_sol = client.create_sol()
-    api_fit = api_sol.create_fit()
-    api_fit.add_booster(type_id=eve_item_id)
-    api_fit.set_character(type_id=eve_item_id)
-    api_fighter = api_fit.add_fighter(type_id=eve_fighter_id, state=consts.ApiMinionState.engaging)
-    api_fit.add_fw_effect(type_id=eve_item_id)
-    api_fit.add_implant(type_id=eve_item_id)
-    api_fit.add_module(type_id=eve_item_id, state=consts.ApiModuleState.overload, charge_type_id=eve_item_id)
-    api_fit.add_rig(type_id=eve_item_id)
-    api_fit.set_ship(type_id=eve_ship_id)
-    api_fit.add_skill(type_id=eve_item_id, level=5)
-    api_fit.set_stance(type_id=eve_item_id)
-    api_fit.add_subsystem(type_id=eve_item_id)
-    # Verification
-    assert len(api_fighter.autocharges) == 1
-    api_stats = api_fit.get_stats(options=FitStatsOptions(drone_bandwidth=True))
-    assert api_stats.drone_bandwidth.one() == (approx(0), approx(125))
-    api_val = api_fit.validate(options=ValOptions(drone_bandwidth_potential=True))
-    assert api_val.passed is True
-    with check_no_field():
-        api_val.details  # ruff:ignore[useless-expression]
-
-
 def test_decreasers(client, consts):
     # Potential bandwidth is checked with modules which decrease it switched off, e.g. warp core
     # stabilizers and interdiction nullifiers in EVE
@@ -311,6 +274,56 @@ def test_current_validation_known_failures(client, consts):
     assert api_val.passed is True
     with check_no_field():
         api_val.details  # ruff:ignore[useless-expression]
+
+
+def test_unlaunchable_validation(client, consts):
+    # Validations against potential bandwidth are checked together: when one of them fails in the
+    # current state, both are checked with modules which decrease bandwidth switched off
+    eve_use_attr_id = client.mk_eve_attr(id_=consts.EveAttr.drone_bandwidth_used)
+    eve_max_attr_id = client.mk_eve_attr(id_=consts.EveAttr.drone_bandwidth)
+    eve_mod_attr_id = client.mk_eve_attr()
+    eve_mod = client.mk_eve_effect_mod(
+        func=consts.EveModFunc.item,
+        loc=consts.EveModLoc.ship,
+        op=consts.EveModOp.post_percent,
+        affector_attr_id=eve_mod_attr_id,
+        affectee_attr_id=eve_max_attr_id)
+    eve_online_effect_id = client.mk_eve_online_effect()
+    eve_mod_online_effect_id = client.mk_eve_effect(cat_id=consts.EveEffCat.online, mod_info=[eve_mod])
+    eve_module_id = client.mk_eve_item(
+        attrs={eve_mod_attr_id: -50},
+        eff_ids=[eve_mod_online_effect_id, eve_online_effect_id])
+    eve_drone1_id = client.mk_eve_item(attrs={eve_use_attr_id: 40})
+    eve_drone2_id = client.mk_eve_item(attrs={eve_use_attr_id: 80})
+    eve_drone3_id = client.mk_eve_item(attrs={eve_use_attr_id: 70})
+    eve_ship_id = client.mk_eve_ship(attrs={eve_max_attr_id: 100})
+    client.create_sources()
+    api_sol = client.create_sol()
+    api_fit = api_sol.create_fit()
+    api_fit.set_ship(type_id=eve_ship_id)
+    api_module = api_fit.add_module(type_id=eve_module_id, state=consts.ApiModuleState.online)
+    api_drone1 = api_fit.add_drone(type_id=eve_drone1_id, state=consts.ApiMinionState.in_space)
+    api_fit.add_drone(type_id=eve_drone2_id, state=consts.ApiMinionState.in_bay)
+    # Verification - launched drone fits into current bandwidth, the one in bay does not
+    api_stats = api_fit.get_stats(options=FitStatsOptions(drone_bandwidth=True))
+    assert api_stats.drone_bandwidth.one() == (approx(40), approx(50))
+    api_val = api_fit.validate(options=ValOptions(drone_bandwidth_potential=True, unlaunchable_drone_bandwidth=True))
+    assert api_val.passed is True
+    with check_no_field():
+        api_val.details  # ruff:ignore[useless-expression]
+    # Action
+    api_drone3 = api_fit.add_drone(type_id=eve_drone3_id, state=consts.ApiMinionState.in_space)
+    # Verification
+    api_stats = api_fit.get_stats(options=FitStatsOptions(drone_bandwidth=True))
+    assert api_stats.drone_bandwidth.one() == (approx(110), approx(50))
+    api_val = api_fit.validate(options=ValOptions(drone_bandwidth_potential=True, unlaunchable_drone_bandwidth=True))
+    assert api_val.passed is False
+    assert api_val.details.drone_bandwidth_potential.used == approx(110)
+    assert api_val.details.drone_bandwidth_potential.max == approx(100)
+    assert api_val.details.drone_bandwidth_potential.users == {api_drone1.id: 40, api_drone3.id: 70}
+    with check_no_field():
+        api_val.details.unlaunchable_drone_bandwidth  # ruff:ignore[useless-expression]
+    assert api_module.update().state == consts.ApiModuleState.online
 
 
 def test_known_failures(client, consts):
@@ -832,6 +845,43 @@ def test_no_value_max(client, consts):
     assert api_val.details.drone_bandwidth_potential.used == approx(150)
     assert api_val.details.drone_bandwidth_potential.max == approx(0)
     assert api_val.details.drone_bandwidth_potential.users == {api_drone.id: 150}
+
+
+def test_criterion_item_kind(client, consts):
+    # Validation applies only to drones
+    eve_use_attr_id = client.mk_eve_attr(id_=consts.EveAttr.drone_bandwidth_used)
+    eve_max_attr_id = client.mk_eve_attr(id_=consts.EveAttr.drone_bandwidth)
+    eve_item_id = client.mk_eve_item(attrs={eve_use_attr_id: 150})
+    eve_ship_id = client.mk_eve_ship(attrs={eve_max_attr_id: 125, eve_use_attr_id: 150})
+    eve_autocharge_attr_id = client.mk_eve_attr(id_=consts.EveAttr.ftr_abil_launch_bomb_type)
+    eve_autocharge_effect_id = client.mk_eve_effect(
+        id_=consts.EveEffect.ftr_abil_launch_bomb,
+        cat_id=consts.EveEffCat.active)
+    eve_fighter_id = client.mk_eve_item(
+        attrs={eve_autocharge_attr_id: eve_item_id, eve_use_attr_id: 150},
+        eff_ids=[eve_autocharge_effect_id])
+    client.create_sources()
+    api_sol = client.create_sol()
+    api_fit = api_sol.create_fit()
+    api_fit.add_booster(type_id=eve_item_id)
+    api_fit.set_character(type_id=eve_item_id)
+    api_fighter = api_fit.add_fighter(type_id=eve_fighter_id, state=consts.ApiMinionState.engaging)
+    api_fit.add_fw_effect(type_id=eve_item_id)
+    api_fit.add_implant(type_id=eve_item_id)
+    api_fit.add_module(type_id=eve_item_id, state=consts.ApiModuleState.overload, charge_type_id=eve_item_id)
+    api_fit.add_rig(type_id=eve_item_id)
+    api_fit.set_ship(type_id=eve_ship_id)
+    api_fit.add_skill(type_id=eve_item_id, level=5)
+    api_fit.set_stance(type_id=eve_item_id)
+    api_fit.add_subsystem(type_id=eve_item_id)
+    # Verification
+    assert len(api_fighter.autocharges) == 1
+    api_stats = api_fit.get_stats(options=FitStatsOptions(drone_bandwidth=True))
+    assert api_stats.drone_bandwidth.one() == (approx(0), approx(125))
+    api_val = api_fit.validate(options=ValOptions(drone_bandwidth_potential=True))
+    assert api_val.passed is True
+    with check_no_field():
+        api_val.details  # ruff:ignore[useless-expression]
 
 
 def test_criterion_drone_state(client, consts):

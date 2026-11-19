@@ -1,4 +1,4 @@
-from fw import approx
+from fw import approx, check_no_field
 from fw.api import ValOptions
 
 
@@ -87,10 +87,15 @@ def test_decreasers(client, consts):
         op=consts.EveModOp.post_percent,
         affector_attr_id=eve_mod_attr_id,
         affectee_attr_id=eve_max_attr_id)
+    eve_capacity_attr_id = client.mk_eve_attr(id_=consts.EveAttr.capacity)
     eve_mod_effect_id = client.mk_eve_effect(cat_id=consts.EveEffCat.online, mod_info=[eve_mod])
-    eve_module_id = client.mk_eve_module(attrs={eve_mod_attr_id: -50}, eff_ids=[eve_mod_effect_id])
+    eve_module_id = client.mk_eve_module(
+        attrs={eve_mod_attr_id: -50, eve_capacity_attr_id: 1},
+        eff_ids=[eve_mod_effect_id])
     eve_drone1_id = client.mk_eve_drone(attrs={eve_use_attr_id: 80})
     eve_drone2_id = client.mk_eve_drone(attrs={eve_use_attr_id: 120})
+    eve_charge_id = client.mk_eve_charge()
+    eve_implant_id = client.mk_eve_implant()
     eve_ship_id = client.mk_eve_ship(attrs={eve_max_attr_id: 100})
     client.create_sources()
     api_sol = client.create_sol()
@@ -112,6 +117,19 @@ def test_decreasers(client, consts):
         passing=[eve_drone1_id],
         failing=[eve_drone2_id])
     assert api_module.update().state == consts.ApiModuleState.online
+    assert api_ship.update().attrs[eve_max_attr_id].modified == approx(50)
+    # Action
+    api_fit.add_drone(type_id=eve_drone1_id, state=consts.ApiMinionState.in_bay)
+    # Verification - the fit itself passes only with the module switched off, so it is switched
+    # for tried items of any kind, including a charge loaded into the module
+    api_fit.check_try_fit_items(
+        val_options=ValOptions(unlaunchable_drone_bandwidth=True),
+        passing=[eve_drone1_id, eve_charge_id, eve_implant_id],
+        failing=[eve_drone2_id])
+    api_module.update()
+    assert api_module.state == consts.ApiModuleState.online
+    with check_no_field():
+        api_module.charge  # ruff:ignore[useless-expression]
     assert api_ship.update().attrs[eve_max_attr_id].modified == approx(50)
 
 

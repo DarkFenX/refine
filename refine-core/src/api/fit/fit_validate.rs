@@ -54,14 +54,10 @@ impl SolCore {
     // Not inlined: this path is rarely taken, and with it inlined every fast validation takes a few
     // instructions more
     #[inline(never)]
-    fn internal_validate_fit_pdbw_fast(
-        &mut self,
-        fit_uid: UFitId,
-        options: &ValOptionsInt,
-    ) -> bool {
+    fn internal_validate_fit_pdbw_fast(&mut self, fit_uid: UFitId, options: &ValOptionsInt) -> bool {
         let savepoint = self.internal_tx_savepoint();
-        let valid = self.internal_switch_pdbw(fit_uid)
-            && self.svc.validate_fit_pdbw_fast(&self.u_data, fit_uid, options);
+        let valid =
+            self.internal_switch_pdbw(fit_uid) && self.svc.validate_fit_pdbw_fast(&self.u_data, fit_uid, options);
         self.internal_tx_rollback(savepoint);
         valid
     }
