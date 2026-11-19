@@ -1,5 +1,5 @@
 use crate::{
-    stats::StatResource,
+    stats::{StatFighterBayVolume, StatResource},
     svc::{Svc, SvcCtx},
     ud::{UData, UFit, UFitId},
 };
@@ -44,7 +44,7 @@ impl Svc {
         u_data: &UData,
         fit_uid: UFitId,
         fit: &UFit,
-    ) -> StatResource {
+    ) -> StatFighterBayVolume {
         self.vast.get_fit_data(fit_uid).get_stat_fighter_bay_volume(
             &SvcCtx::new(u_data, &self.eff_projs),
             &mut self.calc,

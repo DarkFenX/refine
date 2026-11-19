@@ -4,6 +4,7 @@ from .stat_cap_sim import StatCapSim
 from .stat_dmg import StatDmg
 from .stat_ehp import StatEhp
 from .stat_erps import StatErps
+from .stat_fighter_bay_volume import StatFighterBayVolume
 from .stat_hp import StatHp
 from .stat_jam import StatIncomingJam
 from .stat_mining import StatMining
@@ -48,7 +49,7 @@ class FitStats(AttrDict):
             'drone_bandwidth': AttrHookDef(func=lambda d: (
                 NttList(StatResource(data=e) for e in d) if d is not None else None)),
             'fighter_bay_volume': AttrHookDef(func=lambda d: (
-                NttList(StatResource(data=e) for e in d) if d is not None else None)),
+                NttList(StatFighterBayVolume(data=e) for e in d) if d is not None else None)),
             # Fit slots
             'high_slots': AttrHookDef(func=lambda d: (
                 NttList(StatSlot(data=e) for e in d) if d is not None else None)),

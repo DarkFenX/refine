@@ -1,4 +1,4 @@
-pub use stat::StatResource;
+pub use stat::{StatFighterBayVolume, StatResource};
 
 mod getter;
 mod stat;

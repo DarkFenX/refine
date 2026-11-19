@@ -1,8 +1,8 @@
 use crate::{
     Count, PValue, UnitInterval, Value,
     stats::{
-        StatBrFallibleError, StatCapSim, StatDmg, StatEhp, StatErps, StatHp, StatInJam, StatJump, StatMining,
-        StatOutReps, StatResists, StatResource, StatResult, StatRps, StatSensors, StatSlot,
+        StatBrFallibleError, StatCapSim, StatDmg, StatEhp, StatErps, StatFighterBayVolume, StatHp, StatInJam, StatJump,
+        StatMining, StatOutReps, StatResists, StatResource, StatResult, StatRps, StatSensors, StatSlot,
         err::{
             StatAgilityError, StatFitAppliedError, StatFitCharacterError, StatFitShipAppliedError, StatFitShipError,
             StatJumpError, StatMaxWarpRangeError, StatProbingSizeError, StatWarpSpeedError,
@@ -36,7 +36,7 @@ pub struct FitStats {
     #[cfg_attr(feature = "serde", serde(skip_serializing_if = "StatResult::is_not_requested"))]
     pub drone_bandwidth: StatResult<StatResource, !, !> = StatResult::NotRequested,
     #[cfg_attr(feature = "serde", serde(skip_serializing_if = "StatResult::is_not_requested"))]
-    pub fighter_bay_volume: StatResult<StatResource, !, !> = StatResult::NotRequested,
+    pub fighter_bay_volume: StatResult<StatFighterBayVolume, !, !> = StatResult::NotRequested,
     // Fit slots
     #[cfg_attr(feature = "serde", serde(skip_serializing_if = "StatResult::is_not_requested"))]
     pub high_slots: StatResult<StatSlot, !, !> = StatResult::NotRequested,

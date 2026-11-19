@@ -1,7 +1,7 @@
 use crate::{
     Value,
     rd::RAttrId,
-    stats::StatResource,
+    stats::{StatFighterBayVolume, StatResource},
     svc::{Calc, SvcCtx, vast::VastFitData},
     ud::{UFit, UItemId},
 };
@@ -60,14 +60,22 @@ impl VastFitData {
         ctx: &SvcCtx,
         calc: &mut Calc,
         fit: &UFit,
-    ) -> StatResource {
-        get_resource_stats_other(
-            ctx,
-            calc,
-            fit,
-            self.fighters_volume.values().map(|v| v.into_value()),
-            ctx.ac().ftr_capacity,
-        )
+    ) -> StatFighterBayVolume {
+        let output = calc.get_oitem_oattr_afb_oextra(ctx, fit.ship, ctx.ac().ftr_capacity, Value::ZERO);
+        let mut used_inbay = Value::ZERO;
+        let mut used_all = Value::ZERO;
+        for (fighter_uid, volume) in self.fighters_volume.iter() {
+            let volume = volume.into_value();
+            used_all += volume;
+            if !self.fighters_online.contains(fighter_uid) {
+                used_inbay += volume;
+            }
+        }
+        StatFighterBayVolume {
+            used_inbay,
+            used_all,
+            output,
+        }
     }
 }
 

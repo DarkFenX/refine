@@ -1,6 +1,6 @@
 use crate::{
     api::AffectionDir,
-    stats::{FitStats, StatCtlAffectors, StatResource},
+    stats::{FitStats, StatCtlAffectors, StatFighterBayVolume, StatResource},
 };
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -42,7 +42,7 @@ impl<'s> FitStats<'s> {
         sol.internal_tx_rollback(savepoint);
         result
     }
-    pub fn get_stat_fighter_bay_volume(&mut self) -> StatResource {
+    pub fn get_stat_fighter_bay_volume(&mut self) -> StatFighterBayVolume {
         let fit = self.sol.u_data.fits.get(self.uid);
         self.sol
             .svc
