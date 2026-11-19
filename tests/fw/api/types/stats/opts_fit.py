@@ -6,6 +6,7 @@ from fw.util import Absent, dc_to_dict
 if typing.TYPE_CHECKING:
     from .opt_cap import StatsOptionCapBalance, StatsOptionCapSim
     from .opt_dmg import StatsOptionFitDmg
+    from .opt_drone_bandwidth import StatsOptionDroneBandwidth
     from .opt_ehp import StatsOptionEhp
     from .opt_incoming_jam import StatsOptionInJam
     from .opt_jump import StatsOptionJump
@@ -32,7 +33,7 @@ class FitStatsOptions:
     powergrid: bool | type[Absent] = Absent
     calibration: bool | type[Absent] = Absent
     drone_bay_volume: bool | type[Absent] = Absent
-    drone_bandwidth: bool | type[Absent] = Absent
+    drone_bandwidth: bool | list[StatsOptionDroneBandwidth] | type[Absent] = Absent
     fighter_bay_volume: bool | type[Absent] = Absent
     # Fit slots
     high_slots: bool | type[Absent] = Absent

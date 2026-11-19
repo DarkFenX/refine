@@ -16,6 +16,7 @@ from .types import (
     StatOutRepItemKinds,
     StatsOptionCapBalance,
     StatsOptionCapSim,
+    StatsOptionDroneBandwidth,
     StatsOptionEhp,
     StatsOptionErps,
     StatsOptionFitDmg,

@@ -10,6 +10,7 @@ from .opt_dmg import (
     StatsOptionFitDmg,
     StatsOptionItemDmg,
 )
+from .opt_drone_bandwidth import StatsOptionDroneBandwidth
 from .opt_ehp import StatsOptionEhp
 from .opt_incoming_jam import StatsOptionInJam
 from .opt_jump import StatsOptionJump

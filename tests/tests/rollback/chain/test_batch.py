@@ -1,9 +1,11 @@
 from fw import Spool, approx, check_no_field
 from fw.api import (
+    FitStatsOptions,
     FleetStatsOptions,
     ItemStatsOptions,
     ModAddMode,
     ModMoveMode,
+    StatsOptionDroneBandwidth,
     StatsOptionItemOutCps,
     StatsOptionJump,
     StatsOptionMass,
@@ -617,6 +619,57 @@ def test_sol_stats_affector_switch_fleet(client, consts):
     assert api_fit.update().modules.high.map(lambda m: m.id) == [api_module.id]
     assert api_module.update().state == consts.ApiModuleState.offline
     assert api_ship.update().attrs[eve_mass_attr_id].modified == approx(100)
+
+
+def test_sol_stats_affector_switch_drone_bandwidth(client, consts):
+    eve_output_attr_id = client.mk_eve_attr(id_=consts.EveAttr.drone_bandwidth)
+    eve_mod_attr_id = client.mk_eve_attr()
+    eve_mod = client.mk_eve_effect_mod(
+        func=consts.EveModFunc.item,
+        loc=consts.EveModLoc.ship,
+        op=consts.EveModOp.post_percent,
+        affector_attr_id=eve_mod_attr_id,
+        affectee_attr_id=eve_output_attr_id)
+    eve_online_effect_id = client.mk_eve_online_effect()
+    eve_mod_online_effect_id = client.mk_eve_effect(cat_id=consts.EveEffCat.online, mod_info=[eve_mod])
+    eve_mod_active_effect_id = client.mk_eve_effect(cat_id=consts.EveEffCat.active, mod_info=[eve_mod])
+    eve_online_module_id = client.mk_eve_item(
+        attrs={eve_mod_attr_id: -50},
+        eff_ids=[eve_mod_online_effect_id, eve_online_effect_id])
+    eve_active_module_id = client.mk_eve_item(
+        attrs={eve_mod_attr_id: -50},
+        eff_ids=[eve_mod_active_effect_id],
+        defeff_id=eve_mod_active_effect_id)
+    eve_ship_id = client.mk_eve_ship(attrs={eve_output_attr_id: 100})
+    client.create_sources()
+    api_sol = client.create_sol()
+    api_fit = api_sol.create_fit()
+    api_ship = api_fit.set_ship(type_id=eve_ship_id)
+    api_module = api_fit.add_module(type_id=eve_online_module_id)
+    api_other_item = api_sol.add_sw_effect(type_id=eve_ship_id)
+    api_other_item.remove()
+    # Verification
+    assert api_ship.update().attrs[eve_output_attr_id].modified == approx(100)
+    # Action & verification - fit stats request offlines modules the batch put online and added,
+    # rolls back to its savepoint, and the batch fails after it. The swap after it needs the module
+    # added right before the stats request, and moves the old module
+    with api_sol.batch(status_code=400, json_predicate={
+            'code': 'ITM-001',
+            'message': f'failed to remove item: item {api_other_item.id} not found',
+            'cmd_index': 4,
+    }) as api_sol_batch:
+        api_sol_batch.change_module(item_id=api_module.id, state=consts.ApiModuleState.online)
+        api_new_module = api_sol_batch.add_module(
+            fit_id=api_fit.id,
+            type_id=eve_active_module_id,
+            state=consts.ApiModuleState.active)
+        api_sol_batch.get_fit_stats(fit_id=api_fit.id, fit_options=FitStatsOptions(
+            drone_bandwidth=[StatsOptionDroneBandwidth(affectors=consts.ApiCtlAffector.offline)]))
+        api_sol_batch.change_module(item_id=api_new_module.id, move=ModMoveMode.swap(pos=0))
+        api_sol_batch.remove_item(item_id=api_other_item.id)
+    assert api_fit.update().modules.high.map(lambda m: m.id) == [api_module.id]
+    assert api_module.update().state == consts.ApiModuleState.offline
+    assert api_ship.update().attrs[eve_output_attr_id].modified == approx(100)
 
 
 def test_sol_stats_affector_switch_jump(client, consts):
