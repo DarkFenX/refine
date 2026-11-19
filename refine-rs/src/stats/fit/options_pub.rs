@@ -2,9 +2,9 @@ use crate::{
     CmdResps, FitId, FitIdBr, ItemId, ItemIdBr,
     shared::BrResolveInfallible,
     stats::{
-        StatOptionCapBlcGen, StatOptionCapSimGen, StatOptionEhp, StatOptionErps, StatOptionExt, StatOptionFitDmgGen,
-        StatOptionFitMining, StatOptionFitOutCpsGen, StatOptionFitOutNpsGen, StatOptionFitOutRpsGen,
-        StatOptionIncomingJam, StatOptionInt, StatOptionJumpGen, StatOptionMass, StatOptionRps,
+        StatOptionCapBlcGen, StatOptionCapSimGen, StatOptionDroneBandwidth, StatOptionEhp, StatOptionErps,
+        StatOptionExt, StatOptionFitDmgGen, StatOptionFitMining, StatOptionFitOutCpsGen, StatOptionFitOutNpsGen,
+        StatOptionFitOutRpsGen, StatOptionIncomingJam, StatOptionInt, StatOptionJumpGen, StatOptionMass, StatOptionRps,
         fit::FitStatsOptionsResolved,
     },
 };
@@ -40,7 +40,7 @@ enum FitStatOption<F, I> {
     Powergrid(bool),
     Calibration(bool),
     DroneBayVolume(bool),
-    DroneBandwidth(bool),
+    DroneBandwidth(StatOptionExt<StatOptionDroneBandwidth>),
     FighterBayVolume(bool),
     // Fit slots
     HighSlots(bool),
@@ -153,8 +153,8 @@ impl<F, I> FitStatsOptionsGen<F, I> {
         self.overrides.push(FitStatOption::DroneBayVolume(enabled));
         self
     }
-    pub fn with_drone_bandwidth(mut self, enabled: bool) -> Self {
-        self.overrides.push(FitStatOption::DroneBandwidth(enabled));
+    pub fn with_drone_bandwidth(mut self, option: StatOptionExt<StatOptionDroneBandwidth>) -> Self {
+        self.overrides.push(FitStatOption::DroneBandwidth(option));
         self
     }
     pub fn with_fighter_bay_volume(mut self, enabled: bool) -> Self {
@@ -475,7 +475,7 @@ impl FitStatsOptions {
                 FitStatOption::Powergrid(option) => resolved.powergrid = option,
                 FitStatOption::Calibration(option) => resolved.calibration = option,
                 FitStatOption::DroneBayVolume(option) => resolved.drone_bay_volume = option,
-                FitStatOption::DroneBandwidth(option) => resolved.drone_bandwidth = option,
+                FitStatOption::DroneBandwidth(option) => resolved.drone_bandwidth = option.into_resolved(),
                 FitStatOption::FighterBayVolume(option) => resolved.fighter_bay_volume = option,
                 // Fit slots
                 FitStatOption::HighSlots(option) => resolved.high_slots = option,

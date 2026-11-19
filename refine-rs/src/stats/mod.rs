@@ -33,12 +33,12 @@ pub(crate) use item::ItemStatsOptionsGen;
 pub use item::{ItemStats, ItemStatsCmd, ItemStatsCmdBr, ItemStatsOptions, ItemStatsOptionsBr, ItemStatsResp};
 pub(in crate::stats) use option::StatOptionInt;
 pub use option::{
-    StatItemStateOptions, StatOptionCapBlc, StatOptionCapBlcBr, StatOptionCapSim, StatOptionCapSimBr, StatOptionEhp,
-    StatOptionErps, StatOptionExt, StatOptionFitDmg, StatOptionFitDmgBr, StatOptionFitMining, StatOptionFitOutCps,
-    StatOptionFitOutCpsBr, StatOptionFitOutNps, StatOptionFitOutNpsBr, StatOptionFitOutRps, StatOptionFitOutRpsBr,
-    StatOptionIncomingJam, StatOptionItemDmg, StatOptionItemDmgBr, StatOptionItemMining, StatOptionItemOutCps,
-    StatOptionItemOutCpsBr, StatOptionItemOutNps, StatOptionItemOutNpsBr, StatOptionItemOutRps, StatOptionItemOutRpsBr,
-    StatOptionJump, StatOptionJumpBr, StatOptionMass, StatOptionRps,
+    StatItemStateOptions, StatOptionCapBlc, StatOptionCapBlcBr, StatOptionCapSim, StatOptionCapSimBr,
+    StatOptionDroneBandwidth, StatOptionEhp, StatOptionErps, StatOptionExt, StatOptionFitDmg, StatOptionFitDmgBr,
+    StatOptionFitMining, StatOptionFitOutCps, StatOptionFitOutCpsBr, StatOptionFitOutNps, StatOptionFitOutNpsBr,
+    StatOptionFitOutRps, StatOptionFitOutRpsBr, StatOptionIncomingJam, StatOptionItemDmg, StatOptionItemDmgBr,
+    StatOptionItemMining, StatOptionItemOutCps, StatOptionItemOutCpsBr, StatOptionItemOutNps, StatOptionItemOutNpsBr,
+    StatOptionItemOutRps, StatOptionItemOutRpsBr, StatOptionJump, StatOptionJumpBr, StatOptionMass, StatOptionRps,
 };
 pub(crate) use option::{
     StatOptionCapBlcGen, StatOptionCapSimGen, StatOptionFitDmgGen, StatOptionFitOutCpsGen, StatOptionFitOutNpsGen,

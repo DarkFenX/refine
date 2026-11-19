@@ -32,8 +32,6 @@ pub enum CtlAffectors {
 #[derive(Copy, Clone)]
 pub(in crate::api) enum AffectionDir {
     Increase,
-    // Is not used at the moment, but might be needed later
-    #[expect(dead_code)]
     Decrease,
 }
 

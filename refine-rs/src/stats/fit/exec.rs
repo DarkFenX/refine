@@ -3,9 +3,9 @@ use crate::{
     err::BrResolveError,
     stats::{
         FitStats, StatBrFallibleError, StatCapSim, StatDmg, StatEhp, StatErps, StatInJam, StatJump, StatMining,
-        StatOptionCapBlc, StatOptionCapSim, StatOptionEhp, StatOptionErps, StatOptionFitDmg, StatOptionFitMining,
-        StatOptionFitOutCps, StatOptionFitOutNps, StatOptionFitOutRps, StatOptionIncomingJam, StatOptionJump,
-        StatOptionMass, StatOptionRps, StatOutReps, StatResult, StatRps,
+        StatOptionCapBlc, StatOptionCapSim, StatOptionDroneBandwidth, StatOptionEhp, StatOptionErps, StatOptionFitDmg,
+        StatOptionFitMining, StatOptionFitOutCps, StatOptionFitOutNps, StatOptionFitOutRps, StatOptionIncomingJam,
+        StatOptionJump, StatOptionMass, StatOptionRps, StatOutReps, StatResource, StatResult, StatRps,
         err::{StatFitAppliedError, StatFitShipAppliedError, StatFitShipError, StatJumpError},
         exec_shared::{collect_stats_err_both_br, collect_stats_err_inner, collect_stats_err_outer_br},
         fit::FitStatsOptionsResolved,
@@ -110,8 +110,8 @@ impl FitStatsOptionsResolved {
         if *drone_bay_volume {
             stats.drone_bay_volume = StatResult::from_stat(core_fit_stats.get_stat_drone_bay_volume());
         }
-        if *drone_bandwidth {
-            stats.drone_bandwidth = StatResult::from_stat(core_fit_stats.get_stat_drone_bandwidth());
+        if let Some(options) = drone_bandwidth {
+            stats.drone_bandwidth = get_drone_bandwidth_stats(core_fit_stats, options);
         }
         if *fighter_bay_volume {
             stats.fighter_bay_volume = StatResult::from_stat(core_fit_stats.get_stat_fighter_bay_volume());
@@ -335,6 +335,18 @@ fn get_outgoing_cps_stats(
     collect_stats_err_outer_br(options, |option| match option.projectee_item_id {
         Some(projectee_item_id) => core_fit_stats.get_stat_outgoing_cps_applied(option.time, &projectee_item_id),
         None => Ok(core_fit_stats.get_stat_outgoing_cps(option.time)),
+    })
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Fit resources
+////////////////////////////////////////////////////////////////////////////////////////////////////
+fn get_drone_bandwidth_stats(
+    core_fit_stats: &mut rc::stats::FitStats,
+    options: &[StatOptionDroneBandwidth],
+) -> StatResult<StatResource, !, !> {
+    collect_stats_err_inner(options, |option| {
+        Ok(core_fit_stats.get_stat_drone_bandwidth(option.affectors))
     })
 }
 

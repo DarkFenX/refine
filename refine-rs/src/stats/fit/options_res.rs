@@ -1,9 +1,9 @@
 use crate::{
     err::BrResolveError,
     stats::{
-        StatOptionCapBlc, StatOptionCapSim, StatOptionEhp, StatOptionErps, StatOptionExt, StatOptionFitDmg,
-        StatOptionFitMining, StatOptionFitOutCps, StatOptionFitOutNps, StatOptionFitOutRps, StatOptionIncomingJam,
-        StatOptionInt, StatOptionJump, StatOptionMass, StatOptionRps,
+        StatOptionCapBlc, StatOptionCapSim, StatOptionDroneBandwidth, StatOptionEhp, StatOptionErps, StatOptionExt,
+        StatOptionFitDmg, StatOptionFitMining, StatOptionFitOutCps, StatOptionFitOutNps, StatOptionFitOutRps,
+        StatOptionIncomingJam, StatOptionInt, StatOptionJump, StatOptionMass, StatOptionRps,
     },
 };
 
@@ -19,7 +19,7 @@ pub(in crate::stats) struct FitStatsOptionsResolved {
     pub(super) powergrid: bool,
     pub(super) calibration: bool,
     pub(super) drone_bay_volume: bool,
-    pub(super) drone_bandwidth: bool,
+    pub(super) drone_bandwidth: Option<Vec<StatOptionDroneBandwidth>>,
     pub(super) fighter_bay_volume: bool,
     // Fit slots
     pub(super) high_slots: bool,
@@ -96,7 +96,7 @@ impl FitStatsOptionsResolved {
             powergrid: default,
             calibration: default,
             drone_bay_volume: default,
-            drone_bandwidth: default,
+            drone_bandwidth: StatOptionExt::blank_from_default(default),
             fighter_bay_volume: default,
             // Fit slots
             high_slots: default,
@@ -163,6 +163,7 @@ impl FitStatsOptionsResolved {
             outgoing_nps,
             outgoing_rps,
             outgoing_cps,
+            drone_bandwidth,
             ehp,
             rps,
             erps,
@@ -176,7 +177,6 @@ impl FitStatsOptionsResolved {
             powergrid: _,
             calibration: _,
             drone_bay_volume: _,
-            drone_bandwidth: _,
             fighter_bay_volume: _,
             high_slots: _,
             mid_slots: _,
@@ -226,6 +226,7 @@ impl FitStatsOptionsResolved {
         StatOptionInt::complete_blank_with_default(outgoing_nps);
         StatOptionInt::complete_blank_with_default(outgoing_rps);
         StatOptionInt::complete_blank_with_default(outgoing_cps);
+        StatOptionExt::complete_blank_with_default(drone_bandwidth);
         StatOptionExt::complete_blank_with_default(ehp);
         StatOptionExt::complete_blank_with_default(rps);
         StatOptionExt::complete_blank_with_default(erps);
@@ -316,7 +317,7 @@ impl FitStatsOptionsResolved {
             || *powergrid
             || *calibration
             || *drone_bay_volume
-            || *drone_bandwidth
+            || drone_bandwidth.is_some()
             || *fighter_bay_volume
             // Fit slots
             || *high_slots
