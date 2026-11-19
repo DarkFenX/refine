@@ -64,21 +64,25 @@ impl SolCore {
     /// Switches off modules which decrease drone bandwidth of the fit's ship. Returns if the ship
     /// got more bandwidth.
     fn internal_switch_pdbw(&mut self, fit_uid: UFitId) -> bool {
-        let fit = self.u_data.fits.get(fit_uid);
-        let Some(ship_uid) = fit.ship else {
+        let Some(ship_uid) = self.u_data.fits.get(fit_uid).ship else {
             return false;
         };
-        let current = self.svc.get_stat_fit_drone_bandwidth(&self.u_data, fit_uid, fit).output;
+        let Some(attr_rid) = self.u_data.r_data.get_attr_consts().drone_bandwidth else {
+            return false;
+        };
+        let Ok(current) = self.internal_get_item_attr(ship_uid, attr_rid) else {
+            return false;
+        };
         let switched = self.internal_ctl_affectors_switch(
             ship_uid,
-            self.u_data.r_data.get_attr_consts().drone_bandwidth,
+            Some(attr_rid),
             StatCtlAffectors::Offline,
             AffectionDir::Decrease,
         );
         if !switched {
             return false;
         }
-        let fit = self.u_data.fits.get(fit_uid);
-        self.svc.get_stat_fit_drone_bandwidth(&self.u_data, fit_uid, fit).output > current
+        self.internal_get_item_attr(ship_uid, attr_rid)
+            .is_ok_and(|potential| potential.extra > current.extra)
     }
 }
