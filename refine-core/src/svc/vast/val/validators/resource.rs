@@ -1,7 +1,9 @@
+use itertools::Itertools;
+
 use super::shared::get_max_resource;
 use crate::{
     ItemId, Value,
-    rd::RAttrId,
+    rd::{RAttrId, RState},
     svc::{Calc, SvcCtx, vast::VastFitData},
     ud::{UFit, UItemId},
     util::RSet,
@@ -126,7 +128,7 @@ impl VastFitData {
             ctx.ac().drone_bandwidth,
         )
     }
-    pub(in crate::svc::vast::val) fn validate_fighter_bay_volume_fast(
+    pub(in crate::svc::vast::val) fn validate_fighter_bay_volume_all_fast(
         &self,
         kfs: &RSet<UItemId>,
         ctx: &SvcCtx,
@@ -139,6 +141,22 @@ impl VastFitData {
             calc,
             fit,
             self.fighters_volume.iter().map(|(&k, v)| (k, v.into_value())),
+            ctx.ac().ftr_capacity,
+        )
+    }
+    pub(in crate::svc::vast::val) fn validate_fighter_bay_volume_inbay_fast(
+        &self,
+        kfs: &RSet<UItemId>,
+        ctx: &SvcCtx,
+        calc: &mut Calc,
+        fit: &UFit,
+    ) -> bool {
+        validate_fast_other(
+            kfs,
+            ctx,
+            calc,
+            fit,
+            iter_fighters_inbay_volume(ctx, self),
             ctx.ac().ftr_capacity,
         )
     }
@@ -225,7 +243,7 @@ impl VastFitData {
             ctx.ac().drone_bandwidth,
         )
     }
-    pub(in crate::svc::vast::val) fn validate_fighter_bay_volume_verbose(
+    pub(in crate::svc::vast::val) fn validate_fighter_bay_volume_all_verbose(
         &self,
         kfs: &RSet<UItemId>,
         ctx: &SvcCtx,
@@ -238,6 +256,22 @@ impl VastFitData {
             calc,
             fit,
             self.fighters_volume.iter().map(|(&k, v)| (k, v.into_value())),
+            ctx.ac().ftr_capacity,
+        )
+    }
+    pub(in crate::svc::vast::val) fn validate_fighter_bay_volume_inbay_verbose(
+        &self,
+        kfs: &RSet<UItemId>,
+        ctx: &SvcCtx,
+        calc: &mut Calc,
+        fit: &UFit,
+    ) -> ValResult<ValResourceFail> {
+        validate_verbose_other(
+            kfs,
+            ctx,
+            calc,
+            fit,
+            iter_fighters_inbay_volume(ctx, self).collect_vec().into_iter(),
             ctx.ac().ftr_capacity,
         )
     }
@@ -357,5 +391,15 @@ fn validate_verbose_other(
         used: total_use,
         max,
         users,
+    })
+}
+
+fn iter_fighters_inbay_volume(ctx: &SvcCtx, fit_data: &VastFitData) -> impl Iterator<Item = (UItemId, Value)> {
+    fit_data.fighters_volume.iter().filter_map(|(&fighter_uid, volume)| {
+        // Reading item state is cheaper than checking presence in fighters_online
+        match ctx.u_data.items.get(fighter_uid).get_state() < RState::Online {
+            true => Some((fighter_uid, volume.into_value())),
+            false => None,
+        }
     })
 }

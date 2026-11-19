@@ -277,9 +277,16 @@ impl<I> ValOptions<I> {
     ////////////////////////////////////////////////////////////////////////////////////////////////
     // Fighters
     ////////////////////////////////////////////////////////////////////////////////////////////////
-    /// Fails when fighters take more volume than ship's fighter bay has.
-    pub fn with_fighter_bay_volume(mut self, option: OptionExt<ValEnabled<I>>) -> Self {
-        self.overrides.push((ValKind::FighterBayVolume, option));
+    /// Fails when all fighters, regardless of their state, take more volume than ship's fighter bay
+    /// has.
+    pub fn with_fighter_bay_volume_all(mut self, option: OptionExt<ValEnabled<I>>) -> Self {
+        self.overrides.push((ValKind::FighterBayVolumeAll, option));
+        self
+    }
+    /// Fails when fighters which are strictly in "in bay" state (not loaded into tubes) take more
+    /// volume than ship's fighter bay has.
+    pub fn with_fighter_bay_volume_inbay(mut self, option: OptionExt<ValEnabled<I>>) -> Self {
+        self.overrides.push((ValKind::FighterBayVolumeInbay, option));
         self
     }
     /// Fails when fit has more in-space fighters than ship supports.

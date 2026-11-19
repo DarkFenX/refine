@@ -57,7 +57,8 @@ class ValOptions:
     unlaunchable_drone_bandwidth: ValOption = Absent
     drone_group: ValOption = Absent
     # Fighters
-    fighter_bay_volume: ValOption = Absent
+    fighter_bay_volume_all: ValOption = Absent
+    fighter_bay_volume_inbay: ValOption = Absent
     launched_fighter_count: ValOption = Absent
     launched_light_fighter_count: ValOption = Absent
     launched_heavy_fighter_count: ValOption = Absent

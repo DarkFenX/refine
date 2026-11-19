@@ -17,7 +17,7 @@ def test_fail_single(client, consts):
     api_stats = api_fit.get_stats(options=FitStatsOptions(fighter_bay_volume=True))
     assert api_stats.fighter_bay_volume.one() == (approx(0), approx(0), approx(8000))
     api_fit.check_try_fit_items(
-        val_options=ValOptions(fighter_bay_volume=True),
+        val_options=ValOptions(fighter_bay_volume_all=True),
         passing=[eve_fighter2_id],
         failing=[eve_fighter1_id])
 
@@ -39,7 +39,7 @@ def test_fail_multiple_ship(client, consts):
     api_stats = api_fit.get_stats(options=FitStatsOptions(fighter_bay_volume=True))
     assert api_stats.fighter_bay_volume.one() == (approx(9000), approx(9000), approx(15000))
     api_fit.check_try_fit_items(
-        val_options=ValOptions(fighter_bay_volume=True),
+        val_options=ValOptions(fighter_bay_volume_all=True),
         passing=[eve_fighter3_id],
         failing=[eve_fighter2_id])
 
@@ -61,7 +61,7 @@ def test_fail_multiple_struct(client, consts):
     api_stats = api_fit.get_stats(options=FitStatsOptions(fighter_bay_volume=True))
     assert api_stats.fighter_bay_volume.one() == (approx(9000), approx(9000), approx(15000))
     api_fit.check_try_fit_items(
-        val_options=ValOptions(fighter_bay_volume=True),
+        val_options=ValOptions(fighter_bay_volume_all=True),
         passing=[eve_fighter3_id],
         failing=[eve_fighter2_id])
 
@@ -79,7 +79,10 @@ def test_equal(client, consts):
     # Verification
     api_stats = api_fit.get_stats(options=FitStatsOptions(fighter_bay_volume=True))
     assert api_stats.fighter_bay_volume.one() == (approx(0), approx(0), approx(9000))
-    api_fit.check_try_fit_items(val_options=ValOptions(fighter_bay_volume=True), passing=[eve_fighter_id], failing=[])
+    api_fit.check_try_fit_items(
+        val_options=ValOptions(fighter_bay_volume_all=True),
+        passing=[eve_fighter_id],
+        failing=[])
 
 
 def test_known_failures(client, consts):
@@ -102,15 +105,15 @@ def test_known_failures(client, consts):
     api_stats = api_fit.get_stats(options=FitStatsOptions(fighter_bay_volume=True))
     assert api_stats.fighter_bay_volume.one() == (approx(18600), approx(18600), approx(8000))
     api_fit.check_try_fit_items(
-        val_options=ValOptions(fighter_bay_volume=[api_fighter1.id]),
+        val_options=ValOptions(fighter_bay_volume_all=[api_fighter1.id]),
         passing=[],
         failing=[eve_fighter3_id, eve_fighter4_id, eve_fighter2_id, eve_fighter5_id])
     api_fit.check_try_fit_items(
-        val_options=ValOptions(fighter_bay_volume=[api_fighter2.id]),
+        val_options=ValOptions(fighter_bay_volume_all=[api_fighter2.id]),
         passing=[],
         failing=[eve_fighter3_id, eve_fighter4_id, eve_fighter2_id, eve_fighter5_id])
     api_fit.check_try_fit_items(
-        val_options=ValOptions(fighter_bay_volume=[api_fighter1.id, api_fighter2.id]),
+        val_options=ValOptions(fighter_bay_volume_all=[api_fighter1.id, api_fighter2.id]),
         passing=[eve_fighter3_id, eve_fighter4_id],
         failing=[eve_fighter2_id, eve_fighter5_id])
 
@@ -132,7 +135,7 @@ def test_changed_count(client, consts):
     api_stats = api_fit.get_stats(options=FitStatsOptions(fighter_bay_volume=True))
     assert api_stats.fighter_bay_volume.one() == (approx(5000), approx(5000), approx(5000))
     api_fit.check_try_fit_items(
-        val_options=ValOptions(fighter_bay_volume=True),
+        val_options=ValOptions(fighter_bay_volume_all=True),
         passing=[],
         failing=[eve_fighter2_id, eve_fighter3_id])
     # Action
@@ -141,7 +144,7 @@ def test_changed_count(client, consts):
     api_stats = api_fit.get_stats(options=FitStatsOptions(fighter_bay_volume=True))
     assert api_stats.fighter_bay_volume.one() == (approx(2000), approx(2000), approx(5000))
     api_fit.check_try_fit_items(
-        val_options=ValOptions(fighter_bay_volume=True),
+        val_options=ValOptions(fighter_bay_volume_all=True),
         passing=[eve_fighter2_id],
         failing=[eve_fighter3_id])
 
@@ -178,7 +181,7 @@ def test_modified_count(client, consts):
     api_stats = api_fit.get_stats(options=FitStatsOptions(fighter_bay_volume=True))
     assert api_stats.fighter_bay_volume.one() == (approx(900), approx(900), approx(8000))
     api_fit.check_try_fit_items(
-        val_options=ValOptions(fighter_bay_volume=True),
+        val_options=ValOptions(fighter_bay_volume_all=True),
         passing=[eve_fighter2_id],
         failing=[eve_fighter3_id])
     # Action
@@ -188,7 +191,7 @@ def test_modified_count(client, consts):
     api_stats = api_fit.get_stats(options=FitStatsOptions(fighter_bay_volume=True))
     assert api_stats.fighter_bay_volume.one() == (approx(900), approx(900), approx(8000))
     api_fit.check_try_fit_items(
-        val_options=ValOptions(fighter_bay_volume=True),
+        val_options=ValOptions(fighter_bay_volume_all=True),
         passing=[eve_fighter2_id],
         failing=[eve_fighter3_id])
 
@@ -225,7 +228,7 @@ def test_modified_use(client, consts):
     api_stats = api_fit.get_stats(options=FitStatsOptions(fighter_bay_volume=True))
     assert api_stats.fighter_bay_volume.one() == (approx(900), approx(900), approx(8000))
     api_fit.check_try_fit_items(
-        val_options=ValOptions(fighter_bay_volume=True),
+        val_options=ValOptions(fighter_bay_volume_all=True),
         passing=[eve_fighter2_id],
         failing=[eve_fighter3_id])
     # Action
@@ -235,7 +238,7 @@ def test_modified_use(client, consts):
     api_stats = api_fit.get_stats(options=FitStatsOptions(fighter_bay_volume=True))
     assert api_stats.fighter_bay_volume.one() == (approx(900), approx(900), approx(8000))
     api_fit.check_try_fit_items(
-        val_options=ValOptions(fighter_bay_volume=True),
+        val_options=ValOptions(fighter_bay_volume_all=True),
         passing=[eve_fighter2_id],
         failing=[eve_fighter3_id])
 
@@ -263,14 +266,20 @@ def test_modified_max(client, consts):
     assert api_ship.update().attrs[eve_max_attr_id].modified == approx(8000)
     api_stats = api_fit.get_stats(options=FitStatsOptions(fighter_bay_volume=True))
     assert api_stats.fighter_bay_volume.one() == (approx(0), approx(0), approx(8000))
-    api_fit.check_try_fit_items(val_options=ValOptions(fighter_bay_volume=True), passing=[], failing=[eve_fighter_id])
+    api_fit.check_try_fit_items(
+        val_options=ValOptions(fighter_bay_volume_all=True),
+        passing=[],
+        failing=[eve_fighter_id])
     # Action
     api_fit.add_implant(type_id=eve_implant_id)
     # Verification
     assert api_ship.update().attrs[eve_max_attr_id].modified == approx(12000)
     api_stats = api_fit.get_stats(options=FitStatsOptions(fighter_bay_volume=True))
     assert api_stats.fighter_bay_volume.one() == (approx(0), approx(0), approx(12000))
-    api_fit.check_try_fit_items(val_options=ValOptions(fighter_bay_volume=True), passing=[eve_fighter_id], failing=[])
+    api_fit.check_try_fit_items(
+        val_options=ValOptions(fighter_bay_volume_all=True),
+        passing=[eve_fighter_id],
+        failing=[])
 
 
 def test_rounding(client, consts):
@@ -291,7 +300,7 @@ def test_rounding(client, consts):
     api_stats = api_fit.get_stats(options=FitStatsOptions(fighter_bay_volume=True))
     assert api_stats.fighter_bay_volume.one() == (approx(0.002), approx(0.002), approx(5.223))
     api_fit.check_try_fit_items(
-        val_options=ValOptions(fighter_bay_volume=True),
+        val_options=ValOptions(fighter_bay_volume_all=True),
         passing=[eve_fighter3_id],
         failing=[eve_fighter2_id])
 
@@ -309,7 +318,7 @@ def test_no_ship(client, consts):
     api_stats = api_fit.get_stats(options=FitStatsOptions(fighter_bay_volume=True))
     assert api_stats.fighter_bay_volume.one() == (approx(0), approx(0), None)
     api_fit.check_try_fit_items(
-        val_options=ValOptions(fighter_bay_volume=True),
+        val_options=ValOptions(fighter_bay_volume_all=True),
         passing=[eve_fighter2_id],
         failing=[eve_fighter1_id])
 
@@ -325,7 +334,10 @@ def test_no_attr_use(client, consts):
     api_fit = api_sol.create_fit()
     api_fit.set_ship(type_id=eve_ship_id)
     # Verification - users are assumed to take no resource when attribute does not exist
-    api_fit.check_try_fit_items(val_options=ValOptions(fighter_bay_volume=True), passing=[eve_fighter_id], failing=[])
+    api_fit.check_try_fit_items(
+        val_options=ValOptions(fighter_bay_volume_all=True),
+        passing=[eve_fighter_id],
+        failing=[])
 
 
 def test_no_attr_max(client, consts):
@@ -341,7 +353,7 @@ def test_no_attr_max(client, consts):
     api_fit.set_ship(type_id=eve_ship_id)
     # Verification - when output attr does not exist, it is assumed to be 0
     api_fit.check_try_fit_items(
-        val_options=ValOptions(fighter_bay_volume=True),
+        val_options=ValOptions(fighter_bay_volume_all=True),
         passing=[eve_fighter2_id],
         failing=[eve_fighter1_id])
 
@@ -361,7 +373,7 @@ def test_not_loaded_ship(client, consts):
     api_stats = api_fit.get_stats(options=FitStatsOptions(fighter_bay_volume=True))
     assert api_stats.fighter_bay_volume.one() == (approx(0), approx(0), None)
     api_fit.check_try_fit_items(
-        val_options=ValOptions(fighter_bay_volume=True),
+        val_options=ValOptions(fighter_bay_volume_all=True),
         passing=[eve_fighter2_id],
         failing=[eve_fighter1_id])
 
@@ -384,7 +396,7 @@ def test_non_positive(client, consts):
     api_stats = api_fit.get_stats(options=FitStatsOptions(fighter_bay_volume=True))
     assert api_stats.fighter_bay_volume.one() == (approx(0), approx(0), approx(125))
     api_fit.check_try_fit_items(
-        val_options=ValOptions(fighter_bay_volume=True),
+        val_options=ValOptions(fighter_bay_volume_all=True),
         passing=[eve_fighter1_id, eve_fighter3_id, eve_fighter4_id],
         failing=[eve_fighter2_id])
 
@@ -404,7 +416,7 @@ def test_no_value_use(client, consts):
     api_stats = api_fit.get_stats(options=FitStatsOptions(fighter_bay_volume=True))
     assert api_stats.fighter_bay_volume.one() == (approx(0), approx(0), approx(8000))
     api_fit.check_try_fit_items(
-        val_options=ValOptions(fighter_bay_volume=True),
+        val_options=ValOptions(fighter_bay_volume_all=True),
         passing=[eve_fighter2_id],
         failing=[eve_fighter1_id])
 
@@ -424,7 +436,7 @@ def test_no_value_max(client, consts):
     api_stats = api_fit.get_stats(options=FitStatsOptions(fighter_bay_volume=True))
     assert api_stats.fighter_bay_volume.one() == (approx(0), approx(0), approx(0))
     api_fit.check_try_fit_items(
-        val_options=ValOptions(fighter_bay_volume=True),
+        val_options=ValOptions(fighter_bay_volume_all=True),
         passing=[eve_fighter2_id],
         failing=[eve_fighter1_id])
 
@@ -444,7 +456,7 @@ def test_no_value_count(client, consts):
     api_stats = api_fit.get_stats(options=FitStatsOptions(fighter_bay_volume=True))
     assert api_stats.fighter_bay_volume.one() == (approx(0), approx(0), approx(8000))
     api_fit.check_try_fit_items(
-        val_options=ValOptions(fighter_bay_volume=True),
+        val_options=ValOptions(fighter_bay_volume_all=True),
         passing=[eve_fighter2_id],
         failing=[eve_fighter1_id])
 
@@ -463,7 +475,7 @@ def test_no_attr_count(client, consts):
     # Verification - when squad size attribute does not exist, fighter takes volume of a single
     # fighter
     api_fit.check_try_fit_items(
-        val_options=ValOptions(fighter_bay_volume=True),
+        val_options=ValOptions(fighter_bay_volume_all=True),
         passing=[eve_fighter2_id],
         failing=[eve_fighter1_id])
 
@@ -494,7 +506,7 @@ def test_criterion_item_kind(client, consts):
     api_stats = api_fit.get_stats(options=FitStatsOptions(fighter_bay_volume=True))
     assert api_stats.fighter_bay_volume.one() == (approx(0), approx(0), approx(900))
     api_fit.check_try_fit_items(
-        val_options=ValOptions(fighter_bay_volume=True),
+        val_options=ValOptions(fighter_bay_volume_all=True),
         passing=[
             eve_booster_id,
             eve_charge_id,

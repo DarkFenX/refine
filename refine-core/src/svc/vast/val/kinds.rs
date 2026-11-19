@@ -56,7 +56,8 @@ pub(in crate::svc::vast::val) enum ValKind {
     UnlaunchableDroneBandwidth,
     DroneGroup,
     // Fighters
-    FighterBayVolume,
+    FighterBayVolumeAll,
+    FighterBayVolumeInbay,
     LaunchedFighterCount,
     LaunchedLightFighterCount,
     LaunchedHeavyFighterCount,

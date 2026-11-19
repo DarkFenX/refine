@@ -1,6 +1,6 @@
 use crate::{
     Value,
-    rd::RAttrId,
+    rd::{RAttrId, RState},
     stats::{StatFighterBayVolume, StatResource},
     svc::{Calc, SvcCtx, vast::VastFitData},
     ud::{UFit, UItemId},
@@ -64,10 +64,11 @@ impl VastFitData {
         let output = calc.get_oitem_oattr_afb_oextra(ctx, fit.ship, ctx.ac().ftr_capacity, Value::ZERO);
         let mut used_inbay = Value::ZERO;
         let mut used_all = Value::ZERO;
-        for (fighter_uid, volume) in self.fighters_volume.iter() {
+        for (&fighter_uid, volume) in self.fighters_volume.iter() {
             let volume = volume.into_value();
             used_all += volume;
-            if !self.fighters_online.contains(fighter_uid) {
+            // Reading item state is cheaper than checking presence in fighters_online
+            if ctx.u_data.items.get(fighter_uid).get_state() < RState::Online {
                 used_inbay += volume;
             }
         }
