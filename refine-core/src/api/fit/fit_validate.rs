@@ -41,7 +41,7 @@ impl SolCore {
         options: &ValOptionsInt,
     ) -> ValResultFit {
         let mut result = self.svc.validate_fit_verbose(&self.u_data, fit_uid, options);
-        if !result.potential_drone_bandwidth_passed() {
+        if !result.pdbw_passed() {
             let savepoint = self.internal_tx_savepoint();
             if self.internal_switch_pdbw(fit_uid) {
                 self.svc

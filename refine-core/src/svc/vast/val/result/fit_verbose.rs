@@ -341,7 +341,7 @@ impl ValResultFit {
 // Private
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl ValResultFit {
-    pub(crate) fn potential_drone_bandwidth_passed(&self) -> bool {
+    pub(crate) fn pdbw_passed(&self) -> bool {
         !self.drone_bandwidth_potential.is_failed() && !self.unlaunchable_drone_bandwidth.is_failed()
     }
 }
