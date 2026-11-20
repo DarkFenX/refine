@@ -1,8 +1,4 @@
-use crate::{
-    AttrId, ItemId, Op, PValue, UnitInterval, Value,
-    svc::calc::{CalcModInfo, CalcModInfoAffector},
-    ud::UData,
-};
+use crate::{AttrId, ItemId, Op, PValue, UnitInterval, Value, svc::calc::CalcModInfoAffector, ud::UData};
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Public
@@ -33,36 +29,8 @@ pub struct Affector {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Private
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-impl Modification {
-    pub(in crate::api) fn from_calc(calc_mod_info: CalcModInfo, u_data: &UData) -> Self {
-        let CalcModInfo {
-            op,
-            initial_str,
-            range_mult,
-            resist_mult,
-            stacking_mult,
-            applied_str,
-            affectors,
-            // Not exposed
-            effect_rid: _,
-        } = calc_mod_info;
-        Self {
-            op,
-            initial_str,
-            range_mult,
-            resist_mult,
-            stacking_mult,
-            applied_str,
-            affectors: affectors
-                .into_iter()
-                .map(|calc_affector| Affector::from_calc(calc_affector, u_data))
-                .collect(),
-        }
-    }
-}
-
 impl Affector {
-    pub(in crate::api) fn from_calc(calc_affector: CalcModInfoAffector, u_data: &UData) -> Self {
+    pub(crate) fn from_calc(calc_affector: CalcModInfoAffector, u_data: &UData) -> Self {
         let CalcModInfoAffector { item_uid, attr_rid } = calc_affector;
         Self {
             item_id: u_data.items.ext_id_by_int_id(item_uid),

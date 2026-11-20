@@ -1,10 +1,10 @@
 use std::{cmp::Ordering, collections::hash_map::Entry};
 
 use crate::{
-    ModuleState, Op, Value,
-    rd::{RAttrId, RState},
+    ModuleState, Value,
+    rd::{RAttrId, REffectId, RState},
     sol::SolCore,
-    svc::calc::CalcModInfo,
+    svc::calc::CalcOp,
     ud::{UData, UItem, UItemId},
     util::RMap,
 };
@@ -46,6 +46,9 @@ impl SolCore {
     ///   flip sign of its value multiple times)
     /// - it ignores effect mode - it will attempt to deactivate/offline modules even if modifying
     ///   effect is in force-run mode
+    /// - it ignores how modifications combine - a module is switched even if its modification does
+    ///   not change the value at the moment (e.g. it is in the tail of a stacking penalty chain),
+    ///   since it could take effect once other modules are switched
     ///
     /// Returns if state of any module was switched.
     pub(in crate::api) fn internal_ctl_affectors_switch(
@@ -65,25 +68,20 @@ impl SolCore {
         let Some(fit_uid) = self.u_data.items.get(item_uid).get_fit_uid() else {
             return false;
         };
-        let Ok(mod_infos) = self.svc.iter_item_attr_mods(&self.u_data, item_uid, attr_rid) else {
+        let Ok(mods) = self.svc.iter_item_attr_mods_op_str(&self.u_data, item_uid, attr_rid) else {
             return false;
         };
         let mut new_states = RMap::new();
-        for mod_info in mod_infos {
+        for (affector_espec, op, strength) in mods {
             // Ignore modifications which are not impacting requested direction
-            if !needs_switch(&mod_info, direction) {
+            if !needs_switch(op, strength, direction) {
                 continue;
             }
             // Ignore modifications which cannot be switched off
-            let Some(new_state) = can_be_switched(&self.u_data, &mod_info, action) else {
+            let Some(new_state) = can_be_switched(&self.u_data, affector_espec.effect_rid, action) else {
                 continue;
             };
-            // Ignore modifications with empty or complex affector definitions
-            let affector = match mod_info.affectors.len() {
-                1 => mod_info.affectors.first().unwrap(),
-                _ => continue,
-            };
-            let affector_item = self.u_data.items.get(affector.item_uid);
+            let affector_item = self.u_data.items.get(affector_espec.item_uid);
             // Ignore non-module item kinds
             match affector_item {
                 UItem::Module(..) => (),
@@ -93,7 +91,7 @@ impl SolCore {
             if affector_item.get_fit_uid() != Some(fit_uid) {
                 continue;
             }
-            match new_states.entry(affector.item_uid) {
+            match new_states.entry(affector_espec.item_uid) {
                 Entry::Occupied(mut entry) => {
                     // If modifier is coming from the same item, overwrite only if new state is
                     // lower
@@ -115,35 +113,38 @@ impl SolCore {
     }
 }
 
-fn needs_switch(mod_info: &CalcModInfo, dir: AffectionDir) -> bool {
-    match mod_info.op {
-        Op::Add | Op::ExtraAdd | Op::PostPerc => match mod_info.initial_str.cmp(&Value::ZERO) {
-            Ordering::Greater => matches!(dir, AffectionDir::Increase),
-            Ordering::Equal => false,
-            Ordering::Less => matches!(dir, AffectionDir::Decrease),
-        },
-        Op::Sub => match mod_info.initial_str.cmp(&Value::ZERO) {
+fn needs_switch(op: CalcOp, strength: Value, dir: AffectionDir) -> bool {
+    match op {
+        CalcOp::Add | CalcOp::ExtraAdd | CalcOp::PostPerc | CalcOp::PostPercImmune => {
+            match strength.cmp(&Value::ZERO) {
+                Ordering::Greater => matches!(dir, AffectionDir::Increase),
+                Ordering::Equal => false,
+                Ordering::Less => matches!(dir, AffectionDir::Decrease),
+            }
+        }
+        CalcOp::Sub => match strength.cmp(&Value::ZERO) {
             Ordering::Greater => matches!(dir, AffectionDir::Decrease),
             Ordering::Equal => false,
             Ordering::Less => matches!(dir, AffectionDir::Increase),
         },
-        Op::PreMul | Op::PostMul | Op::ExtraMul => match mod_info.initial_str.cmp(&Value::ONE) {
-            Ordering::Greater => matches!(dir, AffectionDir::Increase),
-            Ordering::Equal => false,
-            Ordering::Less => matches!(dir, AffectionDir::Decrease),
-        },
-        Op::PreDiv | Op::PostDiv => match mod_info.initial_str.cmp(&Value::ONE) {
+        CalcOp::PreMul | CalcOp::PostMul | CalcOp::PostMulImmune | CalcOp::ExtraMul => {
+            match strength.cmp(&Value::ONE) {
+                Ordering::Greater => matches!(dir, AffectionDir::Increase),
+                Ordering::Equal => false,
+                Ordering::Less => matches!(dir, AffectionDir::Decrease),
+            }
+        }
+        CalcOp::PreDiv | CalcOp::PostDiv => match strength.cmp(&Value::ONE) {
             Ordering::Greater => matches!(dir, AffectionDir::Decrease),
             Ordering::Equal => false,
             Ordering::Less => matches!(dir, AffectionDir::Increase),
         },
         // Just ignore modifications with those operators, hard to analyze them
-        Op::BaseAssign | Op::PreAssign | Op::PostAssign | Op::MinLimit | Op::MaxLimit => false,
+        CalcOp::PreAssign | CalcOp::PostAssign => false,
     }
 }
 
-fn can_be_switched(u_data: &UData, mod_info: &CalcModInfo, action: StatCtlAffectors) -> Option<RState> {
-    let effect_rid = mod_info.effect_rid?;
+fn can_be_switched(u_data: &UData, effect_rid: REffectId, action: StatCtlAffectors) -> Option<RState> {
     let effect_state = u_data.r_data.get_effect_by_rid(effect_rid).state;
     match action {
         StatCtlAffectors::Unmodified => None,

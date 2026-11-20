@@ -1,9 +1,10 @@
 use crate::{
-    Value,
+    Modification, Value,
+    misc::EffectSpec,
     rd::{RAttrId, REffectId},
     svc::{
         Svc, SvcCtx,
-        calc::{CalcAttrVals, CalcModInfo, CalcOp},
+        calc::{CalcAttrVals, CalcOp},
         err::UItemLoadedError,
     },
     ud::{UData, UItemId},
@@ -31,18 +32,19 @@ impl Svc {
         &mut self,
         u_data: &UData,
         item_uid: UItemId,
-    ) -> Result<impl ExactSizeIterator<Item = (RAttrId, Vec<CalcModInfo>)>, UItemLoadedError> {
+    ) -> Result<impl ExactSizeIterator<Item = (RAttrId, Vec<Modification>)>, UItemLoadedError> {
         self.calc
             .iter_item_mods(&SvcCtx::new(u_data, &self.eff_projs), item_uid)
     }
-    pub(crate) fn iter_item_attr_mods(
+    // Specific request for controllable affector switching
+    pub(crate) fn iter_item_attr_mods_op_str(
         &mut self,
         u_data: &UData,
         item_uid: UItemId,
         attr_rid: RAttrId,
-    ) -> Result<impl ExactSizeIterator<Item = CalcModInfo>, UItemLoadedError> {
+    ) -> Result<impl ExactSizeIterator<Item = (EffectSpec, CalcOp, Value)>, UItemLoadedError> {
         self.calc
-            .iter_item_attr_mods(&SvcCtx::new(u_data, &self.eff_projs), item_uid, attr_rid)
+            .iter_item_attr_mods_op_str(&SvcCtx::new(u_data, &self.eff_projs), item_uid, attr_rid)
     }
     // Specific request for side-effects
     pub(crate) fn get_effect_mods_op_str(

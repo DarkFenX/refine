@@ -1,14 +1,43 @@
 use crate::{
     PValue, Value,
-    rd::REffect,
+    misc::EffectSpec,
+    rd::{RAttrId, REffect},
     svc::{
         SvcCtx,
         calc::{Calc, CalcOp},
+        err::UItemLoadedError,
     },
     ud::UItemId,
 };
 
 impl Calc {
+    /// Get affector effect, operator and strength of every modifier which affects an item's
+    /// attribute.
+    ///
+    /// Modifiers are returned as they are registered, without evaluating how they combine.
+    pub(in crate::svc) fn iter_item_attr_mods_op_str(
+        &mut self,
+        ctx: &SvcCtx,
+        item_uid: UItemId,
+        attr_rid: RAttrId,
+    ) -> Result<impl ExactSizeIterator<Item = (EffectSpec, CalcOp, Value)> + use<>, UItemLoadedError> {
+        let item = ctx.u_data.items.get(item_uid);
+        if !item.is_loaded() {
+            return Err(UItemLoadedError { item_uid });
+        }
+        let mut reuse_ckeys = self.reuse.ckeys.take();
+        self.std
+            .get_mods_for_affectee(&mut reuse_ckeys, item_uid, item, attr_rid, &ctx.u_data.fits);
+        let mut mods = Vec::with_capacity(reuse_ckeys.len());
+        for ckey in reuse_ckeys.iter() {
+            let rmod = self.rmods.get_cmod(ctx.rmt(), ckey).rmod;
+            if let Some(strength) = rmod.get_mod_val(self, ctx) {
+                mods.push((rmod.affector_espec, rmod.op, strength));
+            }
+        }
+        self.reuse.ckeys.put(reuse_ckeys);
+        Ok(mods.into_iter())
+    }
     /// Get operator and strength shared by all modifiers of an item's effect.
     ///
     /// The effect does not have to be running. Strengths have to be almost equal, since they can

@@ -2,17 +2,13 @@
 //! info while not bloating calculation part (since calculation is supposed to be used much more
 //! often than modification info fetching).
 
-use smallvec::{SmallVec, smallvec};
-
 use super::calce_shared::get_base_attr_value;
 use crate::{
-    Op, SecZone,
-    rd::{RAttr, RAttrId, REffectId},
+    Affector, Modification, Op, SecZone,
+    rd::{RAttr, RAttrId},
     svc::{
         SvcCtx,
-        calc::{
-            AttrValInfo, Calc, CalcModInfo, CalcModInfoAffector, CalcModification, CalcModificationKey, ModAccumInfo,
-        },
+        calc::{AttrValInfo, Calc, CalcModInfoAffector, CalcModification, CalcModificationKey, ModAccumInfo},
         err::UItemLoadedError,
     },
     ud::{UItem, UItemId},
@@ -20,9 +16,8 @@ use crate::{
 };
 
 struct Affection {
-    effect_rid: REffectId,
     modification: CalcModification,
-    affectors: SmallVec<[CalcModInfoAffector; 1]>,
+    affectors: Vec<Affector>,
 }
 
 impl Calc {
@@ -33,7 +28,7 @@ impl Calc {
         &mut self,
         ctx: &SvcCtx,
         item_uid: UItemId,
-    ) -> Result<impl ExactSizeIterator<Item = (RAttrId, Vec<CalcModInfo>)> + use<>, UItemLoadedError> {
+    ) -> Result<impl ExactSizeIterator<Item = (RAttrId, Vec<Modification>)> + use<>, UItemLoadedError> {
         let mut info_map = RMapVec::new();
         for attr_rid in self.iter_item_attr_rids(ctx, item_uid)? {
             let attr_info = self.calc_item_attr_info(ctx, item_uid, attr_rid);
@@ -45,20 +40,6 @@ impl Calc {
             }
         }
         Ok(info_map.into_iter())
-    }
-    pub(in crate::svc) fn iter_item_attr_mods(
-        &mut self,
-        ctx: &SvcCtx,
-        item_uid: UItemId,
-        attr_rid: RAttrId,
-    ) -> Result<impl ExactSizeIterator<Item = CalcModInfo> + use<>, UItemLoadedError> {
-        match ctx.u_data.items.get(item_uid).is_loaded() {
-            true => Ok(self
-                .calc_item_attr_info(ctx, item_uid, attr_rid)
-                .effective_infos
-                .into_iter()),
-            false => Err(UItemLoadedError { item_uid }),
-        }
     }
     ////////////////////////////////////////////////////////////////////////////////////////////////
     // Private methods
@@ -109,9 +90,13 @@ impl Calc {
                 affector_item_cat_id,
             };
             let affection = Affection {
-                effect_rid: cmod.rmod.affector_espec.effect_rid,
                 modification,
-                affectors: cmod.rmod.get_affector_info(ctx),
+                affectors: cmod
+                    .rmod
+                    .get_affector_info(ctx)
+                    .into_iter()
+                    .map(|calc_affector| Affector::from_calc(calc_affector, ctx.u_data))
+                    .collect(),
             };
             affections.insert(mod_key, affection);
         }
@@ -125,7 +110,6 @@ impl Calc {
         let mut accumulator = ModAccumInfo::new();
         for affection in self.iter_affections(ctx, item_uid, item, attr_rid) {
             accumulator.add_val(
-                affection.effect_rid,
                 affection.modification.op,
                 affection.modification.val,
                 affection.modification.proj_mult,
@@ -143,18 +127,20 @@ impl Calc {
             && limiter_val.dogma > dogma_attr_info.value
         {
             dogma_attr_info.value = limiter_val.dogma;
-            dogma_attr_info.effective_infos.push(CalcModInfo {
-                effect_rid: None,
+            dogma_attr_info.effective_infos.push(Modification {
                 op: Op::MinLimit,
                 initial_str: limiter_val.dogma,
                 range_mult: None,
                 resist_mult: None,
                 stacking_mult: None,
                 applied_str: limiter_val.dogma,
-                affectors: smallvec![CalcModInfoAffector {
-                    item_uid,
-                    attr_rid: Some(limiter_attr_rid),
-                }],
+                affectors: vec![Affector::from_calc(
+                    CalcModInfoAffector {
+                        item_uid,
+                        attr_rid: Some(limiter_attr_rid),
+                    },
+                    ctx.u_data,
+                )],
             })
         }
         // Upper value limit
@@ -163,18 +149,20 @@ impl Calc {
             && limiter_val.dogma < dogma_attr_info.value
         {
             dogma_attr_info.value = limiter_val.dogma;
-            dogma_attr_info.effective_infos.push(CalcModInfo {
-                effect_rid: None,
+            dogma_attr_info.effective_infos.push(Modification {
                 op: Op::MaxLimit,
                 initial_str: limiter_val.dogma,
                 range_mult: None,
                 resist_mult: None,
                 stacking_mult: None,
                 applied_str: limiter_val.dogma,
-                affectors: smallvec![CalcModInfoAffector {
-                    item_uid,
-                    attr_rid: Some(limiter_attr_rid),
-                }],
+                affectors: vec![Affector::from_calc(
+                    CalcModInfoAffector {
+                        item_uid,
+                        attr_rid: Some(limiter_attr_rid),
+                    },
+                    ctx.u_data,
+                )],
             })
         }
         if ctx.ac().limited_precision.contains(&attr_rid) {
@@ -206,8 +194,7 @@ impl Calc {
                 && let Ok(security_full_val) = self.get_item_attr_rfull(ctx, item_uid, security_attr_rid)
             {
                 let mut base_attr_info = AttrValInfo::new(security_full_val.dogma);
-                base_attr_info.effective_infos.push(CalcModInfo {
-                    effect_rid: None,
+                base_attr_info.effective_infos.push(Modification {
                     // Technically this modification is not pre-assignment, it is base value
                     // overwrite (which later will be overwritten by any other pre-assignment
                     // regardless of its value), but pre-assignment is still used in info for
@@ -218,10 +205,13 @@ impl Calc {
                     resist_mult: None,
                     stacking_mult: None,
                     applied_str: security_full_val.dogma,
-                    affectors: smallvec![CalcModInfoAffector {
-                        item_uid,
-                        attr_rid: Some(security_attr_rid),
-                    }],
+                    affectors: vec![Affector::from_calc(
+                        CalcModInfoAffector {
+                            item_uid,
+                            attr_rid: Some(security_attr_rid),
+                        },
+                        ctx.u_data,
+                    )],
                 });
                 return base_attr_info;
             }
