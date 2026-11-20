@@ -1,7 +1,7 @@
 pub(in crate::svc::calc) use attr_val_data::{AttrValData, ItemAttrData, ItemAttrPostproc};
 pub(crate) use attr_vals::CalcAttrVals;
 pub(in crate::svc::calc) use attr_vals::CalcValueKind;
-pub(crate) use info::{CalcModInfo, CalcModInfoAffector};
+pub(crate) use info::CalcModInfoAffector;
 pub(in crate::svc::calc) use loc_kind::LocationKind;
 pub(in crate::svc::calc) use modification::CalcModification;
 pub(in crate::svc::calc) use modification_key::CalcModificationKey;

@@ -92,9 +92,7 @@ pub trait ItemCommon: ItemSealed {
             Ok(mods_iter) => Ok(mods_iter.into_iter().map(|(attr_rid, modifications)| {
                 (
                     AttrId::from_aid(sol.u_data.r_data.get_attr_by_rid(attr_rid).aid),
-                    modifications
-                        .into_iter()
-                        .map(|calc_mod_info| Modification::from_calc(calc_mod_info, &sol.u_data)),
+                    modifications.into_iter(),
                 )
             })),
             Err(err) => Err(ItemLoadedError {
