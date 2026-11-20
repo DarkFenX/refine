@@ -3,7 +3,7 @@ use std::{cmp::Ordering, collections::hash_map::Entry};
 use crate::{
     ModuleState, Value,
     rd::{RAttrId, REffectId, RState},
-    sol::SolCore,
+    sol::{Savepoint, SolCore},
     svc::calc::CalcOp,
     ud::{UData, UItem, UItemId},
     util::RMap,
@@ -35,8 +35,8 @@ pub(in crate::api) enum AffectionDir {
 }
 
 impl SolCore {
-    /// This function attempts to disable modifications upon certain attribute. Only modifications
-    /// which are isolated within the same fit are considered.
+    /// This function looks for modules which have to be switched to disable modifications upon
+    /// certain attribute. Only modifications which are isolated within the same fit are considered.
     ///
     /// The function is extremely naive for simplicity:
     /// - it considers only modules
@@ -50,28 +50,28 @@ impl SolCore {
     ///   not change the value at the moment (e.g. it is in the tail of a stacking penalty chain),
     ///   since it could take effect once other modules are switched
     ///
-    /// Returns if state of any module was switched.
-    pub(in crate::api) fn internal_ctl_affectors_switch(
+    /// Returns modules to switch, with states they have to be switched to.
+    pub(in crate::api) fn internal_ctl_affectors_find(
         &mut self,
         item_uid: UItemId,
         attr_rid: Option<RAttrId>,
         action: StatCtlAffectors,
         direction: AffectionDir,
-    ) -> bool {
+    ) -> RMap<UItemId, RState> {
+        let mut new_states = RMap::new();
         let Some(attr_rid) = attr_rid else {
-            return false;
+            return new_states;
         };
         if matches!(action, StatCtlAffectors::Unmodified) {
-            return false;
+            return new_states;
         }
         // Do nothing for items without fit
         let Some(fit_uid) = self.u_data.items.get(item_uid).get_fit_uid() else {
-            return false;
+            return new_states;
         };
         let Ok(mods) = self.svc.iter_item_attr_mods_op_str(&self.u_data, item_uid, attr_rid) else {
-            return false;
+            return new_states;
         };
-        let mut new_states = RMap::new();
         for (affector_espec, op, strength) in mods {
             // Ignore modifications which are not impacting requested direction
             if !needs_switch(op, strength, direction) {
@@ -104,12 +104,22 @@ impl SolCore {
                 }
             }
         }
-        // Actually switch states
-        let switched = !new_states.is_empty();
+        new_states
+    }
+    /// Switches modules to passed states. If there is anything to switch, returns savepoint which
+    /// has to be rolled back to once switched states are no longer needed.
+    pub(in crate::api) fn internal_ctl_affectors_switch(
+        &mut self,
+        new_states: RMap<UItemId, RState>,
+    ) -> Option<Savepoint> {
+        if new_states.is_empty() {
+            return None;
+        }
+        let savepoint = self.internal_tx_savepoint();
         for (affector_uid, new_state) in new_states.into_iter() {
             self.internal_set_module_state(affector_uid, ModuleState::from_r_state(new_state));
         }
-        switched
+        Some(savepoint)
     }
 }
 
