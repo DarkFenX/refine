@@ -1,6 +1,7 @@
 use crate::{
     api::AffectionDir,
     stats::{FitStats, StatCtlAffectors, StatFighterBayVolume, StatResource},
+    util::RMap,
 };
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -28,18 +29,17 @@ impl<'s> FitStats<'s> {
     pub fn get_stat_drone_bandwidth(&mut self, decreasers: StatCtlAffectors) -> StatResource {
         let fit_uid = self.uid;
         let sol = &mut *self.sol;
-        let savepoint = match sol.u_data.fits.get(fit_uid).ship {
-            Some(ship_uid) => {
-                let new_states = sol.internal_ctl_affectors_find(
-                    ship_uid,
-                    sol.u_data.r_data.get_attr_consts().drone_bandwidth,
-                    decreasers,
-                    AffectionDir::Decrease,
-                );
-                sol.internal_ctl_affectors_switch(new_states)
-            }
-            None => None,
-        };
+        let mut new_states = RMap::new();
+        if let Some(ship_uid) = sol.u_data.fits.get(fit_uid).ship {
+            sol.internal_ctl_affectors_find(
+                &mut new_states,
+                ship_uid,
+                sol.u_data.r_data.get_attr_consts().drone_bandwidth,
+                decreasers,
+                AffectionDir::Decrease,
+            );
+        }
+        let savepoint = sol.internal_ctl_affectors_switch(new_states);
         let fit = sol.u_data.fits.get(fit_uid);
         let result = sol.svc.get_stat_fit_drone_bandwidth(&sol.u_data, fit_uid, fit);
         if let Some(savepoint) = savepoint {

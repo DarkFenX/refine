@@ -45,7 +45,9 @@ impl<'s> ItemStats<'s> {
     pub fn get_stat_mass(&mut self, increasers: StatCtlAffectors) -> Result<PValue, StatItemError<!>> {
         let item_uid = self.uid;
         let sol = &mut *self.sol;
-        let new_states = sol.internal_ctl_affectors_find(
+        let mut new_states = RMap::new();
+        sol.internal_ctl_affectors_find(
+            &mut new_states,
             item_uid,
             sol.u_data.r_data.get_attr_consts().mass,
             increasers,
@@ -91,12 +93,13 @@ impl<'s> ItemStats<'s> {
         // Work on item states according to request
         let mut new_states = RMap::new();
         for &passenger_ship_uid in passenger_ship_uids.iter() {
-            new_states.extend(sol.internal_ctl_affectors_find(
+            sol.internal_ctl_affectors_find(
+                &mut new_states,
                 passenger_ship_uid,
                 sol.u_data.r_data.get_attr_consts().mass,
                 passenger_mass_increasers,
                 AffectionDir::Increase,
-            ));
+            );
         }
         let savepoint = sol.internal_ctl_affectors_switch(new_states);
         // Collect stats

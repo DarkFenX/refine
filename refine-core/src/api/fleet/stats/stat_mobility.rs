@@ -15,12 +15,13 @@ impl<'s> FleetStats<'s> {
         // Work on item states according to request
         let mut new_states = RMap::new();
         for &ship_uid in ship_uids.iter() {
-            new_states.extend(self.sol.internal_ctl_affectors_find(
+            self.sol.internal_ctl_affectors_find(
+                &mut new_states,
                 ship_uid,
                 self.sol.u_data.r_data.get_attr_consts().mass,
                 increasers,
                 AffectionDir::Increase,
-            ));
+            );
         }
         let savepoint = self.sol.internal_ctl_affectors_switch(new_states);
         // Collect stats

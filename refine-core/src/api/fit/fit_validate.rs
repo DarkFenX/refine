@@ -5,6 +5,7 @@ use crate::{
     stats::StatCtlAffectors,
     svc::vast::{ValOptionsInt, ValResultFitFast},
     ud::UFitId,
+    util::RMap,
     val::{ValOptions, ValResultFit},
 };
 
@@ -66,7 +67,9 @@ impl SolCore {
     fn internal_switch_pdbw(&mut self, fit_uid: UFitId) -> Option<Savepoint> {
         let ship_uid = self.u_data.fits.get(fit_uid).ship?;
         let attr_rid = self.u_data.r_data.get_attr_consts().drone_bandwidth?;
-        let new_states = self.internal_ctl_affectors_find(
+        let mut new_states = RMap::new();
+        self.internal_ctl_affectors_find(
+            &mut new_states,
             ship_uid,
             Some(attr_rid),
             StatCtlAffectors::Offline,

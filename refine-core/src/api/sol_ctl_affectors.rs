@@ -50,27 +50,28 @@ impl SolCore {
     ///   not change the value at the moment (e.g. it is in the tail of a stacking penalty chain),
     ///   since it could take effect once other modules are switched
     ///
-    /// Returns modules to switch, with states they have to be switched to.
+    /// Modules to switch are added to the passed container, with states they have to be switched
+    /// to.
     pub(in crate::api) fn internal_ctl_affectors_find(
         &mut self,
+        new_states: &mut RMap<UItemId, RState>,
         item_uid: UItemId,
         attr_rid: Option<RAttrId>,
         action: StatCtlAffectors,
         direction: AffectionDir,
-    ) -> RMap<UItemId, RState> {
-        let mut new_states = RMap::new();
+    ) {
         let Some(attr_rid) = attr_rid else {
-            return new_states;
+            return;
         };
         if matches!(action, StatCtlAffectors::Unmodified) {
-            return new_states;
+            return;
         }
         // Do nothing for items without fit
         let Some(fit_uid) = self.u_data.items.get(item_uid).get_fit_uid() else {
-            return new_states;
+            return;
         };
         let Ok(mods) = self.svc.iter_item_attr_mods_op_str(&self.u_data, item_uid, attr_rid) else {
-            return new_states;
+            return;
         };
         for (affector_espec, op, strength) in mods {
             // Ignore modifications which are not impacting requested direction
@@ -104,10 +105,10 @@ impl SolCore {
                 }
             }
         }
-        new_states
     }
     /// Switches modules to passed states. If there is anything to switch, returns savepoint which
     /// has to be rolled back to once switched states are no longer needed.
+    #[inline(always)]
     pub(in crate::api) fn internal_ctl_affectors_switch(
         &mut self,
         new_states: RMap<UItemId, RState>,
