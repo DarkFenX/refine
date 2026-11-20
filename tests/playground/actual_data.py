@@ -347,7 +347,10 @@ def test_benchmark_try_fit_items(client, consts):
     assert api_val.passed is True
     iterations = 5000
     try_fit_type_ids = get_try_fit_type_ids()
-    options = ValOptions(default=True).to_dict()
+    options = ValOptions(
+        default=True,
+        drone_bandwidth_current=False,
+        fighter_bay_volume_inbay=False).to_dict()
     print()  # ruff:ignore[print]
     # ruff:ignore[print]
     print(f'starting try-fit-items benchmark, trying {len(try_fit_type_ids)} items per iteration')
@@ -468,7 +471,9 @@ def test_try_fit_items_nphoon(client, consts):
     api_val = api_fit.validate(options=ValOptions(default=True))
     assert api_val.passed is True
     try_fit_type_ids = get_try_fit_type_ids()
-    type_ids = api_fit.try_fit_items(type_ids=try_fit_type_ids, val_options=ValOptions(default=True))
+    type_ids = api_fit.try_fit_items(
+        type_ids=try_fit_type_ids,
+        val_options=ValOptions(default=True, drone_bandwidth_current=False, fighter_bay_volume_inbay=False))
     print('---')  # ruff:ignore[print]
     # ruff:ignore[print]
     print(f'Sent {len(try_fit_type_ids)} items, received {len(type_ids)} eligible items')
