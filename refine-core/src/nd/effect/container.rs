@@ -26,6 +26,7 @@ fn get_effect_map() -> RMap<AEffectId, NEffect> {
         defs::d4_shield_boosting::mk_n_effect(),
         defs::d9_missile_launching::mk_n_effect(),
         defs::d10_tgt_attack::mk_n_effect(),
+        defs::d16_online::mk_n_effect(),
         defs::d17_mining::mk_n_effect(),
         defs::d26_structure_repair::mk_n_effect(),
         defs::d27_armor_repair::mk_n_effect(),
