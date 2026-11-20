@@ -1,5 +1,5 @@
 use crate::{
-    ad::{AEffect, AEffectCatId, AEffectId},
+    ad::{AEffect, AEffectCatId, AEffectId, AState},
     nd::NEffect,
 };
 
@@ -14,14 +14,17 @@ pub(in crate::nd::effect) fn mk_n_effect() -> NEffect {
 }
 
 fn update_effect(a_effect: &mut AEffect, a_warnings: &mut Vec<String>) {
-    // In EVE, "online" effect has active category. In refine, highest module state is picked by
-    // highest effect state. Modules which can never be active (like plates) can become active
-    // without this fix
-    match a_effect.category == AEffectCatId::ONLINE {
+    // In EVE, "online" effect has active category, and it receives active state because of it. In
+    // refine, highest module state is picked by its highest effect state. Modules which can never
+    // be active (like plates) can become active without this fix
+    match a_effect.category == AEffectCatId::ONLINE && a_effect.state == AState::Online {
         true => {
-            let warning = format!("effect {EFFECT_AID}: online effect category didn't need fixing");
+            let warning = format!("effect {EFFECT_AID}: online effect didn't need fixing");
             a_warnings.push(warning);
         }
-        false => a_effect.category = AEffectCatId::ONLINE,
+        false => {
+            a_effect.category = AEffectCatId::ONLINE;
+            a_effect.state = AState::Online;
+        }
     }
 }
