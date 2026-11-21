@@ -32,9 +32,6 @@ impl VastFitData {
         let Some(stance_uid) = fit.stance else {
             return true;
         };
-        let Some(ship) = ship else {
-            return false;
-        };
         stanceable_matcher(ship) || kfs.contains(&stance_uid)
     }
     // Verbose validations
@@ -48,11 +45,6 @@ impl VastFitData {
         let Some(stance_uid) = fit.stance else {
             return ValResult::Passed;
         };
-        let Some(ship) = ship else {
-            return ValResult::Failed(ValShipStanceFail {
-                stance_item_id: ctx.u_data.items.ext_id_by_int_id(stance_uid),
-            });
-        };
         if stanceable_matcher(ship) {
             return ValResult::Passed;
         }
@@ -65,7 +57,10 @@ impl VastFitData {
     }
 }
 
-fn stanceable_matcher(ship: &UShip) -> bool {
+fn stanceable_matcher(ship: Option<&UShip>) -> bool {
+    let Some(ship) = ship else {
+        return false;
+    };
     matches!(
         ship.get_type_aid(),
         AItemId::CONFESSOR | AItemId::HECATE | AItemId::JACKDAW | AItemId::SVIPUL | AItemId::SKUA | AItemId::ANHINGA

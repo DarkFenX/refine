@@ -153,6 +153,20 @@ def test_known_failures(client):
     assert api_val.passed is True
     with check_no_field():
         api_val.details  # ruff:ignore[useless-expression]
+    # Action
+    api_ship.remove()
+    # Verification - no ship case has to be checked as well, since there is no-ship logic
+    api_val = api_fit.validate(options=ValOptions(ship_stance=[api_other.id]))
+    assert api_val.passed is False
+    assert api_val.details.ship_stance.item_id == api_stance.id
+    api_val = api_fit.validate(options=ValOptions(ship_stance=[api_stance.id]))
+    assert api_val.passed is True
+    with check_no_field():
+        api_val.details  # ruff:ignore[useless-expression]
+    api_val = api_fit.validate(options=ValOptions(ship_stance=[api_other.id, api_stance.id]))
+    assert api_val.passed is True
+    with check_no_field():
+        api_val.details  # ruff:ignore[useless-expression]
 
 
 def test_no_ship(client):
