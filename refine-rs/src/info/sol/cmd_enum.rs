@@ -38,22 +38,22 @@ pub enum SolInfoEnumCmdBr {
 // Not public because there is no direct consumer of the command; this command is usable only via
 // hybrid batching endpoint
 impl SolInfoCmdBr {
-    pub(crate) fn into_sol_info_br(self) -> SolInfoEnumCmdBr {
+    pub(crate) const fn into_sol_info_br(self) -> SolInfoEnumCmdBr {
         SolInfoEnumCmdBr::SolInfo(self)
     }
 }
 impl FleetInfoCmdBr {
-    pub(crate) fn into_sol_info_br(self, fleet_id: impl Into<FleetIdBr>) -> SolInfoEnumCmdBr {
+    pub(crate) const fn into_sol_info_br(self, fleet_id: impl [const] Into<FleetIdBr>) -> SolInfoEnumCmdBr {
         SolInfoEnumCmdBr::FleetInfo(self.into_ctx_fleet_br(fleet_id))
     }
 }
 impl FitInfoCmdBr {
-    pub(crate) fn into_sol_info_br(self, fit_id: impl Into<FitIdBr>) -> SolInfoEnumCmdBr {
+    pub(crate) const fn into_sol_info_br(self, fit_id: impl [const] Into<FitIdBr>) -> SolInfoEnumCmdBr {
         SolInfoEnumCmdBr::FitInfo(self.into_ctx_fit_br(fit_id))
     }
 }
 impl ItemInfoCmdBr {
-    pub(crate) fn into_sol_info_br(self, item_id: impl Into<ItemIdBr>) -> SolInfoEnumCmdBr {
+    pub(crate) const fn into_sol_info_br(self, item_id: impl [const] Into<ItemIdBr>) -> SolInfoEnumCmdBr {
         SolInfoEnumCmdBr::ItemInfo(self.into_ctx_item_br(item_id))
     }
 }

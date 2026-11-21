@@ -17,7 +17,7 @@ pub struct FleetChangeCmdGen<F> {
     #[cfg_attr(feature = "serde", serde(default))]
     rm_fit_ids: Vec<F>,
 }
-impl<F> Default for FleetChangeCmdGen<F> {
+const impl<F> Default for FleetChangeCmdGen<F> {
     fn default() -> Self {
         Self {
             add_fit_ids: Default::default(),
@@ -46,7 +46,7 @@ pub struct FleetChangeCmdCtxFleetGen<L, F> {
 // Construction
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl<F> FleetChangeCmdGen<F> {
-    pub fn new() -> Self {
+    pub const fn new() -> Self {
         Self::default()
     }
     pub fn with_add_fit_ids(mut self, add_fit_ids: impl IntoIterator<Item = F>) -> Self {
@@ -63,12 +63,15 @@ impl<F> FleetChangeCmdGen<F> {
 // Conversions
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl FleetChangeCmd {
-    pub(in crate::ctl) fn into_ctx_fleet(self, fleet_id: FleetId) -> FleetChangeCmdCtxFleet {
+    pub(in crate::ctl) const fn into_ctx_fleet(self, fleet_id: FleetId) -> FleetChangeCmdCtxFleet {
         FleetChangeCmdCtxFleet { fleet_id, core: self }
     }
 }
 impl FleetChangeCmdBr {
-    pub(in crate::ctl) fn into_ctx_fleet_br(self, fleet_id: impl Into<FleetIdBr>) -> FleetChangeCmdCtxFleetBr {
+    pub(in crate::ctl) const fn into_ctx_fleet_br(
+        self,
+        fleet_id: impl [const] Into<FleetIdBr>,
+    ) -> FleetChangeCmdCtxFleetBr {
         FleetChangeCmdCtxFleetBr {
             fleet_id: fleet_id.into(),
             core: self,

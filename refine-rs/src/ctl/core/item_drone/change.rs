@@ -32,7 +32,7 @@ pub struct DroneChangeCmdGen<I> {
     #[cfg_attr(feature = "serde", serde(default))]
     effect_modes: EffectModes,
 }
-impl<I> Default for DroneChangeCmdGen<I> {
+const impl<I> Default for DroneChangeCmdGen<I> {
     fn default() -> Self {
         Self {
             type_id: Default::default(),
@@ -68,30 +68,30 @@ pub struct DroneChangeCmdCtxItemGen<I> {
 // Construction
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl<I> DroneChangeCmdGen<I> {
-    pub fn new() -> Self {
+    pub const fn new() -> Self {
         Self::default()
     }
-    pub fn with_type_id(mut self, type_id: ItemTypeId) -> Self {
+    pub const fn with_type_id(mut self, type_id: ItemTypeId) -> Self {
         self.type_id = Some(type_id);
         self
     }
-    pub fn with_state(mut self, state: MinionState) -> Self {
+    pub const fn with_state(mut self, state: MinionState) -> Self {
         self.state = Some(state);
         self
     }
-    pub fn with_mutation(mut self, mutation: Option<ChangeMutation>) -> Self {
+    pub const fn with_mutation(mut self, mutation: Option<ChangeMutation>) -> Self {
         self.mutation = mutation.into();
         self
     }
-    pub fn with_npc_prop_override(mut self, npc_prop_override: Option<NpcProp>) -> Self {
+    pub const fn with_npc_prop_override(mut self, npc_prop_override: Option<NpcProp>) -> Self {
         self.npc_prop_override = npc_prop_override.into();
         self
     }
-    pub fn with_coordinates(mut self, coordinates: Coordinates) -> Self {
+    pub const fn with_coordinates(mut self, coordinates: Coordinates) -> Self {
         self.coordinates = Some(coordinates);
         self
     }
-    pub fn with_movement(mut self, movement: Movement) -> Self {
+    pub const fn with_movement(mut self, movement: Movement) -> Self {
         self.movement = Some(movement);
         self
     }
@@ -113,12 +113,15 @@ impl<I> DroneChangeCmdGen<I> {
 // Conversions
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl DroneChangeCmd {
-    pub(in crate::ctl) fn into_ctx_item(self, item_id: ItemId) -> DroneChangeCmdCtxItem {
+    pub(in crate::ctl) const fn into_ctx_item(self, item_id: ItemId) -> DroneChangeCmdCtxItem {
         DroneChangeCmdCtxItem { item_id, core: self }
     }
 }
 impl DroneChangeCmdBr {
-    pub(in crate::ctl) fn into_ctx_item_br(self, item_id: impl Into<ItemIdBr>) -> DroneChangeCmdCtxItemBr {
+    pub(in crate::ctl) const fn into_ctx_item_br(
+        self,
+        item_id: impl [const] Into<ItemIdBr>,
+    ) -> DroneChangeCmdCtxItemBr {
         DroneChangeCmdCtxItemBr {
             item_id: item_id.into(),
             core: self,

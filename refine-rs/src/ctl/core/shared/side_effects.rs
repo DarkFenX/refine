@@ -7,14 +7,19 @@ use crate::EffectId;
     derive(serde::Deserialize),
     serde(transparent)
 )]
-#[derive(Clone, Default)]
+#[derive(Clone)]
 pub(in crate::ctl::core) struct SideEffects {
     #[cfg_attr(feature = "serde", serde_as(as = "serde_with::Map<_, _>"))]
     data: Vec<(EffectId, bool)>,
 }
+const impl Default for SideEffects {
+    fn default() -> Self {
+        Self { data: Vec::new() }
+    }
+}
 impl SideEffects {
     pub(in crate::ctl) const fn new() -> Self {
-        Self { data: Vec::new() }
+        Self::default()
     }
     pub(in crate::ctl) fn extend(&mut self, effect_modes: impl IntoIterator<Item = (EffectId, bool)>) {
         self.data.extend(effect_modes);

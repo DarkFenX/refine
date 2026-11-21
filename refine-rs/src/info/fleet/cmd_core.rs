@@ -7,7 +7,7 @@ use crate::{
 
 // Core commands
 #[cfg_attr(feature = "serde", derive(serde::Deserialize))]
-#[derive(Clone, Default)]
+#[derive(Clone)]
 pub struct FleetInfoCmd {
     #[cfg_attr(feature = "serde", serde(default))]
     fit_mode: OvrdMapLight<FitId, FitInfoMode>,
@@ -16,8 +16,17 @@ pub struct FleetInfoCmd {
     #[cfg_attr(feature = "serde", serde(flatten))]
     shared: FleetInfoCmdShared,
 }
+const impl Default for FleetInfoCmd {
+    fn default() -> Self {
+        Self {
+            fit_mode: Default::default(),
+            item_mode: Default::default(),
+            shared: Default::default(),
+        }
+    }
+}
 #[cfg_attr(feature = "serde", derive(serde::Deserialize))]
-#[derive(Clone, Default)]
+#[derive(Clone)]
 pub struct FleetInfoCmdBr {
     #[cfg_attr(feature = "serde", serde(default))]
     fit_mode: OvrdCompact<FitIdBr, FitInfoMode>,
@@ -26,11 +35,27 @@ pub struct FleetInfoCmdBr {
     #[cfg_attr(feature = "serde", serde(flatten))]
     shared: FleetInfoCmdShared,
 }
+const impl Default for FleetInfoCmdBr {
+    fn default() -> Self {
+        Self {
+            fit_mode: Default::default(),
+            item_mode: Default::default(),
+            shared: Default::default(),
+        }
+    }
+}
 #[cfg_attr(feature = "serde", derive(serde::Deserialize))]
-#[derive(Copy, Clone, Default)]
+#[derive(Copy, Clone)]
 struct FleetInfoCmdShared {
     #[cfg_attr(feature = "serde", serde(default))]
     fleet_mode: FleetInfoMode,
+}
+const impl Default for FleetInfoCmdShared {
+    fn default() -> Self {
+        Self {
+            fleet_mode: Default::default(),
+        }
+    }
 }
 
 // Extra context commands
@@ -52,14 +77,14 @@ pub struct FleetInfoCmdCtxFleetBr {
 // Construction
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl FleetInfoCmd {
-    pub fn new() -> Self {
+    pub const fn new() -> Self {
         Self::default()
     }
-    pub fn with_fleet(mut self, mode: FleetInfoMode) -> Self {
+    pub const fn with_fleet(mut self, mode: FleetInfoMode) -> Self {
         self.shared.fleet_mode = mode;
         self
     }
-    pub fn with_fit_default(mut self, mode: FitInfoMode) -> Self {
+    pub const fn with_fit_default(mut self, mode: FitInfoMode) -> Self {
         self.fit_mode.set_default(mode);
         self
     }
@@ -67,7 +92,7 @@ impl FleetInfoCmd {
         self.fit_mode.add_overrides(mode, fit_ids);
         self
     }
-    pub fn with_item_default(mut self, mode: ItemInfoMode) -> Self {
+    pub const fn with_item_default(mut self, mode: ItemInfoMode) -> Self {
         self.item_mode.set_default(mode);
         self
     }
@@ -78,14 +103,14 @@ impl FleetInfoCmd {
 }
 
 impl FleetInfoCmdBr {
-    pub fn new() -> Self {
+    pub const fn new() -> Self {
         Self::default()
     }
-    pub fn with_fleet(mut self, mode: FleetInfoMode) -> Self {
+    pub const fn with_fleet(mut self, mode: FleetInfoMode) -> Self {
         self.shared.fleet_mode = mode;
         self
     }
-    pub fn with_fit_default(mut self, mode: FitInfoMode) -> Self {
+    pub const fn with_fit_default(mut self, mode: FitInfoMode) -> Self {
         self.fit_mode.set_default(mode);
         self
     }
@@ -93,7 +118,7 @@ impl FleetInfoCmdBr {
         self.fit_mode.add_overrides(mode, fit_ids);
         self
     }
-    pub fn with_item_default(mut self, mode: ItemInfoMode) -> Self {
+    pub const fn with_item_default(mut self, mode: ItemInfoMode) -> Self {
         self.item_mode.set_default(mode);
         self
     }
@@ -107,7 +132,10 @@ impl FleetInfoCmdBr {
 // Conversions
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl FleetInfoCmdBr {
-    pub(in crate::info) fn into_ctx_fleet_br(self, fleet_id: impl Into<FleetIdBr>) -> FleetInfoCmdCtxFleetBr {
+    pub(in crate::info) const fn into_ctx_fleet_br(
+        self,
+        fleet_id: impl [const] Into<FleetIdBr>,
+    ) -> FleetInfoCmdCtxFleetBr {
         FleetInfoCmdCtxFleetBr {
             fleet_id: fleet_id.into(),
             core: self,

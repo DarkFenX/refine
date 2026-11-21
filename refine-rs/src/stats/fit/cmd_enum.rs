@@ -28,12 +28,12 @@ pub enum FitStatsEnumCmdGen<F, I> {
 // Not public because there is no direct consumer of the command; this command is usable only via
 // hybrid batching endpoint
 impl FitStatsCmdBr {
-    pub(crate) fn into_fit_stats_br(self) -> FitStatsEnumCmdBr {
+    pub(crate) const fn into_fit_stats_br(self) -> FitStatsEnumCmdBr {
         FitStatsEnumCmdBr::FitStats(self)
     }
 }
 impl ItemStatsCmdBr {
-    pub(crate) fn into_fit_stats_br(self, item_id: impl Into<ItemIdBr>) -> FitStatsEnumCmdBr {
+    pub(crate) const fn into_fit_stats_br(self, item_id: impl [const] Into<ItemIdBr>) -> FitStatsEnumCmdBr {
         FitStatsEnumCmdBr::ItemStats(self.into_ctx_item_br(item_id))
     }
 }

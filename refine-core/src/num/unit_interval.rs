@@ -13,8 +13,8 @@ type Range = pattern_type!(u64 is ZERO_BITS..=ONE_BITS);
 #[derive(Copy, Clone)]
 pub struct UnitInterval(Range);
 impl UnitInterval {
-    pub fn from_f64_checked(v: f64) -> Result<Self, UnitIntervalError> {
-        match (0.0..=1.0).contains(&v) {
+    pub const fn from_f64_checked(v: f64) -> Result<Self, UnitIntervalError> {
+        match v >= 0.0 && v <= 1.0 {
             true => Ok(Self::from_f64_clamped(v)),
             false => Err(UnitIntervalError { value: v }),
         }

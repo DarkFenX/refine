@@ -6,26 +6,49 @@ use crate::{
 
 // Core commands
 #[cfg_attr(feature = "serde", derive(serde::Deserialize))]
-#[derive(Clone, Default)]
+#[derive(Clone)]
 pub struct FitInfoCmd {
     #[cfg_attr(feature = "serde", serde(default))]
     item_mode: OvrdMapLight<ItemId, ItemInfoMode>,
     #[cfg_attr(feature = "serde", serde(flatten))]
     shared: FitInfoCmdShared,
 }
+const impl Default for FitInfoCmd {
+    fn default() -> Self {
+        Self {
+            item_mode: Default::default(),
+            shared: Default::default(),
+        }
+    }
+}
 #[cfg_attr(feature = "serde", derive(serde::Deserialize))]
-#[derive(Clone, Default)]
+#[derive(Clone)]
 pub struct FitInfoCmdBr {
     #[cfg_attr(feature = "serde", serde(default))]
     item_mode: OvrdCompact<ItemIdBr, ItemInfoMode>,
     #[cfg_attr(feature = "serde", serde(flatten))]
     shared: FitInfoCmdShared,
 }
+const impl Default for FitInfoCmdBr {
+    fn default() -> Self {
+        Self {
+            item_mode: Default::default(),
+            shared: Default::default(),
+        }
+    }
+}
 #[cfg_attr(feature = "serde", derive(serde::Deserialize))]
-#[derive(Copy, Clone, Default)]
+#[derive(Copy, Clone)]
 struct FitInfoCmdShared {
     #[cfg_attr(feature = "serde", serde(default))]
     fit_mode: FitInfoMode,
+}
+const impl Default for FitInfoCmdShared {
+    fn default() -> Self {
+        Self {
+            fit_mode: Default::default(),
+        }
+    }
 }
 
 // Extra context commands
@@ -47,14 +70,14 @@ pub struct FitInfoCmdCtxFitBr {
 // Construction
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl FitInfoCmd {
-    pub fn new() -> Self {
+    pub const fn new() -> Self {
         Self::default()
     }
-    pub fn with_fit(mut self, mode: FitInfoMode) -> Self {
+    pub const fn with_fit(mut self, mode: FitInfoMode) -> Self {
         self.shared.fit_mode = mode;
         self
     }
-    pub fn with_item_default(mut self, mode: ItemInfoMode) -> Self {
+    pub const fn with_item_default(mut self, mode: ItemInfoMode) -> Self {
         self.item_mode.set_default(mode);
         self
     }
@@ -65,14 +88,14 @@ impl FitInfoCmd {
 }
 
 impl FitInfoCmdBr {
-    pub fn new() -> Self {
+    pub const fn new() -> Self {
         Self::default()
     }
-    pub fn with_fit(mut self, mode: FitInfoMode) -> Self {
+    pub const fn with_fit(mut self, mode: FitInfoMode) -> Self {
         self.shared.fit_mode = mode;
         self
     }
-    pub fn with_item_default(mut self, mode: ItemInfoMode) -> Self {
+    pub const fn with_item_default(mut self, mode: ItemInfoMode) -> Self {
         self.item_mode.set_default(mode);
         self
     }
@@ -86,7 +109,7 @@ impl FitInfoCmdBr {
 // Conversions
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl FitInfoCmdBr {
-    pub(in crate::info) fn into_ctx_fit_br(self, fit_id: impl Into<FitIdBr>) -> FitInfoCmdCtxFitBr {
+    pub(in crate::info) const fn into_ctx_fit_br(self, fit_id: impl [const] Into<FitIdBr>) -> FitInfoCmdCtxFitBr {
         FitInfoCmdCtxFitBr {
             fit_id: fit_id.into(),
             core: self,

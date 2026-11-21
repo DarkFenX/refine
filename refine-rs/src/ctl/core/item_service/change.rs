@@ -5,12 +5,21 @@ use crate::{
 
 // Core commands
 #[cfg_attr(feature = "serde", derive(serde::Deserialize))]
-#[derive(Clone, Default)]
+#[derive(Clone)]
 pub struct ServiceChangeCmd {
     type_id: Option<ItemTypeId>,
     state: Option<ServiceState>,
     #[cfg_attr(feature = "serde", serde(default))]
     effect_modes: EffectModes,
+}
+const impl Default for ServiceChangeCmd {
+    fn default() -> Self {
+        Self {
+            type_id: Default::default(),
+            state: Default::default(),
+            effect_modes: Default::default(),
+        }
+    }
 }
 
 // Extra context commands
@@ -33,14 +42,14 @@ pub struct ServiceChangeCmdCtxItemGen<I> {
 // Construction
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl ServiceChangeCmd {
-    pub fn new() -> Self {
+    pub const fn new() -> Self {
         Self::default()
     }
-    pub fn with_type_id(mut self, type_id: ItemTypeId) -> Self {
+    pub const fn with_type_id(mut self, type_id: ItemTypeId) -> Self {
         self.type_id = Some(type_id);
         self
     }
-    pub fn with_state(mut self, state: ServiceState) -> Self {
+    pub const fn with_state(mut self, state: ServiceState) -> Self {
         self.state = Some(state);
         self
     }
@@ -54,10 +63,13 @@ impl ServiceChangeCmd {
 // Conversions
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl ServiceChangeCmd {
-    pub(in crate::ctl) fn into_ctx_item(self, item_id: ItemId) -> ServiceChangeCmdCtxItem {
+    pub(in crate::ctl) const fn into_ctx_item(self, item_id: ItemId) -> ServiceChangeCmdCtxItem {
         ServiceChangeCmdCtxItem { item_id, core: self }
     }
-    pub(in crate::ctl) fn into_ctx_item_br(self, item_id: impl Into<ItemIdBr>) -> ServiceChangeCmdCtxItemBr {
+    pub(in crate::ctl) const fn into_ctx_item_br(
+        self,
+        item_id: impl [const] Into<ItemIdBr>,
+    ) -> ServiceChangeCmdCtxItemBr {
         ServiceChangeCmdCtxItemBr {
             item_id: item_id.into(),
             core: self,

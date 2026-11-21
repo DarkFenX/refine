@@ -35,10 +35,10 @@ pub struct SkillAddCmdCtxFitGen<F> {
 // Construction
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl SkillAddCmd {
-    pub fn new(type_id: ItemTypeId, level: SkillLevel) -> Self {
+    pub const fn new(type_id: ItemTypeId, level: SkillLevel) -> Self {
         Self { type_id, level, .. }
     }
-    pub fn with_state(mut self, state: bool) -> Self {
+    pub const fn with_state(mut self, state: bool) -> Self {
         self.state = Some(state);
         self
     }
@@ -52,10 +52,10 @@ impl SkillAddCmd {
 // Conversions
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl SkillAddCmd {
-    pub(in crate::ctl) fn into_ctx_fit(self, fit_id: FitId) -> SkillAddCmdCtxFit {
+    pub(in crate::ctl) const fn into_ctx_fit(self, fit_id: FitId) -> SkillAddCmdCtxFit {
         SkillAddCmdCtxFit { fit_id, core: self }
     }
-    pub(in crate::ctl) fn into_ctx_fit_br(self, fit_id: impl Into<FitIdBr>) -> SkillAddCmdCtxFitBr {
+    pub(in crate::ctl) const fn into_ctx_fit_br(self, fit_id: impl [const] Into<FitIdBr>) -> SkillAddCmdCtxFitBr {
         SkillAddCmdCtxFitBr {
             fit_id: fit_id.into(),
             core: self,

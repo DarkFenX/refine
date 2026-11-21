@@ -37,10 +37,10 @@ pub struct BoosterAddCmdCtxFitGen<F> {
 // Construction
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl BoosterAddCmd {
-    pub fn new(type_id: ItemTypeId) -> Self {
+    pub const fn new(type_id: ItemTypeId) -> Self {
         Self { type_id, .. }
     }
-    pub fn with_state(mut self, state: bool) -> Self {
+    pub const fn with_state(mut self, state: bool) -> Self {
         self.state = Some(state);
         self
     }
@@ -58,10 +58,10 @@ impl BoosterAddCmd {
 // Conversions
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl BoosterAddCmd {
-    pub(in crate::ctl) fn into_ctx_fit(self, fit_id: FitId) -> BoosterAddCmdCtxFit {
+    pub(in crate::ctl) const fn into_ctx_fit(self, fit_id: FitId) -> BoosterAddCmdCtxFit {
         BoosterAddCmdCtxFit { fit_id, core: self }
     }
-    pub(in crate::ctl) fn into_ctx_fit_br(self, fit_id: impl Into<FitIdBr>) -> BoosterAddCmdCtxFitBr {
+    pub(in crate::ctl) const fn into_ctx_fit_br(self, fit_id: impl [const] Into<FitIdBr>) -> BoosterAddCmdCtxFitBr {
         BoosterAddCmdCtxFitBr {
             fit_id: fit_id.into(),
             core: self,

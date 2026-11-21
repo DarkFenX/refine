@@ -6,7 +6,7 @@ pub struct ValEnforcer<VC> {
     pub(super) checker: VC,
 }
 impl<VC> ValEnforcer<VC> {
-    pub fn new(val_cmd: SolValCmdBr, checker: VC) -> Self {
+    pub const fn new(val_cmd: SolValCmdBr, checker: VC) -> Self {
         Self { val_cmd, checker }
     }
 }

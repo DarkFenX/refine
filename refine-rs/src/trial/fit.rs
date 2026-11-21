@@ -24,7 +24,7 @@ pub enum FitTryItemsEnumCmdGen<I> {
 // Not public because there is no direct consumer of the command; this command is usable only via
 // hybrid batching endpoint
 impl FitTryItemsCmdBr {
-    pub(crate) fn into_fit_try_br(self) -> FitTryItemsEnumCmdBr {
+    pub(crate) const fn into_fit_try_br(self) -> FitTryItemsEnumCmdBr {
         FitTryItemsEnumCmdBr::FitTryItems(self)
     }
 }

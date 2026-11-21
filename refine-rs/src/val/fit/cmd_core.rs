@@ -21,7 +21,7 @@ pub struct FitValCmdGen<I> {
     #[cfg_attr(feature = "serde", serde(default))]
     info_mode: ValResultMode,
 }
-impl<I> Default for FitValCmdGen<I> {
+const impl<I> Default for FitValCmdGen<I> {
     fn default() -> Self {
         Self {
             options: Default::default(),
@@ -50,14 +50,17 @@ pub struct FitValCmdCtxFitGen<F, I> {
 // Construction
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl<I> FitValCmdGen<I> {
-    pub fn new() -> Self {
+    pub const fn new() -> Self {
         Self::default()
     }
-    pub fn with_options(mut self, options: ValOptions<I>) -> Self {
+    pub const fn with_options(mut self, options: ValOptions<I>) -> Self
+    where
+        I: [const] std::marker::Destruct,
+    {
         self.options = options;
         self
     }
-    pub fn with_info_mode(mut self, info_mode: ValResultMode) -> Self {
+    pub const fn with_info_mode(mut self, info_mode: ValResultMode) -> Self {
         self.info_mode = info_mode;
         self
     }
@@ -67,7 +70,7 @@ impl<I> FitValCmdGen<I> {
 // Conversions
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl FitValCmdBr {
-    pub(in crate::val) fn into_ctx_item_br(self, fit_id: impl Into<FitIdBr>) -> FitValCmdCtxFitBr {
+    pub(in crate::val) const fn into_ctx_item_br(self, fit_id: impl [const] Into<FitIdBr>) -> FitValCmdCtxFitBr {
         FitValCmdCtxFitBr {
             fit_id: fit_id.into(),
             core: self,

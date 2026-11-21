@@ -26,7 +26,7 @@ pub struct FitStatsCmdGen<F, I> {
     #[cfg_attr(feature = "serde", serde(default))]
     item_options: OvrdCompact<I, ItemStatsOptionsGen<F, I>>,
 }
-impl<F, I> Default for FitStatsCmdGen<F, I> {
+const impl<F, I> Default for FitStatsCmdGen<F, I> {
     fn default() -> Self {
         Self {
             fit_options: Default::default(),
@@ -55,14 +55,22 @@ pub struct FitStatsCmdCtxFitGen<F, I> {
 // Construction
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl<F, I> FitStatsCmdGen<F, I> {
-    pub fn new() -> Self {
+    pub const fn new() -> Self {
         Self::default()
     }
-    pub fn with_fit(mut self, options: FitStatsOptionsGen<F, I>) -> Self {
+    pub const fn with_fit(mut self, options: FitStatsOptionsGen<F, I>) -> Self
+    where
+        F: [const] std::marker::Destruct,
+        I: [const] std::marker::Destruct,
+    {
         self.fit_options = options;
         self
     }
-    pub fn with_item_default(mut self, options: ItemStatsOptionsGen<F, I>) -> Self {
+    pub const fn with_item_default(mut self, options: ItemStatsOptionsGen<F, I>) -> Self
+    where
+        F: [const] std::marker::Destruct,
+        I: [const] std::marker::Destruct,
+    {
         self.item_options.set_default(options);
         self
     }
@@ -80,7 +88,7 @@ impl<F, I> FitStatsCmdGen<F, I> {
 // Conversions
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl FitStatsCmdBr {
-    pub(in crate::stats) fn into_ctx_fit_br(self, fit_id: impl Into<FitIdBr>) -> FitStatsCmdCtxFitBr {
+    pub(in crate::stats) const fn into_ctx_fit_br(self, fit_id: impl [const] Into<FitIdBr>) -> FitStatsCmdCtxFitBr {
         FitStatsCmdCtxFitBr {
             fit_id: fit_id.into(),
             core: self,

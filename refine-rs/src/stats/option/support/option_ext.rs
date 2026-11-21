@@ -85,7 +85,10 @@ where
             false => None,
         }
     }
-    pub(in crate::stats) fn into_resolved(self) -> Option<Vec<T>> {
+    pub(in crate::stats) const fn into_resolved(self) -> Option<Vec<T>>
+    where
+        T: [const] std::marker::Destruct,
+    {
         match self {
             Self::Disabled => None,
             Self::Enabled => Some(Vec::new()),
@@ -112,7 +115,10 @@ where
             false => None,
         }
     }
-    pub(in crate::stats) fn into_resolved(self) -> Option<Vec<Result<T, BrResolveError>>> {
+    pub(in crate::stats) const fn into_resolved(self) -> Option<Vec<Result<T, BrResolveError>>>
+    where
+        T: [const] std::marker::Destruct,
+    {
         match self {
             Self::Disabled => None,
             Self::Enabled => Some(Vec::new()),

@@ -34,10 +34,10 @@ pub struct SubsystemAddCmdCtxFitGen<F> {
 // Construction
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl SubsystemAddCmd {
-    pub fn new(type_id: ItemTypeId) -> Self {
+    pub const fn new(type_id: ItemTypeId) -> Self {
         Self { type_id, .. }
     }
-    pub fn with_state(mut self, state: bool) -> Self {
+    pub const fn with_state(mut self, state: bool) -> Self {
         self.state = Some(state);
         self
     }
@@ -51,10 +51,10 @@ impl SubsystemAddCmd {
 // Conversions
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl SubsystemAddCmd {
-    pub(in crate::ctl) fn into_ctx_fit(self, fit_id: FitId) -> SubsystemAddCmdCtxFit {
+    pub(in crate::ctl) const fn into_ctx_fit(self, fit_id: FitId) -> SubsystemAddCmdCtxFit {
         SubsystemAddCmdCtxFit { fit_id, core: self }
     }
-    pub(in crate::ctl) fn into_ctx_fit_br(self, fit_id: impl Into<FitIdBr>) -> SubsystemAddCmdCtxFitBr {
+    pub(in crate::ctl) const fn into_ctx_fit_br(self, fit_id: impl [const] Into<FitIdBr>) -> SubsystemAddCmdCtxFitBr {
         SubsystemAddCmdCtxFitBr {
             fit_id: fit_id.into(),
             core: self,

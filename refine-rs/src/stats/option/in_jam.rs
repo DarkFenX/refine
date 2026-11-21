@@ -1,20 +1,25 @@
 use crate::stats::StatTimeOptions;
 
 #[cfg_attr(feature = "serde", derive(serde::Deserialize))]
-#[derive(Copy, Clone, Default)]
+#[derive(Copy, Clone)]
 pub struct StatOptionIncomingJam {
     #[cfg_attr(feature = "serde", serde(default))]
     pub(in crate::stats) time: StatTimeOptions = StatTimeOptions::default(),
+}
+const impl Default for StatOptionIncomingJam {
+    fn default() -> Self {
+        Self { .. }
+    }
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Construction
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl StatOptionIncomingJam {
-    pub fn new() -> Self {
+    pub const fn new() -> Self {
         Self::default()
     }
-    pub fn with_time(mut self, time: StatTimeOptions) -> Self {
+    pub const fn with_time(mut self, time: StatTimeOptions) -> Self {
         self.time = time;
         self
     }

@@ -5,12 +5,21 @@ use crate::{
 
 // Core commands
 #[cfg_attr(feature = "serde", derive(serde::Deserialize))]
-#[derive(Clone, Default)]
+#[derive(Clone)]
 pub struct CharacterChangeCmd {
     type_id: Option<ItemTypeId>,
     state: Option<bool>,
     #[cfg_attr(feature = "serde", serde(default))]
     effect_modes: EffectModes,
+}
+const impl Default for CharacterChangeCmd {
+    fn default() -> Self {
+        Self {
+            type_id: Default::default(),
+            state: Default::default(),
+            effect_modes: Default::default(),
+        }
+    }
 }
 
 // Extra context commands
@@ -65,14 +74,14 @@ pub struct CharacterChangeCmdCtxItemGen<I> {
 // Construction
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl CharacterChangeCmd {
-    pub fn new() -> Self {
+    pub const fn new() -> Self {
         Self::default()
     }
-    pub fn with_type_id(mut self, type_id: ItemTypeId) -> Self {
+    pub const fn with_type_id(mut self, type_id: ItemTypeId) -> Self {
         self.type_id = Some(type_id);
         self
     }
-    pub fn with_state(mut self, state: bool) -> Self {
+    pub const fn with_state(mut self, state: bool) -> Self {
         self.state = Some(state);
         self
     }
@@ -86,19 +95,25 @@ impl CharacterChangeCmd {
 // Conversions
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl CharacterChangeCmd {
-    pub(in crate::ctl) fn into_ctx_via_fit(self, fit_id: FitId) -> CharacterChangeCmdCtxAny {
+    pub(in crate::ctl) const fn into_ctx_via_fit(self, fit_id: FitId) -> CharacterChangeCmdCtxAny {
         CharacterChangeCmdCtxAny::Fit(CharacterChangeCmdCtxFit { fit_id, core: self })
     }
-    pub(in crate::ctl) fn into_ctx_via_item(self, item_id: ItemId) -> CharacterChangeCmdCtxAny {
+    pub(in crate::ctl) const fn into_ctx_via_item(self, item_id: ItemId) -> CharacterChangeCmdCtxAny {
         CharacterChangeCmdCtxAny::Item(CharacterChangeCmdCtxItem { item_id, core: self })
     }
-    pub(in crate::ctl) fn into_ctx_br_via_fit(self, fit_id: impl Into<FitIdBr>) -> CharacterChangeCmdCtxAnyBr {
+    pub(in crate::ctl) const fn into_ctx_br_via_fit(
+        self,
+        fit_id: impl [const] Into<FitIdBr>,
+    ) -> CharacterChangeCmdCtxAnyBr {
         CharacterChangeCmdCtxAnyBr::Fit(CharacterChangeCmdCtxFitBr {
             fit_id: fit_id.into(),
             core: self,
         })
     }
-    pub(in crate::ctl) fn into_ctx_br_via_item(self, item_id: impl Into<ItemIdBr>) -> CharacterChangeCmdCtxAnyBr {
+    pub(in crate::ctl) const fn into_ctx_br_via_item(
+        self,
+        item_id: impl [const] Into<ItemIdBr>,
+    ) -> CharacterChangeCmdCtxAnyBr {
         CharacterChangeCmdCtxAnyBr::Item(CharacterChangeCmdCtxItemBr {
             item_id: item_id.into(),
             core: self,

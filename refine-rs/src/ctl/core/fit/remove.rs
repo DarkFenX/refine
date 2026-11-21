@@ -25,7 +25,7 @@ pub struct FitRemoveCmdCtxFitGen<F> {
 // Construction
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl FitRemoveCmd {
-    pub fn new() -> Self {
+    pub const fn new() -> Self {
         Self
     }
 }
@@ -34,10 +34,10 @@ impl FitRemoveCmd {
 // Conversions
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl FitRemoveCmd {
-    pub(in crate::ctl) fn into_ctx_fit(self, fit_id: FitId) -> FitRemoveCmdCtxFit {
+    pub(in crate::ctl) const fn into_ctx_fit(self, fit_id: FitId) -> FitRemoveCmdCtxFit {
         FitRemoveCmdCtxFit { fit_id, core: self }
     }
-    pub(in crate::ctl) fn into_ctx_fit_br(self, fit_id: impl Into<FitIdBr>) -> FitRemoveCmdCtxFitBr {
+    pub(in crate::ctl) const fn into_ctx_fit_br(self, fit_id: impl [const] Into<FitIdBr>) -> FitRemoveCmdCtxFitBr {
         FitRemoveCmdCtxFitBr {
             fit_id: fit_id.into(),
             core: self,

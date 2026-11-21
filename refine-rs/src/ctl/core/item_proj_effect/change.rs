@@ -24,7 +24,7 @@ pub struct ProjEffectChangeCmdGen<I> {
     #[cfg_attr(feature = "serde", serde(default))]
     effect_modes: EffectModes,
 }
-impl<I> Default for ProjEffectChangeCmdGen<I> {
+const impl<I> Default for ProjEffectChangeCmdGen<I> {
     fn default() -> Self {
         Self {
             type_id: Default::default(),
@@ -56,14 +56,14 @@ pub struct ProjEffectChangeCmdCtxItemGen<I> {
 // Construction
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl<I> ProjEffectChangeCmdGen<I> {
-    pub fn new() -> Self {
+    pub const fn new() -> Self {
         Self::default()
     }
-    pub fn with_type_id(mut self, type_id: ItemTypeId) -> Self {
+    pub const fn with_type_id(mut self, type_id: ItemTypeId) -> Self {
         self.type_id = Some(type_id);
         self
     }
-    pub fn with_state(mut self, state: bool) -> Self {
+    pub const fn with_state(mut self, state: bool) -> Self {
         self.state = Some(state);
         self
     }
@@ -85,12 +85,15 @@ impl<I> ProjEffectChangeCmdGen<I> {
 // Conversions
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl ProjEffectChangeCmd {
-    pub(in crate::ctl) fn into_ctx_item(self, item_id: ItemId) -> ProjEffectChangeCmdCtxItem {
+    pub(in crate::ctl) const fn into_ctx_item(self, item_id: ItemId) -> ProjEffectChangeCmdCtxItem {
         ProjEffectChangeCmdCtxItem { item_id, core: self }
     }
 }
 impl ProjEffectChangeCmdBr {
-    pub(in crate::ctl) fn into_ctx_item_br(self, item_id: impl Into<ItemIdBr>) -> ProjEffectChangeCmdCtxItemBr {
+    pub(in crate::ctl) const fn into_ctx_item_br(
+        self,
+        item_id: impl [const] Into<ItemIdBr>,
+    ) -> ProjEffectChangeCmdCtxItemBr {
         ProjEffectChangeCmdCtxItemBr {
             item_id: item_id.into(),
             core: self,

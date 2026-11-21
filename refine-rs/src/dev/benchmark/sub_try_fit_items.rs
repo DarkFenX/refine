@@ -18,7 +18,7 @@ pub struct DevBenchmarkTryFitItemsCmd {
 // Construction
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl DevBenchmarkTryFitItemsCmd {
-    pub fn new(fit_id: FitId, type_ids: Vec<ItemTypeId>, val_options: ValOptions, iterations: usize) -> Self {
+    pub const fn new(fit_id: FitId, type_ids: Vec<ItemTypeId>, val_options: ValOptions, iterations: usize) -> Self {
         Self {
             fit_id,
             type_ids,

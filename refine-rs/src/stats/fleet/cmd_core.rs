@@ -34,7 +34,7 @@ pub struct FleetStatsCmdGen<F, I> {
     #[cfg_attr(feature = "serde", serde(default))]
     item_options: OvrdCompact<I, ItemStatsOptionsGen<F, I>>,
 }
-impl<F, I> Default for FleetStatsCmdGen<F, I> {
+const impl<F, I> Default for FleetStatsCmdGen<F, I> {
     fn default() -> Self {
         Self {
             fleet_options: Default::default(),
@@ -64,14 +64,21 @@ pub struct FleetStatsCmdCtxFleetGen<L, F, I> {
 // Construction
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl<F, I> FleetStatsCmdGen<F, I> {
-    pub fn new() -> Self {
+    pub const fn new() -> Self {
         Self::default()
     }
-    pub fn with_fleet(mut self, options: FleetStatsOptionsGen<I>) -> Self {
+    pub const fn with_fleet(mut self, options: FleetStatsOptionsGen<I>) -> Self
+    where
+        I: [const] std::marker::Destruct,
+    {
         self.fleet_options = options;
         self
     }
-    pub fn with_fit_default(mut self, options: FitStatsOptionsGen<F, I>) -> Self {
+    pub const fn with_fit_default(mut self, options: FitStatsOptionsGen<F, I>) -> Self
+    where
+        F: [const] std::marker::Destruct,
+        I: [const] std::marker::Destruct,
+    {
         self.fit_options.set_default(options);
         self
     }
@@ -83,7 +90,11 @@ impl<F, I> FleetStatsCmdGen<F, I> {
         self.fit_options.add_overrides(options, fit_ids);
         self
     }
-    pub fn with_item_default(mut self, options: ItemStatsOptionsGen<F, I>) -> Self {
+    pub const fn with_item_default(mut self, options: ItemStatsOptionsGen<F, I>) -> Self
+    where
+        F: [const] std::marker::Destruct,
+        I: [const] std::marker::Destruct,
+    {
         self.item_options.set_default(options);
         self
     }
@@ -101,7 +112,10 @@ impl<F, I> FleetStatsCmdGen<F, I> {
 // Conversions
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl FleetStatsCmdBr {
-    pub(in crate::stats) fn into_ctx_fleet_br(self, fleet_id: impl Into<FleetIdBr>) -> FleetStatsCmdCtxFleetBr {
+    pub(in crate::stats) const fn into_ctx_fleet_br(
+        self,
+        fleet_id: impl [const] Into<FleetIdBr>,
+    ) -> FleetStatsCmdCtxFleetBr {
         FleetStatsCmdCtxFleetBr {
             fleet_id: fleet_id.into(),
             core: self,

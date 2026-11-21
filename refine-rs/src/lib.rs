@@ -1,6 +1,8 @@
 #![feature(default_field_values)]
 #![feature(const_trait_impl)]
+#![feature(const_convert)]
 #![feature(const_default)]
+#![feature(const_destruct)]
 #![cfg_attr(feature = "serde", feature(cfg_eval))]
 #![expect(unevaluated_default_field_value)]
 

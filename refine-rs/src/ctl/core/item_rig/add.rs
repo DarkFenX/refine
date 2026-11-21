@@ -34,10 +34,10 @@ pub struct RigAddCmdCtxFitGen<F> {
 // Construction
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl RigAddCmd {
-    pub fn new(type_id: ItemTypeId) -> Self {
+    pub const fn new(type_id: ItemTypeId) -> Self {
         Self { type_id, .. }
     }
-    pub fn with_state(mut self, state: bool) -> Self {
+    pub const fn with_state(mut self, state: bool) -> Self {
         self.state = Some(state);
         self
     }
@@ -51,10 +51,10 @@ impl RigAddCmd {
 // Conversions
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl RigAddCmd {
-    pub(in crate::ctl) fn into_ctx_fit(self, fit_id: FitId) -> RigAddCmdCtxFit {
+    pub(in crate::ctl) const fn into_ctx_fit(self, fit_id: FitId) -> RigAddCmdCtxFit {
         RigAddCmdCtxFit { fit_id, core: self }
     }
-    pub(in crate::ctl) fn into_ctx_fit_br(self, fit_id: impl Into<FitIdBr>) -> RigAddCmdCtxFitBr {
+    pub(in crate::ctl) const fn into_ctx_fit_br(self, fit_id: impl [const] Into<FitIdBr>) -> RigAddCmdCtxFitBr {
         RigAddCmdCtxFitBr {
             fit_id: fit_id.into(),
             core: self,

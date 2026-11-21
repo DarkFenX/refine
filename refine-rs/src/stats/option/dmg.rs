@@ -24,7 +24,7 @@ pub struct StatOptionFitDmgGen<I> {
     pub(in crate::stats) crits: StatCritOptions = StatCritOptions::default(),
     pub(in crate::stats) projectee_item_id: Option<I> = None,
 }
-impl<I> Default for StatOptionFitDmgGen<I> {
+const impl<I> Default for StatOptionFitDmgGen<I> {
     fn default() -> Self {
         Self { .. }
     }
@@ -51,7 +51,7 @@ pub struct StatOptionItemDmgGen<I> {
     pub(in crate::stats) state: StatItemStateOptions = StatItemStateOptions::default(),
     pub(in crate::stats) projectee_item_id: Option<I> = None,
 }
-impl<I> Default for StatOptionItemDmgGen<I> {
+const impl<I> Default for StatOptionItemDmgGen<I> {
     fn default() -> Self {
         Self { .. }
     }
@@ -61,48 +61,54 @@ impl<I> Default for StatOptionItemDmgGen<I> {
 // Construction
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl<I> StatOptionFitDmgGen<I> {
-    pub fn new() -> Self {
+    pub const fn new() -> Self {
         Self::default()
     }
-    pub fn with_item_kinds(mut self, item_kinds: StatDmgItemKinds) -> Self {
+    pub const fn with_item_kinds(mut self, item_kinds: StatDmgItemKinds) -> Self {
         self.item_kinds = item_kinds;
         self
     }
-    pub fn with_time(mut self, time: StatTimeOptions) -> Self {
+    pub const fn with_time(mut self, time: StatTimeOptions) -> Self {
         self.time = time;
         self
     }
-    pub fn with_crits(mut self, crits: StatCritOptions) -> Self {
+    pub const fn with_crits(mut self, crits: StatCritOptions) -> Self {
         self.crits = crits;
         self
     }
-    pub fn with_projectee_item_id(mut self, projectee_item_id: impl Into<I>) -> Self {
+    pub const fn with_projectee_item_id(mut self, projectee_item_id: impl [const] Into<I>) -> Self
+    where
+        I: [const] std::marker::Destruct,
+    {
         self.projectee_item_id = Some(projectee_item_id.into());
         self
     }
 }
 
 impl<I> StatOptionItemDmgGen<I> {
-    pub fn new() -> Self {
+    pub const fn new() -> Self {
         Self::default()
     }
-    pub fn with_time(mut self, time: StatTimeOptions) -> Self {
+    pub const fn with_time(mut self, time: StatTimeOptions) -> Self {
         self.time = time;
         self
     }
-    pub fn with_crits(mut self, crits: StatCritOptions) -> Self {
+    pub const fn with_crits(mut self, crits: StatCritOptions) -> Self {
         self.crits = crits;
         self
     }
-    pub fn with_charges(mut self, charges: StatItemChargeOptions) -> Self {
+    pub const fn with_charges(mut self, charges: StatItemChargeOptions) -> Self {
         self.charges = charges;
         self
     }
-    pub fn with_state(mut self, state: StatItemStateOptions) -> Self {
+    pub const fn with_state(mut self, state: StatItemStateOptions) -> Self {
         self.state = state;
         self
     }
-    pub fn with_projectee_item_id(mut self, projectee_item_id: impl Into<I>) -> Self {
+    pub const fn with_projectee_item_id(mut self, projectee_item_id: impl [const] Into<I>) -> Self
+    where
+        I: [const] std::marker::Destruct,
+    {
         self.projectee_item_id = Some(projectee_item_id.into());
         self
     }

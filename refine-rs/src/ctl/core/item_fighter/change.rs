@@ -34,7 +34,7 @@ pub struct FighterChangeCmdGen<I> {
     #[cfg_attr(feature = "serde", serde(default))]
     effect_modes: EffectModes,
 }
-impl<I> Default for FighterChangeCmdGen<I> {
+const impl<I> Default for FighterChangeCmdGen<I> {
     fn default() -> Self {
         Self {
             type_id: Default::default(),
@@ -71,18 +71,18 @@ pub struct FighterChangeCmdCtxItemGen<I> {
 // Construction
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl<I> FighterChangeCmdGen<I> {
-    pub fn new() -> Self {
+    pub const fn new() -> Self {
         Self::default()
     }
-    pub fn with_type_id(mut self, type_id: ItemTypeId) -> Self {
+    pub const fn with_type_id(mut self, type_id: ItemTypeId) -> Self {
         self.type_id = Some(type_id);
         self
     }
-    pub fn with_state(mut self, state: MinionState) -> Self {
+    pub const fn with_state(mut self, state: MinionState) -> Self {
         self.state = Some(state);
         self
     }
-    pub fn with_count_override(mut self, count_override: Option<CountNz>) -> Self {
+    pub const fn with_count_override(mut self, count_override: Option<CountNz>) -> Self {
         self.count_override = count_override.into();
         self
     }
@@ -90,15 +90,15 @@ impl<I> FighterChangeCmdGen<I> {
         self.abilities.extend(abilities);
         self
     }
-    pub fn with_rearm_minion_override(mut self, rearm_minion_override: Option<RearmMinion>) -> Self {
+    pub const fn with_rearm_minion_override(mut self, rearm_minion_override: Option<RearmMinion>) -> Self {
         self.rearm_minion_override = rearm_minion_override.into();
         self
     }
-    pub fn with_coordinates(mut self, coordinates: Coordinates) -> Self {
+    pub const fn with_coordinates(mut self, coordinates: Coordinates) -> Self {
         self.coordinates = Some(coordinates);
         self
     }
-    pub fn with_movement(mut self, movement: Movement) -> Self {
+    pub const fn with_movement(mut self, movement: Movement) -> Self {
         self.movement = Some(movement);
         self
     }
@@ -120,12 +120,15 @@ impl<I> FighterChangeCmdGen<I> {
 // Conversions
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl FighterChangeCmd {
-    pub(in crate::ctl) fn into_ctx_item(self, item_id: ItemId) -> FighterChangeCmdCtxItem {
+    pub(in crate::ctl) const fn into_ctx_item(self, item_id: ItemId) -> FighterChangeCmdCtxItem {
         FighterChangeCmdCtxItem { item_id, core: self }
     }
 }
 impl FighterChangeCmdBr {
-    pub(in crate::ctl) fn into_ctx_item_br(self, item_id: impl Into<ItemIdBr>) -> FighterChangeCmdCtxItemBr {
+    pub(in crate::ctl) const fn into_ctx_item_br(
+        self,
+        item_id: impl [const] Into<ItemIdBr>,
+    ) -> FighterChangeCmdCtxItemBr {
         FighterChangeCmdCtxItemBr {
             item_id: item_id.into(),
             core: self,

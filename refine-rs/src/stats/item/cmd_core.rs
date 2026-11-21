@@ -22,7 +22,7 @@ pub struct ItemStatsCmdGen<F, I> {
     #[cfg_attr(feature = "serde", serde(default))]
     item_options: ItemStatsOptionsGen<F, I>,
 }
-impl<F, I> Default for ItemStatsCmdGen<F, I> {
+const impl<F, I> Default for ItemStatsCmdGen<F, I> {
     fn default() -> Self {
         Self {
             item_options: Default::default(),
@@ -50,10 +50,14 @@ pub struct ItemStatsCmdCtxItemGen<F, I> {
 // Construction
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl<F, I> ItemStatsCmdGen<F, I> {
-    pub fn new() -> Self {
+    pub const fn new() -> Self {
         Self::default()
     }
-    pub fn with_item(mut self, options: ItemStatsOptionsGen<F, I>) -> Self {
+    pub const fn with_item(mut self, options: ItemStatsOptionsGen<F, I>) -> Self
+    where
+        F: [const] std::marker::Destruct,
+        I: [const] std::marker::Destruct,
+    {
         self.item_options = options;
         self
     }
@@ -63,7 +67,10 @@ impl<F, I> ItemStatsCmdGen<F, I> {
 // Conversions
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl ItemStatsCmdBr {
-    pub(in crate::stats) fn into_ctx_item_br(self, item_id: impl Into<ItemIdBr>) -> ItemStatsCmdCtxItemBr {
+    pub(in crate::stats) const fn into_ctx_item_br(
+        self,
+        item_id: impl [const] Into<ItemIdBr>,
+    ) -> ItemStatsCmdCtxItemBr {
         ItemStatsCmdCtxItemBr {
             item_id: item_id.into(),
             core: self,

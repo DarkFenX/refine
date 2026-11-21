@@ -32,7 +32,7 @@ pub struct SolStatsCmdGen<L, F, I> {
     #[cfg_attr(feature = "serde", serde(default))]
     item_options: OvrdCompact<I, ItemStatsOptionsGen<F, I>>,
 }
-impl<L, F, I> Default for SolStatsCmdGen<L, F, I> {
+const impl<L, F, I> Default for SolStatsCmdGen<L, F, I> {
     fn default() -> Self {
         Self {
             fleet_options: Default::default(),
@@ -46,10 +46,13 @@ impl<L, F, I> Default for SolStatsCmdGen<L, F, I> {
 // Construction
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl<L, F, I> SolStatsCmdGen<L, F, I> {
-    pub fn new() -> Self {
+    pub const fn new() -> Self {
         Self::default()
     }
-    pub fn with_fleet_default(mut self, options: FleetStatsOptionsGen<I>) -> Self {
+    pub const fn with_fleet_default(mut self, options: FleetStatsOptionsGen<I>) -> Self
+    where
+        I: [const] std::marker::Destruct,
+    {
         self.fleet_options.set_default(options);
         self
     }
@@ -61,7 +64,11 @@ impl<L, F, I> SolStatsCmdGen<L, F, I> {
         self.fleet_options.add_overrides(options, fleet_ids);
         self
     }
-    pub fn with_fit_default(mut self, options: FitStatsOptionsGen<F, I>) -> Self {
+    pub const fn with_fit_default(mut self, options: FitStatsOptionsGen<F, I>) -> Self
+    where
+        F: [const] std::marker::Destruct,
+        I: [const] std::marker::Destruct,
+    {
         self.fit_options.set_default(options);
         self
     }
@@ -73,7 +80,11 @@ impl<L, F, I> SolStatsCmdGen<L, F, I> {
         self.fit_options.add_overrides(options, fit_ids);
         self
     }
-    pub fn with_item_default(mut self, options: ItemStatsOptionsGen<F, I>) -> Self {
+    pub const fn with_item_default(mut self, options: ItemStatsOptionsGen<F, I>) -> Self
+    where
+        F: [const] std::marker::Destruct,
+        I: [const] std::marker::Destruct,
+    {
         self.item_options.set_default(options);
         self
     }

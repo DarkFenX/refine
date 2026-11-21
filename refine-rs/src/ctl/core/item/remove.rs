@@ -2,9 +2,16 @@ use crate::{CmdResps, ItemId, ItemIdBr, RemoveMode, err::BrResolveError};
 
 // Core commands
 #[cfg_attr(feature = "serde", derive(serde::Deserialize))]
-#[derive(Clone, Default)]
+#[derive(Clone)]
 pub struct ItemRemoveCmd {
     rm_mode: Option<RemoveMode>,
+}
+const impl Default for ItemRemoveCmd {
+    fn default() -> Self {
+        Self {
+            rm_mode: Default::default(),
+        }
+    }
 }
 
 // Extra context commands
@@ -27,10 +34,10 @@ pub struct ItemRemoveCmdCtxItemGen<I> {
 // Construction
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl ItemRemoveCmd {
-    pub fn new() -> Self {
+    pub const fn new() -> Self {
         Self::default()
     }
-    pub fn with_rm_mode(mut self, rm_mode: RemoveMode) -> Self {
+    pub const fn with_rm_mode(mut self, rm_mode: RemoveMode) -> Self {
         self.rm_mode = Some(rm_mode);
         self
     }
@@ -40,10 +47,10 @@ impl ItemRemoveCmd {
 // Conversions
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl ItemRemoveCmd {
-    pub(in crate::ctl) fn into_ctx_item(self, item_id: ItemId) -> ItemRemoveCmdCtxItem {
+    pub(in crate::ctl) const fn into_ctx_item(self, item_id: ItemId) -> ItemRemoveCmdCtxItem {
         ItemRemoveCmdCtxItem { item_id, core: self }
     }
-    pub(in crate::ctl) fn into_ctx_item_br(self, item_id: impl Into<ItemIdBr>) -> ItemRemoveCmdCtxItemBr {
+    pub(in crate::ctl) const fn into_ctx_item_br(self, item_id: impl [const] Into<ItemIdBr>) -> ItemRemoveCmdCtxItemBr {
         ItemRemoveCmdCtxItemBr {
             item_id: item_id.into(),
             core: self,

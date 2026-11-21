@@ -20,9 +20,9 @@ use crate::{
 #[derive(Copy, Clone, Default, Debug, derive_more::Display)]
 pub struct PValue(f64);
 impl PValue {
-    pub fn from_f64_checked(v: f64) -> Result<Self, PValueError> {
+    pub const fn from_f64_checked(v: f64) -> Result<Self, PValueError> {
         // -0.0 passes the check intentionally
-        match (Self::MIN.0..=Self::MAX.0).contains(&v) {
+        match v >= Self::MIN.0 && v <= Self::MAX.0 {
             true => Ok(Self(v)),
             false => Err(PValueError { value: v }),
         }

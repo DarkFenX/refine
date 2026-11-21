@@ -28,7 +28,7 @@ pub struct ItemAutodetectAddCmdCtxFitGen<F> {
 // Construction
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl ItemAutodetectAddCmd {
-    pub fn new(type_id: ItemTypeId) -> Self {
+    pub const fn new(type_id: ItemTypeId) -> Self {
         Self { type_id }
     }
 }
@@ -37,10 +37,13 @@ impl ItemAutodetectAddCmd {
 // Conversions
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl ItemAutodetectAddCmd {
-    pub(in crate::ctl) fn into_ctx_fit(self, fit_id: FitId) -> ItemAutodetectAddCmdCtxFit {
+    pub(in crate::ctl) const fn into_ctx_fit(self, fit_id: FitId) -> ItemAutodetectAddCmdCtxFit {
         ItemAutodetectAddCmdCtxFit { fit_id, core: self }
     }
-    pub(in crate::ctl) fn into_ctx_fit_br(self, fit_id: impl Into<FitIdBr>) -> ItemAutodetectAddCmdCtxFitBr {
+    pub(in crate::ctl) const fn into_ctx_fit_br(
+        self,
+        fit_id: impl [const] Into<FitIdBr>,
+    ) -> ItemAutodetectAddCmdCtxFitBr {
         ItemAutodetectAddCmdCtxFitBr {
             fit_id: fit_id.into(),
             core: self,

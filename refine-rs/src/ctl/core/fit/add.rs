@@ -16,7 +16,7 @@ pub struct FitAddCmdGen<L> {
     sec_status: Option<FitSecStatus>,
     rah_incoming_dps: Option<DpsProfile>,
 }
-impl<L> Default for FitAddCmdGen<L> {
+const impl<L> Default for FitAddCmdGen<L> {
     fn default() -> Self {
         Self {
             fleet_id: Default::default(),
@@ -30,18 +30,21 @@ impl<L> Default for FitAddCmdGen<L> {
 // Construction
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl<L> FitAddCmdGen<L> {
-    pub fn new() -> Self {
+    pub const fn new() -> Self {
         Self::default()
     }
-    pub fn with_fleet_id(mut self, fleet_id: L) -> Self {
+    pub const fn with_fleet_id(mut self, fleet_id: L) -> Self
+    where
+        L: [const] std::marker::Destruct,
+    {
         self.fleet_id = Some(fleet_id);
         self
     }
-    pub fn with_sec_status(mut self, sec_status: FitSecStatus) -> Self {
+    pub const fn with_sec_status(mut self, sec_status: FitSecStatus) -> Self {
         self.sec_status = Some(sec_status);
         self
     }
-    pub fn with_rah_incoming_dps(mut self, rah_incoming_dps: DpsProfile) -> Self {
+    pub const fn with_rah_incoming_dps(mut self, rah_incoming_dps: DpsProfile) -> Self {
         self.rah_incoming_dps = Some(rah_incoming_dps);
         self
     }

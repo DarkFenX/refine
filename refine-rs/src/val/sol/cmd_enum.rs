@@ -26,12 +26,12 @@ pub enum SolValEnumCmdGen<F, I> {
 // Not public because there is no direct consumer of the command; this command is usable only via
 // hybrid batching endpoint
 impl SolValCmdBr {
-    pub(crate) fn into_sol_val_br(self) -> SolValEnumCmdBr {
+    pub(crate) const fn into_sol_val_br(self) -> SolValEnumCmdBr {
         SolValEnumCmdBr::SolValidate(self)
     }
 }
 impl FitValCmdBr {
-    pub(crate) fn into_sol_val_br(self, fit_id: impl Into<FitIdBr>) -> SolValEnumCmdBr {
+    pub(crate) const fn into_sol_val_br(self, fit_id: impl [const] Into<FitIdBr>) -> SolValEnumCmdBr {
         SolValEnumCmdBr::FitValidate(self.into_ctx_item_br(fit_id))
     }
 }

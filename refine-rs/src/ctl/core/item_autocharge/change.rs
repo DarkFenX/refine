@@ -5,11 +5,19 @@ use crate::{
 
 // Core commands
 #[cfg_attr(feature = "serde", derive(serde::Deserialize))]
-#[derive(Clone, Default)]
+#[derive(Clone)]
 pub struct AutochargeChangeCmd {
     state: Option<bool>,
     #[cfg_attr(feature = "serde", serde(default))]
     effect_modes: EffectModes,
+}
+const impl Default for AutochargeChangeCmd {
+    fn default() -> Self {
+        Self {
+            state: Default::default(),
+            effect_modes: Default::default(),
+        }
+    }
 }
 
 // Extra context commands
@@ -32,10 +40,10 @@ pub struct AutochargeChangeCmdCtxItemGen<I> {
 // Construction
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl AutochargeChangeCmd {
-    pub fn new() -> Self {
+    pub const fn new() -> Self {
         Self::default()
     }
-    pub fn with_state(mut self, state: bool) -> Self {
+    pub const fn with_state(mut self, state: bool) -> Self {
         self.state = Some(state);
         self
     }
@@ -49,10 +57,13 @@ impl AutochargeChangeCmd {
 // Conversions
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl AutochargeChangeCmd {
-    pub(in crate::ctl) fn into_ctx_item(self, item_id: ItemId) -> AutochargeChangeCmdCtxItem {
+    pub(in crate::ctl) const fn into_ctx_item(self, item_id: ItemId) -> AutochargeChangeCmdCtxItem {
         AutochargeChangeCmdCtxItem { item_id, core: self }
     }
-    pub(in crate::ctl) fn into_ctx_item_br(self, item_id: impl Into<ItemIdBr>) -> AutochargeChangeCmdCtxItemBr {
+    pub(in crate::ctl) const fn into_ctx_item_br(
+        self,
+        item_id: impl [const] Into<ItemIdBr>,
+    ) -> AutochargeChangeCmdCtxItemBr {
         AutochargeChangeCmdCtxItemBr {
             item_id: item_id.into(),
             core: self,

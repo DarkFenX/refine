@@ -5,12 +5,21 @@ use crate::{
 
 // Core commands
 #[cfg_attr(feature = "serde", derive(serde::Deserialize))]
-#[derive(Clone, Default)]
+#[derive(Clone)]
 pub struct ImplantChangeCmd {
     type_id: Option<ItemTypeId>,
     state: Option<bool>,
     #[cfg_attr(feature = "serde", serde(default))]
     effect_modes: EffectModes,
+}
+const impl Default for ImplantChangeCmd {
+    fn default() -> Self {
+        Self {
+            type_id: Default::default(),
+            state: Default::default(),
+            effect_modes: Default::default(),
+        }
+    }
 }
 
 // Extra context commands
@@ -33,14 +42,14 @@ pub struct ImplantChangeCmdCtxItemGen<I> {
 // Construction
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl ImplantChangeCmd {
-    pub fn new() -> Self {
+    pub const fn new() -> Self {
         Self::default()
     }
-    pub fn with_type_id(mut self, type_id: ItemTypeId) -> Self {
+    pub const fn with_type_id(mut self, type_id: ItemTypeId) -> Self {
         self.type_id = Some(type_id);
         self
     }
-    pub fn with_state(mut self, state: bool) -> Self {
+    pub const fn with_state(mut self, state: bool) -> Self {
         self.state = Some(state);
         self
     }
@@ -54,10 +63,13 @@ impl ImplantChangeCmd {
 // Conversions
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl ImplantChangeCmd {
-    pub(in crate::ctl) fn into_ctx_item(self, item_id: ItemId) -> ImplantChangeCmdCtxItem {
+    pub(in crate::ctl) const fn into_ctx_item(self, item_id: ItemId) -> ImplantChangeCmdCtxItem {
         ImplantChangeCmdCtxItem { item_id, core: self }
     }
-    pub(in crate::ctl) fn into_ctx_item_br(self, item_id: impl Into<ItemIdBr>) -> ImplantChangeCmdCtxItemBr {
+    pub(in crate::ctl) const fn into_ctx_item_br(
+        self,
+        item_id: impl [const] Into<ItemIdBr>,
+    ) -> ImplantChangeCmdCtxItemBr {
         ImplantChangeCmdCtxItemBr {
             item_id: item_id.into(),
             core: self,

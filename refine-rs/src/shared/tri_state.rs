@@ -1,9 +1,13 @@
-#[derive(Copy, Clone, Default)]
+#[derive(Copy, Clone)]
 pub enum TriStateField<T> {
     Value(T),
     None,
-    #[default]
     Absent,
+}
+const impl<T> Default for TriStateField<T> {
+    fn default() -> Self {
+        Self::Absent
+    }
 }
 impl<T> TriStateField<T> {
     pub fn as_ref(&self) -> TriStateField<&T> {
@@ -34,7 +38,10 @@ impl<T> TriStateField<T> {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Conversions
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-impl<T> From<Option<T>> for TriStateField<T> {
+const impl<T> From<Option<T>> for TriStateField<T>
+where
+    T: [const] std::marker::Destruct,
+{
     fn from(val: Option<T>) -> Self {
         match val {
             Some(inner) => Self::Value(inner),

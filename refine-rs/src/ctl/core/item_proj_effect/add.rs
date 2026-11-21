@@ -27,10 +27,10 @@ pub struct ProjEffectAddCmdGen<I> {
 // Construction
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl<I> ProjEffectAddCmdGen<I> {
-    pub fn new(type_id: ItemTypeId) -> Self {
+    pub const fn new(type_id: ItemTypeId) -> Self {
         Self { type_id, .. }
     }
-    pub fn with_state(mut self, state: bool) -> Self {
+    pub const fn with_state(mut self, state: bool) -> Self {
         self.state = Some(state);
         self
     }

@@ -6,16 +6,30 @@ use crate::{
 
 // Core commands
 #[cfg_attr(feature = "serde", derive(serde::Deserialize))]
-#[derive(Clone, Default)]
+#[derive(Clone)]
 pub struct ItemInfoCmd {
     #[cfg_attr(feature = "serde", serde(default))]
     item_mode: OvrdMapLight<ItemId, ItemInfoMode>,
 }
+const impl Default for ItemInfoCmd {
+    fn default() -> Self {
+        Self {
+            item_mode: Default::default(),
+        }
+    }
+}
 #[cfg_attr(feature = "serde", derive(serde::Deserialize))]
-#[derive(Clone, Default)]
+#[derive(Clone)]
 pub struct ItemInfoCmdBr {
     #[cfg_attr(feature = "serde", serde(default))]
     item_mode: OvrdCompact<ItemIdBr, ItemInfoMode>,
+}
+const impl Default for ItemInfoCmdBr {
+    fn default() -> Self {
+        Self {
+            item_mode: Default::default(),
+        }
+    }
 }
 
 // Extra context commands
@@ -37,10 +51,10 @@ pub struct ItemInfoCmdCtxItemBr {
 // Construction
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl ItemInfoCmd {
-    pub fn new() -> Self {
+    pub const fn new() -> Self {
         Self::default()
     }
-    pub fn with_item_default(mut self, mode: ItemInfoMode) -> Self {
+    pub const fn with_item_default(mut self, mode: ItemInfoMode) -> Self {
         self.item_mode.set_default(mode);
         self
     }
@@ -51,10 +65,10 @@ impl ItemInfoCmd {
 }
 
 impl ItemInfoCmdBr {
-    pub fn new() -> Self {
+    pub const fn new() -> Self {
         Self::default()
     }
-    pub fn with_item_default(mut self, mode: ItemInfoMode) -> Self {
+    pub const fn with_item_default(mut self, mode: ItemInfoMode) -> Self {
         self.item_mode.set_default(mode);
         self
     }
@@ -68,7 +82,7 @@ impl ItemInfoCmdBr {
 // Conversions
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl ItemInfoCmdBr {
-    pub(in crate::info) fn into_ctx_item_br(self, item_id: impl Into<ItemIdBr>) -> ItemInfoCmdCtxItemBr {
+    pub(in crate::info) const fn into_ctx_item_br(self, item_id: impl [const] Into<ItemIdBr>) -> ItemInfoCmdCtxItemBr {
         ItemInfoCmdCtxItemBr {
             item_id: item_id.into(),
             core: self,

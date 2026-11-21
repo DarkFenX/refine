@@ -48,22 +48,22 @@ pub struct DroneAddCmdCtxFitGen<F, I> {
 // Construction
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl<I> DroneAddCmdGen<I> {
-    pub fn new(type_id: ItemTypeId, state: MinionState) -> Self {
+    pub const fn new(type_id: ItemTypeId, state: MinionState) -> Self {
         Self { type_id, state, .. }
     }
-    pub fn with_mutation(mut self, mutation: AddMutation) -> Self {
+    pub const fn with_mutation(mut self, mutation: AddMutation) -> Self {
         self.mutation = Some(mutation);
         self
     }
-    pub fn with_npc_prop_override(mut self, npc_prop_override: NpcProp) -> Self {
+    pub const fn with_npc_prop_override(mut self, npc_prop_override: NpcProp) -> Self {
         self.npc_prop_override = Some(npc_prop_override);
         self
     }
-    pub fn with_coordinates(mut self, coordinates: Coordinates) -> Self {
+    pub const fn with_coordinates(mut self, coordinates: Coordinates) -> Self {
         self.coordinates = Some(coordinates);
         self
     }
-    pub fn with_movement(mut self, movement: Movement) -> Self {
+    pub const fn with_movement(mut self, movement: Movement) -> Self {
         self.movement = Some(movement);
         self
     }
@@ -81,12 +81,12 @@ impl<I> DroneAddCmdGen<I> {
 // Conversions
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl DroneAddCmd {
-    pub(in crate::ctl) fn into_ctx_fit(self, fit_id: FitId) -> DroneAddCmdCtxFit {
+    pub(in crate::ctl) const fn into_ctx_fit(self, fit_id: FitId) -> DroneAddCmdCtxFit {
         DroneAddCmdCtxFit { fit_id, core: self }
     }
 }
 impl DroneAddCmdBr {
-    pub(in crate::ctl) fn into_ctx_fit_br(self, fit_id: impl Into<FitIdBr>) -> DroneAddCmdCtxFitBr {
+    pub(in crate::ctl) const fn into_ctx_fit_br(self, fit_id: impl [const] Into<FitIdBr>) -> DroneAddCmdCtxFitBr {
         DroneAddCmdCtxFitBr {
             fit_id: fit_id.into(),
             core: self,

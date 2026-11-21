@@ -66,7 +66,7 @@ impl<T> DefOptionExt<T> {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Conversions
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-impl From<bool> for DefOption {
+const impl From<bool> for DefOption {
     fn from(enabled: bool) -> Self {
         match enabled {
             true => Self::Enabled,
@@ -75,7 +75,10 @@ impl From<bool> for DefOption {
     }
 }
 
-impl<T> From<OptionExt<T>> for DefOptionExt<T> {
+const impl<T> From<OptionExt<T>> for DefOptionExt<T>
+where
+    T: [const] std::marker::Destruct,
+{
     fn from(option: OptionExt<T>) -> Self {
         match option {
             OptionExt::Disabled => Self::Disabled,

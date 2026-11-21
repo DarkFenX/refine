@@ -12,8 +12,8 @@ type Range = pattern_type!(u8 is MIN_RAW..=MAX_RAW);
 #[derive(Copy, Clone)]
 pub struct SkillLevel(Range);
 impl SkillLevel {
-    pub fn from_i32_checked(level: i32) -> Result<Self, SkillLevelError> {
-        match (Self::MIN.into_u8() as i32..=Self::MAX.into_u8() as i32).contains(&level) {
+    pub const fn from_i32_checked(level: i32) -> Result<Self, SkillLevelError> {
+        match level >= Self::MIN.into_u8() as i32 && level <= Self::MAX.into_u8() as i32 {
             true => Ok(Self::from_u8(level as u8)),
             false => Err(SkillLevelError { level }),
         }

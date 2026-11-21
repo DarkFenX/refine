@@ -9,8 +9,8 @@ use crate::Value;
 #[derive(Copy, Clone, Debug, derive_more::Display)]
 pub struct FitSecStatus(f64);
 impl FitSecStatus {
-    pub fn from_f64_checked(sec_status: f64) -> Result<Self, FitSecStatusError> {
-        match (Self::MIN.0..=Self::MAX.0).contains(&sec_status) {
+    pub const fn from_f64_checked(sec_status: f64) -> Result<Self, FitSecStatusError> {
+        match sec_status >= Self::MIN.0 && sec_status <= Self::MAX.0 {
             true => Ok(Self(sec_status)),
             false => Err(FitSecStatusError { sec_status }),
         }

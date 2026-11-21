@@ -52,10 +52,10 @@ pub struct FighterAddCmdCtxFitGen<F, I> {
 // Construction
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl<I> FighterAddCmdGen<I> {
-    pub fn new(type_id: ItemTypeId, state: MinionState) -> Self {
+    pub const fn new(type_id: ItemTypeId, state: MinionState) -> Self {
         Self { type_id, state, .. }
     }
-    pub fn with_count_override(mut self, count_override: CountNz) -> Self {
+    pub const fn with_count_override(mut self, count_override: CountNz) -> Self {
         self.count_override = Some(count_override);
         self
     }
@@ -63,15 +63,15 @@ impl<I> FighterAddCmdGen<I> {
         self.abilities.extend(abilities);
         self
     }
-    pub fn with_rearm_minion_override(mut self, rearm_minion_override: RearmMinion) -> Self {
+    pub const fn with_rearm_minion_override(mut self, rearm_minion_override: RearmMinion) -> Self {
         self.rearm_minion_override = Some(rearm_minion_override);
         self
     }
-    pub fn with_coordinates(mut self, coordinates: Coordinates) -> Self {
+    pub const fn with_coordinates(mut self, coordinates: Coordinates) -> Self {
         self.coordinates = Some(coordinates);
         self
     }
-    pub fn with_movement(mut self, movement: Movement) -> Self {
+    pub const fn with_movement(mut self, movement: Movement) -> Self {
         self.movement = Some(movement);
         self
     }
@@ -89,12 +89,12 @@ impl<I> FighterAddCmdGen<I> {
 // Conversions
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl FighterAddCmd {
-    pub(in crate::ctl) fn into_ctx_fit(self, fit_id: FitId) -> FighterAddCmdCtxFit {
+    pub(in crate::ctl) const fn into_ctx_fit(self, fit_id: FitId) -> FighterAddCmdCtxFit {
         FighterAddCmdCtxFit { fit_id, core: self }
     }
 }
 impl FighterAddCmdBr {
-    pub(in crate::ctl) fn into_ctx_fit_br(self, fit_id: impl Into<FitIdBr>) -> FighterAddCmdCtxFitBr {
+    pub(in crate::ctl) const fn into_ctx_fit_br(self, fit_id: impl [const] Into<FitIdBr>) -> FighterAddCmdCtxFitBr {
         FighterAddCmdCtxFitBr {
             fit_id: fit_id.into(),
             core: self,

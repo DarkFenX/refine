@@ -21,7 +21,7 @@ pub struct FitStatsOptionsGen<F, I> {
     default: bool = false,
     overrides: Vec<FitStatOption<F, I>> = Vec::new(),
 }
-impl<F, I> Default for FitStatsOptionsGen<F, I> {
+const impl<F, I> Default for FitStatsOptionsGen<F, I> {
     fn default() -> Self {
         Self { .. }
     }
@@ -105,7 +105,7 @@ enum FitStatOption<F, I> {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl<F, I> FitStatsOptionsGen<F, I> {
     /// True to have all supported stats enabled by default, false to have them disabled.
-    pub fn new(default: bool) -> Self {
+    pub const fn new(default: bool) -> Self {
         Self { default, .. }
     }
     /// True to have all supported stats enabled by default, false to have them disabled.

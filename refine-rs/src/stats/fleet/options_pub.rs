@@ -19,7 +19,7 @@ pub struct FleetStatsOptionsGen<I> {
     default: bool = false,
     overrides: Vec<FleetStatOption<I>> = Vec::new(),
 }
-impl<I> Default for FleetStatsOptionsGen<I> {
+const impl<I> Default for FleetStatsOptionsGen<I> {
     fn default() -> Self {
         Self { .. }
     }
@@ -40,7 +40,7 @@ enum FleetStatOption<I> {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl<I> FleetStatsOptionsGen<I> {
     /// True to have all supported stats enabled by default, false to have them disabled.
-    pub fn new(default: bool) -> Self {
+    pub const fn new(default: bool) -> Self {
         Self { default, .. }
     }
     /// True to have all supported stats enabled by default, false to have them disabled.

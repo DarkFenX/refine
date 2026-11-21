@@ -22,22 +22,22 @@ const impl Default for StatNeutItemKinds {
 }
 impl StatNeutItemKinds {
     /// True to have all supported item kinds enabled by default, false to have them disabled.
-    pub fn new(default: bool) -> Self {
+    pub const fn new(default: bool) -> Self {
         Self { default, .. }
     }
-    pub fn with_module(mut self, enabled: bool) -> Self {
+    pub const fn with_module(mut self, enabled: bool) -> Self {
         self.module = enabled.into();
         self
     }
-    pub fn with_minion(mut self, enabled: bool) -> Self {
+    pub const fn with_minion(mut self, enabled: bool) -> Self {
         self.minion = enabled.into();
         self
     }
-    pub fn with_bomb(mut self, enabled: bool) -> Self {
+    pub const fn with_bomb(mut self, enabled: bool) -> Self {
         self.bomb = enabled.into();
         self
     }
-    pub fn with_side_effect(mut self, enabled: bool) -> Self {
+    pub const fn with_side_effect(mut self, enabled: bool) -> Self {
         self.side_effect = enabled.into();
         self
     }

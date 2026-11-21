@@ -36,7 +36,7 @@ pub struct ModuleChangeCmdGen<I> {
     #[cfg_attr(feature = "serde", serde(default))]
     effect_modes: EffectModes,
 }
-impl<I> Default for ModuleChangeCmdGen<I> {
+const impl<I> Default for ModuleChangeCmdGen<I> {
     fn default() -> Self {
         Self {
             type_id: Default::default(),
@@ -73,34 +73,34 @@ pub struct ModuleChangeCmdCtxItemGen<I> {
 // Construction
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl<I> ModuleChangeCmdGen<I> {
-    pub fn new() -> Self {
+    pub const fn new() -> Self {
         Self::default()
     }
-    pub fn with_type_id(mut self, type_id: ItemTypeId) -> Self {
+    pub const fn with_type_id(mut self, type_id: ItemTypeId) -> Self {
         self.type_id = Some(type_id);
         self
     }
-    pub fn with_move(mut self, move_: MoveMode) -> Self {
+    pub const fn with_move(mut self, move_: MoveMode) -> Self {
         self.move_ = Some(move_);
         self
     }
-    pub fn with_state(mut self, state: ModuleState) -> Self {
+    pub const fn with_state(mut self, state: ModuleState) -> Self {
         self.state = Some(state);
         self
     }
-    pub fn with_mutation(mut self, mutation: Option<ChangeMutation>) -> Self {
+    pub const fn with_mutation(mut self, mutation: Option<ChangeMutation>) -> Self {
         self.mutation = mutation.into();
         self
     }
-    pub fn with_charge_type_id(mut self, charge_type_id: Option<ItemTypeId>) -> Self {
+    pub const fn with_charge_type_id(mut self, charge_type_id: Option<ItemTypeId>) -> Self {
         self.charge_type_id = charge_type_id.into();
         self
     }
-    pub fn with_spool_override(mut self, spool_override: Option<Spool>) -> Self {
+    pub const fn with_spool_override(mut self, spool_override: Option<Spool>) -> Self {
         self.spool_override = spool_override.into();
         self
     }
-    pub fn with_optional_reload_override(mut self, optional_reload_override: Option<OptionalReload>) -> Self {
+    pub const fn with_optional_reload_override(mut self, optional_reload_override: Option<OptionalReload>) -> Self {
         self.optional_reload_override = optional_reload_override.into();
         self
     }
@@ -122,12 +122,15 @@ impl<I> ModuleChangeCmdGen<I> {
 // Conversions
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl ModuleChangeCmd {
-    pub(in crate::ctl) fn into_ctx_item(self, item_id: ItemId) -> ModuleChangeCmdCtxItem {
+    pub(in crate::ctl) const fn into_ctx_item(self, item_id: ItemId) -> ModuleChangeCmdCtxItem {
         ModuleChangeCmdCtxItem { item_id, core: self }
     }
 }
 impl ModuleChangeCmdBr {
-    pub(in crate::ctl) fn into_ctx_item_br(self, item_id: impl Into<ItemIdBr>) -> ModuleChangeCmdCtxItemBr {
+    pub(in crate::ctl) const fn into_ctx_item_br(
+        self,
+        item_id: impl [const] Into<ItemIdBr>,
+    ) -> ModuleChangeCmdCtxItemBr {
         ModuleChangeCmdCtxItemBr {
             item_id: item_id.into(),
             core: self,

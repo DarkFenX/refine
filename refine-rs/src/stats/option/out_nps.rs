@@ -22,7 +22,7 @@ pub struct StatOptionFitOutNpsGen<I> {
     pub(in crate::stats) time: StatTimeOptions = StatTimeOptions::default(),
     pub(in crate::stats) projectee_item_id: Option<I> = None,
 }
-impl<I> Default for StatOptionFitOutNpsGen<I> {
+const impl<I> Default for StatOptionFitOutNpsGen<I> {
     fn default() -> Self {
         Self { .. }
     }
@@ -47,7 +47,7 @@ pub struct StatOptionItemOutNpsGen<I> {
     pub(in crate::stats) state: StatItemStateOptions = StatItemStateOptions::default(),
     pub(in crate::stats) projectee_item_id: Option<I> = None,
 }
-impl<I> Default for StatOptionItemOutNpsGen<I> {
+const impl<I> Default for StatOptionItemOutNpsGen<I> {
     fn default() -> Self {
         Self { .. }
     }
@@ -57,40 +57,46 @@ impl<I> Default for StatOptionItemOutNpsGen<I> {
 // Construction
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl<I> StatOptionFitOutNpsGen<I> {
-    pub fn new() -> Self {
+    pub const fn new() -> Self {
         Self::default()
     }
-    pub fn with_item_kinds(mut self, item_kinds: StatNeutItemKinds) -> Self {
+    pub const fn with_item_kinds(mut self, item_kinds: StatNeutItemKinds) -> Self {
         self.item_kinds = item_kinds;
         self
     }
-    pub fn with_time(mut self, time: StatTimeOptions) -> Self {
+    pub const fn with_time(mut self, time: StatTimeOptions) -> Self {
         self.time = time;
         self
     }
-    pub fn with_projectee_item_id(mut self, projectee_item_id: impl Into<I>) -> Self {
+    pub const fn with_projectee_item_id(mut self, projectee_item_id: impl [const] Into<I>) -> Self
+    where
+        I: [const] std::marker::Destruct,
+    {
         self.projectee_item_id = Some(projectee_item_id.into());
         self
     }
 }
 
 impl<I> StatOptionItemOutNpsGen<I> {
-    pub fn new() -> Self {
+    pub const fn new() -> Self {
         Self::default()
     }
-    pub fn with_time(mut self, time: StatTimeOptions) -> Self {
+    pub const fn with_time(mut self, time: StatTimeOptions) -> Self {
         self.time = time;
         self
     }
-    pub fn with_charges(mut self, charges: StatItemChargeOptions) -> Self {
+    pub const fn with_charges(mut self, charges: StatItemChargeOptions) -> Self {
         self.charges = charges;
         self
     }
-    pub fn with_state(mut self, state: StatItemStateOptions) -> Self {
+    pub const fn with_state(mut self, state: StatItemStateOptions) -> Self {
         self.state = state;
         self
     }
-    pub fn with_projectee_item_id(mut self, projectee_item_id: impl Into<I>) -> Self {
+    pub const fn with_projectee_item_id(mut self, projectee_item_id: impl [const] Into<I>) -> Self
+    where
+        I: [const] std::marker::Destruct,
+    {
         self.projectee_item_id = Some(projectee_item_id.into());
         self
     }

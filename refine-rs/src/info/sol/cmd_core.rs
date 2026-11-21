@@ -6,7 +6,7 @@ use crate::{
 
 // Core commands
 #[cfg_attr(feature = "serde", derive(serde::Deserialize))]
-#[derive(Clone, Default)]
+#[derive(Clone)]
 pub struct SolInfoCmd {
     #[cfg_attr(feature = "serde", serde(default))]
     fleet_mode: OvrdMapLight<FleetId, FleetInfoMode>,
@@ -17,8 +17,18 @@ pub struct SolInfoCmd {
     #[cfg_attr(feature = "serde", serde(flatten))]
     shared: SolInfoCmdShared,
 }
+const impl Default for SolInfoCmd {
+    fn default() -> Self {
+        Self {
+            fleet_mode: Default::default(),
+            fit_mode: Default::default(),
+            item_mode: Default::default(),
+            shared: Default::default(),
+        }
+    }
+}
 #[cfg_attr(feature = "serde", derive(serde::Deserialize))]
-#[derive(Clone, Default)]
+#[derive(Clone)]
 pub struct SolInfoCmdBr {
     #[cfg_attr(feature = "serde", serde(default))]
     fleet_mode: OvrdCompact<FleetIdBr, FleetInfoMode>,
@@ -29,25 +39,42 @@ pub struct SolInfoCmdBr {
     #[cfg_attr(feature = "serde", serde(flatten))]
     shared: SolInfoCmdShared,
 }
+const impl Default for SolInfoCmdBr {
+    fn default() -> Self {
+        Self {
+            fleet_mode: Default::default(),
+            fit_mode: Default::default(),
+            item_mode: Default::default(),
+            shared: Default::default(),
+        }
+    }
+}
 #[cfg_attr(feature = "serde", derive(serde::Deserialize))]
-#[derive(Copy, Clone, Default)]
+#[derive(Copy, Clone)]
 struct SolInfoCmdShared {
     #[cfg_attr(feature = "serde", serde(default))]
     sol_mode: SolInfoMode,
+}
+const impl Default for SolInfoCmdShared {
+    fn default() -> Self {
+        Self {
+            sol_mode: Default::default(),
+        }
+    }
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Construction
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl SolInfoCmd {
-    pub fn new() -> Self {
+    pub const fn new() -> Self {
         Self::default()
     }
-    pub fn with_sol(mut self, mode: SolInfoMode) -> Self {
+    pub const fn with_sol(mut self, mode: SolInfoMode) -> Self {
         self.shared.sol_mode = mode;
         self
     }
-    pub fn with_fleet_default(mut self, mode: FleetInfoMode) -> Self {
+    pub const fn with_fleet_default(mut self, mode: FleetInfoMode) -> Self {
         self.fleet_mode.set_default(mode);
         self
     }
@@ -55,7 +82,7 @@ impl SolInfoCmd {
         self.fleet_mode.add_overrides(mode, fleet_ids);
         self
     }
-    pub fn with_fit_default(mut self, mode: FitInfoMode) -> Self {
+    pub const fn with_fit_default(mut self, mode: FitInfoMode) -> Self {
         self.fit_mode.set_default(mode);
         self
     }
@@ -63,7 +90,7 @@ impl SolInfoCmd {
         self.fit_mode.add_overrides(mode, fit_ids);
         self
     }
-    pub fn with_item_default(mut self, mode: ItemInfoMode) -> Self {
+    pub const fn with_item_default(mut self, mode: ItemInfoMode) -> Self {
         self.item_mode.set_default(mode);
         self
     }
@@ -74,14 +101,14 @@ impl SolInfoCmd {
 }
 
 impl SolInfoCmdBr {
-    pub fn new() -> Self {
+    pub const fn new() -> Self {
         Self::default()
     }
-    pub fn with_sol(mut self, mode: SolInfoMode) -> Self {
+    pub const fn with_sol(mut self, mode: SolInfoMode) -> Self {
         self.shared.sol_mode = mode;
         self
     }
-    pub fn with_fleet_default(mut self, mode: FleetInfoMode) -> Self {
+    pub const fn with_fleet_default(mut self, mode: FleetInfoMode) -> Self {
         self.fleet_mode.set_default(mode);
         self
     }
@@ -89,7 +116,7 @@ impl SolInfoCmdBr {
         self.fleet_mode.add_overrides(mode, fleet_ids);
         self
     }
-    pub fn with_fit_default(mut self, mode: FitInfoMode) -> Self {
+    pub const fn with_fit_default(mut self, mode: FitInfoMode) -> Self {
         self.fit_mode.set_default(mode);
         self
     }
@@ -97,7 +124,7 @@ impl SolInfoCmdBr {
         self.fit_mode.add_overrides(mode, fit_ids);
         self
     }
-    pub fn with_item_default(mut self, mode: ItemInfoMode) -> Self {
+    pub const fn with_item_default(mut self, mode: ItemInfoMode) -> Self {
         self.item_mode.set_default(mode);
         self
     }

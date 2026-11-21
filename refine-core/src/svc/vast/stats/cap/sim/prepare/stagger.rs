@@ -26,7 +26,7 @@ const impl<I> Default for StatCapSimStagger<I> {
     }
 }
 impl<I> StatCapSimStagger<I> {
-    pub fn new(default: bool) -> Self {
+    pub const fn new(default: bool) -> Self {
         Self { default, .. }
     }
     pub fn with_exception_item_ids(mut self, exception_item_ids: impl IntoIterator<Item = I>) -> Self {

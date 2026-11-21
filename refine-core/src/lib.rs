@@ -12,6 +12,7 @@
 #![feature(const_ops)]
 #![feature(const_convert)]
 #![feature(const_default)]
+#![feature(const_destruct)]
 #![feature(const_result_trait_fn)]
 #![feature(adt_const_params)]
 #![cfg_attr(feature = "serde", feature(cfg_eval))]

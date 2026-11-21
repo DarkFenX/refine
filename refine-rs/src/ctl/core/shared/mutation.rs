@@ -6,7 +6,7 @@ pub struct AddMutation {
     attrs: Vec<(AttrId, AttrMutation)> = Vec::new(),
 }
 impl AddMutation {
-    pub fn new(mutator_id: ItemTypeId) -> Self {
+    pub const fn new(mutator_id: ItemTypeId) -> Self {
         Self { mutator_id, .. }
     }
     pub fn with_attrs(mut self, attrs: impl IntoIterator<Item = (AttrId, AttrMutation)>) -> Self {
@@ -15,16 +15,21 @@ impl AddMutation {
     }
 }
 
-#[derive(Clone, Default)]
+#[derive(Clone)]
 pub struct ChangeMutation {
     pub(in crate::ctl::core) mutator_id: Option<ItemTypeId> = None,
     pub(in crate::ctl::core) attrs: Vec<(AttrId, Option<AttrMutation>)> = Vec::new(),
 }
+const impl Default for ChangeMutation {
+    fn default() -> Self {
+        Self { .. }
+    }
+}
 impl ChangeMutation {
-    pub fn new() -> Self {
+    pub const fn new() -> Self {
         Self::default()
     }
-    pub fn with_mutator_id(mut self, mutator_id: ItemTypeId) -> Self {
+    pub const fn with_mutator_id(mut self, mutator_id: ItemTypeId) -> Self {
         self.mutator_id = Some(mutator_id);
         self
     }

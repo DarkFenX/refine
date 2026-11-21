@@ -22,7 +22,7 @@ pub struct SolValCmdGen<F, I> {
     #[cfg_attr(feature = "serde", serde(default))]
     info_mode: ValResultMode,
 }
-impl<F, I> Default for SolValCmdGen<F, I> {
+const impl<F, I> Default for SolValCmdGen<F, I> {
     fn default() -> Self {
         Self {
             options: Default::default(),
@@ -36,10 +36,13 @@ impl<F, I> Default for SolValCmdGen<F, I> {
 // Construction
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl<F, I> SolValCmdGen<F, I> {
-    pub fn new() -> Self {
+    pub const fn new() -> Self {
         Self::default()
     }
-    pub fn with_options(mut self, options: ValOptions<I>) -> Self {
+    pub const fn with_options(mut self, options: ValOptions<I>) -> Self
+    where
+        I: [const] std::marker::Destruct,
+    {
         self.options = options;
         self
     }
@@ -47,7 +50,7 @@ impl<F, I> SolValCmdGen<F, I> {
         self.fit_ids.extend(fit_ids);
         self
     }
-    pub fn with_info_mode(mut self, info_mode: ValResultMode) -> Self {
+    pub const fn with_info_mode(mut self, info_mode: ValResultMode) -> Self {
         self.info_mode = info_mode;
         self
     }

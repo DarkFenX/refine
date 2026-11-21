@@ -24,7 +24,7 @@ pub enum FitValEnumCmdGen<I> {
 // Not public because there is no direct consumer of the command; this command is usable only via
 // hybrid batching endpoint
 impl FitValCmdBr {
-    pub(crate) fn into_fit_val_br(self) -> FitValEnumCmdBr {
+    pub(crate) const fn into_fit_val_br(self) -> FitValEnumCmdBr {
         FitValEnumCmdBr::FitValidate(self)
     }
 }

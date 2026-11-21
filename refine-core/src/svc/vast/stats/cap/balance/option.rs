@@ -34,30 +34,33 @@ const impl<I> Default for StatCapBlcSrcKinds<I> {
 }
 impl<I> StatCapBlcSrcKinds<I> {
     /// True to have all supported sources enabled by default, false to have them disabled.
-    pub fn new(default: bool) -> Self {
+    pub const fn new(default: bool) -> Self {
         Self { default, .. }
     }
-    pub fn with_regen(mut self, option: OptionExt<StatCapBlcRegen>) -> Self {
+    pub const fn with_regen(mut self, option: OptionExt<StatCapBlcRegen>) -> Self {
         self.regen = option.into();
         self
     }
-    pub fn with_cap_injectors(mut self, enabled: bool) -> Self {
+    pub const fn with_cap_injectors(mut self, enabled: bool) -> Self {
         self.cap_injectors = enabled.into();
         self
     }
-    pub fn with_nosfs(mut self, option: OptionExt<StatCapBlcNosfs<I>>) -> Self {
+    pub const fn with_nosfs(mut self, option: OptionExt<StatCapBlcNosfs<I>>) -> Self
+    where
+        I: [const] std::marker::Destruct,
+    {
         self.nosfs = option.into();
         self
     }
-    pub fn with_consumers(mut self, enabled: bool) -> Self {
+    pub const fn with_consumers(mut self, enabled: bool) -> Self {
         self.consumers = enabled.into();
         self
     }
-    pub fn with_incoming_transfers(mut self, enabled: bool) -> Self {
+    pub const fn with_incoming_transfers(mut self, enabled: bool) -> Self {
         self.incoming_transfers = enabled.into();
         self
     }
-    pub fn with_incoming_neuts(mut self, enabled: bool) -> Self {
+    pub const fn with_incoming_neuts(mut self, enabled: bool) -> Self {
         self.incoming_neuts = enabled.into();
         self
     }
@@ -79,7 +82,7 @@ pub struct StatCapBlcRegen {
 pub struct StatCapBlcNosfs<I = ItemId> {
     pub projectee_item_id: Option<I> = None,
 }
-impl<I> Default for StatCapBlcNosfs<I> {
+const impl<I> Default for StatCapBlcNosfs<I> {
     fn default() -> Self {
         Self { .. }
     }

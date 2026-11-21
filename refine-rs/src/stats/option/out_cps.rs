@@ -20,7 +20,7 @@ pub struct StatOptionFitOutCpsGen<I> {
     pub(in crate::stats) time: StatTimeOptions = StatTimeOptions::default(),
     pub(in crate::stats) projectee_item_id: Option<I> = None,
 }
-impl<I> Default for StatOptionFitOutCpsGen<I> {
+const impl<I> Default for StatOptionFitOutCpsGen<I> {
     fn default() -> Self {
         Self { .. }
     }
@@ -43,7 +43,7 @@ pub struct StatOptionItemOutCpsGen<I> {
     pub(in crate::stats) state: StatItemStateOptions = StatItemStateOptions::default(),
     pub(in crate::stats) projectee_item_id: Option<I> = None,
 }
-impl<I> Default for StatOptionItemOutCpsGen<I> {
+const impl<I> Default for StatOptionItemOutCpsGen<I> {
     fn default() -> Self {
         Self { .. }
     }
@@ -53,32 +53,38 @@ impl<I> Default for StatOptionItemOutCpsGen<I> {
 // Construction
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl<I> StatOptionFitOutCpsGen<I> {
-    pub fn new() -> Self {
+    pub const fn new() -> Self {
         Self::default()
     }
-    pub fn with_time(mut self, time: StatTimeOptions) -> Self {
+    pub const fn with_time(mut self, time: StatTimeOptions) -> Self {
         self.time = time;
         self
     }
-    pub fn with_projectee_item_id(mut self, projectee_item_id: impl Into<I>) -> Self {
+    pub const fn with_projectee_item_id(mut self, projectee_item_id: impl [const] Into<I>) -> Self
+    where
+        I: [const] std::marker::Destruct,
+    {
         self.projectee_item_id = Some(projectee_item_id.into());
         self
     }
 }
 
 impl<I> StatOptionItemOutCpsGen<I> {
-    pub fn new() -> Self {
+    pub const fn new() -> Self {
         Self::default()
     }
-    pub fn with_time(mut self, time: StatTimeOptions) -> Self {
+    pub const fn with_time(mut self, time: StatTimeOptions) -> Self {
         self.time = time;
         self
     }
-    pub fn with_state(mut self, state: StatItemStateOptions) -> Self {
+    pub const fn with_state(mut self, state: StatItemStateOptions) -> Self {
         self.state = state;
         self
     }
-    pub fn with_projectee_item_id(mut self, projectee_item_id: impl Into<I>) -> Self {
+    pub const fn with_projectee_item_id(mut self, projectee_item_id: impl [const] Into<I>) -> Self
+    where
+        I: [const] std::marker::Destruct,
+    {
         self.projectee_item_id = Some(projectee_item_id.into());
         self
     }

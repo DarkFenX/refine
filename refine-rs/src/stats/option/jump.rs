@@ -22,7 +22,7 @@ pub struct StatOptionJumpGen<F> {
     #[cfg_attr(feature = "serde", serde(default))]
     pub(in crate::stats) passenger_mass_increasers: StatCtlAffectors = StatCtlAffectors::Unmodified,
 }
-impl<F> Default for StatOptionJumpGen<F> {
+const impl<F> Default for StatOptionJumpGen<F> {
     fn default() -> Self {
         Self { .. }
     }
@@ -32,10 +32,10 @@ impl<F> Default for StatOptionJumpGen<F> {
 // Construction
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl<F> StatOptionJumpGen<F> {
-    pub fn new() -> Self {
+    pub const fn new() -> Self {
         Self::default()
     }
-    pub fn with_range(mut self, range: StatJumpRange) -> Self {
+    pub const fn with_range(mut self, range: StatJumpRange) -> Self {
         self.range = range;
         self
     }
@@ -43,7 +43,7 @@ impl<F> StatOptionJumpGen<F> {
         self.passenger_fit_ids.extend(passenger_fit_ids);
         self
     }
-    pub fn with_passenger_mass_increasers(mut self, passenger_mass_increasers: StatCtlAffectors) -> Self {
+    pub const fn with_passenger_mass_increasers(mut self, passenger_mass_increasers: StatCtlAffectors) -> Self {
         self.passenger_mass_increasers = passenger_mass_increasers;
         self
     }

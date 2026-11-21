@@ -25,7 +25,7 @@ pub struct FleetRemoveCmdCtxFleetGen<L> {
 // Construction
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl FleetRemoveCmd {
-    pub fn new() -> Self {
+    pub const fn new() -> Self {
         Self
     }
 }
@@ -34,10 +34,13 @@ impl FleetRemoveCmd {
 // Conversions
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl FleetRemoveCmd {
-    pub(in crate::ctl) fn into_ctx_fleet(self, fleet_id: FleetId) -> FleetRemoveCmdCtxFleet {
+    pub(in crate::ctl) const fn into_ctx_fleet(self, fleet_id: FleetId) -> FleetRemoveCmdCtxFleet {
         FleetRemoveCmdCtxFleet { fleet_id, core: self }
     }
-    pub(in crate::ctl) fn into_ctx_fleet_br(self, fleet_id: impl Into<FleetIdBr>) -> FleetRemoveCmdCtxFleetBr {
+    pub(in crate::ctl) const fn into_ctx_fleet_br(
+        self,
+        fleet_id: impl [const] Into<FleetIdBr>,
+    ) -> FleetRemoveCmdCtxFleetBr {
         FleetRemoveCmdCtxFleetBr {
             fleet_id: fleet_id.into(),
             core: self,

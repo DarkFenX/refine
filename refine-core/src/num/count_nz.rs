@@ -9,8 +9,8 @@ use crate::{PValue, Value, util::round_f64_to_u32};
 #[derive(Copy, Clone, Debug, Eq, PartialEq, Ord, PartialOrd, derive_more::Display)]
 pub struct CountNz(NonZeroU32);
 impl CountNz {
-    pub fn from_u32_checked(count: u32) -> Result<Self, CountNzError> {
-        match (Self::MIN.into_u32()..=Self::MAX.into_u32()).contains(&count) {
+    pub const fn from_u32_checked(count: u32) -> Result<Self, CountNzError> {
+        match count >= Self::MIN.into_u32() && count <= Self::MAX.into_u32() {
             true => Ok(Self::from_u32_clamped(count)),
             false => Err(CountNzError),
         }

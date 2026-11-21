@@ -33,43 +33,43 @@ const impl Default for StatDmgItemKinds {
 }
 impl StatDmgItemKinds {
     /// True to have all supported item kinds enabled by default, false to have them disabled.
-    pub fn new(default: bool) -> Self {
+    pub const fn new(default: bool) -> Self {
         Self { default, .. }
     }
-    pub fn with_turret(mut self, enabled: bool) -> Self {
+    pub const fn with_turret(mut self, enabled: bool) -> Self {
         self.turret = enabled.into();
         self
     }
-    pub fn with_missile(mut self, enabled: bool) -> Self {
+    pub const fn with_missile(mut self, enabled: bool) -> Self {
         self.missile = enabled.into();
         self
     }
-    pub fn with_breacher(mut self, enabled: bool) -> Self {
+    pub const fn with_breacher(mut self, enabled: bool) -> Self {
         self.breacher = enabled.into();
         self
     }
-    pub fn with_vorton(mut self, enabled: bool) -> Self {
+    pub const fn with_vorton(mut self, enabled: bool) -> Self {
         self.vorton = enabled.into();
         self
     }
     /// LR fighter bomb damage is triggered by this flag as well
-    pub fn with_bomb(mut self, enabled: bool) -> Self {
+    pub const fn with_bomb(mut self, enabled: bool) -> Self {
         self.bomb = enabled.into();
         self
     }
-    pub fn with_smartbomb(mut self, enabled: bool) -> Self {
+    pub const fn with_smartbomb(mut self, enabled: bool) -> Self {
         self.smartbomb = enabled.into();
         self
     }
-    pub fn with_superweapon(mut self, enabled: bool) -> Self {
+    pub const fn with_superweapon(mut self, enabled: bool) -> Self {
         self.superweapon = enabled.into();
         self
     }
-    pub fn with_minion_mobile(mut self, enabled: bool) -> Self {
+    pub const fn with_minion_mobile(mut self, enabled: bool) -> Self {
         self.minion_mobile = enabled.into();
         self
     }
-    pub fn with_minion_static(mut self, enabled: bool) -> Self {
+    pub const fn with_minion_static(mut self, enabled: bool) -> Self {
         self.minion_static = enabled.into();
         self
     }

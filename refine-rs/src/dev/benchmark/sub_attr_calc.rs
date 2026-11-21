@@ -11,7 +11,7 @@ pub struct DevBenchmarkAttrCalcCmd {
 // Construction
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl DevBenchmarkAttrCalcCmd {
-    pub fn new(fit_id: FitId, type_id: ItemTypeId, iterations: usize) -> Self {
+    pub const fn new(fit_id: FitId, type_id: ItemTypeId, iterations: usize) -> Self {
         Self {
             fit_id,
             type_id,

@@ -25,7 +25,7 @@ pub struct ShipUnsetCmdCtxFitGen<F> {
 // Construction
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl ShipUnsetCmd {
-    pub fn new() -> Self {
+    pub const fn new() -> Self {
         Self
     }
 }
@@ -34,10 +34,10 @@ impl ShipUnsetCmd {
 // Conversions
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl ShipUnsetCmd {
-    pub(in crate::ctl) fn into_ctx_fit(self, fit_id: FitId) -> ShipUnsetCmdCtxFit {
+    pub(in crate::ctl) const fn into_ctx_fit(self, fit_id: FitId) -> ShipUnsetCmdCtxFit {
         ShipUnsetCmdCtxFit { fit_id, core: self }
     }
-    pub(in crate::ctl) fn into_ctx_fit_br(self, fit_id: impl Into<FitIdBr>) -> ShipUnsetCmdCtxFitBr {
+    pub(in crate::ctl) const fn into_ctx_fit_br(self, fit_id: impl [const] Into<FitIdBr>) -> ShipUnsetCmdCtxFitBr {
         ShipUnsetCmdCtxFitBr {
             fit_id: fit_id.into(),
             core: self,

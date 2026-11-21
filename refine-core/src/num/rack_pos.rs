@@ -10,7 +10,7 @@ type Range = pattern_type!(u16 is MIN_RAW..=MAX_RAW);
 #[derive(Copy, Clone)]
 pub struct RackPos(Range);
 impl RackPos {
-    pub fn from_usize_checked(pos: usize) -> Result<Self, RackPosError> {
+    pub const fn from_usize_checked(pos: usize) -> Result<Self, RackPosError> {
         match pos <= Self::MAX.into_usize() {
             true => Ok(Self::from_u16(pos as u16)),
             false => Err(RackPosError { pos }),

@@ -20,7 +20,7 @@ pub struct FitChangeCmdGen<L> {
     #[cfg_attr(feature = "serde", serde(default))]
     rah_incoming_dps: TriStateField<DpsProfile>,
 }
-impl<L> Default for FitChangeCmdGen<L> {
+const impl<L> Default for FitChangeCmdGen<L> {
     fn default() -> Self {
         Self {
             fleet_id: Default::default(),
@@ -50,18 +50,21 @@ pub struct FitChangeCmdCtxFitGen<L, F> {
 // Construction
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl<L> FitChangeCmdGen<L> {
-    pub fn new() -> Self {
+    pub const fn new() -> Self {
         Self::default()
     }
-    pub fn with_fleet_id(mut self, fleet_id: Option<L>) -> Self {
+    pub const fn with_fleet_id(mut self, fleet_id: Option<L>) -> Self
+    where
+        L: [const] std::marker::Destruct,
+    {
         self.fleet_id = fleet_id.into();
         self
     }
-    pub fn with_sec_status(mut self, sec_status: FitSecStatus) -> Self {
+    pub const fn with_sec_status(mut self, sec_status: FitSecStatus) -> Self {
         self.sec_status = Some(sec_status);
         self
     }
-    pub fn with_rah_incoming_dps(mut self, rah_incoming_dps: Option<DpsProfile>) -> Self {
+    pub const fn with_rah_incoming_dps(mut self, rah_incoming_dps: Option<DpsProfile>) -> Self {
         self.rah_incoming_dps = rah_incoming_dps.into();
         self
     }
@@ -71,12 +74,12 @@ impl<L> FitChangeCmdGen<L> {
 // Conversions
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl FitChangeCmd {
-    pub(in crate::ctl) fn into_ctx_fit(self, fit_id: FitId) -> FitChangeCmdCtxFit {
+    pub(in crate::ctl) const fn into_ctx_fit(self, fit_id: FitId) -> FitChangeCmdCtxFit {
         FitChangeCmdCtxFit { fit_id, core: self }
     }
 }
 impl FitChangeCmdBr {
-    pub(in crate::ctl) fn into_ctx_fit_br(self, fit_id: impl Into<FitIdBr>) -> FitChangeCmdCtxFitBr {
+    pub(in crate::ctl) const fn into_ctx_fit_br(self, fit_id: impl [const] Into<FitIdBr>) -> FitChangeCmdCtxFitBr {
         FitChangeCmdCtxFitBr {
             fit_id: fit_id.into(),
             core: self,

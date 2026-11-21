@@ -36,18 +36,18 @@ pub struct ShipSetCmdCtxFitGen<F> {
 // Construction
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl ShipSetCmd {
-    pub fn new(type_id: ItemTypeId) -> Self {
+    pub const fn new(type_id: ItemTypeId) -> Self {
         Self { type_id, .. }
     }
-    pub fn with_state(mut self, state: bool) -> Self {
+    pub const fn with_state(mut self, state: bool) -> Self {
         self.state = Some(state);
         self
     }
-    pub fn with_coordinates(mut self, coordinates: Coordinates) -> Self {
+    pub const fn with_coordinates(mut self, coordinates: Coordinates) -> Self {
         self.coordinates = Some(coordinates);
         self
     }
-    pub fn with_movement(mut self, movement: Movement) -> Self {
+    pub const fn with_movement(mut self, movement: Movement) -> Self {
         self.movement = Some(movement);
         self
     }
@@ -61,10 +61,10 @@ impl ShipSetCmd {
 // Conversions
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl ShipSetCmd {
-    pub(in crate::ctl) fn into_ctx_fit(self, fit_id: FitId) -> ShipSetCmdCtxFit {
+    pub(in crate::ctl) const fn into_ctx_fit(self, fit_id: FitId) -> ShipSetCmdCtxFit {
         ShipSetCmdCtxFit { fit_id, core: self }
     }
-    pub(in crate::ctl) fn into_ctx_fit_br(self, fit_id: impl Into<FitIdBr>) -> ShipSetCmdCtxFitBr {
+    pub(in crate::ctl) const fn into_ctx_fit_br(self, fit_id: impl [const] Into<FitIdBr>) -> ShipSetCmdCtxFitBr {
         ShipSetCmdCtxFitBr {
             fit_id: fit_id.into(),
             core: self,

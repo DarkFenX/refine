@@ -50,7 +50,7 @@ pub struct ModuleAddCmdCtxFitGen<F, I> {
 // Construction
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl<I> ModuleAddCmdGen<I> {
-    pub fn new(rack: ModRack, add_mode: AddMode, type_id: ItemTypeId, state: ModuleState) -> Self {
+    pub const fn new(rack: ModRack, add_mode: AddMode, type_id: ItemTypeId, state: ModuleState) -> Self {
         Self {
             rack,
             add_mode,
@@ -59,19 +59,19 @@ impl<I> ModuleAddCmdGen<I> {
             ..
         }
     }
-    pub fn with_mutation(mut self, mutation: AddMutation) -> Self {
+    pub const fn with_mutation(mut self, mutation: AddMutation) -> Self {
         self.mutation = Some(mutation);
         self
     }
-    pub fn with_charge_type_id(mut self, charge_type_id: ItemTypeId) -> Self {
+    pub const fn with_charge_type_id(mut self, charge_type_id: ItemTypeId) -> Self {
         self.charge_type_id = Some(charge_type_id);
         self
     }
-    pub fn with_spool_override(mut self, spool_override: Spool) -> Self {
+    pub const fn with_spool_override(mut self, spool_override: Spool) -> Self {
         self.spool_override = Some(spool_override);
         self
     }
-    pub fn with_optional_reload_override(mut self, optional_reload_override: OptionalReload) -> Self {
+    pub const fn with_optional_reload_override(mut self, optional_reload_override: OptionalReload) -> Self {
         self.optional_reload_override = Some(optional_reload_override);
         self
     }
@@ -89,12 +89,12 @@ impl<I> ModuleAddCmdGen<I> {
 // Conversions
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl ModuleAddCmd {
-    pub(in crate::ctl) fn into_ctx_fit(self, fit_id: FitId) -> ModuleAddCmdCtxFit {
+    pub(in crate::ctl) const fn into_ctx_fit(self, fit_id: FitId) -> ModuleAddCmdCtxFit {
         ModuleAddCmdCtxFit { fit_id, core: self }
     }
 }
 impl ModuleAddCmdBr {
-    pub(in crate::ctl) fn into_ctx_fit_br(self, fit_id: impl Into<FitIdBr>) -> ModuleAddCmdCtxFitBr {
+    pub(in crate::ctl) const fn into_ctx_fit_br(self, fit_id: impl [const] Into<FitIdBr>) -> ModuleAddCmdCtxFitBr {
         ModuleAddCmdCtxFitBr {
             fit_id: fit_id.into(),
             core: self,

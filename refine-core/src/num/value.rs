@@ -18,8 +18,8 @@ use crate::{
 #[derive(Copy, Clone, Default, Debug, derive_more::Display)]
 pub struct Value(f64);
 impl Value {
-    pub fn from_f64_checked(v: f64) -> Result<Self, ValueError> {
-        match (Self::MIN.0..=Self::MAX.0).contains(&v) {
+    pub const fn from_f64_checked(v: f64) -> Result<Self, ValueError> {
+        match v >= Self::MIN.0 && v <= Self::MAX.0 {
             true => Ok(Self(v)),
             false => Err(ValueError { value: v }),
         }

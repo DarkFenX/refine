@@ -15,7 +15,7 @@ pub struct FleetAddCmdGen<F> {
     #[cfg_attr(feature = "serde", serde(default))]
     fit_ids: Vec<F>,
 }
-impl<F> Default for FleetAddCmdGen<F> {
+const impl<F> Default for FleetAddCmdGen<F> {
     fn default() -> Self {
         Self {
             fit_ids: Default::default(),
@@ -27,7 +27,7 @@ impl<F> Default for FleetAddCmdGen<F> {
 // Construction
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl<F> FleetAddCmdGen<F> {
-    pub fn new() -> Self {
+    pub const fn new() -> Self {
         Self::default()
     }
     pub fn with_fit_ids(mut self, fit_ids: impl IntoIterator<Item = F>) -> Self {

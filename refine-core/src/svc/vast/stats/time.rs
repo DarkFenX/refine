@@ -7,8 +7,8 @@ use crate::PValue;
 #[derive(Copy, Clone, Debug, derive_more::Display)]
 pub struct StatTime(f64);
 impl StatTime {
-    pub fn from_f64_checked(time: f64) -> Result<Self, StatTimeError> {
-        match (Self::MIN.0..=Self::MAX.0).contains(&time) {
+    pub const fn from_f64_checked(time: f64) -> Result<Self, StatTimeError> {
+        match time >= Self::MIN.0 && time <= Self::MAX.0 {
             true => Ok(Self(time)),
             false => Err(StatTimeError { time }),
         }

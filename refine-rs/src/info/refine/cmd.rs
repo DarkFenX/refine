@@ -9,7 +9,7 @@ use crate::{
 ///
 /// Fleet, fit and item info modes apply to all solar systems. There are no per-ID overrides, since
 /// those IDs are unique only within a solar system.
-#[derive(Copy, Clone, Default)]
+#[derive(Copy, Clone)]
 pub struct RefineInfoCmd {
     src_mode: SrcInfoMode,
     sol_mode: SolInfoMode,
@@ -17,31 +17,42 @@ pub struct RefineInfoCmd {
     fit_mode: FitInfoMode,
     item_mode: ItemInfoMode,
 }
+const impl Default for RefineInfoCmd {
+    fn default() -> Self {
+        Self {
+            src_mode: Default::default(),
+            sol_mode: Default::default(),
+            fleet_mode: Default::default(),
+            fit_mode: Default::default(),
+            item_mode: Default::default(),
+        }
+    }
+}
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Construction
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl RefineInfoCmd {
-    pub fn new() -> Self {
+    pub const fn new() -> Self {
         Self::default()
     }
-    pub fn with_src(mut self, mode: SrcInfoMode) -> Self {
+    pub const fn with_src(mut self, mode: SrcInfoMode) -> Self {
         self.src_mode = mode;
         self
     }
-    pub fn with_sol(mut self, mode: SolInfoMode) -> Self {
+    pub const fn with_sol(mut self, mode: SolInfoMode) -> Self {
         self.sol_mode = mode;
         self
     }
-    pub fn with_fleet(mut self, mode: FleetInfoMode) -> Self {
+    pub const fn with_fleet(mut self, mode: FleetInfoMode) -> Self {
         self.fleet_mode = mode;
         self
     }
-    pub fn with_fit(mut self, mode: FitInfoMode) -> Self {
+    pub const fn with_fit(mut self, mode: FitInfoMode) -> Self {
         self.fit_mode = mode;
         self
     }
-    pub fn with_item(mut self, mode: ItemInfoMode) -> Self {
+    pub const fn with_item(mut self, mode: ItemInfoMode) -> Self {
         self.item_mode = mode;
         self
     }

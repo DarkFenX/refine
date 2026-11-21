@@ -11,7 +11,7 @@ pub struct DevBenchmarkStatsCmd {
 // Construction
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl DevBenchmarkStatsCmd {
-    pub fn new(fit_id: FitId, projectee_item_id: ItemId, iterations: usize) -> Self {
+    pub const fn new(fit_id: FitId, projectee_item_id: ItemId, iterations: usize) -> Self {
         Self {
             fit_id,
             projectee_item_id,

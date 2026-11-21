@@ -5,12 +5,16 @@ use crate::{
 };
 
 #[cfg_attr(feature = "serde", derive(serde::Deserialize), serde(rename_all = "snake_case"))]
-#[derive(Copy, Clone, Default)]
+#[derive(Copy, Clone)]
 pub enum SrcInfoMode {
-    #[default]
     Alias,
     Partial,
     Full,
+}
+const impl Default for SrcInfoMode {
+    fn default() -> Self {
+        Self::Alias
+    }
 }
 
 #[cfg_attr(feature = "serde", derive(serde::Serialize))]

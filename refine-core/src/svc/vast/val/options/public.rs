@@ -20,14 +20,14 @@ pub struct ValOptions<I = ItemId> {
     pub(super) default: bool = false,
     pub(super) overrides: Vec<(ValKind, OptionExt<ValEnabled<I>>)> = Vec::new(),
 }
-impl<I> Default for ValOptions<I> {
+const impl<I> Default for ValOptions<I> {
     fn default() -> Self {
         Self { .. }
     }
 }
 impl<I> ValOptions<I> {
     /// True to have all validations enabled by default, false to have them disabled.
-    pub fn new(default: bool) -> Self {
+    pub const fn new(default: bool) -> Self {
         Self { default, .. }
     }
     /// True to have all validations enabled by default, false to have them disabled.
@@ -487,13 +487,13 @@ impl<I1> ValOptions<I1> {
 pub struct ValEnabled<I = ItemId> {
     pub(super) kfs: Vec<I> = Vec::new(),
 }
-impl<I> Default for ValEnabled<I> {
+const impl<I> Default for ValEnabled<I> {
     fn default() -> Self {
         Self { .. }
     }
 }
 impl<I> ValEnabled<I> {
-    pub fn new() -> Self {
+    pub const fn new() -> Self {
         Self::default()
     }
     /// Known failures of a validation.

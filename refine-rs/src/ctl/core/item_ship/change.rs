@@ -5,7 +5,7 @@ use crate::{
 
 // Core commands
 #[cfg_attr(feature = "serde", derive(serde::Deserialize))]
-#[derive(Clone, Default)]
+#[derive(Clone)]
 pub struct ShipChangeCmd {
     type_id: Option<ItemTypeId>,
     state: Option<bool>,
@@ -13,6 +13,17 @@ pub struct ShipChangeCmd {
     movement: Option<Movement>,
     #[cfg_attr(feature = "serde", serde(default))]
     effect_modes: EffectModes,
+}
+const impl Default for ShipChangeCmd {
+    fn default() -> Self {
+        Self {
+            type_id: Default::default(),
+            state: Default::default(),
+            coordinates: Default::default(),
+            movement: Default::default(),
+            effect_modes: Default::default(),
+        }
+    }
 }
 
 // Extra context commands
@@ -67,22 +78,22 @@ pub struct ShipChangeCmdCtxItemGen<I> {
 // Construction
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl ShipChangeCmd {
-    pub fn new() -> Self {
+    pub const fn new() -> Self {
         Self::default()
     }
-    pub fn with_type_id(mut self, type_id: ItemTypeId) -> Self {
+    pub const fn with_type_id(mut self, type_id: ItemTypeId) -> Self {
         self.type_id = Some(type_id);
         self
     }
-    pub fn with_state(mut self, state: bool) -> Self {
+    pub const fn with_state(mut self, state: bool) -> Self {
         self.state = Some(state);
         self
     }
-    pub fn with_coordinates(mut self, coordinates: Coordinates) -> Self {
+    pub const fn with_coordinates(mut self, coordinates: Coordinates) -> Self {
         self.coordinates = Some(coordinates);
         self
     }
-    pub fn with_movement(mut self, movement: Movement) -> Self {
+    pub const fn with_movement(mut self, movement: Movement) -> Self {
         self.movement = Some(movement);
         self
     }
@@ -96,19 +107,22 @@ impl ShipChangeCmd {
 // Conversions
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl ShipChangeCmd {
-    pub(in crate::ctl) fn into_ctx_via_fit(self, fit_id: FitId) -> ShipChangeCmdCtxAny {
+    pub(in crate::ctl) const fn into_ctx_via_fit(self, fit_id: FitId) -> ShipChangeCmdCtxAny {
         ShipChangeCmdCtxAny::Fit(ShipChangeCmdCtxFit { fit_id, core: self })
     }
-    pub(in crate::ctl) fn into_ctx_via_item(self, item_id: ItemId) -> ShipChangeCmdCtxAny {
+    pub(in crate::ctl) const fn into_ctx_via_item(self, item_id: ItemId) -> ShipChangeCmdCtxAny {
         ShipChangeCmdCtxAny::Item(ShipChangeCmdCtxItem { item_id, core: self })
     }
-    pub(in crate::ctl) fn into_ctx_br_via_fit(self, fit_id: impl Into<FitIdBr>) -> ShipChangeCmdCtxAnyBr {
+    pub(in crate::ctl) const fn into_ctx_br_via_fit(self, fit_id: impl [const] Into<FitIdBr>) -> ShipChangeCmdCtxAnyBr {
         ShipChangeCmdCtxAnyBr::Fit(ShipChangeCmdCtxFitBr {
             fit_id: fit_id.into(),
             core: self,
         })
     }
-    pub(in crate::ctl) fn into_ctx_br_via_item(self, item_id: impl Into<ItemIdBr>) -> ShipChangeCmdCtxAnyBr {
+    pub(in crate::ctl) const fn into_ctx_br_via_item(
+        self,
+        item_id: impl [const] Into<ItemIdBr>,
+    ) -> ShipChangeCmdCtxAnyBr {
         ShipChangeCmdCtxAnyBr::Item(ShipChangeCmdCtxItemBr {
             item_id: item_id.into(),
             core: self,

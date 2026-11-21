@@ -21,7 +21,7 @@ pub struct StatOptionCapSimGen<I> {
     pub(in crate::stats) stagger: StatCapSimStagger<I> = StatCapSimStagger::default(),
     pub(in crate::stats) nosf_projectee_item_id: Option<I> = None,
 }
-impl<I> Default for StatOptionCapSimGen<I> {
+const impl<I> Default for StatOptionCapSimGen<I> {
     fn default() -> Self {
         Self { .. }
     }
@@ -31,22 +31,28 @@ impl<I> Default for StatOptionCapSimGen<I> {
 // Construction
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl<I> StatOptionCapSimGen<I> {
-    pub fn new() -> Self {
+    pub const fn new() -> Self {
         Self::default()
     }
-    pub fn with_cap_perc(mut self, cap_perc: UnitInterval) -> Self {
+    pub const fn with_cap_perc(mut self, cap_perc: UnitInterval) -> Self {
         self.cap_perc = cap_perc;
         self
     }
-    pub fn with_optional_reloads(mut self, optional_reloads: OptionalReload) -> Self {
+    pub const fn with_optional_reloads(mut self, optional_reloads: OptionalReload) -> Self {
         self.optional_reloads = Some(optional_reloads);
         self
     }
-    pub fn with_stagger(mut self, stagger: StatCapSimStagger<I>) -> Self {
+    pub const fn with_stagger(mut self, stagger: StatCapSimStagger<I>) -> Self
+    where
+        I: [const] std::marker::Destruct,
+    {
         self.stagger = stagger;
         self
     }
-    pub fn with_nosf_projectee_item_id(mut self, nosf_projectee_item_id: impl Into<I>) -> Self {
+    pub const fn with_nosf_projectee_item_id(mut self, nosf_projectee_item_id: impl [const] Into<I>) -> Self
+    where
+        I: [const] std::marker::Destruct,
+    {
         self.nosf_projectee_item_id = Some(nosf_projectee_item_id.into());
         self
     }

@@ -16,7 +16,7 @@ pub struct FitTryItemsCmdGen<I> {
     val_options: ValOptions<I>,
     type_ids: Vec<ItemTypeId>,
 }
-impl<I> Default for FitTryItemsCmdGen<I> {
+const impl<I> Default for FitTryItemsCmdGen<I> {
     fn default() -> Self {
         Self {
             val_options: Default::default(),
@@ -45,10 +45,13 @@ pub struct FitTryItemsCmdCtxFitGen<F, I> {
 // Construction
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl<I> FitTryItemsCmdGen<I> {
-    pub fn new() -> Self {
+    pub const fn new() -> Self {
         Self::default()
     }
-    pub fn with_val_options(mut self, val_options: ValOptions<I>) -> Self {
+    pub const fn with_val_options(mut self, val_options: ValOptions<I>) -> Self
+    where
+        I: [const] std::marker::Destruct,
+    {
         self.val_options = val_options;
         self
     }
@@ -62,7 +65,7 @@ impl<I> FitTryItemsCmdGen<I> {
 // Conversions
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl FitTryItemsCmdBr {
-    pub(in crate::trial) fn into_ctx_item_br(self, fit_id: impl Into<FitIdBr>) -> FitTryItemsCmdCtxFitBr {
+    pub(in crate::trial) const fn into_ctx_item_br(self, fit_id: impl [const] Into<FitIdBr>) -> FitTryItemsCmdCtxFitBr {
         FitTryItemsCmdCtxFitBr {
             fit_id: fit_id.into(),
             core: self,

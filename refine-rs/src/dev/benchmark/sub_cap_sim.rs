@@ -11,7 +11,7 @@ pub struct DevBenchmarkCapSimCmd {
 // Construction
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl DevBenchmarkCapSimCmd {
-    pub fn new(fit_id: FitId, staggers: Vec<StatCapSimStagger>, iterations: usize) -> Self {
+    pub const fn new(fit_id: FitId, staggers: Vec<StatCapSimStagger>, iterations: usize) -> Self {
         Self {
             fit_id,
             staggers,

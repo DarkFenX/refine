@@ -22,7 +22,7 @@ pub struct StatOptionCapBlcGen<I> {
     #[cfg_attr(feature = "serde", serde(default = "time_default"))]
     pub(in crate::stats) time: StatTimeOptions = StatTimeOptions::Sim(StatTimeOptionsSim { .. }),
 }
-impl<I> Default for StatOptionCapBlcGen<I> {
+const impl<I> Default for StatOptionCapBlcGen<I> {
     fn default() -> Self {
         Self { .. }
     }
@@ -32,14 +32,17 @@ impl<I> Default for StatOptionCapBlcGen<I> {
 // Construction
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl<I> StatOptionCapBlcGen<I> {
-    pub fn new() -> Self {
+    pub const fn new() -> Self {
         Self::default()
     }
-    pub fn with_src_kinds(mut self, src_kinds: StatCapBlcSrcKinds<I>) -> Self {
+    pub const fn with_src_kinds(mut self, src_kinds: StatCapBlcSrcKinds<I>) -> Self
+    where
+        I: [const] std::marker::Destruct,
+    {
         self.src_kinds = src_kinds;
         self
     }
-    pub fn with_time(mut self, time: StatTimeOptions) -> Self {
+    pub const fn with_time(mut self, time: StatTimeOptions) -> Self {
         self.time = time;
         self
     }

@@ -13,9 +13,9 @@ pub(crate) struct OvrdCompact<K, V> {
     default: V,
     overrides: Vec<(V, Vec<K>)>,
 }
-impl<K, V> Default for OvrdCompact<K, V>
+const impl<K, V> Default for OvrdCompact<K, V>
 where
-    V: Default,
+    V: [const] Default,
 {
     fn default() -> Self {
         Self {
@@ -25,7 +25,10 @@ where
     }
 }
 impl<K, V> OvrdCompact<K, V> {
-    pub(crate) fn set_default(&mut self, default: V) {
+    pub(crate) const fn set_default(&mut self, default: V)
+    where
+        V: [const] std::marker::Destruct,
+    {
         self.default = default;
     }
     pub(crate) fn add_overrides(&mut self, value: V, keys: impl IntoIterator<Item = K>) {
@@ -40,14 +43,14 @@ pub(crate) struct OvrdMapLight<K, V> {
     default: V,
     overrides: RMap<K, V>,
 }
-impl<K, V> Default for OvrdMapLight<K, V>
+const impl<K, V> Default for OvrdMapLight<K, V>
 where
-    V: Default,
+    V: [const] Default,
 {
     fn default() -> Self {
         Self {
             default: V::default(),
-            overrides: RMap::default(),
+            overrides: RMap::with_hasher(rustc_hash::FxBuildHasher),
         }
     }
 }
@@ -62,7 +65,7 @@ where
             None => self.default,
         }
     }
-    pub(crate) fn set_default(&mut self, default: V) {
+    pub(crate) const fn set_default(&mut self, default: V) {
         self.default = default;
     }
     pub(crate) fn add_overrides(&mut self, value: V, keys: impl IntoIterator<Item = K>) {
