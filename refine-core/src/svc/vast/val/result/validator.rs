@@ -15,7 +15,7 @@ impl<T> ValResult<T> {
     pub fn is_failed(&self) -> bool {
         matches!(self, Self::Failed(..))
     }
-    pub fn get_failure(&self) -> Option<T> {
+    pub fn get_failure(&self) -> Option<&T> {
         match self {
             Self::Failed(failure) => Some(failure),
             Self::NotRequested | Self::Passed => None,

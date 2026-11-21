@@ -31,6 +31,12 @@ impl ValResultSol {
         let Self { fits, not_loaded_item } = self;
         fits.iter().all(|(_, fit_result)| fit_result.all_passed()) && !not_loaded_item.is_failed()
     }
+    pub fn get_fit(&self, fit_id: &FitId) -> Option<&ValResultFit> {
+        self.fits.iter().find_map(|(id, fit_result)| match id == fit_id {
+            true => Some(fit_result),
+            false => None,
+        })
+    }
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////

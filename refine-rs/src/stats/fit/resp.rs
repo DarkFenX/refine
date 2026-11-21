@@ -14,3 +14,11 @@ pub struct FitStatsResp {
     )]
     pub items: Vec<(ItemId, ItemStats)>,
 }
+impl FitStatsResp {
+    pub fn get_item(&self, item_id: &ItemId) -> Option<&ItemStats> {
+        self.items.iter().find_map(|(id, item_stats)| match id == item_id {
+            true => Some(item_stats),
+            false => None,
+        })
+    }
+}
