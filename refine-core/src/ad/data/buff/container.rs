@@ -9,7 +9,7 @@ pub struct ABuffs {
 }
 impl ABuffs {
     pub fn new() -> Self {
-        Self { data: RMap::new() }
+        Self::default()
     }
     pub fn insert(&mut self, val: ABuff) {
         self.data.insert(val.id, val);

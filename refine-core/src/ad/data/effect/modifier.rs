@@ -20,13 +20,17 @@ pub struct AEffectModifier {
     derive(serde::Serialize, serde::Deserialize),
     serde(transparent)
 )]
-#[derive(Default)]
 pub struct AEffectModifiers {
     data: Vec<AEffectModifier>,
 }
+const impl Default for AEffectModifiers {
+    fn default() -> Self {
+        Self { data: Vec::new() }
+    }
+}
 impl AEffectModifiers {
     pub const fn new() -> Self {
-        Self { data: Vec::new() }
+        Self::default()
     }
     pub fn insert(&mut self, val: AEffectModifier) {
         self.data.push(val);

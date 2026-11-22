@@ -144,7 +144,7 @@ fn validate_fast(
         return true;
     };
     for group_items in max_group.values() {
-        let actual = Count::from_usize(group_items.len());
+        let actual = Count::from_usize_clamped(group_items.len());
         for (&item_uid, &limited) in group_items.iter() {
             if !limited {
                 continue;
@@ -170,7 +170,7 @@ fn validate_verbose(
     };
     let mut groups = Vec::new();
     for (&item_grp_aid, group_items) in max_group.iter() {
-        let actual = Count::from_usize(group_items.len());
+        let actual = Count::from_usize_clamped(group_items.len());
         let mut items = Vec::new();
         for (&item_uid, &limited) in group_items.iter() {
             if !limited {

@@ -5,13 +5,17 @@ use crate::ad::AAbilId;
     derive(serde::Serialize, serde::Deserialize),
     serde(transparent)
 )]
-#[derive(Default)]
 pub struct AItemAbils {
     data: Vec<AAbilId>,
 }
+const impl Default for AItemAbils {
+    fn default() -> Self {
+        Self { data: Vec::new() }
+    }
+}
 impl AItemAbils {
     pub const fn new() -> Self {
-        Self { data: Vec::new() }
+        Self::default()
     }
     pub fn insert(&mut self, val: AAbilId) {
         self.data.push(val);

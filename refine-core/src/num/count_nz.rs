@@ -24,6 +24,9 @@ impl CountNz {
     pub const fn from_i64_clamped(count: i64) -> Self {
         Self::from_u32_clamped(count.saturating_cast())
     }
+    pub const fn from_usize_clamped(count: usize) -> Self {
+        Self::from_u32_clamped(count.saturating_cast())
+    }
     pub const fn into_u32(self) -> u32 {
         self.0.get()
     }

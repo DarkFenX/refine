@@ -17,13 +17,17 @@ pub struct ABuffModifier {
     derive(serde::Serialize, serde::Deserialize),
     serde(transparent)
 )]
-#[derive(Default)]
 pub struct ABuffModifiers {
     data: Vec<ABuffModifier>,
 }
+const impl Default for ABuffModifiers {
+    fn default() -> Self {
+        Self { data: Vec::new() }
+    }
+}
 impl ABuffModifiers {
     pub const fn new() -> Self {
-        Self { data: Vec::new() }
+        Self::default()
     }
     pub fn insert(&mut self, val: ABuffModifier) {
         self.data.push(val);

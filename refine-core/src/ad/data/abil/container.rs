@@ -9,7 +9,7 @@ pub struct AAbils {
 }
 impl AAbils {
     pub fn new() -> Self {
-        Self { data: RMap::new() }
+        Self::default()
     }
     pub fn insert(&mut self, val: AAbil) {
         self.data.insert(val.id, val);

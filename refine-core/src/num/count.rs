@@ -22,6 +22,9 @@ impl Count {
     pub const fn from_i64_clamped(value: i64) -> Self {
         Self(value.saturating_cast())
     }
+    pub const fn from_usize_clamped(value: usize) -> Self {
+        Self(value.saturating_cast())
+    }
     pub const fn into_u32(self) -> u32 {
         self.0
     }
@@ -41,9 +44,6 @@ impl Count {
 // Conversions
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl Count {
-    pub(crate) fn from_usize(value: usize) -> Self {
-        Self(value.saturating_cast())
-    }
     pub(crate) const fn from_f64_rounded(value: f64) -> Self {
         Self(round_f64_to_u32(value))
     }

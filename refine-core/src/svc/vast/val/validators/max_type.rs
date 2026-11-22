@@ -58,7 +58,7 @@ impl VastFitData {
     // Fast validations
     pub(in crate::svc::vast::val) fn validate_max_type_fitted_fast(&self, kfs: &RSet<UItemId>) -> bool {
         for item_type_data in self.mods_svcs_max_type_fitted.values() {
-            let fitted = Count::from_usize(item_type_data.len());
+            let fitted = Count::from_usize_clamped(item_type_data.len());
             for (&item_uid, &allowed) in item_type_data.iter() {
                 if let Some(allowed) = allowed
                     && fitted > allowed
@@ -78,7 +78,7 @@ impl VastFitData {
     ) -> ValResult<ValMaxTypeFail> {
         let mut item_types = RMap::new();
         for (&item_aid, item_type_data) in self.mods_svcs_max_type_fitted.iter() {
-            let fitted = Count::from_usize(item_type_data.len());
+            let fitted = Count::from_usize_clamped(item_type_data.len());
             for (&item_uid, &allowed) in item_type_data.iter() {
                 if let Some(allowed) = allowed
                     && fitted > allowed

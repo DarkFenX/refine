@@ -5,13 +5,17 @@ use crate::ad::AItemId;
     derive(serde::Serialize, serde::Deserialize),
     serde(transparent)
 )]
-#[derive(Default)]
 pub struct AItemListItemIds {
     data: Vec<AItemId>,
 }
+const impl Default for AItemListItemIds {
+    fn default() -> Self {
+        Self { data: Vec::new() }
+    }
+}
 impl AItemListItemIds {
     pub const fn new() -> Self {
-        Self { data: Vec::new() }
+        Self::default()
     }
     pub fn insert(&mut self, val: AItemId) {
         self.data.push(val);

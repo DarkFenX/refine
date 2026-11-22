@@ -9,7 +9,7 @@ pub struct AItems {
 }
 impl AItems {
     pub fn new() -> Self {
-        Self { data: RMap::new() }
+        Self::default()
     }
     pub fn insert(&mut self, val: AItem) {
         self.data.insert(val.id, val);

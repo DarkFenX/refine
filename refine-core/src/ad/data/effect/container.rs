@@ -9,7 +9,7 @@ pub struct AEffects {
 }
 impl AEffects {
     pub fn new() -> Self {
-        Self { data: RMap::new() }
+        Self::default()
     }
     pub fn insert(&mut self, val: AEffect) {
         self.data.insert(val.id, val);

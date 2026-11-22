@@ -16,13 +16,17 @@ pub struct AMutaAttr {
     derive(serde::Serialize, serde::Deserialize),
     serde(transparent)
 )]
-#[derive(Default)]
 pub struct AMutaAttrs {
     data: Vec<AMutaAttr>,
 }
+const impl Default for AMutaAttrs {
+    fn default() -> Self {
+        Self { data: Vec::new() }
+    }
+}
 impl AMutaAttrs {
     pub const fn new() -> Self {
-        Self { data: Vec::new() }
+        Self::default()
     }
     pub fn insert(&mut self, val: AMutaAttr) {
         self.data.push(val);

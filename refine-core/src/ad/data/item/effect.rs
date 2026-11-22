@@ -11,13 +11,17 @@ pub struct AItemEffect {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Container
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-#[derive(Default)]
 pub struct AItemEffects {
     data: CMap<AEffectId, AItemEffect> = CMap::default(),
 }
+const impl Default for AItemEffects {
+    fn default() -> Self {
+        Self { .. }
+    }
+}
 impl AItemEffects {
     pub const fn new() -> Self {
-        Self { .. }
+        Self::default()
     }
     pub fn insert(&mut self, val: AItemEffect) {
         self.data.insert(val.id, val);

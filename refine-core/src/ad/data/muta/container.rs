@@ -9,7 +9,7 @@ pub struct AMutas {
 }
 impl AMutas {
     pub fn new() -> Self {
-        Self { data: RMap::new() }
+        Self::default()
     }
     pub fn insert(&mut self, val: AMuta) {
         self.data.insert(val.id, val);

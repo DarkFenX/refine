@@ -15,13 +15,17 @@ pub struct AItemAttr {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Container
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-#[derive(Default)]
 pub struct AItemAttrs {
     data: CMap<AAttrId, AItemAttr> = CMap::default(),
 }
+const impl Default for AItemAttrs {
+    fn default() -> Self {
+        Self { .. }
+    }
+}
 impl AItemAttrs {
     pub const fn new() -> Self {
-        Self { .. }
+        Self::default()
     }
     pub fn insert(&mut self, val: AItemAttr) {
         self.data.insert(val.id, val);

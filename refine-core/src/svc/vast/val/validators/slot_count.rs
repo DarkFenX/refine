@@ -446,7 +446,7 @@ fn validate_fast_unordered_set(
     if users.is_empty() {
         return true;
     }
-    let used = Count::from_usize(users.len());
+    let used = Count::from_usize_clamped(users.len());
     let max = get_attr_as_count(ctx, calc, max_item_uid, max_attr_rid).unwrap_or(Count::ZERO);
     used <= max || users.is_subset(kfs)
 }
@@ -461,7 +461,7 @@ fn validate_fast_unordered_map<T>(
     if users.is_empty() {
         return true;
     }
-    let used = Count::from_usize(users.len());
+    let used = Count::from_usize_clamped(users.len());
     let max = get_attr_as_count(ctx, calc, max_item_uid, max_attr_rid).unwrap_or(Count::ZERO);
     used <= max || users.is_subset(kfs)
 }
@@ -473,7 +473,7 @@ fn validate_fast_ordered(
     max_attr_rid: Option<RAttrId>,
     users: &UItemVec,
 ) -> bool {
-    let used = Count::from_usize(users.slot_count());
+    let used = Count::from_usize_clamped(users.slot_count());
     if used == Count::ZERO {
         return true;
     }
@@ -495,7 +495,7 @@ fn validate_verbose_unordered_set(
     max_attr_rid: Option<RAttrId>,
     users: &RSet<UItemId>,
 ) -> ValResult<ValSlotCountFail> {
-    let used = Count::from_usize(users.len());
+    let used = Count::from_usize_clamped(users.len());
     let max = get_attr_as_count(ctx, calc, max_item_uid, max_attr_rid);
     if used <= max.unwrap_or(Count::ZERO) {
         return ValResult::Passed;
@@ -517,7 +517,7 @@ fn validate_verbose_unordered_map<T>(
     max_attr_rid: Option<RAttrId>,
     users: &RMap<UItemId, T>,
 ) -> ValResult<ValSlotCountFail> {
-    let used = Count::from_usize(users.len());
+    let used = Count::from_usize_clamped(users.len());
     let max = get_attr_as_count(ctx, calc, max_item_uid, max_attr_rid);
     if used <= max.unwrap_or(Count::ZERO) {
         return ValResult::Passed;
@@ -539,7 +539,7 @@ fn validate_verbose_ordered(
     max_attr_rid: Option<RAttrId>,
     users: &UItemVec,
 ) -> ValResult<ValSlotCountFail> {
-    let used = Count::from_usize(users.slot_count());
+    let used = Count::from_usize_clamped(users.slot_count());
     let max = get_attr_as_count(ctx, calc, max_item_uid, max_attr_rid);
     let effective_max = max.unwrap_or(Count::ZERO);
     if used <= effective_max {

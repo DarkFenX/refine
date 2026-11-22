@@ -9,7 +9,7 @@ pub struct AAttrs {
 }
 impl AAttrs {
     pub fn new() -> Self {
-        Self { data: RMap::new() }
+        Self::default()
     }
     pub fn insert(&mut self, val: AAttr) {
         self.data.insert(val.id, val);

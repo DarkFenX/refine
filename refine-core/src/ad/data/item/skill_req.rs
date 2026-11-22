@@ -15,13 +15,17 @@ pub struct AItemSkillReq {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Container
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-#[derive(Default)]
 pub struct AItemSkillReqs {
     data: CMap<AItemId, AItemSkillReq> = CMap::default(),
 }
+const impl Default for AItemSkillReqs {
+    fn default() -> Self {
+        Self { .. }
+    }
+}
 impl AItemSkillReqs {
     pub const fn new() -> Self {
-        Self { .. }
+        Self::default()
     }
     pub fn insert(&mut self, val: AItemSkillReq) {
         self.data.insert(val.id, val);
