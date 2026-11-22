@@ -28,6 +28,9 @@ impl Count {
     pub const fn into_u32(self) -> u32 {
         self.0
     }
+    pub const fn into_usize(self) -> usize {
+        self.0 as usize
+    }
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////

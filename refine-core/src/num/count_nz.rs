@@ -30,6 +30,9 @@ impl CountNz {
     pub const fn into_u32(self) -> u32 {
         self.0.get()
     }
+    pub const fn into_usize(self) -> usize {
+        self.0.get() as usize
+    }
 }
 #[derive(Debug, thiserror::Error)]
 #[error("non-zero count should be {}+, received 0", CountNz::MIN)]
