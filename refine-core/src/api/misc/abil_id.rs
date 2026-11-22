@@ -7,7 +7,7 @@ use crate::ad::AAbilId;
 ///
 /// Comes from EVE data.
 #[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize), serde(transparent))]
-#[derive(Copy, Clone, Eq, PartialEq, Hash, Debug, derive_more::Display, derive_more::FromStr)]
+#[derive(Copy, Clone, Eq, PartialEq, Ord, PartialOrd, Hash, Debug, derive_more::Display, derive_more::FromStr)]
 pub struct AbilityId(i32);
 impl AbilityId {
     pub const fn from_i32(id: i32) -> Self {

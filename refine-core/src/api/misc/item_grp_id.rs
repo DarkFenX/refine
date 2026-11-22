@@ -7,7 +7,7 @@ use crate::ad::AItemGrpId;
 ///
 /// Comes from EVE data.
 #[cfg_attr(feature = "serde", derive(serde::Serialize), serde(transparent))]
-#[derive(Copy, Clone, Eq, PartialEq, Hash, Debug, derive_more::Display)]
+#[derive(Copy, Clone, Eq, PartialEq, Ord, PartialOrd, Hash, Debug, derive_more::Display)]
 pub struct ItemGrpId(i32);
 impl ItemGrpId {
     pub const fn from_i32(id: i32) -> Self {

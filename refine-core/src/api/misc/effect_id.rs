@@ -9,7 +9,7 @@ use crate::{
 // Public - general
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 /// ID of an effect.
-#[derive(Copy, Clone, Eq, PartialEq, Hash, Debug)]
+#[derive(Copy, Clone, Eq, PartialEq, Ord, PartialOrd, Hash, Debug)]
 pub enum EffectId {
     /// ID of a general EVE effect.
     Dogma(DogmaEffectId),
@@ -28,7 +28,7 @@ pub enum EffectId {
 }
 
 /// ID of an effect defined by EVE data.
-#[derive(Copy, Clone, Eq, PartialEq, Hash, Debug, derive_more::Display, derive_more::FromStr)]
+#[derive(Copy, Clone, Eq, PartialEq, Ord, PartialOrd, Hash, Debug, derive_more::Display, derive_more::FromStr)]
 pub struct DogmaEffectId(i32);
 impl DogmaEffectId {
     pub const fn from_i32(id: i32) -> Self {
@@ -40,7 +40,7 @@ impl DogmaEffectId {
 }
 
 /// ID of an effect defined by the library, with no EVE counterpart.
-#[derive(Copy, Clone, Eq, PartialEq, Hash, Debug, derive_more::Display, derive_more::FromStr)]
+#[derive(Copy, Clone, Eq, PartialEq, Ord, PartialOrd, Hash, Debug, derive_more::Display, derive_more::FromStr)]
 pub struct CustomEffectId(i32);
 impl CustomEffectId {
     pub const fn from_i32(id: i32) -> Self {

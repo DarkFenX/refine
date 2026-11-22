@@ -6,14 +6,14 @@ use crate::ad::{AAttrId, ACustomAttrId, AEveAttrId};
 // Public - general
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 /// ID of an attribute.
-#[derive(Copy, Clone, Eq, PartialEq, Hash, Debug)]
+#[derive(Copy, Clone, Eq, PartialEq, Ord, PartialOrd, Hash, Debug)]
 pub enum AttrId {
     Eve(EveAttrId),
     Custom(CustomAttrId),
 }
 
 /// ID of an attribute defined by EVE data.
-#[derive(Copy, Clone, Eq, PartialEq, Hash, Debug, derive_more::Display, derive_more::FromStr)]
+#[derive(Copy, Clone, Eq, PartialEq, Ord, PartialOrd, Hash, Debug, derive_more::Display, derive_more::FromStr)]
 pub struct EveAttrId(i32);
 impl EveAttrId {
     pub const fn from_i32(id: i32) -> Self {
@@ -25,7 +25,7 @@ impl EveAttrId {
 }
 
 /// ID of an attribute defined by the library, with no EVE counterpart.
-#[derive(Copy, Clone, Eq, PartialEq, Hash, Debug, derive_more::Display, derive_more::FromStr)]
+#[derive(Copy, Clone, Eq, PartialEq, Ord, PartialOrd, Hash, Debug, derive_more::Display, derive_more::FromStr)]
 pub struct CustomAttrId(i32);
 impl CustomAttrId {
     pub const fn from_i32(id: i32) -> Self {
