@@ -26,6 +26,9 @@ def test_mode_id(client, consts):
         sec_zone=consts.ApiSecZone.nullsec,
         default_incoming_dps=(0, 0, 1, 1),
         default_spool=Spool.cycles_to_api(count=1),
+        default_npc_prop=consts.ApiNpcProp.cruise,
+        default_optional_reloads=consts.ApiOptionalReload.disabled,
+        default_rearm_minions=consts.ApiRearmMinion.on_first_empty,
         sol_info_mode=consts.ApiSolInfoMode.id)
     # Verification
     with check_no_field():
@@ -36,6 +39,12 @@ def test_mode_id(client, consts):
         api_sol.default_incoming_dps  # ruff:ignore[useless-expression]
     with check_no_field():
         api_sol.default_spool  # ruff:ignore[useless-expression]
+    with check_no_field():
+        api_sol.default_npc_prop  # ruff:ignore[useless-expression]
+    with check_no_field():
+        api_sol.default_optional_reloads  # ruff:ignore[useless-expression]
+    with check_no_field():
+        api_sol.default_rearm_minions  # ruff:ignore[useless-expression]
     # Action
     api_sol.create_fit()
     api_sol.update(sol_info_mode=consts.ApiSolInfoMode.id)
@@ -50,6 +59,12 @@ def test_mode_id(client, consts):
         api_sol.default_incoming_dps  # ruff:ignore[useless-expression]
     with check_no_field():
         api_sol.default_spool  # ruff:ignore[useless-expression]
+    with check_no_field():
+        api_sol.default_npc_prop  # ruff:ignore[useless-expression]
+    with check_no_field():
+        api_sol.default_optional_reloads  # ruff:ignore[useless-expression]
+    with check_no_field():
+        api_sol.default_rearm_minions  # ruff:ignore[useless-expression]
 
 
 def test_mode_partial(client, consts):
@@ -61,6 +76,9 @@ def test_mode_partial(client, consts):
         sec_zone=consts.ApiSecZone.nullsec,
         default_incoming_dps=(0, 0, 1, 1),
         default_spool=Spool.cycles_to_api(count=1),
+        default_npc_prop=consts.ApiNpcProp.cruise,
+        default_optional_reloads=consts.ApiOptionalReload.disabled,
+        default_rearm_minions=consts.ApiRearmMinion.on_first_empty,
         sol_info_mode=consts.ApiSolInfoMode.partial)
     # Verification
     assert api_sol.src_alias == eve_data.alias
@@ -70,6 +88,12 @@ def test_mode_partial(client, consts):
         api_sol.default_incoming_dps  # ruff:ignore[useless-expression]
     with check_no_field():
         api_sol.default_spool  # ruff:ignore[useless-expression]
+    with check_no_field():
+        api_sol.default_npc_prop  # ruff:ignore[useless-expression]
+    with check_no_field():
+        api_sol.default_optional_reloads  # ruff:ignore[useless-expression]
+    with check_no_field():
+        api_sol.default_rearm_minions  # ruff:ignore[useless-expression]
     # Action
     api_sol.create_fit()
     api_sol.update(sol_info_mode=consts.ApiSolInfoMode.partial)
@@ -83,6 +107,12 @@ def test_mode_partial(client, consts):
         api_sol.default_incoming_dps  # ruff:ignore[useless-expression]
     with check_no_field():
         api_sol.default_spool  # ruff:ignore[useless-expression]
+    with check_no_field():
+        api_sol.default_npc_prop  # ruff:ignore[useless-expression]
+    with check_no_field():
+        api_sol.default_optional_reloads  # ruff:ignore[useless-expression]
+    with check_no_field():
+        api_sol.default_rearm_minions  # ruff:ignore[useless-expression]
 
 
 def test_mode_full(client, consts):
@@ -94,12 +124,18 @@ def test_mode_full(client, consts):
         sec_zone=consts.ApiSecZone.nullsec,
         default_incoming_dps=(0, 0, 1, 1),
         default_spool=Spool.cycles_to_api(count=1),
+        default_npc_prop=consts.ApiNpcProp.cruise,
+        default_optional_reloads=consts.ApiOptionalReload.disabled,
+        default_rearm_minions=consts.ApiRearmMinion.on_first_empty,
         sol_info_mode=consts.ApiSolInfoMode.full)
     # Verification
     assert api_sol.src_alias == eve_data.alias
     assert api_sol.sec_zone == consts.ApiSecZone.nullsec
     assert api_sol.default_incoming_dps == (0, 0, 1, 1)
     assert api_sol.default_spool == Spool.cycles_to_api(count=1)
+    assert api_sol.default_npc_prop == consts.ApiNpcProp.cruise
+    assert api_sol.default_optional_reloads == consts.ApiOptionalReload.disabled
+    assert api_sol.default_rearm_minions == consts.ApiRearmMinion.on_first_empty
     # Action
     api_fit = api_sol.create_fit()
     api_sol.update(sol_info_mode=consts.ApiSolInfoMode.full)
@@ -109,6 +145,9 @@ def test_mode_full(client, consts):
     assert api_sol.sec_zone == consts.ApiSecZone.nullsec
     assert api_sol.default_incoming_dps == (0, 0, 1, 1)
     assert api_sol.default_spool == Spool.cycles_to_api(count=1)
+    assert api_sol.default_npc_prop == consts.ApiNpcProp.cruise
+    assert api_sol.default_optional_reloads == consts.ApiOptionalReload.disabled
+    assert api_sol.default_rearm_minions == consts.ApiRearmMinion.on_first_empty
 
 
 def test_fleet(client, consts):

@@ -1,8 +1,9 @@
 use rc::Lender;
 
 use crate::{
-    DpsProfile, FitId, FitInfo, FitInfoMode, FleetId, FleetInfo, FleetInfoMode, ItemId, ItemInfoMode, ProjEffectInfo,
-    SecZone, SolId, SolInfoMode, Spool, SrcAlias, SwEffectInfo, shared::OvrdMapLight,
+    DpsProfile, FitId, FitInfo, FitInfoMode, FleetId, FleetInfo, FleetInfoMode, ItemId, ItemInfoMode, NpcProp,
+    OptionalReload, ProjEffectInfo, RearmMinion, SecZone, SolId, SolInfoMode, Spool, SrcAlias, SwEffectInfo,
+    shared::OvrdMapLight,
 };
 
 #[cfg_attr(feature = "serde", derive(serde::Serialize))]
@@ -35,6 +36,9 @@ pub struct SolInfoFull {
     pub sec_zone: SecZone,
     pub default_spool: Spool,
     pub default_incoming_dps: DpsProfile,
+    pub default_npc_prop: NpcProp,
+    pub default_optional_reloads: OptionalReload,
+    pub default_rearm_minions: RearmMinion,
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -137,6 +141,9 @@ impl SolInfoFull {
                 sec_zone: core_sol.get_sec_zone(),
                 default_spool: core_sol.get_default_spool(),
                 default_incoming_dps: core_sol.get_default_incoming_dps(),
+                default_npc_prop: core_sol.get_default_npc_prop(),
+                default_optional_reloads: core_sol.get_default_optional_reloads(),
+                default_rearm_minions: core_sol.get_default_rearm_minions(),
             }),
         }
     }
