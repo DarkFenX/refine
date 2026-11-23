@@ -12,12 +12,12 @@ use crate::{
 pub struct ShipInfo {
     pub id: ItemId,
     #[cfg_attr(feature = "serde", serde(flatten, skip_serializing_if = "Option::is_none"))]
-    pub extended: Option<ShipInfoExt>,
+    pub partial: Option<ShipInfoPartial>,
 }
 
 #[cfg_attr(feature = "serde", cfg_eval, serde_with::serde_as, derive(serde::Serialize))]
 #[derive(Clone)]
-pub struct ShipInfoExt {
+pub struct ShipInfoPartial {
     #[cfg(feature = "serde")]
     kind: ItemKind,
     pub type_id: ItemTypeId,
@@ -47,9 +47,9 @@ impl ShipInfo {
         let ship_info_mode = item_info_modes.get(&ship_id);
         Self {
             id: ship_id,
-            extended: match ship_info_mode {
+            partial: match ship_info_mode {
                 ItemInfoMode::Id => None,
-                ItemInfoMode::Partial | ItemInfoMode::Full => Some(ShipInfoExt {
+                ItemInfoMode::Partial | ItemInfoMode::Full => Some(ShipInfoPartial {
                     #[cfg(feature = "serde")]
                     kind: ItemKind::Ship,
                     type_id: core_ship.get_type_id(),

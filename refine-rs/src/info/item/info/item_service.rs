@@ -11,12 +11,12 @@ use crate::{
 pub struct ServiceInfo {
     pub id: ItemId,
     #[cfg_attr(feature = "serde", serde(flatten, skip_serializing_if = "Option::is_none"))]
-    pub extended: Option<ServiceInfoExt>,
+    pub partial: Option<ServiceInfoPartial>,
 }
 
 #[cfg_attr(feature = "serde", cfg_eval, serde_with::serde_as, derive(serde::Serialize))]
 #[derive(Clone)]
-pub struct ServiceInfoExt {
+pub struct ServiceInfoPartial {
     #[cfg(feature = "serde")]
     kind: ItemKind,
     pub type_id: ItemTypeId,
@@ -44,9 +44,9 @@ impl ServiceInfo {
         let service_info_mode = item_info_modes.get(&service_id);
         Self {
             id: service_id,
-            extended: match service_info_mode {
+            partial: match service_info_mode {
                 ItemInfoMode::Id => None,
-                ItemInfoMode::Partial | ItemInfoMode::Full => Some(ServiceInfoExt {
+                ItemInfoMode::Partial | ItemInfoMode::Full => Some(ServiceInfoPartial {
                     #[cfg(feature = "serde")]
                     kind: ItemKind::Service,
                     type_id: core_service.get_type_id(),

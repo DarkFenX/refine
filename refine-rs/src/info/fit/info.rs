@@ -11,12 +11,12 @@ use crate::{
 pub struct FitInfo {
     pub id: FitId,
     #[cfg_attr(feature = "serde", serde(flatten, skip_serializing_if = "Option::is_none"))]
-    pub extended: Option<FitInfoExt>,
+    pub full: Option<FitInfoFull>,
 }
 
 #[cfg_attr(feature = "serde", derive(serde::Serialize))]
 #[derive(Clone)]
-pub struct FitInfoExt {
+pub struct FitInfoFull {
     #[cfg_attr(feature = "serde", serde(skip_serializing_if = "Option::is_none"))]
     pub fleet_id: Option<FleetId>,
     #[cfg_attr(feature = "serde", serde(skip_serializing_if = "Option::is_none"))]
@@ -80,9 +80,9 @@ impl FitInfo {
         let fit_info_mode = fit_info_modes.get(&fit_id);
         Self {
             id: fit_id,
-            extended: match fit_info_mode {
+            full: match fit_info_mode {
                 FitInfoMode::Id => None,
-                FitInfoMode::Full => Some(FitInfoExt {
+                FitInfoMode::Full => Some(FitInfoFull {
                     fleet_id: core_fit.get_fleet_id(),
                     character: core_fit
                         .get_character()

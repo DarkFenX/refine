@@ -11,12 +11,12 @@ use crate::{
 pub struct SubsystemInfo {
     pub id: ItemId,
     #[cfg_attr(feature = "serde", serde(flatten, skip_serializing_if = "Option::is_none"))]
-    pub extended: Option<SubsystemInfoExt>,
+    pub partial: Option<SubsystemInfoPartial>,
 }
 
 #[cfg_attr(feature = "serde", cfg_eval, serde_with::serde_as, derive(serde::Serialize))]
 #[derive(Clone)]
-pub struct SubsystemInfoExt {
+pub struct SubsystemInfoPartial {
     #[cfg(feature = "serde")]
     kind: ItemKind,
     pub type_id: ItemTypeId,
@@ -46,9 +46,9 @@ impl SubsystemInfo {
         let subsystem_info_mode = item_info_modes.get(&subsystem_id);
         Self {
             id: subsystem_id,
-            extended: match subsystem_info_mode {
+            partial: match subsystem_info_mode {
                 ItemInfoMode::Id => None,
-                ItemInfoMode::Partial | ItemInfoMode::Full => Some(SubsystemInfoExt {
+                ItemInfoMode::Partial | ItemInfoMode::Full => Some(SubsystemInfoPartial {
                     #[cfg(feature = "serde")]
                     kind: ItemKind::Subsystem,
                     type_id: core_subsystem.get_type_id(),

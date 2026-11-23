@@ -11,12 +11,12 @@ use crate::{
 pub struct ImplantInfo {
     pub id: ItemId,
     #[cfg_attr(feature = "serde", serde(flatten, skip_serializing_if = "Option::is_none"))]
-    pub extended: Option<ImplantInfoExt>,
+    pub partial: Option<ImplantInfoPartial>,
 }
 
 #[cfg_attr(feature = "serde", cfg_eval, serde_with::serde_as, derive(serde::Serialize))]
 #[derive(Clone)]
-pub struct ImplantInfoExt {
+pub struct ImplantInfoPartial {
     #[cfg(feature = "serde")]
     kind: ItemKind,
     pub type_id: ItemTypeId,
@@ -46,9 +46,9 @@ impl ImplantInfo {
         let implant_info_mode = item_info_modes.get(&implant_id);
         Self {
             id: implant_id,
-            extended: match implant_info_mode {
+            partial: match implant_info_mode {
                 ItemInfoMode::Id => None,
-                ItemInfoMode::Partial | ItemInfoMode::Full => Some(ImplantInfoExt {
+                ItemInfoMode::Partial | ItemInfoMode::Full => Some(ImplantInfoPartial {
                     #[cfg(feature = "serde")]
                     kind: ItemKind::Implant,
                     type_id: core_implant.get_type_id(),

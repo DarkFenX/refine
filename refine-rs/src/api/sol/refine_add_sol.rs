@@ -26,17 +26,17 @@ impl Refine {
         // Variables for move
         let core_src = inner_src.get_core().clone();
         let src_alias = inner_src.get_alias();
-        let (core_sol, info_ext) = self
+        let (core_sol, info_partial) = self
             .tpool
             .exec_standard(move || {
                 let mut core_sol = ctl_cmd.execute(&core_src);
-                let info_ext = info_cmd.execute_into_info_ext(src_alias, &mut core_sol);
-                (core_sol, info_ext)
+                let info_partial = info_cmd.execute_into_info_partial(src_alias, &mut core_sol);
+                (core_sol, info_partial)
             })
             .await;
         let inner_sol = self.id_sol_map.add(src_alias, core_sol);
         let sol = Sol::new(self, inner_sol, true).await;
-        let info = SolInfo::from_id_and_ext(sol.get_id(), info_ext);
+        let info = SolInfo::from_id_and_partial(sol.get_id(), info_partial);
         Ok((sol, info))
     }
 }

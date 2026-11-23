@@ -23,16 +23,16 @@ pub use ctl::{
 };
 pub use hyb::{FitHybridCmdBr, SolHybridCmdBr};
 pub use info::{
-    AbilityInfo, AttrMutationInfo, AutochargeInfo, AutochargeInfoExt, BoosterInfo, BoosterInfoExt, CharacterInfo,
-    CharacterInfoExt, ChargeInfo, ChargeInfoExt, DroneInfo, DroneInfoExt, FighterInfo, FighterInfoExt, FitInfo,
-    FitInfoCmd, FitInfoCmdBr, FitInfoEnumCmdBr, FitInfoExt, FitInfoMode, FleetInfo, FleetInfoCmd, FleetInfoCmdBr,
-    FleetInfoExt, FleetInfoMode, FwEffectInfo, FwEffectInfoExt, ImplantInfo, ImplantInfoExt, ItemInfo, ItemInfoCmd,
-    ItemInfoCmdBr, ItemInfoFull, ItemInfoMode, ItemMutationDormantInfo, ItemMutationEffectiveInfo, ItemMutationInfo,
-    ModuleInfo, ModuleInfoExt, ModuleRacks, ProjEffectInfo, ProjEffectInfoExt, ProjInfo, RangedProjInfo, RefineInfo,
-    RefineInfoCmd, RigInfo, RigInfoExt, ServiceInfo, ServiceInfoExt, ShipInfo, ShipInfoExt, SideEffectInfo,
-    SideEffectMod, SideEffectOp, SkillInfo, SkillInfoExt, SolInfo, SolInfoCmd, SolInfoCmdBr, SolInfoEnumCmdBr,
-    SolInfoExt, SolInfoFull, SolInfoMode, StanceInfo, StanceInfoExt, SubsystemInfo, SubsystemInfoExt, SwEffectInfo,
-    SwEffectInfoExt,
+    AbilityInfo, AttrMutationInfo, AutochargeInfo, AutochargeInfoPartial, BoosterInfo, BoosterInfoPartial,
+    CharacterInfo, CharacterInfoPartial, ChargeInfo, ChargeInfoPartial, DroneInfo, DroneInfoPartial, FighterInfo,
+    FighterInfoPartial, FitInfo, FitInfoCmd, FitInfoCmdBr, FitInfoEnumCmdBr, FitInfoFull, FitInfoMode, FleetInfo,
+    FleetInfoCmd, FleetInfoCmdBr, FleetInfoFull, FleetInfoMode, FwEffectInfo, FwEffectInfoPartial, ImplantInfo,
+    ImplantInfoPartial, ItemInfo, ItemInfoCmd, ItemInfoCmdBr, ItemInfoFull, ItemInfoMode, ItemMutationDormantInfo,
+    ItemMutationEffectiveInfo, ItemMutationInfo, ModuleInfo, ModuleInfoPartial, ModuleRacks, ProjEffectInfo,
+    ProjEffectInfoPartial, ProjInfo, RangedProjInfo, RefineInfo, RefineInfoCmd, RigInfo, RigInfoPartial, ServiceInfo,
+    ServiceInfoPartial, ShipInfo, ShipInfoPartial, SideEffectInfo, SideEffectMod, SideEffectOp, SkillInfo,
+    SkillInfoPartial, SolInfo, SolInfoCmd, SolInfoCmdBr, SolInfoEnumCmdBr, SolInfoFull, SolInfoMode, SolInfoPartial,
+    StanceInfo, StanceInfoPartial, SubsystemInfo, SubsystemInfoPartial, SwEffectInfo, SwEffectInfoPartial,
 };
 pub use rc::{
     AbilityId, AddMode, Affector, AttrId, BreacherProfile, Coordinates, Count, CountNz, CustomAttrId, CustomEffectId,

@@ -12,12 +12,12 @@ use crate::{
 pub struct DroneInfo {
     pub id: ItemId,
     #[cfg_attr(feature = "serde", serde(flatten, skip_serializing_if = "Option::is_none"))]
-    pub extended: Option<DroneInfoExt>,
+    pub partial: Option<DroneInfoPartial>,
 }
 
 #[cfg_attr(feature = "serde", cfg_eval, serde_with::serde_as, derive(serde::Serialize))]
 #[derive(Clone)]
-pub struct DroneInfoExt {
+pub struct DroneInfoPartial {
     #[cfg(feature = "serde")]
     kind: ItemKind,
     pub type_id: ItemTypeId,
@@ -55,9 +55,9 @@ impl DroneInfo {
         let drone_info_mode = item_info_modes.get(&drone_id);
         Self {
             id: drone_id,
-            extended: match drone_info_mode {
+            partial: match drone_info_mode {
                 ItemInfoMode::Id => None,
-                ItemInfoMode::Partial | ItemInfoMode::Full => Some(DroneInfoExt {
+                ItemInfoMode::Partial | ItemInfoMode::Full => Some(DroneInfoPartial {
                     #[cfg(feature = "serde")]
                     kind: ItemKind::Drone,
                     type_id: core_drone.get_type_id(),

@@ -11,12 +11,12 @@ use crate::{
 pub struct SolInfo {
     pub id: SolId,
     #[cfg_attr(feature = "serde", serde(flatten, skip_serializing_if = "Option::is_none"))]
-    pub extended: Option<SolInfoExt>,
+    pub partial: Option<SolInfoPartial>,
 }
 
 #[cfg_attr(feature = "serde", derive(serde::Serialize))]
 #[derive(Clone)]
-pub struct SolInfoExt {
+pub struct SolInfoPartial {
     pub src_alias: SrcAlias,
     #[cfg_attr(feature = "serde", serde(flatten, skip_serializing_if = "Option::is_none"))]
     pub full: Option<SolInfoFull>,
@@ -56,7 +56,7 @@ impl SolInfo {
     ) -> Self {
         Self {
             id: sol_id,
-            extended: SolInfoExt::try_from_core(
+            partial: SolInfoPartial::try_from_core(
                 src_alias,
                 core_sol,
                 sol_info_mode,
@@ -66,15 +66,15 @@ impl SolInfo {
             ),
         }
     }
-    pub(crate) fn from_id_and_ext(sol_id: SolId, sol_info_ext: Option<SolInfoExt>) -> Self {
+    pub(crate) fn from_id_and_partial(sol_id: SolId, sol_info_partial: Option<SolInfoPartial>) -> Self {
         Self {
             id: sol_id,
-            extended: sol_info_ext,
+            partial: sol_info_partial,
         }
     }
 }
 
-impl SolInfoExt {
+impl SolInfoPartial {
     pub(crate) fn from_src_alias(src_alias: SrcAlias) -> Self {
         Self { src_alias, full: None }
     }

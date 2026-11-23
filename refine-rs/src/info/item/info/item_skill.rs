@@ -11,12 +11,12 @@ use crate::{
 pub struct SkillInfo {
     pub id: ItemId,
     #[cfg_attr(feature = "serde", serde(flatten, skip_serializing_if = "Option::is_none"))]
-    pub extended: Option<SkillInfoExt>,
+    pub partial: Option<SkillInfoPartial>,
 }
 
 #[cfg_attr(feature = "serde", cfg_eval, serde_with::serde_as, derive(serde::Serialize))]
 #[derive(Clone)]
-pub struct SkillInfoExt {
+pub struct SkillInfoPartial {
     #[cfg(feature = "serde")]
     kind: ItemKind,
     pub type_id: ItemTypeId,
@@ -45,9 +45,9 @@ impl SkillInfo {
         let skill_info_mode = item_info_modes.get(&skill_id);
         Self {
             id: skill_id,
-            extended: match skill_info_mode {
+            partial: match skill_info_mode {
                 ItemInfoMode::Id => None,
-                ItemInfoMode::Partial | ItemInfoMode::Full => Some(SkillInfoExt {
+                ItemInfoMode::Partial | ItemInfoMode::Full => Some(SkillInfoPartial {
                     #[cfg(feature = "serde")]
                     kind: ItemKind::Skill,
                     type_id: core_skill.get_type_id(),

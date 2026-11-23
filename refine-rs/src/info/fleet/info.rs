@@ -7,12 +7,12 @@ use crate::{FitId, FitInfo, FitInfoMode, FleetId, FleetInfoMode, ItemId, ItemInf
 pub struct FleetInfo {
     pub id: FleetId,
     #[cfg_attr(feature = "serde", serde(flatten, skip_serializing_if = "Option::is_none"))]
-    pub extended: Option<FleetInfoExt>,
+    pub full: Option<FleetInfoFull>,
 }
 
 #[cfg_attr(feature = "serde", derive(serde::Serialize))]
 #[derive(Clone)]
-pub struct FleetInfoExt {
+pub struct FleetInfoFull {
     #[cfg_attr(feature = "serde", serde(skip_serializing_if = "Vec::is_empty"))]
     pub fits: Vec<FitInfo>,
 }
@@ -31,9 +31,9 @@ impl FleetInfo {
         let fleet_info_mode = fleet_info_modes.get(&fleet_id);
         Self {
             id: fleet_id,
-            extended: match fleet_info_mode {
+            full: match fleet_info_mode {
                 FleetInfoMode::Id => None,
-                FleetInfoMode::Full => Some(FleetInfoExt {
+                FleetInfoMode::Full => Some(FleetInfoFull {
                     fits: core_fleet
                         .iter_fits()
                         .map_into_iter(|mut core_fit| {

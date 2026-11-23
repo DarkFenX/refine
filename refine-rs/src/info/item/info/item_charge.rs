@@ -9,12 +9,12 @@ use crate::{EffectId, EffectMode, FitId, ItemId, ItemInfoFull, ItemInfoMode, Ite
 pub struct ChargeInfo {
     pub id: ItemId,
     #[cfg_attr(feature = "serde", serde(flatten, skip_serializing_if = "Option::is_none"))]
-    pub extended: Option<ChargeInfoExt>,
+    pub partial: Option<ChargeInfoPartial>,
 }
 
 #[cfg_attr(feature = "serde", cfg_eval, serde_with::serde_as, derive(serde::Serialize))]
 #[derive(Clone)]
-pub struct ChargeInfoExt {
+pub struct ChargeInfoPartial {
     #[cfg(feature = "serde")]
     kind: ItemKind,
     pub type_id: ItemTypeId,
@@ -43,9 +43,9 @@ impl ChargeInfo {
         let charge_info_mode = item_info_modes.get(&charge_id);
         Self {
             id: charge_id,
-            extended: match charge_info_mode {
+            partial: match charge_info_mode {
                 ItemInfoMode::Id => None,
-                ItemInfoMode::Partial | ItemInfoMode::Full => Some(ChargeInfoExt {
+                ItemInfoMode::Partial | ItemInfoMode::Full => Some(ChargeInfoPartial {
                     #[cfg(feature = "serde")]
                     kind: ItemKind::Charge,
                     type_id: core_charge.get_type_id(),

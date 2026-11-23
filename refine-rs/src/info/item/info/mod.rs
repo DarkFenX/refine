@@ -1,21 +1,21 @@
 pub use item::ItemInfo;
-pub use item_autocharge::{AutochargeInfo, AutochargeInfoExt};
-pub use item_booster::{BoosterInfo, BoosterInfoExt};
-pub use item_character::{CharacterInfo, CharacterInfoExt};
-pub use item_charge::{ChargeInfo, ChargeInfoExt};
-pub use item_drone::{DroneInfo, DroneInfoExt};
-pub use item_fighter::{FighterInfo, FighterInfoExt};
-pub use item_fw_effect::{FwEffectInfo, FwEffectInfoExt};
-pub use item_implant::{ImplantInfo, ImplantInfoExt};
-pub use item_module::{ModuleInfo, ModuleInfoExt};
-pub use item_proj_effect::{ProjEffectInfo, ProjEffectInfoExt};
-pub use item_rig::{RigInfo, RigInfoExt};
-pub use item_service::{ServiceInfo, ServiceInfoExt};
-pub use item_ship::{ShipInfo, ShipInfoExt};
-pub use item_skill::{SkillInfo, SkillInfoExt};
-pub use item_stance::{StanceInfo, StanceInfoExt};
-pub use item_subsystem::{SubsystemInfo, SubsystemInfoExt};
-pub use item_sw_effect::{SwEffectInfo, SwEffectInfoExt};
+pub use item_autocharge::{AutochargeInfo, AutochargeInfoPartial};
+pub use item_booster::{BoosterInfo, BoosterInfoPartial};
+pub use item_character::{CharacterInfo, CharacterInfoPartial};
+pub use item_charge::{ChargeInfo, ChargeInfoPartial};
+pub use item_drone::{DroneInfo, DroneInfoPartial};
+pub use item_fighter::{FighterInfo, FighterInfoPartial};
+pub use item_fw_effect::{FwEffectInfo, FwEffectInfoPartial};
+pub use item_implant::{ImplantInfo, ImplantInfoPartial};
+pub use item_module::{ModuleInfo, ModuleInfoPartial};
+pub use item_proj_effect::{ProjEffectInfo, ProjEffectInfoPartial};
+pub use item_rig::{RigInfo, RigInfoPartial};
+pub use item_service::{ServiceInfo, ServiceInfoPartial};
+pub use item_ship::{ShipInfo, ShipInfoPartial};
+pub use item_skill::{SkillInfo, SkillInfoPartial};
+pub use item_stance::{StanceInfo, StanceInfoPartial};
+pub use item_subsystem::{SubsystemInfo, SubsystemInfoPartial};
+pub use item_sw_effect::{SwEffectInfo, SwEffectInfoPartial};
 pub use shared::{
     AbilityInfo, AttrMutationInfo, ItemInfoFull, ItemMutationDormantInfo, ItemMutationEffectiveInfo, ItemMutationInfo,
     ProjInfo, RangedProjInfo, SideEffectInfo, SideEffectMod, SideEffectOp,

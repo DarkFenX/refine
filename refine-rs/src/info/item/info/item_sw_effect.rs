@@ -9,12 +9,12 @@ use crate::{EffectId, EffectMode, ItemId, ItemInfoFull, ItemInfoMode, ItemTypeId
 pub struct SwEffectInfo {
     pub id: ItemId,
     #[cfg_attr(feature = "serde", serde(flatten, skip_serializing_if = "Option::is_none"))]
-    pub extended: Option<SwEffectInfoExt>,
+    pub partial: Option<SwEffectInfoPartial>,
 }
 
 #[cfg_attr(feature = "serde", cfg_eval, serde_with::serde_as, derive(serde::Serialize))]
 #[derive(Clone)]
-pub struct SwEffectInfoExt {
+pub struct SwEffectInfoPartial {
     #[cfg(feature = "serde")]
     kind: ItemKind,
     pub type_id: ItemTypeId,
@@ -41,9 +41,9 @@ impl SwEffectInfo {
         let sw_effect_info_mode = item_info_modes.get(&sw_effect_id);
         Self {
             id: sw_effect_id,
-            extended: match sw_effect_info_mode {
+            partial: match sw_effect_info_mode {
                 ItemInfoMode::Id => None,
-                ItemInfoMode::Partial | ItemInfoMode::Full => Some(SwEffectInfoExt {
+                ItemInfoMode::Partial | ItemInfoMode::Full => Some(SwEffectInfoPartial {
                     #[cfg(feature = "serde")]
                     kind: ItemKind::SwEffect,
                     type_id: core_sw_effect.get_type_id(),

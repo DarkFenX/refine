@@ -9,12 +9,12 @@ use crate::{EffectId, EffectMode, FitId, ItemId, ItemInfoFull, ItemInfoMode, Ite
 pub struct StanceInfo {
     pub id: ItemId,
     #[cfg_attr(feature = "serde", serde(flatten, skip_serializing_if = "Option::is_none"))]
-    pub extended: Option<StanceInfoExt>,
+    pub partial: Option<StanceInfoPartial>,
 }
 
 #[cfg_attr(feature = "serde", cfg_eval, serde_with::serde_as, derive(serde::Serialize))]
 #[derive(Clone)]
-pub struct StanceInfoExt {
+pub struct StanceInfoPartial {
     #[cfg(feature = "serde")]
     kind: ItemKind,
     pub type_id: ItemTypeId,
@@ -42,9 +42,9 @@ impl StanceInfo {
         let stance_info_mode = item_info_modes.get(&stance_id);
         Self {
             id: stance_id,
-            extended: match stance_info_mode {
+            partial: match stance_info_mode {
                 ItemInfoMode::Id => None,
-                ItemInfoMode::Partial | ItemInfoMode::Full => Some(StanceInfoExt {
+                ItemInfoMode::Partial | ItemInfoMode::Full => Some(StanceInfoPartial {
                     #[cfg(feature = "serde")]
                     kind: ItemKind::Stance,
                     type_id: core_stance.get_type_id(),

@@ -1,7 +1,7 @@
 use futures_util::StreamExt;
 
 use crate::{
-    FitInfoMode, FleetInfoMode, ItemInfoMode, Refine, RefineInfo, SolInfo, SolInfoCmd, SolInfoExt, SolInfoMode,
+    FitInfoMode, FleetInfoMode, ItemInfoMode, Refine, RefineInfo, SolInfo, SolInfoCmd, SolInfoMode, SolInfoPartial,
     src::{SrcInfo, SrcInfoMode},
 };
 
@@ -91,13 +91,13 @@ impl RefineInfoCmd {
             // ID and source alias are available without waiting for solar system locks
             SolInfoMode::Id => guarded_inner_sols
                 .into_iter()
-                .map(|(sol_id, _)| SolInfo::from_id_and_ext(sol_id, None))
+                .map(|(sol_id, _)| SolInfo::from_id_and_partial(sol_id, None))
                 .collect(),
             SolInfoMode::Partial => guarded_inner_sols
                 .into_iter()
                 .map(|(sol_id, guarded_inner_sol)| {
-                    let sol_info_ext = SolInfoExt::from_src_alias(guarded_inner_sol.get_src_alias());
-                    SolInfo::from_id_and_ext(sol_id, Some(sol_info_ext))
+                    let sol_info_partial = SolInfoPartial::from_src_alias(guarded_inner_sol.get_src_alias());
+                    SolInfo::from_id_and_partial(sol_id, Some(sol_info_partial))
                 })
                 .collect(),
             SolInfoMode::Full => {

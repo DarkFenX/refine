@@ -12,12 +12,12 @@ use crate::{
 pub struct BoosterInfo {
     pub id: ItemId,
     #[cfg_attr(feature = "serde", serde(flatten, skip_serializing_if = "Option::is_none"))]
-    pub extended: Option<BoosterInfoExt>,
+    pub partial: Option<BoosterInfoPartial>,
 }
 
 #[cfg_attr(feature = "serde", cfg_eval, serde_with::serde_as, derive(serde::Serialize))]
 #[derive(Clone)]
-pub struct BoosterInfoExt {
+pub struct BoosterInfoPartial {
     #[cfg(feature = "serde")]
     kind: ItemKind,
     pub type_id: ItemTypeId,
@@ -53,9 +53,9 @@ impl BoosterInfo {
         let booster_info_mode = item_info_modes.get(&booster_id);
         Self {
             id: booster_id,
-            extended: match booster_info_mode {
+            partial: match booster_info_mode {
                 ItemInfoMode::Id => None,
-                ItemInfoMode::Partial | ItemInfoMode::Full => Some(BoosterInfoExt {
+                ItemInfoMode::Partial | ItemInfoMode::Full => Some(BoosterInfoPartial {
                     #[cfg(feature = "serde")]
                     kind: ItemKind::Booster,
                     type_id: core_booster.get_type_id(),

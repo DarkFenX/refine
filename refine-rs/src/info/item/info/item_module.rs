@@ -15,12 +15,12 @@ pub struct ModuleInfo {
     #[cfg_attr(feature = "serde", serde(skip_serializing_if = "Option::is_none"))]
     pub charge: Option<ChargeInfo>,
     #[cfg_attr(feature = "serde", serde(flatten, skip_serializing_if = "Option::is_none"))]
-    pub extended: Option<ModuleInfoExt>,
+    pub partial: Option<ModuleInfoPartial>,
 }
 
 #[cfg_attr(feature = "serde", cfg_eval, serde_with::serde_as, derive(serde::Serialize))]
 #[derive(Clone)]
-pub struct ModuleInfoExt {
+pub struct ModuleInfoPartial {
     #[cfg(feature = "serde")]
     kind: ItemKind,
     pub type_id: ItemTypeId,
@@ -71,7 +71,7 @@ impl ModuleInfo {
         Self {
             id: module_id,
             charge: charge_info,
-            extended: match module_info_mode {
+            partial: match module_info_mode {
                 ItemInfoMode::Id => None,
                 ItemInfoMode::Partial | ItemInfoMode::Full => {
                     let charge_count = match has_charge {
@@ -88,7 +88,7 @@ impl ModuleInfo {
                         },
                         false => TriStateField::Absent,
                     };
-                    Some(ModuleInfoExt {
+                    Some(ModuleInfoPartial {
                         #[cfg(feature = "serde")]
                         kind: ItemKind::Module,
                         type_id: core_module.get_type_id(),

@@ -22,12 +22,12 @@ const impl Default for SrcInfoMode {
 pub struct SrcInfo {
     pub alias: SrcAlias,
     #[cfg_attr(feature = "serde", serde(flatten, skip_serializing_if = "Option::is_none"))]
-    pub extended: Option<SrcInfoExt>,
+    pub partial: Option<SrcInfoPartial>,
 }
 
 #[cfg_attr(feature = "serde", derive(serde::Serialize))]
 #[derive(Clone)]
-pub struct SrcInfoExt {
+pub struct SrcInfoPartial {
     /// Time when the request to create the source was received, not when it has been completed.
     #[cfg_attr(feature = "serde", serde(serialize_with = "custom_serde::format_time"))]
     pub time_created: time::UtcDateTime,
@@ -51,11 +51,11 @@ impl SrcInfo {
     pub(crate) fn from_inner(inner_src: &SrcInnerGuarded, is_default: bool, src_info_mode: SrcInfoMode) -> Self {
         Self {
             alias: inner_src.get_alias(),
-            extended: match src_info_mode {
+            partial: match src_info_mode {
                 SrcInfoMode::Alias => None,
                 SrcInfoMode::Partial | SrcInfoMode::Full => {
                     let core_info = inner_src.get_core().get_info();
-                    Some(SrcInfoExt {
+                    Some(SrcInfoPartial {
                         time_created: inner_src.get_time_created(),
                         origin: core_info.origin.clone(),
                         default: is_default,
