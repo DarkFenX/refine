@@ -46,7 +46,17 @@ impl PartialEq for SlotIndex {
 }
 impl std::marker::StructuralPartialEq for SlotIndex {}
 
-// Pattern types have no Hash to derive
+impl Ord for SlotIndex {
+    fn cmp(&self, other: &Self) -> std::cmp::Ordering {
+        self.into_i32().cmp(&other.into_i32())
+    }
+}
+impl PartialOrd for SlotIndex {
+    fn partial_cmp(&self, other: &Self) -> Option<std::cmp::Ordering> {
+        Some(self.cmp(other))
+    }
+}
+
 impl std::hash::Hash for SlotIndex {
     fn hash<H>(&self, state: &mut H)
     where
@@ -62,6 +72,11 @@ impl std::hash::Hash for SlotIndex {
 impl std::fmt::Display for SlotIndex {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         std::fmt::Display::fmt(&self.into_i32(), f)
+    }
+}
+impl std::fmt::Debug for SlotIndex {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        f.debug_tuple("SlotIndex").field(&self.into_i32()).finish()
     }
 }
 

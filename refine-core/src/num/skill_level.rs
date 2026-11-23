@@ -108,7 +108,6 @@ impl PartialOrd for SkillLevel {
     }
 }
 
-// Pattern types have no Hash to derive
 impl std::hash::Hash for SkillLevel {
     fn hash<H>(&self, state: &mut H)
     where
