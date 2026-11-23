@@ -5,7 +5,7 @@ use super::getters::{
         get_max_fighter_count, get_online_max_sec_class, get_radius, get_rig_size, get_volume,
     },
     charge_limit::get_item_charge_limit,
-    cycling::{get_has_optional_reload, get_has_rearm},
+    cycling::{get_has_optional_reload, get_has_rearm, get_has_spool},
     drone_limit::get_ship_drone_limit,
     effect_immunity::get_disallow_vs_ew_immune_tgt,
     fighter_kind::{
@@ -55,6 +55,7 @@ pub(crate) struct RItemBase {
     pub(crate) has_online_effect: bool,
     pub(crate) takes_turret_hardpoint: bool,
     pub(crate) takes_launcher_hardpoint: bool,
+    pub(crate) has_spool: bool,
     pub(crate) has_optional_reload: bool,
     pub(crate) has_rearm: bool,
     // Derived data - max group/type validation data. Items of this type count towards appropriate
@@ -192,6 +193,7 @@ impl RItemBase {
             has_online_effect: Default::default(),
             takes_turret_hardpoint: Default::default(),
             takes_launcher_hardpoint: Default::default(),
+            has_spool: Default::default(),
             has_optional_reload: Default::default(),
             has_rearm: Default::default(),
             proj_buff_item_list_rids: Default::default(),
@@ -260,6 +262,7 @@ impl RItemBase {
         self.has_online_effect = has_online_effect(&self.effect_rids, effect_aid_rid_map);
         self.takes_turret_hardpoint = has_turret_effect(&self.effect_rids, effect_aid_rid_map);
         self.takes_launcher_hardpoint = has_launcher_effect(&self.effect_rids, effect_aid_rid_map);
+        self.has_spool = get_has_spool(&self.effect_rids, r_effects);
         self.proj_buff_item_list_rids = a_item
             .proj_buff_item_list_ids
             .iter()

@@ -67,9 +67,12 @@ impl Svc {
     }
     pub(crate) fn get_item_spool_info_effective(&mut self, u_data: &UData, item_uid: UItemId) -> Option<ItemSpoolInfo> {
         let u_item = u_data.items.get(item_uid);
+        let item_rib = u_item.get_r_item_base()?;
+        if !item_rib.has_spool {
+            return None;
+        }
         let ctx = &SvcCtx::new(u_data, &self.eff_projs);
-        let cycles = u_item
-            .get_r_item_base()?
+        let cycles = item_rib
             .effect_rids
             .iter()
             .filter_map(|&effect_rid| {

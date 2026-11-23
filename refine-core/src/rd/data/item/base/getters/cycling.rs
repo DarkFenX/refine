@@ -37,3 +37,12 @@ pub(in crate::rd::data::item::base) fn get_has_rearm(
                 .is_some_and(|charge_count| charge_count > Count::ZERO)
     })
 }
+
+pub(in crate::rd::data::item::base) fn get_has_spool(
+    item_effects: &[REffectId],
+    r_effects: &PDense<REffectId, REffect>,
+) -> bool {
+    item_effects
+        .iter()
+        .any(|&effect_rid| r_effects.get(effect_rid).unwrap().spool_attr_rids.is_some())
+}
