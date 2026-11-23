@@ -40,7 +40,7 @@ pub use rc::{
     FleetId, ItemAttrValues, ItemEffectInfo, ItemGrpId, ItemId, ItemKind, ItemSpoolInfo, ItemTypeId, MinionState,
     ModRack, Modification, ModuleState, MoveMode, Movement, NpcProp, Op, OptionExt, OptionalReload, PValue, ProjRange,
     RackPos, RearmMinion, RemoveMode, SecZone, SecZoneCorruption, ServiceState, SkillLevel, SlotIndex, Spool,
-    UnitInterval, Value, ad::AdaptedDataCacher, ed::EveDataHandler,
+    SpoolCycleInfo, UnitInterval, Value, ad::AdaptedDataCacher, ed::EveDataHandler,
 };
 pub use shared::{CmdResp, CmdResps, FitIdBr, FleetIdBr, ItemIdBr, TriStateField};
 pub use src::{Src, SrcAlias};

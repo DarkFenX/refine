@@ -27,21 +27,24 @@ def test_cycles_basic(client, consts):
         state=consts.ApiModuleState.active,
         spool_override=Spool.cycles_to_api(count=0))
     # Verification
-    assert api_module.update().spool_cycles == (0, 15)
+    api_module.update()
+    assert api_module.spool_effective == (Spool.cycles_to_api(count=0), {eve_module_spool_effect_id: (0, 15)})
     assert api_module.spool_override == Spool.cycles_to_api(count=0)
     api_module_stats = api_module.get_stats(options=ItemStatsOptions(outgoing_rps=True))
     assert api_module_stats.outgoing_rps.one().armor == approx(85.333333)
     # Action
     api_module.change_module(spool_override=Spool.cycles_to_api(count=20))
     # Verification
-    assert api_module.update().spool_cycles == (15, 15)
+    api_module.update()
+    assert api_module.spool_effective == (Spool.cycles_to_api(count=20), {eve_module_spool_effect_id: (15, 15)})
     assert api_module.spool_override == Spool.cycles_to_api(count=20)
     api_module_stats = api_module.get_stats(options=ItemStatsOptions(outgoing_rps=True))
     assert api_module_stats.outgoing_rps.one().armor == approx(238.933333)
     # Action
     api_module.change_module(spool_override=Spool.cycles_to_api(count=8))
     # Verification
-    assert api_module.update().spool_cycles == (8, 15)
+    api_module.update()
+    assert api_module.spool_effective == (Spool.cycles_to_api(count=8), {eve_module_spool_effect_id: (8, 15)})
     assert api_module.spool_override == Spool.cycles_to_api(count=8)
     api_module_stats = api_module.get_stats(options=ItemStatsOptions(outgoing_rps=True))
     assert api_module_stats.outgoing_rps.one().armor == approx(167.253333)
@@ -72,42 +75,48 @@ def test_time_basic(client, consts):
         state=consts.ApiModuleState.active,
         spool_override=Spool.time_to_api(time=0))
     # Verification
-    assert api_module.update().spool_cycles == (0, 15)
+    api_module.update()
+    assert api_module.spool_effective == (Spool.time_to_api(time=0), {eve_module_spool_effect_id: (0, 15)})
     assert api_module.spool_override == Spool.time_to_api(time=0)
     api_module_stats = api_module.get_stats(options=ItemStatsOptions(outgoing_rps=True))
     assert api_module_stats.outgoing_rps.one().armor == approx(85.333333)
     # Action
     api_module.change_module(spool_override=Spool.time_to_api(time=5.99))
     # Verification
-    assert api_module.update().spool_cycles == (0, 15)
+    api_module.update()
+    assert api_module.spool_effective == (Spool.time_to_api(time=5.99), {eve_module_spool_effect_id: (0, 15)})
     assert api_module.spool_override == Spool.time_to_api(time=5.99)
     api_module_stats = api_module.get_stats(options=ItemStatsOptions(outgoing_rps=True))
     assert api_module_stats.outgoing_rps.one().armor == approx(85.333333)
     # Action
     api_module.change_module(spool_override=Spool.time_to_api(time=6))
     # Verification
-    assert api_module.update().spool_cycles == (1, 15)
+    api_module.update()
+    assert api_module.spool_effective == (Spool.time_to_api(time=6), {eve_module_spool_effect_id: (1, 15)})
     assert api_module.spool_override == Spool.time_to_api(time=6)
     api_module_stats = api_module.get_stats(options=ItemStatsOptions(outgoing_rps=True))
     assert api_module_stats.outgoing_rps.one().armor == approx(95.573333)
     # Action
     api_module.change_module(spool_override=Spool.time_to_api(time=25))
     # Verification
-    assert api_module.update().spool_cycles == (4, 15)
+    api_module.update()
+    assert api_module.spool_effective == (Spool.time_to_api(time=25), {eve_module_spool_effect_id: (4, 15)})
     assert api_module.spool_override == Spool.time_to_api(time=25)
     api_module_stats = api_module.get_stats(options=ItemStatsOptions(outgoing_rps=True))
     assert api_module_stats.outgoing_rps.one().armor == approx(126.293333)
     # Action
     api_module.change_module(spool_override=Spool.time_to_api(time=250))
     # Verification
-    assert api_module.update().spool_cycles == (15, 15)
+    api_module.update()
+    assert api_module.spool_effective == (Spool.time_to_api(time=250), {eve_module_spool_effect_id: (15, 15)})
     assert api_module.spool_override == Spool.time_to_api(time=250)
     api_module_stats = api_module.get_stats(options=ItemStatsOptions(outgoing_rps=True))
     assert api_module_stats.outgoing_rps.one().armor == approx(238.933333)
     # Action
     api_module.change_module(spool_override=Spool.time_to_api(time=89.99))
     # Verification
-    assert api_module.update().spool_cycles == (14, 15)
+    api_module.update()
+    assert api_module.spool_effective == (Spool.time_to_api(time=89.99), {eve_module_spool_effect_id: (14, 15)})
     assert api_module.spool_override == Spool.time_to_api(time=89.99)
     api_module_stats = api_module.get_stats(options=ItemStatsOptions(outgoing_rps=True))
     assert api_module_stats.outgoing_rps.one().armor == approx(228.693333)
@@ -140,7 +149,7 @@ def test_time_cycle_time_zero(client, consts):
     # Verification
     api_module.update()
     with check_no_field():
-        api_module.spool_cycles  # ruff:ignore[useless-expression]
+        api_module.spool_effective  # ruff:ignore[useless-expression]
     api_module_stats = api_module.get_stats(options=ItemStatsOptions(outgoing_rps=True))
     assert api_module_stats.outgoing_rps.one().armor == 0
 
@@ -170,21 +179,24 @@ def test_spool_scale_basic(client, consts):
         state=consts.ApiModuleState.active,
         spool_override=Spool.spool_scale_to_api(val=0))
     # Verification
-    assert api_module.update().spool_cycles == (0, 5)
+    api_module.update()
+    assert api_module.spool_effective == (Spool.spool_scale_to_api(val=0), {eve_module_spool_effect_id: (0, 5)})
     assert api_module.spool_override == Spool.spool_scale_to_api(val=0)
     api_module_stats = api_module.get_stats(options=ItemStatsOptions(outgoing_rps=True))
     assert api_module_stats.outgoing_rps.one().armor == approx(85.333333)
     # Action
     api_module.change_module(spool_override=Spool.spool_scale_to_api(val=0.42))
     # Verification
-    assert api_module.update().spool_cycles == (2, 5)
+    api_module.update()
+    assert api_module.spool_effective == (Spool.spool_scale_to_api(val=0.42), {eve_module_spool_effect_id: (2, 5)})
     assert api_module.spool_override == Spool.spool_scale_to_api(val=0.42)
     api_module_stats = api_module.get_stats(options=ItemStatsOptions(outgoing_rps=True))
     assert api_module_stats.outgoing_rps.one().armor == approx(102.4)
     # Action
     api_module.change_module(spool_override=Spool.spool_scale_to_api(val=1))
     # Verification
-    assert api_module.update().spool_cycles == (5, 5)
+    api_module.update()
+    assert api_module.spool_effective == (Spool.spool_scale_to_api(val=1), {eve_module_spool_effect_id: (5, 5)})
     assert api_module.spool_override == Spool.spool_scale_to_api(val=1)
     api_module_stats = api_module.get_stats(options=ItemStatsOptions(outgoing_rps=True))
     assert api_module_stats.outgoing_rps.one().armor == approx(124.16)
@@ -215,21 +227,24 @@ def test_cycle_scale_basic(client, consts):
         state=consts.ApiModuleState.active,
         spool_override=Spool.cycle_scale_to_api(val=0))
     # Verification
-    assert api_module.update().spool_cycles == (0, 5)
+    api_module.update()
+    assert api_module.spool_effective == (Spool.cycle_scale_to_api(val=0), {eve_module_spool_effect_id: (0, 5)})
     assert api_module.spool_override == Spool.cycle_scale_to_api(val=0)
     api_module_stats = api_module.get_stats(options=ItemStatsOptions(outgoing_rps=True))
     assert api_module_stats.outgoing_rps.one().armor == approx(85.333333)
     # Action
     api_module.change_module(spool_override=Spool.cycle_scale_to_api(val=0.42))
     # Verification
-    assert api_module.update().spool_cycles == (3, 5)
+    api_module.update()
+    assert api_module.spool_effective == (Spool.cycle_scale_to_api(val=0.42), {eve_module_spool_effect_id: (3, 5)})
     assert api_module.spool_override == Spool.cycle_scale_to_api(val=0.42)
     api_module_stats = api_module.get_stats(options=ItemStatsOptions(outgoing_rps=True))
     assert api_module_stats.outgoing_rps.one().armor == approx(110.933333)
     # Action
     api_module.change_module(spool_override=Spool.cycle_scale_to_api(val=1))
     # Verification
-    assert api_module.update().spool_cycles == (5, 5)
+    api_module.update()
+    assert api_module.spool_effective == (Spool.cycle_scale_to_api(val=1), {eve_module_spool_effect_id: (5, 5)})
     assert api_module.spool_override == Spool.cycle_scale_to_api(val=1)
     api_module_stats = api_module.get_stats(options=ItemStatsOptions(outgoing_rps=True))
     assert api_module_stats.outgoing_rps.one().armor == approx(124.16)
@@ -262,7 +277,7 @@ def test_step_zero(client, consts):
     # Verification
     api_module.update()
     with check_no_field():
-        api_module.spool_cycles  # ruff:ignore[useless-expression]
+        api_module.spool_effective  # ruff:ignore[useless-expression]
     api_module_stats = api_module.get_stats(options=ItemStatsOptions(outgoing_rps=True))
     assert api_module_stats.outgoing_rps.one().armor == approx(85.333333)
     # Action
@@ -270,7 +285,7 @@ def test_step_zero(client, consts):
     # Verification
     api_module.update()
     with check_no_field():
-        api_module.spool_cycles  # ruff:ignore[useless-expression]
+        api_module.spool_effective  # ruff:ignore[useless-expression]
     api_module_stats = api_module.get_stats(options=ItemStatsOptions(outgoing_rps=True))
     assert api_module_stats.outgoing_rps.one().armor == approx(85.333333)
     # Action
@@ -278,7 +293,7 @@ def test_step_zero(client, consts):
     # Verification
     api_module.update()
     with check_no_field():
-        api_module.spool_cycles  # ruff:ignore[useless-expression]
+        api_module.spool_effective  # ruff:ignore[useless-expression]
     api_module_stats = api_module.get_stats(options=ItemStatsOptions(outgoing_rps=True))
     assert api_module_stats.outgoing_rps.one().armor == approx(85.333333)
     # Action
@@ -286,6 +301,116 @@ def test_step_zero(client, consts):
     # Verification
     api_module.update()
     with check_no_field():
-        api_module.spool_cycles  # ruff:ignore[useless-expression]
+        api_module.spool_effective  # ruff:ignore[useless-expression]
     api_module_stats = api_module.get_stats(options=ItemStatsOptions(outgoing_rps=True))
     assert api_module_stats.outgoing_rps.one().armor == approx(85.333333)
+
+
+def test_setting(client, consts):
+    # Effective setting is the module's override, or solar system default when there is none
+    eve_spool_step_id = client.mk_eve_attr(id_=consts.EveAttr.repair_mult_bonus_per_cycle)
+    eve_spool_max_id = client.mk_eve_attr(id_=consts.EveAttr.repair_mult_bonus_max)
+    eve_cycle_time_attr_id = client.mk_eve_attr()
+    eve_module_spool_effect_id = client.mk_eve_effect(
+        id_=consts.EveEffect.ship_mod_remote_armor_mutadaptive_repairer,
+        cat_id=consts.EveEffCat.target,
+        duration_attr_id=eve_cycle_time_attr_id)
+    eve_module_spool_id = client.mk_eve_item(
+        attrs={eve_spool_step_id: 0.12, eve_spool_max_id: 1.8, eve_cycle_time_attr_id: 6000},
+        eff_ids=[eve_module_spool_effect_id],
+        defeff_id=eve_module_spool_effect_id)
+    client.create_sources()
+    api_sol = client.create_sol(default_spool=Spool.cycles_to_api(count=4))
+    api_fit = api_sol.create_fit()
+    api_module = api_fit.add_module(type_id=eve_module_spool_id, state=consts.ApiModuleState.active)
+    # Verification
+    api_module.update()
+    assert api_module.spool_effective == (Spool.cycles_to_api(count=4), {eve_module_spool_effect_id: (4, 15)})
+    with check_no_field():
+        api_module.spool_override  # ruff:ignore[useless-expression]
+    # Action
+    api_sol.change(default_spool=Spool.cycle_scale_to_api(val=1))
+    # Verification
+    api_module.update()
+    assert api_module.spool_effective == (Spool.cycle_scale_to_api(val=1), {eve_module_spool_effect_id: (15, 15)})
+    with check_no_field():
+        api_module.spool_override  # ruff:ignore[useless-expression]
+    # Action
+    api_module.change_module(spool_override=Spool.cycles_to_api(count=8))
+    # Verification
+    api_module.update()
+    assert api_module.spool_effective == (Spool.cycles_to_api(count=8), {eve_module_spool_effect_id: (8, 15)})
+    assert api_module.spool_override == Spool.cycles_to_api(count=8)
+    # Action
+    api_module.change_module(spool_override=None)
+    # Verification
+    api_module.update()
+    assert api_module.spool_effective == (Spool.cycle_scale_to_api(val=1), {eve_module_spool_effect_id: (15, 15)})
+    with check_no_field():
+        api_module.spool_override  # ruff:ignore[useless-expression]
+
+
+def test_multiple_effects(client, consts):
+    # Every spoolable effect of a module has its own cycle counts, default effect or not
+    eve_rep_spool_step_id = client.mk_eve_attr(id_=consts.EveAttr.repair_mult_bonus_per_cycle)
+    eve_rep_spool_max_id = client.mk_eve_attr(id_=consts.EveAttr.repair_mult_bonus_max)
+    eve_dmg_spool_step_id = client.mk_eve_attr(id_=consts.EveAttr.dmg_mult_bonus_per_cycle)
+    eve_dmg_spool_max_id = client.mk_eve_attr(id_=consts.EveAttr.dmg_mult_bonus_max)
+    eve_rep_cycle_time_attr_id = client.mk_eve_attr()
+    eve_dmg_cycle_time_attr_id = client.mk_eve_attr()
+    eve_rep_effect_id = client.mk_eve_effect(
+        id_=consts.EveEffect.ship_mod_remote_armor_mutadaptive_repairer,
+        cat_id=consts.EveEffCat.target,
+        duration_attr_id=eve_rep_cycle_time_attr_id)
+    eve_dmg_effect_id = client.mk_eve_effect(
+        id_=consts.EveEffect.tgt_disintegrator_attack,
+        cat_id=consts.EveEffCat.target,
+        duration_attr_id=eve_dmg_cycle_time_attr_id)
+    eve_module1_id = client.mk_eve_item(
+        attrs={
+            eve_rep_spool_step_id: 0.12,
+            eve_rep_spool_max_id: 1.8,
+            eve_rep_cycle_time_attr_id: 6000,
+            eve_dmg_spool_step_id: 0.1,
+            eve_dmg_spool_max_id: 0.455,
+            eve_dmg_cycle_time_attr_id: 4000},
+        eff_ids=[eve_rep_effect_id, eve_dmg_effect_id],
+        defeff_id=eve_rep_effect_id)
+    eve_module2_id = client.mk_eve_item(
+        attrs={
+            eve_rep_spool_step_id: 0,
+            eve_rep_spool_max_id: 1.8,
+            eve_rep_cycle_time_attr_id: 6000,
+            eve_dmg_spool_step_id: 0.1,
+            eve_dmg_spool_max_id: 0.455,
+            eve_dmg_cycle_time_attr_id: 4000},
+        eff_ids=[eve_rep_effect_id, eve_dmg_effect_id],
+        defeff_id=eve_rep_effect_id)
+    client.create_sources()
+    api_sol = client.create_sol()
+    api_fit = api_sol.create_fit()
+    # Action
+    api_module = api_fit.add_module(
+        type_id=eve_module1_id,
+        state=consts.ApiModuleState.active,
+        spool_override=Spool.time_to_api(time=14))
+    # Verification - the same time gives different cycle counts to effects with different durations
+    api_module.update()
+    assert api_module.spool_effective == (
+        Spool.time_to_api(time=14),
+        {eve_rep_effect_id: (2, 15), eve_dmg_effect_id: (3, 5)})
+    assert api_module.spool_override == Spool.time_to_api(time=14)
+    # Action
+    api_module.change_module(spool_override=Spool.cycles_to_api(count=8))
+    # Verification
+    api_module.update()
+    assert api_module.spool_effective == (
+        Spool.cycles_to_api(count=8),
+        {eve_rep_effect_id: (8, 15), eve_dmg_effect_id: (5, 5)})
+    assert api_module.spool_override == Spool.cycles_to_api(count=8)
+    # Action
+    api_module.change_module(type_id=eve_module2_id)
+    # Verification - spool of the default effect cannot be calculated, the other effect stays
+    api_module.update()
+    assert api_module.spool_effective == (Spool.cycles_to_api(count=8), {eve_dmg_effect_id: (5, 5)})
+    assert api_module.spool_override == Spool.cycles_to_api(count=8)

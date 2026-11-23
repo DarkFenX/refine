@@ -1,5 +1,7 @@
+use itertools::Itertools;
+
 use crate::{
-    Count, ItemSpoolInfo, OptionalReload,
+    Count, EffectId, ItemSpoolInfo, OptionalReload, SpoolCycleInfo,
     misc::InfCount,
     svc::{
         Svc, SvcCtx,
@@ -63,17 +65,32 @@ impl Svc {
         }
         Some(InfCount::Count(charged_cycles))
     }
-    pub(crate) fn get_effect_spool_cycle_count(&mut self, u_data: &UData, item_uid: UItemId) -> Option<ItemSpoolInfo> {
+    pub(crate) fn get_item_spool_info_effective(&mut self, u_data: &UData, item_uid: UItemId) -> Option<ItemSpoolInfo> {
         let u_item = u_data.items.get(item_uid);
-        let defeff_rid = u_item.get_r_item_base()?.defeff_rid?;
-        let defeff = u_data.r_data.get_effect_by_rid(defeff_rid);
-        let spool_attrs = defeff.spool_attr_rids?;
-        // TODO: limit by non-interrupted spool cycle count
         let ctx = &SvcCtx::new(u_data, &self.eff_projs);
-        let resolved_spool = ResolvedSpool::try_build(ctx, &mut self.calc, item_uid, defeff, None, spool_attrs)?;
-        Some(ItemSpoolInfo {
-            current: resolved_spool.cycles,
-            max: resolved_spool.cycles_max,
-        })
+        let cycles = u_item
+            .get_r_item_base()?
+            .effect_rids
+            .iter()
+            .filter_map(|&effect_rid| {
+                let effect = u_data.r_data.get_effect_by_rid(effect_rid);
+                let spool_attrs = effect.spool_attr_rids?;
+                // TODO: limit by non-interrupted spool cycle count
+                let resolved_spool =
+                    ResolvedSpool::try_build(ctx, &mut self.calc, item_uid, effect, None, spool_attrs)?;
+                Some(SpoolCycleInfo {
+                    effect_id: EffectId::from_aid(effect.aid),
+                    current: resolved_spool.cycles,
+                    max: resolved_spool.cycles_max,
+                })
+            })
+            .collect_vec();
+        match cycles.is_empty() {
+            true => None,
+            false => Some(ItemSpoolInfo {
+                setting: u_data.get_item_spool_resolved(item_uid, None),
+                cycles,
+            }),
+        }
     }
 }

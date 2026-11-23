@@ -33,7 +33,7 @@ from .movement import Movement
 from .mutation import ItemMutation
 from .proj_range import ProjRangeInfo
 from .side_effect_info import SideEffectInfo
-from .spool_count import SpoolCycleInfo
+from .spool import ItemSpoolInfo
 
 if typing.TYPE_CHECKING:
     from fw.aliases import JsonPredicate
@@ -62,7 +62,7 @@ class Item(AttrDict):
             'autocharges': AttrHookDef(func=lambda d: {
                 effect_http_to_fw(effect_id=k): Item(client=client, data=v, sol_id=sol_id)
                 for k, v in d.items()}),
-            'spool_cycles': AttrHookDef(func=lambda d: SpoolCycleInfo(data=d)),
+            'spool_effective': AttrHookDef(func=lambda d: ItemSpoolInfo(data=d)),
             'count_effective': AttrHookDef(func=lambda d: FighterCountInfo(data=d)),
             'abilities': AttrHookDef(func=lambda a: {int(k): AbilityInfo(data=v) for k, v in a.items()}),
             'side_effects': AttrHookDef(func=lambda ses: {

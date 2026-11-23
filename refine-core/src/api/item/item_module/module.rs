@@ -35,11 +35,11 @@ impl<'s> Module<'s> {
     pub fn get_charge_count(&self) -> Option<Count> {
         get_u_module(self.sol, self.uid).get_charge_count(&self.sol.u_data)
     }
-    pub fn get_spool(&self) -> Spool {
-        self.sol.u_data.get_item_spool_resolved(self.uid, None)
-    }
     pub fn get_spool_override(&self) -> Option<Spool> {
         get_u_module(self.sol, self.uid).get_spool_override()
+    }
+    pub fn get_spool_info_effective(&mut self) -> Option<ItemSpoolInfo> {
+        self.sol.svc.get_item_spool_info_effective(&self.sol.u_data, self.uid)
     }
     pub fn get_optional_reload_override(&self) -> Option<OptionalReload> {
         get_u_module(self.sol, self.uid).get_optional_reload_override()
@@ -64,9 +64,6 @@ impl<'s> Module<'s> {
             };
         self.sol.internal_tx_rollback(savepoint);
         result
-    }
-    pub fn get_spool_cycle_count(&mut self) -> Option<ItemSpoolInfo> {
-        self.sol.svc.get_effect_spool_cycle_count(&self.sol.u_data, self.uid)
     }
 }
 impl<'s> ItemCommon for Module<'s> {}

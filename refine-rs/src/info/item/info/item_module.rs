@@ -35,9 +35,9 @@ pub struct ModuleInfoExt {
     #[cfg_attr(feature = "serde", serde(skip_serializing_if = "TriStateField::is_absent"))]
     pub charged_cycles: TriStateField<Count>,
     #[cfg_attr(feature = "serde", serde(skip_serializing_if = "Option::is_none"))]
-    pub spool_cycles: Option<ItemSpoolInfo>,
-    #[cfg_attr(feature = "serde", serde(skip_serializing_if = "Option::is_none"))]
     pub spool_override: Option<Spool>,
+    #[cfg_attr(feature = "serde", serde(skip_serializing_if = "Option::is_none"))]
+    pub spool_effective: Option<ItemSpoolInfo>,
     #[cfg_attr(feature = "serde", serde(skip_serializing_if = "Option::is_none"))]
     pub optional_reload_override: Option<OptionalReload>,
     #[cfg_attr(feature = "serde", serde(skip_serializing_if = "Option::is_none"))]
@@ -99,8 +99,8 @@ impl ModuleInfo {
                         mutation: core_module.get_mutation().map(ItemMutationInfo::try_from_core),
                         charge_count,
                         charged_cycles: charged_cycle_count,
-                        spool_cycles: core_module.get_spool_cycle_count(),
                         spool_override: core_module.get_spool_override(),
+                        spool_effective: core_module.get_spool_info_effective(),
                         optional_reload_override: core_module.get_optional_reload_override(),
                         optional_reload_effective: core_module.get_optional_reload_effective(),
                         projs: core_module

@@ -97,7 +97,7 @@ pub use def::VERSION;
 pub use lender::{ExactSizeLender, Lender};
 pub use misc::{
     BreacherProfile, DpsProfile, EffectMode, FighterCountInfo, ItemKind, ItemSpoolInfo, ModRack, NpcProp, OptionExt,
-    OptionalReload, RearmMinion, SecZone, SecZoneCorruption, Spool,
+    OptionalReload, RearmMinion, SecZone, SecZoneCorruption, Spool, SpoolCycleInfo,
 };
 pub use num::{Count, CountNz, FitSecStatus, PValue, RackPos, SkillLevel, SlotIndex, UnitInterval, Value};
 pub use sol::{Sol, SolOwned, SolTx};

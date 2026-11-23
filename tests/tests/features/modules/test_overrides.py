@@ -1,4 +1,4 @@
-from fw import check_no_field
+from fw import Spool, check_no_field
 
 
 def test_optional_reload_set_not_loaded(client, consts):
@@ -110,3 +110,105 @@ def test_optional_reload_charge_use(client, consts):
     api_module.update()
     assert api_module.optional_reload_effective == consts.ApiOptionalReload.on_empty
     assert api_module.optional_reload_override == consts.ApiOptionalReload.on_empty
+
+
+def test_spool_set_not_loaded(client, consts):
+    eve_d1 = client.mk_eve_data()
+    eve_d2 = client.mk_eve_data()
+    eve_spool_step_attr_id = client.mk_eve_attr(datas=[eve_d1], id_=consts.EveAttr.repair_mult_bonus_per_cycle)
+    eve_spool_max_attr_id = client.mk_eve_attr(datas=[eve_d1], id_=consts.EveAttr.repair_mult_bonus_max)
+    eve_cycle_time_attr_id = client.mk_eve_attr(datas=[eve_d1])
+    eve_effect_id = client.mk_eve_effect(
+        datas=[eve_d1],
+        id_=consts.EveEffect.ship_mod_remote_armor_mutadaptive_repairer,
+        cat_id=consts.EveEffCat.target,
+        duration_attr_id=eve_cycle_time_attr_id)
+    eve_module_id = client.alloc_item_id(datas=[eve_d1, eve_d2])
+    client.mk_eve_item(
+        datas=[eve_d1],
+        id_=eve_module_id,
+        attrs={eve_spool_step_attr_id: 0.12, eve_spool_max_attr_id: 1.8, eve_cycle_time_attr_id: 6000},
+        eff_ids=[eve_effect_id],
+        defeff_id=eve_effect_id)
+    client.create_sources()
+    api_sol = client.create_sol(data=eve_d1, default_spool=Spool.cycles_to_api(count=4))
+    api_fit = api_sol.create_fit()
+    api_module = api_fit.add_module(type_id=eve_module_id)
+    # Verification
+    api_module.update()
+    assert api_module.spool_effective == (Spool.cycles_to_api(count=4), {eve_effect_id: (4, 15)})
+    with check_no_field():
+        api_module.spool_override  # ruff:ignore[useless-expression]
+    # Action
+    api_sol.change_src(data=eve_d2)
+    # Verification
+    api_module.update()
+    with check_no_field():
+        api_module.spool_effective  # ruff:ignore[useless-expression]
+    with check_no_field():
+        api_module.spool_override  # ruff:ignore[useless-expression]
+    # Action
+    api_module.change_module(spool_override=Spool.cycles_to_api(count=8))
+    # Verification
+    api_module.update()
+    with check_no_field():
+        api_module.spool_effective  # ruff:ignore[useless-expression]
+    assert api_module.spool_override == Spool.cycles_to_api(count=8)
+    # Action
+    api_sol.change_src(data=eve_d1)
+    # Verification
+    api_module.update()
+    assert api_module.spool_effective == (Spool.cycles_to_api(count=8), {eve_effect_id: (8, 15)})
+    assert api_module.spool_override == Spool.cycles_to_api(count=8)
+
+
+def test_spool_effect_use(client, consts):
+    # The setting is used only by modules which have a spoolable effect
+    eve_spool_step_attr_id = client.mk_eve_attr(id_=consts.EveAttr.repair_mult_bonus_per_cycle)
+    eve_spool_max_attr_id = client.mk_eve_attr(id_=consts.EveAttr.repair_mult_bonus_max)
+    eve_cycle_time_attr_id = client.mk_eve_attr()
+    eve_spool_effect_id = client.mk_eve_effect(
+        id_=consts.EveEffect.ship_mod_remote_armor_mutadaptive_repairer,
+        cat_id=consts.EveEffCat.target,
+        duration_attr_id=eve_cycle_time_attr_id)
+    eve_plain_effect_id = client.mk_eve_effect(
+        id_=consts.EveEffect.ship_mod_remote_armor_repairer,
+        cat_id=consts.EveEffCat.target,
+        duration_attr_id=eve_cycle_time_attr_id)
+    eve_module1_id = client.mk_eve_item(
+        attrs={eve_spool_step_attr_id: 0.12, eve_spool_max_attr_id: 1.8, eve_cycle_time_attr_id: 6000},
+        eff_ids=[eve_spool_effect_id],
+        defeff_id=eve_spool_effect_id)
+    eve_module2_id = client.mk_eve_item(
+        attrs={eve_spool_step_attr_id: 0.12, eve_spool_max_attr_id: 1.8, eve_cycle_time_attr_id: 6000},
+        eff_ids=[eve_plain_effect_id],
+        defeff_id=eve_plain_effect_id)
+    client.create_sources()
+    api_sol = client.create_sol(default_spool=Spool.cycles_to_api(count=4))
+    api_fit = api_sol.create_fit()
+    # Action
+    api_module = api_fit.add_module(type_id=eve_module1_id)
+    # Verification
+    api_module.update()
+    assert api_module.spool_effective == (Spool.cycles_to_api(count=4), {eve_spool_effect_id: (4, 15)})
+    with check_no_field():
+        api_module.spool_override  # ruff:ignore[useless-expression]
+    # Action
+    api_module.change_module(spool_override=Spool.cycles_to_api(count=8))
+    # Verification
+    api_module.update()
+    assert api_module.spool_effective == (Spool.cycles_to_api(count=8), {eve_spool_effect_id: (8, 15)})
+    assert api_module.spool_override == Spool.cycles_to_api(count=8)
+    # Action
+    api_module.change_module(type_id=eve_module2_id)
+    # Verification - override is kept, but nothing uses it when no effect of the module spools
+    api_module.update()
+    with check_no_field():
+        api_module.spool_effective  # ruff:ignore[useless-expression]
+    assert api_module.spool_override == Spool.cycles_to_api(count=8)
+    # Action
+    api_module.change_module(type_id=eve_module1_id)
+    # Verification
+    api_module.update()
+    assert api_module.spool_effective == (Spool.cycles_to_api(count=8), {eve_spool_effect_id: (8, 15)})
+    assert api_module.spool_override == Spool.cycles_to_api(count=8)
