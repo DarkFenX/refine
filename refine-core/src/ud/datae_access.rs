@@ -36,7 +36,7 @@ impl UData {
             _ => return None,
         };
         match self.items.get(cont_item_uid) {
-            UItem::Fighter(fighter) => fighter.get_current_count().map(|v| v.into_pvalue()),
+            UItem::Fighter(fighter) => fighter.get_count_effective().map(|v| v.into_pvalue()),
             _ => None,
         }
     }
@@ -46,17 +46,17 @@ impl UData {
 // Multi-tiered data fetchers (with priorities override > on-item/on-fit > on-sol)
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl UData {
-    pub(crate) fn get_fit_uid_rah_incoming_dps(&self, fit_uid: UFitId) -> DpsProfile {
+    pub(crate) fn get_fit_uid_rah_incoming_dps_resolved(&self, fit_uid: UFitId) -> DpsProfile {
         let fit = self.fits.get(fit_uid);
-        self.get_fit_rah_incoming_dps(fit)
+        self.get_fit_rah_incoming_dps_resolved(fit)
     }
-    pub(crate) fn get_fit_rah_incoming_dps(&self, fit: &UFit) -> DpsProfile {
+    pub(crate) fn get_fit_rah_incoming_dps_resolved(&self, fit: &UFit) -> DpsProfile {
         match fit.rah_incoming_dps {
             Some(dps_profile) => dps_profile,
             None => self.default_incoming_dps,
         }
     }
-    pub(crate) fn get_item_spool(&self, item_uid: UItemId, spool_override: Option<Spool>) -> Spool {
+    pub(crate) fn get_item_spool_resolved(&self, item_uid: UItemId, spool_override: Option<Spool>) -> Spool {
         match spool_override {
             Some(spool) => spool,
             None => {
@@ -68,13 +68,16 @@ impl UData {
             }
         }
     }
-    pub(crate) fn get_item_npc_prop(&self, u_item: &UItem) -> Option<NpcProp> {
+    pub(crate) fn get_item_npc_prop_effective(&self, u_item: &UItem) -> Option<NpcProp> {
+        if !u_item.get_r_item_flex_data()?.entity_mwd {
+            return None;
+        }
         u_item.get_npc_prop_override().map(|npc_prop| match npc_prop {
             Some(npc_prop) => npc_prop,
             None => self.default_npc_prop,
         })
     }
-    pub(crate) fn get_item_optional_reload(
+    pub(crate) fn get_item_optional_reload_resolved(
         &self,
         item_uid: UItemId,
         optional_reload_override: Option<OptionalReload>,
@@ -90,7 +93,7 @@ impl UData {
             }
         }
     }
-    pub(crate) fn get_item_rearm_minion(
+    pub(crate) fn get_item_rearm_minion_resolved(
         &self,
         item_uid: UItemId,
         rearm_minions_override: Option<RearmMinion>,

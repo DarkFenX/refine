@@ -47,7 +47,7 @@ impl Calc {
         if item_datas.is_empty() {
             return;
         }
-        let dps_profile = ctx.u_data.get_fit_rah_incoming_dps(fit);
+        let dps_profile = ctx.u_data.get_fit_rah_incoming_dps_resolved(fit);
         // Most simulations find a loop within this many ticks
         let mut tick_history = ROrdSet::with_capacity(16);
         // Run "zero" simulation tick - write initial results and record initial state in history

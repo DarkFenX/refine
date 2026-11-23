@@ -20,11 +20,11 @@ impl<'s> Fighter<'s> {
     pub fn get_state(&self) -> MinionState {
         get_u_fighter(self.sol, self.uid).get_fighter_state()
     }
-    pub fn get_count(&self) -> Option<FighterCountInfo> {
-        get_u_fighter(self.sol, self.uid).get_count_info()
-    }
     pub fn get_count_override(&self) -> Option<CountNz> {
         get_u_fighter(self.sol, self.uid).get_count_override()
+    }
+    pub fn get_count_info_effective(&self) -> Option<FighterCountInfo> {
+        get_u_fighter(self.sol, self.uid).get_count_info_effective()
     }
     pub fn get_coordinates(&self) -> Coordinates {
         Coordinates::from_xyz(get_u_fighter(self.sol, self.uid).get_physics().coordinates)
@@ -32,11 +32,14 @@ impl<'s> Fighter<'s> {
     pub fn get_movement(&self) -> Movement {
         Movement::from_u_physics(get_u_fighter(self.sol, self.uid).get_physics())
     }
-    pub fn get_rearm_minion(&self) -> RearmMinion {
-        self.sol.u_data.get_item_rearm_minion(self.uid, None)
-    }
     pub fn get_rearm_minion_override(&self) -> Option<RearmMinion> {
         get_u_fighter(self.sol, self.uid).get_rearm_minion_override()
+    }
+    pub fn get_rearm_minion_effective(&self) -> Option<RearmMinion> {
+        match get_u_fighter(self.sol, self.uid).get_r_item_base()?.has_rearm {
+            true => Some(self.sol.u_data.get_item_rearm_minion_resolved(self.uid, None)),
+            false => None,
+        }
     }
 }
 impl<'s> ItemCommon for Fighter<'s> {}

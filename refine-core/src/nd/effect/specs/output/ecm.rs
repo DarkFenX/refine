@@ -195,7 +195,7 @@ fn get_ftr_abil(
     )?;
     let duration = funcs::get_effect_duration_s(ctx, calc, item_uid, effect)?;
     if let Ok(u_fighter) = ctx.u_data.items.get(item_uid).dc_fighter()
-        && let Some(count) = u_fighter.get_current_count()
+        && let Some(count) = u_fighter.get_count_effective()
     {
         let str_mult = count.into_pvalue();
         radar *= str_mult;

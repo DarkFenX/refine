@@ -63,7 +63,7 @@ class Item(AttrDict):
                 effect_http_to_fw(effect_id=k): Item(client=client, data=v, sol_id=sol_id)
                 for k, v in d.items()}),
             'spool_cycles': AttrHookDef(func=lambda d: SpoolCycleInfo(data=d)),
-            'count': AttrHookDef(func=lambda d: FighterCountInfo(data=d)),
+            'count_effective': AttrHookDef(func=lambda d: FighterCountInfo(data=d)),
             'abilities': AttrHookDef(func=lambda a: {int(k): AbilityInfo(data=v) for k, v in a.items()}),
             'side_effects': AttrHookDef(func=lambda ses: {
                 effect_http_to_fw(effect_id=k): SideEffectInfo(data=v) for k, v in ses.items()}),

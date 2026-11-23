@@ -162,7 +162,7 @@ fn get_neut_ftr_abil(ctx: &SvcCtx, calc: &mut Calc, item_uid: UItemId) -> Option
         Value::ZERO,
     ));
     if let Ok(u_fighter) = ctx.u_data.items.get(item_uid).dc_fighter()
-        && let Some(count) = u_fighter.get_current_count()
+        && let Some(count) = u_fighter.get_count_effective()
     {
         instance *= count.into_pvalue();
     }

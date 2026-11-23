@@ -49,7 +49,7 @@ pub(super) fn build_fighter_cseq_map(
     match fighter_co {
         FighterCyclingOptions::Burst => burst_fill_cseqs(ctx, calc, item_uid, fighter, effect_rids, cseq_build),
         FighterCyclingOptions::Sim { rearm_minions } => {
-            let rearm_minions = ctx.u_data.get_item_rearm_minion(item_uid, rearm_minions);
+            let rearm_minions = ctx.u_data.get_item_rearm_minion_resolved(item_uid, rearm_minions);
             match rearm_minions {
                 RearmMinion::Disabled => sim_no_rearm_fill_cseqs(ctx, calc, item_uid, fighter, effect_rids, cseq_build),
                 RearmMinion::OnFirstEmpty => {

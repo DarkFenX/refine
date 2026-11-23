@@ -85,7 +85,7 @@ impl Vast {
             UItem::Fighter(fighter) => {
                 let fighter_rib = fighter.get_r_item_base().unwrap();
                 fit_data.item_kind_add(item_uid, fighter_rib.detected_kind, DetectedItemKind::Fighter);
-                let count = fighter.get_count_info().unwrap();
+                let count = fighter.get_count_info_effective().unwrap();
                 fit_data
                     .fighters_volume
                     .insert(item_uid, fighter_rib.volume * count.current.into_pvalue());
@@ -360,7 +360,7 @@ impl Vast {
                 let fighter_rib = fighter.get_r_item_base().unwrap();
                 fit_data.item_kind_remove(item_uid, fighter_rib.detected_kind, DetectedItemKind::Fighter);
                 fit_data.fighters_volume.remove(&item_uid);
-                let count = fighter.get_count_info().unwrap();
+                let count = fighter.get_count_info_effective().unwrap();
                 if count.current > count.max {
                     fit_data.fighter_squad_size.remove(&item_uid);
                 }

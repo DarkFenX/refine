@@ -25,9 +25,10 @@ pub struct DroneInfoExt {
     pub state: MinionState,
     #[cfg_attr(feature = "serde", serde(skip_serializing_if = "Option::is_none"))]
     pub mutation: Option<ItemMutationInfo>,
-    pub npc_prop: NpcProp,
     #[cfg_attr(feature = "serde", serde(skip_serializing_if = "Option::is_none"))]
     pub npc_prop_override: Option<NpcProp>,
+    #[cfg_attr(feature = "serde", serde(skip_serializing_if = "Option::is_none"))]
+    pub npc_prop_effective: Option<NpcProp>,
     pub coordinates: Coordinates,
     pub movement: Movement,
     #[cfg_attr(feature = "serde", serde(skip_serializing_if = "Vec::is_empty"))]
@@ -63,8 +64,8 @@ impl DroneInfo {
                     fit_id: core_drone.get_fit_id(),
                     state: core_drone.get_state(),
                     mutation: core_drone.get_mutation().map(ItemMutationInfo::try_from_core),
-                    npc_prop: core_drone.get_npc_prop(),
                     npc_prop_override: core_drone.get_npc_prop_override(),
+                    npc_prop_effective: core_drone.get_npc_prop_effective(),
                     coordinates: core_drone.get_coordinates(),
                     movement: core_drone.get_movement(),
                     projs: core_drone

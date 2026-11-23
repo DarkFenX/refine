@@ -38,9 +38,10 @@ pub struct ModuleInfoExt {
     pub spool_cycles: Option<ItemSpoolInfo>,
     #[cfg_attr(feature = "serde", serde(skip_serializing_if = "Option::is_none"))]
     pub spool_override: Option<Spool>,
-    pub optional_reload: OptionalReload,
     #[cfg_attr(feature = "serde", serde(skip_serializing_if = "Option::is_none"))]
     pub optional_reload_override: Option<OptionalReload>,
+    #[cfg_attr(feature = "serde", serde(skip_serializing_if = "Option::is_none"))]
+    pub optional_reload_effective: Option<OptionalReload>,
     #[cfg_attr(feature = "serde", serde(skip_serializing_if = "Vec::is_empty"))]
     pub projs: Vec<RangedProjInfo>,
     #[cfg_attr(
@@ -100,8 +101,8 @@ impl ModuleInfo {
                         charged_cycles: charged_cycle_count,
                         spool_cycles: core_module.get_spool_cycle_count(),
                         spool_override: core_module.get_spool_override(),
-                        optional_reload: core_module.get_optional_reload(),
                         optional_reload_override: core_module.get_optional_reload_override(),
+                        optional_reload_effective: core_module.get_optional_reload_effective(),
                         projs: core_module
                             .iter_projs()
                             .map_into_iter(RangedProjInfo::from_core)

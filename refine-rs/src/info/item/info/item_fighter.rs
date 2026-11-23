@@ -31,18 +31,19 @@ pub struct FighterInfoExt {
     pub fit_id: FitId,
     pub state: MinionState,
     #[cfg_attr(feature = "serde", serde(skip_serializing_if = "Option::is_none"))]
-    pub count: Option<FighterCountInfo>,
-    #[cfg_attr(feature = "serde", serde(skip_serializing_if = "Option::is_none"))]
     pub count_override: Option<CountNz>,
+    #[cfg_attr(feature = "serde", serde(skip_serializing_if = "Option::is_none"))]
+    pub count_effective: Option<FighterCountInfo>,
     #[cfg_attr(
         feature = "serde",
         serde_as(as = "serde_with::Map<_, _>"),
         serde(skip_serializing_if = "Vec::is_empty")
     )]
     pub abilities: Vec<(AbilityId, AbilityInfo)>,
-    pub rearm_minion: RearmMinion,
     #[cfg_attr(feature = "serde", serde(skip_serializing_if = "Option::is_none"))]
     pub rearm_minion_override: Option<RearmMinion>,
+    #[cfg_attr(feature = "serde", serde(skip_serializing_if = "Option::is_none"))]
+    pub rearm_minion_effective: Option<RearmMinion>,
     pub coordinates: Coordinates,
     pub movement: Movement,
     #[cfg_attr(feature = "serde", serde(skip_serializing_if = "Vec::is_empty"))]
@@ -86,14 +87,14 @@ impl FighterInfo {
                     type_id: core_fighter.get_type_id(),
                     fit_id: core_fighter.get_fit_id(),
                     state: core_fighter.get_state(),
-                    count: core_fighter.get_count(),
                     count_override: core_fighter.get_count_override(),
+                    count_effective: core_fighter.get_count_info_effective(),
                     abilities: core_fighter
                         .iter_abilities()
                         .map_into_iter(|v| (v.get_id(), AbilityInfo::from_core(v)))
                         .collect(),
-                    rearm_minion: core_fighter.get_rearm_minion(),
                     rearm_minion_override: core_fighter.get_rearm_minion_override(),
+                    rearm_minion_effective: core_fighter.get_rearm_minion_effective(),
                     coordinates: core_fighter.get_coordinates(),
                     movement: core_fighter.get_movement(),
                     projs: core_fighter

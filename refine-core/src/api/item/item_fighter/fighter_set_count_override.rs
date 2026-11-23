@@ -35,9 +35,9 @@ impl SolCore {
             self.undo
                 .record(UndoStep::FighterCountOverride(fighter_uid, old_count_override));
         }
-        let old_count = u_fighter.get_current_count();
+        let old_count = u_fighter.get_count_effective();
         u_fighter.set_count_override(count_override);
-        let new_count = u_fighter.get_current_count();
+        let new_count = u_fighter.get_count_effective();
         // Update services
         if old_count != new_count {
             let u_fighter = self.u_data.items.get(fighter_uid).dc_fighter().unwrap();

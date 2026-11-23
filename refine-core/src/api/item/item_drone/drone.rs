@@ -20,12 +20,12 @@ impl<'s> Drone<'s> {
     pub fn get_state(&self) -> MinionState {
         get_u_drone(self.sol, self.uid).get_drone_state()
     }
-    pub fn get_npc_prop(&self) -> NpcProp {
-        let u_item = self.sol.u_data.items.get(self.uid);
-        self.sol.u_data.get_item_npc_prop(u_item).unwrap()
-    }
     pub fn get_npc_prop_override(&self) -> Option<NpcProp> {
         get_u_drone(self.sol, self.uid).get_npc_prop_override()
+    }
+    pub fn get_npc_prop_effective(&self) -> Option<NpcProp> {
+        let u_item = self.sol.u_data.items.get(self.uid);
+        self.sol.u_data.get_item_npc_prop_effective(u_item)
     }
     pub fn get_coordinates(&self) -> Coordinates {
         Coordinates::from_xyz(get_u_drone(self.sol, self.uid).get_physics().coordinates)

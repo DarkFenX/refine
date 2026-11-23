@@ -5,6 +5,7 @@ use super::getters::{
         get_max_fighter_count, get_online_max_sec_class, get_radius, get_rig_size, get_volume,
     },
     charge_limit::get_item_charge_limit,
+    cycling::{get_has_optional_reload, get_has_rearm},
     drone_limit::get_ship_drone_limit,
     effect_immunity::get_disallow_vs_ew_immune_tgt,
     fighter_kind::{
@@ -54,6 +55,8 @@ pub(crate) struct RItemBase {
     pub(crate) has_online_effect: bool,
     pub(crate) takes_turret_hardpoint: bool,
     pub(crate) takes_launcher_hardpoint: bool,
+    pub(crate) has_optional_reload: bool,
+    pub(crate) has_rearm: bool,
     // Derived data - max group/type validation data. Items of this type count towards appropriate
     // limit of their group/type; which of the items are limited is defined by their flex data
     pub(crate) val_fitted_group_tracked: bool,
@@ -189,6 +192,8 @@ impl RItemBase {
             has_online_effect: Default::default(),
             takes_turret_hardpoint: Default::default(),
             takes_launcher_hardpoint: Default::default(),
+            has_optional_reload: Default::default(),
+            has_rearm: Default::default(),
             proj_buff_item_list_rids: Default::default(),
             fleet_buff_item_list_rids: Default::default(),
             cap_consumers: Default::default(),
@@ -351,5 +356,8 @@ impl RItemBase {
             effect_consts,
         );
         self.item_ship_kind = get_item_ship_kind(self.cat_id, r_item_attrs, attr_consts);
+        // Effect flags which rely on attributes or item-specific effect data
+        self.has_optional_reload = get_has_optional_reload(self.capacity, &self.effect_rids, r_effects);
+        self.has_rearm = get_has_rearm(&self.effect_datas, r_effects);
     }
 }

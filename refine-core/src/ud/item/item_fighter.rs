@@ -124,14 +124,20 @@ impl UFighter {
     pub(crate) fn get_fit_uid(&self) -> UFitId {
         self.fit_uid
     }
-    pub(crate) fn get_current_count(&self) -> Option<CountNz> {
+    pub(crate) fn get_count_override(&self) -> Option<CountNz> {
+        self.count_override
+    }
+    pub(crate) fn set_count_override(&mut self, count_override: Option<CountNz>) {
+        self.count_override = count_override
+    }
+    pub(crate) fn get_count_effective(&self) -> Option<CountNz> {
         let rib = self.get_r_item_base()?;
         Some(match self.count_override {
             Some(count_override) => count_override,
             None => rib.max_fighter_count,
         })
     }
-    pub(crate) fn get_count_info(&self) -> Option<FighterCountInfo> {
+    pub(crate) fn get_count_info_effective(&self) -> Option<FighterCountInfo> {
         let rib = self.get_r_item_base()?;
         Some(match self.count_override {
             Some(count_override) => FighterCountInfo {
@@ -143,12 +149,6 @@ impl UFighter {
                 max: rib.max_fighter_count,
             },
         })
-    }
-    pub(crate) fn get_count_override(&self) -> Option<CountNz> {
-        self.count_override
-    }
-    pub(crate) fn set_count_override(&mut self, count_override: Option<CountNz>) {
-        self.count_override = count_override
     }
     pub(crate) fn get_autocharges(&self) -> &UAutocharges {
         &self.autocharges

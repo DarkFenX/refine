@@ -204,7 +204,7 @@ fn fill_module_effect_info(
         // Only partially charged, has to reload every cycle
         (false, true, false) => part_r(ctx, calc, item_uid, module, active_duration, charge_info.part_charged),
         // Only partially charged cycle, but can cycle without charges
-        (false, true, true) => match ctx.u_data.get_item_optional_reload(item_uid, optional_reloads) {
+        (false, true, true) => match ctx.u_data.get_item_optional_reload_resolved(item_uid, optional_reloads) {
             OptionalReload::OnEmpty => part_r(ctx, calc, item_uid, module, active_duration, charge_info.part_charged),
             OptionalReload::Disabled => {
                 let soft_dt = CycleSoftDtFull::try_new_for_module_regular(ctx, calc, item_uid, module);
@@ -230,7 +230,7 @@ fn fill_module_effect_info(
         // Only fully charged, has to reload after charges are out
         (true, false, false) => full_r(ctx, calc, item_uid, module, active_duration, full_count),
         // Only fully charged, but can cycle without charges
-        (true, false, true) => match ctx.u_data.get_item_optional_reload(item_uid, optional_reloads) {
+        (true, false, true) => match ctx.u_data.get_item_optional_reload_resolved(item_uid, optional_reloads) {
             OptionalReload::OnEmpty => full_r(ctx, calc, item_uid, module, active_duration, full_count),
             OptionalReload::Disabled => {
                 let soft_dt = CycleSoftDtFull::try_new_for_module_regular(ctx, calc, item_uid, module);
@@ -264,7 +264,7 @@ fn fill_module_effect_info(
             charge_info.part_charged,
         ),
         // Fully charged + partially charged + can cycle uncharged
-        (true, true, true) => match ctx.u_data.get_item_optional_reload(item_uid, optional_reloads) {
+        (true, true, true) => match ctx.u_data.get_item_optional_reload_resolved(item_uid, optional_reloads) {
             OptionalReload::OnEmpty => both_r(
                 ctx,
                 calc,

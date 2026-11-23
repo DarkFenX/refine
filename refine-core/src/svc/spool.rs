@@ -22,7 +22,7 @@ impl ResolvedSpool {
         let duration_s = funcs::get_effect_duration_s(ctx, calc, item_uid, effect)?;
         let spool_step = calc.get_item_attr_oextra(ctx, item_uid, spool_attrs.step_attr_rid)?;
         let spool_max = calc.get_item_attr_oextra(ctx, item_uid, spool_attrs.max_attr_rid)?;
-        let spool = ctx.u_data.get_item_spool(item_uid, spool);
+        let spool = ctx.u_data.get_item_spool_resolved(item_uid, spool);
         resolve_spool(spool, spool_step, spool_max, duration_s)
     }
 }

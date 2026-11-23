@@ -152,7 +152,11 @@ impl Calc {
             AAttrId::SHIELD_CAPACITY | AAttrId::ARMOR_HP | AAttrId::HP => {
                 if let UItem::Ship(ship) = ctx.u_data.items.get(aspec.item_uid) {
                     let fit_uid = ship.get_fit_uid();
-                    if ctx.u_data.get_fit_uid_rah_incoming_dps(fit_uid).deals_breacher_dps() {
+                    if ctx
+                        .u_data
+                        .get_fit_uid_rah_incoming_dps_resolved(fit_uid)
+                        .deals_breacher_dps()
+                    {
                         self.clear_fit_rah_results(ctx, fit_uid);
                     }
                 }

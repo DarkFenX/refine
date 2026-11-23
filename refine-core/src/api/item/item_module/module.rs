@@ -36,16 +36,19 @@ impl<'s> Module<'s> {
         get_u_module(self.sol, self.uid).get_charge_count(&self.sol.u_data)
     }
     pub fn get_spool(&self) -> Spool {
-        self.sol.u_data.get_item_spool(self.uid, None)
+        self.sol.u_data.get_item_spool_resolved(self.uid, None)
     }
     pub fn get_spool_override(&self) -> Option<Spool> {
         get_u_module(self.sol, self.uid).get_spool_override()
     }
-    pub fn get_optional_reload(&self) -> OptionalReload {
-        self.sol.u_data.get_item_optional_reload(self.uid, None)
-    }
     pub fn get_optional_reload_override(&self) -> Option<OptionalReload> {
         get_u_module(self.sol, self.uid).get_optional_reload_override()
+    }
+    pub fn get_optional_reload_effective(&self) -> Option<OptionalReload> {
+        match get_u_module(self.sol, self.uid).get_r_item_base()?.has_optional_reload {
+            true => Some(self.sol.u_data.get_item_optional_reload_resolved(self.uid, None)),
+            false => None,
+        }
     }
     pub fn get_charged_cycle_count(&mut self) -> Option<Count> {
         let savepoint = self.sol.internal_active_stat_prepare(self.uid);
