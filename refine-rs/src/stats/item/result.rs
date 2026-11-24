@@ -3,7 +3,7 @@ use crate::{
     stats::{
         StatBrFallibleError, StatCapSim, StatDmg, StatEhp, StatErps, StatHp, StatInJam, StatJump, StatMining,
         StatOutReps, StatResists, StatResult, StatRps, StatSensors,
-        err::{
+        err::core::{
             StatAgilityError, StatItemAppliedError, StatItemError, StatJumpError, StatMaxWarpRangeError,
             StatProbingSizeError, StatWarpSpeedError,
         },

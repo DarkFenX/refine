@@ -180,7 +180,7 @@ impl DroneChangeCmd {
             match core_drone.get_proj(projectee_item_id) {
                 Ok(core_proj) => core_proj.remove(),
                 // Silently accept failure due to missing projection
-                Err(rc::err::ProjGetError::ProjectionNotFound(..)) => (),
+                Err(crate::err::core::ProjGetError::ProjectionNotFound(..)) => (),
                 Err(err) => return Err(err.into()),
             }
         }
@@ -230,7 +230,7 @@ impl DroneChangeCmd {
             match core_drone.add_proj(projectee_item_id) {
                 Ok(..) => (),
                 // Silently accept failure due to existing projection
-                Err(rc::err::ProjAddError::ProjectionAlreadyExists(..)) => (),
+                Err(crate::err::core::ProjAddError::ProjectionAlreadyExists(..)) => (),
                 Err(err) => return Err(err.into()),
             }
         }
@@ -240,13 +240,13 @@ impl DroneChangeCmd {
 #[derive(thiserror::Error, Debug)]
 pub enum DroneChangeError {
     #[error(transparent)]
-    ItemIsNotDrone(#[from] rc::err::ItemKindMatchError),
+    ItemIsNotDrone(#[from] crate::err::core::ItemKindMatchError),
     #[error("failed to mutate attributes: item {0} is not mutated")]
     NotMutated(ItemId),
     #[error("failed to add projection")]
-    ProjAdd(#[from] rc::err::ProjAddError),
+    ProjAdd(#[from] crate::err::core::ProjAddError),
     #[error("failed to remove projection")]
-    ProjRemove(#[from] rc::err::ProjGetError),
+    ProjRemove(#[from] crate::err::core::ProjGetError),
 }
 
 impl DroneChangeCmdCtxItem {
@@ -267,21 +267,21 @@ impl DroneChangeCmdCtxItem {
     }
 }
 
-pub type ItemGetDroneChangeError = GenItemGetDroneChangeError<rc::err::ItemGetError>;
-pub type FitItemGetDroneChangeError = GenItemGetDroneChangeError<rc::err::FitItemGetError>;
+pub type ItemGetDroneChangeError = GenItemGetDroneChangeError<crate::err::core::ItemGetError>;
+pub type FitItemGetDroneChangeError = GenItemGetDroneChangeError<crate::err::core::FitItemGetError>;
 
 #[derive(thiserror::Error, Debug)]
 pub enum GenItemGetDroneChangeError<E> {
     #[error(transparent)]
     ItemGet(E),
     #[error(transparent)]
-    ItemIsNotDrone(rc::err::ItemKindMatchError),
+    ItemIsNotDrone(crate::err::core::ItemKindMatchError),
     #[error("failed to mutate attributes: item {0} is not mutated")]
     NotMutated(ItemId),
     #[error("failed to add projection")]
-    ProjAdd(#[source] rc::err::ProjAddError),
+    ProjAdd(#[source] crate::err::core::ProjAddError),
     #[error("failed to remove projection")]
-    ProjRemove(#[source] rc::err::ProjGetError),
+    ProjRemove(#[source] crate::err::core::ProjGetError),
 }
 impl<E> From<DroneChangeError> for GenItemGetDroneChangeError<E> {
     fn from(err: DroneChangeError) -> Self {

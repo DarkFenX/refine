@@ -126,7 +126,7 @@ impl BoosterChangeCmd {
 #[derive(thiserror::Error, Debug)]
 pub enum BoosterChangeError {
     #[error(transparent)]
-    ItemIsNotBooster(#[from] rc::err::ItemKindMatchError),
+    ItemIsNotBooster(#[from] crate::err::core::ItemKindMatchError),
 }
 
 impl BoosterChangeCmdCtxItem {
@@ -150,15 +150,15 @@ impl BoosterChangeCmdCtxItem {
     }
 }
 
-pub type ItemGetBoosterChangeError = GenItemGetBoosterChangeError<rc::err::ItemGetError>;
-pub type FitItemGetBoosterChangeError = GenItemGetBoosterChangeError<rc::err::FitItemGetError>;
+pub type ItemGetBoosterChangeError = GenItemGetBoosterChangeError<crate::err::core::ItemGetError>;
+pub type FitItemGetBoosterChangeError = GenItemGetBoosterChangeError<crate::err::core::FitItemGetError>;
 
 #[derive(thiserror::Error, Debug)]
 pub enum GenItemGetBoosterChangeError<E> {
     #[error(transparent)]
     ItemGet(E),
     #[error(transparent)]
-    ItemIsNotBooster(rc::err::ItemKindMatchError),
+    ItemIsNotBooster(crate::err::core::ItemKindMatchError),
 }
 impl<E> From<BoosterChangeError> for GenItemGetBoosterChangeError<E> {
     fn from(err: BoosterChangeError) -> Self {

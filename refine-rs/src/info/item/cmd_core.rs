@@ -133,10 +133,10 @@ impl ItemInfoCmdCtxItem {
 #[derive(thiserror::Error, Debug)]
 pub enum ItemGetItemInfoError {
     #[error(transparent)]
-    ItemGet(#[from] rc::err::ItemGetError),
+    ItemGet(#[from] crate::err::core::ItemGetError),
 }
 #[derive(thiserror::Error, Debug)]
 pub enum FitItemGetItemInfoError {
     #[error(transparent)]
-    ItemGet(#[from] rc::err::FitItemGetError),
+    ItemGet(#[from] crate::err::core::FitItemGetError),
 }

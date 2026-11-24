@@ -8,7 +8,7 @@ use crate::{
         StatJump, StatMining, StatOptionCapBlc, StatOptionCapSim, StatOptionEhp, StatOptionErps, StatOptionIncomingJam,
         StatOptionItemDmg, StatOptionItemMining, StatOptionItemOutCps, StatOptionItemOutNps, StatOptionItemOutRps,
         StatOptionJump, StatOptionMass, StatOptionRps, StatOutReps, StatResult, StatRps,
-        err::{StatItemAppliedError, StatItemError, StatJumpError},
+        err::core::{StatItemAppliedError, StatItemError, StatJumpError},
         exec_shared::{collect_stats_err_both_br, collect_stats_err_inner},
         item::ItemStatsOptionsResolved,
     },

@@ -4,7 +4,7 @@ use crate::{
     stats::{
         FleetStats, StatBrFallibleError, StatDmg, StatMining, StatOptionFitDmg, StatOptionFitMining,
         StatOptionFitOutCps, StatOptionFitOutNps, StatOptionFitOutRps, StatOptionMass, StatOutReps, StatResult,
-        err::StatFleetAppliedError,
+        err::core::StatFleetAppliedError,
         exec_shared::{collect_stats_err_inner, collect_stats_err_outer_br},
         fleet::FleetStatsOptionsResolved,
     },

@@ -57,7 +57,7 @@ impl FleetAddCmd {
             match core_fleet.add_fit(fit_id) {
                 Ok(()) => (),
                 // Silently accept failure due to fit already being in this fleet
-                Err(rc::err::FleetFitAddError::FitAlreadyInThisFleet(..)) => (),
+                Err(crate::err::core::FleetFitAddError::FitAlreadyInThisFleet(..)) => (),
                 Err(err) => return Err(err.into()),
             }
         }
@@ -67,5 +67,5 @@ impl FleetAddCmd {
 #[derive(thiserror::Error, Debug)]
 pub enum FleetAddError {
     #[error("failed to add fit to fleet")]
-    FitAdd(#[from] rc::err::FleetFitAddError),
+    FitAdd(#[from] crate::err::core::FleetFitAddError),
 }

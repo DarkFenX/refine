@@ -114,7 +114,7 @@ impl SwEffectChangeCmd {
 #[derive(thiserror::Error, Debug)]
 pub enum SwEffectChangeError {
     #[error(transparent)]
-    ItemIsNotSwEffect(#[from] rc::err::ItemKindMatchError),
+    ItemIsNotSwEffect(#[from] crate::err::core::ItemKindMatchError),
 }
 
 impl SwEffectChangeCmdCtxItem {
@@ -129,9 +129,9 @@ impl SwEffectChangeCmdCtxItem {
 #[derive(thiserror::Error, Debug)]
 pub enum ItemGetSwEffectChangeError {
     #[error(transparent)]
-    ItemGet(#[from] rc::err::ItemGetError),
+    ItemGet(#[from] crate::err::core::ItemGetError),
     #[error(transparent)]
-    ItemIsNotSwEffect(rc::err::ItemKindMatchError),
+    ItemIsNotSwEffect(crate::err::core::ItemKindMatchError),
 }
 impl From<SwEffectChangeError> for ItemGetSwEffectChangeError {
     fn from(err: SwEffectChangeError) -> Self {

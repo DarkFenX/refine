@@ -131,5 +131,5 @@ impl FitValCmdCtxFit {
 #[derive(thiserror::Error, Debug)]
 pub enum FitGetFitValError {
     #[error(transparent)]
-    FitGet(#[from] rc::err::FitGetError),
+    FitGet(#[from] crate::err::core::FitGetError),
 }

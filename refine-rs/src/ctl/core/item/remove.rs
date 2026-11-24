@@ -82,7 +82,7 @@ impl ItemRemoveCmd {
 #[derive(thiserror::Error, Debug)]
 pub enum ItemRemoveError {
     #[error(transparent)]
-    ItemRemove(#[from] rc::err::ItemRemoveError),
+    ItemRemove(#[from] crate::err::core::ItemRemoveError),
 }
 
 impl ItemRemoveCmdCtxItem {
@@ -100,15 +100,15 @@ impl ItemRemoveCmdCtxItem {
     }
 }
 
-pub type ItemGetItemRemoveError = GenItemGetItemRemoveError<rc::err::ItemGetError>;
-pub type FitItemGetItemRemoveError = GenItemGetItemRemoveError<rc::err::FitItemGetError>;
+pub type ItemGetItemRemoveError = GenItemGetItemRemoveError<crate::err::core::ItemGetError>;
+pub type FitItemGetItemRemoveError = GenItemGetItemRemoveError<crate::err::core::FitItemGetError>;
 
 #[derive(thiserror::Error, Debug)]
 pub enum GenItemGetItemRemoveError<E> {
     #[error(transparent)]
     ItemGet(E),
     #[error(transparent)]
-    ItemRemove(rc::err::ItemRemoveError),
+    ItemRemove(crate::err::core::ItemRemoveError),
 }
 impl<E> From<ItemRemoveError> for GenItemGetItemRemoveError<E> {
     fn from(err: ItemRemoveError) -> Self {

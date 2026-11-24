@@ -197,7 +197,7 @@ pub enum FitStanceChangeError {
 #[derive(thiserror::Error, Debug)]
 pub enum ItemStanceChangeError {
     #[error(transparent)]
-    ItemIsNotStance(#[from] rc::err::ItemKindMatchError),
+    ItemIsNotStance(#[from] crate::err::core::ItemKindMatchError),
 }
 
 impl StanceChangeCmdCtxAny {
@@ -225,7 +225,7 @@ impl StanceChangeCmdCtxFit {
 #[derive(thiserror::Error, Debug)]
 pub enum FitGetStanceChangeError {
     #[error(transparent)]
-    FitGet(#[from] rc::err::FitGetError),
+    FitGet(#[from] crate::err::core::FitGetError),
     #[error("fit {0} has no stance set")]
     FitNoStance(FitId),
 }
@@ -249,5 +249,5 @@ impl StanceChangeCmdCtxItem {
 #[derive(thiserror::Error, Debug)]
 pub enum ItemGetStanceChangeError {
     #[error(transparent)]
-    ItemGet(#[from] rc::err::StanceGetError),
+    ItemGet(#[from] crate::err::core::StanceGetError),
 }

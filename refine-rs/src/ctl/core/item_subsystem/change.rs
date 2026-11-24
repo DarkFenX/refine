@@ -114,7 +114,7 @@ impl SubsystemChangeCmd {
 #[derive(thiserror::Error, Debug)]
 pub enum SubsystemChangeError {
     #[error(transparent)]
-    ItemIsNotSubsystem(#[from] rc::err::ItemKindMatchError),
+    ItemIsNotSubsystem(#[from] crate::err::core::ItemKindMatchError),
 }
 
 impl SubsystemChangeCmdCtxItem {
@@ -138,15 +138,15 @@ impl SubsystemChangeCmdCtxItem {
     }
 }
 
-pub type ItemGetSubsystemChangeError = GenItemGetSubsystemChangeError<rc::err::ItemGetError>;
-pub type FitItemGetSubsystemChangeError = GenItemGetSubsystemChangeError<rc::err::FitItemGetError>;
+pub type ItemGetSubsystemChangeError = GenItemGetSubsystemChangeError<crate::err::core::ItemGetError>;
+pub type FitItemGetSubsystemChangeError = GenItemGetSubsystemChangeError<crate::err::core::FitItemGetError>;
 
 #[derive(thiserror::Error, Debug)]
 pub enum GenItemGetSubsystemChangeError<E> {
     #[error(transparent)]
     ItemGet(E),
     #[error(transparent)]
-    ItemIsNotSubsystem(rc::err::ItemKindMatchError),
+    ItemIsNotSubsystem(crate::err::core::ItemKindMatchError),
 }
 impl<E> From<SubsystemChangeError> for GenItemGetSubsystemChangeError<E> {
     fn from(err: SubsystemChangeError) -> Self {

@@ -111,7 +111,7 @@ impl RigChangeCmd {
 #[derive(thiserror::Error, Debug)]
 pub enum RigChangeError {
     #[error(transparent)]
-    ItemIsNotRig(#[from] rc::err::ItemKindMatchError),
+    ItemIsNotRig(#[from] crate::err::core::ItemKindMatchError),
 }
 
 impl RigChangeCmdCtxItem {
@@ -132,15 +132,15 @@ impl RigChangeCmdCtxItem {
     }
 }
 
-pub type ItemGetRigChangeError = GenItemGetRigChangeError<rc::err::ItemGetError>;
-pub type FitItemGetRigChangeError = GenItemGetRigChangeError<rc::err::FitItemGetError>;
+pub type ItemGetRigChangeError = GenItemGetRigChangeError<crate::err::core::ItemGetError>;
+pub type FitItemGetRigChangeError = GenItemGetRigChangeError<crate::err::core::FitItemGetError>;
 
 #[derive(thiserror::Error, Debug)]
 pub enum GenItemGetRigChangeError<E> {
     #[error(transparent)]
     ItemGet(E),
     #[error(transparent)]
-    ItemIsNotRig(rc::err::ItemKindMatchError),
+    ItemIsNotRig(crate::err::core::ItemKindMatchError),
 }
 impl<E> From<RigChangeError> for GenItemGetRigChangeError<E> {
     fn from(err: RigChangeError) -> Self {

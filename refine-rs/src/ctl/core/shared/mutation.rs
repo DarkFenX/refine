@@ -83,7 +83,7 @@ fn apply_absolute(core_mutation: &mut rc::Mutation, attr_id: AttrId, value: Valu
         match core_full_mattr.set_value(Some(value)) {
             Ok(()) => (),
             // Silently accept failure due to zero-width mutation range
-            Err(rc::err::FullMAttrValueSetError::ZeroWidthRange(..)) => (),
+            Err(crate::err::core::FullMAttrValueSetError::ZeroWidthRange(..)) => (),
         }
     }
 }
@@ -94,7 +94,7 @@ fn apply_roll(core_mutation: &mut rc::Mutation, attr_id: AttrId, roll: UnitInter
         Ok(mut core_raw_mattr) => {
             core_raw_mattr.set_roll(roll);
         }
-        Err(rc::err::RawMAttrGetError::MutationNotFound(..)) => {
+        Err(crate::err::core::RawMAttrGetError::MutationNotFound(..)) => {
             core_mutation.mutate_raw(attr_id, roll).unwrap();
         }
     };

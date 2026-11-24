@@ -75,7 +75,7 @@ impl ItemAutodetectAddCmd {
 #[derive(thiserror::Error, Debug)]
 pub enum ItemAutodetectAddError {
     #[error(transparent)]
-    ItemAutodetectAdd(#[from] rc::err::FitItemAutodetectAddError),
+    ItemAutodetectAdd(#[from] crate::err::core::FitItemAutodetectAddError),
 }
 
 impl ItemAutodetectAddCmdCtxFit {
@@ -90,9 +90,9 @@ impl ItemAutodetectAddCmdCtxFit {
 #[derive(thiserror::Error, Debug)]
 pub enum FitGetItemAutodetectAddError {
     #[error(transparent)]
-    FitGet(#[from] rc::err::FitGetError),
+    FitGet(#[from] crate::err::core::FitGetError),
     #[error(transparent)]
-    ItemAutodetectAdd(rc::err::FitItemAutodetectAddError),
+    ItemAutodetectAdd(crate::err::core::FitItemAutodetectAddError),
 }
 impl From<ItemAutodetectAddError> for FitGetItemAutodetectAddError {
     fn from(err: ItemAutodetectAddError) -> Self {

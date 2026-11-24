@@ -115,5 +115,5 @@ impl ShipSetCmdCtxFit {
 #[derive(thiserror::Error, Debug)]
 pub enum FitGetShipSetError {
     #[error(transparent)]
-    FitGet(#[from] rc::err::FitGetError),
+    FitGet(#[from] crate::err::core::FitGetError),
 }

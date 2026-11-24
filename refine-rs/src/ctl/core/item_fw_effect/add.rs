@@ -103,5 +103,5 @@ impl FwEffectAddCmdCtxFit {
 #[derive(thiserror::Error, Debug)]
 pub enum FitGetFwEffectAddError {
     #[error(transparent)]
-    FitGet(#[from] rc::err::FitGetError),
+    FitGet(#[from] crate::err::core::FitGetError),
 }

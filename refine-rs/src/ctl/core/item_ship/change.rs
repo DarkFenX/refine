@@ -214,7 +214,7 @@ pub enum FitShipChangeError {
 #[derive(thiserror::Error, Debug)]
 pub enum ItemShipChangeError {
     #[error(transparent)]
-    ItemIsNotShip(#[from] rc::err::ItemKindMatchError),
+    ItemIsNotShip(#[from] crate::err::core::ItemKindMatchError),
 }
 
 impl ShipChangeCmdCtxAny {
@@ -242,7 +242,7 @@ impl ShipChangeCmdCtxFit {
 #[derive(thiserror::Error, Debug)]
 pub enum FitGetShipChangeError {
     #[error(transparent)]
-    FitGet(#[from] rc::err::FitGetError),
+    FitGet(#[from] crate::err::core::FitGetError),
     #[error("fit {0} has no ship set")]
     FitNoShip(FitId),
 }
@@ -263,5 +263,5 @@ impl ShipChangeCmdCtxItem {
 #[derive(thiserror::Error, Debug)]
 pub enum ItemGetShipChangeError {
     #[error(transparent)]
-    ItemGet(#[from] rc::err::ShipGetError),
+    ItemGet(#[from] crate::err::core::ShipGetError),
 }

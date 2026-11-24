@@ -197,7 +197,7 @@ pub enum FitCharacterChangeError {
 #[derive(thiserror::Error, Debug)]
 pub enum ItemCharacterChangeError {
     #[error(transparent)]
-    ItemIsNotCharacter(#[from] rc::err::ItemKindMatchError),
+    ItemIsNotCharacter(#[from] crate::err::core::ItemKindMatchError),
 }
 
 impl CharacterChangeCmdCtxAny {
@@ -228,7 +228,7 @@ impl CharacterChangeCmdCtxFit {
 #[derive(thiserror::Error, Debug)]
 pub enum FitGetCharacterChangeError {
     #[error(transparent)]
-    FitGet(#[from] rc::err::FitGetError),
+    FitGet(#[from] crate::err::core::FitGetError),
     #[error("fit {0} has no character set")]
     FitNoCharacter(FitId),
 }
@@ -252,5 +252,5 @@ impl CharacterChangeCmdCtxItem {
 #[derive(thiserror::Error, Debug)]
 pub enum ItemGetCharacterChangeError {
     #[error(transparent)]
-    ItemGet(#[from] rc::err::CharacterGetError),
+    ItemGet(#[from] crate::err::core::CharacterGetError),
 }

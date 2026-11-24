@@ -103,5 +103,5 @@ impl SubsystemAddCmdCtxFit {
 #[derive(thiserror::Error, Debug)]
 pub enum FitGetSubsystemAddError {
     #[error(transparent)]
-    FitGet(#[from] rc::err::FitGetError),
+    FitGet(#[from] crate::err::core::FitGetError),
 }

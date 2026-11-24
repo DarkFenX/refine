@@ -169,7 +169,7 @@ impl ModuleAddCmd {
             match core_module.add_proj(projectee_item_id) {
                 Ok(..) => (),
                 // Silently accept failure due to existing projection
-                Err(rc::err::ProjAddError::ProjectionAlreadyExists(..)) => (),
+                Err(crate::err::core::ProjAddError::ProjectionAlreadyExists(..)) => (),
                 Err(err) => return Err(err.into()),
             }
         }
@@ -179,9 +179,9 @@ impl ModuleAddCmd {
 #[derive(thiserror::Error, Debug)]
 pub enum ModuleAddError {
     #[error(transparent)]
-    ModuleAdd(#[from] rc::err::ModuleAddError),
+    ModuleAdd(#[from] crate::err::core::ModuleAddError),
     #[error("failed to add projection")]
-    ProjAdd(#[from] rc::err::ProjAddError),
+    ProjAdd(#[from] crate::err::core::ProjAddError),
 }
 
 impl ModuleAddCmdCtxFit {
@@ -193,11 +193,11 @@ impl ModuleAddCmdCtxFit {
 #[derive(thiserror::Error, Debug)]
 pub enum FitGetModuleAddError {
     #[error(transparent)]
-    FitGet(#[from] rc::err::FitGetError),
+    FitGet(#[from] crate::err::core::FitGetError),
     #[error(transparent)]
-    ModuleAdd(rc::err::ModuleAddError),
+    ModuleAdd(crate::err::core::ModuleAddError),
     #[error("failed to add projection")]
-    ProjAdd(#[source] rc::err::ProjAddError),
+    ProjAdd(#[source] crate::err::core::ProjAddError),
 }
 impl From<ModuleAddError> for FitGetModuleAddError {
     fn from(err: ModuleAddError) -> Self {

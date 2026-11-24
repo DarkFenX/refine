@@ -18,4 +18,4 @@ impl<'refine, 'sol> Sol<'refine> {
 
 #[derive(thiserror::Error, Debug)]
 #[error(transparent)]
-pub struct FleetGetError(#[from] pub rc::err::FleetGetError);
+pub struct FleetGetError(#[from] pub crate::err::core::FleetGetError);

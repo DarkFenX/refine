@@ -103,5 +103,5 @@ impl StanceSetCmdCtxFit {
 #[derive(thiserror::Error, Debug)]
 pub enum FitGetStanceSetError {
     #[error(transparent)]
-    FitGet(#[from] rc::err::FitGetError),
+    FitGet(#[from] crate::err::core::FitGetError),
 }

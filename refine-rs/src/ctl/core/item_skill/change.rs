@@ -124,9 +124,9 @@ impl SkillChangeCmd {
 #[derive(thiserror::Error, Debug)]
 pub enum SkillChangeError {
     #[error(transparent)]
-    ItemIsNotSkill(#[from] rc::err::ItemKindMatchError),
+    ItemIsNotSkill(#[from] crate::err::core::ItemKindMatchError),
     #[error(transparent)]
-    TypeIdSet(#[from] rc::err::SkillTypeIdSetError),
+    TypeIdSet(#[from] crate::err::core::SkillTypeIdSetError),
 }
 
 impl SkillChangeCmdCtxItem {
@@ -147,17 +147,17 @@ impl SkillChangeCmdCtxItem {
     }
 }
 
-pub type ItemGetSkillChangeError = GenItemGetSkillChangeError<rc::err::ItemGetError>;
-pub type FitItemGetSkillChangeError = GenItemGetSkillChangeError<rc::err::FitItemGetError>;
+pub type ItemGetSkillChangeError = GenItemGetSkillChangeError<crate::err::core::ItemGetError>;
+pub type FitItemGetSkillChangeError = GenItemGetSkillChangeError<crate::err::core::FitItemGetError>;
 
 #[derive(thiserror::Error, Debug)]
 pub enum GenItemGetSkillChangeError<E> {
     #[error(transparent)]
     ItemGet(E),
     #[error(transparent)]
-    ItemIsNotSkill(rc::err::ItemKindMatchError),
+    ItemIsNotSkill(crate::err::core::ItemKindMatchError),
     #[error(transparent)]
-    TypeIdSet(rc::err::SkillTypeIdSetError),
+    TypeIdSet(crate::err::core::SkillTypeIdSetError),
 }
 impl<E> From<SkillChangeError> for GenItemGetSkillChangeError<E> {
     fn from(err: SkillChangeError) -> Self {

@@ -98,7 +98,7 @@ impl SkillAddCmd {
 #[derive(thiserror::Error, Debug)]
 pub enum SkillAddError {
     #[error(transparent)]
-    SkillAdd(#[from] rc::err::SkillAddError),
+    SkillAdd(#[from] crate::err::core::SkillAddError),
 }
 
 impl SkillAddCmdCtxFit {
@@ -110,9 +110,9 @@ impl SkillAddCmdCtxFit {
 #[derive(thiserror::Error, Debug)]
 pub enum FitGetSkillAddError {
     #[error(transparent)]
-    FitGet(#[from] rc::err::FitGetError),
+    FitGet(#[from] crate::err::core::FitGetError),
     #[error(transparent)]
-    SkillAdd(rc::err::SkillAddError),
+    SkillAdd(crate::err::core::SkillAddError),
 }
 impl From<SkillAddError> for FitGetSkillAddError {
     fn from(err: SkillAddError) -> Self {

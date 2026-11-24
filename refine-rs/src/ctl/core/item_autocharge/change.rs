@@ -101,7 +101,7 @@ impl AutochargeChangeCmd {
 #[derive(thiserror::Error, Debug)]
 pub enum AutochargeChangeError {
     #[error(transparent)]
-    ItemIsNotAutocharge(#[from] rc::err::ItemKindMatchError),
+    ItemIsNotAutocharge(#[from] crate::err::core::ItemKindMatchError),
 }
 
 impl AutochargeChangeCmdCtxItem {
@@ -125,15 +125,15 @@ impl AutochargeChangeCmdCtxItem {
     }
 }
 
-pub type ItemGetAutochargeChangeError = GenItemGetAutochargeChangeError<rc::err::ItemGetError>;
-pub type FitItemGetAutochargeChangeError = GenItemGetAutochargeChangeError<rc::err::FitItemGetError>;
+pub type ItemGetAutochargeChangeError = GenItemGetAutochargeChangeError<crate::err::core::ItemGetError>;
+pub type FitItemGetAutochargeChangeError = GenItemGetAutochargeChangeError<crate::err::core::FitItemGetError>;
 
 #[derive(thiserror::Error, Debug)]
 pub enum GenItemGetAutochargeChangeError<E> {
     #[error(transparent)]
     ItemGet(E),
     #[error(transparent)]
-    ItemIsNotAutocharge(rc::err::ItemKindMatchError),
+    ItemIsNotAutocharge(crate::err::core::ItemKindMatchError),
 }
 impl<E> From<AutochargeChangeError> for GenItemGetAutochargeChangeError<E> {
     fn from(err: AutochargeChangeError) -> Self {

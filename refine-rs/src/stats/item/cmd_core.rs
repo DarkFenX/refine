@@ -125,10 +125,10 @@ impl ItemStatsCmdCtxItem {
 #[derive(thiserror::Error, Debug)]
 pub enum ItemGetItemStatsError {
     #[error(transparent)]
-    ItemGet(#[from] rc::err::ItemGetError),
+    ItemGet(#[from] crate::err::core::ItemGetError),
 }
 #[derive(thiserror::Error, Debug)]
 pub enum FitItemGetItemStatsError {
     #[error(transparent)]
-    ItemGet(#[from] rc::err::FitItemGetError),
+    ItemGet(#[from] crate::err::core::FitItemGetError),
 }

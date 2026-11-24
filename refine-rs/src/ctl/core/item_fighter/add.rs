@@ -162,7 +162,7 @@ impl FighterAddCmd {
             match core_fighter.add_proj(projectee_item_id) {
                 Ok(..) => (),
                 // Silently accept failure due to existing projection
-                Err(rc::err::ProjAddError::ProjectionAlreadyExists(..)) => (),
+                Err(crate::err::core::ProjAddError::ProjectionAlreadyExists(..)) => (),
                 Err(err) => return Err(err.into()),
             }
         }
@@ -172,7 +172,7 @@ impl FighterAddCmd {
 #[derive(thiserror::Error, Debug)]
 pub enum FighterAddError {
     #[error("failed to add projection")]
-    ProjAdd(#[from] rc::err::ProjAddError),
+    ProjAdd(#[from] crate::err::core::ProjAddError),
 }
 
 impl FighterAddCmdCtxFit {
@@ -184,9 +184,9 @@ impl FighterAddCmdCtxFit {
 #[derive(thiserror::Error, Debug)]
 pub enum FitGetFighterAddError {
     #[error(transparent)]
-    FitGet(#[from] rc::err::FitGetError),
+    FitGet(#[from] crate::err::core::FitGetError),
     #[error("failed to add projection")]
-    ProjAdd(#[source] rc::err::ProjAddError),
+    ProjAdd(#[source] crate::err::core::ProjAddError),
 }
 impl From<FighterAddError> for FitGetFighterAddError {
     fn from(err: FighterAddError) -> Self {

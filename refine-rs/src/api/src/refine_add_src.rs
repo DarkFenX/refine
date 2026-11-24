@@ -49,7 +49,7 @@ pub enum SrcAddError {
     #[error("alias \"{0}\" already exists")]
     SrcAliasNotAvailable(SrcAlias),
     #[error("source initialization failed")]
-    SrcInit(#[from] rc::src::err::SrcInitError),
+    SrcInit(#[from] crate::src::err::core::SrcInitError),
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////

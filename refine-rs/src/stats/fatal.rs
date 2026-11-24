@@ -1,4 +1,4 @@
-use crate::stats::err::{StatFitShipAppliedError, StatItemAppliedError};
+use crate::stats::err::core::{StatFitShipAppliedError, StatItemAppliedError};
 
 pub(in crate::stats) trait StatErrorFatality {
     fn is_fatal(&self) -> bool;

@@ -114,7 +114,7 @@ impl ServiceChangeCmd {
 #[derive(thiserror::Error, Debug)]
 pub enum ServiceChangeError {
     #[error(transparent)]
-    ItemIsNotService(#[from] rc::err::ItemKindMatchError),
+    ItemIsNotService(#[from] crate::err::core::ItemKindMatchError),
 }
 
 impl ServiceChangeCmdCtxItem {
@@ -138,15 +138,15 @@ impl ServiceChangeCmdCtxItem {
     }
 }
 
-pub type ItemGetServiceChangeError = GenItemGetServiceChangeError<rc::err::ItemGetError>;
-pub type FitItemGetServiceChangeError = GenItemGetServiceChangeError<rc::err::FitItemGetError>;
+pub type ItemGetServiceChangeError = GenItemGetServiceChangeError<crate::err::core::ItemGetError>;
+pub type FitItemGetServiceChangeError = GenItemGetServiceChangeError<crate::err::core::FitItemGetError>;
 
 #[derive(thiserror::Error, Debug)]
 pub enum GenItemGetServiceChangeError<E> {
     #[error(transparent)]
     ItemGet(E),
     #[error(transparent)]
-    ItemIsNotService(rc::err::ItemKindMatchError),
+    ItemIsNotService(crate::err::core::ItemKindMatchError),
 }
 impl<E> From<ServiceChangeError> for GenItemGetServiceChangeError<E> {
     fn from(err: ServiceChangeError) -> Self {

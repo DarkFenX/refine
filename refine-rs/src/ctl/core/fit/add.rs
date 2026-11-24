@@ -92,5 +92,5 @@ impl FitAddCmd {
 #[derive(thiserror::Error, Debug)]
 pub enum FitAddError {
     #[error("failed to set fleet")]
-    FleetSet(#[from] rc::err::FitFleetSetError),
+    FleetSet(#[from] crate::err::core::FitFleetSetError),
 }

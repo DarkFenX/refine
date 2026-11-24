@@ -6,7 +6,7 @@ use crate::{
         StatOptionCapBlc, StatOptionCapSim, StatOptionDroneBandwidth, StatOptionEhp, StatOptionErps, StatOptionFitDmg,
         StatOptionFitMining, StatOptionFitOutCps, StatOptionFitOutNps, StatOptionFitOutRps, StatOptionIncomingJam,
         StatOptionJump, StatOptionMass, StatOptionRps, StatOutReps, StatResource, StatResult, StatRps,
-        err::{StatFitAppliedError, StatFitShipAppliedError, StatFitShipError, StatJumpError},
+        err::core::{StatFitAppliedError, StatFitShipAppliedError, StatFitShipError, StatJumpError},
         exec_shared::{collect_stats_err_both_br, collect_stats_err_inner, collect_stats_err_outer_br},
         fit::FitStatsOptionsResolved,
     },

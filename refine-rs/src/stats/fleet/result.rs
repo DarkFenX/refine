@@ -1,6 +1,6 @@
 use crate::{
     PValue,
-    stats::{StatBrFallibleError, StatDmg, StatMining, StatOutReps, StatResult, err::StatFleetAppliedError},
+    stats::{StatBrFallibleError, StatDmg, StatMining, StatOutReps, StatResult, err::core::StatFleetAppliedError},
 };
 
 #[cfg_attr(feature = "serde", derive(serde::Serialize))]

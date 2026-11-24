@@ -142,7 +142,7 @@ impl FitChangeCmd {
 #[derive(thiserror::Error, Debug)]
 pub enum FitChangeError {
     #[error("failed to set fleet")]
-    FleetSet(#[from] rc::err::FitFleetSetError),
+    FleetSet(#[from] crate::err::core::FitFleetSetError),
 }
 
 impl FitChangeCmdCtxFit {
@@ -154,9 +154,9 @@ impl FitChangeCmdCtxFit {
 #[derive(thiserror::Error, Debug)]
 pub enum FitGetFitChangeError {
     #[error(transparent)]
-    FitGet(#[from] rc::err::FitGetError),
+    FitGet(#[from] crate::err::core::FitGetError),
     #[error("failed to set fleet")]
-    FleetSet(#[source] rc::err::FitFleetSetError),
+    FleetSet(#[source] crate::err::core::FitFleetSetError),
 }
 impl From<FitChangeError> for FitGetFitChangeError {
     fn from(err: FitChangeError) -> Self {

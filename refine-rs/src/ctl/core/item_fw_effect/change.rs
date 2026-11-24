@@ -114,7 +114,7 @@ impl FwEffectChangeCmd {
 #[derive(thiserror::Error, Debug)]
 pub enum FwEffectChangeError {
     #[error(transparent)]
-    ItemIsNotFwEffect(#[from] rc::err::ItemKindMatchError),
+    ItemIsNotFwEffect(#[from] crate::err::core::ItemKindMatchError),
 }
 
 impl FwEffectChangeCmdCtxItem {
@@ -138,15 +138,15 @@ impl FwEffectChangeCmdCtxItem {
     }
 }
 
-pub type ItemGetFwEffectChangeError = GenItemGetFwEffectChangeError<rc::err::ItemGetError>;
-pub type FitItemGetFwEffectChangeError = GenItemGetFwEffectChangeError<rc::err::FitItemGetError>;
+pub type ItemGetFwEffectChangeError = GenItemGetFwEffectChangeError<crate::err::core::ItemGetError>;
+pub type FitItemGetFwEffectChangeError = GenItemGetFwEffectChangeError<crate::err::core::FitItemGetError>;
 
 #[derive(thiserror::Error, Debug)]
 pub enum GenItemGetFwEffectChangeError<E> {
     #[error(transparent)]
     ItemGet(E),
     #[error(transparent)]
-    ItemIsNotFwEffect(rc::err::ItemKindMatchError),
+    ItemIsNotFwEffect(crate::err::core::ItemKindMatchError),
 }
 impl<E> From<FwEffectChangeError> for GenItemGetFwEffectChangeError<E> {
     fn from(err: FwEffectChangeError) -> Self {

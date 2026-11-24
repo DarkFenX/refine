@@ -114,5 +114,5 @@ impl BoosterAddCmdCtxFit {
 #[derive(thiserror::Error, Debug)]
 pub enum FitGetBoosterAddError {
     #[error(transparent)]
-    FitGet(#[from] rc::err::FitGetError),
+    FitGet(#[from] crate::err::core::FitGetError),
 }

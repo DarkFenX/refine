@@ -114,7 +114,7 @@ impl ChargeChangeCmd {
 #[derive(thiserror::Error, Debug)]
 pub enum ChargeChangeError {
     #[error(transparent)]
-    ItemIsNotCharge(#[from] rc::err::ItemKindMatchError),
+    ItemIsNotCharge(#[from] crate::err::core::ItemKindMatchError),
 }
 
 impl ChargeChangeCmdCtxItem {
@@ -138,15 +138,15 @@ impl ChargeChangeCmdCtxItem {
     }
 }
 
-pub type ItemGetChargeChangeError = GenItemGetChargeChangeError<rc::err::ItemGetError>;
-pub type FitItemGetChargeChangeError = GenItemGetChargeChangeError<rc::err::FitItemGetError>;
+pub type ItemGetChargeChangeError = GenItemGetChargeChangeError<crate::err::core::ItemGetError>;
+pub type FitItemGetChargeChangeError = GenItemGetChargeChangeError<crate::err::core::FitItemGetError>;
 
 #[derive(thiserror::Error, Debug)]
 pub enum GenItemGetChargeChangeError<E> {
     #[error(transparent)]
     ItemGet(E),
     #[error(transparent)]
-    ItemIsNotCharge(rc::err::ItemKindMatchError),
+    ItemIsNotCharge(crate::err::core::ItemKindMatchError),
 }
 impl<E> From<ChargeChangeError> for GenItemGetChargeChangeError<E> {
     fn from(err: ChargeChangeError) -> Self {

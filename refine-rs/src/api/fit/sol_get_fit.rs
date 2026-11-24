@@ -14,4 +14,4 @@ impl<'refine, 'sol> Sol<'refine> {
 
 #[derive(thiserror::Error, Debug)]
 #[error(transparent)]
-pub struct FitGetError(#[from] pub rc::err::FitGetError);
+pub struct FitGetError(#[from] pub crate::err::core::FitGetError);

@@ -191,7 +191,7 @@ impl FighterChangeCmd {
             match core_fighter.get_proj(projectee_item_id) {
                 Ok(core_proj) => core_proj.remove(),
                 // Silently accept failure due to missing projection
-                Err(rc::err::ProjGetError::ProjectionNotFound(..)) => (),
+                Err(crate::err::core::ProjGetError::ProjectionNotFound(..)) => (),
                 Err(err) => return Err(err.into()),
             }
         }
@@ -227,7 +227,7 @@ impl FighterChangeCmd {
             match core_fighter.add_proj(projectee_item_id) {
                 Ok(..) => (),
                 // Silently accept failure due to existing projection
-                Err(rc::err::ProjAddError::ProjectionAlreadyExists(..)) => (),
+                Err(crate::err::core::ProjAddError::ProjectionAlreadyExists(..)) => (),
                 Err(err) => return Err(err.into()),
             }
         }
@@ -237,11 +237,11 @@ impl FighterChangeCmd {
 #[derive(thiserror::Error, Debug)]
 pub enum FighterChangeError {
     #[error(transparent)]
-    ItemIsNotFighter(#[from] rc::err::ItemKindMatchError),
+    ItemIsNotFighter(#[from] crate::err::core::ItemKindMatchError),
     #[error("failed to add projection")]
-    ProjAdd(#[from] rc::err::ProjAddError),
+    ProjAdd(#[from] crate::err::core::ProjAddError),
     #[error("failed to remove projection")]
-    ProjRemove(#[from] rc::err::ProjGetError),
+    ProjRemove(#[from] crate::err::core::ProjGetError),
 }
 
 impl FighterChangeCmdCtxItem {
@@ -265,19 +265,19 @@ impl FighterChangeCmdCtxItem {
     }
 }
 
-pub type ItemGetFighterChangeError = GenItemGetFighterChangeError<rc::err::ItemGetError>;
-pub type FitItemGetFighterChangeError = GenItemGetFighterChangeError<rc::err::FitItemGetError>;
+pub type ItemGetFighterChangeError = GenItemGetFighterChangeError<crate::err::core::ItemGetError>;
+pub type FitItemGetFighterChangeError = GenItemGetFighterChangeError<crate::err::core::FitItemGetError>;
 
 #[derive(thiserror::Error, Debug)]
 pub enum GenItemGetFighterChangeError<E> {
     #[error(transparent)]
     ItemGet(E),
     #[error(transparent)]
-    ItemIsNotFighter(rc::err::ItemKindMatchError),
+    ItemIsNotFighter(crate::err::core::ItemKindMatchError),
     #[error("failed to add projection")]
-    ProjAdd(#[source] rc::err::ProjAddError),
+    ProjAdd(#[source] crate::err::core::ProjAddError),
     #[error("failed to remove projection")]
-    ProjRemove(#[source] rc::err::ProjGetError),
+    ProjRemove(#[source] crate::err::core::ProjGetError),
 }
 impl<E> From<FighterChangeError> for GenItemGetFighterChangeError<E> {
     fn from(err: FighterChangeError) -> Self {

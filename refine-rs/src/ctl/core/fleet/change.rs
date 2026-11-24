@@ -113,7 +113,7 @@ impl FleetChangeCmd {
             match core_fleet.remove_fit(fit_id) {
                 Ok(()) => (),
                 // Silently accept failure due to fit not being in this fleet
-                Err(rc::err::FleetFitRemoveError::FitIsNotInThisFleet(..)) => (),
+                Err(crate::err::core::FleetFitRemoveError::FitIsNotInThisFleet(..)) => (),
                 Err(err) => return Err(err.into()),
             }
         }
@@ -121,7 +121,7 @@ impl FleetChangeCmd {
             match core_fleet.add_fit(fit_id) {
                 Ok(()) => (),
                 // Silently accept failure due to fit already being in this fleet
-                Err(rc::err::FleetFitAddError::FitAlreadyInThisFleet(..)) => (),
+                Err(crate::err::core::FleetFitAddError::FitAlreadyInThisFleet(..)) => (),
                 Err(err) => return Err(err.into()),
             }
         }
@@ -131,9 +131,9 @@ impl FleetChangeCmd {
 #[derive(thiserror::Error, Debug)]
 pub enum FleetChangeError {
     #[error("failed to add fit")]
-    FitAdd(#[from] rc::err::FleetFitAddError),
+    FitAdd(#[from] crate::err::core::FleetFitAddError),
     #[error("failed to remove fit")]
-    FitRemove(#[from] rc::err::FleetFitRemoveError),
+    FitRemove(#[from] crate::err::core::FleetFitRemoveError),
 }
 
 impl FleetChangeCmdCtxFleet {
@@ -145,11 +145,11 @@ impl FleetChangeCmdCtxFleet {
 #[derive(thiserror::Error, Debug)]
 pub enum FleetGetFleetChangeError {
     #[error(transparent)]
-    FleetGet(#[from] rc::err::FleetGetError),
+    FleetGet(#[from] crate::err::core::FleetGetError),
     #[error("failed to add fit")]
-    FitAdd(#[source] rc::err::FleetFitAddError),
+    FitAdd(#[source] crate::err::core::FleetFitAddError),
     #[error("failed to remove fit")]
-    FitRemove(#[source] rc::err::FleetFitRemoveError),
+    FitRemove(#[source] crate::err::core::FleetFitRemoveError),
 }
 impl From<FleetChangeError> for FleetGetFleetChangeError {
     fn from(err: FleetChangeError) -> Self {

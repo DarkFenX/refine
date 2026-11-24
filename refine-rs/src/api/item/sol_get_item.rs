@@ -17,4 +17,4 @@ impl<'refine, 'sol> Sol<'refine> {
 
 #[derive(thiserror::Error, Debug)]
 #[error(transparent)]
-pub struct ItemGetError(#[from] pub rc::err::ItemGetError);
+pub struct ItemGetError(#[from] pub crate::err::core::ItemGetError);

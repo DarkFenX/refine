@@ -114,7 +114,7 @@ impl ImplantChangeCmd {
 #[derive(thiserror::Error, Debug)]
 pub enum ImplantChangeError {
     #[error(transparent)]
-    ItemIsNotImplant(#[from] rc::err::ItemKindMatchError),
+    ItemIsNotImplant(#[from] crate::err::core::ItemKindMatchError),
 }
 
 impl ImplantChangeCmdCtxItem {
@@ -138,15 +138,15 @@ impl ImplantChangeCmdCtxItem {
     }
 }
 
-pub type ItemGetImplantChangeError = GenItemGetImplantChangeError<rc::err::ItemGetError>;
-pub type FitItemGetImplantChangeError = GenItemGetImplantChangeError<rc::err::FitItemGetError>;
+pub type ItemGetImplantChangeError = GenItemGetImplantChangeError<crate::err::core::ItemGetError>;
+pub type FitItemGetImplantChangeError = GenItemGetImplantChangeError<crate::err::core::FitItemGetError>;
 
 #[derive(thiserror::Error, Debug)]
 pub enum GenItemGetImplantChangeError<E> {
     #[error(transparent)]
     ItemGet(E),
     #[error(transparent)]
-    ItemIsNotImplant(rc::err::ItemKindMatchError),
+    ItemIsNotImplant(crate::err::core::ItemKindMatchError),
 }
 impl<E> From<ImplantChangeError> for GenItemGetImplantChangeError<E> {
     fn from(err: ImplantChangeError) -> Self {

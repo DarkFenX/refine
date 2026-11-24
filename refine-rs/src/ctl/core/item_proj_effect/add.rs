@@ -79,7 +79,7 @@ impl ProjEffectAddCmd {
             match core_proj_effect.add_proj(projectee_item_id) {
                 Ok(..) => (),
                 // Silently accept failure due to existing projection
-                Err(rc::err::ProjAddError::ProjectionAlreadyExists(..)) => (),
+                Err(crate::err::core::ProjAddError::ProjectionAlreadyExists(..)) => (),
                 Err(err) => return Err(err.into()),
             }
         }
@@ -89,5 +89,5 @@ impl ProjEffectAddCmd {
 #[derive(thiserror::Error, Debug)]
 pub enum ProjEffectAddError {
     #[error("failed to add projection")]
-    ProjAdd(#[from] rc::err::ProjAddError),
+    ProjAdd(#[from] crate::err::core::ProjAddError),
 }

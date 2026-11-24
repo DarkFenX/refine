@@ -143,7 +143,7 @@ impl ProjEffectChangeCmd {
             match core_proj_effect.get_proj(projectee_item_id) {
                 Ok(core_proj) => core_proj.remove(),
                 // Silently accept failure due to missing projection
-                Err(rc::err::ProjGetError::ProjectionNotFound(..)) => (),
+                Err(crate::err::core::ProjGetError::ProjectionNotFound(..)) => (),
                 Err(err) => return Err(err.into()),
             }
         }
@@ -158,7 +158,7 @@ impl ProjEffectChangeCmd {
             match core_proj_effect.add_proj(projectee_item_id) {
                 Ok(..) => (),
                 // Silently accept failure due to existing projection
-                Err(rc::err::ProjAddError::ProjectionAlreadyExists(..)) => (),
+                Err(crate::err::core::ProjAddError::ProjectionAlreadyExists(..)) => (),
                 Err(err) => return Err(err.into()),
             }
         }
@@ -168,11 +168,11 @@ impl ProjEffectChangeCmd {
 #[derive(thiserror::Error, Debug)]
 pub enum ProjEffectChangeError {
     #[error(transparent)]
-    ItemIsNotProjEffect(#[from] rc::err::ItemKindMatchError),
+    ItemIsNotProjEffect(#[from] crate::err::core::ItemKindMatchError),
     #[error("failed to add projection")]
-    ProjAdd(#[from] rc::err::ProjAddError),
+    ProjAdd(#[from] crate::err::core::ProjAddError),
     #[error("failed to remove projection")]
-    ProjRemove(#[from] rc::err::ProjGetError),
+    ProjRemove(#[from] crate::err::core::ProjGetError),
 }
 
 impl ProjEffectChangeCmdCtxItem {
@@ -187,13 +187,13 @@ impl ProjEffectChangeCmdCtxItem {
 #[derive(thiserror::Error, Debug)]
 pub enum ItemGetProjEffectChangeError {
     #[error(transparent)]
-    ItemGet(#[from] rc::err::ItemGetError),
+    ItemGet(#[from] crate::err::core::ItemGetError),
     #[error(transparent)]
-    ItemIsNotProjEffect(rc::err::ItemKindMatchError),
+    ItemIsNotProjEffect(crate::err::core::ItemKindMatchError),
     #[error("failed to add projection")]
-    ProjAdd(#[source] rc::err::ProjAddError),
+    ProjAdd(#[source] crate::err::core::ProjAddError),
     #[error("failed to remove projection")]
-    ProjRemove(#[source] rc::err::ProjGetError),
+    ProjRemove(#[source] crate::err::core::ProjGetError),
 }
 impl From<ProjEffectChangeError> for ItemGetProjEffectChangeError {
     fn from(err: ProjEffectChangeError) -> Self {
