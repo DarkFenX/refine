@@ -4,6 +4,7 @@ pub use warnings::SrcWarnings;
 
 mod item;
 mod origin;
+#[expect(clippy::module_inception)]
 pub(crate) mod src;
 mod src_get_mutated_attr_roll;
 mod src_new;
