@@ -18,6 +18,12 @@ class Request:
     def prepared(self) -> requests.PreparedRequest:
         return self.__prepared
 
+    def get_url(self) -> str:
+        return self.__prepared.url
+
+    def set_url(self, *, url: str) -> None:
+        self.__prepared.url = url
+
     # Returns body size in _bytes_
     def get_body_size(self) -> int:
         if self.__prepared.body is None:

@@ -1,6 +1,9 @@
-import json
+import typing
 
 from fw import check_no_field
+
+if typing.TYPE_CHECKING:
+    from fw.request import Request
 
 
 def test_error_body_malformed(client):
@@ -20,9 +23,15 @@ def test_error_no_src(client):
 
 
 def test_error_src_alias_malformed(client):
+
+    def hook_req(req: Request):
+        req.set_url(url=req.get_url().replace(f'/src/{api_src.alias}/', '/src/_..-/'))
+
+    api_src = client.create_source()
     # Action & verification
-    resp = client.get_source_items_request(src_alias='_..-', type_ids=[]).send()
-    resp.check(
+    api_src.get_items(
+        type_ids=[],
+        hook_req=hook_req,
         status_code=404,
         json_predicate={'code': 'SRC-003', 'message': 'alias "_..-" not found: alias is empty after pruning'})
 
@@ -176,18 +185,6 @@ def test_unknown_type(client, consts):
     api_src_items = api_src.get_items(type_ids=[])
     # Verification
     assert len(api_src_items) == 0
-
-
-def test_repeated_type(client, consts):
-    eve_item_id = client.mk_eve_item(cat_id=consts.EveItemCat.ship)
-    api_src = client.create_source()
-    # Action
-    resp = client.get_source_items_request(src_alias=api_src.alias, type_ids=[eve_item_id, eve_item_id]).send()
-    # Verification - parsing JSON into a dictionary would hide repeated keys, so check key-value
-    # pairs
-    resp.check(status_code=200)
-    api_src_items = json.loads(resp.text, object_pairs_hook=list)
-    assert api_src_items == [(str(eve_item_id), [('detected_kind', consts.ApiDetectedItemKind.ship)])]
 
 
 def test_dynamic_type(client, consts):

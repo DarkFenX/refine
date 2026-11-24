@@ -1,41 +1,58 @@
-from fw import Absent, check_no_field
+import typing
+
+from fw import check_no_field
 from fw.api import FitStatsOptions, FleetStatsOptions, ItemStatsOptions
+
+if typing.TYPE_CHECKING:
+    from fw.request import Request
 
 
 def test_error_body_malformed(client):
+
+    def hook_req(req: Request):
+        data = req.get_json()
+        data['fit_options'] = 'random'
+        req.set_json(data=data)
+
     client.create_sources()
     api_sol = client.create_sol()
-    req = client.get_sol_stats_request(
-        sol_id=api_sol.id,
-        fleet_options=Absent,
-        fit_options=FitStatsOptions(mass=True),
-        item_options=Absent)
-    req.set_json(data={'fit_options': 'random'})
     # Action & verification
-    req.send().check(status_code=400, json_predicate={'code': 'JSN-001', 'message': 're:.+'})
+    api_sol.get_stats(
+        fit_options=FitStatsOptions(mass=True),
+        hook_req=hook_req,
+        status_code=400,
+        json_predicate={'code': 'JSN-001', 'message': 're:.+'})
 
 
 def test_error_no_sol(client):
+
+    def hook_req(req: Request):
+        req.set_url(url=req.get_url().replace(f'/sol/{api_sol1.id}/', f'/sol/{api_sol2.id}/'))
+
     client.create_sources()
-    api_sol = client.create_sol()
-    api_sol.remove()
-    # Action & verification
-    resp = client.get_sol_stats_request(
-        sol_id=api_sol.id,
-        fleet_options=Absent,
-        fit_options=Absent,
-        item_options=Absent).send()
-    resp.check(status_code=404, json_predicate={'code': 'SOL-001', 'message': f'solar system {api_sol.id} not found'})
+    api_sol1 = client.create_sol()
+    api_sol2 = client.create_sol()
+    api_sol2.remove()
+    # Action & verification - request is sent via the sol which exists, since test framework checks
+    # consistency of the sol it was called on after every request
+    api_sol1.get_stats(
+        hook_req=hook_req,
+        status_code=404,
+        json_predicate={'code': 'SOL-001', 'message': f'solar system {api_sol2.id} not found'})
 
 
 def test_error_sol_id_malformed(client):
+
+    def hook_req(req: Request):
+        req.set_url(url=req.get_url().replace(f'/sol/{api_sol.id}/', '/sol/1/'))
+
+    client.create_sources()
+    api_sol = client.create_sol()
     # Action & verification
-    resp = client.get_sol_stats_request(
-        sol_id='1',
-        fleet_options=Absent,
-        fit_options=Absent,
-        item_options=Absent).send()
-    resp.check(status_code=404, json_predicate={'code': 'SOL-002', 'message': 'failed to parse a UUID'})
+    api_sol.get_stats(
+        hook_req=hook_req,
+        status_code=404,
+        json_predicate={'code': 'SOL-002', 'message': 'failed to parse a UUID'})
 
 
 def test_defaults(client, consts):

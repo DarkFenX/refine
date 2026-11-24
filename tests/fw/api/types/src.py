@@ -1,7 +1,11 @@
 import typing
 
 from fw.api.types.batches.src import SrcCmdBatchCtx
-from fw.api.types.helpers import src_items_http_to_fw, src_mutated_items_http_to_fw
+from fw.api.types.helpers import (
+    src_items_http_to_fw,
+    src_mutated_attr_rolls_http_to_fw,
+    src_mutated_items_http_to_fw,
+)
 from fw.consts import ApiSrcInfoMode
 from fw.util import Absent, AttrDict
 
@@ -32,10 +36,14 @@ class Src(AttrDict):
     def get_items(
             self, *,
             type_ids: list[int],
+            hook_req: ReqHook | None = None,
             status_code: int = 200,
             json_predicate: JsonPredicate = None,
     ) -> dict[int, AttrDict] | None:
-        resp = self._client.get_source_items_request(src_alias=self.alias, type_ids=type_ids).send()
+        req = self._client.get_source_items_request(src_alias=self.alias, type_ids=type_ids)
+        if hook_req is not None:
+            hook_req(req)
+        resp = req.send()
         resp.check(status_code=status_code, json_predicate=json_predicate)
         if resp.status_code == 200:
             return src_items_http_to_fw(data=resp.json())
@@ -44,13 +52,37 @@ class Src(AttrDict):
     def get_mutated_items(
             self, *,
             mutations: list[tuple[int, int]],
+            hook_req: ReqHook | None = None,
             status_code: int = 200,
             json_predicate: JsonPredicate = None,
     ) -> dict[int, dict[int, AttrDict]] | None:
-        resp = self._client.get_source_mutated_items_request(src_alias=self.alias, mutations=mutations).send()
+        req = self._client.get_source_mutated_items_request(src_alias=self.alias, mutations=mutations)
+        if hook_req is not None:
+            hook_req(req)
+        resp = req.send()
         resp.check(status_code=status_code, json_predicate=json_predicate)
         if resp.status_code == 200:
             return src_mutated_items_http_to_fw(data=resp.json())
+        return None
+
+    def get_mutated_attr_rolls(
+            self, *,
+            mutation: tuple[int, int],
+            values: dict[int | str, float],
+            hook_req: ReqHook | None = None,
+            status_code: int = 200,
+            json_predicate: JsonPredicate = None,
+    ) -> dict[int | str, float] | None:
+        req = self._client.get_source_mutated_attr_rolls_request(
+            src_alias=self.alias,
+            mutation=mutation,
+            values=values)
+        if hook_req is not None:
+            hook_req(req)
+        resp = req.send()
+        resp.check(status_code=status_code, json_predicate=json_predicate)
+        if resp.status_code == 200:
+            return src_mutated_attr_rolls_http_to_fw(data=resp.json())
         return None
 
     def batch(

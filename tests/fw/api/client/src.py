@@ -1,7 +1,7 @@
 import typing
 
 from fw import eve
-from fw.api.commands import SrcInfoItemsCmd, SrcInfoMutatedItemsCmd
+from fw.api.commands import SrcInfoItemsCmd, SrcInfoMutatedAttrRollsCmd, SrcInfoMutatedItemsCmd
 from fw.api.types import Src
 from fw.consts import ApiSrcInfoMode
 from fw.request import Request
@@ -98,6 +98,15 @@ class ApiClientSrc(ApiClientBase, eve.EveDataManager, eve.EveDataServer):
             mutations: list[tuple[int, int]],
     ) -> Request:
         command = SrcInfoMutatedItemsCmd(mutations=mutations)
+        return self.source_command_request(src_alias=src_alias, command=command)
+
+    def get_source_mutated_attr_rolls_request(
+            self, *,
+            src_alias: str,
+            mutation: tuple[int, int],
+            values: dict[int | str, float],
+    ) -> Request:
+        command = SrcInfoMutatedAttrRollsCmd(mutation=mutation, values=values)
         return self.source_command_request(src_alias=src_alias, command=command)
 
     def source_command_request(

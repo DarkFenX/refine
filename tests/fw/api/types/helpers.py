@@ -25,3 +25,7 @@ def src_mutated_items_http_to_fw(data: dict) -> dict[int, dict[int, AttrDict]]:
     return {
         int(base_type_id): {int(mutator_id): AttrDict(data=item) for mutator_id, item in mutators.items()}
         for base_type_id, mutators in data.items()}
+
+
+def src_mutated_attr_rolls_http_to_fw(data: dict) -> dict[int | str, float]:
+    return {attr_http_to_fw(attr_id=attr_id): roll for attr_id, roll in data.items()}

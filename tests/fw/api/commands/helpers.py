@@ -65,3 +65,9 @@ def process_val_options_request(*, options: typing.Any) -> typing.Any:
     if options is Absent:
         return options
     return options.to_dict()
+
+
+def process_attr_map_request[T](*, attr_map: dict[int | str, T]) -> dict[str, T]:
+    if not isinstance(attr_map, dict):
+        return attr_map
+    return _cast_map(data=attr_map)

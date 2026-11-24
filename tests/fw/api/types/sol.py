@@ -145,14 +145,18 @@ class Sol(AttrDict):
             fleet_options: StatsOptions[FleetStatsOptions] | type[Absent] = Absent,
             fit_options: StatsOptions[FitStatsOptions] | type[Absent] = Absent,
             item_options: StatsOptions[ItemStatsOptions] | type[Absent] = Absent,
+            hook_req: ReqHook | None = None,
             status_code: int = 200,
             json_predicate: JsonPredicate = None,
     ) -> SolStatsResp | None:
-        resp = self._client.get_sol_stats_request(
+        req = self._client.get_sol_stats_request(
             sol_id=self.id,
             fleet_options=fleet_options,
             fit_options=fit_options,
-            item_options=item_options).send()
+            item_options=item_options)
+        if hook_req is not None:
+            hook_req(req)
+        resp = req.send()
         self.check()
         resp.check(status_code=status_code, json_predicate=json_predicate)
         if resp.status_code == 200:

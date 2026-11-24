@@ -1,7 +1,11 @@
 import typing
 
-from fw.api.commands import SrcInfoItemsCmd, SrcInfoMutatedItemsCmd
-from fw.api.types.helpers import src_items_http_to_fw, src_mutated_items_http_to_fw
+from fw.api.commands import SrcInfoItemsCmd, SrcInfoMutatedAttrRollsCmd, SrcInfoMutatedItemsCmd
+from fw.api.types.helpers import (
+    src_items_http_to_fw,
+    src_mutated_attr_rolls_http_to_fw,
+    src_mutated_items_http_to_fw,
+)
 
 if typing.TYPE_CHECKING:
     from collections.abc import Callable
@@ -60,4 +64,14 @@ class SrcCmdBatchCtx:
         self._commands.append(SrcInfoMutatedItemsCmd(mutations=mutations))
         ret_data = {}
         self._ret_datas.append((ret_data, src_mutated_items_http_to_fw))
+        return ret_data
+
+    def get_mutated_attr_rolls(
+            self, *,
+            mutation: tuple[int, int],
+            values: dict[int | str, float],
+    ) -> dict[int | str, float]:
+        self._commands.append(SrcInfoMutatedAttrRollsCmd(mutation=mutation, values=values))
+        ret_data = {}
+        self._ret_datas.append((ret_data, src_mutated_attr_rolls_http_to_fw))
         return ret_data

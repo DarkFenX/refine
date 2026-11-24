@@ -1,5 +1,7 @@
 import typing
 
+from fw import approx
+
 if typing.TYPE_CHECKING:
     from fw.request import Request
 
@@ -53,30 +55,46 @@ def test_error_no_src(client):
 
 
 def test_error_src_alias_malformed(client):
+
+    def hook_req(req: Request):
+        req.set_url(url=req.get_url().replace(f'/src/{api_src.alias}/', '/src/_..-/'))
+
+    api_src = client.create_source()
     # Action & verification
-    resp = client.source_command_batch_request(src_alias='_..-', commands=[]).send()
-    resp.check(
-        status_code=404,
-        json_predicate={'code': 'SRC-003', 'message': 'alias "_..-" not found: alias is empty after pruning'})
+    with api_src.batch(
+            hook_req=hook_req,
+            status_code=404,
+            json_predicate={'code': 'SRC-003', 'message': 'alias "_..-" not found: alias is empty after pruning'},
+    ) as api_src_batch:
+        api_src_batch.get_items(type_ids=[])
 
 
 def test_mixed(client, consts):
     # Commands of different kinds are answered in the order they were sent in
+    eve_attr_id = client.mk_eve_attr()
     eve_high_effect_id = client.mk_eve_effect(id_=consts.EveEffect.hi_power)
     eve_mid_effect_id = client.mk_eve_effect(id_=consts.EveEffect.med_power)
     eve_ship_id = client.mk_eve_item(cat_id=consts.EveItemCat.ship)
     eve_drone_id = client.mk_eve_item(cat_id=consts.EveItemCat.drone)
-    eve_base_module_id = client.mk_eve_item(cat_id=consts.EveItemCat.module, eff_ids=[eve_high_effect_id])
+    eve_base_module_id = client.mk_eve_item(
+        cat_id=consts.EveItemCat.module,
+        attrs={eve_attr_id: 100},
+        eff_ids=[eve_high_effect_id])
     eve_mutated_module_id = client.mk_eve_item(
         cat_id=consts.EveItemCat.module,
         is_dynamic=True,
         eff_ids=[eve_mid_effect_id])
-    eve_mutator_id = client.mk_eve_mutator(items=[([eve_base_module_id], eve_mutated_module_id)])
+    eve_mutator_id = client.mk_eve_mutator(
+        items=[([eve_base_module_id], eve_mutated_module_id)],
+        attrs={eve_attr_id: (0.8, 1.2)})
     api_src = client.create_source()
     # Action
     with api_src.batch() as api_src_batch:
         api_src_items1 = api_src_batch.get_items(type_ids=[eve_ship_id, eve_base_module_id])
         api_src_mutated_items = api_src_batch.get_mutated_items(mutations=[(eve_base_module_id, eve_mutator_id)])
+        api_src_rolls = api_src_batch.get_mutated_attr_rolls(
+            mutation=(eve_base_module_id, eve_mutator_id),
+            values={eve_attr_id: 104})
         api_src_items2 = api_src_batch.get_items(type_ids=[eve_drone_id])
     # Verification
     assert api_src_items1.keys() == {eve_ship_id, eve_base_module_id}
@@ -87,14 +105,14 @@ def test_mixed(client, consts):
     api_src_mutated_module = api_src_mutated_items[eve_base_module_id][eve_mutator_id]
     assert api_src_mutated_module.type_id == eve_mutated_module_id
     assert api_src_mutated_module.detected_kind == consts.ApiDetectedItemKind.module_mid
+    assert api_src_rolls.keys() == {eve_attr_id}
+    assert api_src_rolls[eve_attr_id] == approx(0.6)
     assert api_src_items2.keys() == {eve_drone_id}
     assert api_src_items2[eve_drone_id].detected_kind == consts.ApiDetectedItemKind.drone
 
 
 def test_no_cmds(client):
     api_src = client.create_source()
-    # Action
-    resp = client.source_command_batch_request(src_alias=api_src.alias, commands=[]).send()
-    # Verification
-    resp.check(status_code=200)
-    assert resp.json() == []
+    # Action & verification
+    with api_src.batch(json_predicate=[]):
+        pass
