@@ -33,7 +33,7 @@ pub struct SrcItemInfo {
 // Conversions
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl SrcItemInfos {
-    pub(crate) fn from_core(core_src: &rc::Src, type_ids: &[ItemTypeId]) -> Self {
+    pub(super) fn from_core(core_src: &rc::Src, type_ids: &[ItemTypeId]) -> Self {
         let mut seen_type_ids = RSet::default();
         let items = type_ids
             .iter()

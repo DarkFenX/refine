@@ -5,19 +5,13 @@ use axum::{
     response::IntoResponse,
 };
 use axum_extra::extract::WithRejection;
-use serde::Deserialize;
 
 use crate::{err::ApiError, state::AppState};
-
-#[derive(Deserialize)]
-pub(crate) struct GetSrcItemsReqBody {
-    type_ids: Vec<rs::ItemTypeId>,
-}
 
 pub(crate) async fn get_source_items(
     State(state): State<AppState>,
     Path(src_alias): Path<String>,
-    WithRejection(Json(payload), _): WithRejection<Json<GetSrcItemsReqBody>, ApiError>,
+    WithRejection(Json(payload), _): WithRejection<Json<rs::src::SrcItemInfosCmd>, ApiError>,
 ) -> impl IntoResponse {
     match internal_get_source_items(state, src_alias, payload).await {
         Ok(item_infos) => (StatusCode::OK, Json(item_infos)).into_response(),
@@ -28,7 +22,7 @@ pub(crate) async fn get_source_items(
 async fn internal_get_source_items(
     state: AppState,
     src_alias: String,
-    payload: GetSrcItemsReqBody,
+    payload: rs::src::SrcItemInfosCmd,
 ) -> Result<rs::src::SrcItemInfos, ApiError> {
     let src_alias =
         rs::src::SrcAlias::try_pruned(&src_alias).map_err(|err| ApiError::PathSrcParseMisc(src_alias, err))?;
@@ -36,7 +30,7 @@ async fn internal_get_source_items(
         .get_refine()
         .get_src(Some(src_alias))
         .await?
-        .get_item_infos(&payload.type_ids)
+        .get_item_infos(payload)
         .await;
     Ok(item_infos)
 }

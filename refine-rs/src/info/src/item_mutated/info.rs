@@ -1,5 +1,6 @@
 use crate::{
     DetectedItemKind, ItemTypeId, ModuleState,
+    src::SrcMutation,
     util::{RMap, RSet},
 };
 
@@ -51,14 +52,18 @@ pub struct SrcMutatedItemInfo {
 // Conversions
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl SrcMutatedItemInfos {
-    pub(crate) fn from_core(core_src: &rc::Src, mutations: &[(ItemTypeId, ItemTypeId)]) -> Self {
+    pub(super) fn from_core(core_src: &rc::Src, mutations: &[SrcMutation]) -> Self {
         let mut base_types: Vec<SrcMutatedItemBaseInfo> = Vec::new();
         let mut base_type_indices = RMap::default();
         let mut seen_mutations = RSet::default();
-        for &(base_type_id, mutator_id) in mutations {
-            if !seen_mutations.insert((base_type_id, mutator_id)) {
+        for &mutation in mutations {
+            if !seen_mutations.insert(mutation) {
                 continue;
             }
+            let SrcMutation {
+                base_type_id,
+                mutator_id,
+            } = mutation;
             let Some(core_src_item) = core_src.get_mutated_item(base_type_id, mutator_id) else {
                 continue;
             };
