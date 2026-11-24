@@ -64,7 +64,7 @@ fn test_crusader(edh: &EveDataHandler, adc: &AdaptedDataCacher) {
     let skill_ids = get_skill_ids();
     tracing::info!("source: initializing...");
     let src = Src::new(edh, Some(adc)).unwrap();
-    match src.get_info().origin {
+    match src.get_origin() {
         SrcOrigin::Cached(..) => tracing::info!("source: loaded from cache"),
         SrcOrigin::Generated(..) => tracing::info!("source: generated"),
     }

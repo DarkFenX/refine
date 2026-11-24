@@ -115,7 +115,7 @@ fn create_core_src(
 }
 
 fn log_reason(core_src: &rc::Src) {
-    match &core_src.get_info().origin {
+    match core_src.get_origin() {
         rc::src::SrcOrigin::Generated(reason) => {
             let prefix = "source data was generated";
             match reason {
@@ -141,7 +141,6 @@ fn log_reason(core_src: &rc::Src) {
 }
 
 fn log_warnings(core_src: &rc::Src) {
-    let core_info = core_src.get_info();
     let rc::src::SrcWarnings {
         eve_data_fetch,
         adg_pk_duplicates,
@@ -151,7 +150,7 @@ fn log_warnings(core_src: &rc::Src) {
         adg_customization,
         adg_conversion_aux,
         cache_write,
-    } = &core_info.warnings;
+    } = core_src.get_warnings();
     // Report data fetching errors under EVE data handler span, since that's where they originate
     // from
     tracing::error_span!("edh").in_scope(|| {

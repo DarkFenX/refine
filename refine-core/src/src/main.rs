@@ -2,8 +2,9 @@ use std::sync::Arc;
 
 use super::{
     err::SrcInitError,
-    info::{SrcInfo, SrcOrigin, SrcOriginGeneratedReason, SrcWarnings},
     item::SrcItem,
+    origin::{SrcOrigin, SrcOriginGeneratedReason},
+    warnings::SrcWarnings,
 };
 use crate::{
     ItemTypeId,
@@ -20,7 +21,8 @@ use crate::{
 /// its contents
 pub struct Src {
     pub(crate) r_data: Arc<RData>,
-    info: SrcInfo,
+    origin: SrcOrigin,
+    warnings: SrcWarnings,
 }
 impl Src {
     pub fn new(ed_handler: &EveDataHandler, ad_cacher: Option<&AdaptedDataCacher>) -> Result<Self, SrcInitError> {
@@ -59,8 +61,11 @@ impl Src {
         // Cached data is unusable - generate adapted data and cache it
         generate_and_cache(ed_handler, SrcOrigin::Generated(reason), ad_cacher, current_fingerprint)
     }
-    pub fn get_info(&self) -> &SrcInfo {
-        &self.info
+    pub fn get_origin(&self) -> &SrcOrigin {
+        &self.origin
+    }
+    pub fn get_warnings(&self) -> &SrcWarnings {
+        &self.warnings
     }
     pub fn get_item(&self, type_id: ItemTypeId) -> Option<SrcItem<'_>> {
         let r_item = self.r_data.get_item_by_aid(&type_id.into_aid())?;
@@ -76,10 +81,10 @@ impl Src {
 fn process(mut a_data: AData, origin: SrcOrigin) -> Result<Src, SrcInitError> {
     let warnings = SrcWarnings::from_adapted_warnings(&mut a_data);
     let r_data = RData::from_a_data(a_data);
-    let src_info = SrcInfo { origin, warnings };
     Ok(Src {
         r_data: Arc::new(r_data),
-        info: src_info,
+        origin,
+        warnings,
     })
 }
 
@@ -104,9 +109,9 @@ fn generate_and_cache(
     let mut warnings = SrcWarnings::from_adapted_warnings(&mut a_data);
     warnings.cache_write = cache_write_warning;
     let r_data = RData::from_a_data(a_data);
-    let src_info = SrcInfo { origin, warnings };
     Ok(Src {
         r_data: Arc::new(r_data),
-        info: src_info,
+        origin,
+        warnings,
     })
 }

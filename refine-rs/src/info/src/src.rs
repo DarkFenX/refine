@@ -41,15 +41,15 @@ impl SrcInfo {
             partial: match src_info_mode {
                 SrcInfoMode::Alias => None,
                 SrcInfoMode::Partial | SrcInfoMode::Full => {
-                    let core_info = inner_src.get_core().get_info();
+                    let core_src = inner_src.get_core();
                     Some(SrcInfoPartial {
                         time_created: inner_src.get_time_created(),
-                        origin: core_info.origin.clone(),
+                        origin: core_src.get_origin().clone(),
                         default: is_default,
                         full: match src_info_mode {
                             SrcInfoMode::Alias | SrcInfoMode::Partial => None,
                             SrcInfoMode::Full => Some(SrcInfoFull {
-                                warnings: core_info.warnings.clone(),
+                                warnings: core_src.get_warnings().clone(),
                             }),
                         },
                     })
