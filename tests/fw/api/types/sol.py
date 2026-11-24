@@ -6,7 +6,7 @@ from fw.api.types.dps_profile import DpsProfile
 from fw.api.types.fit import Fit
 from fw.api.types.fleet import Fleet
 from fw.api.types.item import Item
-from fw.api.types.stats import SolBatchStats
+from fw.api.types.stats import SolStatsResp
 from fw.api.types.validation import FitValResult, SolValResult
 from fw.consts import ApiFitInfoMode, ApiFleetInfoMode, ApiItemInfoMode, ApiSolInfoMode, ApiValResultMode
 from fw.util import Absent, AttrDict, AttrHookDef, Default, is_subset
@@ -147,7 +147,7 @@ class Sol(AttrDict):
             item_options: StatsOptions[ItemStatsOptions] | type[Absent] = Absent,
             status_code: int = 200,
             json_predicate: JsonPredicate = None,
-    ) -> SolBatchStats | None:
+    ) -> SolStatsResp | None:
         resp = self._client.get_sol_stats_request(
             sol_id=self.id,
             fleet_options=fleet_options,
@@ -156,7 +156,7 @@ class Sol(AttrDict):
         self.check()
         resp.check(status_code=status_code, json_predicate=json_predicate)
         if resp.status_code == 200:
-            return SolBatchStats(data=resp.json())
+            return SolStatsResp(data=resp.json())
         return None
 
     def validate(

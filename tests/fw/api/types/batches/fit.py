@@ -43,7 +43,7 @@ from fw.api.commands import (
     FitValFitCmd,
 )
 from fw.api.types.item import ModAddMode
-from fw.api.types.stats import FitBatchStats, ItemBatchStats
+from fw.api.types.stats import FitStatsResp, ItemStatsResp
 from fw.api.types.validation import FitValResult
 from fw.consts import ApiMinionState, ApiModuleState, ApiServiceState, Rack
 from fw.util import Absent, Default
@@ -667,23 +667,23 @@ class FitCmdBatchCtx(BaseCmdBatchCtx):
             self, *,
             fit_options: FitStatsOptions | type[Absent] = Absent,
             item_options: StatsOptions[ItemStatsOptions] | type[Absent] = Absent,
-    ) -> FitBatchStats:
+    ) -> FitStatsResp:
         command = FitStatsFitCmd(
             fit_options=fit_options,
             item_options=item_options)
         self._commands.append(command)
-        return self._make_stats(cls=FitBatchStats)
+        return self._make_stats(cls=FitStatsResp)
 
     def get_item_stats(
             self, *,
             item_id: str,
             item_options: ItemStatsOptions | type[Absent] = Absent,
-    ) -> ItemBatchStats:
+    ) -> ItemStatsResp:
         command = FitStatsItemCmd(
             item_id=item_id,
             item_options=item_options)
         self._commands.append(command)
-        return self._make_stats(cls=ItemBatchStats)
+        return self._make_stats(cls=ItemStatsResp)
 
     ################################################################################################
     # Validation

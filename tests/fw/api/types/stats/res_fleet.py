@@ -6,7 +6,7 @@ from .stat_mining import StatMining
 from .stat_outgoing_rps import StatOutRps
 
 
-class FleetBatchStats(AttrDict):
+class FleetStatsResp(AttrDict):
 
     def __init__(self, *, data: dict) -> None:
         super().__init__(data=data, hooks={

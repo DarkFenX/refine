@@ -16,7 +16,7 @@ from .stat_sensors import StatSensors
 from .stat_slot import StatSlot
 
 
-class FitBatchStats(AttrDict):
+class FitStatsResp(AttrDict):
 
     def __init__(self, *, data: dict) -> None:
         super().__init__(data=data, hooks={

@@ -4,7 +4,7 @@ from .res_fleet import FleetStats
 from .res_item import ItemStats
 
 
-class SolBatchStats(AttrDict):
+class SolStatsResp(AttrDict):
 
     def __init__(self, *, data: dict) -> None:
         super().__init__(data=data, hooks={

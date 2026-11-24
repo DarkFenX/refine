@@ -24,8 +24,8 @@ from .opt_shared import StatTime
 from .opts_fit import FitStatsOptions
 from .opts_fleet import FleetStatsOptions
 from .opts_item import ItemStatsOptions
-from .res_fit import FitBatchStats, FitStats
-from .res_fleet import FleetBatchStats, FleetStats
-from .res_item import ItemBatchStats, ItemStats
-from .res_sol import SolBatchStats
+from .res_fit import FitStats, FitStatsResp
+from .res_fleet import FleetStats, FleetStatsResp
+from .res_item import ItemStats, ItemStatsResp
+from .res_sol import SolStatsResp
 from .stat_cap_sim import StatCapSim
