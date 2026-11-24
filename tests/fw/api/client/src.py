@@ -1,6 +1,7 @@
 import typing
 
 from fw import eve
+from fw.api.commands import SrcInfoItemsCmd, SrcInfoMutatedItemsCmd
 from fw.api.types import Src
 from fw.consts import ApiSrcInfoMode
 from fw.request import Request
@@ -9,6 +10,7 @@ from .base import ApiClientBase
 
 if typing.TYPE_CHECKING:
     from fw.aliases import JsonPredicate
+    from fw.api.commands import BaseCommand
     from fw.eve.aliases import DataPrimHook, DataStrHook
 
 
@@ -87,22 +89,38 @@ class ApiClientSrc(ApiClientBase, eve.EveDataManager, eve.EveDataServer):
             src_alias: str,
             type_ids: list[int],
     ) -> Request:
-        return Request(
-            client=self,
-            method='POST',
-            url=f'{self._base_url}/src/{src_alias}/items',
-            json={'type_ids': type_ids})
+        command = SrcInfoItemsCmd(type_ids=type_ids)
+        return self.source_command_request(src_alias=src_alias, command=command)
 
     def get_source_mutated_items_request(
             self, *,
             src_alias: str,
             mutations: list[tuple[int, int]],
     ) -> Request:
+        command = SrcInfoMutatedItemsCmd(mutations=mutations)
+        return self.source_command_request(src_alias=src_alias, command=command)
+
+    def source_command_request(
+            self, *,
+            src_alias: str,
+            command: BaseCommand,
+    ) -> Request:
         return Request(
             client=self,
             method='POST',
-            url=f'{self._base_url}/src/{src_alias}/mutated-items',
-            json={'mutations': mutations})
+            url=f'{self._base_url}/src/{src_alias}/single',
+            json=command.serialize())
+
+    def source_command_batch_request(
+            self, *,
+            src_alias: str,
+            commands: list[BaseCommand],
+    ) -> Request:
+        return Request(
+            client=self,
+            method='POST',
+            url=f'{self._base_url}/src/{src_alias}/batch',
+            json=[c.serialize() for c in commands])
 
     def remove_source_request(self, *, src_alias: str) -> Request:
         return Request(

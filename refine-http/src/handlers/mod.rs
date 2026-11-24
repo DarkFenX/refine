@@ -5,7 +5,7 @@ pub(crate) use fleet::{add_fleet, change_fleet, get_fleet, remove_fleet};
 pub(crate) use item::{add_item, change_item, get_item, remove_item};
 pub(crate) use root::root;
 pub(crate) use sol::{add_sol, batch_sol, change_sol, get_sol, remove_sol, switch_sol_src};
-pub(crate) use src::{add_source, get_source, get_source_items, get_source_mutated_items, remove_source};
+pub(crate) use src::{add_source, batch_source, get_source, query_source, remove_source};
 pub(crate) use stats::{get_fit_stats, get_fleet_stats, get_item_stats};
 pub(crate) use try_fit_items::try_fit_items;
 pub(crate) use validate::{validate_fit, validate_sol};

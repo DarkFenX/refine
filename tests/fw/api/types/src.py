@@ -1,10 +1,12 @@
 import typing
 
+from fw.api.types.batches.src import SrcCmdBatchCtx
+from fw.api.types.helpers import src_items_http_to_fw, src_mutated_items_http_to_fw
 from fw.consts import ApiSrcInfoMode
 from fw.util import Absent, AttrDict
 
 if typing.TYPE_CHECKING:
-    from fw.aliases import JsonPredicate
+    from fw.aliases import JsonPredicate, ReqHook
     from fw.api import ApiClient
 
 
@@ -36,7 +38,7 @@ class Src(AttrDict):
         resp = self._client.get_source_items_request(src_alias=self.alias, type_ids=type_ids).send()
         resp.check(status_code=status_code, json_predicate=json_predicate)
         if resp.status_code == 200:
-            return {int(k): AttrDict(data=v) for k, v in resp.json().items()}
+            return src_items_http_to_fw(data=resp.json())
         return None
 
     def get_mutated_items(
@@ -48,7 +50,18 @@ class Src(AttrDict):
         resp = self._client.get_source_mutated_items_request(src_alias=self.alias, mutations=mutations).send()
         resp.check(status_code=status_code, json_predicate=json_predicate)
         if resp.status_code == 200:
-            return {
-                int(base_type_id): {int(mutator_id): AttrDict(data=v) for mutator_id, v in mutators.items()}
-                for base_type_id, mutators in resp.json().items()}
+            return src_mutated_items_http_to_fw(data=resp.json())
         return None
+
+    def batch(
+            self, *,
+            hook_req: ReqHook | None = None,
+            status_code: int = 200,
+            json_predicate: JsonPredicate = None,
+    ) -> SrcCmdBatchCtx:
+        return SrcCmdBatchCtx(
+            client=self._client,
+            src_alias=self.alias,
+            hook_req=hook_req,
+            status_code=status_code,
+            json_predicate=json_predicate)

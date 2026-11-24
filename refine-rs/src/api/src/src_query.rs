@@ -1,0 +1,14 @@
+use crate::{
+    Src,
+    src::{SrcInfoEnumCmd, SrcInfoEnumResp},
+};
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Public
+////////////////////////////////////////////////////////////////////////////////////////////////////
+impl Src<'_> {
+    #[tracing::instrument(name = "src-qry", level = "error", skip_all)]
+    pub async fn query(&self, info_cmd: SrcInfoEnumCmd) -> SrcInfoEnumResp {
+        info_cmd.execute(self.inner.get_core())
+    }
+}
