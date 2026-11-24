@@ -5,7 +5,7 @@ pub use crate::{
         FitGetError, FleetGetError, ItemGetError, SolAddError, SolGetError, SolIdParseError, SolRemoveError,
         SolSwitchSrcError,
     },
-    shared::BrResolveError,
+    misc::BrResolveError,
 };
 
 pub mod core {

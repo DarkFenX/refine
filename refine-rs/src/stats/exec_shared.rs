@@ -3,11 +3,11 @@ use rc::{ExactSizeLender, Lender, stats::ItemStatsCommon};
 use crate::{
     FitId, FleetId, ItemId,
     err::BrResolveError,
-    shared::OvrdMapHeavy,
     stats::{
         FitStats, FleetStats, ItemStats, StatBrFallibleError, StatResult, fatal::StatErrorFatality,
         fit::FitStatsOptionsResolved, fleet::FleetStatsOptionsResolved, item::ItemStatsOptionsResolved,
     },
+    util::OvrdMapHeavy,
 };
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////

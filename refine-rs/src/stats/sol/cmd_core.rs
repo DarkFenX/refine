@@ -1,6 +1,5 @@
 use crate::{
     CmdResps, FitId, FitIdBr, FleetId, FleetIdBr, ItemId, ItemIdBr,
-    shared::{OvrdCompact, OvrdMapHeavy},
     stats::{
         FitStatsOptionsGen, FleetStatsOptionsGen, ItemStatsOptionsGen, SolStatsResp,
         exec_shared::{
@@ -11,6 +10,7 @@ use crate::{
         fleet::FleetStatsOptionsResolved,
         item::ItemStatsOptionsResolved,
     },
+    util::{OvrdCompact, OvrdMapHeavy},
 };
 
 // Core commands

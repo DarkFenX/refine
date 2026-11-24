@@ -1,7 +1,7 @@
 use crate::{
     CmdResps, FitId, FitIdBr, FleetId, FleetIdBr, ItemId, ItemIdBr, SolId, SrcAlias,
     info::{FitInfoMode, FleetInfoMode, ItemInfoMode, SolInfo, SolInfoMode, SolInfoPartial},
-    shared::{OvrdCompact, OvrdMapLight},
+    util::{OvrdCompact, OvrdMapLight},
 };
 
 // Core commands

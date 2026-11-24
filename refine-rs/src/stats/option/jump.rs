@@ -1,6 +1,6 @@
 use crate::{
     CmdResps, FitId, FitIdBr,
-    shared::BrResolveInfallible,
+    misc::BrResolveInfallible,
     stats::{StatCtlAffectors, StatJumpRange},
 };
 

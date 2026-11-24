@@ -2,7 +2,7 @@ use crate::{
     CmdResps, FitId, FitIdBr, ItemId, ItemIdBr,
     err::BrResolveError,
     info::{FitInfo, FitInfoMode, ItemInfoMode},
-    shared::{OvrdCompact, OvrdMapLight},
+    util::{OvrdCompact, OvrdMapLight},
 };
 
 // Core commands

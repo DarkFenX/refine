@@ -6,7 +6,7 @@ use crate::{
     Count, EffectId, EffectMode, FitId, ItemId, ItemSpoolInfo, ItemTypeId, ModRack, ModuleState, OptionalReload,
     RackPos, Spool, TriStateField,
     info::{ChargeInfo, ItemInfoFull, ItemInfoMode, ItemMutationInfo, RangedProjInfo},
-    shared::OvrdMapLight,
+    util::OvrdMapLight,
 };
 
 #[cfg_attr(feature = "serde", derive(serde::Serialize))]

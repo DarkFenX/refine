@@ -7,6 +7,7 @@
 #![expect(unevaluated_default_field_value)]
 
 pub use api::{Fit, Fleet, Item, Refine, Sol, SolId};
+pub use misc::{CmdResp, CmdResps, FitIdBr, FleetIdBr, ItemIdBr, TriStateField};
 pub use rc::{
     AbilityId, AddMode, Affector, AttrId, BreacherProfile, Coordinates, Count, CountNz, CustomAttrId, CustomEffectId,
     DetectedItemKind, Direction, DogmaEffectId, DpsProfile, EffectId, EffectMode, EveAttrId, FighterCountInfo, FitId,
@@ -15,7 +16,6 @@ pub use rc::{
     PValue, ProjRange, RackPos, RearmMinion, RemoveMode, SecZone, SecZoneCorruption, ServiceState, SkillLevel,
     SlotIndex, Spool, SpoolCycleInfo, UnitInterval, Value, ad::AdaptedDataCacher, ed::EveDataHandler,
 };
-pub use shared::{CmdResp, CmdResps, FitIdBr, FleetIdBr, ItemIdBr, TriStateField};
 pub use src::{Src, SrcAlias};
 
 mod api;
@@ -26,7 +26,7 @@ pub mod dev;
 pub mod err;
 pub mod hyb;
 pub mod info;
-mod shared;
+mod misc;
 pub mod src;
 pub mod stats;
 mod svc;

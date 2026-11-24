@@ -1,7 +1,7 @@
 use crate::{
     CmdResps,
     err::BrResolveError,
-    shared::{BrResolveFallible, BrResolveInfallible},
+    misc::{BrResolveFallible, BrResolveInfallible},
 };
 
 /// A stat option which can have extended settings.

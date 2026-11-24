@@ -3,7 +3,7 @@ use rc::Lender;
 use crate::{
     DpsProfile, FitId, FleetId, ItemId, NpcProp, OptionalReload, RearmMinion, SecZone, SolId, Spool, SrcAlias,
     info::{FitInfo, FitInfoMode, FleetInfo, FleetInfoMode, ItemInfoMode, ProjEffectInfo, SolInfoMode, SwEffectInfo},
-    shared::OvrdMapLight,
+    util::OvrdMapLight,
 };
 
 #[cfg_attr(feature = "serde", derive(serde::Serialize))]

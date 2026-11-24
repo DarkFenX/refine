@@ -2,7 +2,7 @@ use std::hash::Hash;
 
 use crate::{
     CmdResps,
-    shared::{BrResolveFallible, BrResolveInfallible},
+    misc::{BrResolveFallible, BrResolveInfallible},
     util::RMap,
 };
 

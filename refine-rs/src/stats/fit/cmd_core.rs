@@ -1,12 +1,13 @@
 use crate::{
     CmdResps, FitId, FitIdBr, ItemId, ItemIdBr,
     err::BrResolveError,
-    shared::{BrResolveInfallible, OvrdCompact, OvrdMapHeavy},
+    misc::BrResolveInfallible,
     stats::{
         FitStatsOptionsGen, FitStatsResp, ItemStatsOptionsGen,
         exec_shared::{extend_stats_for_passed_items, get_stats_for_items_in_overrides},
         item::ItemStatsOptionsResolved,
     },
+    util::{OvrdCompact, OvrdMapHeavy},
 };
 
 // Core commands

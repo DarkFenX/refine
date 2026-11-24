@@ -5,7 +5,7 @@ use crate::ItemKind;
 use crate::{
     Coordinates, EffectId, EffectMode, FitId, ItemId, ItemTypeId, MinionState, Movement, NpcProp,
     info::{ItemInfoFull, ItemInfoMode, ItemMutationInfo, RangedProjInfo},
-    shared::OvrdMapLight,
+    util::OvrdMapLight,
 };
 
 #[cfg_attr(feature = "serde", derive(serde::Serialize))]

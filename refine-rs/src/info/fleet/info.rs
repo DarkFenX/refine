@@ -3,7 +3,7 @@ use rc::Lender;
 use crate::{
     FitId, FleetId, ItemId,
     info::{FitInfo, FitInfoMode, FleetInfoMode, ItemInfoMode},
-    shared::OvrdMapLight,
+    util::OvrdMapLight,
 };
 
 #[cfg_attr(feature = "serde", derive(serde::Serialize))]

@@ -3,7 +3,7 @@ use rc::ItemCommon;
 use crate::{
     CmdResps, FitId, FitIdBr, ItemId, ItemIdBr,
     err::BrResolveError,
-    shared::BrResolveInfallible,
+    misc::BrResolveInfallible,
     stats::{ItemStatsOptionsGen, ItemStatsResp},
 };
 

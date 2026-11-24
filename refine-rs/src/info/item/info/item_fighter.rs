@@ -6,7 +6,7 @@ use crate::{
     AbilityId, Coordinates, CountNz, EffectId, EffectMode, FighterCountInfo, FitId, ItemId, ItemTypeId, MinionState,
     Movement, RearmMinion,
     info::{AbilityInfo, AutochargeInfo, ItemInfoFull, ItemInfoMode, RangedProjInfo},
-    shared::OvrdMapLight,
+    util::OvrdMapLight,
 };
 
 #[cfg_attr(feature = "serde", cfg_eval, serde_with::serde_as, derive(serde::Serialize))]

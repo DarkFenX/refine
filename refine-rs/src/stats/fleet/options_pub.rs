@@ -1,6 +1,6 @@
 use crate::{
     CmdResps, ItemId, ItemIdBr,
-    shared::BrResolveInfallible,
+    misc::BrResolveInfallible,
     stats::{
         StatOptionExt, StatOptionFitDmgGen, StatOptionFitMining, StatOptionFitOutCpsGen, StatOptionFitOutNpsGen,
         StatOptionFitOutRpsGen, StatOptionInt, StatOptionMass, fleet::FleetStatsOptionsResolved,

@@ -6,7 +6,7 @@ use crate::{
         BoosterInfo, CharacterInfo, DroneInfo, FighterInfo, FitInfoMode, FwEffectInfo, ImplantInfo, ItemInfoMode,
         ModuleInfo, RigInfo, ServiceInfo, ShipInfo, SkillInfo, StanceInfo, SubsystemInfo,
     },
-    shared::OvrdMapLight,
+    util::OvrdMapLight,
 };
 
 #[cfg_attr(feature = "serde", derive(serde::Serialize))]

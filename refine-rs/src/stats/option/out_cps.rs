@@ -1,7 +1,7 @@
 use crate::{
     CmdResps, ItemId, ItemIdBr,
     err::BrResolveError,
-    shared::BrResolveFallible,
+    misc::BrResolveFallible,
     stats::{StatItemStateOptions, StatTimeOptions},
 };
 

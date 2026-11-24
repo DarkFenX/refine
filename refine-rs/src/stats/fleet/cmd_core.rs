@@ -3,7 +3,7 @@ use rc::Lender;
 use crate::{
     CmdResps, FitId, FitIdBr, FleetId, FleetIdBr, ItemId, ItemIdBr,
     err::BrResolveError,
-    shared::{BrResolveInfallible, OvrdCompact, OvrdMapHeavy},
+    misc::BrResolveInfallible,
     stats::{
         FitStatsOptionsGen, FleetStatsOptionsGen, FleetStatsResp, ItemStatsOptionsGen,
         exec_shared::{
@@ -13,6 +13,7 @@ use crate::{
         fit::FitStatsOptionsResolved,
         item::ItemStatsOptionsResolved,
     },
+    util::{OvrdCompact, OvrdMapHeavy},
 };
 
 // Core commands

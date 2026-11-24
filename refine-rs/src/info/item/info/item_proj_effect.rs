@@ -5,7 +5,7 @@ use crate::ItemKind;
 use crate::{
     EffectId, EffectMode, ItemId, ItemTypeId,
     info::{ItemInfoFull, ItemInfoMode, ProjInfo},
-    shared::OvrdMapLight,
+    util::OvrdMapLight,
 };
 
 #[cfg_attr(feature = "serde", derive(serde::Serialize))]
