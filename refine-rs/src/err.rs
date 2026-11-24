@@ -2,8 +2,8 @@ pub use rc::err::{FitIdParseError, FleetIdParseError, ItemIdParseError};
 
 pub use crate::{
     api::{
-        FitGetError, FitHybridBatchError, FleetGetError, ItemGetError, SolAddError, SolGetError, SolHybridBatchError,
-        SolIdParseError, SolRemoveError, SolSwitchSrcError,
+        FitGetError, FleetGetError, ItemGetError, SolAddError, SolGetError, SolIdParseError, SolRemoveError,
+        SolSwitchSrcError,
     },
     shared::BrResolveError,
 };

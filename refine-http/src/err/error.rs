@@ -120,43 +120,43 @@ impl From<JsonRejection> for ApiError {
         Self::Json(err)
     }
 }
-impl From<rs::err::SolHybridBatchError> for ApiError {
-    fn from(err: rs::err::SolHybridBatchError) -> Self {
+impl From<rs::hyb::err::SolHybridBatchError> for ApiError {
+    fn from(err: rs::hyb::err::SolHybridBatchError) -> Self {
         match err {
-            rs::err::SolHybridBatchError::BrResolve(index, inner) => {
+            rs::hyb::err::SolHybridBatchError::BrResolve(index, inner) => {
                 Self::BatchBackrefResolve(ApiErrorIndexed { index, error: inner })
             }
-            rs::err::SolHybridBatchError::CtlExec(index, inner) => {
+            rs::hyb::err::SolHybridBatchError::CtlExec(index, inner) => {
                 Self::SolBatchCtl(ApiErrorIndexed { index, error: inner })
             }
-            rs::err::SolHybridBatchError::InfoExec(index, inner) => {
+            rs::hyb::err::SolHybridBatchError::InfoExec(index, inner) => {
                 Self::SolBatchInfo(ApiErrorIndexed { index, error: inner })
             }
-            rs::err::SolHybridBatchError::StatsExec(index, inner) => {
+            rs::hyb::err::SolHybridBatchError::StatsExec(index, inner) => {
                 Self::SolBatchStats(ApiErrorIndexed { index, error: inner })
             }
-            rs::err::SolHybridBatchError::ValExec(index, inner) => {
+            rs::hyb::err::SolHybridBatchError::ValExec(index, inner) => {
                 Self::SolBatchVal(ApiErrorIndexed { index, error: inner })
             }
-            rs::err::SolHybridBatchError::TryItemsExec(index, inner) => {
+            rs::hyb::err::SolHybridBatchError::TryItemsExec(index, inner) => {
                 Self::SolBatchTryItems(ApiErrorIndexed { index, error: inner })
             }
         }
     }
 }
-impl From<rs::err::FitHybridBatchError> for ApiError {
-    fn from(err: rs::err::FitHybridBatchError) -> Self {
+impl From<rs::hyb::err::FitHybridBatchError> for ApiError {
+    fn from(err: rs::hyb::err::FitHybridBatchError) -> Self {
         match err {
-            rs::err::FitHybridBatchError::BrResolve(index, inner) => {
+            rs::hyb::err::FitHybridBatchError::BrResolve(index, inner) => {
                 Self::BatchBackrefResolve(ApiErrorIndexed { index, error: inner })
             }
-            rs::err::FitHybridBatchError::CtlExec(index, inner) => {
+            rs::hyb::err::FitHybridBatchError::CtlExec(index, inner) => {
                 Self::FitBatchCtl(ApiErrorIndexed { index, error: inner })
             }
-            rs::err::FitHybridBatchError::InfoExec(index, inner) => {
+            rs::hyb::err::FitHybridBatchError::InfoExec(index, inner) => {
                 Self::FitBatchInfo(ApiErrorIndexed { index, error: inner })
             }
-            rs::err::FitHybridBatchError::StatsExec(index, inner) => {
+            rs::hyb::err::FitHybridBatchError::StatsExec(index, inner) => {
                 Self::FitBatchStats(ApiErrorIndexed { index, error: inner })
             }
         }

@@ -5,5 +5,8 @@ mod fit;
 mod sol;
 
 pub mod err {
-    pub use crate::hyb::{fit::FitHybridError, sol::SolHybridError};
+    pub use crate::{
+        api::{FitHybridBatchError, SolHybridBatchError},
+        hyb::{fit::FitHybridError, sol::SolHybridError},
+    };
 }
