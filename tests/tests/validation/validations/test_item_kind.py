@@ -43,8 +43,8 @@ def test_kind_booster(client, consts):
     api_val = api_fit.validate(options=ValOptions(item_kind=True))
     assert api_val.passed is False
     assert api_val.details.item_kind == {
-        api_other1.id: (consts.ApiValItemType.drone, consts.ApiValItemType.booster),
-        api_other2.id: (consts.ApiValItemType.booster, consts.ApiValItemType.implant)}
+        api_other1.id: (consts.ApiDetectedItemKind.drone, consts.ApiDetectedItemKind.booster),
+        api_other2.id: (consts.ApiDetectedItemKind.booster, consts.ApiDetectedItemKind.implant)}
 
 
 def test_kind_character(client, consts):
@@ -66,8 +66,8 @@ def test_kind_character(client, consts):
     api_val = api_fit.validate(options=ValOptions(item_kind=True))
     assert api_val.passed is False
     assert api_val.details.item_kind == {
-        api_other1.id: (consts.ApiValItemType.ship, consts.ApiValItemType.character),
-        api_other2.id: (consts.ApiValItemType.character, consts.ApiValItemType.implant)}
+        api_other1.id: (consts.ApiDetectedItemKind.ship, consts.ApiDetectedItemKind.character),
+        api_other2.id: (consts.ApiDetectedItemKind.character, consts.ApiDetectedItemKind.implant)}
 
 
 def test_kind_charge(client, consts):
@@ -91,8 +91,8 @@ def test_kind_charge(client, consts):
     api_val = api_fit.validate(options=ValOptions(item_kind=True))
     assert api_val.passed is False
     assert api_val.details.item_kind == {
-        api_module.charge.id: (consts.ApiValItemType.ship, consts.ApiValItemType.charge),
-        api_other.id: (consts.ApiValItemType.charge, consts.ApiValItemType.implant)}
+        api_module.charge.id: (consts.ApiDetectedItemKind.ship, consts.ApiDetectedItemKind.charge),
+        api_other.id: (consts.ApiDetectedItemKind.charge, consts.ApiDetectedItemKind.implant)}
 
 
 def test_kind_drone(client, consts):
@@ -114,8 +114,8 @@ def test_kind_drone(client, consts):
     api_val = api_fit.validate(options=ValOptions(item_kind=True))
     assert api_val.passed is False
     assert api_val.details.item_kind == {
-        api_other1.id: (consts.ApiValItemType.charge, consts.ApiValItemType.drone),
-        api_other2.id: (consts.ApiValItemType.drone, consts.ApiValItemType.implant)}
+        api_other1.id: (consts.ApiDetectedItemKind.charge, consts.ApiDetectedItemKind.drone),
+        api_other2.id: (consts.ApiDetectedItemKind.drone, consts.ApiDetectedItemKind.implant)}
 
 
 def test_kind_fighter(client, consts):
@@ -137,8 +137,8 @@ def test_kind_fighter(client, consts):
     api_val = api_fit.validate(options=ValOptions(item_kind=True))
     assert api_val.passed is False
     assert api_val.details.item_kind == {
-        api_other1.id: (consts.ApiValItemType.charge, consts.ApiValItemType.fighter),
-        api_other2.id: (consts.ApiValItemType.fighter, consts.ApiValItemType.implant)}
+        api_other1.id: (consts.ApiDetectedItemKind.charge, consts.ApiDetectedItemKind.fighter),
+        api_other2.id: (consts.ApiDetectedItemKind.fighter, consts.ApiDetectedItemKind.implant)}
 
 
 def test_kind_implant(client, consts):
@@ -161,8 +161,8 @@ def test_kind_implant(client, consts):
     api_val = api_fit.validate(options=ValOptions(item_kind=True))
     assert api_val.passed is False
     assert api_val.details.item_kind == {
-        api_other1.id: (consts.ApiValItemType.drone, consts.ApiValItemType.implant),
-        api_other2.id: (consts.ApiValItemType.implant, consts.ApiValItemType.booster)}
+        api_other1.id: (consts.ApiDetectedItemKind.drone, consts.ApiDetectedItemKind.implant),
+        api_other2.id: (consts.ApiDetectedItemKind.implant, consts.ApiDetectedItemKind.booster)}
 
 
 def test_kind_module_high(client, consts):
@@ -190,11 +190,11 @@ def test_kind_module_high(client, consts):
     api_val = api_fit.validate(options=ValOptions(item_kind=True))
     assert api_val.passed is False
     assert api_val.details.item_kind == {
-        api_other1.id: (consts.ApiValItemType.ship, consts.ApiValItemType.module_high),
-        api_other2.id: (consts.ApiValItemType.module_high, consts.ApiValItemType.module_low),
-        api_other3.id: (consts.ApiValItemType.module_high, consts.ApiValItemType.module_low),
-        api_other4.id: (consts.ApiValItemType.module_high, consts.ApiValItemType.implant),
-        api_other5.id: (consts.ApiValItemType.module_high, consts.ApiValItemType.implant)}
+        api_other1.id: (consts.ApiDetectedItemKind.ship, consts.ApiDetectedItemKind.module_high),
+        api_other2.id: (consts.ApiDetectedItemKind.module_high, consts.ApiDetectedItemKind.module_low),
+        api_other3.id: (consts.ApiDetectedItemKind.module_high, consts.ApiDetectedItemKind.module_low),
+        api_other4.id: (consts.ApiDetectedItemKind.module_high, consts.ApiDetectedItemKind.implant),
+        api_other5.id: (consts.ApiDetectedItemKind.module_high, consts.ApiDetectedItemKind.implant)}
 
 
 def test_kind_module_mid(client, consts):
@@ -222,11 +222,11 @@ def test_kind_module_mid(client, consts):
     api_val = api_fit.validate(options=ValOptions(item_kind=True))
     assert api_val.passed is False
     assert api_val.details.item_kind == {
-        api_other1.id: (consts.ApiValItemType.ship, consts.ApiValItemType.module_mid),
-        api_other2.id: (consts.ApiValItemType.module_mid, consts.ApiValItemType.module_high),
-        api_other3.id: (consts.ApiValItemType.module_mid, consts.ApiValItemType.module_high),
-        api_other4.id: (consts.ApiValItemType.module_mid, consts.ApiValItemType.implant),
-        api_other5.id: (consts.ApiValItemType.module_mid, consts.ApiValItemType.implant)}
+        api_other1.id: (consts.ApiDetectedItemKind.ship, consts.ApiDetectedItemKind.module_mid),
+        api_other2.id: (consts.ApiDetectedItemKind.module_mid, consts.ApiDetectedItemKind.module_high),
+        api_other3.id: (consts.ApiDetectedItemKind.module_mid, consts.ApiDetectedItemKind.module_high),
+        api_other4.id: (consts.ApiDetectedItemKind.module_mid, consts.ApiDetectedItemKind.implant),
+        api_other5.id: (consts.ApiDetectedItemKind.module_mid, consts.ApiDetectedItemKind.implant)}
 
 
 def test_kind_module_low(client, consts):
@@ -254,11 +254,11 @@ def test_kind_module_low(client, consts):
     api_val = api_fit.validate(options=ValOptions(item_kind=True))
     assert api_val.passed is False
     assert api_val.details.item_kind == {
-        api_other1.id: (consts.ApiValItemType.ship, consts.ApiValItemType.module_low),
-        api_other2.id: (consts.ApiValItemType.module_low, consts.ApiValItemType.module_mid),
-        api_other3.id: (consts.ApiValItemType.module_low, consts.ApiValItemType.module_mid),
-        api_other4.id: (consts.ApiValItemType.module_low, consts.ApiValItemType.implant),
-        api_other5.id: (consts.ApiValItemType.module_low, consts.ApiValItemType.implant)}
+        api_other1.id: (consts.ApiDetectedItemKind.ship, consts.ApiDetectedItemKind.module_low),
+        api_other2.id: (consts.ApiDetectedItemKind.module_low, consts.ApiDetectedItemKind.module_mid),
+        api_other3.id: (consts.ApiDetectedItemKind.module_low, consts.ApiDetectedItemKind.module_mid),
+        api_other4.id: (consts.ApiDetectedItemKind.module_low, consts.ApiDetectedItemKind.implant),
+        api_other5.id: (consts.ApiDetectedItemKind.module_low, consts.ApiDetectedItemKind.implant)}
 
 
 def test_kind_rig(client, consts):
@@ -284,9 +284,9 @@ def test_kind_rig(client, consts):
     api_val = api_fit.validate(options=ValOptions(item_kind=True))
     assert api_val.passed is False
     assert api_val.details.item_kind == {
-        api_other1.id: (consts.ApiValItemType.character, consts.ApiValItemType.rig),
-        api_other2.id: (consts.ApiValItemType.rig, consts.ApiValItemType.implant),
-        api_other3.id: (consts.ApiValItemType.rig, consts.ApiValItemType.implant)}
+        api_other1.id: (consts.ApiDetectedItemKind.character, consts.ApiDetectedItemKind.rig),
+        api_other2.id: (consts.ApiDetectedItemKind.rig, consts.ApiDetectedItemKind.implant),
+        api_other3.id: (consts.ApiDetectedItemKind.rig, consts.ApiDetectedItemKind.implant)}
 
 
 def test_kind_service(client, consts):
@@ -312,9 +312,9 @@ def test_kind_service(client, consts):
     api_val = api_fit.validate(options=ValOptions(item_kind=True))
     assert api_val.passed is False
     assert api_val.details.item_kind == {
-        api_other1.id: (consts.ApiValItemType.character, consts.ApiValItemType.service),
-        api_other2.id: (consts.ApiValItemType.service, consts.ApiValItemType.implant),
-        api_other3.id: (consts.ApiValItemType.service, consts.ApiValItemType.implant)}
+        api_other1.id: (consts.ApiDetectedItemKind.character, consts.ApiDetectedItemKind.service),
+        api_other2.id: (consts.ApiDetectedItemKind.service, consts.ApiDetectedItemKind.implant),
+        api_other3.id: (consts.ApiDetectedItemKind.service, consts.ApiDetectedItemKind.implant)}
 
 
 def test_kind_ship(client, consts):
@@ -336,8 +336,8 @@ def test_kind_ship(client, consts):
     api_val = api_fit.validate(options=ValOptions(item_kind=True))
     assert api_val.passed is False
     assert api_val.details.item_kind == {
-        api_other1.id: (consts.ApiValItemType.drone, consts.ApiValItemType.ship),
-        api_other2.id: (consts.ApiValItemType.ship, consts.ApiValItemType.implant)}
+        api_other1.id: (consts.ApiDetectedItemKind.drone, consts.ApiDetectedItemKind.ship),
+        api_other2.id: (consts.ApiDetectedItemKind.ship, consts.ApiDetectedItemKind.implant)}
 
 
 def test_kind_skill(client, consts):
@@ -359,8 +359,8 @@ def test_kind_skill(client, consts):
     api_val = api_fit.validate(options=ValOptions(item_kind=True))
     assert api_val.passed is False
     assert api_val.details.item_kind == {
-        api_other1.id: (consts.ApiValItemType.charge, consts.ApiValItemType.skill),
-        api_other2.id: (consts.ApiValItemType.skill, consts.ApiValItemType.implant)}
+        api_other1.id: (consts.ApiDetectedItemKind.charge, consts.ApiDetectedItemKind.skill),
+        api_other2.id: (consts.ApiDetectedItemKind.skill, consts.ApiDetectedItemKind.implant)}
 
 
 def test_kind_stance(client, consts):
@@ -382,8 +382,8 @@ def test_kind_stance(client, consts):
     api_val = api_fit.validate(options=ValOptions(item_kind=True))
     assert api_val.passed is False
     assert api_val.details.item_kind == {
-        api_other1.id: (consts.ApiValItemType.drone, consts.ApiValItemType.stance),
-        api_other2.id: (consts.ApiValItemType.stance, consts.ApiValItemType.implant)}
+        api_other1.id: (consts.ApiDetectedItemKind.drone, consts.ApiDetectedItemKind.stance),
+        api_other2.id: (consts.ApiDetectedItemKind.stance, consts.ApiDetectedItemKind.implant)}
 
 
 def test_kind_subsystem(client, consts):
@@ -405,8 +405,8 @@ def test_kind_subsystem(client, consts):
     api_val = api_fit.validate(options=ValOptions(item_kind=True))
     assert api_val.passed is False
     assert api_val.details.item_kind == {
-        api_other1.id: (consts.ApiValItemType.character, consts.ApiValItemType.subsystem),
-        api_other2.id: (consts.ApiValItemType.subsystem, consts.ApiValItemType.implant)}
+        api_other1.id: (consts.ApiDetectedItemKind.character, consts.ApiDetectedItemKind.subsystem),
+        api_other2.id: (consts.ApiDetectedItemKind.subsystem, consts.ApiDetectedItemKind.implant)}
 
 
 def test_no_matches(client, consts):
@@ -418,7 +418,7 @@ def test_no_matches(client, consts):
     # Verification
     api_val = api_fit.validate(options=ValOptions(item_kind=True))
     assert api_val.passed is False
-    assert api_val.details.item_kind == {api_item.id: (None, consts.ApiValItemType.rig)}
+    assert api_val.details.item_kind == {api_item.id: (None, consts.ApiDetectedItemKind.rig)}
 
 
 def test_multiple_matches_implant(client, consts):
@@ -436,8 +436,8 @@ def test_multiple_matches_implant(client, consts):
     api_val = api_fit.validate(options=ValOptions(item_kind=True))
     assert api_val.passed is False
     assert api_val.details.item_kind == {
-        api_booster.id: (None, consts.ApiValItemType.booster),
-        api_implant.id: (None, consts.ApiValItemType.implant)}
+        api_booster.id: (None, consts.ApiDetectedItemKind.booster),
+        api_implant.id: (None, consts.ApiDetectedItemKind.implant)}
 
 
 def test_multiple_matches_module(client, consts):
@@ -467,10 +467,10 @@ def test_multiple_matches_module(client, consts):
     api_val = api_fit.validate(options=ValOptions(item_kind=True))
     assert api_val.passed is False
     assert api_val.details.item_kind == {
-        api_ship_module1.id: (None, consts.ApiValItemType.module_high),
-        api_ship_module2.id: (None, consts.ApiValItemType.module_high),
-        api_struct_module1.id: (None, consts.ApiValItemType.module_high),
-        api_struct_module2.id: (None, consts.ApiValItemType.module_high)}
+        api_ship_module1.id: (None, consts.ApiDetectedItemKind.module_high),
+        api_ship_module2.id: (None, consts.ApiDetectedItemKind.module_high),
+        api_struct_module1.id: (None, consts.ApiDetectedItemKind.module_high),
+        api_struct_module2.id: (None, consts.ApiDetectedItemKind.module_high)}
 
 
 def test_known_failures(client, consts):
@@ -488,11 +488,11 @@ def test_known_failures(client, consts):
     api_val = api_fit.validate(options=ValOptions(item_kind=[api_booster1.id]))
     assert api_val.passed is False
     assert api_val.details.item_kind == {
-        api_booster2.id: (consts.ApiValItemType.implant, consts.ApiValItemType.booster)}
+        api_booster2.id: (consts.ApiDetectedItemKind.implant, consts.ApiDetectedItemKind.booster)}
     api_val = api_fit.validate(options=ValOptions(item_kind=[api_booster2.id]))
     assert api_val.passed is False
     assert api_val.details.item_kind == {
-        api_booster1.id: (consts.ApiValItemType.implant, consts.ApiValItemType.booster)}
+        api_booster1.id: (consts.ApiDetectedItemKind.implant, consts.ApiDetectedItemKind.booster)}
     api_val = api_fit.validate(options=ValOptions(item_kind=[api_booster1.id, api_booster2.id]))
     assert api_val.passed is True
     with check_no_field():
@@ -521,7 +521,7 @@ def test_mutation_effect(client, consts):
     api_val = api_fit.validate(options=ValOptions(item_kind=True))
     assert api_val.passed is False
     assert api_val.details.item_kind == {
-        api_mid_module.id: (consts.ApiValItemType.module_high, consts.ApiValItemType.module_mid)}
+        api_mid_module.id: (consts.ApiDetectedItemKind.module_high, consts.ApiDetectedItemKind.module_mid)}
     # Action
     api_mid_module.change_module(mutation=eve_mutator_id)
     # Verification
@@ -535,7 +535,7 @@ def test_mutation_effect(client, consts):
     api_val = api_fit.validate(options=ValOptions(item_kind=True))
     assert api_val.passed is False
     assert api_val.details.item_kind == {
-        api_high_module.id: (consts.ApiValItemType.module_mid, consts.ApiValItemType.module_high)}
+        api_high_module.id: (consts.ApiDetectedItemKind.module_mid, consts.ApiDetectedItemKind.module_high)}
     # Action
     api_high_module.change_module(mutation=None)
     api_mid_module.change_module(mutation=None)
@@ -543,7 +543,7 @@ def test_mutation_effect(client, consts):
     api_val = api_fit.validate(options=ValOptions(item_kind=True))
     assert api_val.passed is False
     assert api_val.details.item_kind == {
-        api_mid_module.id: (consts.ApiValItemType.module_high, consts.ApiValItemType.module_mid)}
+        api_mid_module.id: (consts.ApiDetectedItemKind.module_high, consts.ApiDetectedItemKind.module_mid)}
 
 
 def test_mutation_attr(client, consts):
@@ -563,21 +563,21 @@ def test_mutation_attr(client, consts):
     api_val = api_fit.validate(options=ValOptions(item_kind=True))
     assert api_val.passed is False
     assert api_val.details.item_kind == {
-        api_item.id: (consts.ApiValItemType.booster, consts.ApiValItemType.module_high)}
+        api_item.id: (consts.ApiDetectedItemKind.booster, consts.ApiDetectedItemKind.module_high)}
     # Action
     api_item.change_module(mutation=eve_mutator_id)
     # Verification - mutated item type is used; contribution of base item attributes is ignored
     api_val = api_fit.validate(options=ValOptions(item_kind=True))
     assert api_val.passed is False
     assert api_val.details.item_kind == {
-        api_item.id: (consts.ApiValItemType.implant, consts.ApiValItemType.module_high)}
+        api_item.id: (consts.ApiDetectedItemKind.implant, consts.ApiDetectedItemKind.module_high)}
     # Action
     api_item.change_module(mutation=None)
     # Verification
     api_val = api_fit.validate(options=ValOptions(item_kind=True))
     assert api_val.passed is False
     assert api_val.details.item_kind == {
-        api_item.id: (consts.ApiValItemType.booster, consts.ApiValItemType.module_high)}
+        api_item.id: (consts.ApiDetectedItemKind.booster, consts.ApiDetectedItemKind.module_high)}
 
 
 def test_no_attr_implant(client, consts):
@@ -590,7 +590,7 @@ def test_no_attr_implant(client, consts):
     # Verification - when attribute doesn't exist, item kind detection can't rely on it
     api_val = api_fit.validate(options=ValOptions(item_kind=True))
     assert api_val.passed is False
-    assert api_val.details.item_kind == {api_implant.id: (None, consts.ApiValItemType.implant)}
+    assert api_val.details.item_kind == {api_implant.id: (None, consts.ApiDetectedItemKind.implant)}
 
 
 def test_not_loaded(client):

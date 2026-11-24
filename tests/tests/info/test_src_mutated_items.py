@@ -57,10 +57,10 @@ def test_detected_kind(client, consts):
     assert api_src_items.keys() == {eve_base_module_id, eve_base_drone_id, eve_base_other_id}
     assert api_src_items[eve_base_module_id].keys() == {eve_mutator_id}
     assert api_src_items[eve_base_module_id][eve_mutator_id].type_id == eve_mutated_module_id
-    assert api_src_items[eve_base_module_id][eve_mutator_id].detected_kind == consts.ApiValItemType.module_mid
+    assert api_src_items[eve_base_module_id][eve_mutator_id].detected_kind == consts.ApiDetectedItemKind.module_mid
     assert api_src_items[eve_base_drone_id].keys() == {eve_mutator_id}
     assert api_src_items[eve_base_drone_id][eve_mutator_id].type_id == eve_mutated_drone_id
-    assert api_src_items[eve_base_drone_id][eve_mutator_id].detected_kind == consts.ApiValItemType.drone
+    assert api_src_items[eve_base_drone_id][eve_mutator_id].detected_kind == consts.ApiDetectedItemKind.drone
     assert api_src_items[eve_base_other_id].keys() == {eve_mutator_id}
     api_src_other = api_src_items[eve_base_other_id][eve_mutator_id]
     assert api_src_other.type_id == eve_mutated_other_id

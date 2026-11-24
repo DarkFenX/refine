@@ -652,6 +652,25 @@ class ApiItemKind(StrEnum):
 
 
 @unique
+class ApiDetectedItemKind(StrEnum):
+    booster = 'booster'
+    character = 'character'
+    charge = 'charge'
+    drone = 'drone'
+    fighter = 'fighter'
+    implant = 'implant'
+    module_high = 'module_high'
+    module_mid = 'module_mid'
+    module_low = 'module_low'
+    rig = 'rig'
+    service = 'service'
+    ship = 'ship'
+    skill = 'skill'
+    stance = 'stance'
+    subsystem = 'subsystem'
+
+
+@unique
 class ApiModuleState(StrEnum):
     disabled = 'disabled'
     offline = 'offline'
@@ -742,25 +761,6 @@ class ApiRearmMinion(StrEnum):
 class ApiNpcProp(StrEnum):
     cruise = 'cruise'
     chase = 'chase'
-
-
-@unique
-class ApiValItemType(StrEnum):
-    booster = 'booster'
-    character = 'character'
-    charge = 'charge'
-    drone = 'drone'
-    fighter = 'fighter'
-    implant = 'implant'
-    module_high = 'module_high'
-    module_mid = 'module_mid'
-    module_low = 'module_low'
-    rig = 'rig'
-    service = 'service'
-    ship = 'ship'
-    skill = 'skill'
-    stance = 'stance'
-    subsystem = 'subsystem'
 
 
 @unique

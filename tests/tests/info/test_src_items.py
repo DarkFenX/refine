@@ -58,21 +58,21 @@ def test_detected_kind(client, consts):
         eve_skill_id, eve_stance_id, eve_subsystem_id])
     # Verification
     assert len(api_src_items) == 15
-    assert api_src_items[eve_booster_id].detected_kind == consts.ApiValItemType.booster
-    assert api_src_items[eve_character_id].detected_kind == consts.ApiValItemType.character
-    assert api_src_items[eve_charge_id].detected_kind == consts.ApiValItemType.charge
-    assert api_src_items[eve_drone_id].detected_kind == consts.ApiValItemType.drone
-    assert api_src_items[eve_fighter_id].detected_kind == consts.ApiValItemType.fighter
-    assert api_src_items[eve_implant_id].detected_kind == consts.ApiValItemType.implant
-    assert api_src_items[eve_high_module_id].detected_kind == consts.ApiValItemType.module_high
-    assert api_src_items[eve_mid_module_id].detected_kind == consts.ApiValItemType.module_mid
-    assert api_src_items[eve_low_module_id].detected_kind == consts.ApiValItemType.module_low
-    assert api_src_items[eve_rig_id].detected_kind == consts.ApiValItemType.rig
-    assert api_src_items[eve_service_id].detected_kind == consts.ApiValItemType.service
-    assert api_src_items[eve_ship_id].detected_kind == consts.ApiValItemType.ship
-    assert api_src_items[eve_skill_id].detected_kind == consts.ApiValItemType.skill
-    assert api_src_items[eve_stance_id].detected_kind == consts.ApiValItemType.stance
-    assert api_src_items[eve_subsystem_id].detected_kind == consts.ApiValItemType.subsystem
+    assert api_src_items[eve_booster_id].detected_kind == consts.ApiDetectedItemKind.booster
+    assert api_src_items[eve_character_id].detected_kind == consts.ApiDetectedItemKind.character
+    assert api_src_items[eve_charge_id].detected_kind == consts.ApiDetectedItemKind.charge
+    assert api_src_items[eve_drone_id].detected_kind == consts.ApiDetectedItemKind.drone
+    assert api_src_items[eve_fighter_id].detected_kind == consts.ApiDetectedItemKind.fighter
+    assert api_src_items[eve_implant_id].detected_kind == consts.ApiDetectedItemKind.implant
+    assert api_src_items[eve_high_module_id].detected_kind == consts.ApiDetectedItemKind.module_high
+    assert api_src_items[eve_mid_module_id].detected_kind == consts.ApiDetectedItemKind.module_mid
+    assert api_src_items[eve_low_module_id].detected_kind == consts.ApiDetectedItemKind.module_low
+    assert api_src_items[eve_rig_id].detected_kind == consts.ApiDetectedItemKind.rig
+    assert api_src_items[eve_service_id].detected_kind == consts.ApiDetectedItemKind.service
+    assert api_src_items[eve_ship_id].detected_kind == consts.ApiDetectedItemKind.ship
+    assert api_src_items[eve_skill_id].detected_kind == consts.ApiDetectedItemKind.skill
+    assert api_src_items[eve_stance_id].detected_kind == consts.ApiDetectedItemKind.stance
+    assert api_src_items[eve_subsystem_id].detected_kind == consts.ApiDetectedItemKind.subsystem
 
 
 def test_detected_kind_none(client, consts):
@@ -122,13 +122,13 @@ def test_module_max_state(client, consts):
         eve_offline_module_id, eve_online_module_id, eve_active_module_id, eve_overload_module_id])
     # Verification
     assert len(api_src_items) == 4
-    assert api_src_items[eve_offline_module_id].detected_kind == consts.ApiValItemType.module_high
+    assert api_src_items[eve_offline_module_id].detected_kind == consts.ApiDetectedItemKind.module_high
     assert api_src_items[eve_offline_module_id].module_max_state == consts.ApiModuleState.offline
-    assert api_src_items[eve_online_module_id].detected_kind == consts.ApiValItemType.module_high
+    assert api_src_items[eve_online_module_id].detected_kind == consts.ApiDetectedItemKind.module_high
     assert api_src_items[eve_online_module_id].module_max_state == consts.ApiModuleState.online
-    assert api_src_items[eve_active_module_id].detected_kind == consts.ApiValItemType.module_mid
+    assert api_src_items[eve_active_module_id].detected_kind == consts.ApiDetectedItemKind.module_mid
     assert api_src_items[eve_active_module_id].module_max_state == consts.ApiModuleState.active
-    assert api_src_items[eve_overload_module_id].detected_kind == consts.ApiValItemType.module_low
+    assert api_src_items[eve_overload_module_id].detected_kind == consts.ApiDetectedItemKind.module_low
     assert api_src_items[eve_overload_module_id].module_max_state == consts.ApiModuleState.overload
 
 
@@ -149,13 +149,13 @@ def test_module_max_state_other_kinds(client, consts):
     api_src_items = api_src.get_items(type_ids=[eve_drone_id, eve_rig_id, eve_service_id])
     # Verification
     assert len(api_src_items) == 3
-    assert api_src_items[eve_drone_id].detected_kind == consts.ApiValItemType.drone
+    assert api_src_items[eve_drone_id].detected_kind == consts.ApiDetectedItemKind.drone
     with check_no_field():
         api_src_items[eve_drone_id].module_max_state  # ruff:ignore[useless-expression]
-    assert api_src_items[eve_rig_id].detected_kind == consts.ApiValItemType.rig
+    assert api_src_items[eve_rig_id].detected_kind == consts.ApiDetectedItemKind.rig
     with check_no_field():
         api_src_items[eve_rig_id].module_max_state  # ruff:ignore[useless-expression]
-    assert api_src_items[eve_service_id].detected_kind == consts.ApiValItemType.service
+    assert api_src_items[eve_service_id].detected_kind == consts.ApiDetectedItemKind.service
     with check_no_field():
         api_src_items[eve_service_id].module_max_state  # ruff:ignore[useless-expression]
 
@@ -187,7 +187,7 @@ def test_repeated_type(client, consts):
     # pairs
     resp.check(status_code=200)
     api_src_items = json.loads(resp.text, object_pairs_hook=list)
-    assert api_src_items == [(str(eve_item_id), [('detected_kind', consts.ApiValItemType.ship)])]
+    assert api_src_items == [(str(eve_item_id), [('detected_kind', consts.ApiDetectedItemKind.ship)])]
 
 
 def test_dynamic_type(client, consts):
@@ -204,7 +204,7 @@ def test_dynamic_type(client, consts):
     api_src_items = api_src.get_items(type_ids=[eve_base_module_id, eve_mutated_module_id])
     # Verification
     assert api_src_items.keys() == {eve_base_module_id}
-    assert api_src_items[eve_base_module_id].detected_kind == consts.ApiValItemType.module_high
+    assert api_src_items[eve_base_module_id].detected_kind == consts.ApiDetectedItemKind.module_high
 
 
 def test_multiple_sources(client, consts):
@@ -223,7 +223,7 @@ def test_multiple_sources(client, consts):
     api_src2_items = api_src2.get_items(type_ids=[eve_item1_id, eve_item2_id])
     # Verification
     assert api_src1_items.keys() == {eve_item1_id, eve_item2_id}
-    assert api_src1_items[eve_item1_id].detected_kind == consts.ApiValItemType.ship
-    assert api_src1_items[eve_item2_id].detected_kind == consts.ApiValItemType.charge
+    assert api_src1_items[eve_item1_id].detected_kind == consts.ApiDetectedItemKind.ship
+    assert api_src1_items[eve_item2_id].detected_kind == consts.ApiDetectedItemKind.charge
     assert api_src2_items.keys() == {eve_item1_id}
-    assert api_src2_items[eve_item1_id].detected_kind == consts.ApiValItemType.drone
+    assert api_src2_items[eve_item1_id].detected_kind == consts.ApiDetectedItemKind.drone
