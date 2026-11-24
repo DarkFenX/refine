@@ -3,11 +3,11 @@ use crate::{FleetId, Sol};
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Public
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-pub struct Fleet<'r, 's> {
-    pub(super) sol: &'s mut Sol<'r>,
+pub struct Fleet<'refine, 'sol> {
+    pub(super) sol: &'sol mut Sol<'refine>,
     pub(super) id: FleetId,
 }
-impl<'r, 's> Fleet<'r, 's> {
+impl<'refine, 'sol> Fleet<'refine, 'sol> {
     pub fn get_id(&self) -> FleetId {
         self.id
     }
@@ -16,8 +16,8 @@ impl<'r, 's> Fleet<'r, 's> {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Private
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-impl<'r, 's> Fleet<'r, 's> {
-    pub(super) fn new(sol: &'s mut Sol<'r>, id: FleetId) -> Self {
+impl<'refine, 'sol> Fleet<'refine, 'sol> {
+    pub(super) fn new(sol: &'sol mut Sol<'refine>, id: FleetId) -> Self {
         Self { sol, id }
     }
 }

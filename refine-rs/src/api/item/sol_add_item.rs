@@ -7,9 +7,9 @@ use crate::{
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Public
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-impl<'r, 's> Sol<'r> {
+impl<'refine, 'sol> Sol<'refine> {
     #[tracing::instrument(name = "itm-add", level = "error", skip_all)]
-    pub async fn add_item(&'s mut self, ctl_cmd: ItemAddEnumCmd) -> Result<Item<'r, 's>, ItemAddEnumError> {
+    pub async fn add_item(&'sol mut self, ctl_cmd: ItemAddEnumCmd) -> Result<Item<'refine, 'sol>, ItemAddEnumError> {
         let item_id = self
             .exec_standard(|core_sol| ctl_cmd.execute(core_sol).map(|ctl_cmd_resp| ctl_cmd_resp.item_id))
             .await?;
@@ -18,10 +18,10 @@ impl<'r, 's> Sol<'r> {
     }
     #[tracing::instrument(name = "itm-add-inf", level = "error", skip_all)]
     pub async fn add_item_and_get_info(
-        &'s mut self,
+        &'sol mut self,
         ctl_cmd: ItemAddEnumCmd,
         info_cmd: ItemInfoCmdBr,
-    ) -> Result<(Item<'r, 's>, ItemInfo), ItemAddEnumError> {
+    ) -> Result<(Item<'refine, 'sol>, ItemInfo), ItemAddEnumError> {
         let (item_id, item_info) = self
             .exec_standard(|core_sol| {
                 let ctl_cmd_resp = ctl_cmd.execute(core_sol)?;

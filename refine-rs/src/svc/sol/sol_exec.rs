@@ -1,7 +1,7 @@
 use super::ctx::SolCtx;
 use crate::Sol;
 
-impl<'r> Sol<'r> {
+impl<'refine> Sol<'refine> {
     /// Methods which execute solar system changes in a threadpool are split into two groups:
     ///
     /// - infallible methods run commands which cannot fail, thus solar system never has to be
@@ -88,7 +88,7 @@ impl<'r> Sol<'r> {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Helpers
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-impl<'r> Sol<'r> {
+impl<'refine> Sol<'refine> {
     pub(crate) fn get_ctx(&self) -> SolCtx {
         SolCtx {
             sol_id: self.get_id(),

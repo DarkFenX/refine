@@ -11,11 +11,11 @@ use crate::{Refine, SrcAlias, svc::SrcInnerGuarded};
 /// server.
 ///
 /// Has an alias attached to it for ease of management.
-pub struct Src<'r> {
-    pub(super) refine: &'r Refine,
+pub struct Src<'refine> {
+    pub(super) refine: &'refine Refine,
     pub(super) inner: SrcInnerGuarded,
 }
-impl<'r> Src<'r> {
+impl<'refine> Src<'refine> {
     pub fn get_alias(&self) -> SrcAlias {
         self.inner.get_alias()
     }
@@ -24,8 +24,8 @@ impl<'r> Src<'r> {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Private
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-impl<'r> Src<'r> {
-    pub(super) fn new(refine: &'r Refine, inner: SrcInnerGuarded) -> Self {
+impl<'refine> Src<'refine> {
+    pub(super) fn new(refine: &'refine Refine, inner: SrcInnerGuarded) -> Self {
         Self { refine, inner }
     }
 }

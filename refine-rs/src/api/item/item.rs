@@ -3,11 +3,11 @@ use crate::{ItemId, Sol};
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Public
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-pub struct Item<'r, 's> {
-    pub(super) sol: &'s mut Sol<'r>,
+pub struct Item<'refine, 'sol> {
+    pub(super) sol: &'sol mut Sol<'refine>,
     pub(super) id: ItemId,
 }
-impl<'r, 's> Item<'r, 's> {
+impl<'refine, 'sol> Item<'refine, 'sol> {
     pub fn get_id(&self) -> ItemId {
         self.id
     }
@@ -16,8 +16,8 @@ impl<'r, 's> Item<'r, 's> {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Private
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-impl<'r, 's> Item<'r, 's> {
-    pub(super) fn new(sol: &'s mut Sol<'r>, id: ItemId) -> Self {
+impl<'refine, 'sol> Item<'refine, 'sol> {
+    pub(super) fn new(sol: &'sol mut Sol<'refine>, id: ItemId) -> Self {
         Self { sol, id }
     }
 }

@@ -3,11 +3,11 @@ use crate::{FitId, Sol};
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Public
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-pub struct Fit<'r, 's> {
-    pub(super) sol: &'s mut Sol<'r>,
+pub struct Fit<'refine, 'sol> {
+    pub(super) sol: &'sol mut Sol<'refine>,
     pub(super) id: FitId,
 }
-impl<'r, 's> Fit<'r, 's> {
+impl<'refine, 'sol> Fit<'refine, 'sol> {
     pub fn get_id(&self) -> FitId {
         self.id
     }
@@ -16,8 +16,8 @@ impl<'r, 's> Fit<'r, 's> {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Private
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-impl<'r, 's> Fit<'r, 's> {
-    pub(super) fn new(sol: &'s mut Sol<'r>, id: FitId) -> Self {
+impl<'refine, 'sol> Fit<'refine, 'sol> {
+    pub(super) fn new(sol: &'sol mut Sol<'refine>, id: FitId) -> Self {
         Self { sol, id }
     }
 }

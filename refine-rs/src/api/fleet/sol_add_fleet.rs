@@ -7,9 +7,9 @@ use crate::{
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Public
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-impl<'r, 's> Sol<'r> {
+impl<'refine, 'sol> Sol<'refine> {
     #[tracing::instrument(name = "flt-add", level = "error", skip_all)]
-    pub async fn add_fleet(&'s mut self, ctl_cmd: FleetAddCmd) -> Result<Fleet<'r, 's>, FleetAddError> {
+    pub async fn add_fleet(&'sol mut self, ctl_cmd: FleetAddCmd) -> Result<Fleet<'refine, 'sol>, FleetAddError> {
         let ctl_cmd_resp = self
             .exec_standard(|core_sol| ctl_cmd.execute(core_sol).map(|ctl_cmd_resp| ctl_cmd_resp.fleet_id))
             .await?;
@@ -18,10 +18,10 @@ impl<'r, 's> Sol<'r> {
     }
     #[tracing::instrument(name = "flt-add-inf", level = "error", skip_all)]
     pub async fn add_fleet_and_get_info(
-        &'s mut self,
+        &'sol mut self,
         ctl_cmd: FleetAddCmd,
         info_cmd: FleetInfoCmd,
-    ) -> Result<(Fleet<'r, 's>, FleetInfo), FleetAddError> {
+    ) -> Result<(Fleet<'refine, 'sol>, FleetInfo), FleetAddError> {
         let (fleet_id, fleet_info) = self
             .exec_standard(|core_sol| {
                 let fleet_id = ctl_cmd.execute(core_sol).map(|ctl_cmd_resp| ctl_cmd_resp.fleet_id)?;
