@@ -1,5 +1,3 @@
-pub use rc::err::{FitIdParseError, FleetIdParseError, ItemIdParseError};
-
 pub use crate::{
     api::{
         FitGetError, FleetGetError, ItemGetError, SolAddError, SolGetError, SolIdParseError, SolRemoveError,
