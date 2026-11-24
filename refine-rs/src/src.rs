@@ -1,12 +1,9 @@
 pub use rc::src::{SrcOrigin, SrcOriginGeneratedReason, SrcWarnings};
 
-pub use crate::{
-    api::{Src, SrcAlias},
-    info::src::{
-        SrcInfo, SrcInfoEnumCmd, SrcInfoEnumResp, SrcInfoFull, SrcInfoMode, SrcInfoPartial, SrcItemInfo, SrcItemInfos,
-        SrcItemInfosCmd, SrcMutatedItemBaseInfo, SrcMutatedItemInfo, SrcMutatedItemInfos, SrcMutatedItemInfosCmd,
-        SrcMutation,
-    },
+pub use crate::info::src::{
+    SrcInfo, SrcInfoEnumCmd, SrcInfoEnumResp, SrcInfoFull, SrcInfoMode, SrcInfoPartial, SrcItemInfo, SrcItemInfos,
+    SrcItemInfosCmd, SrcMutatedItemBaseInfo, SrcMutatedItemInfo, SrcMutatedItemInfos, SrcMutatedItemInfosCmd,
+    SrcMutation,
 };
 
 pub mod err {

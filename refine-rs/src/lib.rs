@@ -6,7 +6,7 @@
 #![cfg_attr(feature = "serde", feature(cfg_eval))]
 #![expect(unevaluated_default_field_value)]
 
-pub use api::{Fit, Fleet, Item, Refine, Sol, SolId};
+pub use api::{Fit, Fleet, Item, Refine, Sol, SolId, Src, SrcAlias};
 pub use misc::{CmdResp, CmdResps, FitIdBr, FleetIdBr, ItemIdBr, TriStateField};
 pub use rc::{
     AbilityId, AddMode, Affector, AttrId, BreacherProfile, Coordinates, Count, CountNz, CustomAttrId, CustomEffectId,
@@ -16,7 +16,6 @@ pub use rc::{
     PValue, ProjRange, RackPos, RearmMinion, RemoveMode, SecZone, SecZoneCorruption, ServiceState, SkillLevel,
     SlotIndex, Spool, SpoolCycleInfo, UnitInterval, Value, ad::AdaptedDataCacher, ed::EveDataHandler,
 };
-pub use src::{Src, SrcAlias};
 
 mod api;
 pub mod app;

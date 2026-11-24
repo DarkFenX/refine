@@ -1,6 +1,6 @@
 #![allow(warnings, unused)]
 
-use rs::{Refine, src::SrcAlias};
+use rs::{Refine, SrcAlias};
 use tracing_subscriber::prelude::*;
 
 fn setup_logger() -> () {

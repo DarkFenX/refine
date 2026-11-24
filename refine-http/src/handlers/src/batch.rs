@@ -32,8 +32,7 @@ async fn internal_batch_source(
     src_alias: String,
     payload: SrcBatchReqBody,
 ) -> Result<Vec<rs::src::SrcInfoEnumResp>, ApiError> {
-    let src_alias =
-        rs::src::SrcAlias::try_pruned(&src_alias).map_err(|err| ApiError::PathSrcParseMisc(src_alias, err))?;
+    let src_alias = rs::SrcAlias::try_pruned(&src_alias).map_err(|err| ApiError::PathSrcParseMisc(src_alias, err))?;
     let mut cmds = Vec::with_capacity(payload.0.len());
     for (index, raw_cmd) in payload.0.into_iter().enumerate() {
         match serde_json::from_value(raw_cmd) {

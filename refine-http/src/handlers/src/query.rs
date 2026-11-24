@@ -24,8 +24,7 @@ async fn internal_query_source(
     src_alias: String,
     payload: rs::src::SrcInfoEnumCmd,
 ) -> Result<rs::src::SrcInfoEnumResp, ApiError> {
-    let src_alias =
-        rs::src::SrcAlias::try_pruned(&src_alias).map_err(|err| ApiError::PathSrcParseMisc(src_alias, err))?;
+    let src_alias = rs::SrcAlias::try_pruned(&src_alias).map_err(|err| ApiError::PathSrcParseMisc(src_alias, err))?;
     let resp = state.get_refine().get_src(Some(src_alias)).await?.query(payload).await;
     Ok(resp)
 }
