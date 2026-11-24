@@ -33,7 +33,7 @@ impl ApiError {
                 rs::src::err::SrcAddError::SrcInit(..) => (StatusCode::UNPROCESSABLE_ENTITY, "SNT-001"),
             },
             Self::SrcRemove(err) => match err {
-                rs::src::err::SrcRemoveError::SrcNotFound(..) => (StatusCode::NOT_FOUND, "SRC-007"),
+                rs::src::err::SrcRemoveError::SrcNotFound(..) => (StatusCode::NOT_FOUND, "SRC-001"),
             },
             ////////////////////////////////////////////////////////////////////////////////////////
             // Solar system-related
