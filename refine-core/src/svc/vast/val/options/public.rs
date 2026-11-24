@@ -514,7 +514,7 @@ mod custom_serde {
     use serde::de::{Deserialize, Deserializer, Error, IgnoredAny, IntoDeserializer, MapAccess, Visitor};
 
     use super::*;
-    use crate::misc::DefOptionExt;
+    use crate::svc::vast::shared::DefOptionExt;
 
     impl<'de, I> Deserialize<'de> for ValOptions<I>
     where

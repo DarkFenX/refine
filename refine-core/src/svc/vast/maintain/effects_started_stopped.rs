@@ -1,7 +1,6 @@
 use crate::{
-    misc::EffectSpec,
     rd::{RAttrConsts, RData, REffect, REffectDisallows, REffectId},
-    svc::{Vast, vast::val::EffectSecZoneInfo},
+    svc::{EffectSpec, Vast, vast::val::EffectSecZoneInfo},
     ud::{UFitId, UItem, UItemId},
 };
 

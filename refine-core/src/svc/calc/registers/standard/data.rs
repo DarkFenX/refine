@@ -1,8 +1,10 @@
 use crate::{
     ad::{AItemGrpId, AItemId},
-    misc::{AttrSpec, EffectSpec},
     rd::{RAttrId, RItemListId},
-    svc::calc::{CtxModKey, LocationKind, RawModId},
+    svc::{
+        AttrSpec, EffectSpec,
+        calc::{CtxModKey, LocationKind, RawModId},
+    },
     ud::{UFitId, UItemId},
     util::{RMap, RMapRSet, RSet},
 };

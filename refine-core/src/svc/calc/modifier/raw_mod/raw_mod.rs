@@ -4,12 +4,11 @@ use super::affector::{RawModAffector, RawModItemDependent};
 use crate::{
     Value,
     ad::AEffectCatId,
-    misc::EffectSpec,
     rd::{
         RAttrId, RBuff, RBuffModifier, REffect, REffectBuffFull, REffectBuffScope, REffectModifier, REffectProjModSpec,
     },
     svc::{
-        SvcCtx,
+        EffectSpec, SvcCtx,
         calc::{
             AffecteeFilter, AggrMode, Calc, CalcModInfoAffector, CalcOp, ItemAddRemoveReviser, Location, ModifierKind,
             modifier::ModStrength,

@@ -1,10 +1,10 @@
 use crate::{
-    misc::DmgKinds,
     svc::{
         SvcCtx,
         calc::{AttrValInfo, Calc, CalcAttrVals},
     },
     ud::UItemId,
+    util::DmgKinds,
 };
 
 impl Calc {

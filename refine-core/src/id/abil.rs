@@ -22,10 +22,10 @@ impl AbilityId {
 // Private
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl AbilityId {
-    pub(in crate::api) fn from_aid(abil_aid: AAbilId) -> Self {
+    pub(crate) fn from_aid(abil_aid: AAbilId) -> Self {
         Self(abil_aid.into_i32())
     }
-    pub(in crate::api) fn into_aid(self) -> AAbilId {
+    pub(crate) fn into_aid(self) -> AAbilId {
         AAbilId::from_i32(self.0)
     }
 }

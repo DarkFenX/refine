@@ -1,6 +1,7 @@
 pub(in crate::svc) use data::{
     CSeqHardDtFull, CycleActive, CycleDataFull, CycleSoftDtFull, CycleSoftDtReasons, GetDuration, GetMainDuration,
 };
+pub(crate) use inf_count::InfCount;
 pub(crate) use item_getters::CseqCache;
 pub(in crate::svc) use item_getters::{CycleOptionsSim, CyclingOptions, get_item_cseq_map};
 pub(in crate::svc) use iter_cycle::CycleIter;
@@ -15,6 +16,7 @@ pub(in crate::svc) use seq_var_loop_sin::CSeqLoopSin;
 
 mod data;
 mod effect_charge_info;
+mod inf_count;
 mod item_getters;
 mod iter_cycle;
 mod iter_part;

@@ -1,8 +1,7 @@
 use crate::{
-    misc::DmgKinds,
     svc::calc::CalcAttrVals,
     ud::{UFitId, UItemId},
-    util::{RMap, SDenseRSet},
+    util::{DmgKinds, RMap, SDenseRSet},
 };
 
 #[derive(Clone)]

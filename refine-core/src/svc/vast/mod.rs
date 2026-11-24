@@ -1,3 +1,4 @@
+pub use shared::OptionExt;
 #[cfg(feature = "dev")]
 pub(crate) use stats::StatCapBlcNosfsOptionsInt;
 pub use stats::{

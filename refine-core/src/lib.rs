@@ -85,24 +85,30 @@
 //! are the only ones which are using ordered container.
 
 pub use api::{
-    Ability, AbilityId, AbilityIter, AddMode, Affector, AttrId, Autocharge, Booster, Character, Charge, Coordinates,
-    CustomAttrId, CustomEffectId, Direction, DogmaEffectId, DormantMutation, Drone, EffectId, EffectiveMutation,
-    EntityIter, EveAttrId, Fighter, Fit, Fleet, FullMAttr, FullMAttrIter, FwEffect, Implant, Item, ItemAttrValues,
-    ItemCommon, ItemEffectInfo, ItemGrpId, ItemTypeId, MinionState, Modification, Module, ModuleState, MoveMode,
-    Movement, Mutation, Op, Proj, ProjEffect, ProjIter, ProjRange, RangedProj, RangedProjIter, RawMAttr, RawMAttrIter,
-    RemoveMode, Rig, Service, ServiceState, Ship, SideEffect, SideEffectIter, SideEffectStr, Skill, Stance, Subsystem,
-    SwEffect,
+    Ability, AbilityIter, Autocharge, Booster, Character, Charge, Coordinates, Direction, DormantMutation, Drone,
+    EffectiveMutation, EntityIter, Fighter, Fit, Fleet, FullMAttr, FullMAttrIter, FwEffect, Implant, Item,
+    ItemAttrValues, ItemCommon, ItemEffectInfo, Module, Movement, Mutation, Proj, ProjEffect, ProjIter, ProjRange,
+    RangedProj, RangedProjIter, RawMAttr, RawMAttrIter, Rig, Service, Ship, SideEffect, SideEffectIter, SideEffectStr,
+    Skill, Stance, Subsystem, SwEffect,
 };
 pub use def::VERSION;
+pub use id::{
+    AbilityId, AttrId, CustomAttrId, CustomEffectId, DogmaEffectId, EffectId, EveAttrId, ItemGrpId, ItemTypeId,
+};
 pub use lender::{ExactSizeLender, Lender};
 pub use misc::{
-    BreacherProfile, DpsProfile, EffectMode, FighterCountInfo, ItemKind, ItemSpoolInfo, ModRack, NpcProp, OptionExt,
-    OptionalReload, RearmMinion, SecZone, SecZoneCorruption, Spool, SpoolCycleInfo,
+    AddMode, BreacherProfile, DpsProfile, EffectMode, ItemKind, MinionState, ModRack, ModuleState, MoveMode, NpcProp,
+    OptionalReload, RearmMinion, RemoveMode, SecZone, SecZoneCorruption, ServiceState, Spool,
 };
 pub use num::{Count, CountNz, FitSecStatus, PValue, RackPos, SkillLevel, SlotIndex, UnitInterval, Value};
 pub use sol::{Sol, SolOwned, SolTx};
 pub use src::Src;
-pub use ud::{FitId, FleetId, ItemId};
+pub use svc::{
+    ItemSpoolInfo, SpoolCycleInfo,
+    calc::{Affector, Modification, Op},
+    vast::OptionExt,
+};
+pub use ud::{FighterCountInfo, FitId, FleetId, ItemId};
 
 pub mod ad;
 mod api;
@@ -111,6 +117,7 @@ mod dbg;
 mod def;
 pub mod ed;
 pub mod err;
+mod id;
 mod misc;
 mod nd;
 mod num;

@@ -1,8 +1,10 @@
 use std::hash::Hash;
 
 use crate::{
-    misc::AttrSpec,
-    svc::calc::{CtxModKey, CtxModifier, ModifierKind, RawModId, registers::RegOp},
+    svc::{
+        AttrSpec,
+        calc::{CtxModKey, CtxModifier, ModifierKind, RawModId, registers::RegOp},
+    },
     util::RMapRSet,
 };
 

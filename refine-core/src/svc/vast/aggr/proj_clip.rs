@@ -10,13 +10,12 @@ use super::{
 };
 use crate::{
     Count, PValue, Value,
-    misc::InfCount,
     nd::NEffectOutputGetter,
     rd::{REffect, REffectProjOpcSpec},
     stats::StatCritOptions,
     svc::{
         Calc, SvcCtx,
-        cycle::{CSeqHardDtFull, CycleDataFull, CycleSeq},
+        cycle::{CSeqHardDtFull, CycleDataFull, CycleSeq, InfCount},
     },
     ud::UItemId,
     util::LibConverter,

@@ -1,8 +1,8 @@
 use crate::{
     Fighter, Movement, PValue,
-    misc::Xyz,
     sol::{SolCore, UndoStep},
     ud::UItemId,
+    util::Xyz,
 };
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////

@@ -8,12 +8,11 @@ use super::{
 };
 use crate::{
     Count, PValue, UnitInterval, Value,
-    misc::EffectSpec,
     nd::NEffectOutputGetter,
     rd::{REffect, REffectProjOpcSpec},
     stats::StatCritOptions,
     svc::{
-        SvcCtx,
+        EffectSpec, SvcCtx,
         calc::Calc,
         cycle::{CSeqLoopLimSin, CycleDataFull, GetMainDuration},
         output::Output,

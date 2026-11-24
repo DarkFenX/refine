@@ -1,6 +1,6 @@
 use angle_sc::{Angle, Degrees, trig};
 
-use crate::{PValue, Value, misc::Xyz, ud::UPhysics};
+use crate::{PValue, Value, ud::UPhysics, util::Xyz};
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Public - general

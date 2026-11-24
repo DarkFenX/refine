@@ -1,5 +1,6 @@
 //! Various helper entities used throughout the library.
 
+pub(crate) use dmg_kinds::DmgKinds;
 pub(crate) use float::{
     FLOAT_TOLERANCE, approx_eq, ceil_f64_to_u32, ceil_tick, ceil_unerr, floor_tick, floor_unerr, round,
     round_f64_to_i32, round_f64_to_u32, sig_round, sum_pai_owned, sum_pai_ref, trunc_f64_to_u32,
@@ -12,10 +13,13 @@ pub(crate) use storage::{
     SDenseRSet, SDenseUnchecked, SmallRSet,
 };
 pub(crate) use traits::{LibConverter, LibDefault, LibGetId, LibIncrement, LibMax, LibNamed};
+pub(crate) use xyz::Xyz;
 
+mod dmg_kinds;
 mod float;
 mod func;
 mod iter_peek_prefetch;
 mod state;
 mod storage;
 mod traits;
+mod xyz;

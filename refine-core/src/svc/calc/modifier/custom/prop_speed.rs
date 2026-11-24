@@ -3,10 +3,9 @@ use smallvec::SmallVec;
 use super::CalcCustomModStrength;
 use crate::{
     Value,
-    misc::{AttrSpec, EffectSpec},
     rd::{RAttrConsts, REffect},
     svc::{
-        SvcCtx,
+        AttrSpec, EffectSpec, SvcCtx,
         calc::{
             AffecteeFilter, AggrMode, Calc, CalcCustomModifier, CalcModInfoAffector, CalcOp, Location, ModifierKind,
             RawModAffector, RawModifier, modifier::ModStrength,

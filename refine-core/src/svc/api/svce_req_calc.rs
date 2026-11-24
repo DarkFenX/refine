@@ -1,9 +1,8 @@
 use crate::{
     Modification, Value,
-    misc::EffectSpec,
     rd::{RAttrId, REffectId},
     svc::{
-        Svc, SvcCtx,
+        EffectSpec, Svc, SvcCtx,
         calc::{CalcAttrVals, CalcOp},
         err::UItemLoadedError,
     },

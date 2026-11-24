@@ -1,7 +1,6 @@
 use crate::{
-    misc::{AttrSpec, EffectSpec},
     rd::{REffect, REffectId},
-    svc::calc::RawModId,
+    svc::{AttrSpec, EffectSpec, calc::RawModId},
     ud::UItemId,
     util::RMapRSet,
 };

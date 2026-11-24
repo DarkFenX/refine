@@ -1,8 +1,7 @@
 use super::{has_impact::HasImpact, instance_duration::InstanceDuration, limit_amount::InstanceLimit};
 use crate::{
     PValue,
-    misc::DmgKinds,
-    util::{LibDefault, LibMax},
+    util::{DmgKinds, LibDefault, LibMax},
 };
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////

@@ -1,7 +1,6 @@
 use crate::{
-    misc::{AttrSpec, EffectSpec},
     rd::{RAttrId, REffect, REffectId, RState},
-    svc::{Svc, SvcCtx},
+    svc::{AttrSpec, EffectSpec, Svc, SvcCtx},
     ud::{UData, UFighter, UFitId, UFleet, UItem, UItemId, UProjData, USkill},
 };
 

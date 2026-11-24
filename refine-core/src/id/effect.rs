@@ -168,7 +168,7 @@ impl EffectId {
             AEffectId::Custom(id) => Self::Custom(CustomEffectId(id.into_i32())),
         }
     }
-    pub(in crate::api) fn into_aid(self) -> AEffectId {
+    pub(crate) fn into_aid(self) -> AEffectId {
         match self {
             EffectId::Dogma(id) => AEffectId::Dogma(ADogmaEffectId::from_i32(id.0)),
             EffectId::SystemWide(id) => AEffectId::SystemWide(id.into_aid()),

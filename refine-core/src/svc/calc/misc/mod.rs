@@ -2,16 +2,20 @@ pub(in crate::svc::calc) use attr_val_data::{AttrValData, ItemAttrData, ItemAttr
 pub(crate) use attr_vals::CalcAttrVals;
 pub(in crate::svc::calc) use attr_vals::CalcValueKind;
 pub(crate) use info::CalcModInfoAffector;
+pub use item_attr_modifications::{Affector, Modification};
 pub(in crate::svc::calc) use loc_kind::LocationKind;
 pub(in crate::svc::calc) use modification::CalcModification;
 pub(in crate::svc::calc) use modification_key::CalcModificationKey;
+pub use op::Op;
 pub(in crate::svc::calc) use reuse::{CalcReuse, Reuse};
 
 mod attr_val_data;
 mod attr_vals;
 mod info;
+mod item_attr_modifications;
 mod loc_kind;
 mod modification;
 mod modification_key;
+mod op;
 mod reuse;
 mod u_item_exts;

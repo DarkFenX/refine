@@ -13,15 +13,14 @@ use super::{
 };
 use crate::{
     Count, PValue, Value,
-    misc::{DmgKinds, EffectSpec},
     num::ValueNiched,
     svc::{
-        SvcCtx,
+        EffectSpec, SvcCtx,
         calc::{Calc, CalcAttrVals, calce_rah::shared::SIG_ROUND_DIGITS},
         funcs,
     },
     ud::{UFitId, UItemId},
-    util::{RMap, ROrdSet},
+    util::{DmgKinds, RMap, ROrdSet},
 };
 
 const FALLBACK_RESONANCE: CalcAttrVals = CalcAttrVals {

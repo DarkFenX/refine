@@ -10,7 +10,7 @@ pub use fit::FitId;
 pub(crate) use fit::{UFit, UFitId, UFitSkill, UFits, UItemVec, UItemVecShiftDir};
 pub use fleet::FleetId;
 pub(crate) use fleet::{UFleet, UFleetId, UFleets};
-pub use item::ItemId;
+pub use item::{FighterCountInfo, ItemId};
 pub(crate) use item::{
     ItemMutationData, UAttrMutationRequest, UAutocharge, UAutocharges, UBooster, UCharacter, UCharge, UDrone,
     UEffectUpdates, UFighter, UFwEffect, UImplant, UItem, UItemId, UItemMutationRequest, UItems, UModule, UPhysics,

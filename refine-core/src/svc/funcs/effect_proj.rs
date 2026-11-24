@@ -1,8 +1,7 @@
 use crate::{
     PValue,
-    misc::EffectSpec,
     stats::StatCritOptions,
-    svc::{Calc, SvcCtx},
+    svc::{Calc, EffectSpec, SvcCtx},
     ud::UItemId,
 };
 

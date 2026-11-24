@@ -1,7 +1,7 @@
 use crate::{
     ad::{AItemId, AModifierSrq},
-    misc::EffectSpec,
     rd::{RAttrId, REffect, REffectResist},
+    svc::EffectSpec,
     ud::{UData, UItem, UItemId},
     util::DenseId,
 };

@@ -2,10 +2,9 @@ use itertools::Itertools;
 
 use crate::{
     Count, EffectId, ItemSpoolInfo, OptionalReload, SpoolCycleInfo,
-    misc::InfCount,
     svc::{
         Svc, SvcCtx,
-        cycle::{CseqCache, CycleOptionsSim, CyclingOptions, get_item_cseq_map},
+        cycle::{CseqCache, CycleOptionsSim, CyclingOptions, InfCount, get_item_cseq_map},
         spool::ResolvedSpool,
     },
     ud::{UData, UItemId},

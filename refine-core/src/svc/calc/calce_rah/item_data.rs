@@ -1,5 +1,5 @@
 use super::item_info::ItemInfo;
-use crate::{Value, misc::DmgKinds};
+use crate::{Value, util::DmgKinds};
 
 pub(super) struct ItemData {
     pub(super) info: ItemInfo,

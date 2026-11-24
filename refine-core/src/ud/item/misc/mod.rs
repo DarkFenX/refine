@@ -1,5 +1,6 @@
 pub(crate) use autocharges::UAutocharges;
 pub(in crate::ud::item) use effect_modes::{UEffectModeOverrideIter, UEffectModes};
+pub use fighter_count::FighterCountInfo;
 pub(in crate::ud::item) use func::{bool_to_state_active, bool_to_state_offline, state_to_bool};
 pub(crate) use physics::UPhysics;
 pub(crate) use proj_data::UProjData;
@@ -8,6 +9,7 @@ pub(crate) use reffs::REffs;
 
 mod autocharges;
 mod effect_modes;
+mod fighter_count;
 mod func;
 mod physics;
 mod proj_data;

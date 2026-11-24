@@ -1,5 +1,5 @@
 use crate::{
-    misc::{AttrSpec, EffectSpec},
+    svc::{AttrSpec, EffectSpec},
     ud::UItemId,
     util::RMapRSet,
 };

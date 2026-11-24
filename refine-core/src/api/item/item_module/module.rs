@@ -1,8 +1,8 @@
 use crate::{
     Charge, Count, FitId, ItemCommon, ItemSpoolInfo, ModRack, ModuleState, OptionalReload, RackPos, Spool,
     api::ItemSealed,
-    misc::InfCount,
     sol::SolCore,
+    svc::cycle::InfCount,
     ud::{UItemId, UModule},
 };
 

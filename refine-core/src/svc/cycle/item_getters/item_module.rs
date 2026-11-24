@@ -5,14 +5,13 @@ use super::{
 };
 use crate::{
     Count, OptionalReload, PValue, UnitInterval, Value,
-    misc::InfCount,
     nd::{NEffectChargeDepl, NEffectChargeDeplCrystal},
     rd::{REffectChargeLoc, REffectId},
     svc::{
         SvcCtx,
         calc::Calc,
         cycle::{
-            CSeqHardDtFull, CycleActive, CycleDataFull, CycleSeq, CycleSoftDtFull, CycleSoftDtReasons,
+            CSeqHardDtFull, CycleActive, CycleDataFull, CycleSeq, CycleSoftDtFull, CycleSoftDtReasons, InfCount,
             effect_charge_info::{
                 get_eci_autocharge, get_eci_charge_rate, get_eci_crystal, get_eci_uncharged, get_eci_undepletable,
             },

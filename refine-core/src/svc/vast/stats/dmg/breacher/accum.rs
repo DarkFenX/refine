@@ -19,12 +19,11 @@ use super::{
 use crate::{
     Count, PValue, UnitInterval, Value,
     def::SERVER_TICK_HZ,
-    misc::EffectSpec,
     nd::{NEffectBreacherOutputGetter, NEffectOutputGetter},
     rd::{REffect, REffectProjOpcSpec},
     stats::{StatCritOptions, StatDmgEntryBreacher, StatTime, StatTimeOptions},
     svc::{
-        Calc, SvcCtx,
+        Calc, EffectSpec, SvcCtx,
         cycle::{CSeqHardDtFull, CycleDataFull, CycleSeq},
     },
     ud::UItemId,

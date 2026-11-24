@@ -1,4 +1,9 @@
-use crate::{Count, misc::InfCount, rd::REffectId, svc::cycle::effect_charge_info::EffectChargeInfo, ud::UItem};
+use crate::{
+    Count,
+    rd::REffectId,
+    svc::cycle::{InfCount, effect_charge_info::EffectChargeInfo},
+    ud::UItem,
+};
 
 pub(in crate::svc::cycle) fn get_eci_autocharge(item: &UItem, effect_rid: REffectId) -> EffectChargeInfo {
     EffectChargeInfo {

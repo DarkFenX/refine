@@ -1,6 +1,5 @@
 use crate::{
     Count, PValue, Value,
-    misc::DmgKinds,
     nd::NEffectOutputGetter,
     rd::{RAttrId, REffect},
     svc::{
@@ -9,6 +8,7 @@ use crate::{
         output::{Output, OutputComplex, OutputSimple},
     },
     ud::UItemId,
+    util::DmgKinds,
 };
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////

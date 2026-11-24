@@ -4,7 +4,6 @@ use super::{
 };
 use crate::{
     PValue,
-    misc::DmgKinds,
     stats::{
         StatCritOptions, StatDmg, StatDmgApplied, StatDmgEntry, StatDmgEntryApplied, StatItemChargeOptions,
         StatTimeOptions,
@@ -16,6 +15,7 @@ use crate::{
         vast::stats::item_checks::check_autocharge_charge_drone_fighter_module,
     },
     ud::UItemId,
+    util::DmgKinds,
 };
 
 impl Vast {

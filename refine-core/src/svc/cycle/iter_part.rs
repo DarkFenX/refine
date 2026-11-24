@@ -4,7 +4,7 @@ use super::{
 };
 use crate::{
     Count,
-    misc::InfCount,
+    svc::cycle::InfCount,
     util::{State3, State4},
 };
 

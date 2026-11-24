@@ -1,8 +1,7 @@
 use crate::{
     ad::AEffectCatId,
-    misc::{AttrSpec, EffectSpec},
     rd::REffect,
-    svc::Vast,
+    svc::{AttrSpec, EffectSpec, Vast},
     ud::{UData, UItem, UItemId},
 };
 

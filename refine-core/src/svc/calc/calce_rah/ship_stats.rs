@@ -1,4 +1,4 @@
-use crate::{PValue, misc::DmgKinds};
+use crate::{PValue, util::DmgKinds};
 
 pub(super) struct RahShipStats {
     pub(super) resos: DmgKinds<PValue>,

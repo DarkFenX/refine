@@ -6,7 +6,6 @@ use super::{
 };
 use crate::{
     PValue,
-    misc::DmgKinds,
     stats::{
         StatCritOptions, StatDmg, StatDmgApplied, StatDmgEntry, StatDmgEntryApplied, StatDmgItemKinds, StatTimeOptions,
     },
@@ -16,6 +15,7 @@ use crate::{
         vast::VastFitData,
     },
     ud::{UFitId, UItemId},
+    util::DmgKinds,
 };
 
 impl Vast {

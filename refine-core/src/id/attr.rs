@@ -125,7 +125,7 @@ impl AttrId {
             AAttrId::Custom(id) => Self::Custom(CustomAttrId(id.into_i32())),
         }
     }
-    pub(in crate::api) fn into_aid(self) -> AAttrId {
+    pub(crate) fn into_aid(self) -> AAttrId {
         match self {
             AttrId::Eve(id) => AAttrId::Eve(AEveAttrId::from_i32(id.0)),
             AttrId::Custom(id) => AAttrId::Custom(ACustomAttrId::from_i32(id.0)),

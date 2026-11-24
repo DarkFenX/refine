@@ -1,6 +1,6 @@
 use crate::{
     ItemId, OptionExt, UnitInterval,
-    misc::{DefOption, DefOptionExt},
+    svc::vast::shared::{DefOption, DefOptionExt},
     ud::{ProjecteeUidError, UData, UItemId},
 };
 

@@ -1,9 +1,8 @@
 use crate::{
     UnitInterval, Value,
     ad::AAttrId,
-    misc::AttrSpec,
     rd::{RAttrId, REffectResist},
-    svc::{Calc, SvcCtx},
+    svc::{AttrSpec, Calc, SvcCtx},
     ud::{UData, UItemId},
 };
 

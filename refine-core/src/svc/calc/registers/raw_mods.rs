@@ -1,6 +1,8 @@
 use crate::{
-    misc::EffectSpec,
-    svc::calc::{CtxModKey, CtxModifier, RawModId, RawModIdKind, RawModSlot, RawModTemplates, RawModifier},
+    svc::{
+        EffectSpec,
+        calc::{CtxModKey, CtxModifier, RawModId, RawModIdKind, RawModSlot, RawModTemplates, RawModifier},
+    },
     util::{PDenseRm, RMapRSet},
 };
 

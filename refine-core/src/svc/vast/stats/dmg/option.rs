@@ -1,4 +1,4 @@
-use crate::{misc::DefOption, nd::NEffectDmgKind, rd::REffect, ud::UItem};
+use crate::{nd::NEffectDmgKind, rd::REffect, svc::vast::shared::DefOption, ud::UItem};
 
 /// Items which will be included in damage stats.
 #[cfg_attr(feature = "serde", derive(serde::Deserialize))]

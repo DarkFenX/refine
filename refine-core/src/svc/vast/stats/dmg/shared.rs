@@ -1,6 +1,5 @@
 use crate::{
     PValue,
-    misc::DmgKinds,
     nd::NEffectDmgOutputGetter,
     rd::{REffect, REffectProjOpcSpec},
     stats::{StatCritOptions, StatTimeOptions},
@@ -10,6 +9,7 @@ use crate::{
         vast::aggr::{SeqAccum, SeqInstanceAccumMax, aggr_proj_burst, aggr_proj_split, aggr_proj_time},
     },
     ud::UItemId,
+    util::DmgKinds,
 };
 
 pub(super) fn add_normal_dmg(

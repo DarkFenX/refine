@@ -57,7 +57,7 @@ pub(crate) struct DmgKindsIter<'a, T> {
     state: State5,
 }
 impl<'a, T> DmgKindsIter<'a, T> {
-    pub(in crate::misc) fn new(item: &'a DmgKinds<T>) -> Self {
+    pub(in crate::util) fn new(item: &'a DmgKinds<T>) -> Self {
         Self {
             item,
             state: State5::One,

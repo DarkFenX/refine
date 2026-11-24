@@ -5,8 +5,7 @@ use super::{
 };
 use crate::{
     Count, PValue,
-    misc::InfCount,
-    svc::cycle::{CSeqHardDtFull, CycleDataFull, CycleSeq, GetMainDuration},
+    svc::cycle::{CSeqHardDtFull, CycleDataFull, CycleSeq, GetMainDuration, InfCount},
     util::LibConverter,
 };
 

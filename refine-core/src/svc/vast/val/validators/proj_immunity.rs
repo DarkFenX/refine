@@ -1,8 +1,7 @@
 use crate::{
     ItemId, UnitInterval,
-    misc::{AttrSpec, EffectSpec},
     rd::REffectResist,
-    svc::{Calc, SvcCtx, Vast, funcs::is_oattr_flag_set, vast::VastFitData},
+    svc::{AttrSpec, Calc, EffectSpec, SvcCtx, Vast, funcs::is_oattr_flag_set, vast::VastFitData},
     ud::{UItem, UItemId},
     util::{RMap, RMapRSet, RSet},
     val::ValResult,
