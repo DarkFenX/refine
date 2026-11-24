@@ -1,8 +1,8 @@
 use std::sync::Arc;
 
 use crate::{
-    Refine, Src, SrcAlias,
-    src::{SrcInfo, SrcInfoMode},
+    AdaptedDataCacher, EveDataHandler, Refine, Src, SrcAlias,
+    src::{SrcInfo, SrcInfoMode, SrcOrigin, SrcOriginGeneratedReason, SrcWarnings},
     svc::SrcInnerGuarded,
 };
 
@@ -16,8 +16,8 @@ impl Refine {
         &self,
         alias: SrcAlias,
         make_default: bool,
-        ed_handler: rc::ed::EveDataHandler,
-        ad_cacher: Option<rc::ad::AdaptedDataCacher>,
+        ed_handler: EveDataHandler,
+        ad_cacher: Option<AdaptedDataCacher>,
     ) -> Result<Src<'_>, SrcAddError> {
         let inner_src = self
             .internal_add_src(alias, make_default, ed_handler, ad_cacher)
@@ -31,8 +31,8 @@ impl Refine {
         &self,
         alias: SrcAlias,
         make_default: bool,
-        ed_handler: rc::ed::EveDataHandler,
-        ad_cacher: Option<rc::ad::AdaptedDataCacher>,
+        ed_handler: EveDataHandler,
+        ad_cacher: Option<AdaptedDataCacher>,
         info_mode: SrcInfoMode,
     ) -> Result<(Src<'_>, SrcInfo), SrcAddError> {
         let inner_src = self
@@ -60,8 +60,8 @@ impl Refine {
         &self,
         alias: SrcAlias,
         make_default: bool,
-        ed_handler: rc::ed::EveDataHandler,
-        ad_cacher: Option<rc::ad::AdaptedDataCacher>,
+        ed_handler: EveDataHandler,
+        ad_cacher: Option<AdaptedDataCacher>,
     ) -> Result<SrcInnerGuarded, SrcAddError> {
         tracing::debug!("creating source with alias \"{alias}\", default={make_default}");
         // Source creation time is the time request was received
@@ -95,10 +95,7 @@ impl Refine {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Private - sync processing
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-fn create_core_src(
-    ed_handler: rc::ed::EveDataHandler,
-    ad_cacher: Option<rc::ad::AdaptedDataCacher>,
-) -> Result<rc::Src, SrcAddError> {
+fn create_core_src(ed_handler: EveDataHandler, ad_cacher: Option<AdaptedDataCacher>) -> Result<rc::Src, SrcAddError> {
     tracing::info!(
         "initializing new source with {:?} and {}",
         ed_handler,
@@ -116,32 +113,32 @@ fn create_core_src(
 
 fn log_reason(core_src: &rc::Src) {
     match core_src.get_origin() {
-        rc::src::SrcOrigin::Generated(reason) => {
+        SrcOrigin::Generated(reason) => {
             let prefix = "source data was generated";
             match reason {
-                rc::src::SrcOriginGeneratedReason::NoCacher => {
+                SrcOriginGeneratedReason::NoCacher => {
                     tracing::info!("{prefix}: caching is disabled")
                 }
-                rc::src::SrcOriginGeneratedReason::NoEveDataVersion(msg) => {
+                SrcOriginGeneratedReason::NoEveDataVersion(msg) => {
                     tracing::info!("{prefix}: failed to get EVE data version: {msg}")
                 }
-                rc::src::SrcOriginGeneratedReason::NoCachedFingerprint(msg) => {
+                SrcOriginGeneratedReason::NoCachedFingerprint(msg) => {
                     tracing::info!("{prefix}: failed to get cache fingerprint: {msg}")
                 }
-                rc::src::SrcOriginGeneratedReason::FingerprintMismatch(msg) => {
+                SrcOriginGeneratedReason::FingerprintMismatch(msg) => {
                     tracing::info!("{prefix}: fingerprint mismatch: {msg}")
                 }
-                rc::src::SrcOriginGeneratedReason::CacheLoadFailed(msg) => {
+                SrcOriginGeneratedReason::CacheLoadFailed(msg) => {
                     tracing::info!("{prefix}: failed to load cache: {msg}")
                 }
             }
         }
-        rc::src::SrcOrigin::Cached(..) => tracing::info!("source data was loaded from cache"),
+        SrcOrigin::Cached(..) => tracing::info!("source data was loaded from cache"),
     }
 }
 
 fn log_warnings(core_src: &rc::Src) {
-    let rc::src::SrcWarnings {
+    let SrcWarnings {
         eve_data_fetch,
         adg_pk_duplicates,
         adg_cleanup,
