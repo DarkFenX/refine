@@ -10,7 +10,7 @@ if typing.TYPE_CHECKING:
     from fw.api.aliases import DpsProfileAlias
     from fw.api.commands import BaseCommand
     from fw.api.types import FitStatsOptions
-    from fw.consts import ApiFitInfoMode, ApiItemInfoMode, ApiValInfoMode
+    from fw.consts import ApiFitInfoMode, ApiItemInfoMode, ApiValResultMode
 
 
 class ApiClientFit(ApiClientBase):
@@ -51,10 +51,10 @@ class ApiClientFit(ApiClientBase):
             sol_id: str,
             fit_id: str,
             options: ValOptions | type[Absent],
-            val_info_mode: ApiValInfoMode | type[Absent],
+            val_result_mode: ApiValResultMode | type[Absent],
     ) -> Request:
         params = {}
-        conditional_insert(container=params, path=['validation'], value=val_info_mode)
+        conditional_insert(container=params, path=['validation'], value=val_result_mode)
         kwargs = {
             'method': 'POST',
             'url': f'{self._base_url}/sol/{sol_id}/fit/{fit_id}/validate',

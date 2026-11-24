@@ -19,13 +19,13 @@ pub struct FitValCmdGen<I> {
     #[cfg_attr(feature = "serde", serde(default))]
     options: ValOptions<I>,
     #[cfg_attr(feature = "serde", serde(default))]
-    info_mode: ValResultMode,
+    result_mode: ValResultMode,
 }
 const impl<I> Default for FitValCmdGen<I> {
     fn default() -> Self {
         Self {
             options: Default::default(),
-            info_mode: Default::default(),
+            result_mode: Default::default(),
         }
     }
 }
@@ -60,8 +60,8 @@ impl<I> FitValCmdGen<I> {
         self.options = options;
         self
     }
-    pub const fn with_info_mode(mut self, info_mode: ValResultMode) -> Self {
-        self.info_mode = info_mode;
+    pub const fn with_result_mode(mut self, result_mode: ValResultMode) -> Self {
+        self.result_mode = result_mode;
         self
     }
 }
@@ -87,7 +87,7 @@ impl FitValCmdBr {
             options: self
                 .options
                 .filter_map_item_ids(|item_id_br| resps.resolve_item_id(item_id_br).ok()),
-            info_mode: self.info_mode,
+            result_mode: self.result_mode,
         }
     }
 }
@@ -106,7 +106,7 @@ impl FitValCmdCtxFitBr {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl FitValCmd {
     pub(crate) fn execute(self, core_fit: &mut rc::Fit) -> FitValResult {
-        match self.info_mode {
+        match self.result_mode {
             ValResultMode::Simple => FitValResult {
                 passed: core_fit.validate_fast(&self.options),
                 details: None,

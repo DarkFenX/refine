@@ -28,7 +28,7 @@ pub(crate) async fn validate_sol(
 ) -> impl IntoResponse {
     let Json(payload) = payload.unwrap_or_default();
     match internal_validate_sol(state, sol_id, params, payload).await {
-        Ok(val_info) => (StatusCode::OK, Json(val_info)).into_response(),
+        Ok(val_result) => (StatusCode::OK, Json(val_result)).into_response(),
         Err(err) => err.into_response(),
     }
 }
@@ -40,7 +40,7 @@ async fn internal_validate_sol(
     payload: SolValReqBody,
 ) -> Result<rs::val::SolValResult, ApiError> {
     let sol_id = rs::SolId::from_str(&sol_id)?;
-    let val_info = state
+    let val_result = state
         .get_refine()
         .get_sol(sol_id)
         .await?
@@ -48,8 +48,8 @@ async fn internal_validate_sol(
             rs::val::SolValCmd::new()
                 .with_options(payload.options)
                 .with_fit_ids(payload.fit_ids)
-                .with_info_mode(params.validation),
+                .with_result_mode(params.validation),
         )
         .await;
-    Ok(val_info)
+    Ok(val_result)
 }

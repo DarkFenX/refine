@@ -22,7 +22,7 @@ if typing.TYPE_CHECKING:
         ApiOptionalReload,
         ApiRearmMinion,
         ApiSecZone,
-        ApiValInfoMode,
+        ApiValResultMode,
     )
 
 
@@ -232,10 +232,10 @@ class ApiClientSol(ApiClientBase, eve.EveDataManager):
             sol_id: str,
             fit_ids: list[str] | type[Absent],
             options: ValOptions | type[Absent],
-            val_info_mode: ApiValInfoMode | type[Absent],
+            val_result_mode: ApiValResultMode | type[Absent],
     ) -> Request:
         params = {}
-        conditional_insert(container=params, path=['validation'], value=val_info_mode)
+        conditional_insert(container=params, path=['validation'], value=val_result_mode)
         body = {}
         conditional_insert(container=body, path=['fit_ids'], value=fit_ids)
         conditional_insert(

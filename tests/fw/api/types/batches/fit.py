@@ -67,7 +67,7 @@ if typing.TYPE_CHECKING:
         ApiNpcProp,
         ApiOptionalReload,
         ApiRearmMinion,
-        ApiValInfoMode,
+        ApiValResultMode,
     )
 
 
@@ -691,11 +691,11 @@ class FitCmdBatchCtx(BaseCmdBatchCtx):
     def validate_fit(
             self, *,
             options: ValOptions | type[Absent] = Absent,
-            info_mode: ApiValInfoMode | type[Absent] = Absent,
+            result_mode: ApiValResultMode | type[Absent] = Absent,
     ) -> FitValResult:
         command = FitValFitCmd(
             options=options,
-            info_mode=info_mode)
+            result_mode=result_mode)
         self._commands.append(command)
         return self._make_val_result(cls=FitValResult)
 

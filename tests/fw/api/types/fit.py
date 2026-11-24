@@ -32,7 +32,7 @@ from fw.consts import (
     ApiModRmMode,
     ApiModuleState,
     ApiServiceState,
-    ApiValInfoMode,
+    ApiValResultMode,
     Rack,
 )
 from fw.util import Absent, AttrDict, AttrHookDef, Default, NttRack, is_subset
@@ -143,12 +143,12 @@ class Fit(AttrDict):
     ) -> FitValResult | None:
         resp_simple = self.__validate_fit(
             options=options,
-            val_info_mode=ApiValInfoMode.simple,
+            val_result_mode=ApiValResultMode.simple,
             status_code=status_code,
             json_predicate=json_predicate)
         resp_detailed = self.__validate_fit(
             options=options,
-            val_info_mode=ApiValInfoMode.detailed,
+            val_result_mode=ApiValResultMode.detailed,
             status_code=status_code,
             json_predicate=json_predicate)
         if resp_simple.status_code == 200 and resp_detailed.status_code == 200:
@@ -161,7 +161,7 @@ class Fit(AttrDict):
             resp_sol_detailed = self.__validate_sol(
                 fit_ids=[self.id],
                 options=options,
-                val_info_mode=ApiValInfoMode.detailed,
+                val_result_mode=ApiValResultMode.detailed,
                 status_code=200,
                 json_predicate=None)
             result_sol_detailed = SolValResult(data=resp_sol_detailed.json())
@@ -176,7 +176,7 @@ class Fit(AttrDict):
                 resp_sol_simple = self.__validate_sol(
                     fit_ids=[self.id],
                     options=options,
-                    val_info_mode=ApiValInfoMode.simple,
+                    val_result_mode=ApiValResultMode.simple,
                     status_code=200,
                     json_predicate=None)
                 result_sol_simple = SolValResult(data=resp_sol_simple.json())
@@ -187,13 +187,13 @@ class Fit(AttrDict):
     def validate_single(
             self, *,
             options: ValOptions | type[Absent],
-            val_info_mode: ApiValInfoMode | type[Absent] = Absent,
+            val_result_mode: ApiValResultMode | type[Absent] = Absent,
             status_code: int = 200,
             json_predicate: JsonPredicate = None,
     ) -> FitValResult | None:
         resp = self.__validate_fit(
             options=options,
-            val_info_mode=val_info_mode,
+            val_result_mode=val_result_mode,
             status_code=status_code,
             json_predicate=json_predicate)
         if resp.status_code == 200:
@@ -203,7 +203,7 @@ class Fit(AttrDict):
     def __validate_fit(
             self, *,
             options: ValOptions | type[Absent],
-            val_info_mode: ApiValInfoMode | type[Absent],
+            val_result_mode: ApiValResultMode | type[Absent],
             status_code: int,
             json_predicate: JsonPredicate,
     ) -> Response:
@@ -211,7 +211,7 @@ class Fit(AttrDict):
             sol_id=self._sol_id,
             fit_id=self.id,
             options=options,
-            val_info_mode=val_info_mode).send()
+            val_result_mode=val_result_mode).send()
         self._client.check_sol(sol_id=self._sol_id)
         resp.check(status_code=status_code, json_predicate=json_predicate)
         return resp
@@ -220,7 +220,7 @@ class Fit(AttrDict):
             self, *,
             fit_ids: list[str],
             options: ValOptions | type[Absent],
-            val_info_mode: ApiValInfoMode | type[Absent],
+            val_result_mode: ApiValResultMode | type[Absent],
             status_code: int,
             json_predicate: JsonPredicate,
     ) -> Response:
@@ -228,7 +228,7 @@ class Fit(AttrDict):
             sol_id=self._sol_id,
             fit_ids=fit_ids,
             options=options,
-            val_info_mode=val_info_mode).send()
+            val_result_mode=val_result_mode).send()
         self._client.check_sol(sol_id=self._sol_id)
         resp.check(status_code=status_code, json_predicate=json_predicate)
         return resp

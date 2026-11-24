@@ -11,10 +11,10 @@ def test_fit(client, consts):
         api_item = api_fit_batch.add_implant(type_id=eve_not_loaded_id)
         api_val1 = api_fit_batch.validate_fit(
             options=ValOptions(not_loaded_item=True),
-            info_mode=consts.ApiValInfoMode.detailed)
+            result_mode=consts.ApiValResultMode.detailed)
         api_val2 = api_fit_batch.validate_fit(
             options=ValOptions(not_loaded_item=True),
-            info_mode=consts.ApiValInfoMode.simple)
+            result_mode=consts.ApiValResultMode.simple)
     # Verification
     assert api_val1.passed is False
     assert api_val1.details.not_loaded_item == [api_item.id]
@@ -32,10 +32,10 @@ def test_fit_kfs(client, consts):
     with api_fit.batch() as api_fit_batch:
         api_val1 = api_fit_batch.validate_fit(
             options=ValOptions(not_loaded_item=True),
-            info_mode=consts.ApiValInfoMode.detailed)
+            result_mode=consts.ApiValResultMode.detailed)
         api_val2 = api_fit_batch.validate_fit(
             options=ValOptions(not_loaded_item=[api_item.id]),
-            info_mode=consts.ApiValInfoMode.detailed)
+            result_mode=consts.ApiValResultMode.detailed)
     # Verification
     assert api_val1.passed is False
     assert api_val1.details.not_loaded_item == [api_item.id]
@@ -54,10 +54,10 @@ def test_fit_kfs_backref(client, consts):
         api_item = api_fit_batch.add_implant(type_id=eve_not_loaded_id)
         api_val1 = api_fit_batch.validate_fit(
             options=ValOptions(not_loaded_item=['#0', '#5']),
-            info_mode=consts.ApiValInfoMode.detailed)
+            result_mode=consts.ApiValResultMode.detailed)
         api_val2 = api_fit_batch.validate_fit(
             options=ValOptions(not_loaded_item=['#0', '#5', api_item.id]),
-            info_mode=consts.ApiValInfoMode.detailed)
+            result_mode=consts.ApiValResultMode.detailed)
     # Verification
     assert api_val1.passed is False
     assert api_val1.details.not_loaded_item == [api_item.id]

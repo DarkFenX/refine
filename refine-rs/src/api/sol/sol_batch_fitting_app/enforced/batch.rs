@@ -40,7 +40,7 @@ impl Sol<'_> {
             } = val_enforcer;
             // Ensure enforcer validation is running in detailed mode, regardless of what caller
             // specified; details are needed for the enforcer to work
-            let enf_val_cmd = enf_val_cmd.with_info_mode(ValResultMode::Detailed);
+            let enf_val_cmd = enf_val_cmd.with_result_mode(ValResultMode::Detailed);
             // Validate before the change
             let val_before = enf_val_cmd
                 .clone()

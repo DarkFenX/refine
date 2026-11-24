@@ -90,7 +90,7 @@ if typing.TYPE_CHECKING:
         ApiRearmMinion,
         ApiSecZone,
         ApiSolInfoMode,
-        ApiValInfoMode,
+        ApiValResultMode,
     )
 
 
@@ -999,12 +999,12 @@ class SolCmdBatchCtx(BaseCmdBatchCtx):
             self, *,
             options: ValOptions | type[Absent] = Absent,
             fit_ids: list[str] | type[Absent] = Absent,
-            info_mode: ApiValInfoMode | type[Absent] = Absent,
+            result_mode: ApiValResultMode | type[Absent] = Absent,
     ) -> SolValResult:
         command = SolValSolCmd(
             options=options,
             fit_ids=fit_ids,
-            info_mode=info_mode)
+            result_mode=result_mode)
         self._commands.append(command)
         return self._make_val_result(cls=SolValResult)
 
@@ -1012,12 +1012,12 @@ class SolCmdBatchCtx(BaseCmdBatchCtx):
             self, *,
             fit_id: str,
             options: ValOptions | type[Absent] = Absent,
-            info_mode: ApiValInfoMode | type[Absent] = Absent,
+            result_mode: ApiValResultMode | type[Absent] = Absent,
     ) -> FitValResult:
         command = SolValFitCmd(
             fit_id=fit_id,
             options=options,
-            info_mode=info_mode)
+            result_mode=result_mode)
         self._commands.append(command)
         return self._make_val_result(cls=FitValResult)
 

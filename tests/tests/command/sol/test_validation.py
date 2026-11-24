@@ -10,10 +10,10 @@ def test_sol(client, consts):
         api_item = api_sol_batch.add_sw_effect(type_id=eve_not_loaded_id)
         api_val1 = api_sol_batch.validate_sol(
             options=ValOptions(not_loaded_item=True),
-            info_mode=consts.ApiValInfoMode.detailed)
+            result_mode=consts.ApiValResultMode.detailed)
         api_val2 = api_sol_batch.validate_sol(
             options=ValOptions(not_loaded_item=True),
-            info_mode=consts.ApiValInfoMode.simple)
+            result_mode=consts.ApiValResultMode.simple)
     # Verification
     assert api_val1.passed is False
     assert api_val1.details.not_loaded_item == [api_item.id]
@@ -32,10 +32,10 @@ def test_sol_fit_ids(client, consts):
         api_val1 = api_sol_batch.validate_sol(
             options=ValOptions(not_loaded_item=True),
             fit_ids=[api_fit.id],
-            info_mode=consts.ApiValInfoMode.detailed)
+            result_mode=consts.ApiValResultMode.detailed)
         api_val2 = api_sol_batch.validate_sol(
             options=ValOptions(not_loaded_item=True),
-            info_mode=consts.ApiValInfoMode.detailed)
+            result_mode=consts.ApiValResultMode.detailed)
     # Verification
     assert api_val1.passed is False
     assert api_val1.details.fits[api_fit.id].not_loaded_item == [api_item.id]
@@ -54,11 +54,11 @@ def test_sol_fit_ids_backref(client, consts):
         api_val1 = api_sol_batch.validate_sol(
             options=ValOptions(not_loaded_item=True),
             fit_ids=['#1', '#5'],
-            info_mode=consts.ApiValInfoMode.detailed)
+            result_mode=consts.ApiValResultMode.detailed)
         api_val2 = api_sol_batch.validate_sol(
             options=ValOptions(not_loaded_item=True),
             fit_ids=['#1', '#5', api_fit.id],
-            info_mode=consts.ApiValInfoMode.detailed)
+            result_mode=consts.ApiValResultMode.detailed)
     # Verification
     assert api_val1.passed is True
     with check_no_field():
@@ -75,10 +75,10 @@ def test_sol_kfs(client, consts):
     with api_sol.batch() as api_sol_batch:
         api_val1 = api_sol_batch.validate_sol(
             options=ValOptions(not_loaded_item=True),
-            info_mode=consts.ApiValInfoMode.detailed)
+            result_mode=consts.ApiValResultMode.detailed)
         api_val2 = api_sol_batch.validate_sol(
             options=ValOptions(not_loaded_item=[api_item.id]),
-            info_mode=consts.ApiValInfoMode.detailed)
+            result_mode=consts.ApiValResultMode.detailed)
     # Verification
     assert api_val1.passed is False
     assert api_val1.details.not_loaded_item == [api_item.id]
@@ -96,10 +96,10 @@ def test_sol_kfs_backref(client, consts):
         api_item = api_sol_batch.add_sw_effect(type_id=eve_not_loaded_id)
         api_val1 = api_sol_batch.validate_sol(
             options=ValOptions(not_loaded_item=['#0', '#5']),
-            info_mode=consts.ApiValInfoMode.detailed)
+            result_mode=consts.ApiValResultMode.detailed)
         api_val2 = api_sol_batch.validate_sol(
             options=ValOptions(not_loaded_item=['#0', '#5', api_item.id]),
-            info_mode=consts.ApiValInfoMode.detailed)
+            result_mode=consts.ApiValResultMode.detailed)
     # Verification
     assert api_val1.passed is False
     assert api_val1.details.not_loaded_item == [api_item.id]
@@ -118,11 +118,11 @@ def test_fit(client, consts):
         api_val1 = api_sol_batch.validate_fit(
             fit_id=api_fit.id,
             options=ValOptions(not_loaded_item=True),
-            info_mode=consts.ApiValInfoMode.detailed)
+            result_mode=consts.ApiValResultMode.detailed)
         api_val2 = api_sol_batch.validate_fit(
             fit_id=api_fit.id,
             options=ValOptions(not_loaded_item=True),
-            info_mode=consts.ApiValInfoMode.simple)
+            result_mode=consts.ApiValResultMode.simple)
     # Verification
     assert api_val1.passed is False
     assert api_val1.details.not_loaded_item == [api_item.id]
@@ -141,11 +141,11 @@ def test_fit_backref(client, consts):
         api_val1 = api_sol_batch.validate_fit(
             fit_id=api_fit.id,
             options=ValOptions(not_loaded_item=True),
-            info_mode=consts.ApiValInfoMode.detailed)
+            result_mode=consts.ApiValResultMode.detailed)
         api_val2 = api_sol_batch.validate_fit(
             fit_id=api_fit.id,
             options=ValOptions(not_loaded_item=True),
-            info_mode=consts.ApiValInfoMode.simple)
+            result_mode=consts.ApiValResultMode.simple)
     # Verification
     assert api_val1.passed is False
     assert api_val1.details.not_loaded_item == [api_item.id]
@@ -205,11 +205,11 @@ def test_fit_kfs(client, consts):
         api_val1 = api_sol_batch.validate_fit(
             fit_id=api_fit.id,
             options=ValOptions(not_loaded_item=True),
-            info_mode=consts.ApiValInfoMode.detailed)
+            result_mode=consts.ApiValResultMode.detailed)
         api_val2 = api_sol_batch.validate_fit(
             fit_id=api_fit.id,
             options=ValOptions(not_loaded_item=[api_item.id]),
-            info_mode=consts.ApiValInfoMode.detailed)
+            result_mode=consts.ApiValResultMode.detailed)
     # Verification
     assert api_val1.passed is False
     assert api_val1.details.not_loaded_item == [api_item.id]
@@ -228,11 +228,11 @@ def test_fit_kfs_backref(client, consts):
         api_val1 = api_sol_batch.validate_fit(
             fit_id=api_fit.id,
             options=ValOptions(not_loaded_item=['#0', '#5']),
-            info_mode=consts.ApiValInfoMode.detailed)
+            result_mode=consts.ApiValResultMode.detailed)
         api_val2 = api_sol_batch.validate_fit(
             fit_id=api_fit.id,
             options=ValOptions(not_loaded_item=['#0', '#5', api_item.id]),
-            info_mode=consts.ApiValInfoMode.detailed)
+            result_mode=consts.ApiValResultMode.detailed)
     # Verification
     assert api_val1.passed is False
     assert api_val1.details.not_loaded_item == [api_item.id]

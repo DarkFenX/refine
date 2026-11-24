@@ -835,7 +835,7 @@ class ApiItemInfoMode(StrEnum):
 
 
 @unique
-class ApiValInfoMode(StrEnum):
+class ApiValResultMode(StrEnum):
     simple = 'simple'
     detailed = 'detailed'
 

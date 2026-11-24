@@ -7,7 +7,7 @@ from fw.util import conditional_insert
 
 if typing.TYPE_CHECKING:
     from fw.api.types import ValOptions
-    from fw.consts import ApiValInfoMode
+    from fw.consts import ApiValResultMode
     from fw.util import Absent
 
 
@@ -16,12 +16,12 @@ class SolValSolCmd(BaseCommand):
 
     options: ValOptions | type[Absent]
     fit_ids: list[str] | type[Absent]
-    info_mode: ApiValInfoMode | type[Absent]
+    result_mode: ApiValResultMode | type[Absent]
 
     def serialize(self) -> dict:
         body = super().serialize()
         body['type'] = 'sol_validate'
         conditional_insert(container=body, path=['options'], value=process_val_options_request(options=self.options))
         conditional_insert(container=body, path=['fit_ids'], value=self.fit_ids)
-        conditional_insert(container=body, path=['info_mode'], value=self.info_mode)
+        conditional_insert(container=body, path=['result_mode'], value=self.result_mode)
         return body

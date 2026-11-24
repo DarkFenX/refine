@@ -8,7 +8,7 @@ from fw.api.types.fleet import Fleet
 from fw.api.types.item import Item
 from fw.api.types.stats import SolBatchStats
 from fw.api.types.validation import FitValResult, SolValResult
-from fw.consts import ApiFitInfoMode, ApiFleetInfoMode, ApiItemInfoMode, ApiSolInfoMode, ApiValInfoMode
+from fw.consts import ApiFitInfoMode, ApiFleetInfoMode, ApiItemInfoMode, ApiSolInfoMode, ApiValResultMode
 from fw.util import Absent, AttrDict, AttrHookDef, Default, is_subset
 
 if typing.TYPE_CHECKING:
@@ -169,13 +169,13 @@ class Sol(AttrDict):
         resp_simple = self.__validate_sol(
             fit_ids=fit_ids,
             options=options,
-            val_info_mode=ApiValInfoMode.simple,
+            val_result_mode=ApiValResultMode.simple,
             status_code=status_code,
             json_predicate=json_predicate)
         resp_detailed = self.__validate_sol(
             fit_ids=fit_ids,
             options=options,
-            val_info_mode=ApiValInfoMode.detailed,
+            val_result_mode=ApiValResultMode.detailed,
             status_code=status_code,
             json_predicate=json_predicate)
         # Ensure simple results are consistent with full results
@@ -189,7 +189,7 @@ class Sol(AttrDict):
                 resp_fit_simple = self.__validate_fit(
                     fit_id=fit_id,
                     options=options,
-                    val_info_mode=ApiValInfoMode.simple,
+                    val_result_mode=ApiValResultMode.simple,
                     status_code=200,
                     json_predicate=None)
                 result_fit_simple = FitValResult(data=resp_fit_simple.json())
@@ -197,7 +197,7 @@ class Sol(AttrDict):
                 resp_fit_detailed = self.__validate_fit(
                     fit_id=fit_id,
                     options=options,
-                    val_info_mode=ApiValInfoMode.detailed,
+                    val_result_mode=ApiValResultMode.detailed,
                     status_code=200,
                     json_predicate=None)
                 result_fit_detailed = FitValResult(data=resp_fit_detailed.json())
@@ -210,14 +210,14 @@ class Sol(AttrDict):
             self, *,
             fit_ids: list[str] | type[Absent | Default] = Default,
             options: ValOptions | type[Absent],
-            val_info_mode: ApiValInfoMode | type[Absent] = Absent,
+            val_result_mode: ApiValResultMode | type[Absent] = Absent,
             status_code: int = 200,
             json_predicate: JsonPredicate = None,
     ) -> SolValResult | None:
         resp = self.__validate_sol(
             fit_ids=fit_ids,
             options=options,
-            val_info_mode=val_info_mode,
+            val_result_mode=val_result_mode,
             status_code=status_code,
             json_predicate=json_predicate)
         if resp.status_code == 200:
@@ -228,7 +228,7 @@ class Sol(AttrDict):
             self, *,
             fit_ids: list[str] | type[Absent | Default],
             options: ValOptions | type[Absent],
-            val_info_mode: ApiValInfoMode | type[Absent],
+            val_result_mode: ApiValResultMode | type[Absent],
             status_code: int,
             json_predicate: JsonPredicate,
     ) -> Response:
@@ -238,7 +238,7 @@ class Sol(AttrDict):
             sol_id=self.id,
             fit_ids=fit_ids,
             options=options,
-            val_info_mode=val_info_mode).send()
+            val_result_mode=val_result_mode).send()
         self._client.check_sol(sol_id=self.id)
         resp.check(status_code=status_code, json_predicate=json_predicate)
         return resp
@@ -247,7 +247,7 @@ class Sol(AttrDict):
             self, *,
             fit_id: str,
             options: ValOptions | type[Absent],
-            val_info_mode: ApiValInfoMode | type[Absent],
+            val_result_mode: ApiValResultMode | type[Absent],
             status_code: int,
             json_predicate: JsonPredicate,
     ) -> Response:
@@ -255,7 +255,7 @@ class Sol(AttrDict):
             sol_id=self.id,
             fit_id=fit_id,
             options=options,
-            val_info_mode=val_info_mode).send()
+            val_result_mode=val_result_mode).send()
         self._client.check_sol(sol_id=self.id)
         resp.check(status_code=status_code, json_predicate=json_predicate)
         return resp

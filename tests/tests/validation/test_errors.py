@@ -7,7 +7,7 @@ def test_sol_param_malformed(client):
     # Action & verification
     api_sol.validate_single(
         options=ValOptions(cpu=True),
-        val_info_mode='random',
+        val_result_mode='random',
         status_code=400,
         json_predicate={'code': 'PRM-001', 'message': 're:.+'})
 
@@ -19,6 +19,6 @@ def test_fit_param_malformed(client):
     # Action & verification
     api_fit.validate_single(
         options=ValOptions(cpu=True),
-        val_info_mode='random',
+        val_result_mode='random',
         status_code=400,
         json_predicate={'code': 'PRM-001', 'message': 're:.+'})

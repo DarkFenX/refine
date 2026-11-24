@@ -20,14 +20,14 @@ pub struct SolValCmdGen<F, I> {
     #[cfg_attr(feature = "serde", serde(default))]
     fit_ids: Vec<F>,
     #[cfg_attr(feature = "serde", serde(default))]
-    info_mode: ValResultMode,
+    result_mode: ValResultMode,
 }
 const impl<F, I> Default for SolValCmdGen<F, I> {
     fn default() -> Self {
         Self {
             options: Default::default(),
             fit_ids: Default::default(),
-            info_mode: Default::default(),
+            result_mode: Default::default(),
         }
     }
 }
@@ -50,8 +50,8 @@ impl<F, I> SolValCmdGen<F, I> {
         self.fit_ids.extend(fit_ids);
         self
     }
-    pub const fn with_info_mode(mut self, info_mode: ValResultMode) -> Self {
-        self.info_mode = info_mode;
+    pub const fn with_result_mode(mut self, result_mode: ValResultMode) -> Self {
+        self.result_mode = result_mode;
         self
     }
 }
@@ -66,7 +66,7 @@ impl SolValCmdBr {
                 .options
                 .filter_map_item_ids(|item_id_br| resps.resolve_item_id(item_id_br).ok()),
             fit_ids: resps.resolve_fit_ids_lossy(self.fit_ids),
-            info_mode: self.info_mode,
+            result_mode: self.result_mode,
         }
     }
 }
@@ -86,7 +86,7 @@ impl SolValCmd {
         // Avoid allocations by temporarily moving data to core options struct
         std::mem::swap(&mut self.fit_ids, &mut core_options.fit_ids);
         std::mem::swap(&mut self.options, &mut core_options.options);
-        let result = match self.info_mode {
+        let result = match self.result_mode {
             ValResultMode::Simple => SolValResult {
                 passed: core_sol.validate_fast(&core_options),
                 details: None,
