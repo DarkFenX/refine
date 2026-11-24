@@ -22,8 +22,10 @@ pub enum SolTryItemsEnumCmdGen<F, I> {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Conversions
 ////////////////////////////////////////////////////////////////////////////////////////////////////
+// Not public because there is no direct consumer of the command; this command is usable only via
+// hybrid batching endpoint
 impl FitTryItemsCmdBr {
-    pub const fn into_sol_try_br(self, fit_id: impl [const] Into<FitIdBr>) -> SolTryItemsEnumCmdBr {
+    pub(crate) const fn into_sol_try_br(self, fit_id: impl [const] Into<FitIdBr>) -> SolTryItemsEnumCmdBr {
         SolTryItemsEnumCmdBr::FitTryItems(self.into_ctx_item_br(fit_id))
     }
 }
