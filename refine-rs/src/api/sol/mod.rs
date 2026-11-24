@@ -18,6 +18,7 @@ mod sol_batch_fitting_app;
 mod sol_batch_hybrid;
 mod sol_change;
 mod sol_get_info;
+mod sol_get_stats;
 mod sol_remove;
 mod sol_switch_src;
 mod sol_validate;

@@ -63,6 +63,7 @@ pub(crate) async fn setup_server() {
         .route("/sol/{sol_id}", patch(handlers::change_sol))
         .route("/sol/{sol_id}", delete(handlers::remove_sol))
         .route("/sol/{sol_id}/src", patch(handlers::switch_sol_src))
+        .route("/sol/{sol_id}/stats", post(handlers::get_sol_stats))
         .route("/sol/{sol_id}/validate", post(handlers::validate_sol))
         .route("/sol/{sol_id}/batch", post(handlers::batch_sol))
         // Fleet handlers

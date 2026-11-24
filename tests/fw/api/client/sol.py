@@ -2,6 +2,7 @@ import typing
 
 from fw import eve
 from fw.api.commands import RootCtlSolCreateCmd
+from fw.api.commands.helpers import process_stats_options_request
 from fw.api.types import Sol, ValOptions
 from fw.consts import ApiSolInfoMode
 from fw.request import Request
@@ -10,8 +11,9 @@ from .base import ApiClientBase
 
 if typing.TYPE_CHECKING:
     from fw.aliases import JsonPredicate
-    from fw.api.aliases import DpsProfileAlias
+    from fw.api.aliases import DpsProfileAlias, StatsOptions
     from fw.api.commands import BaseCommand
+    from fw.api.types import FitStatsOptions, FleetStatsOptions, ItemStatsOptions
     from fw.consts import (
         ApiFitInfoMode,
         ApiFleetInfoMode,
@@ -195,6 +197,35 @@ class ApiClientSol(ApiClientBase, eve.EveDataManager):
     def cleanup_sols(self) -> None:
         for sol in self.__created_sols.copy():
             sol.remove()
+
+    def get_sol_stats_request(
+            self, *,
+            sol_id: str,
+            fleet_options: StatsOptions[FleetStatsOptions] | type[Absent],
+            fit_options: StatsOptions[FitStatsOptions] | type[Absent],
+            item_options: StatsOptions[ItemStatsOptions] | type[Absent],
+    ) -> Request:
+        body = {}
+        conditional_insert(
+            container=body,
+            path=['fleet_options'],
+            value=process_stats_options_request(options=fleet_options))
+        conditional_insert(
+            container=body,
+            path=['fit_options'],
+            value=process_stats_options_request(options=fit_options))
+        conditional_insert(
+            container=body,
+            path=['item_options'],
+            value=process_stats_options_request(options=item_options))
+        kwargs = {
+            'method': 'POST',
+            'url': f'{self._base_url}/sol/{sol_id}/stats'}
+        # Intentionally send request without body when we don't need it, to test case when the
+        # server receives no content-type header
+        if body:
+            kwargs['json'] = body
+        return Request(client=self, **kwargs)
 
     def validate_sol_request(
             self, *,

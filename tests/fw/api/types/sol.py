@@ -6,6 +6,7 @@ from fw.api.types.dps_profile import DpsProfile
 from fw.api.types.fit import Fit
 from fw.api.types.fleet import Fleet
 from fw.api.types.item import Item
+from fw.api.types.stats import SolBatchStats
 from fw.api.types.validation import FitValResult, SolValResult
 from fw.consts import ApiFitInfoMode, ApiFleetInfoMode, ApiItemInfoMode, ApiSolInfoMode, ApiValInfoMode
 from fw.util import Absent, AttrDict, AttrHookDef, Default, is_subset
@@ -14,7 +15,8 @@ if typing.TYPE_CHECKING:
     from fw import eve
     from fw.aliases import JsonPredicate, ReqHook
     from fw.api import ApiClient
-    from fw.api.aliases import DpsProfileAlias
+    from fw.api.aliases import DpsProfileAlias, StatsOptions
+    from fw.api.types.stats import FitStatsOptions, FleetStatsOptions, ItemStatsOptions
     from fw.api.types.validation import ValOptions
     from fw.consts import ApiEffMode, ApiNpcProp, ApiOptionalReload, ApiRearmMinion, ApiSecZone
     from fw.response import Response
@@ -137,6 +139,25 @@ class Sol(AttrDict):
         if resp.status_code == 200:
             self._data = resp.json()
         return self
+
+    def get_stats(
+            self, *,
+            fleet_options: StatsOptions[FleetStatsOptions] | type[Absent] = Absent,
+            fit_options: StatsOptions[FitStatsOptions] | type[Absent] = Absent,
+            item_options: StatsOptions[ItemStatsOptions] | type[Absent] = Absent,
+            status_code: int = 200,
+            json_predicate: JsonPredicate = None,
+    ) -> SolBatchStats | None:
+        resp = self._client.get_sol_stats_request(
+            sol_id=self.id,
+            fleet_options=fleet_options,
+            fit_options=fit_options,
+            item_options=item_options).send()
+        self.check()
+        resp.check(status_code=status_code, json_predicate=json_predicate)
+        if resp.status_code == 200:
+            return SolBatchStats(data=resp.json())
+        return None
 
     def validate(
             self, *,
