@@ -82,6 +82,28 @@ class ApiClientSrc(ApiClientBase, eve.EveDataManager, eve.EveDataServer):
             url=f'{self._base_url}/src/{src_alias}',
             params=params)
 
+    def get_source_items_request(
+            self, *,
+            src_alias: str,
+            type_ids: list[int],
+    ) -> Request:
+        return Request(
+            client=self,
+            method='POST',
+            url=f'{self._base_url}/src/{src_alias}/items',
+            json={'type_ids': type_ids})
+
+    def get_source_mutated_items_request(
+            self, *,
+            src_alias: str,
+            mutations: list[tuple[int, int]],
+    ) -> Request:
+        return Request(
+            client=self,
+            method='POST',
+            url=f'{self._base_url}/src/{src_alias}/mutated-items',
+            json={'mutations': mutations})
+
     def remove_source_request(self, *, src_alias: str) -> Request:
         return Request(
             client=self,

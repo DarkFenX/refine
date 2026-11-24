@@ -26,3 +26,29 @@ class Src(AttrDict):
             self._data = resp.json()
             return self
         return None
+
+    def get_items(
+            self, *,
+            type_ids: list[int],
+            status_code: int = 200,
+            json_predicate: JsonPredicate = None,
+    ) -> dict[int, AttrDict] | None:
+        resp = self._client.get_source_items_request(src_alias=self.alias, type_ids=type_ids).send()
+        resp.check(status_code=status_code, json_predicate=json_predicate)
+        if resp.status_code == 200:
+            return {int(k): AttrDict(data=v) for k, v in resp.json().items()}
+        return None
+
+    def get_mutated_items(
+            self, *,
+            mutations: list[tuple[int, int]],
+            status_code: int = 200,
+            json_predicate: JsonPredicate = None,
+    ) -> dict[int, dict[int, AttrDict]] | None:
+        resp = self._client.get_source_mutated_items_request(src_alias=self.alias, mutations=mutations).send()
+        resp.check(status_code=status_code, json_predicate=json_predicate)
+        if resp.status_code == 200:
+            return {
+                int(base_type_id): {int(mutator_id): AttrDict(data=v) for mutator_id, v in mutators.items()}
+                for base_type_id, mutators in resp.json().items()}
+        return None

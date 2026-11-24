@@ -25,7 +25,7 @@ impl ItemTypeId {
     pub(crate) fn from_aid(type_aid: AItemId) -> Self {
         Self(type_aid.into_i32())
     }
-    pub(in crate::api) fn into_aid(self) -> AItemId {
+    pub(crate) fn into_aid(self) -> AItemId {
         AItemId::from_i32(self.0)
     }
 }

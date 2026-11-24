@@ -24,7 +24,8 @@ pub enum ItemKind {
 
 /// Covers only item kinds which can be auto-detected by the library.
 ///
-/// Is used in item kind mismatch validation, and internally by try-fit-items functionality.
+/// Is exposed by data source items and item kind mismatch validation, and is used internally by
+/// item auto-adding and try-fit-items functionality.
 #[cfg_attr(feature = "serde", derive(serde::Serialize), serde(rename_all = "snake_case"))]
 #[derive(Copy, Clone, Eq, PartialEq, Debug, derive_more::Display)]
 #[display(rename_all = "snake_case")]

@@ -55,6 +55,8 @@ pub(crate) async fn setup_server() {
         .route("/src/{alias}", post(handlers::add_source))
         .route("/src/{alias}", get(handlers::get_source))
         .route("/src/{alias}", delete(handlers::remove_source))
+        .route("/src/{alias}/items", post(handlers::get_source_items))
+        .route("/src/{alias}/mutated-items", post(handlers::get_source_mutated_items))
         // Solar system handlers
         .route("/sol", post(handlers::add_sol))
         .route("/sol/{sol_id}", get(handlers::get_sol))

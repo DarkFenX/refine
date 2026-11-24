@@ -29,7 +29,7 @@ pub(crate) use sol::SolInfoEnumCmd;
 pub use sol::{
     SolInfo, SolInfoCmd, SolInfoCmdBr, SolInfoEnumCmdBr, SolInfoEnumError, SolInfoFull, SolInfoMode, SolInfoPartial,
 };
-pub use src::{SrcInfo, SrcInfoFull, SrcInfoMode, SrcInfoPartial};
+pub use src::{SrcInfo, SrcInfoFull, SrcInfoMode, SrcInfoPartial, SrcItemInfo, SrcMutatedItemInfo};
 
 mod fit;
 mod fleet;

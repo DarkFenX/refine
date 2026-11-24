@@ -1,21 +1,8 @@
 use crate::{
     SrcAlias,
-    src::{SrcOrigin, SrcWarnings},
+    src::{SrcInfoMode, SrcOrigin, SrcWarnings},
     svc::SrcInnerGuarded,
 };
-
-#[cfg_attr(feature = "serde", derive(serde::Deserialize), serde(rename_all = "snake_case"))]
-#[derive(Copy, Clone)]
-pub enum SrcInfoMode {
-    Alias,
-    Partial,
-    Full,
-}
-const impl Default for SrcInfoMode {
-    fn default() -> Self {
-        Self::Alias
-    }
-}
 
 #[cfg_attr(feature = "serde", derive(serde::Serialize))]
 #[derive(Clone)]
