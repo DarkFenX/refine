@@ -7,7 +7,7 @@ use crate::{
 };
 
 #[cfg_attr(feature = "serde", derive(serde::Deserialize))]
-pub struct DevBenchmarkTryFitItemsCmd {
+pub struct DevBenchmarkTryItemsCmd {
     fit_id: FitId,
     type_ids: Vec<ItemTypeId>,
     val_options: ValOptions,
@@ -17,7 +17,7 @@ pub struct DevBenchmarkTryFitItemsCmd {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Construction
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-impl DevBenchmarkTryFitItemsCmd {
+impl DevBenchmarkTryItemsCmd {
     pub const fn new(fit_id: FitId, type_ids: Vec<ItemTypeId>, val_options: ValOptions, iterations: usize) -> Self {
         Self {
             fit_id,
@@ -27,16 +27,16 @@ impl DevBenchmarkTryFitItemsCmd {
         }
     }
 }
-impl From<DevBenchmarkTryFitItemsCmd> for DevBenchmarkCmd {
-    fn from(sub_cmd: DevBenchmarkTryFitItemsCmd) -> Self {
-        DevBenchmarkCmd::TryFitItems(Box::new(sub_cmd))
+impl From<DevBenchmarkTryItemsCmd> for DevBenchmarkCmd {
+    fn from(sub_cmd: DevBenchmarkTryItemsCmd) -> Self {
+        DevBenchmarkCmd::TryItems(Box::new(sub_cmd))
     }
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Execution
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-impl DevBenchmarkTryFitItemsCmd {
+impl DevBenchmarkTryItemsCmd {
     pub(super) fn execute(self, core_sol: &mut rc::SolOwned) {
         let cloner = SolCloner::new(core_sol);
         let chunk_size = usize::max(

@@ -356,7 +356,7 @@ def test_benchmark_try_fit_items(client, consts):
     print(f'starting try-fit-items benchmark, trying {len(try_fit_type_ids)} items per iteration')
     before = time()
     api_sol.benchmark(command={
-        'type': 'try_fit_items',
+        'type': 'try_items',
         'fit_id': api_fit.id,
         'type_ids': try_fit_type_ids,
         'val_options': options,

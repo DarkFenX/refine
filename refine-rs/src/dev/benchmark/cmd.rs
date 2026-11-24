@@ -1,4 +1,4 @@
-use crate::dev::{DevBenchmarkAttrCalcCmd, DevBenchmarkCapSimCmd, DevBenchmarkStatsCmd, DevBenchmarkTryFitItemsCmd};
+use crate::dev::{DevBenchmarkAttrCalcCmd, DevBenchmarkCapSimCmd, DevBenchmarkStatsCmd, DevBenchmarkTryItemsCmd};
 
 #[cfg_attr(
     feature = "serde",
@@ -9,7 +9,7 @@ pub enum DevBenchmarkCmd {
     AttrCalc(DevBenchmarkAttrCalcCmd),
     CapSim(DevBenchmarkCapSimCmd),
     Stats(DevBenchmarkStatsCmd),
-    TryFitItems(Box<DevBenchmarkTryFitItemsCmd>),
+    TryItems(Box<DevBenchmarkTryItemsCmd>),
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -21,7 +21,7 @@ impl DevBenchmarkCmd {
             Self::AttrCalc(cmd) => cmd.execute(core_sol),
             Self::CapSim(cmd) => cmd.execute(core_sol),
             Self::Stats(cmd) => cmd.execute(core_sol),
-            Self::TryFitItems(cmd) => cmd.execute(core_sol),
+            Self::TryItems(cmd) => cmd.execute(core_sol),
         }
     }
 }
