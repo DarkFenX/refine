@@ -10,7 +10,11 @@ pub use crate::{
 };
 
 pub mod err {
-    pub use rc::src::err::SrcInitError;
+    pub use rc::{
+        ad::err::{ADataGeneratorCleanupError, ADataGeneratorError},
+        ed::err::EveDataHandlerError,
+        src::err::SrcInitError,
+    };
 
     pub use crate::api::{SrcAddError, SrcAliasPruneInitError, SrcAliasStrictInitError, SrcGetError, SrcRemoveError};
 }
