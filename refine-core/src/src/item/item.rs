@@ -30,7 +30,7 @@ impl SrcItem<'_> {
 // Private
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl<'src> SrcItem<'src> {
-    pub(super) fn new(r_item: &'src RItem) -> Self {
+    pub(in crate::src) fn new(r_item: &'src RItem) -> Self {
         Self { r_item }
     }
 }

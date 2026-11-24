@@ -1,4 +1,4 @@
-use crate::src::{SrcInfoEnumResp, SrcItemInfosCmd, SrcMutatedItemInfosCmd};
+use crate::src::{SrcInfoEnumResp, SrcItemInfosCmd, SrcMutatedAttrRollsCmd, SrcMutatedItemInfosCmd};
 
 #[cfg_attr(
     feature = "serde",
@@ -9,6 +9,7 @@ use crate::src::{SrcInfoEnumResp, SrcItemInfosCmd, SrcMutatedItemInfosCmd};
 pub enum SrcInfoEnumCmd {
     ItemInfos(SrcItemInfosCmd),
     MutatedItemInfos(SrcMutatedItemInfosCmd),
+    MutatedAttrRolls(SrcMutatedAttrRollsCmd),
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -24,6 +25,11 @@ impl SrcMutatedItemInfosCmd {
         SrcInfoEnumCmd::MutatedItemInfos(self)
     }
 }
+impl SrcMutatedAttrRollsCmd {
+    pub const fn into_src_info(self) -> SrcInfoEnumCmd {
+        SrcInfoEnumCmd::MutatedAttrRolls(self)
+    }
+}
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Execution
@@ -33,6 +39,7 @@ impl SrcInfoEnumCmd {
         match self {
             Self::ItemInfos(cmd) => SrcInfoEnumResp::ItemInfos(cmd.execute(core_src)),
             Self::MutatedItemInfos(cmd) => SrcInfoEnumResp::MutatedItemInfos(cmd.execute(core_src)),
+            Self::MutatedAttrRolls(cmd) => SrcInfoEnumResp::MutatedAttrRolls(cmd.execute(core_src)),
         }
     }
 }

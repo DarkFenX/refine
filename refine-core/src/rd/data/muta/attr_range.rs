@@ -1,4 +1,4 @@
-use crate::{Value, ad::AMutaAttrRange};
+use crate::{UnitInterval, Value, ad::AMutaAttrRange};
 
 #[derive(Copy, Clone)]
 pub(crate) struct RMutaAttrRange {
@@ -8,6 +8,24 @@ pub(crate) struct RMutaAttrRange {
     pub(crate) mult_max_raw: Value,
     pub(crate) mult_min_math: Value,
     pub(crate) mult_max_math: Value,
+}
+impl RMutaAttrRange {
+    /// Roll which turns unmutated value into absolute one, clamped when the latter is out of range.
+    ///
+    /// Returns None if mutation range limits the attribute to a single value.
+    pub(crate) fn resolve_absolute_into_roll(
+        &self,
+        unmutated_value: Value,
+        absolute_value: Value,
+    ) -> Option<UnitInterval> {
+        let min_value = unmutated_value * self.mult_min_raw;
+        let max_value = unmutated_value * self.mult_max_raw;
+        if min_value == max_value {
+            return None;
+        }
+        let value = (absolute_value - min_value) / (max_value - min_value);
+        Some(UnitInterval::from_value_clamped(value))
+    }
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////

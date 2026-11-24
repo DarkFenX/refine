@@ -11,6 +11,7 @@ mod src;
 mod src_batch_query;
 mod src_get_info;
 mod src_get_item_infos;
+mod src_get_mutated_attr_rolls;
 mod src_get_mutated_item_infos;
 mod src_query;
 mod src_remove;

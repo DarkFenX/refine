@@ -35,12 +35,6 @@ impl<'sol> FullMAttr<'sol> {
         //   this case it will be 0.0 relatively [14.4, 16.8] range - range is wrong, result is
         //   right).
         let value = *u_item.get_r_item_flex_data().unwrap().attrs.get(&attr_rid).unwrap();
-        let min_value = value * a_mutation_range.mult_min_raw;
-        let max_value = value * a_mutation_range.mult_max_raw;
-        if min_value == max_value {
-            return None;
-        }
-        let value = (value - min_value) / (max_value - min_value);
-        Some(UnitInterval::from_value_clamped(value))
+        a_mutation_range.resolve_absolute_into_roll(value, value)
     }
 }

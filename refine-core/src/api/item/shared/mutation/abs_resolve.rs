@@ -18,11 +18,5 @@ pub(in crate::api::item::shared::mutation) fn resolve_absolute_into_roll(
     let attr_rid = r_data.get_attr_rid_by_aid(attr_aid).unwrap();
     let unmutated_value = *unmutated_attrs.get(&attr_rid).unwrap();
     let mutation_range = r_mutator.attr_mods.get(&attr_rid).unwrap();
-    let min_value = unmutated_value * mutation_range.mult_min_raw;
-    let max_value = unmutated_value * mutation_range.mult_max_raw;
-    if min_value == max_value {
-        return None;
-    }
-    let value = (absolute_value - min_value) / (max_value - min_value);
-    Some(UnitInterval::from_value_clamped(value))
+    mutation_range.resolve_absolute_into_roll(unmutated_value, absolute_value)
 }

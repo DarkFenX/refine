@@ -60,7 +60,7 @@ impl SrcWarnings {
 // Conversions
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl SrcWarnings {
-    pub(super) fn from_adapted_warnings(a_data: &mut AData) -> Self {
+    pub(in crate::src) fn from_adapted_warnings(a_data: &mut AData) -> Self {
         let ADataWarnings {
             data_fetch,
             pk_duplicates,

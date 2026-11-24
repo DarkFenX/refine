@@ -1,29 +1,19 @@
 use std::sync::Arc;
 
-use super::{
-    err::SrcInitError,
-    item::SrcItem,
-    origin::{SrcOrigin, SrcOriginGeneratedReason},
-    warnings::SrcWarnings,
-};
 use crate::{
-    ItemTypeId,
-    ad::{AData, ADataGenerator, AFingerprint, AdaptedDataCacher, err::AdcLoadError},
+    Src,
+    ad::{
+        AData, ADataGenerator, AFingerprint, AdaptedDataCacher,
+        err::{ADataGeneratorError, AdcLoadError},
+    },
     ed::EveDataHandler,
     rd::RData,
+    src::{SrcOrigin, SrcOriginGeneratedReason, SrcWarnings},
 };
 
-/// Data source.
-///
-/// Data source is a top-level entity which manages EVE data handler and adapted data cacher to do
-/// necessary preparations and expose processed data to solar system and its services.
-/// Under the hood it's an entity which builds runtime data container, and then provides access to
-/// its contents
-pub struct Src {
-    pub(crate) r_data: Arc<RData>,
-    origin: SrcOrigin,
-    warnings: SrcWarnings,
-}
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Public
+////////////////////////////////////////////////////////////////////////////////////////////////////
 impl Src {
     pub fn new(ed_handler: &EveDataHandler, ad_cacher: Option<&AdaptedDataCacher>) -> Result<Self, SrcInitError> {
         // No cacher - just generate adapted data (no cacher to write it)
@@ -61,23 +51,17 @@ impl Src {
         // Cached data is unusable - generate adapted data and cache it
         generate_and_cache(ed_handler, SrcOrigin::Generated(reason), ad_cacher, current_fingerprint)
     }
-    pub fn get_origin(&self) -> &SrcOrigin {
-        &self.origin
-    }
-    pub fn get_warnings(&self) -> &SrcWarnings {
-        &self.warnings
-    }
-    pub fn get_item(&self, type_id: ItemTypeId) -> Option<SrcItem<'_>> {
-        let r_item = self.r_data.get_item_by_aid(&type_id.into_aid())?;
-        Some(SrcItem::new(r_item))
-    }
-    pub fn get_mutated_item(&self, base_type_id: ItemTypeId, mutator_type_id: ItemTypeId) -> Option<SrcItem<'_>> {
-        let muta_pregen = self.r_data.get_muta_pregen();
-        let entry = muta_pregen.get_entry(base_type_id.into_aid(), mutator_type_id.into_aid())?;
-        Some(SrcItem::new(&entry.mutated_item))
-    }
 }
 
+#[derive(Debug, thiserror::Error)]
+pub enum SrcInitError {
+    #[error(transparent)]
+    ADataGeneration(#[from] ADataGeneratorError),
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Private
+////////////////////////////////////////////////////////////////////////////////////////////////////
 fn process(mut a_data: AData, origin: SrcOrigin) -> Result<Src, SrcInitError> {
     let warnings = SrcWarnings::from_adapted_warnings(&mut a_data);
     let r_data = RData::from_a_data(a_data);
