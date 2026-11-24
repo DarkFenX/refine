@@ -1,4 +1,8 @@
-pub use rc::src::{SrcOrigin, SrcOriginGeneratedReason, SrcWarnings};
+pub use rc::{
+    ad::AdaptedDataCacher,
+    ed::EveDataHandler,
+    src::{SrcOrigin, SrcOriginGeneratedReason, SrcWarnings},
+};
 
 pub use crate::info::src::{
     SrcInfo, SrcInfoEnumCmd, SrcInfoEnumResp, SrcInfoFull, SrcInfoMode, SrcInfoPartial, SrcItemInfo, SrcItemInfos,

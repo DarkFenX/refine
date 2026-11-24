@@ -18,19 +18,19 @@ pub(crate) struct AddSrcReqBody {
     make_default: Option<bool>,
 }
 
-pub(crate) async fn add_source(
+pub(crate) async fn add_src(
     State(state): State<AppState>,
     Path(src_alias): Path<String>,
     WithRejection(Query(params), _): WithRejection<Query<SrcParams>, ApiError>,
     WithRejection(Json(payload), _): WithRejection<Json<AddSrcReqBody>, ApiError>,
 ) -> impl IntoResponse {
-    match internal_add_source(state, src_alias, params, payload).await {
+    match internal_add_src(state, src_alias, params, payload).await {
         Ok(src_info) => (StatusCode::CREATED, Json(src_info)).into_response(),
         Err(err) => err.into_response(),
     }
 }
 
-async fn internal_add_source(
+async fn internal_add_src(
     state: AppState,
     src_alias: String,
     params: SrcParams,

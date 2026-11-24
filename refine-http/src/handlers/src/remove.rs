@@ -6,14 +6,14 @@ use axum::{
 
 use crate::{err::ApiError, state::AppState};
 
-pub(crate) async fn remove_source(State(state): State<AppState>, Path(src_alias): Path<String>) -> impl IntoResponse {
-    match internal_remove_source(state, src_alias).await {
+pub(crate) async fn remove_src(State(state): State<AppState>, Path(src_alias): Path<String>) -> impl IntoResponse {
+    match internal_remove_src(state, src_alias).await {
         Ok(..) => StatusCode::NO_CONTENT.into_response(),
         Err(err) => err.into_response(),
     }
 }
 
-async fn internal_remove_source(state: AppState, src_alias: String) -> Result<(), ApiError> {
+async fn internal_remove_src(state: AppState, src_alias: String) -> Result<(), ApiError> {
     let src_alias = rs::SrcAlias::try_pruned(&src_alias).map_err(|err| ApiError::PathSrcParseMisc(src_alias, err))?;
     state.get_refine().get_src(Some(src_alias)).await?.remove().await?;
     Ok(())

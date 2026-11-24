@@ -9,22 +9,18 @@ use axum_extra::extract::WithRejection;
 use super::shared::SrcParams;
 use crate::{err::ApiError, state::AppState};
 
-pub(crate) async fn get_source(
+pub(crate) async fn get_src(
     State(state): State<AppState>,
     Path(src_alias): Path<String>,
     WithRejection(Query(params), _): WithRejection<Query<SrcParams>, ApiError>,
 ) -> impl IntoResponse {
-    match internal_get_source(state, src_alias, params).await {
+    match internal_get_src(state, src_alias, params).await {
         Ok(src_info) => (StatusCode::OK, Json(src_info)).into_response(),
         Err(err) => err.into_response(),
     }
 }
 
-async fn internal_get_source(
-    state: AppState,
-    src_alias: String,
-    params: SrcParams,
-) -> Result<rs::src::SrcInfo, ApiError> {
+async fn internal_get_src(state: AppState, src_alias: String, params: SrcParams) -> Result<rs::src::SrcInfo, ApiError> {
     let src_alias = rs::SrcAlias::try_pruned(&src_alias).map_err(|err| ApiError::PathSrcParseMisc(src_alias, err))?;
     let src_info = state
         .get_refine()

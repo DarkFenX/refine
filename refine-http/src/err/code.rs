@@ -43,7 +43,7 @@ impl ApiError {
                 rs::err::SolGetError::SolNotFound(..) => (StatusCode::NOT_FOUND, "SOL-001"),
             },
             Self::SolAdd(err) => match err {
-                rs::err::SolAddError::SrcGet(..) => (StatusCode::BAD_REQUEST, "SOL-003"),
+                rs::ctl::err::SolAddError::SrcGet(..) => (StatusCode::BAD_REQUEST, "SOL-003"),
             },
             Self::SolChange(err) => sol_change_enum(err),
             Self::SolBatchCtl(err) => sol_change_enum(&err.error),
@@ -80,10 +80,10 @@ impl ApiError {
                 }
             },
             Self::SolRemove(err) => match err {
-                rs::err::SolRemoveError::SolNotFound(..) => (StatusCode::NOT_FOUND, "SOL-001"),
+                rs::ctl::err::SolRemoveError::SolNotFound(..) => (StatusCode::NOT_FOUND, "SOL-001"),
             },
             Self::SolSrcSwitch(err) => match err {
-                rs::err::SolSwitchSrcError::SrcGet(..) => (StatusCode::BAD_REQUEST, "SOL-003"),
+                rs::ctl::err::SolSwitchSrcError::SrcGet(..) => (StatusCode::BAD_REQUEST, "SOL-003"),
             },
             ////////////////////////////////////////////////////////////////////////////////////////
             // Fleet-related

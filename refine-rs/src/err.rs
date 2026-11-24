@@ -1,8 +1,5 @@
 pub use crate::{
-    api::{
-        FitGetError, FleetGetError, ItemGetError, SolAddError, SolGetError, SolIdParseError, SolRemoveError,
-        SolSwitchSrcError,
-    },
+    api::{FitGetError, FleetGetError, ItemGetError, SolGetError, SolIdParseError},
     misc::BrResolveError,
 };
 

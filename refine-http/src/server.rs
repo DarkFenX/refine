@@ -52,11 +52,11 @@ pub(crate) async fn setup_server() {
     let router = Router::new()
         .route("/", get(handlers::root))
         // Data source handlers
-        .route("/src/{alias}", post(handlers::add_source))
-        .route("/src/{alias}", get(handlers::get_source))
-        .route("/src/{alias}", delete(handlers::remove_source))
-        .route("/src/{alias}/single", post(handlers::query_source))
-        .route("/src/{alias}/batch", post(handlers::batch_source))
+        .route("/src/{alias}", post(handlers::add_src))
+        .route("/src/{alias}", get(handlers::get_src))
+        .route("/src/{alias}", delete(handlers::remove_src))
+        .route("/src/{alias}/single", post(handlers::query_src))
+        .route("/src/{alias}/batch", post(handlers::batch_src))
         // Solar system handlers
         .route("/sol", post(handlers::add_sol))
         .route("/sol/{sol_id}", get(handlers::get_sol))

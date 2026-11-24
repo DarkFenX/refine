@@ -16,18 +16,18 @@ use crate::{
 #[serde(transparent)]
 pub(crate) struct SrcBatchReqBody(Vec<serde_json::Value>);
 
-pub(crate) async fn batch_source(
+pub(crate) async fn batch_src(
     State(state): State<AppState>,
     Path(src_alias): Path<String>,
     WithRejection(Json(payload), _): WithRejection<Json<SrcBatchReqBody>, ApiError>,
 ) -> impl IntoResponse {
-    match internal_batch_source(state, src_alias, payload).await {
+    match internal_batch_src(state, src_alias, payload).await {
         Ok(resps) => (StatusCode::OK, Json(resps)).into_response(),
         Err(err) => err.into_response(),
     }
 }
 
-async fn internal_batch_source(
+async fn internal_batch_src(
     state: AppState,
     src_alias: String,
     payload: SrcBatchReqBody,

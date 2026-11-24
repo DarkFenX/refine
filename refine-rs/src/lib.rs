@@ -14,7 +14,7 @@ pub use rc::{
     FitSecStatus, FleetId, ItemAttrValues, ItemEffectInfo, ItemGrpId, ItemId, ItemKind, ItemSpoolInfo, ItemTypeId,
     MinionState, ModRack, Modification, ModuleState, MoveMode, Movement, NpcProp, Op, OptionExt, OptionalReload,
     PValue, ProjRange, RackPos, RearmMinion, RemoveMode, SecZone, SecZoneCorruption, ServiceState, SkillLevel,
-    SlotIndex, Spool, SpoolCycleInfo, UnitInterval, Value, ad::AdaptedDataCacher, ed::EveDataHandler,
+    SlotIndex, Spool, SpoolCycleInfo, UnitInterval, Value,
 };
 
 mod api;

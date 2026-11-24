@@ -45,13 +45,13 @@ pub(crate) enum ApiError {
     #[error(transparent)]
     PathSolNotFound(#[from] rs::err::SolGetError),
     #[error(transparent)]
-    SolAdd(#[from] rs::err::SolAddError),
+    SolAdd(#[from] rs::ctl::err::SolAddError),
     #[error(transparent)]
     SolChange(#[from] rs::ctl::err::SolChangeEnumError),
     #[error(transparent)]
-    SolRemove(#[from] rs::err::SolRemoveError),
+    SolRemove(#[from] rs::ctl::err::SolRemoveError),
     #[error(transparent)]
-    SolSrcSwitch(#[from] rs::err::SolSwitchSrcError),
+    SolSrcSwitch(#[from] rs::ctl::err::SolSwitchSrcError),
     #[error(transparent)]
     SolBatchCtl(ApiErrorIndexed<rs::ctl::err::SolChangeEnumError>),
     #[error(transparent)]

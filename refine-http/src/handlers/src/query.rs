@@ -8,18 +8,18 @@ use axum_extra::extract::WithRejection;
 
 use crate::{err::ApiError, state::AppState};
 
-pub(crate) async fn query_source(
+pub(crate) async fn query_src(
     State(state): State<AppState>,
     Path(src_alias): Path<String>,
     WithRejection(Json(payload), _): WithRejection<Json<rs::src::SrcInfoEnumCmd>, ApiError>,
 ) -> impl IntoResponse {
-    match internal_query_source(state, src_alias, payload).await {
+    match internal_query_src(state, src_alias, payload).await {
         Ok(resp) => (StatusCode::OK, Json(resp)).into_response(),
         Err(err) => err.into_response(),
     }
 }
 
-async fn internal_query_source(
+async fn internal_query_src(
     state: AppState,
     src_alias: String,
     payload: rs::src::SrcInfoEnumCmd,
