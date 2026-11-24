@@ -1,4 +1,5 @@
 use crate::{
+    DetectedItemKind,
     ad::AItemId,
     rd::RItemBase,
     svc::{
@@ -14,7 +15,6 @@ use crate::{
         },
     },
     ud::{UData, UFitId, UItemId},
-    val::DetectedItemKind,
 };
 
 impl Vast {

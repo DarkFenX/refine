@@ -1,7 +1,7 @@
 use itertools::chain;
 
 use crate::{
-    Count,
+    Count, DetectedItemKind,
     ad::AItemCatId,
     svc::{
         Vast,
@@ -12,7 +12,7 @@ use crate::{
     },
     ud::{UData, UItem, UItemId, UShipKind},
     util::RMap,
-    val::{DetectedItemKind, ValShipKind},
+    val::ValShipKind,
 };
 
 impl Vast {

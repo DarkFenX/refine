@@ -1,4 +1,4 @@
-use crate::{ItemTypeId, ModuleState, rd::RItem, val::DetectedItemKind};
+use crate::{DetectedItemKind, ItemTypeId, ModuleState, rd::RItem};
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Public

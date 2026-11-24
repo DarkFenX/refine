@@ -1,10 +1,10 @@
 pub use fit::{FitValCmd, FitValCmdBr, FitValEnumCmdBr, FitValResult};
 pub(crate) use fit::{FitValCmdGen, FitValEnumCmd};
 pub use rc::val::{
-    DetectedItemKind, ValActivationBlockedFail, ValCapitalModFail, ValCapitalModInfo, ValChargeGroupChargeInfo,
-    ValChargeGroupFail, ValChargeSizeChargeInfo, ValChargeSizeFail, ValChargeVolumeChargeInfo, ValChargeVolumeFail,
-    ValCloakingBlockedFail, ValDroneGroupFail, ValDroneGroupInfo, ValEffectSecZoneEffectInfo, ValEffectSecZoneFail,
-    ValEffectSecZoneItemInfo, ValEffectStopperFail, ValEffectStopperItemInfo, ValEnabled, ValFighterSquadSizeFail,
+    ValActivationBlockedFail, ValCapitalModFail, ValCapitalModInfo, ValChargeGroupChargeInfo, ValChargeGroupFail,
+    ValChargeSizeChargeInfo, ValChargeSizeFail, ValChargeVolumeChargeInfo, ValChargeVolumeFail, ValCloakingBlockedFail,
+    ValDroneGroupFail, ValDroneGroupInfo, ValEffectSecZoneEffectInfo, ValEffectSecZoneFail, ValEffectSecZoneItemInfo,
+    ValEffectStopperFail, ValEffectStopperItemInfo, ValEnabled, ValFighterSquadSizeFail,
     ValFighterSquadSizeFighterInfo, ValItemKindFail, ValItemKindItemInfo, ValItemSecZoneFail, ValItemSecZoneItemInfo,
     ValItemVsShipKindFail, ValItemVsShipKindItemInfo, ValMaxGroupFail, ValMaxGroupGroupInfo, ValMaxGroupItemInfo,
     ValMaxTypeFail, ValMaxTypeItemInfo, ValMaxTypeTypeInfo, ValModuleStateFail, ValModuleStateModuleInfo,

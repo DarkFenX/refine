@@ -1,11 +1,11 @@
 use itertools::Itertools;
 
 use crate::{
-    ItemId, ModRack,
+    DetectedItemKind, ItemId, ModRack,
     svc::{SvcCtx, vast::VastFitData},
     ud::{UItemId, UModule},
     util::RSet,
-    val::{DetectedItemKind, ValResult},
+    val::ValResult,
 };
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////

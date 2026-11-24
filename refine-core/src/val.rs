@@ -1,19 +1,16 @@
 //! Validation-related exports
-pub use crate::{
-    misc::DetectedItemKind,
-    svc::vast::{
-        ValActivationBlockedFail, ValCapitalModFail, ValCapitalModInfo, ValChargeGroupChargeInfo, ValChargeGroupFail,
-        ValChargeSizeChargeInfo, ValChargeSizeFail, ValChargeVolumeChargeInfo, ValChargeVolumeFail,
-        ValCloakingBlockedFail, ValDroneGroupFail, ValDroneGroupInfo, ValEffectSecZoneEffectInfo, ValEffectSecZoneFail,
-        ValEffectSecZoneItemInfo, ValEffectStopperFail, ValEffectStopperItemInfo, ValEnabled, ValFighterSquadSizeFail,
-        ValFighterSquadSizeFighterInfo, ValItemKindFail, ValItemKindItemInfo, ValItemSecZoneFail,
-        ValItemSecZoneItemInfo, ValItemVsShipKindFail, ValItemVsShipKindItemInfo, ValMaxGroupFail,
-        ValMaxGroupGroupInfo, ValMaxGroupItemInfo, ValMaxTypeFail, ValMaxTypeItemInfo, ValMaxTypeTypeInfo,
-        ValModuleStateFail, ValModuleStateModuleInfo, ValNotLoadedItemFail, ValOptions, ValOptionsSol,
-        ValOverloadSkillFail, ValOverloadSkillItemInfo, ValProjFilterFail, ValProjFilterItemInfo, ValProjImmunityFail,
-        ValProjImmunityItemInfo, ValResourceFail, ValResourceItemInfo, ValResult, ValResultFit, ValResultSol,
-        ValRigSizeFail, ValRigSizeItemInfo, ValShipKind, ValShipLimitFail, ValShipLimitItemInfo, ValShipStanceFail,
-        ValSlotCountFail, ValSlotIndexFail, ValSlotIndexSlotInfo, ValSrqFail, ValSrqItemInfo, ValSrqSkillInfo,
-        ValUnusableCapFail, ValUnusableCapItemInfo, ValUnusableResFail, ValUnusableResItemInfo, ValUnusableSlotFail,
-    },
+pub use crate::svc::vast::{
+    ValActivationBlockedFail, ValCapitalModFail, ValCapitalModInfo, ValChargeGroupChargeInfo, ValChargeGroupFail,
+    ValChargeSizeChargeInfo, ValChargeSizeFail, ValChargeVolumeChargeInfo, ValChargeVolumeFail, ValCloakingBlockedFail,
+    ValDroneGroupFail, ValDroneGroupInfo, ValEffectSecZoneEffectInfo, ValEffectSecZoneFail, ValEffectSecZoneItemInfo,
+    ValEffectStopperFail, ValEffectStopperItemInfo, ValEnabled, ValFighterSquadSizeFail,
+    ValFighterSquadSizeFighterInfo, ValItemKindFail, ValItemKindItemInfo, ValItemSecZoneFail, ValItemSecZoneItemInfo,
+    ValItemVsShipKindFail, ValItemVsShipKindItemInfo, ValMaxGroupFail, ValMaxGroupGroupInfo, ValMaxGroupItemInfo,
+    ValMaxTypeFail, ValMaxTypeItemInfo, ValMaxTypeTypeInfo, ValModuleStateFail, ValModuleStateModuleInfo,
+    ValNotLoadedItemFail, ValOptions, ValOptionsSol, ValOverloadSkillFail, ValOverloadSkillItemInfo, ValProjFilterFail,
+    ValProjFilterItemInfo, ValProjImmunityFail, ValProjImmunityItemInfo, ValResourceFail, ValResourceItemInfo,
+    ValResult, ValResultFit, ValResultSol, ValRigSizeFail, ValRigSizeItemInfo, ValShipKind, ValShipLimitFail,
+    ValShipLimitItemInfo, ValShipStanceFail, ValSlotCountFail, ValSlotIndexFail, ValSlotIndexSlotInfo, ValSrqFail,
+    ValSrqItemInfo, ValSrqSkillInfo, ValUnusableCapFail, ValUnusableCapItemInfo, ValUnusableResFail,
+    ValUnusableResItemInfo, ValUnusableSlotFail,
 };

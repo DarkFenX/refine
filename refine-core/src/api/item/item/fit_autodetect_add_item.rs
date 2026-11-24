@@ -1,11 +1,10 @@
 use crate::{
-    AddMode, Fit, Item, ItemTypeId, MinionState, ModRack, ModuleState, ServiceState,
+    AddMode, DetectedItemKind, Fit, Item, ItemTypeId, MinionState, ModRack, ModuleState, ServiceState,
     ad::AItemId,
     err::basic::RackPosLimitError,
     rd::RState,
     sol::SolCore,
     ud::{UFitId, UItemId, UPhysics},
-    val::DetectedItemKind,
 };
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////

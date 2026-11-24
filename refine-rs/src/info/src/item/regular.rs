@@ -1,4 +1,4 @@
-use crate::{ItemTypeId, ModuleState, util::RSet, val::DetectedItemKind};
+use crate::{DetectedItemKind, ItemTypeId, ModuleState, util::RSet};
 
 #[cfg_attr(
     feature = "serde",

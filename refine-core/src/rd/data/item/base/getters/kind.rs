@@ -1,9 +1,8 @@
 use crate::{
-    Value,
+    DetectedItemKind, Value,
     ad::{AItemCatId, AItemGrpId},
     rd::{RAttrConsts, RAttrId, REffectConsts, REffectId},
     util::RMap,
-    val::DetectedItemKind,
 };
 
 pub(in crate::rd::data::item::base) fn detect_item_kind(

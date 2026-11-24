@@ -1,4 +1,5 @@
 use crate::{
+    DetectedItemKind,
     ad::AItemId,
     rd::RItemBase,
     svc::{
@@ -6,7 +7,7 @@ use crate::{
         vast::{ValOptionsInt, ValOptionsSolInt, ValResultFitFast},
     },
     ud::{UData, UFitId, UItemId},
-    val::{DetectedItemKind, ValResultFit, ValResultSol},
+    val::{ValResultFit, ValResultSol},
 };
 
 impl Svc {

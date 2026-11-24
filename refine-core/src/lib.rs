@@ -97,8 +97,8 @@ pub use id::{
 };
 pub use lender::{ExactSizeLender, Lender};
 pub use misc::{
-    AddMode, BreacherProfile, DpsProfile, EffectMode, ItemKind, MinionState, ModRack, ModuleState, MoveMode, NpcProp,
-    OptionalReload, RearmMinion, RemoveMode, SecZone, SecZoneCorruption, ServiceState, Spool,
+    AddMode, BreacherProfile, DetectedItemKind, DpsProfile, EffectMode, ItemKind, MinionState, ModRack, ModuleState,
+    MoveMode, NpcProp, OptionalReload, RearmMinion, RemoveMode, SecZone, SecZoneCorruption, ServiceState, Spool,
 };
 pub use num::{Count, CountNz, FitSecStatus, PValue, RackPos, SkillLevel, SlotIndex, UnitInterval, Value};
 pub use sol::{Sol, SolOwned, SolTx};

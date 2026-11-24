@@ -36,11 +36,11 @@ pub use info::{
 };
 pub use rc::{
     AbilityId, AddMode, Affector, AttrId, BreacherProfile, Coordinates, Count, CountNz, CustomAttrId, CustomEffectId,
-    Direction, DogmaEffectId, DpsProfile, EffectId, EffectMode, EveAttrId, FighterCountInfo, FitId, FitSecStatus,
-    FleetId, ItemAttrValues, ItemEffectInfo, ItemGrpId, ItemId, ItemKind, ItemSpoolInfo, ItemTypeId, MinionState,
-    ModRack, Modification, ModuleState, MoveMode, Movement, NpcProp, Op, OptionExt, OptionalReload, PValue, ProjRange,
-    RackPos, RearmMinion, RemoveMode, SecZone, SecZoneCorruption, ServiceState, SkillLevel, SlotIndex, Spool,
-    SpoolCycleInfo, UnitInterval, Value, ad::AdaptedDataCacher, ed::EveDataHandler,
+    DetectedItemKind, Direction, DogmaEffectId, DpsProfile, EffectId, EffectMode, EveAttrId, FighterCountInfo, FitId,
+    FitSecStatus, FleetId, ItemAttrValues, ItemEffectInfo, ItemGrpId, ItemId, ItemKind, ItemSpoolInfo, ItemTypeId,
+    MinionState, ModRack, Modification, ModuleState, MoveMode, Movement, NpcProp, Op, OptionExt, OptionalReload,
+    PValue, ProjRange, RackPos, RearmMinion, RemoveMode, SecZone, SecZoneCorruption, ServiceState, SkillLevel,
+    SlotIndex, Spool, SpoolCycleInfo, UnitInterval, Value, ad::AdaptedDataCacher, ed::EveDataHandler,
 };
 pub use shared::{CmdResp, CmdResps, FitIdBr, FleetIdBr, ItemIdBr, TriStateField};
 pub use src::{Src, SrcAlias};

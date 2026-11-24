@@ -21,7 +21,7 @@ use super::getters::{
     slot_index::{get_booster_slot, get_implant_slot, get_subsystem_slot},
 };
 use crate::{
-    Count, CountNz, PValue, SkillLevel, SlotIndex, Value,
+    Count, CountNz, DetectedItemKind, PValue, SkillLevel, SlotIndex, Value,
     ad::{AAbilId, AAttrId, AEffectId, AItem, AItemCatId, AItemGrpId, AItemId, AItemListId},
     rd::{
         RAttrConsts, RAttrId, REffect, REffectConsts, REffectId, RItemBaseEffectData, RItemCapConsumer,
@@ -29,7 +29,6 @@ use crate::{
         RShipDroneLimit, RShipKind, RState,
     },
     util::{PDense, RMap},
-    val::DetectedItemKind,
 };
 
 /// Item base data - the data which does not depend on anything outside the item itself.

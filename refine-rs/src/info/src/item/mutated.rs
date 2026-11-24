@@ -1,7 +1,6 @@
 use crate::{
-    ItemTypeId, ModuleState,
+    DetectedItemKind, ItemTypeId, ModuleState,
     util::{RMap, RSet},
-    val::DetectedItemKind,
 };
 
 #[cfg_attr(

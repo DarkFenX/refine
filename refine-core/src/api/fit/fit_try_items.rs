@@ -1,13 +1,13 @@
 use itertools::Itertools;
 
 use crate::{
-    AddMode, Fit, ItemTypeId, MinionState, ModRack, ModuleState, PValue, RemoveMode, ServiceState,
+    AddMode, DetectedItemKind, Fit, ItemTypeId, MinionState, ModRack, ModuleState, PValue, RemoveMode, ServiceState,
     ad::AItemId,
     rd::RState,
     sol::SolCore,
     svc::vast::ValOptionsInt,
     ud::{UData, UFitId, UItemId, UPhysics},
-    val::{DetectedItemKind, ValOptions},
+    val::ValOptions,
 };
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
