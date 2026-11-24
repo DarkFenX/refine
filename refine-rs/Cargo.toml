@@ -9,6 +9,7 @@ edition = "2024"
 [dependencies]
 # Local
 rc = { package = "refine-core", path = "../refine-core" }
+refine-serde = { path = "../util/refine-serde", optional = true }
 # Non-local
 derive_more = { version = ">=2.1.1", features = ["display"] }
 fixedstr = { version = ">=0.5.11", features = ["fstr"] }
@@ -28,6 +29,7 @@ uuid = { version = ">=1.29.3", features = ["fast-rng", "v4"] }
 [features]
 dev = ["rc/dev"]
 serde = [
+    "dep:refine-serde",
     "dep:serde",
     "dep:serde_tuple",
     "dep:serde_with",
