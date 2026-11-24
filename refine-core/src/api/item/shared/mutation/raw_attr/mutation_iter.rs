@@ -5,7 +5,7 @@ use crate::{DormantMutation, EffectiveMutation, Mutation, RawMAttr, ad::AAttrId,
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Public
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-impl<'s> Mutation<'s> {
+impl<'sol> Mutation<'sol> {
     /// Iterates over mutation's raw mutated attributes.
     pub fn iter_raw_mattrs(&mut self) -> RawMAttrIter<'_> {
         match self {
@@ -15,14 +15,14 @@ impl<'s> Mutation<'s> {
     }
 }
 
-impl<'s> EffectiveMutation<'s> {
+impl<'sol> EffectiveMutation<'sol> {
     /// Iterates over mutation's raw mutated attributes.
     pub fn iter_raw_mattrs(&mut self) -> RawMAttrIter<'_> {
         RawMAttrIter::new(self.sol, self.item_uid)
     }
 }
 
-impl<'s> DormantMutation<'s> {
+impl<'sol> DormantMutation<'sol> {
     /// Iterates over mutation's raw mutated attributes.
     pub fn iter_raw_mattrs(&mut self) -> RawMAttrIter<'_> {
         RawMAttrIter::new(self.sol, self.item_uid)

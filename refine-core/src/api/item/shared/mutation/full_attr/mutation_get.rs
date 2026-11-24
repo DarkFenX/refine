@@ -3,7 +3,7 @@ use crate::{AttrId, EffectiveMutation, FullMAttr, ItemId, ItemTypeId, err::basic
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Public
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-impl<'s> EffectiveMutation<'s> {
+impl<'sol> EffectiveMutation<'sol> {
     /// Get mutation's full mutated attribute for requested attribute ID.
     pub fn get_full_mattr(&mut self, attr_id: AttrId) -> Result<FullMAttr<'_>, FullMAttrGetError> {
         let attr_aid = attr_id.into_aid();

@@ -4,12 +4,12 @@ use crate::{ItemId, ProjRange, sol::SolCore, ud::UItemId};
 // Public
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 /// Projection which allows to set range.
-pub struct RangedProj<'s> {
-    pub(super) sol: &'s mut SolCore,
+pub struct RangedProj<'sol> {
+    pub(super) sol: &'sol mut SolCore,
     pub(super) projector_uid: UItemId,
     pub(super) projectee_uid: UItemId,
 }
-impl<'s> RangedProj<'s> {
+impl<'sol> RangedProj<'sol> {
     pub fn get_projectee_item_id(&self) -> ItemId {
         self.sol.u_data.items.ext_id_by_int_id(self.projectee_uid)
     }
@@ -36,8 +36,8 @@ impl<'s> RangedProj<'s> {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Private
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-impl<'s> RangedProj<'s> {
-    pub(in crate::api) fn new(sol: &'s mut SolCore, projector_uid: UItemId, projectee_uid: UItemId) -> Self {
+impl<'sol> RangedProj<'sol> {
+    pub(in crate::api) fn new(sol: &'sol mut SolCore, projector_uid: UItemId, projectee_uid: UItemId) -> Self {
         Self {
             sol,
             projector_uid,

@@ -3,7 +3,7 @@ use crate::{AddMode, Fit, ItemTypeId, ModRack, ModuleState, RemoveMode};
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Public
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-impl<'s> Fit<'s> {
+impl<'sol> Fit<'sol> {
     pub fn benchmark_attr_calc(&mut self, type_id: ItemTypeId, iterations: usize) {
         let ship_uid = self.sol.u_data.fits.get(self.uid).ship.unwrap();
         // Collect attr keys

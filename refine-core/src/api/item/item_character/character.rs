@@ -8,11 +8,11 @@ use crate::{
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Public
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-pub struct Character<'s> {
-    pub(super) sol: &'s mut SolCore,
+pub struct Character<'sol> {
+    pub(super) sol: &'sol mut SolCore,
     pub(super) uid: UItemId,
 }
-impl<'s> Character<'s> {
+impl<'sol> Character<'sol> {
     pub fn get_fit_id(&self) -> FitId {
         let fit_uid = get_u_character(self.sol, self.uid).get_fit_uid();
         self.sol.u_data.fits.ext_id_by_int_id(fit_uid)
@@ -21,17 +21,17 @@ impl<'s> Character<'s> {
         get_u_character(self.sol, self.uid).get_character_state()
     }
 }
-impl<'s> ItemCommon for Character<'s> {}
+impl<'sol> ItemCommon for Character<'sol> {}
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Private
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-impl<'s> Character<'s> {
-    pub(in crate::api) fn new(sol: &'s mut SolCore, uid: UItemId) -> Self {
+impl<'sol> Character<'sol> {
+    pub(in crate::api) fn new(sol: &'sol mut SolCore, uid: UItemId) -> Self {
         Self { sol, uid }
     }
 }
-impl<'s> ItemSealed for Character<'s> {
+impl<'sol> ItemSealed for Character<'sol> {
     fn get_uid(&self) -> UItemId {
         self.uid
     }

@@ -7,7 +7,7 @@ use crate::{
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Public
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-impl<'s> Fit<'s> {
+impl<'sol> Fit<'sol> {
     /// Iterates over items stored directly on the fit (e.g. modules, but not their charges).
     pub fn iter_items(&mut self) -> EntityIter<'_, Item<'_>> {
         let item_uids = self.sol.internal_get_fit_items_uid(self.uid);

@@ -6,7 +6,7 @@ use crate::{
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Public
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-impl<'s> Mutation<'s> {
+impl<'sol> Mutation<'sol> {
     /// Mutate an attribute with a roll quality.
     ///
     /// Accepts roll of any attribute, even if it is not defined by item mutator. In this case, roll
@@ -19,7 +19,7 @@ impl<'s> Mutation<'s> {
     }
 }
 
-impl<'s> EffectiveMutation<'s> {
+impl<'sol> EffectiveMutation<'sol> {
     /// Mutate an attribute with a roll quality.
     ///
     /// Accepts roll of any attribute, even if it is not defined by item mutator. In this case, roll
@@ -29,7 +29,7 @@ impl<'s> EffectiveMutation<'s> {
     }
 }
 
-impl<'s> DormantMutation<'s> {
+impl<'sol> DormantMutation<'sol> {
     /// Mutate an attribute with a roll quality.
     ///
     /// Accepts roll of any attribute, even if it is not defined by item mutator. In this case, roll

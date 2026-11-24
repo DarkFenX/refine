@@ -92,7 +92,7 @@ pub(crate) trait FromUid: EntityFamily {
 
 // Implementations for non-item entities
 impl EntityFamily for Fleet<'_> {
-    type Handle<'s> = Fleet<'s>;
+    type Handle<'sol> = Fleet<'sol>;
     #[inline(always)]
     fn __check_covariance<'long: 'short, 'short>(
         proof: CovariantProof<Self::Handle<'long>>,
@@ -107,7 +107,7 @@ impl FromUid for Fleet<'_> {
     }
 }
 impl EntityFamily for Fit<'_> {
-    type Handle<'s> = Fit<'s>;
+    type Handle<'sol> = Fit<'sol>;
     #[inline(always)]
     fn __check_covariance<'long: 'short, 'short>(
         proof: CovariantProof<Self::Handle<'long>>,
@@ -123,7 +123,7 @@ impl FromUid for Fit<'_> {
 }
 // Implementations for items
 impl EntityFamily for Item<'_> {
-    type Handle<'s> = Item<'s>;
+    type Handle<'sol> = Item<'sol>;
     #[inline(always)]
     fn __check_covariance<'long: 'short, 'short>(
         proof: CovariantProof<Self::Handle<'long>>,
@@ -138,7 +138,7 @@ impl FromUid for Item<'_> {
     }
 }
 impl EntityFamily for Autocharge<'_> {
-    type Handle<'s> = Autocharge<'s>;
+    type Handle<'sol> = Autocharge<'sol>;
     #[inline(always)]
     fn __check_covariance<'long: 'short, 'short>(
         proof: CovariantProof<Self::Handle<'long>>,
@@ -153,7 +153,7 @@ impl FromUid for Autocharge<'_> {
     }
 }
 impl EntityFamily for Booster<'_> {
-    type Handle<'s> = Booster<'s>;
+    type Handle<'sol> = Booster<'sol>;
     #[inline(always)]
     fn __check_covariance<'long: 'short, 'short>(
         proof: CovariantProof<Self::Handle<'long>>,
@@ -168,7 +168,7 @@ impl FromUid for Booster<'_> {
     }
 }
 impl EntityFamily for Drone<'_> {
-    type Handle<'s> = Drone<'s>;
+    type Handle<'sol> = Drone<'sol>;
     #[inline(always)]
     fn __check_covariance<'long: 'short, 'short>(
         proof: CovariantProof<Self::Handle<'long>>,
@@ -183,7 +183,7 @@ impl FromUid for Drone<'_> {
     }
 }
 impl EntityFamily for Fighter<'_> {
-    type Handle<'s> = Fighter<'s>;
+    type Handle<'sol> = Fighter<'sol>;
     #[inline(always)]
     fn __check_covariance<'long: 'short, 'short>(
         proof: CovariantProof<Self::Handle<'long>>,
@@ -198,7 +198,7 @@ impl FromUid for Fighter<'_> {
     }
 }
 impl EntityFamily for FwEffect<'_> {
-    type Handle<'s> = FwEffect<'s>;
+    type Handle<'sol> = FwEffect<'sol>;
     #[inline(always)]
     fn __check_covariance<'long: 'short, 'short>(
         proof: CovariantProof<Self::Handle<'long>>,
@@ -213,7 +213,7 @@ impl FromUid for FwEffect<'_> {
     }
 }
 impl EntityFamily for Implant<'_> {
-    type Handle<'s> = Implant<'s>;
+    type Handle<'sol> = Implant<'sol>;
     #[inline(always)]
     fn __check_covariance<'long: 'short, 'short>(
         proof: CovariantProof<Self::Handle<'long>>,
@@ -228,7 +228,7 @@ impl FromUid for Implant<'_> {
     }
 }
 impl EntityFamily for Module<'_> {
-    type Handle<'s> = Module<'s>;
+    type Handle<'sol> = Module<'sol>;
     #[inline(always)]
     fn __check_covariance<'long: 'short, 'short>(
         proof: CovariantProof<Self::Handle<'long>>,
@@ -243,7 +243,7 @@ impl FromUid for Module<'_> {
     }
 }
 impl EntityFamily for ProjEffect<'_> {
-    type Handle<'s> = ProjEffect<'s>;
+    type Handle<'sol> = ProjEffect<'sol>;
     #[inline(always)]
     fn __check_covariance<'long: 'short, 'short>(
         proof: CovariantProof<Self::Handle<'long>>,
@@ -258,7 +258,7 @@ impl FromUid for ProjEffect<'_> {
     }
 }
 impl EntityFamily for Rig<'_> {
-    type Handle<'s> = Rig<'s>;
+    type Handle<'sol> = Rig<'sol>;
     #[inline(always)]
     fn __check_covariance<'long: 'short, 'short>(
         proof: CovariantProof<Self::Handle<'long>>,
@@ -273,7 +273,7 @@ impl FromUid for Rig<'_> {
     }
 }
 impl EntityFamily for Service<'_> {
-    type Handle<'s> = Service<'s>;
+    type Handle<'sol> = Service<'sol>;
     #[inline(always)]
     fn __check_covariance<'long: 'short, 'short>(
         proof: CovariantProof<Self::Handle<'long>>,
@@ -288,7 +288,7 @@ impl FromUid for Service<'_> {
     }
 }
 impl EntityFamily for Skill<'_> {
-    type Handle<'s> = Skill<'s>;
+    type Handle<'sol> = Skill<'sol>;
     #[inline(always)]
     fn __check_covariance<'long: 'short, 'short>(
         proof: CovariantProof<Self::Handle<'long>>,
@@ -303,7 +303,7 @@ impl FromUid for Skill<'_> {
     }
 }
 impl EntityFamily for Subsystem<'_> {
-    type Handle<'s> = Subsystem<'s>;
+    type Handle<'sol> = Subsystem<'sol>;
     #[inline(always)]
     fn __check_covariance<'long: 'short, 'short>(
         proof: CovariantProof<Self::Handle<'long>>,
@@ -318,7 +318,7 @@ impl FromUid for Subsystem<'_> {
     }
 }
 impl EntityFamily for SwEffect<'_> {
-    type Handle<'s> = SwEffect<'s>;
+    type Handle<'sol> = SwEffect<'sol>;
     #[inline(always)]
     fn __check_covariance<'long: 'short, 'short>(
         proof: CovariantProof<Self::Handle<'long>>,
@@ -334,7 +334,7 @@ impl FromUid for SwEffect<'_> {
 }
 // Implementations for stats
 impl EntityFamily for FleetStats<'_> {
-    type Handle<'s> = FleetStats<'s>;
+    type Handle<'sol> = FleetStats<'sol>;
     #[inline(always)]
     fn __check_covariance<'long: 'short, 'short>(
         proof: CovariantProof<Self::Handle<'long>>,
@@ -349,7 +349,7 @@ impl FromUid for FleetStats<'_> {
     }
 }
 impl EntityFamily for FitStats<'_> {
-    type Handle<'s> = FitStats<'s>;
+    type Handle<'sol> = FitStats<'sol>;
     #[inline(always)]
     fn __check_covariance<'long: 'short, 'short>(
         proof: CovariantProof<Self::Handle<'long>>,
@@ -364,7 +364,7 @@ impl FromUid for FitStats<'_> {
     }
 }
 impl EntityFamily for ItemStats<'_> {
-    type Handle<'s> = ItemStats<'s>;
+    type Handle<'sol> = ItemStats<'sol>;
     #[inline(always)]
     fn __check_covariance<'long: 'short, 'short>(
         proof: CovariantProof<Self::Handle<'long>>,

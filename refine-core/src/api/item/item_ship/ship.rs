@@ -8,11 +8,11 @@ use crate::{
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Public
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-pub struct Ship<'s> {
-    pub(super) sol: &'s mut SolCore,
+pub struct Ship<'sol> {
+    pub(super) sol: &'sol mut SolCore,
     pub(super) uid: UItemId,
 }
-impl<'s> Ship<'s> {
+impl<'sol> Ship<'sol> {
     pub fn get_fit_id(&self) -> FitId {
         let fit_uid = get_u_ship(self.sol, self.uid).get_fit_uid();
         self.sol.u_data.fits.ext_id_by_int_id(fit_uid)
@@ -27,17 +27,17 @@ impl<'s> Ship<'s> {
         Movement::from_u_physics(get_u_ship(self.sol, self.uid).get_physics())
     }
 }
-impl<'s> ItemCommon for Ship<'s> {}
+impl<'sol> ItemCommon for Ship<'sol> {}
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Private
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-impl<'s> Ship<'s> {
-    pub(in crate::api) fn new(sol: &'s mut SolCore, uid: UItemId) -> Self {
+impl<'sol> Ship<'sol> {
+    pub(in crate::api) fn new(sol: &'sol mut SolCore, uid: UItemId) -> Self {
         Self { sol, uid }
     }
 }
-impl<'s> ItemSealed for Ship<'s> {
+impl<'sol> ItemSealed for Ship<'sol> {
     fn get_uid(&self) -> UItemId {
         self.uid
     }

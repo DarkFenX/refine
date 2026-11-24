@@ -8,8 +8,8 @@ use crate::{
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Public
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-impl<'s> Mutation<'s> {
-    pub fn set_mutator_type_id(self, mutator_type_id: ItemTypeId) -> Mutation<'s> {
+impl<'sol> Mutation<'sol> {
+    pub fn set_mutator_type_id(self, mutator_type_id: ItemTypeId) -> Mutation<'sol> {
         match self {
             Self::Effective(effective_mutation) => effective_mutation.set_mutator_type_id(mutator_type_id),
             Self::Dormant(dormant_mutation) => dormant_mutation.set_mutator_type_id(mutator_type_id),
@@ -17,8 +17,8 @@ impl<'s> Mutation<'s> {
     }
 }
 
-impl<'s> EffectiveMutation<'s> {
-    pub fn set_mutator_type_id(self, mutator_type_id: ItemTypeId) -> Mutation<'s> {
+impl<'sol> EffectiveMutation<'sol> {
+    pub fn set_mutator_type_id(self, mutator_type_id: ItemTypeId) -> Mutation<'sol> {
         self.sol
             .internal_set_mutator_aid(self.item_uid, mutator_type_id.into_aid())
             .unwrap();
@@ -26,8 +26,8 @@ impl<'s> EffectiveMutation<'s> {
     }
 }
 
-impl<'s> DormantMutation<'s> {
-    pub fn set_mutator_type_id(self, mutator_type_id: ItemTypeId) -> Mutation<'s> {
+impl<'sol> DormantMutation<'sol> {
+    pub fn set_mutator_type_id(self, mutator_type_id: ItemTypeId) -> Mutation<'sol> {
         self.sol
             .internal_set_mutator_aid(self.item_uid, mutator_type_id.into_aid())
             .unwrap();

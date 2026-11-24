@@ -8,7 +8,7 @@ use crate::{
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Public
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-impl<'s> Fit<'s> {
+impl<'sol> Fit<'sol> {
     pub fn add_subsystem(&mut self, type_id: ItemTypeId) -> Subsystem<'_> {
         let subsystem_uid = self.sol.internal_add_subsystem(self.uid, type_id.into_aid());
         Subsystem::new(self.sol, subsystem_uid)

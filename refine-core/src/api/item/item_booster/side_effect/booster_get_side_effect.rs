@@ -4,7 +4,7 @@ use crate::{Booster, EffectId, ItemId, SideEffect};
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Public
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-impl<'s> Booster<'s> {
+impl<'sol> Booster<'sol> {
     pub fn get_side_effect(&mut self, effect_id: &EffectId) -> Result<SideEffect<'_>, SideEffectGetError> {
         let effect_aid = effect_id.into_aid();
         let r_data = &self.sol.u_data.r_data;

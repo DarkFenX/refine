@@ -5,7 +5,7 @@ use crate::{Fit, UnitInterval, stats::StatCapSimStagger, svc::vast::StatCapSimSt
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Public
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-impl<'s> Fit<'s> {
+impl<'sol> Fit<'sol> {
     pub fn benchmark_cap_sim(&mut self, staggers: &[StatCapSimStagger], iterations: usize) {
         let ship_uid = self.sol.u_data.fits.get(self.uid).ship.unwrap();
         let staggers = match staggers.is_empty() {

@@ -3,7 +3,7 @@ use crate::{Fighter, ItemId, RangedProj, err::ProjGetError};
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Public
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-impl<'s> Fighter<'s> {
+impl<'sol> Fighter<'sol> {
     pub fn get_proj(&mut self, projectee_item_id: &ItemId) -> Result<RangedProj<'_>, ProjGetError> {
         self.sol.internal_get_ranged_proj(self.uid, projectee_item_id)
     }

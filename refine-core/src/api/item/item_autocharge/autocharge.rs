@@ -8,11 +8,11 @@ use crate::{
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Public
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-pub struct Autocharge<'s> {
-    pub(super) sol: &'s mut SolCore,
+pub struct Autocharge<'sol> {
+    pub(super) sol: &'sol mut SolCore,
     pub(super) uid: UItemId,
 }
-impl<'s> Autocharge<'s> {
+impl<'sol> Autocharge<'sol> {
     pub fn get_fit_id(&self) -> FitId {
         let fit_uid = get_u_autocharge(self.sol, self.uid).get_fit_uid();
         self.sol.u_data.fits.ext_id_by_int_id(fit_uid)
@@ -30,17 +30,17 @@ impl<'s> Autocharge<'s> {
         !get_u_autocharge(self.sol, self.uid).get_force_disabled()
     }
 }
-impl<'s> ItemCommon for Autocharge<'s> {}
+impl<'sol> ItemCommon for Autocharge<'sol> {}
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Private
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-impl<'s> Autocharge<'s> {
-    pub(in crate::api) fn new(sol: &'s mut SolCore, uid: UItemId) -> Self {
+impl<'sol> Autocharge<'sol> {
+    pub(in crate::api) fn new(sol: &'sol mut SolCore, uid: UItemId) -> Self {
         Self { sol, uid }
     }
 }
-impl<'s> ItemSealed for Autocharge<'s> {
+impl<'sol> ItemSealed for Autocharge<'sol> {
     fn get_uid(&self) -> UItemId {
         self.uid
     }

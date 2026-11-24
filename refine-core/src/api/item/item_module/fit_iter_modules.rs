@@ -3,7 +3,7 @@ use crate::{EntityIter, Fit, ModRack, Module};
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Public
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-impl<'s> Fit<'s> {
+impl<'sol> Fit<'sol> {
     /// Iterates over modules of a rack, ordered by position.
     pub fn iter_modules(&mut self, rack: ModRack) -> EntityIter<'_, Module<'_>> {
         let u_fit = self.sol.u_data.fits.get(self.uid);

@@ -3,11 +3,11 @@ use crate::{ItemCommon, api::ItemSealed, sol::SolCore, ud::UItemId};
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Public
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-pub struct ProjEffect<'s> {
-    pub(super) sol: &'s mut SolCore,
+pub struct ProjEffect<'sol> {
+    pub(super) sol: &'sol mut SolCore,
     pub(super) uid: UItemId,
 }
-impl<'s> ProjEffect<'s> {
+impl<'sol> ProjEffect<'sol> {
     pub fn get_state(&self) -> bool {
         self.sol
             .u_data
@@ -18,17 +18,17 @@ impl<'s> ProjEffect<'s> {
             .get_proj_effect_state()
     }
 }
-impl<'s> ItemCommon for ProjEffect<'s> {}
+impl<'sol> ItemCommon for ProjEffect<'sol> {}
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Private
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-impl<'s> ProjEffect<'s> {
-    pub(in crate::api) fn new(sol: &'s mut SolCore, uid: UItemId) -> Self {
+impl<'sol> ProjEffect<'sol> {
+    pub(in crate::api) fn new(sol: &'sol mut SolCore, uid: UItemId) -> Self {
         Self { sol, uid }
     }
 }
-impl<'s> ItemSealed for ProjEffect<'s> {
+impl<'sol> ItemSealed for ProjEffect<'sol> {
     fn get_uid(&self) -> UItemId {
         self.uid
     }

@@ -3,7 +3,7 @@ use crate::{DormantMutation, EffectiveMutation, ItemTypeId, Mutation, sol::SolCo
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Public
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-impl<'s> Mutation<'s> {
+impl<'sol> Mutation<'sol> {
     pub fn get_mutator_type_id(&self) -> ItemTypeId {
         match self {
             Self::Effective(effective_mutation) => effective_mutation.get_mutator_type_id(),
@@ -12,13 +12,13 @@ impl<'s> Mutation<'s> {
     }
 }
 
-impl<'s> EffectiveMutation<'s> {
+impl<'sol> EffectiveMutation<'sol> {
     pub fn get_mutator_type_id(&self) -> ItemTypeId {
         self.sol.api_get_mutator_type_id(self.item_uid)
     }
 }
 
-impl<'s> DormantMutation<'s> {
+impl<'sol> DormantMutation<'sol> {
     pub fn get_mutator_type_id(&self) -> ItemTypeId {
         self.sol.api_get_mutator_type_id(self.item_uid)
     }

@@ -8,7 +8,7 @@ use crate::{
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Public
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-impl<'s> Fleet<'s> {
+impl<'sol> Fleet<'sol> {
     pub fn get_item(&mut self, item_id: &ItemId) -> Result<Item<'_>, FleetItemGetError> {
         let item_uid = self.sol.internal_get_fleet_item_uid(self.uid, item_id)?;
         Ok(Item::new(self.sol, item_uid))

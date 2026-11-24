@@ -11,7 +11,7 @@ use crate::{
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Public
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-impl<'s> Fit<'s> {
+impl<'sol> Fit<'sol> {
     pub fn add_skill(&mut self, type_id: ItemTypeId, level: SkillLevel) -> Result<Skill<'_>, SkillAddError> {
         let skill_uid = self.sol.internal_add_skill(self.uid, type_id.into_aid(), level)?;
         Ok(Skill::new(self.sol, skill_uid))

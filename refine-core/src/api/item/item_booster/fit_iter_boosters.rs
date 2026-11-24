@@ -3,7 +3,7 @@ use crate::{Booster, EntityIter, Fit};
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Public
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-impl<'s> Fit<'s> {
+impl<'sol> Fit<'sol> {
     pub fn iter_boosters(&mut self) -> EntityIter<'_, Booster<'_>> {
         let booster_uids = self.sol.u_data.fits.get(self.uid).boosters.iter().copied().collect();
         EntityIter::new(self.sol, booster_uids)

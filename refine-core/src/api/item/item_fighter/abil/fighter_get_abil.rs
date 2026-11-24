@@ -3,7 +3,7 @@ use crate::{Ability, AbilityId, Fighter, ItemId};
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Public
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-impl<'s> Fighter<'s> {
+impl<'sol> Fighter<'sol> {
     pub fn get_ability(&mut self, ability_id: &AbilityId) -> Result<Ability<'_>, AbilityGetError> {
         let u_fighter = self.sol.u_data.items.get(self.uid).dc_fighter().unwrap();
         if let Some(rib) = u_fighter.get_r_item_base()

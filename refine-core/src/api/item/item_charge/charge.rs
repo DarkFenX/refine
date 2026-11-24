@@ -8,11 +8,11 @@ use crate::{
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Public
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-pub struct Charge<'s> {
-    pub(super) sol: &'s mut SolCore,
+pub struct Charge<'sol> {
+    pub(super) sol: &'sol mut SolCore,
     pub(super) uid: UItemId,
 }
-impl<'s> Charge<'s> {
+impl<'sol> Charge<'sol> {
     pub fn get_fit_id(&self) -> FitId {
         let fit_uid = get_u_charge(self.sol, self.uid).get_fit_uid();
         self.sol.u_data.fits.ext_id_by_int_id(fit_uid)
@@ -25,17 +25,17 @@ impl<'s> Charge<'s> {
         !get_u_charge(self.sol, self.uid).get_force_disabled()
     }
 }
-impl<'s> ItemCommon for Charge<'s> {}
+impl<'sol> ItemCommon for Charge<'sol> {}
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Private
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-impl<'s> Charge<'s> {
-    pub(in crate::api) fn new(sol: &'s mut SolCore, uid: UItemId) -> Self {
+impl<'sol> Charge<'sol> {
+    pub(in crate::api) fn new(sol: &'sol mut SolCore, uid: UItemId) -> Self {
         Self { sol, uid }
     }
 }
-impl<'s> ItemSealed for Charge<'s> {
+impl<'sol> ItemSealed for Charge<'sol> {
     fn get_uid(&self) -> UItemId {
         self.uid
     }

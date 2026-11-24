@@ -9,11 +9,11 @@ use crate::{
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Public
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-pub struct Module<'s> {
-    pub(super) sol: &'s mut SolCore,
+pub struct Module<'sol> {
+    pub(super) sol: &'sol mut SolCore,
     pub(super) uid: UItemId,
 }
-impl<'s> Module<'s> {
+impl<'sol> Module<'sol> {
     pub fn get_fit_id(&self) -> FitId {
         let fit_uid = get_u_module(self.sol, self.uid).get_fit_uid();
         self.sol.u_data.fits.ext_id_by_int_id(fit_uid)
@@ -66,17 +66,17 @@ impl<'s> Module<'s> {
         result
     }
 }
-impl<'s> ItemCommon for Module<'s> {}
+impl<'sol> ItemCommon for Module<'sol> {}
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Private
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-impl<'s> Module<'s> {
-    pub(in crate::api) fn new(sol: &'s mut SolCore, uid: UItemId) -> Self {
+impl<'sol> Module<'sol> {
+    pub(in crate::api) fn new(sol: &'sol mut SolCore, uid: UItemId) -> Self {
         Self { sol, uid }
     }
 }
-impl<'s> ItemSealed for Module<'s> {
+impl<'sol> ItemSealed for Module<'sol> {
     fn get_uid(&self) -> UItemId {
         self.uid
     }

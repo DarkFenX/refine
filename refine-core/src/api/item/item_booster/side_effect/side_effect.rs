@@ -9,13 +9,13 @@ use crate::{
 // Public
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 /// Side effect of a booster.
-pub struct SideEffect<'s> {
-    pub(super) sol: &'s mut SolCore,
+pub struct SideEffect<'sol> {
+    pub(super) sol: &'sol mut SolCore,
     pub(super) item_uid: UItemId,
     pub(super) effect_aid: AEffectId,
     pub(super) chance_attr_aid: AAttrId,
 }
-impl<'s> SideEffect<'s> {
+impl<'sol> SideEffect<'sol> {
     pub fn get_effect_id(&self) -> EffectId {
         EffectId::from_aid(self.effect_aid)
     }
@@ -24,9 +24,9 @@ impl<'s> SideEffect<'s> {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Private
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-impl<'s> SideEffect<'s> {
+impl<'sol> SideEffect<'sol> {
     pub(in crate::api) fn new(
-        sol: &'s mut SolCore,
+        sol: &'sol mut SolCore,
         item_uid: UItemId,
         effect_aid: AEffectId,
         chance_attr_aid: AAttrId,

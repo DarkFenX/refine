@@ -8,11 +8,11 @@ use crate::{
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Public
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-pub struct Implant<'s> {
-    pub(super) sol: &'s mut SolCore,
+pub struct Implant<'sol> {
+    pub(super) sol: &'sol mut SolCore,
     pub(super) uid: UItemId,
 }
-impl<'s> Implant<'s> {
+impl<'sol> Implant<'sol> {
     pub fn get_fit_id(&self) -> FitId {
         let fit_uid = get_u_implant(self.sol, self.uid).get_fit_uid();
         self.sol.u_data.fits.ext_id_by_int_id(fit_uid)
@@ -24,17 +24,17 @@ impl<'s> Implant<'s> {
         get_u_implant(self.sol, self.uid).get_implant_state()
     }
 }
-impl<'s> ItemCommon for Implant<'s> {}
+impl<'sol> ItemCommon for Implant<'sol> {}
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Private
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-impl<'s> Implant<'s> {
-    pub(in crate::api) fn new(sol: &'s mut SolCore, uid: UItemId) -> Self {
+impl<'sol> Implant<'sol> {
+    pub(in crate::api) fn new(sol: &'sol mut SolCore, uid: UItemId) -> Self {
         Self { sol, uid }
     }
 }
-impl<'s> ItemSealed for Implant<'s> {
+impl<'sol> ItemSealed for Implant<'sol> {
     fn get_uid(&self) -> UItemId {
         self.uid
     }

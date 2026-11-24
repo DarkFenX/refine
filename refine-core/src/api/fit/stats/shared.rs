@@ -129,7 +129,7 @@ where
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Private
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-impl<'s> FitStats<'s> {
+impl<'sol> FitStats<'sol> {
     pub(super) fn get_character_for_stats(&mut self) -> Result<ItemStats<'_>, FitHasCharacterError> {
         let Some(char_uid) = self.sol.u_data.fits.get(self.uid).character else {
             return Err(FitHasCharacterError {

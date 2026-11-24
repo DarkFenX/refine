@@ -3,7 +3,7 @@ use crate::{EntityIter, Item, api::ItemSealed, sol::SolCore, ud::UItemId};
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Public
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-impl<'s> Item<'s> {
+impl<'sol> Item<'sol> {
     /// Iterates over item's sub-items, like module's charge, or fighter's autocharges.
     pub fn iter_subitems(&mut self) -> EntityIter<'_, Item<'_>> {
         let item_uid = self.get_uid();

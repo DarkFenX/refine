@@ -31,7 +31,7 @@ impl<'iter> Lender for AbilityIter<'iter> {
 }
 impl<'iter> ExactSizeLender for AbilityIter<'iter> {}
 
-impl<'s> Fighter<'s> {
+impl<'sol> Fighter<'sol> {
     /// Iterates over fighter's abilities.
     pub fn iter_abilities(&mut self) -> AbilityIter<'_> {
         let abil_aids = match self

@@ -3,7 +3,7 @@ use crate::{EntityIter, Fit, Skill};
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Public
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-impl<'s> Fit<'s> {
+impl<'sol> Fit<'sol> {
     pub fn iter_skills(&mut self) -> EntityIter<'_, Skill<'_>> {
         let fit_skills = self.sol.u_data.fits.get(self.uid).skills.values();
         let skill_uids = fit_skills.map(|fit_skill| fit_skill.skill_uid).collect();

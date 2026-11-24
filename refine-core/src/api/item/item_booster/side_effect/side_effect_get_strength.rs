@@ -17,7 +17,7 @@ impl SideEffectStr {
     }
 }
 
-impl<'s> SideEffect<'s> {
+impl<'sol> SideEffect<'sol> {
     /// Get side effect strength as an operator and modification value.
     ///
     /// Returns something only if all the side effect modifiers use the same operator and almost the

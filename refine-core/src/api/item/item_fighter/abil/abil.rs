@@ -4,12 +4,12 @@ use crate::{AbilityId, Count, ad::AAbilId, sol::SolCore, ud::UItemId};
 // Public
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 /// Fighter ability which allows changing its state.
-pub struct Ability<'s> {
-    pub(super) sol: &'s mut SolCore,
+pub struct Ability<'sol> {
+    pub(super) sol: &'sol mut SolCore,
     pub(super) fighter_uid: UItemId,
     pub(super) abil_aid: AAbilId,
 }
-impl<'s> Ability<'s> {
+impl<'sol> Ability<'sol> {
     pub fn get_id(&self) -> AbilityId {
         AbilityId::from_aid(self.abil_aid)
     }
@@ -28,8 +28,8 @@ impl<'s> Ability<'s> {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Private
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-impl<'s> Ability<'s> {
-    pub(in crate::api) fn new(sol: &'s mut SolCore, fighter_uid: UItemId, abil_aid: AAbilId) -> Self {
+impl<'sol> Ability<'sol> {
+    pub(in crate::api) fn new(sol: &'sol mut SolCore, fighter_uid: UItemId, abil_aid: AAbilId) -> Self {
         Self {
             sol,
             fighter_uid,

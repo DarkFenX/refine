@@ -8,11 +8,11 @@ use crate::{
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Public
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-pub struct Drone<'s> {
-    pub(super) sol: &'s mut SolCore,
+pub struct Drone<'sol> {
+    pub(super) sol: &'sol mut SolCore,
     pub(super) uid: UItemId,
 }
-impl<'s> Drone<'s> {
+impl<'sol> Drone<'sol> {
     pub fn get_fit_id(&self) -> FitId {
         let fit_uid = get_u_drone(self.sol, self.uid).get_fit_uid();
         self.sol.u_data.fits.ext_id_by_int_id(fit_uid)
@@ -34,17 +34,17 @@ impl<'s> Drone<'s> {
         Movement::from_u_physics(get_u_drone(self.sol, self.uid).get_physics())
     }
 }
-impl<'s> ItemCommon for Drone<'s> {}
+impl<'sol> ItemCommon for Drone<'sol> {}
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Private
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-impl<'s> Drone<'s> {
-    pub(in crate::api) fn new(sol: &'s mut SolCore, uid: UItemId) -> Self {
+impl<'sol> Drone<'sol> {
+    pub(in crate::api) fn new(sol: &'sol mut SolCore, uid: UItemId) -> Self {
         Self { sol, uid }
     }
 }
-impl<'s> ItemSealed for Drone<'s> {
+impl<'sol> ItemSealed for Drone<'sol> {
     fn get_uid(&self) -> UItemId {
         self.uid
     }

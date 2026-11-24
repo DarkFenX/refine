@@ -8,11 +8,11 @@ use crate::{
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Public
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-pub struct Service<'s> {
-    pub(super) sol: &'s mut SolCore,
+pub struct Service<'sol> {
+    pub(super) sol: &'sol mut SolCore,
     pub(super) uid: UItemId,
 }
-impl<'s> Service<'s> {
+impl<'sol> Service<'sol> {
     pub fn get_fit_id(&self) -> FitId {
         let fit_uid = get_u_service(self.sol, self.uid).get_fit_uid();
         self.sol.u_data.fits.ext_id_by_int_id(fit_uid)
@@ -21,17 +21,17 @@ impl<'s> Service<'s> {
         get_u_service(self.sol, self.uid).get_service_state()
     }
 }
-impl<'s> ItemCommon for Service<'s> {}
+impl<'sol> ItemCommon for Service<'sol> {}
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Private
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-impl<'s> Service<'s> {
-    pub(in crate::api) fn new(sol: &'s mut SolCore, uid: UItemId) -> Self {
+impl<'sol> Service<'sol> {
+    pub(in crate::api) fn new(sol: &'sol mut SolCore, uid: UItemId) -> Self {
         Self { sol, uid }
     }
 }
-impl<'s> ItemSealed for Service<'s> {
+impl<'sol> ItemSealed for Service<'sol> {
     fn get_uid(&self) -> UItemId {
         self.uid
     }

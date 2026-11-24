@@ -8,7 +8,7 @@ use crate::{
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Public
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-impl<'s> Fit<'s> {
+impl<'sol> Fit<'sol> {
     pub fn add_service(&mut self, type_id: ItemTypeId, state: ServiceState) -> Service<'_> {
         let service_uid = self.sol.internal_add_service(self.uid, type_id.into_aid(), state);
         Service::new(self.sol, service_uid)

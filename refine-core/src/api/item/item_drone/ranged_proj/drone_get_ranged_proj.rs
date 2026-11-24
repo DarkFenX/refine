@@ -3,7 +3,7 @@ use crate::{Drone, ItemId, RangedProj, err::ProjGetError};
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Public
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-impl<'s> Drone<'s> {
+impl<'sol> Drone<'sol> {
     pub fn get_proj(&mut self, projectee_item_id: &ItemId) -> Result<RangedProj<'_>, ProjGetError> {
         self.sol.internal_get_ranged_proj(self.uid, projectee_item_id)
     }

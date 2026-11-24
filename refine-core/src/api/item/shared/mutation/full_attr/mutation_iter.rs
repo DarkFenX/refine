@@ -5,7 +5,7 @@ use crate::{EffectiveMutation, FullMAttr, ad::AAttrId, sol::SolCore, ud::UItemId
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Public
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-impl<'s> EffectiveMutation<'s> {
+impl<'sol> EffectiveMutation<'sol> {
     /// Iterates over mutation's full mutated attributes.
     pub fn iter_full_mattrs(&mut self) -> FullMAttrIter<'_> {
         FullMAttrIter::new(self.sol, self.item_uid)

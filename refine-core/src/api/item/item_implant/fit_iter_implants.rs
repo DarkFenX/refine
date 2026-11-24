@@ -3,7 +3,7 @@ use crate::{EntityIter, Fit, Implant};
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Public
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-impl<'s> Fit<'s> {
+impl<'sol> Fit<'sol> {
     pub fn iter_implants(&mut self) -> EntityIter<'_, Implant<'_>> {
         let implant_uids = self.sol.u_data.fits.get(self.uid).implants.iter().copied().collect();
         EntityIter::new(self.sol, implant_uids)

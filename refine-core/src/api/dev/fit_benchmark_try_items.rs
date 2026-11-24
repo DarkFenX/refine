@@ -7,7 +7,7 @@ use crate::{Fit, ItemTypeId, svc::vast::ValOptionsInt, val::ValOptions};
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Public
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-impl<'s> Fit<'s> {
+impl<'sol> Fit<'sol> {
     pub fn benchmark_try_items(&mut self, type_ids: &[ItemTypeId], val_options: &ValOptions, iterations: usize) {
         let type_aids = type_ids.iter().map(|v| v.into_aid()).collect_vec();
         let int_val_options = ValOptionsInt::from_pub(val_options, self.sol);

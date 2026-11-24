@@ -3,11 +3,11 @@ use crate::{FitId, sol::SolCore, ud::UFitId};
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Public
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-pub struct Fit<'s> {
-    pub(in crate::api) sol: &'s mut SolCore,
+pub struct Fit<'sol> {
+    pub(in crate::api) sol: &'sol mut SolCore,
     pub(in crate::api) uid: UFitId,
 }
-impl<'s> Fit<'s> {
+impl<'sol> Fit<'sol> {
     pub fn get_fit_id(&self) -> FitId {
         self.sol.u_data.fits.ext_id_by_int_id(self.uid)
     }
@@ -16,8 +16,8 @@ impl<'s> Fit<'s> {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Private
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-impl<'s> Fit<'s> {
-    pub(in crate::api) fn new(sol: &'s mut SolCore, uid: UFitId) -> Self {
+impl<'sol> Fit<'sol> {
+    pub(in crate::api) fn new(sol: &'sol mut SolCore, uid: UFitId) -> Self {
         Self { sol, uid }
     }
 }

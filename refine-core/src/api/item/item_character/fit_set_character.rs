@@ -8,7 +8,7 @@ use crate::{
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Public
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-impl<'s> Fit<'s> {
+impl<'sol> Fit<'sol> {
     /// Set character, replacing current one with a new item.
     pub fn set_character(&mut self, type_id: ItemTypeId) -> Character<'_> {
         let character_uid = self.sol.internal_set_fit_character(self.uid, type_id.into_aid());

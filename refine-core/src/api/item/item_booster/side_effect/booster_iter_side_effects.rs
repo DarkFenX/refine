@@ -37,7 +37,7 @@ impl<'iter> Lender for SideEffectIter<'iter> {
 }
 impl<'iter> ExactSizeLender for SideEffectIter<'iter> {}
 
-impl<'s> Booster<'s> {
+impl<'sol> Booster<'sol> {
     /// Iterates over booster's side effects.
     pub fn iter_side_effects(&mut self) -> SideEffectIter<'_> {
         let u_booster = self.sol.u_data.items.get(self.uid).dc_booster().unwrap();

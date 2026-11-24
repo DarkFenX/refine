@@ -5,7 +5,7 @@ use crate::{
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Public
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-impl<'s> Mutation<'s> {
+impl<'sol> Mutation<'sol> {
     /// Get mutation's raw mutated attribute for requested attribute ID.
     pub fn get_raw_mattr(&mut self, attr_id: AttrId) -> Result<RawMAttr<'_>, RawMAttrGetError> {
         match self {
@@ -15,14 +15,14 @@ impl<'s> Mutation<'s> {
     }
 }
 
-impl<'s> EffectiveMutation<'s> {
+impl<'sol> EffectiveMutation<'sol> {
     /// Get mutation's raw mutated attribute for requested attribute ID.
     pub fn get_raw_mattr(&mut self, attr_id: AttrId) -> Result<RawMAttr<'_>, RawMAttrGetError> {
         get_raw_mattr(self.sol, self.item_uid, attr_id.into_aid())
     }
 }
 
-impl<'s> DormantMutation<'s> {
+impl<'sol> DormantMutation<'sol> {
     /// Get mutation's raw mutated attribute for requested attribute ID.
     pub fn get_raw_mattr(&mut self, attr_id: AttrId) -> Result<RawMAttr<'_>, RawMAttrGetError> {
         get_raw_mattr(self.sol, self.item_uid, attr_id.into_aid())

@@ -3,7 +3,7 @@ use crate::{EntityIter, Fighter, Fit};
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Public
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-impl<'s> Fit<'s> {
+impl<'sol> Fit<'sol> {
     pub fn iter_fighters(&mut self) -> EntityIter<'_, Fighter<'_>> {
         let fighter_uids = self.sol.u_data.fits.get(self.uid).fighters.iter().copied().collect();
         EntityIter::new(self.sol, fighter_uids)

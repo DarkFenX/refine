@@ -8,7 +8,7 @@ use crate::{
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Public
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-impl<'s> Charge<'s> {
+impl<'sol> Charge<'sol> {
     /// Set type ID, replacing currently used EVE item by another, preserving all the user data.
     pub fn set_type_id(&mut self, type_id: ItemTypeId) {
         self.sol.internal_set_charge_type_aid(self.uid, type_id.into_aid())

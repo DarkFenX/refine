@@ -7,7 +7,7 @@ use crate::{
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Public
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-impl<'s> Mutation<'s> {
+impl<'sol> Mutation<'sol> {
     pub fn remove(self) {
         match self {
             Mutation::Effective(effective_mutation) => effective_mutation.remove(),
@@ -16,13 +16,13 @@ impl<'s> Mutation<'s> {
     }
 }
 
-impl<'s> EffectiveMutation<'s> {
+impl<'sol> EffectiveMutation<'sol> {
     pub fn remove(self) {
         self.sol.internal_remove_item_mutation(self.item_uid).unwrap();
     }
 }
 
-impl<'s> DormantMutation<'s> {
+impl<'sol> DormantMutation<'sol> {
     pub fn remove(self) {
         self.sol.internal_remove_item_mutation(self.item_uid).unwrap();
     }

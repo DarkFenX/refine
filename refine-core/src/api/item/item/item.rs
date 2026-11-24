@@ -6,26 +6,26 @@ use crate::{
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Public
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-pub enum Item<'s> {
-    Autocharge(Autocharge<'s>),
-    Booster(Booster<'s>),
-    Character(Character<'s>),
-    Charge(Charge<'s>),
-    Drone(Drone<'s>),
-    Fighter(Fighter<'s>),
-    FwEffect(FwEffect<'s>),
-    Implant(Implant<'s>),
-    Module(Module<'s>),
-    ProjEffect(ProjEffect<'s>),
-    Rig(Rig<'s>),
-    Service(Service<'s>),
-    Ship(Ship<'s>),
-    Skill(Skill<'s>),
-    Stance(Stance<'s>),
-    Subsystem(Subsystem<'s>),
-    SwEffect(SwEffect<'s>),
+pub enum Item<'sol> {
+    Autocharge(Autocharge<'sol>),
+    Booster(Booster<'sol>),
+    Character(Character<'sol>),
+    Charge(Charge<'sol>),
+    Drone(Drone<'sol>),
+    Fighter(Fighter<'sol>),
+    FwEffect(FwEffect<'sol>),
+    Implant(Implant<'sol>),
+    Module(Module<'sol>),
+    ProjEffect(ProjEffect<'sol>),
+    Rig(Rig<'sol>),
+    Service(Service<'sol>),
+    Ship(Ship<'sol>),
+    Skill(Skill<'sol>),
+    Stance(Stance<'sol>),
+    Subsystem(Subsystem<'sol>),
+    SwEffect(SwEffect<'sol>),
 }
-impl<'s> Item<'s> {
+impl<'sol> Item<'sol> {
     pub fn get_fit_id(&self) -> Option<FitId> {
         match self {
             Item::Autocharge(autocharge) => Some(autocharge.get_fit_id()),
@@ -48,17 +48,17 @@ impl<'s> Item<'s> {
         }
     }
 }
-impl<'s> ItemCommon for Item<'s> {}
+impl<'sol> ItemCommon for Item<'sol> {}
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Private
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-impl<'s> Item<'s> {
-    pub(in crate::api) fn new(sol: &'s mut SolCore, uid: UItemId) -> Self {
+impl<'sol> Item<'sol> {
+    pub(in crate::api) fn new(sol: &'sol mut SolCore, uid: UItemId) -> Self {
         sol.internal_get_item(uid)
     }
 }
-impl<'s> ItemSealed for Item<'s> {
+impl<'sol> ItemSealed for Item<'sol> {
     fn get_uid(&self) -> UItemId {
         match self {
             Item::Autocharge(autocharge) => autocharge.get_uid(),

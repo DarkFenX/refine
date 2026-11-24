@@ -11,12 +11,12 @@ use crate::{AttrId, ad::AAttrId, sol::SolCore, ud::UItemId};
 /// Raw mutated attributes do not necessarily affect attributes of their parent item. However, they
 /// are the only way to access item attribute mutations which are not available on current data
 /// source.
-pub struct RawMAttr<'s> {
-    pub(super) sol: &'s mut SolCore,
+pub struct RawMAttr<'sol> {
+    pub(super) sol: &'sol mut SolCore,
     pub(super) item_uid: UItemId,
     pub(super) attr_aid: AAttrId,
 }
-impl<'s> RawMAttr<'s> {
+impl<'sol> RawMAttr<'sol> {
     /// Mutated attribute ID.
     pub fn get_attr_id(&self) -> AttrId {
         AttrId::from_aid(self.attr_aid)
@@ -26,8 +26,8 @@ impl<'s> RawMAttr<'s> {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Private
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-impl<'s> RawMAttr<'s> {
-    pub(in crate::api) fn new(sol: &'s mut SolCore, item_uid: UItemId, attr_aid: AAttrId) -> Self {
+impl<'sol> RawMAttr<'sol> {
+    pub(in crate::api) fn new(sol: &'sol mut SolCore, item_uid: UItemId, attr_aid: AAttrId) -> Self {
         Self {
             sol,
             item_uid,

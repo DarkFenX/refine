@@ -6,8 +6,8 @@ use crate::{
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Public
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-impl<'s> Item<'s> {
-    pub fn dc_autocharge(&mut self) -> Result<&mut Autocharge<'s>, ItemKindMatchError> {
+impl<'sol> Item<'sol> {
+    pub fn dc_autocharge(&mut self) -> Result<&mut Autocharge<'sol>, ItemKindMatchError> {
         match self {
             Self::Autocharge(autocharge) => Ok(autocharge),
             _ => Err(ItemKindMatchError {
@@ -17,7 +17,7 @@ impl<'s> Item<'s> {
             }),
         }
     }
-    pub fn dc_booster(&mut self) -> Result<&mut Booster<'s>, ItemKindMatchError> {
+    pub fn dc_booster(&mut self) -> Result<&mut Booster<'sol>, ItemKindMatchError> {
         match self {
             Self::Booster(booster) => Ok(booster),
             _ => Err(ItemKindMatchError {
@@ -27,7 +27,7 @@ impl<'s> Item<'s> {
             }),
         }
     }
-    pub fn dc_character(&mut self) -> Result<&mut Character<'s>, ItemKindMatchError> {
+    pub fn dc_character(&mut self) -> Result<&mut Character<'sol>, ItemKindMatchError> {
         match self {
             Self::Character(character) => Ok(character),
             _ => Err(ItemKindMatchError {
@@ -37,7 +37,7 @@ impl<'s> Item<'s> {
             }),
         }
     }
-    pub fn dc_charge(&mut self) -> Result<&mut Charge<'s>, ItemKindMatchError> {
+    pub fn dc_charge(&mut self) -> Result<&mut Charge<'sol>, ItemKindMatchError> {
         match self {
             Self::Charge(charge) => Ok(charge),
             _ => Err(ItemKindMatchError {
@@ -47,7 +47,7 @@ impl<'s> Item<'s> {
             }),
         }
     }
-    pub fn dc_drone(&mut self) -> Result<&mut Drone<'s>, ItemKindMatchError> {
+    pub fn dc_drone(&mut self) -> Result<&mut Drone<'sol>, ItemKindMatchError> {
         match self {
             Self::Drone(drone) => Ok(drone),
             _ => Err(ItemKindMatchError {
@@ -57,7 +57,7 @@ impl<'s> Item<'s> {
             }),
         }
     }
-    pub fn dc_fighter(&mut self) -> Result<&mut Fighter<'s>, ItemKindMatchError> {
+    pub fn dc_fighter(&mut self) -> Result<&mut Fighter<'sol>, ItemKindMatchError> {
         match self {
             Self::Fighter(fighter) => Ok(fighter),
             _ => Err(ItemKindMatchError {
@@ -67,7 +67,7 @@ impl<'s> Item<'s> {
             }),
         }
     }
-    pub fn dc_fw_effect(&mut self) -> Result<&mut FwEffect<'s>, ItemKindMatchError> {
+    pub fn dc_fw_effect(&mut self) -> Result<&mut FwEffect<'sol>, ItemKindMatchError> {
         match self {
             Self::FwEffect(fw_effect) => Ok(fw_effect),
             _ => Err(ItemKindMatchError {
@@ -77,7 +77,7 @@ impl<'s> Item<'s> {
             }),
         }
     }
-    pub fn dc_implant(&mut self) -> Result<&mut Implant<'s>, ItemKindMatchError> {
+    pub fn dc_implant(&mut self) -> Result<&mut Implant<'sol>, ItemKindMatchError> {
         match self {
             Self::Implant(implant) => Ok(implant),
             _ => Err(ItemKindMatchError {
@@ -87,7 +87,7 @@ impl<'s> Item<'s> {
             }),
         }
     }
-    pub fn dc_module(&mut self) -> Result<&mut Module<'s>, ItemKindMatchError> {
+    pub fn dc_module(&mut self) -> Result<&mut Module<'sol>, ItemKindMatchError> {
         match self {
             Self::Module(module) => Ok(module),
             _ => Err(ItemKindMatchError {
@@ -97,7 +97,7 @@ impl<'s> Item<'s> {
             }),
         }
     }
-    pub fn dc_proj_effect(&mut self) -> Result<&mut ProjEffect<'s>, ItemKindMatchError> {
+    pub fn dc_proj_effect(&mut self) -> Result<&mut ProjEffect<'sol>, ItemKindMatchError> {
         match self {
             Self::ProjEffect(proj_effect) => Ok(proj_effect),
             _ => Err(ItemKindMatchError {
@@ -107,7 +107,7 @@ impl<'s> Item<'s> {
             }),
         }
     }
-    pub fn dc_rig(&mut self) -> Result<&mut Rig<'s>, ItemKindMatchError> {
+    pub fn dc_rig(&mut self) -> Result<&mut Rig<'sol>, ItemKindMatchError> {
         match self {
             Self::Rig(rig) => Ok(rig),
             _ => Err(ItemKindMatchError {
@@ -117,7 +117,7 @@ impl<'s> Item<'s> {
             }),
         }
     }
-    pub fn dc_service(&mut self) -> Result<&mut Service<'s>, ItemKindMatchError> {
+    pub fn dc_service(&mut self) -> Result<&mut Service<'sol>, ItemKindMatchError> {
         match self {
             Self::Service(service) => Ok(service),
             _ => Err(ItemKindMatchError {
@@ -127,7 +127,7 @@ impl<'s> Item<'s> {
             }),
         }
     }
-    pub fn dc_ship(&mut self) -> Result<&mut Ship<'s>, ItemKindMatchError> {
+    pub fn dc_ship(&mut self) -> Result<&mut Ship<'sol>, ItemKindMatchError> {
         match self {
             Self::Ship(ship) => Ok(ship),
             _ => Err(ItemKindMatchError {
@@ -137,7 +137,7 @@ impl<'s> Item<'s> {
             }),
         }
     }
-    pub fn dc_skill(&mut self) -> Result<&mut Skill<'s>, ItemKindMatchError> {
+    pub fn dc_skill(&mut self) -> Result<&mut Skill<'sol>, ItemKindMatchError> {
         match self {
             Self::Skill(skill) => Ok(skill),
             _ => Err(ItemKindMatchError {
@@ -147,7 +147,7 @@ impl<'s> Item<'s> {
             }),
         }
     }
-    pub fn dc_stance(&mut self) -> Result<&mut Stance<'s>, ItemKindMatchError> {
+    pub fn dc_stance(&mut self) -> Result<&mut Stance<'sol>, ItemKindMatchError> {
         match self {
             Self::Stance(stance) => Ok(stance),
             _ => Err(ItemKindMatchError {
@@ -157,7 +157,7 @@ impl<'s> Item<'s> {
             }),
         }
     }
-    pub fn dc_subsystem(&mut self) -> Result<&mut Subsystem<'s>, ItemKindMatchError> {
+    pub fn dc_subsystem(&mut self) -> Result<&mut Subsystem<'sol>, ItemKindMatchError> {
         match self {
             Self::Subsystem(subsystem) => Ok(subsystem),
             _ => Err(ItemKindMatchError {
@@ -167,7 +167,7 @@ impl<'s> Item<'s> {
             }),
         }
     }
-    pub fn dc_sw_effect(&mut self) -> Result<&mut SwEffect<'s>, ItemKindMatchError> {
+    pub fn dc_sw_effect(&mut self) -> Result<&mut SwEffect<'sol>, ItemKindMatchError> {
         match self {
             Self::SwEffect(sw_effect) => Ok(sw_effect),
             _ => Err(ItemKindMatchError {
@@ -182,7 +182,7 @@ impl<'s> Item<'s> {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Private
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-impl<'s> Item<'s> {
+impl<'sol> Item<'sol> {
     fn get_item_kind(&self) -> ItemKind {
         match self {
             Self::Autocharge(..) => ItemKind::Autocharge,
