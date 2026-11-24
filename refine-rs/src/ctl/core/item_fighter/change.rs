@@ -1,7 +1,10 @@
 use crate::{
-    AbilityId, ChangedItemIdsResp, CmdResps, Coordinates, CountNz, EffectId, EffectMode, ItemId, ItemIdBr, ItemTypeId,
-    MinionState, Movement, RearmMinion, TriStateField,
-    ctl::core::shared::{Abilities, EffectModes},
+    AbilityId, CmdResps, Coordinates, CountNz, EffectId, EffectMode, ItemId, ItemIdBr, ItemTypeId, MinionState,
+    Movement, RearmMinion, TriStateField,
+    ctl::{
+        ChangedItemIdsResp,
+        core::shared::{Abilities, EffectModes},
+    },
     err::BrResolveError,
 };
 

@@ -1,28 +1,29 @@
 use crate::{
-    AutochargeChangeCmd, BoosterAddCmd, BoosterChangeCmd, CharacterChangeCmd, CharacterSetCmd, CharacterUnsetCmd,
-    ChargeChangeCmd, CmdResp, CmdResps, DroneAddCmd, DroneAddCmdBr, DroneChangeCmd, DroneChangeCmdBr, FighterAddCmd,
-    FighterAddCmdBr, FighterChangeCmd, FighterChangeCmdBr, FitChangeCmd, FwEffectAddCmd, FwEffectChangeCmd,
-    ImplantAddCmd, ImplantChangeCmd, ItemAutodetectAddCmd, ItemId, ItemIdBr, ItemRemoveCmd, ModuleAddCmd,
-    ModuleAddCmdBr, ModuleChangeCmd, ModuleChangeCmdBr, RigAddCmd, RigChangeCmd, ServiceAddCmd, ServiceChangeCmd,
-    ShipChangeCmd, ShipSetCmd, ShipUnsetCmd, SkillAddCmd, SkillChangeCmd, StanceChangeCmd, StanceSetCmd,
-    StanceUnsetCmd, SubsystemAddCmd, SubsystemChangeCmd,
+    CmdResp, CmdResps, ItemId, ItemIdBr,
     ctl::{
-        DroneAddCmdGen, FighterAddCmdGen, ModuleAddCmdGen,
+        AutochargeChangeCmd, BoosterAddCmd, BoosterChangeCmd, CharacterChangeCmd, CharacterSetCmd, CharacterUnsetCmd,
+        ChargeChangeCmd, DroneAddCmd, DroneAddCmdBr, DroneAddCmdGen, DroneChangeCmd, DroneChangeCmdBr, FighterAddCmd,
+        FighterAddCmdBr, FighterAddCmdGen, FighterChangeCmd, FighterChangeCmdBr, FitChangeCmd, FwEffectAddCmd,
+        FwEffectChangeCmd, ImplantAddCmd, ImplantChangeCmd, ItemAutodetectAddCmd, ItemRemoveCmd, ModuleAddCmd,
+        ModuleAddCmdBr, ModuleAddCmdGen, ModuleChangeCmd, ModuleChangeCmdBr, RigAddCmd, RigChangeCmd, ServiceAddCmd,
+        ServiceChangeCmd, ShipChangeCmd, ShipSetCmd, ShipUnsetCmd, SkillAddCmd, SkillChangeCmd, StanceChangeCmd,
+        StanceSetCmd, StanceUnsetCmd, SubsystemAddCmd, SubsystemChangeCmd,
         core::{
             AutochargeChangeCmdCtxItemGen, BoosterChangeCmdCtxItemGen, ChargeChangeCmdCtxItemGen,
             DroneChangeCmdCtxItemGen, FighterChangeCmdCtxItemGen, FwEffectChangeCmdCtxItemGen,
             ImplantChangeCmdCtxItemGen, ItemRemoveCmdCtxItemGen, ModuleChangeCmdCtxItemGen, RigChangeCmdCtxItemGen,
             ServiceChangeCmdCtxItemGen, SkillChangeCmdCtxItemGen, SubsystemChangeCmdCtxItemGen,
         },
+        err::{
+            DroneAddError, FighterAddError, FitChangeError, FitCharacterChangeError, FitItemGetAutochargeChangeError,
+            FitItemGetBoosterChangeError, FitItemGetChargeChangeError, FitItemGetDroneChangeError,
+            FitItemGetFighterChangeError, FitItemGetFwEffectChangeError, FitItemGetImplantChangeError,
+            FitItemGetItemRemoveError, FitItemGetModuleChangeError, FitItemGetRigChangeError,
+            FitItemGetServiceChangeError, FitItemGetSkillChangeError, FitItemGetSubsystemChangeError,
+            FitShipChangeError, FitStanceChangeError, ItemAutodetectAddError, ModuleAddError, SkillAddError,
+        },
     },
-    err::{
-        BrResolveError, DroneAddError, FighterAddError, FitChangeError, FitCharacterChangeError,
-        FitItemGetAutochargeChangeError, FitItemGetBoosterChangeError, FitItemGetChargeChangeError,
-        FitItemGetDroneChangeError, FitItemGetFighterChangeError, FitItemGetFwEffectChangeError,
-        FitItemGetImplantChangeError, FitItemGetItemRemoveError, FitItemGetModuleChangeError, FitItemGetRigChangeError,
-        FitItemGetServiceChangeError, FitItemGetSkillChangeError, FitItemGetSubsystemChangeError, FitShipChangeError,
-        FitStanceChangeError, ItemAutodetectAddError, ModuleAddError, SkillAddError,
-    },
+    err::BrResolveError,
 };
 
 pub type FitChangeEnumCmd = FitChangeEnumCmdGen<ItemId>;

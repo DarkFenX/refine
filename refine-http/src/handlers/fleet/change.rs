@@ -15,7 +15,7 @@ pub(crate) async fn change_fleet(
     State(state): State<AppState>,
     Path((sol_id, fleet_id)): Path<(String, String)>,
     WithRejection(Query(params), _): WithRejection<Query<FleetParams>, ApiError>,
-    WithRejection(Json(payload), _): WithRejection<Json<rs::FleetChangeCmd>, ApiError>,
+    WithRejection(Json(payload), _): WithRejection<Json<rs::ctl::FleetChangeCmd>, ApiError>,
 ) -> impl IntoResponse {
     match internal_change_fleet(state, sol_id, fleet_id, params, payload).await {
         Ok(resp) => (StatusCode::OK, Json(resp)).into_response(),
@@ -28,8 +28,8 @@ async fn internal_change_fleet(
     sol_id: String,
     fleet_id: String,
     params: FleetParams,
-    payload: rs::FleetChangeCmd,
-) -> Result<rs::FleetInfo, ApiError> {
+    payload: rs::ctl::FleetChangeCmd,
+) -> Result<rs::info::FleetInfo, ApiError> {
     let sol_id = rs::SolId::from_str(&sol_id)?;
     let fleet_id = rs::FleetId::from_str(&fleet_id)?;
     let fleet_info = state

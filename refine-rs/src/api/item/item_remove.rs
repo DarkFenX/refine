@@ -1,4 +1,7 @@
-use crate::{Item, ItemRemoveCmd, err::ItemRemoveError};
+use crate::{
+    Item,
+    ctl::{ItemRemoveCmd, err::ItemRemoveError},
+};
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Public

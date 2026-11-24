@@ -3,7 +3,9 @@ use rc::ItemCommon;
 #[cfg(feature = "serde")]
 use crate::ItemKind;
 use crate::{
-    EffectId, EffectMode, FitId, ItemId, ItemInfoFull, ItemInfoMode, ItemTypeId, ServiceState, shared::OvrdMapLight,
+    EffectId, EffectMode, FitId, ItemId, ItemTypeId, ServiceState,
+    info::{ItemInfoFull, ItemInfoMode},
+    shared::OvrdMapLight,
 };
 
 #[cfg_attr(feature = "serde", derive(serde::Serialize))]

@@ -1,6 +1,8 @@
 use crate::{
-    CmdResps, Sol, SolChangeEnumCmdBr, SolInfo, SolInfoCmdBr,
-    err::{BrResolveError, SolChangeEnumError},
+    CmdResps, Sol,
+    ctl::{SolChangeEnumCmdBr, err::SolChangeEnumError},
+    err::BrResolveError,
+    info::{SolInfo, SolInfoCmdBr},
     stats::{SolStatsCmdBr, SolStatsResp},
     val::{SolValCmdBr, SolValResult},
 };

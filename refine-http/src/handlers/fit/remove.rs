@@ -13,7 +13,7 @@ use crate::{err::ApiError, state::AppState};
 pub(crate) async fn remove_fit(
     State(state): State<AppState>,
     Path((sol_id, fit_id)): Path<(String, String)>,
-    WithRejection(payload, _): WithRejection<Option<Json<rs::FitRemoveCmd>>, ApiError>,
+    WithRejection(payload, _): WithRejection<Option<Json<rs::ctl::FitRemoveCmd>>, ApiError>,
 ) -> impl IntoResponse {
     let Json(payload) = payload.unwrap_or_default();
     match internal_remove_fit(state, sol_id, fit_id, payload).await {
@@ -26,7 +26,7 @@ async fn internal_remove_fit(
     state: AppState,
     sol_id: String,
     fit_id: String,
-    payload: rs::FitRemoveCmd,
+    payload: rs::ctl::FitRemoveCmd,
 ) -> Result<(), ApiError> {
     let sol_id = rs::SolId::from_str(&sol_id)?;
     let fit_id = rs::FitId::from_str(&fit_id)?;

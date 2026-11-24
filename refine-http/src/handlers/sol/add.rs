@@ -14,7 +14,7 @@ use crate::{err::ApiError, state::AppState};
 pub(crate) struct AddSolReqBody {
     src_alias: Option<String>,
     #[serde(flatten)]
-    cmd: rs::SolAddCmd,
+    cmd: rs::ctl::SolAddCmd,
 }
 
 pub(crate) async fn add_sol(
@@ -29,7 +29,11 @@ pub(crate) async fn add_sol(
     }
 }
 
-async fn internal_add_sol(state: AppState, params: SolParams, payload: AddSolReqBody) -> Result<rs::SolInfo, ApiError> {
+async fn internal_add_sol(
+    state: AppState,
+    params: SolParams,
+    payload: AddSolReqBody,
+) -> Result<rs::info::SolInfo, ApiError> {
     let src_alias = parse_src_alias_from_body(payload.src_alias)?;
     let (_, sol_info) = state
         .get_refine()

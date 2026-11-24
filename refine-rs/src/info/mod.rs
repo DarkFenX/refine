@@ -9,34 +9,34 @@
 // allocations, depending on override count).
 
 pub(crate) use fit::FitInfoEnumCmd;
-pub use fit::{
-    FitGetFitInfoError, FitInfo, FitInfoCmd, FitInfoCmdBr, FitInfoEnumCmdBr, FitInfoEnumError, FitInfoFull,
-    FitInfoMode, ModuleRacks,
-};
-pub use fleet::{FleetGetFleetInfoError, FleetInfo, FleetInfoCmd, FleetInfoCmdBr, FleetInfoFull, FleetInfoMode};
+pub use fit::{FitInfo, FitInfoCmd, FitInfoCmdBr, FitInfoEnumCmdBr, FitInfoFull, FitInfoMode, ModuleRacks};
+pub use fleet::{FleetInfo, FleetInfoCmd, FleetInfoCmdBr, FleetInfoFull, FleetInfoMode};
 pub use item::{
     AbilityInfo, AttrMutationInfo, AutochargeInfo, AutochargeInfoPartial, BoosterInfo, BoosterInfoPartial,
     CharacterInfo, CharacterInfoPartial, ChargeInfo, ChargeInfoPartial, DroneInfo, DroneInfoPartial, FighterInfo,
-    FighterInfoPartial, FitItemGetItemInfoError, FwEffectInfo, FwEffectInfoPartial, ImplantInfo, ImplantInfoPartial,
-    ItemGetItemInfoError, ItemInfo, ItemInfoCmd, ItemInfoCmdBr, ItemInfoFull, ItemInfoMode, ItemMutationDormantInfo,
-    ItemMutationEffectiveInfo, ItemMutationInfo, ModuleInfo, ModuleInfoPartial, ProjEffectInfo, ProjEffectInfoPartial,
-    ProjInfo, RangedProjInfo, RigInfo, RigInfoPartial, ServiceInfo, ServiceInfoPartial, ShipInfo, ShipInfoPartial,
-    SideEffectInfo, SideEffectMod, SideEffectOp, SkillInfo, SkillInfoPartial, StanceInfo, StanceInfoPartial,
-    SubsystemInfo, SubsystemInfoPartial, SwEffectInfo, SwEffectInfoPartial,
+    FighterInfoPartial, FwEffectInfo, FwEffectInfoPartial, ImplantInfo, ImplantInfoPartial, ItemInfo, ItemInfoCmd,
+    ItemInfoCmdBr, ItemInfoFull, ItemInfoMode, ItemMutationDormantInfo, ItemMutationEffectiveInfo, ItemMutationInfo,
+    ModuleInfo, ModuleInfoPartial, ProjEffectInfo, ProjEffectInfoPartial, ProjInfo, RangedProjInfo, RigInfo,
+    RigInfoPartial, ServiceInfo, ServiceInfoPartial, ShipInfo, ShipInfoPartial, SideEffectInfo, SideEffectMod,
+    SideEffectOp, SkillInfo, SkillInfoPartial, StanceInfo, StanceInfoPartial, SubsystemInfo, SubsystemInfoPartial,
+    SwEffectInfo, SwEffectInfoPartial,
 };
 pub use refine::{RefineInfo, RefineInfoCmd};
 pub(crate) use sol::SolInfoEnumCmd;
-pub use sol::{
-    SolInfo, SolInfoCmd, SolInfoCmdBr, SolInfoEnumCmdBr, SolInfoEnumError, SolInfoFull, SolInfoMode, SolInfoPartial,
-};
-pub use src::{
-    SrcInfo, SrcInfoFull, SrcInfoMode, SrcInfoPartial, SrcItemInfo, SrcItemInfos, SrcMutatedItemBaseInfo,
-    SrcMutatedItemInfo, SrcMutatedItemInfos,
-};
+pub use sol::{SolInfo, SolInfoCmd, SolInfoCmdBr, SolInfoEnumCmdBr, SolInfoFull, SolInfoMode, SolInfoPartial};
 
 mod fit;
 mod fleet;
 mod item;
 mod refine;
 mod sol;
-mod src;
+pub(crate) mod src;
+
+pub mod err {
+    pub use crate::info::{
+        fit::{FitGetFitInfoError, FitInfoEnumError},
+        fleet::FleetGetFleetInfoError,
+        item::{FitItemGetItemInfoError, ItemGetItemInfoError},
+        sol::SolInfoEnumError,
+    };
+}

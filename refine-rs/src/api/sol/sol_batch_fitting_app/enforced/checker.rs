@@ -1,7 +1,10 @@
 use crate::{
-    CmdResps, FitId, FitInfo, FitInfoCmd, FleetId, FleetInfo, FleetInfoCmd, ItemId, ItemInfo, ItemInfoCmd,
-    SolChangeEnumCmdBr, SolInfo, SolInfoCmd,
-    err::{FitGetFitInfoError, FleetGetFleetInfoError, ItemGetItemInfoError},
+    CmdResps, FitId, FleetId, ItemId,
+    ctl::SolChangeEnumCmdBr,
+    info::{
+        FitInfo, FitInfoCmd, FleetInfo, FleetInfoCmd, ItemInfo, ItemInfoCmd, SolInfo, SolInfoCmd,
+        err::{FitGetFitInfoError, FleetGetFleetInfoError, ItemGetItemInfoError},
+    },
     stats::{
         FitStatsCmd, FitStatsResp, FleetStatsCmd, FleetStatsResp, ItemStatsCmd, ItemStatsResp, SolStatsCmd,
         SolStatsResp,

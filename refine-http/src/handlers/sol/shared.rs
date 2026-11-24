@@ -5,24 +5,24 @@ use crate::err::ApiError;
 #[derive(Deserialize)]
 pub(crate) struct SolParams {
     #[serde(default)]
-    sol: rs::SolInfoMode,
+    sol: rs::info::SolInfoMode,
     #[serde(default)]
-    fleet: rs::FleetInfoMode,
+    fleet: rs::info::FleetInfoMode,
     #[serde(default)]
-    fit: rs::FitInfoMode,
+    fit: rs::info::FitInfoMode,
     #[serde(default)]
-    item: rs::ItemInfoMode,
+    item: rs::info::ItemInfoMode,
 }
 impl SolParams {
-    pub(super) fn into_cmd(self) -> rs::SolInfoCmd {
-        rs::SolInfoCmd::new()
+    pub(super) fn into_cmd(self) -> rs::info::SolInfoCmd {
+        rs::info::SolInfoCmd::new()
             .with_sol(self.sol)
             .with_fleet_default(self.fleet)
             .with_fit_default(self.fit)
             .with_item_default(self.item)
     }
-    pub(super) fn into_cmd_br(self) -> rs::SolInfoCmdBr {
-        rs::SolInfoCmdBr::new()
+    pub(super) fn into_cmd_br(self) -> rs::info::SolInfoCmdBr {
+        rs::info::SolInfoCmdBr::new()
             .with_sol(self.sol)
             .with_fleet_default(self.fleet)
             .with_fit_default(self.fit)

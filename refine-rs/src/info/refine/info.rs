@@ -1,4 +1,4 @@
-use crate::{SolInfo, src::SrcInfo};
+use crate::{info::SolInfo, src::SrcInfo};
 
 #[derive(Clone)]
 pub struct RefineInfo {

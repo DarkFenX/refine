@@ -1,4 +1,8 @@
-use crate::{Fleet, FleetAddCmd, FleetInfo, FleetInfoCmd, Sol, err::FleetAddError};
+use crate::{
+    Fleet, Sol,
+    ctl::{FleetAddCmd, err::FleetAddError},
+    info::{FleetInfo, FleetInfoCmd},
+};
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Public

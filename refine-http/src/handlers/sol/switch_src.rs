@@ -34,7 +34,7 @@ async fn internal_switch_sol_src(
     sol_id: String,
     params: SolParams,
     payload: ChangeSolSrcReqBody,
-) -> Result<rs::SolInfo, ApiError> {
+) -> Result<rs::info::SolInfo, ApiError> {
     let sol_id = rs::SolId::from_str(&sol_id)?;
     let src_alias = parse_src_alias_from_body(payload.src_alias)?;
     let sol_info = state

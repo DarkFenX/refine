@@ -1,7 +1,11 @@
 use crate::{
-    CmdResp, CmdResps, FitInfoCmd, FitInfoCmdBr, ItemIdBr, ItemInfoCmdBr,
-    err::{BrResolveError, FitItemGetItemInfoError},
-    info::item::{ItemInfoCmdCtxItem, ItemInfoCmdCtxItemBr},
+    CmdResp, CmdResps, ItemIdBr,
+    err::BrResolveError,
+    info::{
+        FitInfoCmd, FitInfoCmdBr, ItemInfoCmdBr,
+        err::FitItemGetItemInfoError,
+        item::{ItemInfoCmdCtxItem, ItemInfoCmdCtxItemBr},
+    },
 };
 
 #[derive(Clone)]

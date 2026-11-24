@@ -1,4 +1,8 @@
-use crate::{CmdResp, CmdResps, Fit, FitChangeEnumCmd, FitInfo, FitInfoCmdBr, err::FitChangeEnumError};
+use crate::{
+    CmdResp, CmdResps, Fit,
+    ctl::{FitChangeEnumCmd, err::FitChangeEnumError},
+    info::{FitInfo, FitInfoCmdBr},
+};
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Public

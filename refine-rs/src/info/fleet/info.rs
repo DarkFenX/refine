@@ -1,6 +1,10 @@
 use rc::Lender;
 
-use crate::{FitId, FitInfo, FitInfoMode, FleetId, FleetInfoMode, ItemId, ItemInfoMode, shared::OvrdMapLight};
+use crate::{
+    FitId, FleetId, ItemId,
+    info::{FitInfo, FitInfoMode, FleetInfoMode, ItemInfoMode},
+    shared::OvrdMapLight,
+};
 
 #[cfg_attr(feature = "serde", derive(serde::Serialize))]
 #[derive(Clone)]

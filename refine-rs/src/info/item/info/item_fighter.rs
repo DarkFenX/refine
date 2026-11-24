@@ -3,8 +3,9 @@ use rc::{ItemCommon, Lender};
 #[cfg(feature = "serde")]
 use crate::ItemKind;
 use crate::{
-    AbilityId, AbilityInfo, AutochargeInfo, Coordinates, CountNz, EffectId, EffectMode, FighterCountInfo, FitId,
-    ItemId, ItemInfoFull, ItemInfoMode, ItemTypeId, MinionState, Movement, RangedProjInfo, RearmMinion,
+    AbilityId, Coordinates, CountNz, EffectId, EffectMode, FighterCountInfo, FitId, ItemId, ItemTypeId, MinionState,
+    Movement, RearmMinion,
+    info::{AbilityInfo, AutochargeInfo, ItemInfoFull, ItemInfoMode, RangedProjInfo},
     shared::OvrdMapLight,
 };
 

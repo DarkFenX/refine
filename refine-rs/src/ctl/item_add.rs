@@ -1,17 +1,20 @@
 use crate::{
-    AddedItemIdsResp, BoosterAddCmd, CharacterSetCmd, DroneAddCmd, FighterAddCmd, FitId, FwEffectAddCmd, ImplantAddCmd,
-    ItemAutodetectAddCmd, ModuleAddCmd, ProjEffectAddCmd, RigAddCmd, ServiceAddCmd, ShipSetCmd, SkillAddCmd,
-    StanceSetCmd, SubsystemAddCmd, SwEffectAddCmd,
-    ctl::core::{
-        BoosterAddCmdCtxFit, CharacterSetCmdCtxFit, DroneAddCmdCtxFit, FighterAddCmdCtxFit, FwEffectAddCmdCtxFit,
-        ImplantAddCmdCtxFit, ItemAutodetectAddCmdCtxFit, ModuleAddCmdCtxFit, RigAddCmdCtxFit, ServiceAddCmdCtxFit,
-        ShipSetCmdCtxFit, SkillAddCmdCtxFit, StanceSetCmdCtxFit, SubsystemAddCmdCtxFit,
-    },
-    err::{
-        FitGetBoosterAddError, FitGetCharacterSetError, FitGetDroneAddError, FitGetFighterAddError,
-        FitGetFwEffectAddError, FitGetImplantAddError, FitGetItemAutodetectAddError, FitGetModuleAddError,
-        FitGetRigAddError, FitGetServiceAddError, FitGetShipSetError, FitGetSkillAddError, FitGetStanceSetError,
-        FitGetSubsystemAddError, ProjEffectAddError,
+    FitId,
+    ctl::{
+        AddedItemIdsResp, BoosterAddCmd, CharacterSetCmd, DroneAddCmd, FighterAddCmd, FwEffectAddCmd, ImplantAddCmd,
+        ItemAutodetectAddCmd, ModuleAddCmd, ProjEffectAddCmd, RigAddCmd, ServiceAddCmd, ShipSetCmd, SkillAddCmd,
+        StanceSetCmd, SubsystemAddCmd, SwEffectAddCmd,
+        core::{
+            BoosterAddCmdCtxFit, CharacterSetCmdCtxFit, DroneAddCmdCtxFit, FighterAddCmdCtxFit, FwEffectAddCmdCtxFit,
+            ImplantAddCmdCtxFit, ItemAutodetectAddCmdCtxFit, ModuleAddCmdCtxFit, RigAddCmdCtxFit, ServiceAddCmdCtxFit,
+            ShipSetCmdCtxFit, SkillAddCmdCtxFit, StanceSetCmdCtxFit, SubsystemAddCmdCtxFit,
+        },
+        err::{
+            FitGetBoosterAddError, FitGetCharacterSetError, FitGetDroneAddError, FitGetFighterAddError,
+            FitGetFwEffectAddError, FitGetImplantAddError, FitGetItemAutodetectAddError, FitGetModuleAddError,
+            FitGetRigAddError, FitGetServiceAddError, FitGetShipSetError, FitGetSkillAddError, FitGetStanceSetError,
+            FitGetSubsystemAddError, ProjEffectAddError,
+        },
     },
 };
 

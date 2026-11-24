@@ -1,6 +1,7 @@
 use crate::{
-    AddedFitIdResp, AddedFleetIdResp, AddedItemIdsResp, ChangedItemIdsResp, FitId, FitInfo, FleetId, FleetInfo, ItemId,
-    ItemInfo, ItemTypeId, SolInfo,
+    FitId, FleetId, ItemId, ItemTypeId,
+    ctl::{AddedFitIdResp, AddedFleetIdResp, AddedItemIdsResp, ChangedItemIdsResp},
+    info::{FitInfo, FleetInfo, ItemInfo, SolInfo},
     stats::{FitStatsResp, FleetStatsResp, ItemStatsResp, SolStatsResp},
     val::{FitValResult, SolValResult},
 };

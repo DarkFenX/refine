@@ -2,7 +2,11 @@ use rc::{ItemCommon, Lender};
 
 #[cfg(feature = "serde")]
 use crate::ItemKind;
-use crate::{EffectId, EffectMode, ItemId, ItemInfoFull, ItemInfoMode, ItemTypeId, ProjInfo, shared::OvrdMapLight};
+use crate::{
+    EffectId, EffectMode, ItemId, ItemTypeId,
+    info::{ItemInfoFull, ItemInfoMode, ProjInfo},
+    shared::OvrdMapLight,
+};
 
 #[cfg_attr(feature = "serde", derive(serde::Serialize))]
 #[derive(Clone)]

@@ -14,17 +14,17 @@ pub(crate) struct RootParams {
     #[serde(default)]
     src: rs::src::SrcInfoMode,
     #[serde(default)]
-    sol: rs::SolInfoMode,
+    sol: rs::info::SolInfoMode,
     #[serde(default)]
-    fleet: rs::FleetInfoMode,
+    fleet: rs::info::FleetInfoMode,
     #[serde(default)]
-    fit: rs::FitInfoMode,
+    fit: rs::info::FitInfoMode,
     #[serde(default)]
-    item: rs::ItemInfoMode,
+    item: rs::info::ItemInfoMode,
 }
 impl RootParams {
-    fn into_cmd(self) -> rs::RefineInfoCmd {
-        rs::RefineInfoCmd::new()
+    fn into_cmd(self) -> rs::info::RefineInfoCmd {
+        rs::info::RefineInfoCmd::new()
             .with_src(self.src)
             .with_sol(self.sol)
             .with_fleet(self.fleet)
@@ -39,7 +39,7 @@ struct RootInfo {
     threads_sync_standard: usize,
     threads_sync_heavy: usize,
     srcs: Vec<rs::src::SrcInfo>,
-    sols: Vec<rs::SolInfo>,
+    sols: Vec<rs::info::SolInfo>,
 }
 
 pub(crate) async fn root(

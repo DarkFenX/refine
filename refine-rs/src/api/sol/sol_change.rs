@@ -1,4 +1,8 @@
-use crate::{CmdResp, CmdResps, Sol, SolChangeEnumCmd, SolInfo, SolInfoCmdBr, err::SolChangeEnumError};
+use crate::{
+    CmdResp, CmdResps, Sol,
+    ctl::{SolChangeEnumCmd, err::SolChangeEnumError},
+    info::{SolInfo, SolInfoCmdBr},
+};
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Public

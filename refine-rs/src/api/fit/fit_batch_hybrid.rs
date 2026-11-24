@@ -1,6 +1,9 @@
 use crate::{
-    CmdResps, Fit, FitHybridCmdBr,
-    err::{BrResolveError, FitChangeEnumError, FitHybridError, FitInfoEnumError},
+    CmdResps, Fit,
+    ctl::err::FitChangeEnumError,
+    err::BrResolveError,
+    hyb::{FitHybridCmdBr, err::FitHybridError},
+    info::err::FitInfoEnumError,
     stats::err::FitStatsEnumError,
 };
 

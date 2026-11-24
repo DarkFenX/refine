@@ -1,8 +1,8 @@
 use rc::Lender;
 
 use crate::{
-    DpsProfile, FitId, FitInfo, FitInfoMode, FleetId, FleetInfo, FleetInfoMode, ItemId, ItemInfoMode, NpcProp,
-    OptionalReload, ProjEffectInfo, RearmMinion, SecZone, SolId, SolInfoMode, Spool, SrcAlias, SwEffectInfo,
+    DpsProfile, FitId, FleetId, ItemId, NpcProp, OptionalReload, RearmMinion, SecZone, SolId, Spool, SrcAlias,
+    info::{FitInfo, FitInfoMode, FleetInfo, FleetInfoMode, ItemInfoMode, ProjEffectInfo, SolInfoMode, SwEffectInfo},
     shared::OvrdMapLight,
 };
 

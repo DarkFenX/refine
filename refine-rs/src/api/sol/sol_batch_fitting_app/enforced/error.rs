@@ -1,5 +1,5 @@
 use super::batch::FIX_LIMIT;
-use crate::err::{BrResolveError, SolChangeEnumError};
+use crate::{ctl::err::SolChangeEnumError, err::BrResolveError};
 
 #[derive(Debug, thiserror::Error)]
 pub enum SolFittingAppEnforcedError<E>

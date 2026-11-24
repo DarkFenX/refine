@@ -1,4 +1,4 @@
-use crate::{AddedFitIdResp, CmdResps, DpsProfile, FitSecStatus, FleetId, FleetIdBr, err::BrResolveError};
+use crate::{CmdResps, DpsProfile, FitSecStatus, FleetId, FleetIdBr, ctl::AddedFitIdResp, err::BrResolveError};
 
 // Core commands
 pub type FitAddCmd = FitAddCmdGen<FleetId>;

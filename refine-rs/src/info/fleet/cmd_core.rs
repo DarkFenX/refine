@@ -1,7 +1,7 @@
 use crate::{
-    CmdResps, FitId, FitIdBr, FitInfoMode, FleetId, FleetIdBr, FleetInfo, FleetInfoMode, ItemId, ItemIdBr,
-    ItemInfoMode,
+    CmdResps, FitId, FitIdBr, FleetId, FleetIdBr, ItemId, ItemIdBr,
     err::BrResolveError,
+    info::{FitInfoMode, FleetInfo, FleetInfoMode, ItemInfoMode},
     shared::{OvrdCompact, OvrdMapLight},
 };
 

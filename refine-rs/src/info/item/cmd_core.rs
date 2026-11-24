@@ -1,6 +1,7 @@
 use crate::{
-    CmdResps, ItemId, ItemIdBr, ItemInfo, ItemInfoMode,
+    CmdResps, ItemId, ItemIdBr,
     err::BrResolveError,
+    info::{ItemInfo, ItemInfoMode},
     shared::{OvrdCompact, OvrdMapLight},
 };
 

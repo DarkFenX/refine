@@ -1,8 +1,9 @@
 use crate::{
-    CmdResp, CmdResps, FitIdBr, FitInfoCmdBr, FleetIdBr, FleetInfoCmdBr, ItemIdBr, ItemInfoCmdBr, SolInfoCmd,
-    SolInfoCmdBr,
-    err::{BrResolveError, FitGetFitInfoError, FleetGetFleetInfoError, ItemGetItemInfoError},
+    CmdResp, CmdResps, FitIdBr, FleetIdBr, ItemIdBr,
+    err::BrResolveError,
     info::{
+        FitInfoCmdBr, FleetInfoCmdBr, ItemInfoCmdBr, SolInfoCmd, SolInfoCmdBr,
+        err::{FitGetFitInfoError, FleetGetFleetInfoError, ItemGetItemInfoError},
         fit::{FitInfoCmdCtxFit, FitInfoCmdCtxFitBr},
         fleet::{FleetInfoCmdCtxFleet, FleetInfoCmdCtxFleetBr},
         item::{ItemInfoCmdCtxItem, ItemInfoCmdCtxItemBr},

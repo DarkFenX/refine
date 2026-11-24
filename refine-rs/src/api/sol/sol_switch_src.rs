@@ -1,4 +1,8 @@
-use crate::{Sol, SolInfo, SolInfoCmd, SrcAlias, src::err::SrcGetError};
+use crate::{
+    Sol, SrcAlias,
+    info::{SolInfo, SolInfoCmd},
+    src::err::SrcGetError,
+};
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Public

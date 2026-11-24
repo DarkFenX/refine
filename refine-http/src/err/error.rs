@@ -47,15 +47,15 @@ pub(crate) enum ApiError {
     #[error(transparent)]
     SolAdd(#[from] rs::err::SolAddError),
     #[error(transparent)]
-    SolChange(#[from] rs::err::SolChangeEnumError),
+    SolChange(#[from] rs::ctl::err::SolChangeEnumError),
     #[error(transparent)]
     SolRemove(#[from] rs::err::SolRemoveError),
     #[error(transparent)]
     SolSrcSwitch(#[from] rs::err::SolSwitchSrcError),
     #[error(transparent)]
-    SolBatchCtl(ApiErrorIndexed<rs::err::SolChangeEnumError>),
+    SolBatchCtl(ApiErrorIndexed<rs::ctl::err::SolChangeEnumError>),
     #[error(transparent)]
-    SolBatchInfo(ApiErrorIndexed<rs::err::SolInfoEnumError>),
+    SolBatchInfo(ApiErrorIndexed<rs::info::err::SolInfoEnumError>),
     #[error(transparent)]
     SolBatchStats(ApiErrorIndexed<rs::stats::err::SolStatsEnumError>),
     #[error(transparent)]
@@ -68,22 +68,22 @@ pub(crate) enum ApiError {
     #[error(transparent)]
     PathFleetNotFound(#[from] rs::err::FleetGetError),
     #[error(transparent)]
-    FleetAdd(#[from] rs::err::FleetAddError),
+    FleetAdd(#[from] rs::ctl::err::FleetAddError),
     #[error(transparent)]
-    FleetChange(#[from] rs::err::FleetChangeError),
+    FleetChange(#[from] rs::ctl::err::FleetChangeError),
     // Fit-related
     #[error(transparent)]
     PathFitParse(#[from] rs::err::FitIdParseError),
     #[error(transparent)]
     PathFitNotFound(#[from] rs::err::FitGetError),
     #[error(transparent)]
-    FitAdd(#[from] rs::err::FitAddError),
+    FitAdd(#[from] rs::ctl::err::FitAddError),
     #[error(transparent)]
-    FitChange(#[from] rs::err::FitChangeEnumError),
+    FitChange(#[from] rs::ctl::err::FitChangeEnumError),
     #[error(transparent)]
-    FitBatchCtl(ApiErrorIndexed<rs::err::FitChangeEnumError>),
+    FitBatchCtl(ApiErrorIndexed<rs::ctl::err::FitChangeEnumError>),
     #[error(transparent)]
-    FitBatchInfo(ApiErrorIndexed<rs::err::FitInfoEnumError>),
+    FitBatchInfo(ApiErrorIndexed<rs::info::err::FitInfoEnumError>),
     #[error(transparent)]
     FitBatchStats(ApiErrorIndexed<rs::stats::err::FitStatsEnumError>),
     // Item-related
@@ -92,11 +92,11 @@ pub(crate) enum ApiError {
     #[error(transparent)]
     PathItemNotFound(#[from] rs::err::ItemGetError),
     #[error(transparent)]
-    ItemAdd(#[from] rs::err::ItemAddEnumError),
+    ItemAdd(#[from] rs::ctl::err::ItemAddEnumError),
     #[error(transparent)]
-    ItemChange(#[from] rs::err::ItemChangeEnumError),
+    ItemChange(#[from] rs::ctl::err::ItemChangeEnumError),
     #[error(transparent)]
-    ItemRemove(#[from] rs::err::ItemRemoveError),
+    ItemRemove(#[from] rs::ctl::err::ItemRemoveError),
 }
 
 #[derive(Serialize)]

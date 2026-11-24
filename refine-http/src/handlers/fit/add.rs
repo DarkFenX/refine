@@ -15,7 +15,7 @@ pub(crate) async fn add_fit(
     State(state): State<AppState>,
     Path(sol_id): Path<String>,
     WithRejection(Query(params), _): WithRejection<Query<FitParams>, ApiError>,
-    WithRejection(payload, _): WithRejection<Option<Json<rs::FitAddCmd>>, ApiError>,
+    WithRejection(payload, _): WithRejection<Option<Json<rs::ctl::FitAddCmd>>, ApiError>,
 ) -> impl IntoResponse {
     let Json(payload) = payload.unwrap_or_default();
     match internal_add_fit(state, sol_id, params, payload).await {
@@ -28,8 +28,8 @@ async fn internal_add_fit(
     state: AppState,
     sol_id: String,
     params: FitParams,
-    payload: rs::FitAddCmd,
-) -> Result<rs::FitInfo, ApiError> {
+    payload: rs::ctl::FitAddCmd,
+) -> Result<rs::info::FitInfo, ApiError> {
     let sol_id = rs::SolId::from_str(&sol_id)?;
     let (_, fit_info) = state
         .get_refine()

@@ -3,8 +3,9 @@ use rc::{ItemCommon, Lender};
 #[cfg(feature = "serde")]
 use crate::ItemKind;
 use crate::{
-    ChargeInfo, Count, EffectId, EffectMode, FitId, ItemId, ItemInfoFull, ItemInfoMode, ItemMutationInfo,
-    ItemSpoolInfo, ItemTypeId, ModRack, ModuleState, OptionalReload, RackPos, RangedProjInfo, Spool, TriStateField,
+    Count, EffectId, EffectMode, FitId, ItemId, ItemSpoolInfo, ItemTypeId, ModRack, ModuleState, OptionalReload,
+    RackPos, Spool, TriStateField,
+    info::{ChargeInfo, ItemInfoFull, ItemInfoMode, ItemMutationInfo, RangedProjInfo},
     shared::OvrdMapLight,
 };
 

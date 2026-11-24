@@ -15,7 +15,7 @@ pub(crate) async fn change_sol(
     State(state): State<AppState>,
     Path(sol_id): Path<String>,
     WithRejection(Query(params), _): WithRejection<Query<SolParams>, ApiError>,
-    WithRejection(Json(payload), _): WithRejection<Json<rs::SolChangeEnumCmd>, ApiError>,
+    WithRejection(Json(payload), _): WithRejection<Json<rs::ctl::SolChangeEnumCmd>, ApiError>,
 ) -> impl IntoResponse {
     match internal_change_sol(state, sol_id, params, payload).await {
         Ok(resp) => (StatusCode::OK, Json(resp)).into_response(),
@@ -27,8 +27,8 @@ async fn internal_change_sol(
     state: AppState,
     sol_id: String,
     params: SolParams,
-    payload: rs::SolChangeEnumCmd,
-) -> Result<rs::SolInfo, ApiError> {
+    payload: rs::ctl::SolChangeEnumCmd,
+) -> Result<rs::info::SolInfo, ApiError> {
     let sol_id = rs::SolId::from_str(&sol_id)?;
     let (_, sol_info) = state
         .get_refine()

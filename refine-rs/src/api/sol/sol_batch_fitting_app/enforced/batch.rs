@@ -1,6 +1,8 @@
 use crate::{
-    CmdResps, Sol, SolChangeEnumCmdBr, SolInfo, SolInfoCmdBr,
+    CmdResps, Sol,
     app::{ValCheckerInput, ValCheckerResult, ValCheckerSol, ValEnforcer, err::SolFittingAppEnforcedError},
+    ctl::SolChangeEnumCmdBr,
+    info::{SolInfo, SolInfoCmdBr},
     stats::{SolStatsCmdBr, SolStatsResp},
     val::{SolValCmdBr, SolValResult, ValResultMode},
 };

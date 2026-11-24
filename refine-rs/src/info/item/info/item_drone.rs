@@ -3,8 +3,9 @@ use rc::{ItemCommon, Lender};
 #[cfg(feature = "serde")]
 use crate::ItemKind;
 use crate::{
-    Coordinates, EffectId, EffectMode, FitId, ItemId, ItemInfoFull, ItemInfoMode, ItemMutationInfo, ItemTypeId,
-    MinionState, Movement, NpcProp, RangedProjInfo, shared::OvrdMapLight,
+    Coordinates, EffectId, EffectMode, FitId, ItemId, ItemTypeId, MinionState, Movement, NpcProp,
+    info::{ItemInfoFull, ItemInfoMode, ItemMutationInfo, RangedProjInfo},
+    shared::OvrdMapLight,
 };
 
 #[cfg_attr(feature = "serde", derive(serde::Serialize))]

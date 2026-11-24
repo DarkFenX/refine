@@ -1,4 +1,4 @@
-use crate::{AddedItemIdsResp, CmdResps, FitId, FitIdBr, ItemTypeId, err::BrResolveError};
+use crate::{CmdResps, FitId, FitIdBr, ItemTypeId, ctl::AddedItemIdsResp, err::BrResolveError};
 
 // Core commands
 #[cfg_attr(feature = "serde", derive(serde::Deserialize))]

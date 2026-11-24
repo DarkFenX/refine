@@ -39,13 +39,13 @@ async fn main() {
         .unwrap();
     // Main part
     let mut sol = refine
-        .add_sol(None, rs::SolAddCmd::new().with_sec_zone(rs::SecZone::WSpace))
+        .add_sol(None, rs::ctl::SolAddCmd::new().with_sec_zone(rs::SecZone::WSpace))
         .await
         .unwrap();
     let resps = sol
         .hybrid_batch(vec![
-            rs::FleetAddCmdBr::new().into_sol_hyb_br(),
-            rs::FitAddCmdBr::new()
+            rs::ctl::FleetAddCmdBr::new().into_sol_hyb_br(),
+            rs::ctl::FitAddCmdBr::new()
                 .with_fleet_id(rs::FleetIdBr::Br(0))
                 .into_sol_hyb_br(),
         ])

@@ -1,6 +1,9 @@
 use crate::{
-    CmdResps, Sol, SolHybridCmdBr,
-    err::{BrResolveError, SolChangeEnumError, SolHybridError, SolInfoEnumError},
+    CmdResps, Sol,
+    ctl::err::SolChangeEnumError,
+    err::BrResolveError,
+    hyb::{SolHybridCmdBr, err::SolHybridError},
+    info::err::SolInfoEnumError,
     stats::err::SolStatsEnumError,
     trial::err::SolTryItemsEnumError,
     val::err::SolValEnumError,

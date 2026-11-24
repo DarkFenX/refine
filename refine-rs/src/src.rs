@@ -2,7 +2,7 @@ pub use rc::src::{SrcOrigin, SrcOriginGeneratedReason, SrcWarnings};
 
 pub use crate::{
     api::{Src, SrcAlias},
-    info::{
+    info::src::{
         SrcInfo, SrcInfoFull, SrcInfoMode, SrcInfoPartial, SrcItemInfo, SrcItemInfos, SrcMutatedItemBaseInfo,
         SrcMutatedItemInfo, SrcMutatedItemInfos,
     },

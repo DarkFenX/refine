@@ -1,5 +1,9 @@
-pub use fit::{FitHybridCmdBr, FitHybridError};
-pub use sol::{SolHybridCmdBr, SolHybridError};
+pub use fit::FitHybridCmdBr;
+pub use sol::SolHybridCmdBr;
 
 mod fit;
 mod sol;
+
+pub mod err {
+    pub use crate::hyb::{fit::FitHybridError, sol::SolHybridError};
+}

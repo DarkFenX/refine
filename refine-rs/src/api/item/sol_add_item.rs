@@ -1,4 +1,8 @@
-use crate::{CmdResps, Item, ItemAddEnumCmd, ItemInfo, ItemInfoCmdBr, Sol, err::ItemAddEnumError};
+use crate::{
+    CmdResps, Item, Sol,
+    ctl::{ItemAddEnumCmd, err::ItemAddEnumError},
+    info::{ItemInfo, ItemInfoCmdBr},
+};
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Public

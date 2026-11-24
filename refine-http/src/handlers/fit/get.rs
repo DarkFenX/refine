@@ -27,7 +27,7 @@ async fn internal_get_fit(
     sol_id: String,
     fit_id: String,
     params: FitParams,
-) -> Result<rs::FitInfo, ApiError> {
+) -> Result<rs::info::FitInfo, ApiError> {
     let sol_id = rs::SolId::from_str(&sol_id)?;
     let fit_id = rs::FitId::from_str(&fit_id)?;
     let fit_info = state

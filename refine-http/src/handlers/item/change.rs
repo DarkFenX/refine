@@ -15,7 +15,7 @@ pub(crate) async fn change_item(
     State(state): State<AppState>,
     Path((sol_id, item_id)): Path<(String, String)>,
     WithRejection(Query(params), _): WithRejection<Query<ItemParams>, ApiError>,
-    WithRejection(Json(payload), _): WithRejection<Json<rs::ItemChangeEnumCmd>, ApiError>,
+    WithRejection(Json(payload), _): WithRejection<Json<rs::ctl::ItemChangeEnumCmd>, ApiError>,
 ) -> impl IntoResponse {
     match internal_change_item(state, sol_id, item_id, params, payload).await {
         Ok(resp) => (StatusCode::OK, Json(resp)).into_response(),
@@ -28,8 +28,8 @@ async fn internal_change_item(
     sol_id: String,
     item_id: String,
     params: ItemParams,
-    payload: rs::ItemChangeEnumCmd,
-) -> Result<rs::ItemInfo, ApiError> {
+    payload: rs::ctl::ItemChangeEnumCmd,
+) -> Result<rs::info::ItemInfo, ApiError> {
     let sol_id = rs::SolId::from_str(&sol_id)?;
     let item_id = rs::ItemId::from_str(&item_id)?;
     let (_, item_info) = state

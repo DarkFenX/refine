@@ -1,6 +1,6 @@
 use crate::{
-    CmdResps, FitId, FitIdBr, FitInfoMode, FleetId, FleetIdBr, FleetInfoMode, ItemId, ItemIdBr, ItemInfoMode, SolId,
-    SolInfo, SolInfoMode, SolInfoPartial, SrcAlias,
+    CmdResps, FitId, FitIdBr, FleetId, FleetIdBr, ItemId, ItemIdBr, SolId, SrcAlias,
+    info::{FitInfoMode, FleetInfoMode, ItemInfoMode, SolInfo, SolInfoMode, SolInfoPartial},
     shared::{OvrdCompact, OvrdMapLight},
 };
 

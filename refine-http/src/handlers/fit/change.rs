@@ -15,7 +15,7 @@ pub(crate) async fn change_fit(
     State(state): State<AppState>,
     Path((sol_id, fit_id)): Path<(String, String)>,
     WithRejection(Query(params), _): WithRejection<Query<FitParams>, ApiError>,
-    WithRejection(Json(payload), _): WithRejection<Json<rs::FitChangeEnumCmd>, ApiError>,
+    WithRejection(Json(payload), _): WithRejection<Json<rs::ctl::FitChangeEnumCmd>, ApiError>,
 ) -> impl IntoResponse {
     match internal_change_fit(state, sol_id, fit_id, params, payload).await {
         Ok(resp) => (StatusCode::OK, Json(resp)).into_response(),
@@ -28,8 +28,8 @@ async fn internal_change_fit(
     sol_id: String,
     fit_id: String,
     params: FitParams,
-    payload: rs::FitChangeEnumCmd,
-) -> Result<rs::FitInfo, ApiError> {
+    payload: rs::ctl::FitChangeEnumCmd,
+) -> Result<rs::info::FitInfo, ApiError> {
     let sol_id = rs::SolId::from_str(&sol_id)?;
     let fit_id = rs::FitId::from_str(&fit_id)?;
     let (_, fit_info) = state

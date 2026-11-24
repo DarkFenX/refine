@@ -3,7 +3,8 @@ use rc::ItemCommon;
 #[cfg(feature = "serde")]
 use crate::ItemKind;
 use crate::{
-    Coordinates, EffectId, EffectMode, FitId, ItemId, ItemInfoFull, ItemInfoMode, ItemTypeId, Movement,
+    Coordinates, EffectId, EffectMode, FitId, ItemId, ItemTypeId, Movement,
+    info::{ItemInfoFull, ItemInfoMode},
     shared::OvrdMapLight,
 };
 

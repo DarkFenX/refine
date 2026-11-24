@@ -1,7 +1,11 @@
 use crate::{
-    AutochargeInfo, BoosterInfo, CharacterInfo, ChargeInfo, DroneInfo, FighterInfo, FwEffectInfo, ImplantInfo, ItemId,
-    ItemInfoMode, ItemTypeId, ModuleInfo, ProjEffectInfo, RigInfo, ServiceInfo, ShipInfo, SkillInfo, StanceInfo,
-    SubsystemInfo, SwEffectInfo, shared::OvrdMapLight,
+    ItemId, ItemTypeId,
+    info::{
+        AutochargeInfo, BoosterInfo, CharacterInfo, ChargeInfo, DroneInfo, FighterInfo, FwEffectInfo, ImplantInfo,
+        ItemInfoMode, ModuleInfo, ProjEffectInfo, RigInfo, ServiceInfo, ShipInfo, SkillInfo, StanceInfo, SubsystemInfo,
+        SwEffectInfo,
+    },
+    shared::OvrdMapLight,
 };
 
 #[cfg_attr(feature = "serde", derive(serde::Serialize), serde(untagged))]

@@ -1,6 +1,6 @@
 use rc::ItemCommon;
 
-use crate::{AttrId, EffectId, ItemAttrValues, ItemEffectInfo, ItemInfoMode, Modification};
+use crate::{AttrId, EffectId, ItemAttrValues, ItemEffectInfo, Modification, info::ItemInfoMode};
 
 #[cfg_attr(feature = "serde", cfg_eval, serde_with::serde_as, derive(serde::Serialize))]
 #[derive(Clone)]

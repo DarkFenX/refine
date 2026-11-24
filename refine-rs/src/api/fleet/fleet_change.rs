@@ -1,4 +1,8 @@
-use crate::{Fleet, FleetChangeCmd, FleetInfo, FleetInfoCmd, err::FleetChangeError};
+use crate::{
+    Fleet,
+    ctl::{FleetChangeCmd, err::FleetChangeError},
+    info::{FleetInfo, FleetInfoCmd},
+};
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Public

@@ -1,4 +1,8 @@
-use crate::{Fit, FitAddCmd, FitInfo, FitInfoCmd, Sol, err::FitAddError};
+use crate::{
+    Fit, Sol,
+    ctl::{FitAddCmd, err::FitAddError},
+    info::{FitInfo, FitInfoCmd},
+};
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Public

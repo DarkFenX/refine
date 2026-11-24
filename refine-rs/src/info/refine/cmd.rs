@@ -1,7 +1,8 @@
 use futures_util::StreamExt;
 
 use crate::{
-    FitInfoMode, FleetInfoMode, ItemInfoMode, Refine, RefineInfo, SolInfo, SolInfoCmd, SolInfoMode, SolInfoPartial,
+    Refine,
+    info::{FitInfoMode, FleetInfoMode, ItemInfoMode, RefineInfo, SolInfo, SolInfoCmd, SolInfoMode, SolInfoPartial},
     src::{SrcInfo, SrcInfoMode},
 };
 

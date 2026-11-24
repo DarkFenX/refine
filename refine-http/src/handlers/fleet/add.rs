@@ -15,7 +15,7 @@ pub(crate) async fn add_fleet(
     State(state): State<AppState>,
     Path(sol_id): Path<String>,
     WithRejection(Query(params), _): WithRejection<Query<FleetParams>, ApiError>,
-    WithRejection(payload, _): WithRejection<Option<Json<rs::FleetAddCmd>>, ApiError>,
+    WithRejection(payload, _): WithRejection<Option<Json<rs::ctl::FleetAddCmd>>, ApiError>,
 ) -> impl IntoResponse {
     let Json(payload) = payload.unwrap_or_default();
     match internal_add_fleet(state, sol_id, params, payload).await {
@@ -28,8 +28,8 @@ async fn internal_add_fleet(
     state: AppState,
     sol_id: String,
     params: FleetParams,
-    payload: rs::FleetAddCmd,
-) -> Result<rs::FleetInfo, ApiError> {
+    payload: rs::ctl::FleetAddCmd,
+) -> Result<rs::info::FleetInfo, ApiError> {
     let sol_id = rs::SolId::from_str(&sol_id)?;
     let (_, fleet_info) = state
         .get_refine()

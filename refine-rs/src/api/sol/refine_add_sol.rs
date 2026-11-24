@@ -1,4 +1,9 @@
-use crate::{Refine, Sol, SolAddCmd, SolInfo, SolInfoCmd, SrcAlias, src::err::SrcGetError};
+use crate::{
+    Refine, Sol, SrcAlias,
+    ctl::SolAddCmd,
+    info::{SolInfo, SolInfoCmd},
+    src::err::SrcGetError,
+};
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Public
