@@ -88,7 +88,7 @@ pub struct ValResultFit {
     pub ship_stance: ValResult<ValShipStanceFail> = ValResult::NotRequested,
     // Drones
     #[cfg_attr(feature = "serde", serde(skip_serializing_if = "ValResult::is_not_failed"))]
-    pub drone_bay_volume: ValResult<ValResourceFail> = ValResult::NotRequested,
+    pub drone_bay: ValResult<ValResourceFail> = ValResult::NotRequested,
     #[cfg_attr(feature = "serde", serde(skip_serializing_if = "ValResult::is_not_failed"))]
     pub launched_drone_count: ValResult<ValSlotCountFail> = ValResult::NotRequested,
     #[cfg_attr(feature = "serde", serde(skip_serializing_if = "ValResult::is_not_failed"))]
@@ -103,9 +103,9 @@ pub struct ValResultFit {
     pub drone_group: ValResult<ValDroneGroupFail> = ValResult::NotRequested,
     // Fighters
     #[cfg_attr(feature = "serde", serde(skip_serializing_if = "ValResult::is_not_failed"))]
-    pub fighter_bay_volume_all: ValResult<ValResourceFail> = ValResult::NotRequested,
+    pub fighter_bay_all: ValResult<ValResourceFail> = ValResult::NotRequested,
     #[cfg_attr(feature = "serde", serde(skip_serializing_if = "ValResult::is_not_failed"))]
-    pub fighter_bay_volume_inbay: ValResult<ValResourceFail> = ValResult::NotRequested,
+    pub fighter_bay_inbay: ValResult<ValResourceFail> = ValResult::NotRequested,
     #[cfg_attr(feature = "serde", serde(skip_serializing_if = "ValResult::is_not_failed"))]
     pub launched_fighter_count: ValResult<ValSlotCountFail> = ValResult::NotRequested,
     #[cfg_attr(feature = "serde", serde(skip_serializing_if = "ValResult::is_not_failed"))]
@@ -210,7 +210,7 @@ impl ValResultFit {
             subsystem_slot_index,
             ship_stance,
             // Drones
-            drone_bay_volume,
+            drone_bay,
             launched_drone_count,
             drone_bandwidth_current,
             drone_bandwidth_potential,
@@ -218,8 +218,8 @@ impl ValResultFit {
             unlaunchable_drone_bandwidth,
             drone_group,
             // Fighters
-            fighter_bay_volume_all,
-            fighter_bay_volume_inbay,
+            fighter_bay_all,
+            fighter_bay_inbay,
             launched_fighter_count,
             launched_light_fighter_count,
             launched_heavy_fighter_count,
@@ -293,7 +293,7 @@ impl ValResultFit {
             && !subsystem_slot_index.is_failed()
             && !ship_stance.is_failed()
             // Drones
-            && !drone_bay_volume.is_failed()
+            && !drone_bay.is_failed()
             && !launched_drone_count.is_failed()
             && !drone_bandwidth_current.is_failed()
             && !drone_bandwidth_potential.is_failed()
@@ -301,8 +301,8 @@ impl ValResultFit {
             && !unlaunchable_drone_bandwidth.is_failed()
             && !drone_group.is_failed()
             // Fighters
-            && !fighter_bay_volume_all.is_failed()
-            && !fighter_bay_volume_inbay.is_failed()
+            && !fighter_bay_all.is_failed()
+            && !fighter_bay_inbay.is_failed()
             && !launched_fighter_count.is_failed()
             && !launched_light_fighter_count.is_failed()
             && !launched_heavy_fighter_count.is_failed()

@@ -49,7 +49,7 @@ pub(in crate::svc::vast::val) enum ValKind {
     SubsystemSlotIndex,
     ShipStance,
     // Drones
-    DroneBayVolume,
+    DroneBay,
     LaunchedDroneCount,
     DroneBandwidthCurrent,
     DroneBandwidthPotential,
@@ -57,8 +57,8 @@ pub(in crate::svc::vast::val) enum ValKind {
     UnlaunchableDroneBandwidth,
     DroneGroup,
     // Fighters
-    FighterBayVolumeAll,
-    FighterBayVolumeInbay,
+    FighterBayAll,
+    FighterBayInbay,
     LaunchedFighterCount,
     LaunchedLightFighterCount,
     LaunchedHeavyFighterCount,

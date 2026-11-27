@@ -1,6 +1,6 @@
 use crate::{
     api::AffectionDir,
-    stats::{FitStats, StatCtlAffectors, StatFighterBayVolume, StatResource},
+    stats::{FitStats, StatCtlAffectors, StatFighterBay, StatResource},
     util::RMap,
 };
 
@@ -20,11 +20,9 @@ impl<'sol> FitStats<'sol> {
         let fit = self.sol.u_data.fits.get(self.uid);
         self.sol.svc.get_stat_fit_calibration(&self.sol.u_data, self.uid, fit)
     }
-    pub fn get_stat_drone_bay_volume(&mut self) -> StatResource {
+    pub fn get_stat_drone_bay(&mut self) -> StatResource {
         let fit = self.sol.u_data.fits.get(self.uid);
-        self.sol
-            .svc
-            .get_stat_fit_drone_bay_volume(&self.sol.u_data, self.uid, fit)
+        self.sol.svc.get_stat_fit_drone_bay(&self.sol.u_data, self.uid, fit)
     }
     pub fn get_stat_drone_bandwidth(&mut self, decreasers: StatCtlAffectors) -> StatResource {
         let fit_uid = self.uid;
@@ -47,10 +45,8 @@ impl<'sol> FitStats<'sol> {
         }
         result
     }
-    pub fn get_stat_fighter_bay_volume(&mut self) -> StatFighterBayVolume {
+    pub fn get_stat_fighter_bay(&mut self) -> StatFighterBay {
         let fit = self.sol.u_data.fits.get(self.uid);
-        self.sol
-            .svc
-            .get_stat_fit_fighter_bay_volume(&self.sol.u_data, self.uid, fit)
+        self.sol.svc.get_stat_fit_fighter_bay(&self.sol.u_data, self.uid, fit)
     }
 }

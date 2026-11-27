@@ -26,9 +26,9 @@ impl FitStatsOptionsResolved {
             cpu,
             powergrid,
             calibration,
-            drone_bay_volume,
+            drone_bay,
             drone_bandwidth,
-            fighter_bay_volume,
+            fighter_bay,
             high_slots,
             mid_slots,
             low_slots,
@@ -107,14 +107,14 @@ impl FitStatsOptionsResolved {
         if *calibration {
             stats.calibration = StatResult::from_stat(core_fit_stats.get_stat_calibration());
         }
-        if *drone_bay_volume {
-            stats.drone_bay_volume = StatResult::from_stat(core_fit_stats.get_stat_drone_bay_volume());
+        if *drone_bay {
+            stats.drone_bay = StatResult::from_stat(core_fit_stats.get_stat_drone_bay());
         }
         if let Some(options) = drone_bandwidth {
             stats.drone_bandwidth = get_drone_bandwidth_stats(core_fit_stats, options);
         }
-        if *fighter_bay_volume {
-            stats.fighter_bay_volume = StatResult::from_stat(core_fit_stats.get_stat_fighter_bay_volume());
+        if *fighter_bay {
+            stats.fighter_bay = StatResult::from_stat(core_fit_stats.get_stat_fighter_bay());
         }
         // Fit slots
         if *high_slots {

@@ -13,7 +13,7 @@ pub use mining::{StatMining, StatMiningEntry, StatMiningItemKinds, StatMiningRes
 pub use mobility::{StatAgilityError, StatMaxWarpRangeError, StatWarpSpeedError};
 pub use neut::StatNeutItemKinds;
 pub use orps::{StatOutRepItemKinds, StatOutReps};
-pub use resource::{StatFighterBayVolume, StatResource};
+pub use resource::{StatFighterBay, StatResource};
 pub use sensors::{StatProbingSizeError, StatSensors, StatSensorsKind};
 pub use slot::StatSlot;
 pub use tank::{

@@ -47,7 +47,7 @@ pub(crate) use option::{
 };
 pub use rc::stats::{
     StatCapBlcSrcKinds, StatCapSim, StatCapSimStagger, StatCritOptions, StatCtlAffectors, StatDmgItemKinds, StatEhp,
-    StatEhpLayer, StatErps, StatErpsLayer, StatErpsLayerRegen, StatFighterBayVolume, StatHp, StatHpLayer, StatInJam,
+    StatEhpLayer, StatErps, StatErpsLayer, StatErpsLayerRegen, StatFighterBay, StatHp, StatHpLayer, StatInJam,
     StatItemChargeOptions, StatJump, StatJumpConduit, StatJumpPortal, StatJumpRange, StatJumpSelf, StatMining,
     StatMiningEntry, StatMiningItemKinds, StatMiningResourceKind, StatNeutItemKinds, StatOutRepItemKinds, StatOutReps,
     StatResists, StatResistsLayer, StatResource, StatRps, StatRpsLayer, StatRpsLayerRegen, StatSensors,

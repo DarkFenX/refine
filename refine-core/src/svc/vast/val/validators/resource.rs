@@ -96,7 +96,7 @@ impl VastFitData {
             ctx.ac().upgrade_capacity,
         )
     }
-    pub(in crate::svc::vast::val) fn validate_drone_bay_volume_fast(
+    pub(in crate::svc::vast::val) fn validate_drone_bay_fast(
         &self,
         kfs: &RSet<UItemId>,
         ctx: &SvcCtx,
@@ -128,7 +128,7 @@ impl VastFitData {
             ctx.ac().drone_bandwidth,
         )
     }
-    pub(in crate::svc::vast::val) fn validate_fighter_bay_volume_all_fast(
+    pub(in crate::svc::vast::val) fn validate_fighter_bay_all_fast(
         &self,
         kfs: &RSet<UItemId>,
         ctx: &SvcCtx,
@@ -144,7 +144,7 @@ impl VastFitData {
             ctx.ac().ftr_capacity,
         )
     }
-    pub(in crate::svc::vast::val) fn validate_fighter_bay_volume_inbay_fast(
+    pub(in crate::svc::vast::val) fn validate_fighter_bay_inbay_fast(
         &self,
         kfs: &RSet<UItemId>,
         ctx: &SvcCtx,
@@ -211,7 +211,7 @@ impl VastFitData {
             ctx.ac().upgrade_capacity,
         )
     }
-    pub(in crate::svc::vast::val) fn validate_drone_bay_volume_verbose(
+    pub(in crate::svc::vast::val) fn validate_drone_bay_verbose(
         &self,
         kfs: &RSet<UItemId>,
         ctx: &SvcCtx,
@@ -243,7 +243,7 @@ impl VastFitData {
             ctx.ac().drone_bandwidth,
         )
     }
-    pub(in crate::svc::vast::val) fn validate_fighter_bay_volume_all_verbose(
+    pub(in crate::svc::vast::val) fn validate_fighter_bay_all_verbose(
         &self,
         kfs: &RSet<UItemId>,
         ctx: &SvcCtx,
@@ -259,7 +259,7 @@ impl VastFitData {
             ctx.ac().ftr_capacity,
         )
     }
-    pub(in crate::svc::vast::val) fn validate_fighter_bay_volume_inbay_verbose(
+    pub(in crate::svc::vast::val) fn validate_fighter_bay_inbay_verbose(
         &self,
         kfs: &RSet<UItemId>,
         ctx: &SvcCtx,

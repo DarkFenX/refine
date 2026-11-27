@@ -310,15 +310,11 @@ impl<'sol> Fit<'sol> {
             self.sol.svc.get_stat_fit_cpu(&self.sol.u_data, self.uid, u_fit);
             self.sol.svc.get_stat_fit_powergrid(&self.sol.u_data, self.uid, u_fit);
             self.sol.svc.get_stat_fit_calibration(&self.sol.u_data, self.uid, u_fit);
-            self.sol
-                .svc
-                .get_stat_fit_drone_bay_volume(&self.sol.u_data, self.uid, u_fit);
+            self.sol.svc.get_stat_fit_drone_bay(&self.sol.u_data, self.uid, u_fit);
             self.sol
                 .svc
                 .get_stat_fit_drone_bandwidth(&self.sol.u_data, self.uid, u_fit);
-            self.sol
-                .svc
-                .get_stat_fit_fighter_bay_volume(&self.sol.u_data, self.uid, u_fit);
+            self.sol.svc.get_stat_fit_fighter_bay(&self.sol.u_data, self.uid, u_fit);
             ////////////////////////////////////////////////////////////////////////////////////////
             // Slots
             ////////////////////////////////////////////////////////////////////////////////////////

@@ -1,7 +1,7 @@
 use crate::{
     Value,
     rd::{RAttrId, RState},
-    stats::{StatFighterBayVolume, StatResource},
+    stats::{StatFighterBay, StatResource},
     svc::{Calc, SvcCtx, vast::VastFitData},
     ud::{UFit, UItemId},
 };
@@ -37,7 +37,7 @@ impl VastFitData {
             ctx.ac().upgrade_capacity,
         )
     }
-    pub(in crate::svc) fn get_stat_drone_bay_volume(&self, ctx: &SvcCtx, calc: &mut Calc, fit: &UFit) -> StatResource {
+    pub(in crate::svc) fn get_stat_drone_bay(&self, ctx: &SvcCtx, calc: &mut Calc, fit: &UFit) -> StatResource {
         get_resource_stats_other(
             ctx,
             calc,
@@ -55,12 +55,7 @@ impl VastFitData {
             ctx.ac().drone_bandwidth,
         )
     }
-    pub(in crate::svc) fn get_stat_fighter_bay_volume(
-        &self,
-        ctx: &SvcCtx,
-        calc: &mut Calc,
-        fit: &UFit,
-    ) -> StatFighterBayVolume {
+    pub(in crate::svc) fn get_stat_fighter_bay(&self, ctx: &SvcCtx, calc: &mut Calc, fit: &UFit) -> StatFighterBay {
         let output = calc.get_oitem_oattr_afb_oextra(ctx, fit.ship, ctx.ac().ftr_capacity, Value::ZERO);
         let mut used_inbay = Value::ZERO;
         let mut used_all = Value::ZERO;
@@ -72,7 +67,7 @@ impl VastFitData {
                 used_inbay += volume;
             }
         }
-        StatFighterBayVolume {
+        StatFighterBay {
             used_inbay,
             used_all,
             output,

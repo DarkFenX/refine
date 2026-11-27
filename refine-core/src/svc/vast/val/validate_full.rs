@@ -236,8 +236,8 @@ impl Vast {
             return false;
         }
         // Drones
-        if let ValOptionInt::Enabled(opts) = options.get(ValKind::DroneBayVolume)
-            && !fit_data.validate_drone_bay_volume_fast(&opts.kfs, ctx, calc, fit)
+        if let ValOptionInt::Enabled(opts) = options.get(ValKind::DroneBay)
+            && !fit_data.validate_drone_bay_fast(&opts.kfs, ctx, calc, fit)
         {
             return false;
         }
@@ -259,9 +259,9 @@ impl Vast {
         // In-bay fighters are a part of all fighters: when all fighters fit into the bay, in-bay
         // ones do too, and their validation is skipped. With known failures the all-fighters
         // validation can pass without fitting, so the skip needs it to have none
-        let check_ftr_inbay_volume = match options.get(ValKind::FighterBayVolumeAll) {
+        let check_ftr_inbay_volume = match options.get(ValKind::FighterBayAll) {
             ValOptionInt::Enabled(opts) => {
-                if !fit_data.validate_fighter_bay_volume_all_fast(&opts.kfs, ctx, calc, fit) {
+                if !fit_data.validate_fighter_bay_all_fast(&opts.kfs, ctx, calc, fit) {
                     return false;
                 }
                 !opts.kfs.is_empty()
@@ -269,8 +269,8 @@ impl Vast {
             ValOptionInt::Disabled => true,
         };
         if check_ftr_inbay_volume
-            && let ValOptionInt::Enabled(opts) = options.get(ValKind::FighterBayVolumeInbay)
-            && !fit_data.validate_fighter_bay_volume_inbay_fast(&opts.kfs, ctx, calc, fit)
+            && let ValOptionInt::Enabled(opts) = options.get(ValKind::FighterBayInbay)
+            && !fit_data.validate_fighter_bay_inbay_fast(&opts.kfs, ctx, calc, fit)
         {
             return false;
         }
@@ -551,7 +551,7 @@ impl Vast {
             subsystem_slot_index,
             ship_stance,
             // Drones
-            drone_bay_volume,
+            drone_bay,
             launched_drone_count,
             drone_bandwidth_current,
             drone_bandwidth_potential: _,
@@ -559,8 +559,8 @@ impl Vast {
             unlaunchable_drone_bandwidth: _,
             drone_group,
             // Fighters
-            fighter_bay_volume_all,
-            fighter_bay_volume_inbay,
+            fighter_bay_all,
+            fighter_bay_inbay,
             launched_fighter_count,
             launched_light_fighter_count,
             launched_heavy_fighter_count,
@@ -716,8 +716,8 @@ impl Vast {
         ////////////////////////////////////////////////////////////////////////////////////////////
         // Drones
         ////////////////////////////////////////////////////////////////////////////////////////////
-        if let ValOptionInt::Enabled(opts) = options.get(ValKind::DroneBayVolume) {
-            *drone_bay_volume = fit_data.validate_drone_bay_volume_verbose(&opts.kfs, ctx, calc, fit);
+        if let ValOptionInt::Enabled(opts) = options.get(ValKind::DroneBay) {
+            *drone_bay = fit_data.validate_drone_bay_verbose(&opts.kfs, ctx, calc, fit);
         }
         if let ValOptionInt::Enabled(opts) = options.get(ValKind::LaunchedDroneCount) {
             *launched_drone_count = fit_data.validate_launched_drone_count_verbose(&opts.kfs, ctx, calc, fit);
@@ -734,11 +734,11 @@ impl Vast {
         ////////////////////////////////////////////////////////////////////////////////////////////
         // Fighters
         ////////////////////////////////////////////////////////////////////////////////////////////
-        if let ValOptionInt::Enabled(opts) = options.get(ValKind::FighterBayVolumeAll) {
-            *fighter_bay_volume_all = fit_data.validate_fighter_bay_volume_all_verbose(&opts.kfs, ctx, calc, fit);
+        if let ValOptionInt::Enabled(opts) = options.get(ValKind::FighterBayAll) {
+            *fighter_bay_all = fit_data.validate_fighter_bay_all_verbose(&opts.kfs, ctx, calc, fit);
         }
-        if let ValOptionInt::Enabled(opts) = options.get(ValKind::FighterBayVolumeInbay) {
-            *fighter_bay_volume_inbay = fit_data.validate_fighter_bay_volume_inbay_verbose(&opts.kfs, ctx, calc, fit);
+        if let ValOptionInt::Enabled(opts) = options.get(ValKind::FighterBayInbay) {
+            *fighter_bay_inbay = fit_data.validate_fighter_bay_inbay_verbose(&opts.kfs, ctx, calc, fit);
         }
         if let ValOptionInt::Enabled(opts) = options.get(ValKind::LaunchedFighterCount) {
             *launched_fighter_count = fit_data.validate_launched_fighter_count_verbose(&opts.kfs, ctx, calc, fit);

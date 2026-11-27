@@ -19,22 +19,22 @@ def test_state(client, consts):
     api_fighter2 = api_fit.add_fighter(type_id=eve_fighter2_id, state=consts.ApiMinionState.in_space)
     api_fighter3 = api_fit.add_fighter(type_id=eve_fighter3_id, state=consts.ApiMinionState.engaging)
     # Verification
-    api_stats = api_fit.get_stats(options=FitStatsOptions(fighter_bay_volume=True))
-    assert api_stats.fighter_bay_volume.one() == (approx(9000), approx(24000), approx(15000))
+    api_stats = api_fit.get_stats(options=FitStatsOptions(fighter_bay=True))
+    assert api_stats.fighter_bay.one() == (approx(9000), approx(24000), approx(15000))
     # Action
     api_fighter1.change_fighter(state=consts.ApiMinionState.in_space)
     # Verification
-    api_stats = api_fit.get_stats(options=FitStatsOptions(fighter_bay_volume=True))
-    assert api_stats.fighter_bay_volume.one() == (approx(0), approx(24000), approx(15000))
+    api_stats = api_fit.get_stats(options=FitStatsOptions(fighter_bay=True))
+    assert api_stats.fighter_bay.one() == (approx(0), approx(24000), approx(15000))
     # Action
     api_fighter2.change_fighter(state=consts.ApiMinionState.in_bay)
     api_fighter3.change_fighter(state=consts.ApiMinionState.in_bay)
     # Verification
-    api_stats = api_fit.get_stats(options=FitStatsOptions(fighter_bay_volume=True))
-    assert api_stats.fighter_bay_volume.one() == (approx(15000), approx(24000), approx(15000))
+    api_stats = api_fit.get_stats(options=FitStatsOptions(fighter_bay=True))
+    assert api_stats.fighter_bay.one() == (approx(15000), approx(24000), approx(15000))
     # Action
     api_fighter3.change_fighter(state=consts.ApiMinionState.engaging)
     api_fighter2.remove()
     # Verification
-    api_stats = api_fit.get_stats(options=FitStatsOptions(fighter_bay_volume=True))
-    assert api_stats.fighter_bay_volume.one() == (approx(0), approx(14400), approx(15000))
+    api_stats = api_fit.get_stats(options=FitStatsOptions(fighter_bay=True))
+    assert api_stats.fighter_bay.one() == (approx(0), approx(14400), approx(15000))

@@ -18,9 +18,9 @@ pub(in crate::stats) struct FitStatsOptionsResolved {
     pub(super) cpu: bool,
     pub(super) powergrid: bool,
     pub(super) calibration: bool,
-    pub(super) drone_bay_volume: bool,
+    pub(super) drone_bay: bool,
     pub(super) drone_bandwidth: Option<Vec<StatOptionDroneBandwidth>>,
-    pub(super) fighter_bay_volume: bool,
+    pub(super) fighter_bay: bool,
     // Fit slots
     pub(super) high_slots: bool,
     pub(super) mid_slots: bool,
@@ -95,9 +95,9 @@ impl FitStatsOptionsResolved {
             cpu: default,
             powergrid: default,
             calibration: default,
-            drone_bay_volume: default,
+            drone_bay: default,
             drone_bandwidth: StatOptionExt::blank_from_default(default),
-            fighter_bay_volume: default,
+            fighter_bay: default,
             // Fit slots
             high_slots: default,
             mid_slots: default,
@@ -176,8 +176,8 @@ impl FitStatsOptionsResolved {
             cpu: _,
             powergrid: _,
             calibration: _,
-            drone_bay_volume: _,
-            fighter_bay_volume: _,
+            drone_bay: _,
+            fighter_bay: _,
             high_slots: _,
             mid_slots: _,
             low_slots: _,
@@ -252,9 +252,9 @@ impl FitStatsOptionsResolved {
             cpu,
             powergrid,
             calibration,
-            drone_bay_volume,
+            drone_bay,
             drone_bandwidth,
-            fighter_bay_volume,
+            fighter_bay,
             high_slots,
             mid_slots,
             low_slots,
@@ -316,9 +316,9 @@ impl FitStatsOptionsResolved {
             || *cpu
             || *powergrid
             || *calibration
-            || *drone_bay_volume
+            || *drone_bay
             || drone_bandwidth.is_some()
-            || *fighter_bay_volume
+            || *fighter_bay
             // Fit slots
             || *high_slots
             || *mid_slots

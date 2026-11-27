@@ -4,7 +4,7 @@ pub(crate) use stats::StatCapBlcNosfsOptionsInt;
 pub use stats::{
     StatAgilityError, StatCapBlcNosfs, StatCapBlcRegen, StatCapBlcSrcKinds, StatCapSim, StatCapSimStagger,
     StatCritOptions, StatDmg, StatDmgApplied, StatDmgEntry, StatDmgEntryApplied, StatDmgEntryBreacher,
-    StatDmgItemKinds, StatEhp, StatEhpLayer, StatErps, StatErpsLayer, StatErpsLayerRegen, StatFighterBayVolume, StatHp,
+    StatDmgItemKinds, StatEhp, StatEhpLayer, StatErps, StatErpsLayer, StatErpsLayerRegen, StatFighterBay, StatHp,
     StatHpLayer, StatInJam, StatItemChargeOptions, StatJump, StatJumpConduit, StatJumpError, StatJumpPassenger,
     StatJumpPortal, StatJumpRange, StatJumpSelf, StatMaxWarpRangeError, StatMining, StatMiningEntry,
     StatMiningItemKinds, StatMiningResourceKind, StatNeutItemKinds, StatOutRepItemKinds, StatOutReps,

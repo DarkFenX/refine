@@ -3,7 +3,7 @@ import typing
 
 
 @dataclasses.dataclass
-class StatFighterBayVolume:
+class StatFighterBay:
 
     used_inbay: float
     used_all: float

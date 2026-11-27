@@ -32,9 +32,9 @@ class FitStatsOptions:
     cpu: bool | type[Absent] = Absent
     powergrid: bool | type[Absent] = Absent
     calibration: bool | type[Absent] = Absent
-    drone_bay_volume: bool | type[Absent] = Absent
+    drone_bay: bool | type[Absent] = Absent
     drone_bandwidth: bool | list[StatsOptionDroneBandwidth] | type[Absent] = Absent
-    fighter_bay_volume: bool | type[Absent] = Absent
+    fighter_bay: bool | type[Absent] = Absent
     # Fit slots
     high_slots: bool | type[Absent] = Absent
     mid_slots: bool | type[Absent] = Absent

@@ -39,9 +39,9 @@ enum FitStatOption<F, I> {
     Cpu(bool),
     Powergrid(bool),
     Calibration(bool),
-    DroneBayVolume(bool),
+    DroneBay(bool),
     DroneBandwidth(StatOptionExt<StatOptionDroneBandwidth>),
-    FighterBayVolume(bool),
+    FighterBay(bool),
     // Fit slots
     HighSlots(bool),
     MidSlots(bool),
@@ -149,16 +149,16 @@ impl<F, I> FitStatsOptionsGen<F, I> {
         self.overrides.push(FitStatOption::Calibration(enabled));
         self
     }
-    pub fn with_drone_bay_volume(mut self, enabled: bool) -> Self {
-        self.overrides.push(FitStatOption::DroneBayVolume(enabled));
+    pub fn with_drone_bay(mut self, enabled: bool) -> Self {
+        self.overrides.push(FitStatOption::DroneBay(enabled));
         self
     }
     pub fn with_drone_bandwidth(mut self, option: StatOptionExt<StatOptionDroneBandwidth>) -> Self {
         self.overrides.push(FitStatOption::DroneBandwidth(option));
         self
     }
-    pub fn with_fighter_bay_volume(mut self, enabled: bool) -> Self {
-        self.overrides.push(FitStatOption::FighterBayVolume(enabled));
+    pub fn with_fighter_bay(mut self, enabled: bool) -> Self {
+        self.overrides.push(FitStatOption::FighterBay(enabled));
         self
     }
     // Fit slots
@@ -388,9 +388,9 @@ impl BrResolveInfallible for FitStatsOptionsBr {
                 FitStatOption::Cpu(option) => FitStatOption::Cpu(option),
                 FitStatOption::Powergrid(option) => FitStatOption::Powergrid(option),
                 FitStatOption::Calibration(option) => FitStatOption::Calibration(option),
-                FitStatOption::DroneBayVolume(option) => FitStatOption::DroneBayVolume(option),
+                FitStatOption::DroneBay(option) => FitStatOption::DroneBay(option),
                 FitStatOption::DroneBandwidth(option) => FitStatOption::DroneBandwidth(option),
-                FitStatOption::FighterBayVolume(option) => FitStatOption::FighterBayVolume(option),
+                FitStatOption::FighterBay(option) => FitStatOption::FighterBay(option),
                 // Fit slots
                 FitStatOption::HighSlots(option) => FitStatOption::HighSlots(option),
                 FitStatOption::MidSlots(option) => FitStatOption::MidSlots(option),
@@ -474,9 +474,9 @@ impl FitStatsOptions {
                 FitStatOption::Cpu(option) => resolved.cpu = option,
                 FitStatOption::Powergrid(option) => resolved.powergrid = option,
                 FitStatOption::Calibration(option) => resolved.calibration = option,
-                FitStatOption::DroneBayVolume(option) => resolved.drone_bay_volume = option,
+                FitStatOption::DroneBay(option) => resolved.drone_bay = option,
                 FitStatOption::DroneBandwidth(option) => resolved.drone_bandwidth = option.into_resolved(),
-                FitStatOption::FighterBayVolume(option) => resolved.fighter_bay_volume = option,
+                FitStatOption::FighterBay(option) => resolved.fighter_bay = option,
                 // Fit slots
                 FitStatOption::HighSlots(option) => resolved.high_slots = option,
                 FitStatOption::MidSlots(option) => resolved.mid_slots = option,
@@ -584,9 +584,9 @@ mod custom_serde {
         Cpu,
         Powergrid,
         Calibration,
-        DroneBayVolume,
+        DroneBay,
         DroneBandwidth,
-        FighterBayVolume,
+        FighterBay,
         // Fit slots
         HighSlots,
         MidSlots,
@@ -694,14 +694,14 @@ mod custom_serde {
                     Key::Calibration => {
                         overrides.extend(map.next_value::<Option<_>>()?.map(FitStatOption::Calibration));
                     }
-                    Key::DroneBayVolume => {
-                        overrides.extend(map.next_value::<Option<_>>()?.map(FitStatOption::DroneBayVolume));
+                    Key::DroneBay => {
+                        overrides.extend(map.next_value::<Option<_>>()?.map(FitStatOption::DroneBay));
                     }
                     Key::DroneBandwidth => {
                         overrides.extend(map.next_value::<Option<_>>()?.map(FitStatOption::DroneBandwidth));
                     }
-                    Key::FighterBayVolume => {
-                        overrides.extend(map.next_value::<Option<_>>()?.map(FitStatOption::FighterBayVolume));
+                    Key::FighterBay => {
+                        overrides.extend(map.next_value::<Option<_>>()?.map(FitStatOption::FighterBay));
                     }
                     // Fit slots
                     Key::HighSlots => {

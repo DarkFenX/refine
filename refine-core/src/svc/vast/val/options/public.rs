@@ -244,8 +244,8 @@ impl<I> ValOptions<I> {
     // Drones
     ////////////////////////////////////////////////////////////////////////////////////////////////
     /// Fails when drones take more volume than ship's drone bay has.
-    pub fn with_drone_bay_volume(mut self, option: OptionExt<ValEnabled<I>>) -> Self {
-        self.overrides.push((ValKind::DroneBayVolume, option));
+    pub fn with_drone_bay(mut self, option: OptionExt<ValEnabled<I>>) -> Self {
+        self.overrides.push((ValKind::DroneBay, option));
         self
     }
     /// Fails when fit has more in-space drones than ship supports.
@@ -288,14 +288,14 @@ impl<I> ValOptions<I> {
     ////////////////////////////////////////////////////////////////////////////////////////////////
     /// Fails when all fighters, regardless of their state, take more volume than ship's fighter bay
     /// has.
-    pub fn with_fighter_bay_volume_all(mut self, option: OptionExt<ValEnabled<I>>) -> Self {
-        self.overrides.push((ValKind::FighterBayVolumeAll, option));
+    pub fn with_fighter_bay_all(mut self, option: OptionExt<ValEnabled<I>>) -> Self {
+        self.overrides.push((ValKind::FighterBayAll, option));
         self
     }
     /// Fails when fighters which are strictly in "in bay" state (not loaded into tubes) take more
     /// volume than ship's fighter bay has.
-    pub fn with_fighter_bay_volume_inbay(mut self, option: OptionExt<ValEnabled<I>>) -> Self {
-        self.overrides.push((ValKind::FighterBayVolumeInbay, option));
+    pub fn with_fighter_bay_inbay(mut self, option: OptionExt<ValEnabled<I>>) -> Self {
+        self.overrides.push((ValKind::FighterBayInbay, option));
         self
     }
     /// Fails when fit has more in-space fighters than ship supports.

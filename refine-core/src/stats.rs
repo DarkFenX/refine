@@ -4,8 +4,8 @@ pub use crate::{
     svc::vast::{
         StatCapBlcNosfs, StatCapBlcRegen, StatCapBlcSrcKinds, StatCapSim, StatCapSimStagger, StatCritOptions, StatDmg,
         StatDmgApplied, StatDmgEntry, StatDmgEntryApplied, StatDmgEntryBreacher, StatDmgItemKinds, StatEhp,
-        StatEhpLayer, StatErps, StatErpsLayer, StatErpsLayerRegen, StatFighterBayVolume, StatHp, StatHpLayer,
-        StatInJam, StatItemChargeOptions, StatJump, StatJumpConduit, StatJumpPassenger, StatJumpPortal, StatJumpRange,
+        StatEhpLayer, StatErps, StatErpsLayer, StatErpsLayerRegen, StatFighterBay, StatHp, StatHpLayer, StatInJam,
+        StatItemChargeOptions, StatJump, StatJumpConduit, StatJumpPassenger, StatJumpPortal, StatJumpRange,
         StatJumpSelf, StatMining, StatMiningEntry, StatMiningItemKinds, StatMiningResourceKind, StatNeutItemKinds,
         StatOutRepItemKinds, StatOutReps, StatResists, StatResistsLayer, StatResource, StatRps, StatRpsLayer,
         StatRpsLayerRegen, StatSensors, StatSensorsKind, StatSlot, StatTime, StatTimeOptions, StatTimeOptionsBurst,

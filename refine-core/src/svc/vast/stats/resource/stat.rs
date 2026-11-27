@@ -9,7 +9,7 @@ pub struct StatResource {
 
 #[cfg_attr(feature = "serde", derive(serde_tuple::Serialize_tuple))]
 #[derive(Copy, Clone)]
-pub struct StatFighterBayVolume {
+pub struct StatFighterBay {
     /// Volume taken by fighters which are strictly in "in bay" state (not loaded into tubes).
     pub used_inbay: Value,
     /// Volume taken by all fighters, regardless of their state.
