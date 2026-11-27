@@ -35,7 +35,7 @@ class Src(AttrDict):
 
     def get_items(
             self, *,
-            type_ids: list[int],
+            type_ids: list[int] | type[Absent],
             hook_req: ReqHook | None = None,
             status_code: int = 200,
             json_predicate: JsonPredicate = None,

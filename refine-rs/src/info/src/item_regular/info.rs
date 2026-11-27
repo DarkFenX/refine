@@ -33,18 +33,26 @@ pub struct SrcItemInfo {
 // Conversions
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl SrcItemInfos {
-    pub(super) fn from_core(core_src: &rc::Src, type_ids: &[ItemTypeId]) -> Self {
-        let mut seen_type_ids = RSet::default();
-        let items = type_ids
-            .iter()
-            .filter(|&&type_id| seen_type_ids.insert(type_id))
-            .filter_map(|&type_id| core_src.get_item(type_id).map(SrcItemInfo::from_core))
-            .collect();
+    pub(super) fn from_core(core_src: &rc::Src, type_ids: Option<&[ItemTypeId]>) -> Self {
+        let items = match type_ids {
+            Some(type_ids) => {
+                let mut seen_type_ids = RSet::default();
+                type_ids
+                    .iter()
+                    .filter(|&&type_id| seen_type_ids.insert(type_id))
+                    .filter_map(|&type_id| core_src.get_item(type_id).map(SrcItemInfo::from_core))
+                    .collect()
+            }
+            None => SrcItemInfo::iter_from_core(core_src).collect(),
+        };
         Self { items }
     }
 }
 
 impl SrcItemInfo {
+    pub(crate) fn iter_from_core(core_src: &rc::Src) -> impl ExactSizeIterator<Item = Self> {
+        core_src.iter_items().map(Self::from_core)
+    }
     fn from_core(core_src_item: rc::src::SrcItem) -> Self {
         Self {
             type_id: core_src_item.get_type_id(),

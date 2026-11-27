@@ -3,13 +3,12 @@ use crate::{ItemTypeId, src::SrcItemInfos};
 #[cfg_attr(feature = "serde", derive(serde::Deserialize))]
 #[derive(Clone)]
 pub struct SrcItemInfosCmd {
-    type_ids: Vec<ItemTypeId>,
+    /// None means all item types of the source.
+    type_ids: Option<Vec<ItemTypeId>>,
 }
 const impl Default for SrcItemInfosCmd {
     fn default() -> Self {
-        Self {
-            type_ids: Default::default(),
-        }
+        Self { type_ids: None }
     }
 }
 
@@ -17,11 +16,12 @@ const impl Default for SrcItemInfosCmd {
 // Construction
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl SrcItemInfosCmd {
+    /// Command which requests all item types, until it is limited by [`Self::with_type_ids`].
     pub const fn new() -> Self {
         Self::default()
     }
     pub fn with_type_ids(mut self, type_ids: impl IntoIterator<Item = ItemTypeId>) -> Self {
-        self.type_ids.extend(type_ids);
+        self.type_ids.get_or_insert_default().extend(type_ids);
         self
     }
 }
@@ -31,6 +31,6 @@ impl SrcItemInfosCmd {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl SrcItemInfosCmd {
     pub(crate) fn execute(self, core_src: &rc::Src) -> SrcItemInfos {
-        SrcItemInfos::from_core(core_src, &self.type_ids)
+        SrcItemInfos::from_core(core_src, self.type_ids.as_deref())
     }
 }

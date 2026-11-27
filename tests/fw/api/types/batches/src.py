@@ -14,7 +14,7 @@ if typing.TYPE_CHECKING:
     from fw.aliases import JsonPredicate, ReqHook
     from fw.api import ApiClient
     from fw.api.commands import BaseCommand
-    from fw.util import AttrDict
+    from fw.util import Absent, AttrDict
 
 
 class SrcCmdBatchCtx:
@@ -54,7 +54,7 @@ class SrcCmdBatchCtx:
             for (ret_data, converter), cmd_result in zip(self._ret_datas, resp.json(), strict=True):
                 ret_data.update(converter(cmd_result))
 
-    def get_items(self, *, type_ids: list[int]) -> dict[int, AttrDict]:
+    def get_items(self, *, type_ids: list[int] | type[Absent]) -> dict[int, AttrDict]:
         self._commands.append(SrcInfoItemsCmd(type_ids=type_ids))
         ret_data = {}
         self._ret_datas.append((ret_data, src_items_http_to_fw))

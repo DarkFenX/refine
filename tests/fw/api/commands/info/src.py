@@ -1,18 +1,23 @@
 import dataclasses
+import typing
 
 from fw.api.commands import BaseCommand
 from fw.api.commands.helpers import process_attr_map_request
+from fw.util import conditional_insert
+
+if typing.TYPE_CHECKING:
+    from fw.util import Absent
 
 
 @dataclasses.dataclass(kw_only=True)
 class SrcInfoItemsCmd(BaseCommand):
 
-    type_ids: list[int]
+    type_ids: list[int] | type[Absent]
 
     def serialize(self) -> dict:
         body = super().serialize()
         body['type'] = 'item_infos'
-        body['type_ids'] = self.type_ids
+        conditional_insert(container=body, path=['type_ids'], value=self.type_ids)
         return body
 
 

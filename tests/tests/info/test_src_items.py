@@ -1,6 +1,6 @@
 import typing
 
-from fw import check_no_field
+from fw import Absent, check_no_field
 
 if typing.TYPE_CHECKING:
     from fw.request import Request
@@ -187,6 +187,25 @@ def test_unknown_type(client, consts):
     assert len(api_src_items) == 0
 
 
+def test_all(client, consts):
+    # Without type IDs all types of the source are reported
+    eve_high_effect_id = client.mk_eve_effect(id_=consts.EveEffect.hi_power)
+    eve_active_effect_id = client.mk_eve_effect(cat_id=consts.EveEffCat.active)
+    eve_ship_id = client.mk_eve_item(cat_id=consts.EveItemCat.ship)
+    eve_module_id = client.mk_eve_item(cat_id=consts.EveItemCat.module, eff_ids=[eve_high_effect_id])
+    eve_no_match_id = client.mk_eve_item(cat_id=consts.EveItemCat.module, eff_ids=[eve_active_effect_id])
+    api_src = client.create_source()
+    # Action
+    api_src_items = api_src.get_items(type_ids=Absent)
+    # Verification
+    assert api_src_items.keys() == {eve_ship_id, eve_module_id, eve_no_match_id}
+    assert api_src_items[eve_ship_id].detected_kind == consts.ApiDetectedItemKind.ship
+    assert api_src_items[eve_module_id].detected_kind == consts.ApiDetectedItemKind.module_high
+    assert api_src_items[eve_module_id].module_max_state == consts.ApiModuleState.offline
+    with check_no_field():
+        api_src_items[eve_no_match_id].detected_kind  # ruff:ignore[useless-expression]
+
+
 def test_dynamic_type(client, consts):
     # Dynamic types exist only as a result of mutation, the source does not have them on their own
     eve_high_effect_id = client.mk_eve_effect(id_=consts.EveEffect.hi_power)
@@ -202,6 +221,10 @@ def test_dynamic_type(client, consts):
     # Verification
     assert api_src_items.keys() == {eve_base_module_id}
     assert api_src_items[eve_base_module_id].detected_kind == consts.ApiDetectedItemKind.module_high
+    # Action
+    api_src_items = api_src.get_items(type_ids=Absent)
+    # Verification
+    assert eve_mutated_module_id not in api_src_items
 
 
 def test_multiple_sources(client, consts):

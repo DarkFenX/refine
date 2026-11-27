@@ -46,6 +46,9 @@ impl RData {
     pub(crate) fn get_item_by_aid(&self, item_aid: &AItemId) -> Option<&RcItem> {
         self.items.get(item_aid)
     }
+    pub(crate) fn iter_items(&self) -> impl ExactSizeIterator<Item = &RcItem> {
+        self.items.values()
+    }
     pub(crate) fn get_item_effects_pregen_entry(
         &self,
         effects_pregen_id: RItemEffectsPregenId,

@@ -87,7 +87,7 @@ class ApiClientSrc(ApiClientBase, eve.EveDataManager, eve.EveDataServer):
     def get_source_items_request(
             self, *,
             src_alias: str,
-            type_ids: list[int],
+            type_ids: list[int] | type[Absent],
     ) -> Request:
         command = SrcInfoItemsCmd(type_ids=type_ids)
         return self.source_command_request(src_alias=src_alias, command=command)
