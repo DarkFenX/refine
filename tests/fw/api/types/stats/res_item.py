@@ -31,6 +31,10 @@ class ItemStats(AttrDict):
                 NttList(StatOutRps(data=e) if e is not None else None for e in d)
                 if d is not None else None)),
             'outgoing_cps': AttrHookDef(func=lambda d: NttList(d) if d is not None else None),
+            # Resources
+            'cpu_use': AttrHookDef(func=lambda d: NttList(d) if d is not None else None),
+            'powergrid_use': AttrHookDef(func=lambda d: NttList(d) if d is not None else None),
+            'calibration_use': AttrHookDef(func=lambda d: NttList(d) if d is not None else None),
             # Tank
             'resists': AttrHookDef(func=lambda d: NttList(StatResists(data=e) for e in d) if d is not None else None),
             'hp': AttrHookDef(func=lambda d: NttList(StatHp(data=e) for e in d) if d is not None else None),

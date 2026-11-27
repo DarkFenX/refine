@@ -14,6 +14,10 @@ pub(in crate::stats) struct ItemStatsOptionsResolved {
     pub(super) outgoing_nps: Option<Vec<Result<StatOptionItemOutNps, BrResolveError>>>,
     pub(super) outgoing_rps: Option<Vec<Result<StatOptionItemOutRps, BrResolveError>>>,
     pub(super) outgoing_cps: Option<Vec<Result<StatOptionItemOutCps, BrResolveError>>>,
+    // Resources
+    pub(super) cpu_use: bool,
+    pub(super) powergrid_use: bool,
+    pub(super) calibration_use: bool,
     // Tank
     pub(super) resists: bool,
     pub(super) hp: bool,
@@ -67,6 +71,10 @@ impl ItemStatsOptionsResolved {
             outgoing_nps: StatOptionInt::blank_from_default(default),
             outgoing_rps: StatOptionInt::blank_from_default(default),
             outgoing_cps: StatOptionInt::blank_from_default(default),
+            // Resources
+            cpu_use: default,
+            powergrid_use: default,
+            calibration_use: default,
             // Tank
             resists: default,
             hp: default,
@@ -124,6 +132,9 @@ impl ItemStatsOptionsResolved {
             mass,
             jump,
             // Flags have no extended options to complete
+            cpu_use: _,
+            powergrid_use: _,
+            calibration_use: _,
             resists: _,
             hp: _,
             wc_ehp: _,
@@ -178,6 +189,9 @@ impl ItemStatsOptionsResolved {
             outgoing_nps,
             outgoing_rps,
             outgoing_cps,
+            cpu_use,
+            powergrid_use,
+            calibration_use,
             resists,
             hp,
             ehp,
@@ -219,6 +233,10 @@ impl ItemStatsOptionsResolved {
             || outgoing_nps.is_some()
             || outgoing_rps.is_some()
             || outgoing_cps.is_some()
+            // Resources
+            || *cpu_use
+            || *powergrid_use
+            || *calibration_use
             // Tank
             || *resists
             || *hp

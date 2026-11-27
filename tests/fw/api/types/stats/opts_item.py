@@ -27,6 +27,10 @@ class ItemStatsOptions:
     outgoing_nps: bool | list[StatsOptionItemOutNps] | type[Absent] = Absent
     outgoing_rps: bool | list[StatsOptionItemOutRps] | type[Absent] = Absent
     outgoing_cps: bool | list[StatsOptionItemOutCps] | type[Absent] = Absent
+    # Resources
+    cpu_use: bool | type[Absent] = Absent
+    powergrid_use: bool | type[Absent] = Absent
+    calibration_use: bool | type[Absent] = Absent
     # Tank
     resists: bool | type[Absent] = Absent
     hp: bool | type[Absent] = Absent

@@ -34,6 +34,10 @@ enum ItemStatOption<F, I> {
     OutgoingNps(StatOptionInt<StatOptionItemOutNpsGen<I>>),
     OutgoingRps(StatOptionInt<StatOptionItemOutRpsGen<I>>),
     OutgoingCps(StatOptionInt<StatOptionItemOutCpsGen<I>>),
+    // Resources
+    CpuUse(bool),
+    PowergridUse(bool),
+    CalibrationUse(bool),
     // Tank
     Resists(bool),
     Hp(bool),
@@ -108,6 +112,18 @@ impl<F, I> ItemStatsOptionsGen<F, I> {
     }
     pub fn with_outgoing_cps(mut self, option: StatOptionExt<StatOptionItemOutCpsGen<I>>) -> Self {
         self.overrides.push(ItemStatOption::OutgoingCps(option.into_internal()));
+        self
+    }
+    pub fn with_cpu_use(mut self, enabled: bool) -> Self {
+        self.overrides.push(ItemStatOption::CpuUse(enabled));
+        self
+    }
+    pub fn with_powergrid_use(mut self, enabled: bool) -> Self {
+        self.overrides.push(ItemStatOption::PowergridUse(enabled));
+        self
+    }
+    pub fn with_calibration_use(mut self, enabled: bool) -> Self {
+        self.overrides.push(ItemStatOption::CalibrationUse(enabled));
         self
     }
     pub fn with_resists(mut self, enabled: bool) -> Self {
@@ -263,6 +279,10 @@ impl BrResolveInfallible for ItemStatsOptionsBr {
                 ItemStatOption::OutgoingNps(option) => ItemStatOption::OutgoingNps(option.br_resolve_stored(resps)),
                 ItemStatOption::OutgoingRps(option) => ItemStatOption::OutgoingRps(option.br_resolve_stored(resps)),
                 ItemStatOption::OutgoingCps(option) => ItemStatOption::OutgoingCps(option.br_resolve_stored(resps)),
+                // Resources
+                ItemStatOption::CpuUse(option) => ItemStatOption::CpuUse(option),
+                ItemStatOption::PowergridUse(option) => ItemStatOption::PowergridUse(option),
+                ItemStatOption::CalibrationUse(option) => ItemStatOption::CalibrationUse(option),
                 // Tank
                 ItemStatOption::Resists(option) => ItemStatOption::Resists(option),
                 ItemStatOption::Hp(option) => ItemStatOption::Hp(option),
@@ -325,6 +345,10 @@ impl ItemStatsOptions {
                 ItemStatOption::OutgoingNps(option) => resolved.outgoing_nps = option.into_resolved(),
                 ItemStatOption::OutgoingRps(option) => resolved.outgoing_rps = option.into_resolved(),
                 ItemStatOption::OutgoingCps(option) => resolved.outgoing_cps = option.into_resolved(),
+                // Resources
+                ItemStatOption::CpuUse(option) => resolved.cpu_use = option,
+                ItemStatOption::PowergridUse(option) => resolved.powergrid_use = option,
+                ItemStatOption::CalibrationUse(option) => resolved.calibration_use = option,
                 // Tank
                 ItemStatOption::Resists(option) => resolved.resists = option,
                 ItemStatOption::Hp(option) => resolved.hp = option,
@@ -411,6 +435,10 @@ mod custom_serde {
         OutgoingNps,
         OutgoingRps,
         OutgoingCps,
+        // Resources
+        CpuUse,
+        PowergridUse,
+        CalibrationUse,
         // Tank
         Resists,
         Hp,
@@ -490,6 +518,16 @@ mod custom_serde {
                     }
                     Key::OutgoingCps => {
                         overrides.extend(map.next_value::<Option<_>>()?.map(ItemStatOption::OutgoingCps));
+                    }
+                    // Resources
+                    Key::CpuUse => {
+                        overrides.extend(map.next_value::<Option<_>>()?.map(ItemStatOption::CpuUse));
+                    }
+                    Key::PowergridUse => {
+                        overrides.extend(map.next_value::<Option<_>>()?.map(ItemStatOption::PowergridUse));
+                    }
+                    Key::CalibrationUse => {
+                        overrides.extend(map.next_value::<Option<_>>()?.map(ItemStatOption::CalibrationUse));
                     }
                     // Tank
                     Key::Resists => {

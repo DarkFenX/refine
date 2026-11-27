@@ -1,6 +1,6 @@
 use crate::{
     svc::err::{IntStatItemError, UItemKindVsStatError, UItemLoadedError},
-    ud::{UData, UItem, UItemId, UShip, UShipKind},
+    ud::{UData, UItem, UItemId, URig, UShip, UShipKind},
 };
 
 pub(super) fn check_character(u_data: &UData, item_uid: UItemId) -> Result<(), IntStatItemError<!>> {
@@ -179,6 +179,30 @@ pub(super) fn check_autocharge_charge_drone_fighter_module(
     };
     match is_loaded {
         true => Ok(()),
+        false => Err(UItemLoadedError { item_uid }.into()),
+    }
+}
+
+pub(super) fn check_module_service(u_data: &UData, item_uid: UItemId) -> Result<(), IntStatItemError<!>> {
+    let item = u_data.items.get(item_uid);
+    let is_loaded = match item {
+        UItem::Module(module) => module.is_loaded(),
+        UItem::Service(service) => service.is_loaded(),
+        _ => return Err(UItemKindVsStatError { item_uid }.into()),
+    };
+    match is_loaded {
+        true => Ok(()),
+        false => Err(UItemLoadedError { item_uid }.into()),
+    }
+}
+
+pub(super) fn check_rig(u_data: &UData, item_uid: UItemId) -> Result<&URig, IntStatItemError<!>> {
+    let item = u_data.items.get(item_uid);
+    let UItem::Rig(rig) = item else {
+        return Err(UItemKindVsStatError { item_uid }.into());
+    };
+    match rig.is_loaded() {
+        true => Ok(rig),
         false => Err(UItemLoadedError { item_uid }.into()),
     }
 }

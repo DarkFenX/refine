@@ -1,5 +1,5 @@
 from fw import approx, check_no_field
-from fw.api import FitStatsOptions, ValOptions
+from fw.api import FitStatsOptions, ItemStatsOptions, ValOptions
 
 
 def test_fail_single(client, consts):
@@ -15,6 +15,8 @@ def test_fail_single(client, consts):
     # Verification
     api_stats = api_fit.get_stats(options=FitStatsOptions(calibration=True))
     assert api_stats.calibration.one() == (approx(150), approx(125))
+    api_rig_stats = api_rig.get_stats(options=ItemStatsOptions(calibration_use=True))
+    assert api_rig_stats.calibration_use.one() == approx(150)
     api_val = api_fit.validate(options=ValOptions(calibration=True))
     assert api_val.passed is False
     assert api_val.details.calibration.used == approx(150)
@@ -189,6 +191,8 @@ def test_modified_use(client, consts):
     assert api_rig.update().attrs[eve_use_attr_id].modified == approx(75)
     api_stats = api_fit.get_stats(options=FitStatsOptions(calibration=True))
     assert api_stats.calibration.one() == (approx(150), approx(125))
+    api_rig_stats = api_rig.get_stats(options=ItemStatsOptions(calibration_use=True))
+    assert api_rig_stats.calibration_use.one() == approx(150)
     api_val = api_fit.validate(options=ValOptions(calibration=True))
     assert api_val.passed is False
     assert api_val.details.calibration.used == approx(150)
@@ -200,6 +204,8 @@ def test_modified_use(client, consts):
     assert api_rig.update().attrs[eve_use_attr_id].modified == approx(150)
     api_stats = api_fit.get_stats(options=FitStatsOptions(calibration=True))
     assert api_stats.calibration.one() == (approx(150), approx(125))
+    api_rig_stats = api_rig.get_stats(options=ItemStatsOptions(calibration_use=True))
+    assert api_rig_stats.calibration_use.one() == approx(150)
     api_val = api_fit.validate(options=ValOptions(calibration=True))
     assert api_val.passed is False
     assert api_val.details.calibration.used == approx(150)
@@ -263,6 +269,10 @@ def test_rounding(client, consts):
     # Verification
     api_stats = api_fit.get_stats(options=FitStatsOptions(calibration=True))
     assert api_stats.calibration.one() == (approx(5.229), approx(5.223))
+    api_rig1_stats = api_rig1.get_stats(options=ItemStatsOptions(calibration_use=True))
+    assert api_rig1_stats.calibration_use.one() == approx(0.002)
+    api_rig2_stats = api_rig2.get_stats(options=ItemStatsOptions(calibration_use=True))
+    assert api_rig2_stats.calibration_use.one() == approx(5.227)
     api_val = api_fit.validate(options=ValOptions(calibration=True))
     assert api_val.passed is False
     assert api_val.details.calibration.used == approx(5.229)
@@ -318,10 +328,12 @@ def test_not_loaded_user(client, consts):
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
     api_fit.set_ship(type_id=eve_ship_id)
-    api_fit.add_rig(type_id=eve_rig_id)
+    api_rig = api_fit.add_rig(type_id=eve_rig_id)
     # Verification
     api_stats = api_fit.get_stats(options=FitStatsOptions(calibration=True))
     assert api_stats.calibration.one() == (approx(0), approx(125))
+    api_rig_stats = api_rig.get_stats(options=ItemStatsOptions(calibration_use=True))
+    assert api_rig_stats.calibration_use is None
     api_val = api_fit.validate(options=ValOptions(calibration=True))
     assert api_val.passed is True
     with check_no_field():
@@ -339,12 +351,18 @@ def test_non_positive(client, consts):
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
     api_fit.set_ship(type_id=eve_ship_id)
-    api_fit.add_rig(type_id=eve_rig1_id)
+    api_rig1 = api_fit.add_rig(type_id=eve_rig1_id)
     api_rig2 = api_fit.add_rig(type_id=eve_rig2_id)
-    api_fit.add_rig(type_id=eve_rig3_id)
+    api_rig3 = api_fit.add_rig(type_id=eve_rig3_id)
     # Verification - items with negative and 0 use are not exposed
     api_stats = api_fit.get_stats(options=FitStatsOptions(calibration=True))
     assert api_stats.calibration.one() == (approx(140), approx(125))
+    api_rig1_stats = api_rig1.get_stats(options=ItemStatsOptions(calibration_use=True))
+    assert api_rig1_stats.calibration_use.one() == approx(0)
+    api_rig2_stats = api_rig2.get_stats(options=ItemStatsOptions(calibration_use=True))
+    assert api_rig2_stats.calibration_use.one() == approx(150)
+    api_rig3_stats = api_rig3.get_stats(options=ItemStatsOptions(calibration_use=True))
+    assert api_rig3_stats.calibration_use.one() == approx(-10)
     api_val = api_fit.validate(options=ValOptions(calibration=True))
     assert api_val.passed is False
     assert api_val.details.calibration.used == approx(140)
@@ -363,10 +381,14 @@ def test_no_value_use(client, consts):
     api_fit = api_sol.create_fit()
     api_fit.set_ship(type_id=eve_ship_id)
     api_rig1 = api_fit.add_rig(type_id=eve_rig1_id)
-    api_fit.add_rig(type_id=eve_rig2_id)
+    api_rig2 = api_fit.add_rig(type_id=eve_rig2_id)
     # Verification
     api_stats = api_fit.get_stats(options=FitStatsOptions(calibration=True))
     assert api_stats.calibration.one() == (approx(150), approx(125))
+    api_rig1_stats = api_rig1.get_stats(options=ItemStatsOptions(calibration_use=True))
+    assert api_rig1_stats.calibration_use.one() == approx(150)
+    api_rig2_stats = api_rig2.get_stats(options=ItemStatsOptions(calibration_use=True))
+    assert api_rig2_stats.calibration_use.one() == approx(0)
     api_val = api_fit.validate(options=ValOptions(calibration=True))
     assert api_val.passed is False
     assert api_val.details.calibration.used == approx(150)
@@ -403,8 +425,10 @@ def test_no_attr_use(client, consts):
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
     api_fit.set_ship(type_id=eve_ship_id)
-    api_fit.add_rig(type_id=eve_rig_id)
+    api_rig = api_fit.add_rig(type_id=eve_rig_id)
     # Verification - users are assumed to take no resource when attribute does not exist
+    api_rig_stats = api_rig.get_stats(options=ItemStatsOptions(calibration_use=True))
+    assert api_rig_stats.calibration_use.one() == approx(0)
     api_val = api_fit.validate(options=ValOptions(calibration=True))
     assert api_val.passed is True
     with check_no_field():
@@ -430,6 +454,7 @@ def test_no_attr_max(client, consts):
 
 
 def test_criterion_rig_state(client, consts):
+    # Item stat is the same in every state, fit stat and validation count only enabled rigs
     eve_use_attr_id = client.mk_eve_attr(id_=consts.EveAttr.upgrade_cost)
     eve_max_attr_id = client.mk_eve_attr(id_=consts.EveAttr.upgrade_capacity)
     eve_rig_id = client.mk_eve_item(attrs={eve_use_attr_id: 150})
@@ -442,6 +467,8 @@ def test_criterion_rig_state(client, consts):
     # Verification
     api_stats = api_fit.get_stats(options=FitStatsOptions(calibration=True))
     assert api_stats.calibration.one() == (approx(0), approx(125))
+    api_rig_stats = api_rig.get_stats(options=ItemStatsOptions(calibration_use=True))
+    assert api_rig_stats.calibration_use.one() == approx(150)
     api_val = api_fit.validate(options=ValOptions(calibration=True))
     assert api_val.passed is True
     with check_no_field():
@@ -451,6 +478,8 @@ def test_criterion_rig_state(client, consts):
     # Verification
     api_stats = api_fit.get_stats(options=FitStatsOptions(calibration=True))
     assert api_stats.calibration.one() == (approx(150), approx(125))
+    api_rig_stats = api_rig.get_stats(options=ItemStatsOptions(calibration_use=True))
+    assert api_rig_stats.calibration_use.one() == approx(150)
     api_val = api_fit.validate(options=ValOptions(calibration=True))
     assert api_val.passed is False
     assert api_val.details.calibration.used == approx(150)
@@ -461,6 +490,8 @@ def test_criterion_rig_state(client, consts):
     # Verification
     api_stats = api_fit.get_stats(options=FitStatsOptions(calibration=True))
     assert api_stats.calibration.one() == (approx(0), approx(125))
+    api_rig_stats = api_rig.get_stats(options=ItemStatsOptions(calibration_use=True))
+    assert api_rig_stats.calibration_use.one() == approx(150)
     api_val = api_fit.validate(options=ValOptions(calibration=True))
     assert api_val.passed is True
     with check_no_field():
@@ -468,7 +499,7 @@ def test_criterion_rig_state(client, consts):
 
 
 def test_criterion_item_kind(client, consts):
-    # Validation applies only to rigs
+    # Validation and item stat apply only to rigs
     eve_use_attr_id = client.mk_eve_attr(id_=consts.EveAttr.upgrade_cost)
     eve_max_attr_id = client.mk_eve_attr(id_=consts.EveAttr.upgrade_capacity)
     eve_item_id = client.mk_eve_item(attrs={eve_use_attr_id: 150})
@@ -483,22 +514,32 @@ def test_criterion_item_kind(client, consts):
     client.create_sources()
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
-    api_fit.add_booster(type_id=eve_item_id)
-    api_fit.set_character(type_id=eve_item_id)
-    api_fit.add_drone(type_id=eve_item_id, state=consts.ApiMinionState.engaging)
+    api_booster = api_fit.add_booster(type_id=eve_item_id)
+    api_character = api_fit.set_character(type_id=eve_item_id)
+    api_drone = api_fit.add_drone(type_id=eve_item_id, state=consts.ApiMinionState.engaging)
     api_fighter = api_fit.add_fighter(type_id=eve_fighter_id, state=consts.ApiMinionState.engaging)
-    api_fit.add_fw_effect(type_id=eve_item_id)
-    api_fit.add_implant(type_id=eve_item_id)
-    api_fit.add_module(type_id=eve_item_id, state=consts.ApiModuleState.overload, charge_type_id=eve_item_id)
-    api_fit.add_service(type_id=eve_item_id, state=consts.ApiServiceState.online)
-    api_fit.set_ship(type_id=eve_ship_id)
-    api_fit.add_skill(type_id=eve_item_id, level=5)
-    api_fit.set_stance(type_id=eve_item_id)
-    api_fit.add_subsystem(type_id=eve_item_id)
+    api_fw_effect = api_fit.add_fw_effect(type_id=eve_item_id)
+    api_implant = api_fit.add_implant(type_id=eve_item_id)
+    api_module = api_fit.add_module(
+        type_id=eve_item_id,
+        state=consts.ApiModuleState.overload,
+        charge_type_id=eve_item_id)
+    api_service = api_fit.add_service(type_id=eve_item_id, state=consts.ApiServiceState.online)
+    api_ship = api_fit.set_ship(type_id=eve_ship_id)
+    api_skill = api_fit.add_skill(type_id=eve_item_id, level=5)
+    api_stance = api_fit.set_stance(type_id=eve_item_id)
+    api_subsystem = api_fit.add_subsystem(type_id=eve_item_id)
     # Verification
     assert len(api_fighter.autocharges) == 1
     api_stats = api_fit.get_stats(options=FitStatsOptions(calibration=True))
     assert api_stats.calibration.one() == (approx(0), approx(125))
+    api_others = [
+        api_booster, api_character, api_drone, api_fighter, api_fighter.autocharges[eve_autocharge_effect_id],
+        api_fw_effect, api_implant, api_module, api_module.charge, api_service, api_ship, api_skill, api_stance,
+        api_subsystem]
+    for api_other in api_others:
+        api_other_stats = api_other.get_stats(options=ItemStatsOptions(calibration_use=True))
+        assert api_other_stats.calibration_use is None
     api_val = api_fit.validate(options=ValOptions(calibration=True))
     assert api_val.passed is True
     with check_no_field():
@@ -514,8 +555,11 @@ def test_stat_not_requested(client, consts):
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
     api_fit.set_ship(type_id=eve_ship_id)
-    api_fit.add_rig(type_id=eve_rig_id)
+    api_rig = api_fit.add_rig(type_id=eve_rig_id)
     # Verification
     api_stats = api_fit.get_stats(options=FitStatsOptions(calibration=False))
     with check_no_field():
         api_stats.calibration  # ruff:ignore[useless-expression]
+    api_rig_stats = api_rig.get_stats(options=ItemStatsOptions(calibration_use=False))
+    with check_no_field():
+        api_rig_stats.calibration_use  # ruff:ignore[useless-expression]

@@ -25,6 +25,13 @@ pub struct ItemStats {
     pub outgoing_rps: StatResult<StatOutReps, StatItemAppliedError<!>, StatBrFallibleError<StatItemAppliedError<!>>> = StatResult::NotRequested,
     #[cfg_attr(feature = "serde", serde(skip_serializing_if = "StatResult::is_not_requested"))]
     pub outgoing_cps: StatResult<PValue, StatItemAppliedError<!>, StatBrFallibleError<StatItemAppliedError<!>>> = StatResult::NotRequested,
+    // Resources
+    #[cfg_attr(feature = "serde", serde(skip_serializing_if = "StatResult::is_not_requested"))]
+    pub cpu_use: StatResult<Value, StatItemError<!>, !> = StatResult::NotRequested,
+    #[cfg_attr(feature = "serde", serde(skip_serializing_if = "StatResult::is_not_requested"))]
+    pub powergrid_use: StatResult<Value, StatItemError<!>, !> = StatResult::NotRequested,
+    #[cfg_attr(feature = "serde", serde(skip_serializing_if = "StatResult::is_not_requested"))]
+    pub calibration_use: StatResult<Value, StatItemError<!>, !> = StatResult::NotRequested,
     // Tank
     #[cfg_attr(feature = "serde", serde(skip_serializing_if = "StatResult::is_not_requested"))]
     pub resists: StatResult<StatResists, StatItemError<!>, !> = StatResult::NotRequested,

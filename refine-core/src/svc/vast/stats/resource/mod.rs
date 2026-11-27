@@ -1,4 +1,5 @@
 pub use stat::{StatFighterBay, StatResource};
 
-mod getter;
+mod getter_fit;
+mod getter_item;
 mod stat;

@@ -13,5 +13,6 @@ mod sol_iter_items;
 mod stat_cap;
 mod stat_misc;
 mod stat_mobility;
+mod stat_resource;
 mod stat_sensors;
 mod stat_tank;

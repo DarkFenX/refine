@@ -1,7 +1,8 @@
 use crate::{
+    Value,
     stats::{StatFighterBay, StatResource},
-    svc::{Svc, SvcCtx},
-    ud::{UData, UFit, UFitId},
+    svc::{Svc, SvcCtx, err::IntStatItemError, vast::Vast},
+    ud::{UData, UFit, UFitId, UItemId},
 };
 
 impl Svc {
@@ -36,5 +37,26 @@ impl Svc {
         self.vast
             .get_fit_data(fit_uid)
             .get_stat_fighter_bay(&SvcCtx::new(u_data, &self.eff_projs), &mut self.calc, fit)
+    }
+    pub(crate) fn get_stat_item_cpu_use(
+        &mut self,
+        u_data: &UData,
+        item_uid: UItemId,
+    ) -> Result<Value, IntStatItemError<!>> {
+        Vast::get_stat_item_cpu_use(&SvcCtx::new(u_data, &self.eff_projs), &mut self.calc, item_uid)
+    }
+    pub(crate) fn get_stat_item_powergrid_use(
+        &mut self,
+        u_data: &UData,
+        item_uid: UItemId,
+    ) -> Result<Value, IntStatItemError<!>> {
+        Vast::get_stat_item_powergrid_use(&SvcCtx::new(u_data, &self.eff_projs), &mut self.calc, item_uid)
+    }
+    pub(crate) fn get_stat_item_calibration_use(
+        &mut self,
+        u_data: &UData,
+        item_uid: UItemId,
+    ) -> Result<Value, IntStatItemError<!>> {
+        Vast::get_stat_item_calibration_use(&SvcCtx::new(u_data, &self.eff_projs), item_uid)
     }
 }

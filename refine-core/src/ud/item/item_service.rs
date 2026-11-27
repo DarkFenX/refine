@@ -89,7 +89,7 @@ impl UService {
     pub(crate) fn get_r_item_flex_data(&self) -> Option<&RItemFlexData> {
         self.base.get_r_item_flex_data()
     }
-    pub(in crate::ud::item) fn is_loaded(&self) -> bool {
+    pub(crate) fn is_loaded(&self) -> bool {
         self.base.is_loaded()
     }
     pub(in crate::ud::item) fn r_data_changed(&mut self, r_data: &RData) {

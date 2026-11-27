@@ -22,6 +22,9 @@ impl ItemStatsOptionsResolved {
             outgoing_nps,
             outgoing_rps,
             outgoing_cps,
+            cpu_use,
+            powergrid_use,
+            calibration_use,
             resists,
             hp,
             ehp,
@@ -117,6 +120,16 @@ impl ItemStatsOptionsResolved {
                 options,
                 outgoing_rps_switched.or_get(|option| get_outgoing_rps_stat(core_item_stats, option)),
             );
+        }
+        // Resources
+        if *cpu_use {
+            stats.cpu_use = StatResult::from_result_outer(core_item_stats.get_stat_cpu_use());
+        }
+        if *powergrid_use {
+            stats.powergrid_use = StatResult::from_result_outer(core_item_stats.get_stat_powergrid_use());
+        }
+        if *calibration_use {
+            stats.calibration_use = StatResult::from_result_outer(core_item_stats.get_stat_calibration_use());
         }
         // Tank
         if *resists {
