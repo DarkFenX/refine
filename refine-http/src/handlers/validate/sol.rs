@@ -17,7 +17,7 @@ pub(crate) struct SolValReqBody {
     #[serde(default)]
     options: rs::val::ValOptions,
     #[serde(default)]
-    fit_ids: Vec<rs::FitId>,
+    fit_ids: Option<Vec<rs::FitId>>,
 }
 
 pub(crate) async fn validate_sol(
@@ -40,16 +40,12 @@ async fn internal_validate_sol(
     payload: SolValReqBody,
 ) -> Result<rs::val::SolValResult, ApiError> {
     let sol_id = rs::SolId::from_str(&sol_id)?;
-    let val_result = state
-        .get_refine()
-        .get_sol(sol_id)
-        .await?
-        .validate(
-            rs::val::SolValCmd::new()
-                .with_options(payload.options)
-                .with_fit_ids(payload.fit_ids)
-                .with_result_mode(params.validation),
-        )
-        .await;
+    let mut val_cmd = rs::val::SolValCmd::new()
+        .with_options(payload.options)
+        .with_result_mode(params.validation);
+    if let Some(fit_ids) = payload.fit_ids {
+        val_cmd = val_cmd.with_fit_ids(fit_ids);
+    }
+    let val_result = state.get_refine().get_sol(sol_id).await?.validate(val_cmd).await;
     Ok(val_result)
 }

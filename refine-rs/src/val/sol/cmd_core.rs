@@ -17,8 +17,9 @@ pub type SolValCmdBr = SolValCmdGen<FitIdBr, ItemIdBr>;
 pub struct SolValCmdGen<F, I> {
     #[cfg_attr(feature = "serde", serde(default))]
     options: ValOptions<I>,
+    /// None means all fits of the solar system.
     #[cfg_attr(feature = "serde", serde(default))]
-    fit_ids: Vec<F>,
+    fit_ids: Option<Vec<F>>,
     #[cfg_attr(feature = "serde", serde(default))]
     result_mode: ValResultMode,
 }
@@ -26,7 +27,7 @@ const impl<F, I> Default for SolValCmdGen<F, I> {
     fn default() -> Self {
         Self {
             options: Default::default(),
-            fit_ids: Default::default(),
+            fit_ids: None,
             result_mode: Default::default(),
         }
     }
@@ -36,6 +37,7 @@ const impl<F, I> Default for SolValCmdGen<F, I> {
 // Construction
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl<F, I> SolValCmdGen<F, I> {
+    /// Command which validates all fits, until it is limited by [`Self::with_fit_ids`].
     pub const fn new() -> Self {
         Self::default()
     }
@@ -47,7 +49,7 @@ impl<F, I> SolValCmdGen<F, I> {
         self
     }
     pub fn with_fit_ids(mut self, fit_ids: impl IntoIterator<Item = F>) -> Self {
-        self.fit_ids.extend(fit_ids);
+        self.fit_ids.get_or_insert_default().extend(fit_ids);
         self
     }
     pub const fn with_result_mode(mut self, result_mode: ValResultMode) -> Self {
@@ -65,7 +67,7 @@ impl SolValCmdBr {
             options: self
                 .options
                 .filter_map_item_ids(|item_id_br| resps.resolve_item_id(item_id_br).ok()),
-            fit_ids: resps.resolve_fit_ids_lossy(self.fit_ids),
+            fit_ids: self.fit_ids.map(|fit_ids| resps.resolve_fit_ids_lossy(fit_ids)),
             result_mode: self.result_mode,
         }
     }
@@ -80,7 +82,7 @@ impl SolValCmd {
     }
     pub(crate) fn execute_borrowed(&mut self, core_sol: &mut rc::Sol) -> SolValResult {
         let mut core_options = rc::val::ValOptionsSol {
-            fit_ids: Vec::default(),
+            fit_ids: None,
             options: ValOptions::default(),
         };
         // Avoid allocations by temporarily moving data to core options struct

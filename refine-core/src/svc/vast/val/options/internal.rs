@@ -18,12 +18,14 @@ impl ValOptionsSolInt {
     pub(crate) fn from_pub(pub_sol_opts: &ValOptionsSol, sol: &SolCore) -> Self {
         Self {
             options: ValOptionsInt::from_pub(&pub_sol_opts.options, sol),
-            fit_uids: pub_sol_opts
-                .fit_ids
-                .iter()
-                .filter_map(|fit_id| sol.u_data.fits.int_id_by_ext_id(fit_id))
-                .unique()
-                .collect(),
+            fit_uids: match &pub_sol_opts.fit_ids {
+                Some(fit_ids) => fit_ids
+                    .iter()
+                    .filter_map(|fit_id| sol.u_data.fits.int_id_by_ext_id(fit_id))
+                    .unique()
+                    .collect(),
+                None => sol.u_data.fits.keys().collect(),
+            },
         }
     }
 }

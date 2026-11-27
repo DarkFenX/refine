@@ -35,13 +35,19 @@ def test_sol_fit_ids(client, consts):
             result_mode=consts.ApiValResultMode.detailed)
         api_val2 = api_sol_batch.validate_sol(
             options=ValOptions(not_loaded_item=True),
+            fit_ids=[],
             result_mode=consts.ApiValResultMode.detailed)
-    # Verification
+        api_val3 = api_sol_batch.validate_sol(
+            options=ValOptions(not_loaded_item=True),
+            result_mode=consts.ApiValResultMode.detailed)
+    # Verification - all fits are validated when fit IDs are not specified
     assert api_val1.passed is False
     assert api_val1.details.fits[api_fit.id].not_loaded_item == [api_item.id]
     assert api_val2.passed is True
     with check_no_field():
         api_val2.details  # ruff:ignore[useless-expression]
+    assert api_val3.passed is False
+    assert api_val3.details.fits[api_fit.id].not_loaded_item == [api_item.id]
 
 
 def test_sol_fit_ids_backref(client, consts):

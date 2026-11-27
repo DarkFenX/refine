@@ -4,9 +4,9 @@ use crate::{FitId, ItemId, OptionExt, svc::vast::val::ValKind};
 #[cfg_attr(feature = "serde", derive(serde::Deserialize))]
 #[derive(Clone, Default)]
 pub struct ValOptionsSol {
-    /// Fit IDs to validate.
+    /// Fit IDs to validate, None means all fits of the solar system.
     #[cfg_attr(feature = "serde", serde(default))]
-    pub fit_ids: Vec<FitId>,
+    pub fit_ids: Option<Vec<FitId>>,
     /// Validation options.
     #[cfg_attr(feature = "serde", serde(default))]
     pub options: ValOptions,
