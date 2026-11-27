@@ -24,12 +24,12 @@ class SrcInfoItemsCmd(BaseCommand):
 @dataclasses.dataclass(kw_only=True)
 class SrcInfoMutatedItemsCmd(BaseCommand):
 
-    mutations: list[tuple[int, int]]
+    mutations: list[tuple[int, int]] | type[Absent]
 
     def serialize(self) -> dict:
         body = super().serialize()
         body['type'] = 'mutated_item_infos'
-        body['mutations'] = self.mutations
+        conditional_insert(container=body, path=['mutations'], value=self.mutations)
         return body
 
 

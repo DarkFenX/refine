@@ -31,6 +31,10 @@ impl RMutasPregen {
     pub(in crate::rd::data) fn iter_entries(&self) -> impl ExactSizeIterator<Item = &RMutasPregenEntry> {
         self.entries.values()
     }
+    /// Keys are base item and mutator IDs.
+    pub(crate) fn iter_keyed_entries(&self) -> impl ExactSizeIterator<Item = ((AItemId, AItemId), &RMutasPregenEntry)> {
+        self.entries.iter().map(|(&key, entry)| (key, entry))
+    }
     /// Data derived from unmutated attributes, without the attributes themselves.
     pub(in crate::rd::data) fn get_flex_data(&self, entry: &RMutasPregenEntry) -> &RItemFlexData {
         &self.flex_data[entry.flex_data_rid.index()]

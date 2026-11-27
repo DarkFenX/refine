@@ -3,13 +3,12 @@ use crate::{ItemTypeId, src::SrcMutatedItemInfos};
 #[cfg_attr(feature = "serde", derive(serde::Deserialize))]
 #[derive(Clone)]
 pub struct SrcMutatedItemInfosCmd {
-    mutations: Vec<SrcMutation>,
+    /// None means all mutations the source can apply.
+    mutations: Option<Vec<SrcMutation>>,
 }
 const impl Default for SrcMutatedItemInfosCmd {
     fn default() -> Self {
-        Self {
-            mutations: Default::default(),
-        }
+        Self { mutations: None }
     }
 }
 
@@ -25,11 +24,12 @@ pub struct SrcMutation {
 // Construction
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl SrcMutatedItemInfosCmd {
+    /// Command which requests all mutations, until it is limited by [`Self::with_mutations`].
     pub const fn new() -> Self {
         Self::default()
     }
     pub fn with_mutations(mut self, mutations: impl IntoIterator<Item = SrcMutation>) -> Self {
-        self.mutations.extend(mutations);
+        self.mutations.get_or_insert_default().extend(mutations);
         self
     }
 }
@@ -48,6 +48,6 @@ impl SrcMutation {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl SrcMutatedItemInfosCmd {
     pub(crate) fn execute(self, core_src: &rc::Src) -> SrcMutatedItemInfos {
-        SrcMutatedItemInfos::from_core(core_src, &self.mutations)
+        SrcMutatedItemInfos::from_core(core_src, self.mutations.as_deref())
     }
 }

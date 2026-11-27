@@ -60,7 +60,10 @@ class SrcCmdBatchCtx:
         self._ret_datas.append((ret_data, src_items_http_to_fw))
         return ret_data
 
-    def get_mutated_items(self, *, mutations: list[tuple[int, int]]) -> dict[int, dict[int, AttrDict]]:
+    def get_mutated_items(
+            self, *,
+            mutations: list[tuple[int, int]] | type[Absent],
+    ) -> dict[int, dict[int, AttrDict]]:
         self._commands.append(SrcInfoMutatedItemsCmd(mutations=mutations))
         ret_data = {}
         self._ret_datas.append((ret_data, src_mutated_items_http_to_fw))

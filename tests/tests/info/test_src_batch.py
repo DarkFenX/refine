@@ -7,22 +7,15 @@ if typing.TYPE_CHECKING:
 
 
 def test_error_cmd_malformed(client, consts):
-
-    def hook_req(req: Request):
-        data = req.get_json()
-        del data[1]['mutations']
-        req.set_json(data=data)
-
     eve_item_id = client.mk_eve_item(cat_id=consts.EveItemCat.ship)
     api_src = client.create_source()
     # Action & verification
     with api_src.batch(
-            hook_req=hook_req,
             status_code=400,
             json_predicate={'code': 'JSN-002', 'message': 're:.+', 'cmd_index': 1},
     ) as api_src_batch:
         api_src_batch.get_items(type_ids=[eve_item_id])
-        api_src_batch.get_mutated_items(mutations=[])
+        api_src_batch.get_mutated_items(mutations='random')
 
 
 def test_error_cmd_type_unknown(client, consts):

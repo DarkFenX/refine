@@ -95,7 +95,7 @@ class ApiClientSrc(ApiClientBase, eve.EveDataManager, eve.EveDataServer):
     def get_source_mutated_items_request(
             self, *,
             src_alias: str,
-            mutations: list[tuple[int, int]],
+            mutations: list[tuple[int, int]] | type[Absent],
     ) -> Request:
         command = SrcInfoMutatedItemsCmd(mutations=mutations)
         return self.source_command_request(src_alias=src_alias, command=command)

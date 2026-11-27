@@ -1,6 +1,6 @@
 import typing
 
-from fw import check_no_field
+from fw import Absent, check_no_field
 
 if typing.TYPE_CHECKING:
     from fw.request import Request
@@ -137,6 +137,34 @@ def test_multiple_mutations(client, consts):
     assert api_src_items[eve_base1_id][eve_mutator2_id].type_id == eve_mutated3_id
     assert api_src_items[eve_base2_id].keys() == {eve_mutator1_id}
     assert api_src_items[eve_base2_id][eve_mutator1_id].type_id == eve_mutated2_id
+
+
+def test_all(client, consts):
+    # Without mutations all the mutations the source can apply are reported
+    eve_high_effect_id = client.mk_eve_effect(id_=consts.EveEffect.hi_power)
+    eve_base1_id = client.mk_eve_item(cat_id=consts.EveItemCat.module, eff_ids=[eve_high_effect_id])
+    eve_base2_id = client.mk_eve_item(cat_id=consts.EveItemCat.module, eff_ids=[eve_high_effect_id])
+    eve_mutated1_id = client.mk_eve_item(
+        cat_id=consts.EveItemCat.module,
+        is_dynamic=True,
+        eff_ids=[eve_high_effect_id])
+    eve_mutated2_id = client.mk_eve_item(cat_id=consts.EveItemCat.module, is_dynamic=True)
+    eve_mutator1_id = client.mk_eve_mutator(items=[([eve_base1_id, eve_base2_id], eve_mutated1_id)])
+    eve_mutator2_id = client.mk_eve_mutator(items=[([eve_base1_id], eve_mutated2_id)])
+    client.mk_eve_item(cat_id=consts.EveItemCat.module)
+    api_src = client.create_source()
+    # Action
+    api_src_items = api_src.get_mutated_items(mutations=Absent)
+    # Verification - one entry per base type and mutator, even when they share a mutated type
+    assert api_src_items.keys() == {eve_base1_id, eve_base2_id}
+    assert api_src_items[eve_base1_id].keys() == {eve_mutator1_id, eve_mutator2_id}
+    assert api_src_items[eve_base1_id][eve_mutator1_id].type_id == eve_mutated1_id
+    assert api_src_items[eve_base1_id][eve_mutator1_id].detected_kind == consts.ApiDetectedItemKind.module_high
+    assert api_src_items[eve_base1_id][eve_mutator2_id].type_id == eve_mutated2_id
+    with check_no_field():
+        api_src_items[eve_base1_id][eve_mutator2_id].detected_kind  # ruff:ignore[useless-expression]
+    assert api_src_items[eve_base2_id].keys() == {eve_mutator1_id}
+    assert api_src_items[eve_base2_id][eve_mutator1_id].type_id == eve_mutated1_id
 
 
 def test_unknown_mutation(client, consts):

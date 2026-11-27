@@ -51,7 +51,7 @@ class Src(AttrDict):
 
     def get_mutated_items(
             self, *,
-            mutations: list[tuple[int, int]],
+            mutations: list[tuple[int, int]] | type[Absent],
             hook_req: ReqHook | None = None,
             status_code: int = 200,
             json_predicate: JsonPredicate = None,

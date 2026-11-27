@@ -14,5 +14,6 @@ mod src_get_item_infos;
 mod src_get_mutated_attr_rolls;
 mod src_get_mutated_item_infos;
 mod src_iter_item_infos;
+mod src_iter_mutated_item_infos;
 mod src_query;
 mod src_remove;

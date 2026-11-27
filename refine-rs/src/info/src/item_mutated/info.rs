@@ -52,37 +52,43 @@ pub struct SrcMutatedItemInfo {
 // Conversions
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl SrcMutatedItemInfos {
-    pub(super) fn from_core(core_src: &rc::Src, mutations: &[SrcMutation]) -> Self {
-        let mut base_types: Vec<SrcMutatedItemBaseInfo> = Vec::new();
+    pub(super) fn from_core(core_src: &rc::Src, mutations: Option<&[SrcMutation]>) -> Self {
+        let mut base_types = Vec::new();
         let mut base_type_indices = RMap::default();
-        let mut seen_mutations = RSet::default();
-        for &mutation in mutations {
-            if !seen_mutations.insert(mutation) {
-                continue;
+        match mutations {
+            Some(mutations) => {
+                let mut seen_mutations = RSet::default();
+                for &mutation in mutations {
+                    if !seen_mutations.insert(mutation) {
+                        continue;
+                    }
+                    let SrcMutation {
+                        base_type_id,
+                        mutator_id,
+                    } = mutation;
+                    let Some(core_src_item) = core_src.get_mutated_item(base_type_id, mutator_id) else {
+                        continue;
+                    };
+                    let item = SrcMutatedItemInfo::from_core(mutator_id, core_src_item);
+                    push_item(&mut base_types, &mut base_type_indices, base_type_id, item);
+                }
             }
-            let SrcMutation {
-                base_type_id,
-                mutator_id,
-            } = mutation;
-            let Some(core_src_item) = core_src.get_mutated_item(base_type_id, mutator_id) else {
-                continue;
-            };
-            let base_type_index = *base_type_indices.entry(base_type_id).or_insert_with(|| {
-                base_types.push(SrcMutatedItemBaseInfo {
-                    base_type_id,
-                    items: Vec::new(),
-                });
-                base_types.len() - 1
-            });
-            base_types[base_type_index]
-                .items
-                .push(SrcMutatedItemInfo::from_core(mutator_id, core_src_item));
+            None => {
+                for (base_type_id, item) in SrcMutatedItemInfo::iter_from_core(core_src) {
+                    push_item(&mut base_types, &mut base_type_indices, base_type_id, item);
+                }
+            }
         }
         Self { base_types }
     }
 }
 
 impl SrcMutatedItemInfo {
+    pub(crate) fn iter_from_core(core_src: &rc::Src) -> impl ExactSizeIterator<Item = (ItemTypeId, Self)> {
+        core_src
+            .iter_mutated_items()
+            .map(|(base_type_id, mutator_id, core_src_item)| (base_type_id, Self::from_core(mutator_id, core_src_item)))
+    }
     fn from_core(mutator_id: ItemTypeId, core_src_item: rc::src::SrcItem) -> Self {
         Self {
             mutator_id,
@@ -91,4 +97,20 @@ impl SrcMutatedItemInfo {
             module_max_state: core_src_item.get_module_max_state(),
         }
     }
+}
+
+fn push_item(
+    base_types: &mut Vec<SrcMutatedItemBaseInfo>,
+    base_type_indices: &mut RMap<ItemTypeId, usize>,
+    base_type_id: ItemTypeId,
+    item: SrcMutatedItemInfo,
+) {
+    let base_type_index = *base_type_indices.entry(base_type_id).or_insert_with(|| {
+        base_types.push(SrcMutatedItemBaseInfo {
+            base_type_id,
+            items: Vec::new(),
+        });
+        base_types.len() - 1
+    });
+    base_types[base_type_index].items.push(item);
 }
