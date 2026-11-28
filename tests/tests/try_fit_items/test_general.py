@@ -32,8 +32,9 @@ def test_skipped_types(client, consts):
             eve_module_id,
             eve_rig_id,
             eve_service_id,
+            eve_stance_id,
             eve_subsystem_id],
-        failing=[eve_char_id, eve_ship_id, eve_skill_id, eve_stance_id, eve_undetectable_id, eve_unknown_id])
+        failing=[eve_char_id, eve_ship_id, eve_skill_id, eve_undetectable_id, eve_unknown_id])
 
 
 def test_module_without_online_effect(client, consts):

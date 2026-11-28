@@ -34,6 +34,7 @@ impl SolCore {
     ) -> Vec<AItemId> {
         let mut valid = Vec::new();
         let mut charge_type_aids = Vec::new();
+        let mut stance_type_aids = Vec::new();
         let u_physics = UPhysics::default();
         for type_aid in type_aids {
             let Some(r_item) = self.u_data.r_data.get_item_by_aid(type_aid) else {
@@ -60,7 +61,6 @@ impl SolCore {
                         valid.push(*type_aid)
                     }
                 }
-                // Charges are tried after all other items
                 DetectedItemKind::Charge => charge_type_aids.push(*type_aid),
                 DetectedItemKind::Drone => {
                     if self.try_item(
@@ -162,6 +162,7 @@ impl SolCore {
                         valid.push(*type_aid)
                     }
                 }
+                DetectedItemKind::Stance => stance_type_aids.push(*type_aid),
                 DetectedItemKind::Subsystem => {
                     if self.try_item(
                         fit_uid,
@@ -177,6 +178,9 @@ impl SolCore {
         }
         if !charge_type_aids.is_empty() {
             self.internal_try_charges(fit_uid, charge_type_aids, val_options, &mut valid);
+        }
+        if !stance_type_aids.is_empty() {
+            self.internal_try_stances(fit_uid, stance_type_aids, val_options, &mut valid);
         }
         valid
     }
@@ -280,4 +284,34 @@ fn get_chargeable_modules(u_data: &UData, fit_uid: UFitId) -> Vec<UItemId> {
             None => false,
         })
         .collect()
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Private - stance-specific
+////////////////////////////////////////////////////////////////////////////////////////////////////
+impl SolCore {
+    fn internal_try_stances(
+        &mut self,
+        fit_uid: UFitId,
+        stance_type_aids: Vec<AItemId>,
+        val_options: &ValOptionsInt,
+        valid: &mut Vec<AItemId>,
+    ) {
+        // Setting a stance removes the one the fit has. The latter stays detached while stances are
+        // tried, so tried stances never get its internal ID, and rollback puts it back as it was
+        let savepoint = self.internal_tx_savepoint();
+        if let Some(old_stance_uid) = self.u_data.fits.get(fit_uid).stance {
+            self.internal_remove_stance(old_stance_uid);
+        }
+        for stance_type_aid in stance_type_aids {
+            let stance_savepoint = self.internal_tx_savepoint();
+            self.internal_set_fit_stance(fit_uid, stance_type_aid);
+            let stance_valid = self.internal_validate_fit_fast(fit_uid, val_options);
+            self.internal_tx_rollback(stance_savepoint);
+            if stance_valid {
+                valid.push(stance_type_aid);
+            }
+        }
+        self.internal_tx_rollback(savepoint);
+    }
 }

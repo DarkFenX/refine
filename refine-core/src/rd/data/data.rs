@@ -435,16 +435,13 @@ fn make_ship_items(items: &RMap<AItemId, RcItem>, item_kind: DetectedItemKind) -
         // Item can be used by ships its ship limit accepts, or by any ship when it has no limit
         let mut item_aids = kind_items
             .iter()
-            .filter_map(|item| {
-                let accepted = match &item.base.ship_limit {
-                    Some(ship_limit) => ship_limit.accepts_ship(ship.base.aid, Some(ship.base.grp_id)),
-                    None => true,
-                };
-                match accepted {
-                    true => Some(item.base.aid),
-                    false => None,
+            .filter(|item| match &item.base.ship_limit {
+                Some(ship_limit) => {
+                    ship_limit.type_aids.contains(&ship.base.aid) || ship_limit.group_aids.contains(&ship.base.grp_id)
                 }
+                None => true,
             })
+            .map(|item| item.base.aid)
             .collect_vec();
         if item_aids.is_empty() {
             continue;
