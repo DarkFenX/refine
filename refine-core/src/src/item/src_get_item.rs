@@ -6,6 +6,6 @@ use crate::{ItemTypeId, Src, src::SrcItem};
 impl Src {
     pub fn get_item(&self, type_id: ItemTypeId) -> Option<SrcItem<'_>> {
         let r_item = self.r_data.get_item_by_aid(&type_id.into_aid())?;
-        Some(SrcItem::new(r_item))
+        Some(SrcItem::new(&self.r_data, r_item))
     }
 }

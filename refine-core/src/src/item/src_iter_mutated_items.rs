@@ -13,7 +13,7 @@ impl Src {
                 (
                     ItemTypeId::from_aid(base_type_aid),
                     ItemTypeId::from_aid(mutator_type_aid),
-                    SrcItem::new(&entry.mutated_item),
+                    SrcItem::new(&self.r_data, &entry.mutated_item),
                 )
             })
     }

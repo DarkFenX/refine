@@ -6,6 +6,8 @@ use crate::{Src, src::SrcItem};
 impl Src {
     /// Mutated item types are not included.
     pub fn iter_items(&self) -> impl ExactSizeIterator<Item = SrcItem<'_>> {
-        self.r_data.iter_items().map(|r_item| SrcItem::new(r_item))
+        self.r_data
+            .iter_items()
+            .map(|r_item| SrcItem::new(&self.r_data, r_item))
     }
 }

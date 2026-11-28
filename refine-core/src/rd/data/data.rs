@@ -1,6 +1,9 @@
 use std::sync::Arc;
 
+use itertools::Itertools;
+
 use crate::{
+    DetectedItemKind,
     ad::{
         AAbilId, AAbils, AAttrId, AAttrs, ABuffId, ABuffs, AData, AEffectId, AEffects, AItemId, AItemListId,
         AItemLists, AItems, AMutas,
@@ -40,6 +43,7 @@ pub(crate) struct RData {
     rmod_template_affectors: RLocalRmtAffectors,
     // Extra data stored directly on RData for ease of access / optimization purposes
     rah_duration_attr_rid: Option<RAttrId>,
+    ship_stances: RMap<AItemId, Box<[AItemId]>>,
 }
 impl RData {
     // Item methods
@@ -98,7 +102,7 @@ impl RData {
     pub(crate) fn get_ability_by_aid(&self, ability_aid: &AAbilId) -> Option<&RAbil> {
         self.abils.get(ability_aid)
     }
-    // Misc getters
+    // Extra data getters
     pub(crate) fn get_rah_duration_attr_rid(&self) -> Option<RAttrId> {
         self.rah_duration_attr_rid
     }
@@ -107,6 +111,12 @@ impl RData {
     }
     pub(crate) fn get_local_rmt_affector_effects(&self, item_base: &RItemBase, attr_rid: RAttrId) -> &[REffectId] {
         self.rmod_template_affectors.get(item_base, attr_rid)
+    }
+    pub(crate) fn get_ship_stance_aids(&self, ship_aid: &AItemId) -> &[AItemId] {
+        match self.ship_stances.get(ship_aid) {
+            Some(stance_aids) => stance_aids,
+            None => &[],
+        }
     }
 }
 
@@ -172,6 +182,7 @@ impl RData {
         }
         let local_rmt_affectors =
             RLocalRmtAffectors::new(&items, &muta_pregen, effect_list_count, &effects, &rmod_templates);
+        let ship_stances = make_ship_stances(&items);
         Self {
             items,
             item_effects_pregen,
@@ -190,6 +201,7 @@ impl RData {
             rmod_templates,
             rmod_template_affectors: local_rmt_affectors,
             rah_duration_attr_rid,
+            ship_stances,
         }
     }
 }
@@ -398,4 +410,35 @@ fn fill_abils(abils: &mut RMap<AAbilId, RAbil>, effect_aid_rid_map: &RMap<AEffec
     for r_abil in abils.values_mut() {
         r_abil.fill_runtime(effect_aid_rid_map);
     }
+}
+
+// Extra data
+fn make_ship_stances(items: &RMap<AItemId, RcItem>) -> RMap<AItemId, Box<[AItemId]>> {
+    let stances = items
+        .values()
+        .filter(|item| matches!(item.base.detected_kind, Some(DetectedItemKind::Stance)))
+        .collect_vec();
+    let ships = items
+        .values()
+        .filter(|item| matches!(item.base.detected_kind, Some(DetectedItemKind::Ship)));
+    let mut ship_stances = RMap::new();
+    for ship in ships {
+        // Stance can be used by ships its ship limit accepts, or by any ship when it has no limit
+        let mut stance_aids = stances
+            .iter()
+            .filter(|stance| match &stance.base.ship_limit {
+                Some(ship_limit) => {
+                    ship_limit.type_aids.contains(&ship.base.aid) || ship_limit.group_aids.contains(&ship.base.grp_id)
+                }
+                None => true,
+            })
+            .map(|stance| stance.base.aid)
+            .collect_vec();
+        if stance_aids.is_empty() {
+            continue;
+        }
+        stance_aids.sort_unstable();
+        ship_stances.insert(ship.base.aid, stance_aids.into_boxed_slice());
+    }
+    ship_stances
 }

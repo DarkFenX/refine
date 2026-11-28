@@ -1,4 +1,7 @@
-use crate::{DetectedItemKind, ItemTypeId, ModuleState, rd::RItem};
+use crate::{
+    DetectedItemKind, ItemTypeId, ModuleState,
+    rd::{RData, RItem},
+};
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Public
@@ -6,6 +9,7 @@ use crate::{DetectedItemKind, ItemTypeId, ModuleState, rd::RItem};
 /// Item type of a data source.
 #[derive(Copy, Clone)]
 pub struct SrcItem<'src> {
+    r_data: &'src RData,
     r_item: &'src RItem,
 }
 impl SrcItem<'_> {
@@ -24,13 +28,20 @@ impl SrcItem<'_> {
             _ => None,
         }
     }
+    /// Stance types this ship type can use; nothing for anything but a ship with stances.
+    pub fn iter_ship_stance_type_ids(&self) -> impl ExactSizeIterator<Item = ItemTypeId> {
+        self.r_data
+            .get_ship_stance_aids(&self.r_item.base.aid)
+            .iter()
+            .map(|&stance_aid| ItemTypeId::from_aid(stance_aid))
+    }
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Private
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl<'src> SrcItem<'src> {
-    pub(in crate::src) fn new(r_item: &'src RItem) -> Self {
-        Self { r_item }
+    pub(in crate::src) fn new(r_data: &'src RData, r_item: &'src RItem) -> Self {
+        Self { r_data, r_item }
     }
 }

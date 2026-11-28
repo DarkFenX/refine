@@ -9,8 +9,8 @@ use crate::{
             val::{
                 ValKind, ValOptionInt, get_fit_ship_rig_size, get_fit_ship_type_group, get_item_vs_ship_kind_mismatch,
                 is_capital_module, is_charge_group_mismatch, is_charge_size_mismatch, is_charge_volume_mismatch,
-                is_drone_group_mismatch, is_rig_size_mismatch, is_ship_limit_met, is_ship_subcap,
-                is_skill_level_missing, is_slot_index_taken,
+                is_drone_group_mismatch, is_rig_size_mismatch, is_ship_subcap, is_skill_level_missing,
+                is_slot_index_taken,
             },
         },
     },
@@ -73,7 +73,7 @@ impl Vast {
                 ))
         {
             let (ship_type_aid, ship_grp_aid) = get_fit_ship_type_group(u_data, fit);
-            if !is_ship_limit_met(ship_limit, ship_type_aid, ship_grp_aid) {
+            if !ship_type_aid.is_some_and(|v| ship_limit.accepts_ship(v, ship_grp_aid)) {
                 return false;
             }
         }

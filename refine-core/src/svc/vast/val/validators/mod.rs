@@ -31,8 +31,8 @@ pub(in crate::svc::vast) use rig_size::{get_fit_ship_rig_size, is_rig_size_misma
 pub(in crate::svc::vast) use sec_zone_effect::EffectSecZoneInfo;
 pub use sec_zone_effect::{ValEffectSecZoneEffectInfo, ValEffectSecZoneFail, ValEffectSecZoneItemInfo};
 pub use sec_zone_item::{ValItemSecZoneFail, ValItemSecZoneItemInfo};
+pub(in crate::svc::vast) use ship_limit::get_fit_ship_type_group;
 pub use ship_limit::{ValShipLimitFail, ValShipLimitItemInfo};
-pub(in crate::svc::vast) use ship_limit::{get_fit_ship_type_group, is_ship_limit_met};
 pub use ship_stance::ValShipStanceFail;
 pub use skill_reqs::{ValSrqFail, ValSrqItemInfo, ValSrqSkillInfo};
 pub(in crate::svc::vast) use skill_reqs::{ValSrqSkillStored, is_skill_level_missing};

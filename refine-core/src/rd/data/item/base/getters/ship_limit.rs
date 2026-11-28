@@ -12,6 +12,11 @@ pub(crate) struct RItemShipLimit {
     pub(crate) type_aids: Box<[AItemId]>,
     pub(crate) group_aids: Box<[AItemGrpId]>,
 }
+impl RItemShipLimit {
+    pub(crate) fn accepts_ship(&self, ship_type_aid: AItemId, ship_grp_aid: Option<AItemGrpId>) -> bool {
+        self.type_aids.contains(&ship_type_aid) || ship_grp_aid.is_some_and(|v| self.group_aids.contains(&v))
+    }
+}
 
 pub(in crate::rd::data::item::base) fn get_item_ship_limit(
     item_aid: AItemId,

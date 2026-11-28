@@ -115,7 +115,7 @@ impl VastFitData {
     ) {
         self.ship_limited_items.insert(item_uid);
         let (ship_type_aid, ship_grp_aid) = get_fit_ship_type_group(u_data, u_data.fits.get(fit_uid));
-        if !is_ship_limit_met(ship_limit, ship_type_aid, ship_grp_aid) {
+        if !ship_type_aid.is_some_and(|v| ship_limit.accepts_ship(v, ship_grp_aid)) {
             self.ship_limit_mismatches.insert(item_uid);
         }
     }
@@ -128,7 +128,8 @@ impl VastFitData {
         self.ship_limit_mismatches.clear();
         for &item_uid in self.ship_limited_items.iter() {
             let item_rib = u_data.items.get(item_uid).get_r_item_base().unwrap();
-            if !is_ship_limit_met(item_rib.ship_limit.as_ref().unwrap(), ship_type_aid, ship_grp_aid) {
+            let ship_limit = item_rib.ship_limit.as_ref().unwrap();
+            if !ship_type_aid.is_some_and(|v| ship_limit.accepts_ship(v, ship_grp_aid)) {
                 self.ship_limit_mismatches.insert(item_uid);
             }
         }
@@ -151,13 +152,4 @@ pub(in crate::svc::vast) fn get_fit_ship_type_group(
         }
         None => (None, None),
     }
-}
-
-pub(in crate::svc::vast) fn is_ship_limit_met(
-    ship_limit: &RItemShipLimit,
-    ship_type_aid: Option<AItemId>,
-    ship_grp_aid: Option<AItemGrpId>,
-) -> bool {
-    ship_type_aid.is_some_and(|v| ship_limit.type_aids.contains(&v))
-        || ship_grp_aid.is_some_and(|v| ship_limit.group_aids.contains(&v))
 }
