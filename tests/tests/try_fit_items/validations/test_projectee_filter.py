@@ -3,19 +3,24 @@ from fw.api import ValOptions
 
 def test_src_direct_dd(client, consts):
     # Also check multiple projectee items
+    eve_grp_id = client.mk_eve_charge_group()
     eve_capships_skill_id = client.mk_eve_item(id_=consts.EveItem.capital_ships)
     eve_other_skill_id = client.mk_eve_item()
+    eve_group_attr_id = client.mk_eve_attr(id_=consts.EveAttr.charge_group1)
     eve_capacity_attr_id = client.mk_eve_attr(id_=consts.EveAttr.capacity)
     eve_launcher_effect_id = client.mk_eve_effect(
         id_=consts.UtilEffect.activates_charge,
         cat_id=consts.EveEffCat.active)
     eve_src_effect_id = client.mk_eve_effect(id_=consts.EveEffect.super_weapon_amarr, cat_id=consts.EveEffCat.target)
     eve_launcher_id = client.mk_eve_item(
-        attrs={eve_capacity_attr_id: 1},
+        attrs={eve_group_attr_id: eve_grp_id, eve_capacity_attr_id: 1},
         eff_ids=[eve_launcher_effect_id],
         defeff_id=eve_launcher_effect_id)
-    eve_src_charge_id = client.mk_eve_charge(eff_ids=[eve_src_effect_id], defeff_id=eve_src_effect_id)
-    eve_other_charge_id = client.mk_eve_charge()
+    eve_src_charge_id = client.mk_eve_charge(
+        grp_id=eve_grp_id,
+        eff_ids=[eve_src_effect_id],
+        defeff_id=eve_src_effect_id)
+    eve_other_charge_id = client.mk_eve_charge(grp_id=eve_grp_id)
     eve_cap_ship_id = client.mk_eve_ship(srqs={eve_capships_skill_id: 1})
     eve_freighter_id = client.mk_eve_ship(grp_id=consts.EveItemGrp.freighter)
     eve_jf_id = client.mk_eve_ship(grp_id=consts.EveItemGrp.jump_freighter)
@@ -53,7 +58,9 @@ def test_src_direct_dd(client, consts):
 
 
 def test_src_standup_vorton(client, consts):
+    eve_grp_id = client.mk_eve_charge_group()
     eve_tgt_list_attr_id = client.mk_eve_attr(id_=consts.EveAttr.tgt_filter_typelist_id)
+    eve_group_attr_id = client.mk_eve_attr(id_=consts.EveAttr.charge_group1)
     eve_capacity_attr_id = client.mk_eve_attr(id_=consts.EveAttr.capacity)
     eve_launcher_effect_id = client.mk_eve_effect(
         id_=consts.UtilEffect.activates_charge,
@@ -63,14 +70,15 @@ def test_src_standup_vorton(client, consts):
     eve_ship2_id = client.mk_eve_ship()
     eve_item_list_id = client.mk_eve_item_list(inc_type_ids=[eve_ship2_id])
     eve_launcher_id = client.mk_eve_item(
-        attrs={eve_capacity_attr_id: 1},
+        attrs={eve_group_attr_id: eve_grp_id, eve_capacity_attr_id: 1},
         eff_ids=[eve_launcher_effect_id],
         defeff_id=eve_launcher_effect_id)
     eve_src_charge_id = client.mk_eve_charge(
+        grp_id=eve_grp_id,
         attrs={eve_tgt_list_attr_id: eve_item_list_id},
         eff_ids=[eve_src_effect_id],
         defeff_id=eve_src_effect_id)
-    eve_other_charge_id = client.mk_eve_charge()
+    eve_other_charge_id = client.mk_eve_charge(grp_id=eve_grp_id)
     client.create_sources()
     api_sol = client.create_sol()
     api_src_fit = api_sol.create_fit()
@@ -93,7 +101,9 @@ def test_src_standup_vorton(client, consts):
 
 
 def test_filter_reference_values(client, consts):
+    eve_grp_id = client.mk_eve_charge_group()
     eve_tgt_list_attr_id = client.mk_eve_attr(id_=consts.EveAttr.tgt_filter_typelist_id)
+    eve_group_attr_id = client.mk_eve_attr(id_=consts.EveAttr.charge_group1)
     eve_capacity_attr_id = client.mk_eve_attr(id_=consts.EveAttr.capacity)
     eve_launcher_effect_id = client.mk_eve_effect(
         id_=consts.UtilEffect.activates_charge,
@@ -104,22 +114,26 @@ def test_filter_reference_values(client, consts):
     client.mk_eve_item_list(id_=eve_item_list_id - 1)
     client.mk_eve_item_list(id_=eve_item_list_id + 1)
     eve_launcher_id = client.mk_eve_item(
-        attrs={eve_capacity_attr_id: 1},
+        attrs={eve_group_attr_id: eve_grp_id, eve_capacity_attr_id: 1},
         eff_ids=[eve_launcher_effect_id],
         defeff_id=eve_launcher_effect_id)
     eve_charge1_id = client.mk_eve_charge(
+        grp_id=eve_grp_id,
         attrs={eve_tgt_list_attr_id: eve_item_list_id - 0.6},
         eff_ids=[eve_src_effect_id],
         defeff_id=eve_src_effect_id)
     eve_charge2_id = client.mk_eve_charge(
+        grp_id=eve_grp_id,
         attrs={eve_tgt_list_attr_id: eve_item_list_id - 0.4},
         eff_ids=[eve_src_effect_id],
         defeff_id=eve_src_effect_id)
     eve_charge3_id = client.mk_eve_charge(
+        grp_id=eve_grp_id,
         attrs={eve_tgt_list_attr_id: eve_item_list_id + 0.4},
         eff_ids=[eve_src_effect_id],
         defeff_id=eve_src_effect_id)
     eve_charge4_id = client.mk_eve_charge(
+        grp_id=eve_grp_id,
         attrs={eve_tgt_list_attr_id: eve_item_list_id + 0.6},
         eff_ids=[eve_src_effect_id],
         defeff_id=eve_src_effect_id)
@@ -139,7 +153,9 @@ def test_filter_reference_values(client, consts):
 
 
 def test_empty_list(client, consts):
+    eve_grp_id = client.mk_eve_charge_group()
     eve_tgt_list_attr_id = client.mk_eve_attr(id_=consts.EveAttr.tgt_filter_typelist_id)
+    eve_group_attr_id = client.mk_eve_attr(id_=consts.EveAttr.charge_group1)
     eve_capacity_attr_id = client.mk_eve_attr(id_=consts.EveAttr.capacity)
     eve_launcher_effect_id = client.mk_eve_effect(
         id_=consts.UtilEffect.activates_charge,
@@ -148,10 +164,11 @@ def test_empty_list(client, consts):
     eve_ship_id = client.mk_eve_ship()
     eve_item_list_id = client.mk_eve_item_list()
     eve_launcher_id = client.mk_eve_item(
-        attrs={eve_capacity_attr_id: 1},
+        attrs={eve_group_attr_id: eve_grp_id, eve_capacity_attr_id: 1},
         eff_ids=[eve_launcher_effect_id],
         defeff_id=eve_launcher_effect_id)
     eve_src_charge_id = client.mk_eve_charge(
+        grp_id=eve_grp_id,
         attrs={eve_tgt_list_attr_id: eve_item_list_id},
         eff_ids=[eve_src_effect_id],
         defeff_id=eve_src_effect_id)
@@ -170,7 +187,9 @@ def test_empty_list(client, consts):
 
 
 def test_tgt_mutation(client, consts):
+    eve_grp_id = client.mk_eve_charge_group()
     eve_tgt_list_attr_id = client.mk_eve_attr(id_=consts.EveAttr.tgt_filter_typelist_id)
+    eve_group_attr_id = client.mk_eve_attr(id_=consts.EveAttr.charge_group1)
     eve_capacity_attr_id = client.mk_eve_attr(id_=consts.EveAttr.capacity)
     eve_launcher_effect_id = client.mk_eve_effect(
         id_=consts.UtilEffect.activates_charge,
@@ -182,14 +201,16 @@ def test_tgt_mutation(client, consts):
     eve_item_list1_id = client.mk_eve_item_list(inc_type_ids=[eve_tgt_base_drone_id])
     eve_item_list2_id = client.mk_eve_item_list(inc_type_ids=[eve_tgt_mutated_drone_id])
     eve_launcher_id = client.mk_eve_item(
-        attrs={eve_capacity_attr_id: 1},
+        attrs={eve_group_attr_id: eve_grp_id, eve_capacity_attr_id: 1},
         eff_ids=[eve_launcher_effect_id],
         defeff_id=eve_launcher_effect_id)
     eve_charge1_id = client.mk_eve_charge(
+        grp_id=eve_grp_id,
         attrs={eve_tgt_list_attr_id: eve_item_list1_id},
         eff_ids=[eve_src_effect_id],
         defeff_id=eve_src_effect_id)
     eve_charge2_id = client.mk_eve_charge(
+        grp_id=eve_grp_id,
         attrs={eve_tgt_list_attr_id: eve_item_list2_id},
         eff_ids=[eve_src_effect_id],
         defeff_id=eve_src_effect_id)
@@ -222,7 +243,9 @@ def test_tgt_mutation(client, consts):
 
 
 def test_known_failures(client, consts):
+    eve_grp_id = client.mk_eve_charge_group()
     eve_tgt_list_attr_id = client.mk_eve_attr(id_=consts.EveAttr.tgt_filter_typelist_id)
+    eve_group_attr_id = client.mk_eve_attr(id_=consts.EveAttr.charge_group1)
     eve_capacity_attr_id = client.mk_eve_attr(id_=consts.EveAttr.capacity)
     eve_launcher_effect_id = client.mk_eve_effect(
         id_=consts.UtilEffect.activates_charge,
@@ -231,15 +254,16 @@ def test_known_failures(client, consts):
     eve_tgt_item_id = client.mk_eve_ship()
     eve_item_list_id = client.mk_eve_item_list()
     eve_launcher1_id = client.mk_eve_item(
-        attrs={eve_capacity_attr_id: 1},
+        attrs={eve_group_attr_id: eve_grp_id, eve_capacity_attr_id: 1},
         eff_ids=[eve_launcher_effect_id],
         defeff_id=eve_launcher_effect_id)
     eve_launcher2_id = client.mk_eve_item(eff_ids=[eve_launcher_effect_id], defeff_id=eve_launcher_effect_id)
     eve_src_charge_id = client.mk_eve_charge(
+        grp_id=eve_grp_id,
         attrs={eve_tgt_list_attr_id: eve_item_list_id},
         eff_ids=[eve_src_effect_id],
         defeff_id=eve_src_effect_id)
-    eve_other_charge_id = client.mk_eve_charge()
+    eve_other_charge_id = client.mk_eve_charge(grp_id=eve_grp_id)
     client.create_sources()
     api_sol = client.create_sol()
     api_tgt_fit = api_sol.create_fit()
@@ -276,7 +300,9 @@ def test_known_failures(client, consts):
 
 
 def test_no_attr(client, consts):
+    eve_grp_id = client.mk_eve_charge_group()
     eve_tgt_list_attr_id = consts.EveAttr.tgt_filter_typelist_id
+    eve_group_attr_id = client.mk_eve_attr(id_=consts.EveAttr.charge_group1)
     eve_capacity_attr_id = client.mk_eve_attr(id_=consts.EveAttr.capacity)
     eve_launcher_effect_id = client.mk_eve_effect(
         id_=consts.UtilEffect.activates_charge,
@@ -286,10 +312,11 @@ def test_no_attr(client, consts):
     eve_ship2_id = client.mk_eve_ship()
     eve_item_list_id = client.mk_eve_item_list(inc_type_ids=[eve_ship2_id])
     eve_launcher_id = client.mk_eve_item(
-        attrs={eve_capacity_attr_id: 1},
+        attrs={eve_group_attr_id: eve_grp_id, eve_capacity_attr_id: 1},
         eff_ids=[eve_launcher_effect_id],
         defeff_id=eve_launcher_effect_id)
     eve_src_charge_id = client.mk_eve_charge(
+        grp_id=eve_grp_id,
         attrs={eve_tgt_list_attr_id: eve_item_list_id},
         eff_ids=[eve_src_effect_id],
         defeff_id=eve_src_effect_id)
@@ -308,7 +335,9 @@ def test_no_attr(client, consts):
 
 
 def test_not_loaded_tgt(client, consts):
+    eve_grp_id = client.mk_eve_charge_group()
     eve_tgt_list_attr_id = client.mk_eve_attr(id_=consts.EveAttr.tgt_filter_typelist_id)
+    eve_group_attr_id = client.mk_eve_attr(id_=consts.EveAttr.charge_group1)
     eve_capacity_attr_id = client.mk_eve_attr(id_=consts.EveAttr.capacity)
     eve_launcher_effect_id = client.mk_eve_effect(
         id_=consts.UtilEffect.activates_charge,
@@ -318,10 +347,11 @@ def test_not_loaded_tgt(client, consts):
     eve_tgt_item2_id = client.alloc_item_id()
     eve_item_list_id = client.mk_eve_item_list(inc_type_ids=[eve_tgt_item2_id])
     eve_launcher_id = client.mk_eve_item(
-        attrs={eve_capacity_attr_id: 1},
+        attrs={eve_group_attr_id: eve_grp_id, eve_capacity_attr_id: 1},
         eff_ids=[eve_launcher_effect_id],
         defeff_id=eve_launcher_effect_id)
     eve_src_charge_id = client.mk_eve_charge(
+        grp_id=eve_grp_id,
         attrs={eve_tgt_list_attr_id: eve_item_list_id},
         eff_ids=[eve_src_effect_id],
         defeff_id=eve_src_effect_id)

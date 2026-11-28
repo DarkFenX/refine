@@ -83,6 +83,7 @@ def test_asb(client, consts):
     eve_max_attr_id = client.mk_eve_attr(id_=consts.EveAttr.capacitor_capacity)
     eve_use_attr_id = client.mk_eve_attr()
     eve_cycle_time_attr_id = client.mk_eve_attr()
+    eve_group_attr_id = client.mk_eve_attr(id_=consts.EveAttr.charge_group1)
     eve_capacity_attr_id = client.mk_eve_attr(id_=consts.EveAttr.capacity)
     eve_volume_attr_id = client.mk_eve_attr(id_=consts.EveAttr.volume)
     eve_reload_attr_id = client.mk_eve_attr(id_=consts.EveAttr.reload_time)
@@ -94,6 +95,7 @@ def test_asb(client, consts):
         duration_attr_id=eve_cycle_time_attr_id)
     eve_module_id = client.mk_eve_module(
         attrs={
+            eve_group_attr_id: consts.EveItemGrp.capacitor_booster_charge,
             eve_use_attr_id: 1320,
             eve_cycle_time_attr_id: 5000,
             eve_reload_attr_id: 60000,
@@ -303,8 +305,10 @@ def test_not_loaded_ship(client, consts):
 
 
 def test_criterion_item_kind(client, consts):
+    eve_grp_id = client.mk_eve_charge_group()
     eve_max_attr_id = client.mk_eve_attr(id_=consts.EveAttr.capacitor_capacity)
     eve_use_attr_id = client.mk_eve_attr()
+    eve_group_attr_id = client.mk_eve_attr(id_=consts.EveAttr.charge_group1)
     eve_capacity_attr_id = client.mk_eve_attr(id_=consts.EveAttr.capacity)
     eve_effect_id = client.mk_eve_effect(cat_id=consts.EveEffCat.active, discharge_attr_id=eve_use_attr_id)
     eve_booster_id = client.mk_eve_booster(
@@ -312,6 +316,7 @@ def test_criterion_item_kind(client, consts):
         eff_ids=[eve_effect_id],
         defeff_id=eve_effect_id)
     eve_charge_id = client.mk_eve_charge(
+        grp_id=eve_grp_id,
         attrs={eve_use_attr_id: 1000},
         eff_ids=[eve_effect_id],
         defeff_id=eve_effect_id)
@@ -337,7 +342,7 @@ def test_criterion_item_kind(client, consts):
         attrs={eve_use_attr_id: 1000},
         eff_ids=[eve_effect_id],
         defeff_id=eve_effect_id)
-    eve_launcher_id = client.mk_eve_item(attrs={eve_capacity_attr_id: 1})
+    eve_launcher_id = client.mk_eve_item(attrs={eve_group_attr_id: eve_grp_id, eve_capacity_attr_id: 1})
     eve_ship_id = client.mk_eve_ship(attrs={eve_max_attr_id: 750})
     client.create_sources()
     api_sol = client.create_sol()

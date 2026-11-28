@@ -270,11 +270,13 @@ def test_criterion_effect(client, consts):
 
 
 def test_criterion_item_kind(client, consts):
+    eve_grp_id = client.mk_eve_charge_group()
     eve_max_attr_id = client.mk_eve_attr(id_=consts.EveAttr.launcher_slots_left)
     eve_effect_id = client.mk_eve_effect(id_=consts.EveEffect.launcher_fitted)
+    eve_group_attr_id = client.mk_eve_attr(id_=consts.EveAttr.charge_group1)
     eve_capacity_attr_id = client.mk_eve_attr(id_=consts.EveAttr.capacity)
     eve_booster_id = client.mk_eve_booster(eff_ids=[eve_effect_id])
-    eve_charge_id = client.mk_eve_charge(eff_ids=[eve_effect_id])
+    eve_charge_id = client.mk_eve_charge(grp_id=eve_grp_id, eff_ids=[eve_effect_id])
     eve_drone_id = client.mk_eve_drone(eff_ids=[eve_effect_id])
     eve_fighter_id = client.mk_eve_fighter(eff_ids=[eve_effect_id])
     eve_implant_id = client.mk_eve_implant(eff_ids=[eve_effect_id])
@@ -282,7 +284,7 @@ def test_criterion_item_kind(client, consts):
     eve_rig_id = client.mk_eve_rig(eff_ids=[eve_effect_id])
     eve_service_id = client.mk_eve_service(eff_ids=[eve_effect_id])
     eve_subsystem_id = client.mk_eve_subsystem(eff_ids=[eve_effect_id])
-    eve_launcher_id = client.mk_eve_item(attrs={eve_capacity_attr_id: 1})
+    eve_launcher_id = client.mk_eve_item(attrs={eve_group_attr_id: eve_grp_id, eve_capacity_attr_id: 1})
     eve_ship_id = client.mk_eve_ship(attrs={eve_max_attr_id: 0})
     client.create_sources()
     api_sol = client.create_sol()

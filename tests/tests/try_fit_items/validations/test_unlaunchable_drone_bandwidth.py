@@ -78,6 +78,7 @@ def test_equal_below_max(client, consts):
 def test_decreasers(client, consts):
     # Drones are checked against potential bandwidth, i.e. with modules which decrease bandwidth
     # switched off; it applies both to fitted and to tried modules
+    eve_grp_id = client.mk_eve_charge_group()
     eve_use_attr_id = client.mk_eve_attr(id_=consts.EveAttr.drone_bandwidth_used)
     eve_max_attr_id = client.mk_eve_attr(id_=consts.EveAttr.drone_bandwidth)
     eve_mod_attr_id = client.mk_eve_attr()
@@ -87,14 +88,15 @@ def test_decreasers(client, consts):
         op=consts.EveModOp.post_percent,
         affector_attr_id=eve_mod_attr_id,
         affectee_attr_id=eve_max_attr_id)
+    eve_group_attr_id = client.mk_eve_attr(id_=consts.EveAttr.charge_group1)
     eve_capacity_attr_id = client.mk_eve_attr(id_=consts.EveAttr.capacity)
     eve_mod_effect_id = client.mk_eve_effect(cat_id=consts.EveEffCat.online, mod_info=[eve_mod])
     eve_module_id = client.mk_eve_module(
-        attrs={eve_mod_attr_id: -50, eve_capacity_attr_id: 1},
+        attrs={eve_group_attr_id: eve_grp_id, eve_mod_attr_id: -50, eve_capacity_attr_id: 1},
         eff_ids=[eve_mod_effect_id])
     eve_drone1_id = client.mk_eve_drone(attrs={eve_use_attr_id: 80})
     eve_drone2_id = client.mk_eve_drone(attrs={eve_use_attr_id: 120})
-    eve_charge_id = client.mk_eve_charge()
+    eve_charge_id = client.mk_eve_charge(grp_id=eve_grp_id)
     eve_implant_id = client.mk_eve_implant()
     eve_ship_id = client.mk_eve_ship(attrs={eve_max_attr_id: 100})
     client.create_sources()
@@ -359,11 +361,13 @@ def test_not_loaded_ship(client, consts):
 
 def test_criterion_item_kind(client, consts):
     # Validation applies only to drones
+    eve_grp_id = client.mk_eve_charge_group()
     eve_use_attr_id = client.mk_eve_attr(id_=consts.EveAttr.drone_bandwidth_used)
     eve_max_attr_id = client.mk_eve_attr(id_=consts.EveAttr.drone_bandwidth)
+    eve_group_attr_id = client.mk_eve_attr(id_=consts.EveAttr.charge_group1)
     eve_capacity_attr_id = client.mk_eve_attr(id_=consts.EveAttr.capacity)
     eve_booster_id = client.mk_eve_booster(attrs={eve_use_attr_id: 150})
-    eve_charge_id = client.mk_eve_charge(attrs={eve_use_attr_id: 150})
+    eve_charge_id = client.mk_eve_charge(grp_id=eve_grp_id, attrs={eve_use_attr_id: 150})
     eve_drone_id = client.mk_eve_drone(attrs={eve_use_attr_id: 150})
     eve_fighter_id = client.mk_eve_fighter(attrs={eve_use_attr_id: 150})
     eve_implant_id = client.mk_eve_implant(attrs={eve_use_attr_id: 150})
@@ -371,7 +375,7 @@ def test_criterion_item_kind(client, consts):
     eve_rig_id = client.mk_eve_rig(attrs={eve_use_attr_id: 150})
     eve_service_id = client.mk_eve_service(attrs={eve_use_attr_id: 150})
     eve_subsystem_id = client.mk_eve_subsystem(attrs={eve_use_attr_id: 150})
-    eve_launcher_id = client.mk_eve_item(attrs={eve_capacity_attr_id: 1})
+    eve_launcher_id = client.mk_eve_item(attrs={eve_group_attr_id: eve_grp_id, eve_capacity_attr_id: 1})
     eve_ship_id = client.mk_eve_ship(attrs={eve_max_attr_id: 125, eve_use_attr_id: 150})
     client.create_sources()
     api_sol = client.create_sol()

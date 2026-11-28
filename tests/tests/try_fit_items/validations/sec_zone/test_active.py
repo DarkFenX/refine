@@ -3,13 +3,15 @@ from fw.api import ValOptions
 
 
 def test_charge(client, consts):
+    eve_grp_id = client.mk_eve_charge_group()
     eve_ban_empire_attr_id = client.mk_eve_attr(id_=consts.EveAttr.disallow_in_empire_space)
+    eve_group_attr_id = client.mk_eve_attr(id_=consts.EveAttr.charge_group1)
     eve_capacity_attr_id = client.mk_eve_attr(id_=consts.EveAttr.capacity)
     eve_effect_id = client.mk_eve_effect(id_=consts.UtilEffect.activates_charge, cat_id=consts.EveEffCat.active)
-    eve_charge1_id = client.mk_eve_charge()
-    eve_charge2_id = client.mk_eve_charge(attrs={eve_ban_empire_attr_id: 1})
+    eve_charge1_id = client.mk_eve_charge(grp_id=eve_grp_id)
+    eve_charge2_id = client.mk_eve_charge(grp_id=eve_grp_id, attrs={eve_ban_empire_attr_id: 1})
     eve_module_id = client.mk_eve_item(
-        attrs={eve_capacity_attr_id: 1},
+        attrs={eve_group_attr_id: eve_grp_id, eve_capacity_attr_id: 1},
         eff_ids=[eve_effect_id],
         defeff_id=eve_effect_id)
     client.create_sources()
@@ -47,14 +49,16 @@ def test_charge(client, consts):
 def test_known_failures(client, consts):
     # Fast validator has KF check at the very end of logic chain, thus we check all those conditions
     # which end up with KF check
+    eve_grp_id = client.mk_eve_charge_group()
     eve_ban_empire_attr_id = client.mk_eve_attr(id_=consts.EveAttr.disallow_in_empire_space)
     eve_ban_hazard_attr_id = client.mk_eve_attr(id_=consts.EveAttr.disallow_in_hazard)
+    eve_group_attr_id = client.mk_eve_attr(id_=consts.EveAttr.charge_group1)
     eve_capacity_attr_id = client.mk_eve_attr(id_=consts.EveAttr.capacity)
     eve_effect_id = client.mk_eve_effect(id_=consts.UtilEffect.activates_charge, cat_id=consts.EveEffCat.active)
-    eve_charge1_id = client.mk_eve_charge(attrs={eve_ban_empire_attr_id: 1})
-    eve_charge2_id = client.mk_eve_charge(attrs={eve_ban_hazard_attr_id: 1})
+    eve_charge1_id = client.mk_eve_charge(grp_id=eve_grp_id, attrs={eve_ban_empire_attr_id: 1})
+    eve_charge2_id = client.mk_eve_charge(grp_id=eve_grp_id, attrs={eve_ban_hazard_attr_id: 1})
     eve_module1_id = client.mk_eve_item(
-        attrs={eve_capacity_attr_id: 1},
+        attrs={eve_group_attr_id: eve_grp_id, eve_capacity_attr_id: 1},
         eff_ids=[eve_effect_id],
         defeff_id=eve_effect_id)
     eve_module2_id = client.mk_eve_item(eff_ids=[eve_effect_id], defeff_id=eve_effect_id)
@@ -155,13 +159,15 @@ def test_known_failures(client, consts):
 
 
 def test_modified(client, consts):
+    eve_grp_id = client.mk_eve_charge_group()
     eve_attr_id = client.mk_eve_attr(id_=consts.EveAttr.disallow_in_empire_space)
+    eve_group_attr_id = client.mk_eve_attr(id_=consts.EveAttr.charge_group1)
     eve_capacity_attr_id = client.mk_eve_attr(id_=consts.EveAttr.capacity)
     eve_effect_id = client.mk_eve_effect(id_=consts.UtilEffect.activates_charge, cat_id=consts.EveEffCat.active)
-    eve_charge1_id = client.mk_eve_charge(attrs={eve_attr_id: 0})
-    eve_charge2_id = client.mk_eve_charge(attrs={eve_attr_id: 1})
+    eve_charge1_id = client.mk_eve_charge(grp_id=eve_grp_id, attrs={eve_attr_id: 0})
+    eve_charge2_id = client.mk_eve_charge(grp_id=eve_grp_id, attrs={eve_attr_id: 1})
     eve_module_id = client.mk_eve_item(
-        attrs={eve_capacity_attr_id: 1},
+        attrs={eve_group_attr_id: eve_grp_id, eve_capacity_attr_id: 1},
         eff_ids=[eve_effect_id],
         defeff_id=eve_effect_id)
     eve_mod_attr_id = client.mk_eve_attr()
@@ -211,17 +217,19 @@ def test_modified(client, consts):
 
 def test_values(client, consts):
     # Check that only absence of attribute value, or value equal to 0 is treated as flag disabled
+    eve_grp_id = client.mk_eve_charge_group()
     eve_attr_id = client.mk_eve_attr(id_=consts.EveAttr.disallow_in_empire_space)
+    eve_group_attr_id = client.mk_eve_attr(id_=consts.EveAttr.charge_group1)
     eve_capacity_attr_id = client.mk_eve_attr(id_=consts.EveAttr.capacity)
     eve_effect_id = client.mk_eve_effect(id_=consts.UtilEffect.activates_charge, cat_id=consts.EveEffCat.active)
-    eve_charge1_id = client.mk_eve_charge()
-    eve_charge2_id = client.mk_eve_charge(attrs={eve_attr_id: 0})
-    eve_charge3_id = client.mk_eve_charge(attrs={eve_attr_id: 1})
-    eve_charge4_id = client.mk_eve_charge(attrs={eve_attr_id: 0.01})
-    eve_charge5_id = client.mk_eve_charge(attrs={eve_attr_id: -0.01})
-    eve_charge6_id = client.mk_eve_charge(attrs={eve_attr_id: -5000})
+    eve_charge1_id = client.mk_eve_charge(grp_id=eve_grp_id)
+    eve_charge2_id = client.mk_eve_charge(grp_id=eve_grp_id, attrs={eve_attr_id: 0})
+    eve_charge3_id = client.mk_eve_charge(grp_id=eve_grp_id, attrs={eve_attr_id: 1})
+    eve_charge4_id = client.mk_eve_charge(grp_id=eve_grp_id, attrs={eve_attr_id: 0.01})
+    eve_charge5_id = client.mk_eve_charge(grp_id=eve_grp_id, attrs={eve_attr_id: -0.01})
+    eve_charge6_id = client.mk_eve_charge(grp_id=eve_grp_id, attrs={eve_attr_id: -5000})
     eve_module_id = client.mk_eve_item(
-        attrs={eve_capacity_attr_id: 1},
+        attrs={eve_group_attr_id: eve_grp_id, eve_capacity_attr_id: 1},
         eff_ids=[eve_effect_id],
         defeff_id=eve_effect_id)
     client.create_sources()
@@ -236,12 +244,14 @@ def test_values(client, consts):
 
 
 def test_no_attr(client, consts):
+    eve_grp_id = client.mk_eve_charge_group()
     eve_attr_id = consts.EveAttr.disallow_in_empire_space
+    eve_group_attr_id = client.mk_eve_attr(id_=consts.EveAttr.charge_group1)
     eve_capacity_attr_id = client.mk_eve_attr(id_=consts.EveAttr.capacity)
     eve_effect_id = client.mk_eve_effect(id_=consts.UtilEffect.activates_charge, cat_id=consts.EveEffCat.active)
-    eve_charge_id = client.mk_eve_charge(attrs={eve_attr_id: 1})
+    eve_charge_id = client.mk_eve_charge(grp_id=eve_grp_id, attrs={eve_attr_id: 1})
     eve_module_id = client.mk_eve_item(
-        attrs={eve_capacity_attr_id: 1},
+        attrs={eve_group_attr_id: eve_grp_id, eve_capacity_attr_id: 1},
         eff_ids=[eve_effect_id],
         defeff_id=eve_effect_id)
     client.create_sources()
@@ -253,12 +263,14 @@ def test_no_attr(client, consts):
 
 
 def test_state(client, consts):
+    eve_grp_id = client.mk_eve_charge_group()
     eve_attr_id = client.mk_eve_attr(id_=consts.EveAttr.disallow_in_empire_space)
+    eve_group_attr_id = client.mk_eve_attr(id_=consts.EveAttr.charge_group1)
     eve_capacity_attr_id = client.mk_eve_attr(id_=consts.EveAttr.capacity)
     eve_effect_id = client.mk_eve_effect(id_=consts.UtilEffect.activates_charge, cat_id=consts.EveEffCat.active)
-    eve_charge_id = client.mk_eve_charge(attrs={eve_attr_id: 1})
+    eve_charge_id = client.mk_eve_charge(grp_id=eve_grp_id, attrs={eve_attr_id: 1})
     eve_module_id = client.mk_eve_item(
-        attrs={eve_capacity_attr_id: 1},
+        attrs={eve_group_attr_id: eve_grp_id, eve_capacity_attr_id: 1},
         eff_ids=[eve_effect_id],
         defeff_id=eve_effect_id)
     client.create_sources()
@@ -282,11 +294,13 @@ def test_state(client, consts):
 
 
 def test_criterion_item_kind(client, consts):
+    eve_grp_id = client.mk_eve_charge_group()
     eve_attr_id = client.mk_eve_attr(id_=consts.EveAttr.disallow_in_empire_space)
+    eve_group_attr_id = client.mk_eve_attr(id_=consts.EveAttr.charge_group1)
     eve_capacity_attr_id = client.mk_eve_attr(id_=consts.EveAttr.capacity)
     eve_effect_id = client.mk_eve_effect(id_=consts.UtilEffect.activates_charge, cat_id=consts.EveEffCat.active)
     eve_booster_id = client.mk_eve_booster(attrs={eve_attr_id: 1})
-    eve_charge_id = client.mk_eve_charge(attrs={eve_attr_id: 1})
+    eve_charge_id = client.mk_eve_charge(grp_id=eve_grp_id, attrs={eve_attr_id: 1})
     eve_drone_id = client.mk_eve_drone(attrs={eve_attr_id: 1})
     eve_fighter_id = client.mk_eve_fighter(attrs={eve_attr_id: 1})
     eve_implant_id = client.mk_eve_implant(attrs={eve_attr_id: 1})
@@ -295,7 +309,7 @@ def test_criterion_item_kind(client, consts):
     eve_service_id = client.mk_eve_service(attrs={eve_attr_id: 1})
     eve_subsystem_id = client.mk_eve_subsystem(attrs={eve_attr_id: 1})
     eve_launcher_id = client.mk_eve_item(
-        attrs={eve_capacity_attr_id: 1},
+        attrs={eve_group_attr_id: eve_grp_id, eve_capacity_attr_id: 1},
         eff_ids=[eve_effect_id],
         defeff_id=eve_effect_id)
     client.create_sources()

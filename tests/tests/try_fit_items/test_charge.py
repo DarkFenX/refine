@@ -3,12 +3,14 @@ from fw.api import ValOptions
 
 def test_kfs_replaced(client, consts):
     # Known failures of a charge loaded into a module should not apply to charges tried in its place
+    eve_grp_id = client.mk_eve_charge_group()
     eve_ban_attr_id = client.mk_eve_attr(id_=consts.EveAttr.disallow_in_empire_space)
+    eve_group_attr_id = client.mk_eve_attr(id_=consts.EveAttr.charge_group1)
     eve_capacity_attr_id = client.mk_eve_attr(id_=consts.EveAttr.capacity)
-    eve_charge1_id = client.mk_eve_charge()
-    eve_charge2_id = client.mk_eve_charge(attrs={eve_ban_attr_id: 1})
-    eve_charge3_id = client.mk_eve_charge(attrs={eve_ban_attr_id: 1})
-    eve_module_id = client.mk_eve_item(attrs={eve_capacity_attr_id: 1})
+    eve_charge1_id = client.mk_eve_charge(grp_id=eve_grp_id)
+    eve_charge2_id = client.mk_eve_charge(grp_id=eve_grp_id, attrs={eve_ban_attr_id: 1})
+    eve_charge3_id = client.mk_eve_charge(grp_id=eve_grp_id, attrs={eve_ban_attr_id: 1})
+    eve_module_id = client.mk_eve_item(attrs={eve_group_attr_id: eve_grp_id, eve_capacity_attr_id: 1})
     client.create_sources()
     api_sol = client.create_sol(sec_zone=consts.ApiSecZone.hisec)
     api_fit = api_sol.create_fit()
@@ -52,9 +54,11 @@ def test_kfs_restored(client, consts):
 
 
 def test_fitted_modules(client, consts):
+    eve_grp_id = client.mk_eve_charge_group()
+    eve_group_attr_id = client.mk_eve_attr(id_=consts.EveAttr.charge_group1)
     eve_capacity_attr_id = client.mk_eve_attr(id_=consts.EveAttr.capacity)
-    eve_charge_id = client.mk_eve_charge()
-    eve_launcher_id = client.mk_eve_module(attrs={eve_capacity_attr_id: 1})
+    eve_charge_id = client.mk_eve_charge(grp_id=eve_grp_id)
+    eve_launcher_id = client.mk_eve_module(attrs={eve_group_attr_id: eve_grp_id, eve_capacity_attr_id: 1})
     client.create_sources()
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
@@ -68,12 +72,14 @@ def test_fitted_modules(client, consts):
 
 
 def test_module_capacity(client, consts):
+    eve_grp_id = client.mk_eve_charge_group()
+    eve_group_attr_id = client.mk_eve_attr(id_=consts.EveAttr.charge_group1)
     eve_capacity_attr_id = client.mk_eve_attr(id_=consts.EveAttr.capacity)
-    eve_charge_id = client.mk_eve_charge()
-    eve_module1_id = client.mk_eve_item(attrs={eve_capacity_attr_id: 0})
-    eve_module2_id = client.mk_eve_item(attrs={eve_capacity_attr_id: -1})
-    eve_module3_id = client.mk_eve_item()
-    eve_module4_id = client.mk_eve_item(attrs={eve_capacity_attr_id: 0.1})
+    eve_charge_id = client.mk_eve_charge(grp_id=eve_grp_id)
+    eve_module1_id = client.mk_eve_item(attrs={eve_group_attr_id: eve_grp_id, eve_capacity_attr_id: 0})
+    eve_module2_id = client.mk_eve_item(attrs={eve_group_attr_id: eve_grp_id, eve_capacity_attr_id: -1})
+    eve_module3_id = client.mk_eve_item(attrs={eve_group_attr_id: eve_grp_id})
+    eve_module4_id = client.mk_eve_item(attrs={eve_group_attr_id: eve_grp_id, eve_capacity_attr_id: 0.1})
     client.create_sources()
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
@@ -86,6 +92,30 @@ def test_module_capacity(client, consts):
     api_fit.add_module(type_id=eve_module4_id)
     # Verification
     api_fit.check_try_fit_items(val_options=ValOptions(), passing=[eve_charge_id], failing=[])
+
+
+def test_module_charge_groups(client, consts):
+    eve_grp1_id = client.mk_eve_charge_group()
+    eve_grp2_id = client.mk_eve_charge_group()
+    eve_group_attr_id = client.mk_eve_attr(id_=consts.EveAttr.charge_group1)
+    eve_capacity_attr_id = client.mk_eve_attr(id_=consts.EveAttr.capacity)
+    eve_charge_id = client.mk_eve_charge(grp_id=eve_grp1_id)
+    # Create an item which has the group, just to prevent the group from being cleaned up
+    client.mk_eve_charge(grp_id=eve_grp2_id)
+    eve_module1_id = client.mk_eve_item(attrs={eve_capacity_attr_id: 1})
+    eve_module2_id = client.mk_eve_item(attrs={eve_group_attr_id: eve_grp2_id, eve_capacity_attr_id: 1})
+    client.create_sources()
+    api_sol = client.create_sol()
+    api_fit = api_sol.create_fit()
+    api_fit.add_module(type_id=eve_module1_id)
+    # Verification - charges are tried only in modules which allow some charge groups, even when
+    # charge group validation is disabled
+    api_fit.check_try_fit_items(val_options=ValOptions(), passing=[], failing=[eve_charge_id])
+    # Action
+    api_fit.add_module(type_id=eve_module2_id)
+    # Verification - which groups a module allows is up to charge group validation
+    api_fit.check_try_fit_items(val_options=ValOptions(), passing=[eve_charge_id], failing=[])
+    api_fit.check_try_fit_items(val_options=ValOptions(charge_group=True), passing=[], failing=[eve_charge_id])
 
 
 def test_module_types(client, consts):
@@ -112,11 +142,13 @@ def test_module_types(client, consts):
 
 
 def test_replaced(client, consts):
+    eve_grp_id = client.mk_eve_charge_group()
     eve_ban_attr_id = client.mk_eve_attr(id_=consts.EveAttr.disallow_in_empire_space)
+    eve_group_attr_id = client.mk_eve_attr(id_=consts.EveAttr.charge_group1)
     eve_capacity_attr_id = client.mk_eve_attr(id_=consts.EveAttr.capacity)
-    eve_charge1_id = client.mk_eve_charge(attrs={eve_ban_attr_id: 1})
-    eve_charge2_id = client.mk_eve_charge()
-    eve_module_id = client.mk_eve_item(attrs={eve_capacity_attr_id: 1})
+    eve_charge1_id = client.mk_eve_charge(grp_id=eve_grp_id, attrs={eve_ban_attr_id: 1})
+    eve_charge2_id = client.mk_eve_charge(grp_id=eve_grp_id)
+    eve_module_id = client.mk_eve_item(attrs={eve_group_attr_id: eve_grp_id, eve_capacity_attr_id: 1})
     client.create_sources()
     api_sol = client.create_sol(sec_zone=consts.ApiSecZone.hisec)
     api_fit = api_sol.create_fit()
@@ -131,11 +163,13 @@ def test_replaced(client, consts):
 
 
 def test_restored(client, consts):
+    eve_grp_id = client.mk_eve_charge_group()
+    eve_group_attr_id = client.mk_eve_attr(id_=consts.EveAttr.charge_group1)
     eve_capacity_attr_id = client.mk_eve_attr(id_=consts.EveAttr.capacity)
     eve_effect_id = client.mk_eve_effect()
-    eve_charge1_id = client.mk_eve_charge(eff_ids=[eve_effect_id])
-    eve_charge2_id = client.mk_eve_charge()
-    eve_module_id = client.mk_eve_item(attrs={eve_capacity_attr_id: 1})
+    eve_charge1_id = client.mk_eve_charge(grp_id=eve_grp_id, eff_ids=[eve_effect_id])
+    eve_charge2_id = client.mk_eve_charge(grp_id=eve_grp_id)
+    eve_module_id = client.mk_eve_item(attrs={eve_group_attr_id: eve_grp_id, eve_capacity_attr_id: 1})
     client.create_sources()
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
@@ -153,11 +187,13 @@ def test_restored(client, consts):
 
 
 def test_charged_module(client, consts):
+    eve_grp_id = client.mk_eve_charge_group()
     eve_ban_attr_id = client.mk_eve_attr(id_=consts.EveAttr.disallow_in_empire_space)
+    eve_group_attr_id = client.mk_eve_attr(id_=consts.EveAttr.charge_group1)
     eve_capacity_attr_id = client.mk_eve_attr(id_=consts.EveAttr.capacity)
-    eve_charge1_id = client.mk_eve_charge(attrs={eve_ban_attr_id: 1})
-    eve_charge2_id = client.mk_eve_charge()
-    eve_module_id = client.mk_eve_item(attrs={eve_capacity_attr_id: 1})
+    eve_charge1_id = client.mk_eve_charge(grp_id=eve_grp_id, attrs={eve_ban_attr_id: 1})
+    eve_charge2_id = client.mk_eve_charge(grp_id=eve_grp_id)
+    eve_module_id = client.mk_eve_item(attrs={eve_group_attr_id: eve_grp_id, eve_capacity_attr_id: 1})
     client.create_sources()
     api_sol = client.create_sol(sec_zone=consts.ApiSecZone.hisec)
     api_fit = api_sol.create_fit()
@@ -174,13 +210,15 @@ def test_charged_module(client, consts):
 
 def test_module_states(client, consts):
     # Tried charges inherit state of the module they are loaded into
+    eve_grp_id = client.mk_eve_charge_group()
     eve_ban_attr_id = client.mk_eve_attr(id_=consts.EveAttr.disallow_in_empire_space)
+    eve_group_attr_id = client.mk_eve_attr(id_=consts.EveAttr.charge_group1)
     eve_capacity_attr_id = client.mk_eve_attr(id_=consts.EveAttr.capacity)
     eve_effect_id = client.mk_eve_effect(id_=consts.UtilEffect.activates_charge, cat_id=consts.EveEffCat.active)
-    eve_charge1_id = client.mk_eve_charge()
-    eve_charge2_id = client.mk_eve_charge(attrs={eve_ban_attr_id: 1})
+    eve_charge1_id = client.mk_eve_charge(grp_id=eve_grp_id)
+    eve_charge2_id = client.mk_eve_charge(grp_id=eve_grp_id, attrs={eve_ban_attr_id: 1})
     eve_module_id = client.mk_eve_item(
-        attrs={eve_capacity_attr_id: 1},
+        attrs={eve_group_attr_id: eve_grp_id, eve_capacity_attr_id: 1},
         eff_ids=[eve_effect_id],
         defeff_id=eve_effect_id)
     client.create_sources()
@@ -205,16 +243,21 @@ def test_module_states(client, consts):
 
 def test_module_projections(client, consts):
     # Tried charges are projected wherever the module they are loaded into is projected
+    eve_grp_id = client.mk_eve_charge_group()
+    eve_group_attr_id = client.mk_eve_attr(id_=consts.EveAttr.charge_group1)
     eve_capacity_attr_id = client.mk_eve_attr(id_=consts.EveAttr.capacity)
     eve_launcher_effect_id = client.mk_eve_effect(
         id_=consts.UtilEffect.activates_charge,
         cat_id=consts.EveEffCat.active)
     eve_charge_effect_id = client.mk_eve_effect(id_=consts.EveEffect.super_weapon_amarr, cat_id=consts.EveEffCat.target)
     eve_launcher_id = client.mk_eve_item(
-        attrs={eve_capacity_attr_id: 1},
+        attrs={eve_group_attr_id: eve_grp_id, eve_capacity_attr_id: 1},
         eff_ids=[eve_launcher_effect_id],
         defeff_id=eve_launcher_effect_id)
-    eve_charge_id = client.mk_eve_charge(eff_ids=[eve_charge_effect_id], defeff_id=eve_charge_effect_id)
+    eve_charge_id = client.mk_eve_charge(
+        grp_id=eve_grp_id,
+        eff_ids=[eve_charge_effect_id],
+        defeff_id=eve_charge_effect_id)
     eve_ship_id = client.mk_eve_ship()
     client.create_sources()
     api_sol = client.create_sol()

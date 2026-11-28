@@ -281,10 +281,12 @@ def test_skill_state(client):
 
 
 def test_item_kinds(client, consts):
+    eve_grp_id = client.mk_eve_charge_group()
     eve_skill_id = client.mk_eve_item()
+    eve_group_attr_id = client.mk_eve_attr(id_=consts.EveAttr.charge_group1)
     eve_capacity_attr_id = client.mk_eve_attr(id_=consts.EveAttr.capacity)
     eve_booster_id = client.mk_eve_booster(srqs={eve_skill_id: 3})
-    eve_charge_id = client.mk_eve_charge(srqs={eve_skill_id: 3})
+    eve_charge_id = client.mk_eve_charge(grp_id=eve_grp_id, srqs={eve_skill_id: 3})
     eve_drone_id = client.mk_eve_drone(srqs={eve_skill_id: 3})
     eve_fighter_id = client.mk_eve_fighter(srqs={eve_skill_id: 3})
     eve_implant_id = client.mk_eve_implant(srqs={eve_skill_id: 3})
@@ -294,7 +296,7 @@ def test_item_kinds(client, consts):
     eve_rig_id = client.mk_eve_rig(srqs={eve_skill_id: 3})
     eve_service_id = client.mk_eve_service(srqs={eve_skill_id: 3})
     eve_subsystem_id = client.mk_eve_subsystem(srqs={eve_skill_id: 3})
-    eve_launcher_id = client.mk_eve_item(attrs={eve_capacity_attr_id: 1})
+    eve_launcher_id = client.mk_eve_item(attrs={eve_group_attr_id: eve_grp_id, eve_capacity_attr_id: 1})
     client.create_sources()
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()

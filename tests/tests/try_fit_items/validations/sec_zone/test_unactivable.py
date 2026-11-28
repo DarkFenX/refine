@@ -373,10 +373,12 @@ def test_main_module(client, consts):
 
 
 def test_charge(client, consts):
+    eve_grp_id = client.mk_eve_charge_group()
     eve_ban_empire_attr_id = client.mk_eve_attr(id_=consts.EveAttr.disallow_in_empire_space)
+    eve_group_attr_id = client.mk_eve_attr(id_=consts.EveAttr.charge_group1)
     eve_capacity_attr_id = client.mk_eve_attr(id_=consts.EveAttr.capacity)
-    eve_charge_id = client.mk_eve_charge(attrs={eve_ban_empire_attr_id: 1})
-    eve_module_id = client.mk_eve_item(attrs={eve_capacity_attr_id: 1})
+    eve_charge_id = client.mk_eve_charge(grp_id=eve_grp_id, attrs={eve_ban_empire_attr_id: 1})
+    eve_module_id = client.mk_eve_item(attrs={eve_group_attr_id: eve_grp_id, eve_capacity_attr_id: 1})
     client.create_sources()
     api_sol = client.create_sol(sec_zone=consts.ApiSecZone.hisec)
     api_fit = api_sol.create_fit()
@@ -549,10 +551,12 @@ def test_no_attr(client, consts):
 
 
 def test_criterion_item_kind(client, consts):
+    eve_grp_id = client.mk_eve_charge_group()
     eve_attr_id = client.mk_eve_attr(id_=consts.EveAttr.disallow_in_empire_space)
+    eve_group_attr_id = client.mk_eve_attr(id_=consts.EveAttr.charge_group1)
     eve_capacity_attr_id = client.mk_eve_attr(id_=consts.EveAttr.capacity)
     eve_booster_id = client.mk_eve_booster(attrs={eve_attr_id: 1})
-    eve_charge_id = client.mk_eve_charge(attrs={eve_attr_id: 1})
+    eve_charge_id = client.mk_eve_charge(grp_id=eve_grp_id, attrs={eve_attr_id: 1})
     eve_drone_id = client.mk_eve_drone(attrs={eve_attr_id: 1})
     eve_fighter_id = client.mk_eve_fighter(attrs={eve_attr_id: 1})
     eve_implant_id = client.mk_eve_implant(attrs={eve_attr_id: 1})
@@ -560,7 +564,7 @@ def test_criterion_item_kind(client, consts):
     eve_rig_id = client.mk_eve_rig(attrs={eve_attr_id: 1})
     eve_service_id = client.mk_eve_service(attrs={eve_attr_id: 1})
     eve_subsystem_id = client.mk_eve_subsystem(attrs={eve_attr_id: 1})
-    eve_launcher_id = client.mk_eve_item(attrs={eve_capacity_attr_id: 1})
+    eve_launcher_id = client.mk_eve_item(attrs={eve_group_attr_id: eve_grp_id, eve_capacity_attr_id: 1})
     client.create_sources()
     api_sol = client.create_sol(sec_zone=consts.ApiSecZone.lowsec)
     api_fit = api_sol.create_fit()

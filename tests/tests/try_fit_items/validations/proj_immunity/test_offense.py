@@ -3,8 +3,10 @@ from fw.api import ValOptions
 
 
 def test_offense_src_module_tgt_ship_project_unproject(client, consts):
+    eve_grp_id = client.mk_eve_charge_group()
     eve_immunity_attr_id = client.mk_eve_attr(id_=consts.EveAttr.disallow_offensive_modifiers)
     eve_effect_attr_id = client.mk_eve_attr()
+    eve_group_attr_id = client.mk_eve_attr(id_=consts.EveAttr.charge_group1)
     eve_capacity_attr_id = client.mk_eve_attr(id_=consts.EveAttr.capacity)
     eve_launcher_effect_id = client.mk_eve_effect(
         id_=consts.UtilEffect.activates_charge,
@@ -17,11 +19,14 @@ def test_offense_src_module_tgt_ship_project_unproject(client, consts):
         affectee_attr_id=eve_effect_attr_id)
     eve_src_effect_id = client.mk_eve_effect(cat_id=consts.EveEffCat.target, is_offensive=True, mod_info=[eve_src_mod])
     eve_launcher_id = client.mk_eve_item(
-        attrs={eve_capacity_attr_id: 1},
+        attrs={eve_group_attr_id: eve_grp_id, eve_capacity_attr_id: 1},
         eff_ids=[eve_launcher_effect_id],
         defeff_id=eve_launcher_effect_id)
-    eve_src_charge_id = client.mk_eve_charge(eff_ids=[eve_src_effect_id], defeff_id=eve_src_effect_id)
-    eve_other_charge_id = client.mk_eve_charge()
+    eve_src_charge_id = client.mk_eve_charge(
+        grp_id=eve_grp_id,
+        eff_ids=[eve_src_effect_id],
+        defeff_id=eve_src_effect_id)
+    eve_other_charge_id = client.mk_eve_charge(grp_id=eve_grp_id)
     eve_tgt_item_id = client.mk_eve_ship(attrs={eve_immunity_attr_id: 1})
     client.create_sources()
     api_sol = client.create_sol()
@@ -52,8 +57,10 @@ def test_offense_src_module_tgt_ship_project_unproject(client, consts):
 
 def test_offense_tgt_drone_fighter(client, consts):
     # Also check multiple projectee items
+    eve_grp_id = client.mk_eve_charge_group()
     eve_immunity_attr_id = client.mk_eve_attr(id_=consts.EveAttr.disallow_offensive_modifiers)
     eve_effect_attr_id = client.mk_eve_attr()
+    eve_group_attr_id = client.mk_eve_attr(id_=consts.EveAttr.charge_group1)
     eve_capacity_attr_id = client.mk_eve_attr(id_=consts.EveAttr.capacity)
     eve_launcher_effect_id = client.mk_eve_effect(
         id_=consts.UtilEffect.activates_charge,
@@ -66,10 +73,13 @@ def test_offense_tgt_drone_fighter(client, consts):
         affectee_attr_id=eve_effect_attr_id)
     eve_src_effect_id = client.mk_eve_effect(cat_id=consts.EveEffCat.target, is_offensive=True, mod_info=[eve_src_mod])
     eve_launcher_id = client.mk_eve_item(
-        attrs={eve_capacity_attr_id: 1},
+        attrs={eve_group_attr_id: eve_grp_id, eve_capacity_attr_id: 1},
         eff_ids=[eve_launcher_effect_id],
         defeff_id=eve_launcher_effect_id)
-    eve_src_charge_id = client.mk_eve_charge(eff_ids=[eve_src_effect_id], defeff_id=eve_src_effect_id)
+    eve_src_charge_id = client.mk_eve_charge(
+        grp_id=eve_grp_id,
+        eff_ids=[eve_src_effect_id],
+        defeff_id=eve_src_effect_id)
     eve_tgt_item_id = client.mk_eve_item(attrs={eve_immunity_attr_id: 1})
     client.create_sources()
     api_sol = client.create_sol()
@@ -88,8 +98,10 @@ def test_offense_tgt_drone_fighter(client, consts):
 
 def test_offense_buff(client, consts):
     # Use disrupt lance to apply offensive debuff
+    eve_grp_id = client.mk_eve_charge_group()
     eve_immunity_attr_id = client.mk_eve_attr(id_=consts.EveAttr.disallow_offensive_modifiers)
     eve_affectee_attr_id = client.mk_eve_attr(stackable=True)
+    eve_group_attr_id = client.mk_eve_attr(id_=consts.EveAttr.charge_group1)
     eve_capacity_attr_id = client.mk_eve_attr(id_=consts.EveAttr.capacity)
     eve_launcher_effect_id = client.mk_eve_effect(
         id_=consts.UtilEffect.activates_charge,
@@ -104,10 +116,10 @@ def test_offense_buff(client, consts):
         cat_id=consts.EveEffCat.active,
         is_offensive=True)
     eve_launcher_id = client.mk_eve_item(
-        attrs={eve_capacity_attr_id: 1},
+        attrs={eve_group_attr_id: eve_grp_id, eve_capacity_attr_id: 1},
         eff_ids=[eve_launcher_effect_id],
         defeff_id=eve_launcher_effect_id)
-    eve_affector_charge_id = client.mk_eve_charge(eff_ids=[eve_effect_id], defeff_id=eve_effect_id)
+    eve_affector_charge_id = client.mk_eve_charge(grp_id=eve_grp_id, eff_ids=[eve_effect_id], defeff_id=eve_effect_id)
     eve_affectee_ship_id = client.mk_eve_ship(attrs={eve_immunity_attr_id: 1, eve_affectee_attr_id: 1})
     client.create_sources()
     api_sol = client.create_sol()
@@ -131,8 +143,10 @@ def test_offense_buff(client, consts):
 
 
 def test_offense_flag_values(client, consts):
+    eve_grp_id = client.mk_eve_charge_group()
     eve_immunity_attr_id = client.mk_eve_attr(id_=consts.EveAttr.disallow_offensive_modifiers)
     eve_effect_attr_id = client.mk_eve_attr()
+    eve_group_attr_id = client.mk_eve_attr(id_=consts.EveAttr.charge_group1)
     eve_capacity_attr_id = client.mk_eve_attr(id_=consts.EveAttr.capacity)
     eve_launcher_effect_id = client.mk_eve_effect(
         id_=consts.UtilEffect.activates_charge,
@@ -145,10 +159,13 @@ def test_offense_flag_values(client, consts):
         affectee_attr_id=eve_effect_attr_id)
     eve_src_effect_id = client.mk_eve_effect(cat_id=consts.EveEffCat.target, is_offensive=True, mod_info=[eve_src_mod])
     eve_launcher_id = client.mk_eve_item(
-        attrs={eve_capacity_attr_id: 1},
+        attrs={eve_group_attr_id: eve_grp_id, eve_capacity_attr_id: 1},
         eff_ids=[eve_launcher_effect_id],
         defeff_id=eve_launcher_effect_id)
-    eve_src_charge_id = client.mk_eve_charge(eff_ids=[eve_src_effect_id], defeff_id=eve_src_effect_id)
+    eve_src_charge_id = client.mk_eve_charge(
+        grp_id=eve_grp_id,
+        eff_ids=[eve_src_effect_id],
+        defeff_id=eve_src_effect_id)
     eve_tgt_item1_id = client.mk_eve_item(attrs={eve_immunity_attr_id: -1})
     eve_tgt_item2_id = client.mk_eve_item(attrs={eve_immunity_attr_id: 0})
     eve_tgt_item3_id = client.mk_eve_item(attrs={eve_immunity_attr_id: 0.1})
@@ -194,9 +211,11 @@ def test_offense_flag_values(client, consts):
 
 
 def test_offense_tgt_modified(client, consts):
+    eve_grp_id = client.mk_eve_charge_group()
     eve_immunity_attr_id = client.mk_eve_attr(id_=consts.EveAttr.disallow_offensive_modifiers)
     eve_mod_attr_id = client.mk_eve_attr()
     eve_effect_attr_id = client.mk_eve_attr()
+    eve_group_attr_id = client.mk_eve_attr(id_=consts.EveAttr.charge_group1)
     eve_capacity_attr_id = client.mk_eve_attr(id_=consts.EveAttr.capacity)
     eve_launcher_effect_id = client.mk_eve_effect(
         id_=consts.UtilEffect.activates_charge,
@@ -209,10 +228,13 @@ def test_offense_tgt_modified(client, consts):
         affectee_attr_id=eve_effect_attr_id)
     eve_src_effect_id = client.mk_eve_effect(cat_id=consts.EveEffCat.target, is_offensive=True, mod_info=[eve_src_mod])
     eve_launcher_id = client.mk_eve_item(
-        attrs={eve_capacity_attr_id: 1},
+        attrs={eve_group_attr_id: eve_grp_id, eve_capacity_attr_id: 1},
         eff_ids=[eve_launcher_effect_id],
         defeff_id=eve_launcher_effect_id)
-    eve_src_charge_id = client.mk_eve_charge(eff_ids=[eve_src_effect_id], defeff_id=eve_src_effect_id)
+    eve_src_charge_id = client.mk_eve_charge(
+        grp_id=eve_grp_id,
+        eff_ids=[eve_src_effect_id],
+        defeff_id=eve_src_effect_id)
     eve_tgt_item_id = client.mk_eve_ship(attrs={eve_immunity_attr_id: 0})
     eve_mod = client.mk_eve_effect_mod(
         func=consts.EveModFunc.item,
@@ -254,8 +276,10 @@ def test_offense_tgt_modified(client, consts):
 
 
 def test_offense_tgt_mutation(client, consts):
+    eve_grp_id = client.mk_eve_charge_group()
     eve_immunity_attr_id = client.mk_eve_attr(id_=consts.EveAttr.disallow_offensive_modifiers)
     eve_effect_attr_id = client.mk_eve_attr()
+    eve_group_attr_id = client.mk_eve_attr(id_=consts.EveAttr.charge_group1)
     eve_capacity_attr_id = client.mk_eve_attr(id_=consts.EveAttr.capacity)
     eve_launcher_effect_id = client.mk_eve_effect(
         id_=consts.UtilEffect.activates_charge,
@@ -268,10 +292,13 @@ def test_offense_tgt_mutation(client, consts):
         affectee_attr_id=eve_effect_attr_id)
     eve_src_effect_id = client.mk_eve_effect(cat_id=consts.EveEffCat.target, is_offensive=True, mod_info=[eve_src_mod])
     eve_launcher_id = client.mk_eve_item(
-        attrs={eve_capacity_attr_id: 1},
+        attrs={eve_group_attr_id: eve_grp_id, eve_capacity_attr_id: 1},
         eff_ids=[eve_launcher_effect_id],
         defeff_id=eve_launcher_effect_id)
-    eve_src_charge_id = client.mk_eve_charge(eff_ids=[eve_src_effect_id], defeff_id=eve_src_effect_id)
+    eve_src_charge_id = client.mk_eve_charge(
+        grp_id=eve_grp_id,
+        eff_ids=[eve_src_effect_id],
+        defeff_id=eve_src_effect_id)
     eve_tgt_base_item_id = client.mk_eve_item(attrs={eve_immunity_attr_id: 1})
     eve_tgt_mutated_item_id = client.mk_eve_item(is_dynamic=True, attrs={eve_immunity_attr_id: 0})
     eve_tgt_mutator_id = client.mk_eve_mutator(
@@ -325,8 +352,10 @@ def test_offense_tgt_mutation(client, consts):
 
 
 def test_offense_no_attr(client, consts):
+    eve_grp_id = client.mk_eve_charge_group()
     eve_immunity_attr_id = consts.EveAttr.disallow_offensive_modifiers
     eve_effect_attr_id = client.mk_eve_attr()
+    eve_group_attr_id = client.mk_eve_attr(id_=consts.EveAttr.charge_group1)
     eve_capacity_attr_id = client.mk_eve_attr(id_=consts.EveAttr.capacity)
     eve_launcher_effect_id = client.mk_eve_effect(
         id_=consts.UtilEffect.activates_charge,
@@ -339,10 +368,13 @@ def test_offense_no_attr(client, consts):
         affectee_attr_id=eve_effect_attr_id)
     eve_src_effect_id = client.mk_eve_effect(cat_id=consts.EveEffCat.target, is_offensive=True, mod_info=[eve_src_mod])
     eve_launcher_id = client.mk_eve_item(
-        attrs={eve_capacity_attr_id: 1},
+        attrs={eve_group_attr_id: eve_grp_id, eve_capacity_attr_id: 1},
         eff_ids=[eve_launcher_effect_id],
         defeff_id=eve_launcher_effect_id)
-    eve_src_charge_id = client.mk_eve_charge(eff_ids=[eve_src_effect_id], defeff_id=eve_src_effect_id)
+    eve_src_charge_id = client.mk_eve_charge(
+        grp_id=eve_grp_id,
+        eff_ids=[eve_src_effect_id],
+        defeff_id=eve_src_effect_id)
     eve_tgt_item_id = client.mk_eve_ship(attrs={eve_immunity_attr_id: 1})
     client.create_sources()
     api_sol = client.create_sol()
@@ -359,8 +391,10 @@ def test_offense_no_attr(client, consts):
 
 
 def test_offense_criterion_no_modifiers(client, consts):
+    eve_grp_id = client.mk_eve_charge_group()
     eve_immunity_attr_id = client.mk_eve_attr(id_=consts.EveAttr.disallow_offensive_modifiers)
     eve_effect_attr_id = client.mk_eve_attr()
+    eve_group_attr_id = client.mk_eve_attr(id_=consts.EveAttr.charge_group1)
     eve_capacity_attr_id = client.mk_eve_attr(id_=consts.EveAttr.capacity)
     eve_launcher_effect_id = client.mk_eve_effect(
         id_=consts.UtilEffect.activates_charge,
@@ -374,11 +408,17 @@ def test_offense_criterion_no_modifiers(client, consts):
     eve_src_effect1_id = client.mk_eve_effect(cat_id=consts.EveEffCat.target, is_offensive=True)
     eve_src_effect2_id = client.mk_eve_effect(cat_id=consts.EveEffCat.target, is_offensive=True, mod_info=[eve_src_mod])
     eve_launcher_id = client.mk_eve_item(
-        attrs={eve_capacity_attr_id: 1},
+        attrs={eve_group_attr_id: eve_grp_id, eve_capacity_attr_id: 1},
         eff_ids=[eve_launcher_effect_id],
         defeff_id=eve_launcher_effect_id)
-    eve_src_charge1_id = client.mk_eve_charge(eff_ids=[eve_src_effect1_id], defeff_id=eve_src_effect1_id)
-    eve_src_charge2_id = client.mk_eve_charge(eff_ids=[eve_src_effect2_id], defeff_id=eve_src_effect2_id)
+    eve_src_charge1_id = client.mk_eve_charge(
+        grp_id=eve_grp_id,
+        eff_ids=[eve_src_effect1_id],
+        defeff_id=eve_src_effect1_id)
+    eve_src_charge2_id = client.mk_eve_charge(
+        grp_id=eve_grp_id,
+        eff_ids=[eve_src_effect2_id],
+        defeff_id=eve_src_effect2_id)
     eve_tgt_item_id = client.mk_eve_ship(attrs={eve_immunity_attr_id: 1})
     client.create_sources()
     api_sol = client.create_sol()
@@ -395,8 +435,10 @@ def test_offense_criterion_no_modifiers(client, consts):
 
 
 def test_offense_criterion_not_offense(client, consts):
+    eve_grp_id = client.mk_eve_charge_group()
     eve_immunity_attr_id = client.mk_eve_attr(id_=consts.EveAttr.disallow_offensive_modifiers)
     eve_effect_attr_id = client.mk_eve_attr()
+    eve_group_attr_id = client.mk_eve_attr(id_=consts.EveAttr.charge_group1)
     eve_capacity_attr_id = client.mk_eve_attr(id_=consts.EveAttr.capacity)
     eve_launcher_effect_id = client.mk_eve_effect(
         id_=consts.UtilEffect.activates_charge,
@@ -413,11 +455,17 @@ def test_offense_criterion_not_offense(client, consts):
         mod_info=[eve_src_mod])
     eve_src_effect2_id = client.mk_eve_effect(cat_id=consts.EveEffCat.target, is_offensive=True, mod_info=[eve_src_mod])
     eve_launcher_id = client.mk_eve_item(
-        attrs={eve_capacity_attr_id: 1},
+        attrs={eve_group_attr_id: eve_grp_id, eve_capacity_attr_id: 1},
         eff_ids=[eve_launcher_effect_id],
         defeff_id=eve_launcher_effect_id)
-    eve_src_charge1_id = client.mk_eve_charge(eff_ids=[eve_src_effect1_id], defeff_id=eve_src_effect1_id)
-    eve_src_charge2_id = client.mk_eve_charge(eff_ids=[eve_src_effect2_id], defeff_id=eve_src_effect2_id)
+    eve_src_charge1_id = client.mk_eve_charge(
+        grp_id=eve_grp_id,
+        eff_ids=[eve_src_effect1_id],
+        defeff_id=eve_src_effect1_id)
+    eve_src_charge2_id = client.mk_eve_charge(
+        grp_id=eve_grp_id,
+        eff_ids=[eve_src_effect2_id],
+        defeff_id=eve_src_effect2_id)
     eve_tgt_item_id = client.mk_eve_ship(attrs={eve_immunity_attr_id: 1})
     client.create_sources()
     api_sol = client.create_sol()
@@ -435,8 +483,10 @@ def test_offense_criterion_not_offense(client, consts):
 
 def test_offense_criterion_effect_cat(client, consts):
     # Only targeted effects are subject for the validation
+    eve_grp_id = client.mk_eve_charge_group()
     eve_immunity_attr_id = client.mk_eve_attr(id_=consts.EveAttr.disallow_offensive_modifiers)
     eve_effect_attr_id = client.mk_eve_attr()
+    eve_group_attr_id = client.mk_eve_attr(id_=consts.EveAttr.charge_group1)
     eve_capacity_attr_id = client.mk_eve_attr(id_=consts.EveAttr.capacity)
     eve_launcher_effect_id = client.mk_eve_effect(
         id_=consts.UtilEffect.activates_charge,
@@ -456,11 +506,17 @@ def test_offense_criterion_effect_cat(client, consts):
         mod_info=[eve_src_mod])
     eve_src_effect2_id = client.mk_eve_effect(cat_id=consts.EveEffCat.target, is_offensive=True, mod_info=[eve_src_mod])
     eve_launcher_id = client.mk_eve_item(
-        attrs={eve_capacity_attr_id: 1},
+        attrs={eve_group_attr_id: eve_grp_id, eve_capacity_attr_id: 1},
         eff_ids=[eve_launcher_effect_id],
         defeff_id=eve_launcher_effect_id)
-    eve_src_charge1_id = client.mk_eve_charge(eff_ids=[eve_src_effect1_id], defeff_id=eve_src_effect1_id)
-    eve_src_charge2_id = client.mk_eve_charge(eff_ids=[eve_src_effect2_id], defeff_id=eve_src_effect2_id)
+    eve_src_charge1_id = client.mk_eve_charge(
+        grp_id=eve_grp_id,
+        eff_ids=[eve_src_effect1_id],
+        defeff_id=eve_src_effect1_id)
+    eve_src_charge2_id = client.mk_eve_charge(
+        grp_id=eve_grp_id,
+        eff_ids=[eve_src_effect2_id],
+        defeff_id=eve_src_effect2_id)
     eve_tgt_item_id = client.mk_eve_ship(attrs={eve_immunity_attr_id: 1})
     client.create_sources()
     api_sol = client.create_sol()
@@ -478,34 +534,43 @@ def test_offense_criterion_effect_cat(client, consts):
 
 def test_assist(client, consts):
     # Check different disallow-vs-ewar-immune flag values here too
+    eve_grp_id = client.mk_eve_charge_group()
     eve_immunity_attr_id = client.mk_eve_attr(id_=consts.EveAttr.disallow_offensive_modifiers)
     eve_assist_attr_id = client.mk_eve_attr(id_=consts.EveAttr.disallow_vs_ew_immune_tgt)
+    eve_group_attr_id = client.mk_eve_attr(id_=consts.EveAttr.charge_group1)
     eve_capacity_attr_id = client.mk_eve_attr(id_=consts.EveAttr.capacity)
     eve_launcher_effect_id = client.mk_eve_effect(
         id_=consts.UtilEffect.activates_charge,
         cat_id=consts.EveEffCat.active)
     eve_src_effect_id = client.mk_eve_effect(cat_id=consts.EveEffCat.target, is_assistance=True, is_offensive=False)
     eve_launcher_id = client.mk_eve_item(
-        attrs={eve_capacity_attr_id: 1},
+        attrs={eve_group_attr_id: eve_grp_id, eve_capacity_attr_id: 1},
         eff_ids=[eve_launcher_effect_id],
         defeff_id=eve_launcher_effect_id)
     eve_src_charge1_id = client.mk_eve_charge(
+        grp_id=eve_grp_id,
         attrs={eve_assist_attr_id: -1},
         eff_ids=[eve_src_effect_id],
         defeff_id=eve_src_effect_id)
     eve_src_charge2_id = client.mk_eve_charge(
+        grp_id=eve_grp_id,
         attrs={eve_assist_attr_id: 0},
         eff_ids=[eve_src_effect_id],
         defeff_id=eve_src_effect_id)
     eve_src_charge3_id = client.mk_eve_charge(
+        grp_id=eve_grp_id,
         attrs={eve_assist_attr_id: 0.1},
         eff_ids=[eve_src_effect_id],
         defeff_id=eve_src_effect_id)
     eve_src_charge4_id = client.mk_eve_charge(
+        grp_id=eve_grp_id,
         attrs={eve_assist_attr_id: 50.3},
         eff_ids=[eve_src_effect_id],
         defeff_id=eve_src_effect_id)
-    eve_src_charge5_id = client.mk_eve_charge(eff_ids=[eve_src_effect_id], defeff_id=eve_src_effect_id)
+    eve_src_charge5_id = client.mk_eve_charge(
+        grp_id=eve_grp_id,
+        eff_ids=[eve_src_effect_id],
+        defeff_id=eve_src_effect_id)
     eve_tgt_item_id = client.mk_eve_ship(attrs={eve_immunity_attr_id: 1})
     client.create_sources()
     api_sol = client.create_sol()
@@ -528,22 +593,26 @@ def test_assist(client, consts):
 
 
 def test_assist_switch_src_type_id(client, consts):
+    eve_grp_id = client.mk_eve_charge_group()
     eve_immunity_attr_id = client.mk_eve_attr(id_=consts.EveAttr.disallow_offensive_modifiers)
     eve_assist_attr_id = client.mk_eve_attr(id_=consts.EveAttr.disallow_vs_ew_immune_tgt)
+    eve_group_attr_id = client.mk_eve_attr(id_=consts.EveAttr.charge_group1)
     eve_capacity_attr_id = client.mk_eve_attr(id_=consts.EveAttr.capacity)
     eve_launcher_effect_id = client.mk_eve_effect(
         id_=consts.UtilEffect.activates_charge,
         cat_id=consts.EveEffCat.active)
     eve_src_effect_id = client.mk_eve_effect(cat_id=consts.EveEffCat.target, is_assistance=True, is_offensive=False)
     eve_launcher_id = client.mk_eve_item(
-        attrs={eve_capacity_attr_id: 1},
+        attrs={eve_group_attr_id: eve_grp_id, eve_capacity_attr_id: 1},
         eff_ids=[eve_launcher_effect_id],
         defeff_id=eve_launcher_effect_id)
     eve_src_charge1_id = client.mk_eve_charge(
+        grp_id=eve_grp_id,
         attrs={eve_assist_attr_id: 1},
         eff_ids=[eve_src_effect_id],
         defeff_id=eve_src_effect_id)
     eve_src_charge2_id = client.mk_eve_charge(
+        grp_id=eve_grp_id,
         attrs={eve_assist_attr_id: 0},
         eff_ids=[eve_src_effect_id],
         defeff_id=eve_src_effect_id)
@@ -563,18 +632,21 @@ def test_assist_switch_src_type_id(client, consts):
 
 
 def test_assist_no_attr(client, consts):
+    eve_grp_id = client.mk_eve_charge_group()
     eve_immunity_attr_id = client.mk_eve_attr(id_=consts.EveAttr.disallow_offensive_modifiers)
     eve_assist_attr_id = consts.EveAttr.disallow_vs_ew_immune_tgt
+    eve_group_attr_id = client.mk_eve_attr(id_=consts.EveAttr.charge_group1)
     eve_capacity_attr_id = client.mk_eve_attr(id_=consts.EveAttr.capacity)
     eve_launcher_effect_id = client.mk_eve_effect(
         id_=consts.UtilEffect.activates_charge,
         cat_id=consts.EveEffCat.active)
     eve_src_effect_id = client.mk_eve_effect(cat_id=consts.EveEffCat.target, is_assistance=True, is_offensive=False)
     eve_launcher_id = client.mk_eve_item(
-        attrs={eve_capacity_attr_id: 1},
+        attrs={eve_group_attr_id: eve_grp_id, eve_capacity_attr_id: 1},
         eff_ids=[eve_launcher_effect_id],
         defeff_id=eve_launcher_effect_id)
     eve_src_charge_id = client.mk_eve_charge(
+        grp_id=eve_grp_id,
         attrs={eve_assist_attr_id: 1},
         eff_ids=[eve_src_effect_id],
         defeff_id=eve_src_effect_id)
@@ -595,9 +667,11 @@ def test_assist_no_attr(client, consts):
 
 
 def test_known_failures(client, consts):
+    eve_grp_id = client.mk_eve_charge_group()
     eve_immunity_attr_id = client.mk_eve_attr(id_=consts.EveAttr.disallow_offensive_modifiers)
     eve_assist_attr_id = client.mk_eve_attr(id_=consts.EveAttr.disallow_vs_ew_immune_tgt)
     eve_effect_attr_id = client.mk_eve_attr()
+    eve_group_attr_id = client.mk_eve_attr(id_=consts.EveAttr.charge_group1)
     eve_capacity_attr_id = client.mk_eve_attr(id_=consts.EveAttr.capacity)
     eve_launcher_effect_id = client.mk_eve_effect(
         id_=consts.UtilEffect.activates_charge,
@@ -617,18 +691,20 @@ def test_known_failures(client, consts):
         is_assistance=True,
         is_offensive=False)
     eve_launcher1_id = client.mk_eve_item(
-        attrs={eve_capacity_attr_id: 1},
+        attrs={eve_group_attr_id: eve_grp_id, eve_capacity_attr_id: 1},
         eff_ids=[eve_launcher_effect_id],
         defeff_id=eve_launcher_effect_id)
     eve_launcher2_id = client.mk_eve_item(eff_ids=[eve_launcher_effect_id], defeff_id=eve_launcher_effect_id)
     eve_src_offense_charge_id = client.mk_eve_charge(
+        grp_id=eve_grp_id,
         eff_ids=[eve_src_offense_effect_id],
         defeff_id=eve_src_offense_effect_id)
     eve_src_assist_charge_id = client.mk_eve_charge(
+        grp_id=eve_grp_id,
         attrs={eve_assist_attr_id: 1},
         eff_ids=[eve_src_assist_effect_id],
         defeff_id=eve_src_assist_effect_id)
-    eve_other_charge_id = client.mk_eve_charge()
+    eve_other_charge_id = client.mk_eve_charge(grp_id=eve_grp_id)
     eve_tgt_item_id = client.mk_eve_ship(attrs={eve_immunity_attr_id: 1})
     client.create_sources()
     api_sol = client.create_sol()
@@ -669,9 +745,11 @@ def test_assist_immunity(client, consts):
     # Check that target flagged as assist immune doesn't trigger this validation, for both offensive
     # effects with modifiers, and assistive effects which shouldn't be used against offense immune
     # targets
+    eve_grp_id = client.mk_eve_charge_group()
     eve_immunity_attr_id = client.mk_eve_attr(id_=consts.EveAttr.disallow_assistance)
     eve_assist_attr_id = client.mk_eve_attr(id_=consts.EveAttr.disallow_vs_ew_immune_tgt)
     eve_effect_attr_id = client.mk_eve_attr()
+    eve_group_attr_id = client.mk_eve_attr(id_=consts.EveAttr.charge_group1)
     eve_capacity_attr_id = client.mk_eve_attr(id_=consts.EveAttr.capacity)
     eve_launcher_effect_id = client.mk_eve_effect(
         id_=consts.UtilEffect.activates_charge,
@@ -691,13 +769,15 @@ def test_assist_immunity(client, consts):
         is_assistance=True,
         is_offensive=False)
     eve_launcher_id = client.mk_eve_item(
-        attrs={eve_capacity_attr_id: 1},
+        attrs={eve_group_attr_id: eve_grp_id, eve_capacity_attr_id: 1},
         eff_ids=[eve_launcher_effect_id],
         defeff_id=eve_launcher_effect_id)
     eve_src_offense_charge_id = client.mk_eve_charge(
+        grp_id=eve_grp_id,
         eff_ids=[eve_src_offense_effect_id],
         defeff_id=eve_src_offense_effect_id)
     eve_src_assist_charge_id = client.mk_eve_charge(
+        grp_id=eve_grp_id,
         attrs={eve_assist_attr_id: 1},
         eff_ids=[eve_src_assist_effect_id],
         defeff_id=eve_src_assist_effect_id)
@@ -717,9 +797,11 @@ def test_assist_immunity(client, consts):
 
 
 def test_not_loaded_tgt(client, consts):
+    eve_grp_id = client.mk_eve_charge_group()
     client.mk_eve_attr(id_=consts.EveAttr.disallow_offensive_modifiers)
     eve_assist_attr_id = client.mk_eve_attr(id_=consts.EveAttr.disallow_vs_ew_immune_tgt)
     eve_effect_attr_id = client.mk_eve_attr()
+    eve_group_attr_id = client.mk_eve_attr(id_=consts.EveAttr.charge_group1)
     eve_capacity_attr_id = client.mk_eve_attr(id_=consts.EveAttr.capacity)
     eve_launcher_effect_id = client.mk_eve_effect(
         id_=consts.UtilEffect.activates_charge,
@@ -739,13 +821,15 @@ def test_not_loaded_tgt(client, consts):
         is_assistance=True,
         is_offensive=False)
     eve_launcher_id = client.mk_eve_item(
-        attrs={eve_capacity_attr_id: 1},
+        attrs={eve_group_attr_id: eve_grp_id, eve_capacity_attr_id: 1},
         eff_ids=[eve_launcher_effect_id],
         defeff_id=eve_launcher_effect_id)
     eve_src_offense_charge_id = client.mk_eve_charge(
+        grp_id=eve_grp_id,
         eff_ids=[eve_src_offense_effect_id],
         defeff_id=eve_src_offense_effect_id)
     eve_src_assist_charge_id = client.mk_eve_charge(
+        grp_id=eve_grp_id,
         attrs={eve_assist_attr_id: 1},
         eff_ids=[eve_src_assist_effect_id],
         defeff_id=eve_src_assist_effect_id)

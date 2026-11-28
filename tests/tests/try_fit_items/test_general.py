@@ -60,10 +60,12 @@ def test_module_without_online_effect(client, consts):
 
 
 def test_fit_unchanged(client, consts):
+    eve_grp_id = client.mk_eve_charge_group()
+    eve_group_attr_id = client.mk_eve_attr(id_=consts.EveAttr.charge_group1)
     eve_capacity_attr_id = client.mk_eve_attr(id_=consts.EveAttr.capacity)
     eve_booster_id = client.mk_eve_booster()
-    eve_charge1_id = client.mk_eve_charge()
-    eve_charge2_id = client.mk_eve_charge()
+    eve_charge1_id = client.mk_eve_charge(grp_id=eve_grp_id)
+    eve_charge2_id = client.mk_eve_charge(grp_id=eve_grp_id)
     eve_drone_id = client.mk_eve_drone()
     eve_fighter_id = client.mk_eve_fighter()
     eve_implant_id = client.mk_eve_implant()
@@ -71,7 +73,7 @@ def test_fit_unchanged(client, consts):
     eve_rig_id = client.mk_eve_rig()
     eve_service_id = client.mk_eve_service()
     eve_subsystem_id = client.mk_eve_subsystem()
-    eve_launcher_id = client.mk_eve_module(attrs={eve_capacity_attr_id: 1})
+    eve_launcher_id = client.mk_eve_module(attrs={eve_group_attr_id: eve_grp_id, eve_capacity_attr_id: 1})
     client.create_sources()
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()

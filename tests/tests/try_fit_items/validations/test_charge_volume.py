@@ -3,11 +3,13 @@ from fw.api import ValOptions
 
 
 def test_bundled(client, consts):
+    eve_grp_id = client.mk_eve_charge_group()
+    eve_group_attr_id = client.mk_eve_attr(id_=consts.EveAttr.charge_group1)
     eve_capacity_attr_id = client.mk_eve_attr(id_=consts.EveAttr.capacity)
     eve_vol_attr_id = client.mk_eve_attr(id_=consts.EveAttr.volume)
-    eve_charge1_id = client.mk_eve_charge(attrs={eve_vol_attr_id: 1})
-    eve_charge2_id = client.mk_eve_charge(attrs={eve_vol_attr_id: 1.2})
-    eve_module_id = client.mk_eve_item(attrs={eve_capacity_attr_id: 1})
+    eve_charge1_id = client.mk_eve_charge(grp_id=eve_grp_id, attrs={eve_vol_attr_id: 1})
+    eve_charge2_id = client.mk_eve_charge(grp_id=eve_grp_id, attrs={eve_vol_attr_id: 1.2})
+    eve_module_id = client.mk_eve_item(attrs={eve_group_attr_id: eve_grp_id, eve_capacity_attr_id: 1})
     client.create_sources()
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
@@ -20,11 +22,13 @@ def test_bundled(client, consts):
 
 
 def test_separate(client, consts):
+    eve_grp_id = client.mk_eve_charge_group()
+    eve_group_attr_id = client.mk_eve_attr(id_=consts.EveAttr.charge_group1)
     eve_capacity_attr_id = client.mk_eve_attr(id_=consts.EveAttr.capacity)
     eve_vol_attr_id = client.mk_eve_attr(id_=consts.EveAttr.volume)
-    eve_charge1_id = client.mk_eve_charge(attrs={eve_vol_attr_id: 1})
-    eve_charge2_id = client.mk_eve_charge(attrs={eve_vol_attr_id: 1.2})
-    eve_module_id = client.mk_eve_item(attrs={eve_capacity_attr_id: 1})
+    eve_charge1_id = client.mk_eve_charge(grp_id=eve_grp_id, attrs={eve_vol_attr_id: 1})
+    eve_charge2_id = client.mk_eve_charge(grp_id=eve_grp_id, attrs={eve_vol_attr_id: 1.2})
+    eve_module_id = client.mk_eve_item(attrs={eve_group_attr_id: eve_grp_id, eve_capacity_attr_id: 1})
     client.create_sources()
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
@@ -37,11 +41,13 @@ def test_separate(client, consts):
 
 
 def test_known_failures(client, consts):
+    eve_grp_id = client.mk_eve_charge_group()
+    eve_group_attr_id = client.mk_eve_attr(id_=consts.EveAttr.charge_group1)
     eve_capacity_attr_id = client.mk_eve_attr(id_=consts.EveAttr.capacity)
     eve_vol_attr_id = client.mk_eve_attr(id_=consts.EveAttr.volume)
-    eve_charge1_id = client.mk_eve_charge(attrs={eve_vol_attr_id: 1})
-    eve_charge2_id = client.mk_eve_charge(attrs={eve_vol_attr_id: 1.2})
-    eve_module1_id = client.mk_eve_item(attrs={eve_capacity_attr_id: 1})
+    eve_charge1_id = client.mk_eve_charge(grp_id=eve_grp_id, attrs={eve_vol_attr_id: 1})
+    eve_charge2_id = client.mk_eve_charge(grp_id=eve_grp_id, attrs={eve_vol_attr_id: 1.2})
+    eve_module1_id = client.mk_eve_item(attrs={eve_group_attr_id: eve_grp_id, eve_capacity_attr_id: 1})
     eve_module2_id = client.mk_eve_item()
     client.create_sources()
     api_sol = client.create_sol()
@@ -66,11 +72,13 @@ def test_known_failures(client, consts):
 
 
 def test_modified_module(client, consts):
+    eve_grp_id = client.mk_eve_charge_group()
+    eve_group_attr_id = client.mk_eve_attr(id_=consts.EveAttr.charge_group1)
     eve_capacity_attr_id = client.mk_eve_attr(id_=consts.EveAttr.capacity)
     eve_vol_attr_id = client.mk_eve_attr(id_=consts.EveAttr.volume)
-    eve_charge1_id = client.mk_eve_charge(attrs={eve_vol_attr_id: 1.2})
-    eve_charge2_id = client.mk_eve_charge(attrs={eve_vol_attr_id: 1})
-    eve_module_id = client.mk_eve_item(attrs={eve_capacity_attr_id: 1})
+    eve_charge1_id = client.mk_eve_charge(grp_id=eve_grp_id, attrs={eve_vol_attr_id: 1.2})
+    eve_charge2_id = client.mk_eve_charge(grp_id=eve_grp_id, attrs={eve_vol_attr_id: 1})
+    eve_module_id = client.mk_eve_item(attrs={eve_group_attr_id: eve_grp_id, eve_capacity_attr_id: 1})
     eve_mod_attr_id = client.mk_eve_attr()
     eve_mod = client.mk_eve_effect_mod(
         func=consts.EveModFunc.loc,
@@ -96,12 +104,14 @@ def test_modified_module(client, consts):
 
 
 def test_modified_charge(client, consts):
+    eve_grp_id = client.mk_eve_charge_group()
     eve_skill_id = client.mk_eve_item()
+    eve_group_attr_id = client.mk_eve_attr(id_=consts.EveAttr.charge_group1)
     eve_capacity_attr_id = client.mk_eve_attr(id_=consts.EveAttr.capacity)
     eve_vol_attr_id = client.mk_eve_attr(id_=consts.EveAttr.volume)
-    eve_charge1_id = client.mk_eve_charge(attrs={eve_vol_attr_id: 1.2}, srqs={eve_skill_id: 1})
-    eve_charge2_id = client.mk_eve_charge(attrs={eve_vol_attr_id: 1}, srqs={eve_skill_id: 1})
-    eve_module_id = client.mk_eve_item(attrs={eve_capacity_attr_id: 1})
+    eve_charge1_id = client.mk_eve_charge(grp_id=eve_grp_id, attrs={eve_vol_attr_id: 1.2}, srqs={eve_skill_id: 1})
+    eve_charge2_id = client.mk_eve_charge(grp_id=eve_grp_id, attrs={eve_vol_attr_id: 1}, srqs={eve_skill_id: 1})
+    eve_module_id = client.mk_eve_item(attrs={eve_group_attr_id: eve_grp_id, eve_capacity_attr_id: 1})
     eve_mod_attr_id = client.mk_eve_attr()
     eve_mod = client.mk_eve_effect_mod(
         func=consts.EveModFunc.own_srq,
@@ -126,12 +136,16 @@ def test_modified_charge(client, consts):
 
 
 def test_mutation_module(client, consts):
+    eve_grp_id = client.mk_eve_charge_group()
+    eve_group_attr_id = client.mk_eve_attr(id_=consts.EveAttr.charge_group1)
     eve_capacity_attr_id = client.mk_eve_attr(id_=consts.EveAttr.capacity)
     eve_vol_attr_id = client.mk_eve_attr(id_=consts.EveAttr.volume)
-    eve_charge1_id = client.mk_eve_charge(attrs={eve_vol_attr_id: 1})
-    eve_charge2_id = client.mk_eve_charge(attrs={eve_vol_attr_id: 0.8})
-    eve_base_module_id = client.mk_eve_item(attrs={eve_capacity_attr_id: 1})
-    eve_mutated_module_id = client.mk_eve_item(is_dynamic=True, attrs={eve_capacity_attr_id: 0.8})
+    eve_charge1_id = client.mk_eve_charge(grp_id=eve_grp_id, attrs={eve_vol_attr_id: 1})
+    eve_charge2_id = client.mk_eve_charge(grp_id=eve_grp_id, attrs={eve_vol_attr_id: 0.8})
+    eve_base_module_id = client.mk_eve_item(attrs={eve_group_attr_id: eve_grp_id, eve_capacity_attr_id: 1})
+    eve_mutated_module_id = client.mk_eve_item(
+        is_dynamic=True,
+        attrs={eve_group_attr_id: eve_grp_id, eve_capacity_attr_id: 0.8})
     eve_mutator_id = client.mk_eve_mutator(items=[([eve_base_module_id], eve_mutated_module_id)])
     client.create_sources()
     api_sol = client.create_sol()
@@ -145,10 +159,12 @@ def test_mutation_module(client, consts):
 
 
 def test_no_value_charge(client, consts):
+    eve_grp_id = client.mk_eve_charge_group()
+    eve_group_attr_id = client.mk_eve_attr(id_=consts.EveAttr.charge_group1)
     eve_capacity_attr_id = client.mk_eve_attr(id_=consts.EveAttr.capacity)
     client.mk_eve_attr(id_=consts.EveAttr.volume)
-    eve_charge_id = client.mk_eve_charge()
-    eve_module_id = client.mk_eve_item(attrs={eve_capacity_attr_id: 2})
+    eve_charge_id = client.mk_eve_charge(grp_id=eve_grp_id)
+    eve_module_id = client.mk_eve_item(attrs={eve_group_attr_id: eve_grp_id, eve_capacity_attr_id: 2})
     client.create_sources()
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
