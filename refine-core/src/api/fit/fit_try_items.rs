@@ -280,7 +280,7 @@ fn get_chargeable_modules(u_data: &UData, fit_uid: UFitId) -> Vec<UItemId> {
         .get(fit_uid)
         .iter_module_uids()
         .filter(|&module_uid| match u_data.items.get(module_uid).get_r_item_base() {
-            Some(item_rib) => item_rib.capacity > PValue::ZERO,
+            Some(item_rib) => item_rib.capacity > PValue::ZERO && !item_rib.charge_limit.group_ids.is_empty(),
             None => false,
         })
         .collect()

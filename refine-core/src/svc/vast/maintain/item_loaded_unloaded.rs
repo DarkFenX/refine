@@ -412,9 +412,7 @@ impl Vast {
                         .remove_l2(module_rib.grp_id, &item_uid);
                 }
                 if let Some(charge_uid) = module.get_charge_uid() {
-                    if module_rib.charge_limit.is_some() {
-                        fit_data.charge_group.remove(&charge_uid);
-                    }
+                    fit_data.charge_group.remove(&charge_uid);
                     if module_rib.charge_size.is_some() {
                         fit_data.charge_size.remove(&charge_uid);
                     }

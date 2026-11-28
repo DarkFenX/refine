@@ -68,8 +68,6 @@ impl VastFitData {
                     .get_r_item_base()
                     .unwrap()
                     .charge_limit
-                    .as_ref()
-                    .unwrap()
                     .group_ids
                     .iter()
                     .map(|&grp_aid| ItemGrpId::from_aid(grp_aid))
@@ -101,8 +99,5 @@ impl VastFitData {
 }
 
 pub(in crate::svc::vast) fn is_charge_group_mismatch(cont_rib: &RItemBase, charge_rib: &RItemBase) -> bool {
-    match &cont_rib.charge_limit {
-        Some(charge_limit) => !charge_limit.group_ids.contains(&charge_rib.grp_id),
-        None => false,
-    }
+    !cont_rib.charge_limit.accepts_charge(charge_rib.grp_id)
 }

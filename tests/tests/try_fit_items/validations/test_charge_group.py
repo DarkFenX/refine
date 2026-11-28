@@ -193,6 +193,26 @@ def test_mutation(client, consts):
         failing=[eve_charge1_id])
 
 
+def test_no_value(client, consts):
+    # Module which allows no charge groups takes no charges
+    eve_grp_id = client.mk_eve_charge_group()
+    eve_group_attr_id = client.mk_eve_attr(id_=consts.EveAttr.charge_group1)
+    eve_capacity_attr_id = client.mk_eve_attr(id_=consts.EveAttr.capacity)
+    eve_charge_id = client.mk_eve_charge(grp_id=eve_grp_id)
+    eve_module1_id = client.mk_eve_item(attrs={eve_capacity_attr_id: 1})
+    eve_module2_id = client.mk_eve_item(attrs={eve_group_attr_id: eve_grp_id, eve_capacity_attr_id: 1})
+    client.create_sources()
+    api_sol = client.create_sol()
+    api_fit = api_sol.create_fit()
+    api_module = api_fit.add_module(type_id=eve_module1_id)
+    # Verification
+    api_fit.check_try_fit_items(val_options=ValOptions(charge_group=True), passing=[], failing=[eve_charge_id])
+    # Action
+    api_module.change_module(type_id=eve_module2_id)
+    # Verification
+    api_fit.check_try_fit_items(val_options=ValOptions(charge_group=True), passing=[eve_charge_id], failing=[])
+
+
 def test_no_attr(client, consts):
     eve_grp1_id = client.mk_eve_charge_group()
     eve_grp2_id = client.mk_eve_charge_group()
@@ -205,7 +225,7 @@ def test_no_attr(client, consts):
     client.create_sources()
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
-    api_fit.add_module(type_id=eve_module_id, charge_type_id=eve_charge_id)
+    api_fit.add_module(type_id=eve_module_id)
     # Verification - limits defined with attribute which doesn't exist are ignored. Without it,
-    # module has no limit, so validation passes
-    api_fit.check_try_fit_items(val_options=ValOptions(charge_group=True), passing=[eve_charge_id], failing=[])
+    # module allows no charge groups, so no charge passes
+    api_fit.check_try_fit_items(val_options=ValOptions(charge_group=True), passing=[], failing=[eve_charge_id])

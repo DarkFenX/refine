@@ -388,11 +388,10 @@ def test_no_attr(client, consts):
     api_fit = api_sol.create_fit()
     api_module = api_fit.add_module(type_id=eve_module1_id, charge_type_id=eve_charge_id)
     # Verification - limits defined with attribute which doesn't exist are ignored. Without it,
-    # module has no limit, so validation passes
+    # module allows no charge groups, so validation fails
     api_val = api_fit.validate(options=ValOptions(charge_group=True))
-    assert api_val.passed is True
-    with check_no_field():
-        api_val.details  # ruff:ignore[useless-expression]
+    assert api_val.passed is False
+    assert api_val.details.charge_group == {api_module.charge.id: (api_module.id, eve_grp1_id, [])}
     # Action
     api_module.change_module(type_id=eve_module2_id)
     # Verification - having some attributes which do not exist does not prevent existing attributes
@@ -400,6 +399,30 @@ def test_no_attr(client, consts):
     api_val = api_fit.validate(options=ValOptions(charge_group=True))
     assert api_val.passed is False
     assert api_val.details.charge_group == {api_module.charge.id: (api_module.id, eve_grp1_id, [eve_grp2_id])}
+
+
+def test_no_value(client, consts):
+    # Module which allows no charge groups takes no charges
+    eve_grp_id = client.mk_eve_item_group()
+    eve_group_attr_id = client.mk_eve_attr(id_=consts.EveAttr.charge_group1)
+    eve_charge_id = client.mk_eve_item(grp_id=eve_grp_id)
+    eve_module1_id = client.mk_eve_item()
+    eve_module2_id = client.mk_eve_item(attrs={eve_group_attr_id: eve_grp_id})
+    client.create_sources()
+    api_sol = client.create_sol()
+    api_fit = api_sol.create_fit()
+    api_module = api_fit.add_module(type_id=eve_module1_id, charge_type_id=eve_charge_id)
+    # Verification
+    api_val = api_fit.validate(options=ValOptions(charge_group=True))
+    assert api_val.passed is False
+    assert api_val.details.charge_group == {api_module.charge.id: (api_module.id, eve_grp_id, [])}
+    # Action
+    api_module.change_module(type_id=eve_module2_id)
+    # Verification
+    api_val = api_fit.validate(options=ValOptions(charge_group=True))
+    assert api_val.passed is True
+    with check_no_field():
+        api_val.details  # ruff:ignore[useless-expression]
 
 
 def test_not_loaded_module(client, consts):
@@ -464,7 +487,7 @@ def test_criterion_item_kind(client, consts):
     eve_grp2_id = client.mk_eve_item_group()
     eve_group_attr_id = client.mk_eve_attr(id_=consts.EveAttr.charge_group1)
     eve_item_id = client.mk_eve_item(grp_id=eve_grp1_id, attrs={eve_group_attr_id: eve_grp2_id})
-    eve_module_id = client.mk_eve_item(grp_id=eve_grp1_id)
+    eve_module_id = client.mk_eve_item(grp_id=eve_grp1_id, attrs={eve_group_attr_id: eve_grp1_id})
     eve_autocharge_attr_id = client.mk_eve_attr(id_=consts.EveAttr.ftr_abil_launch_bomb_type)
     eve_autocharge_effect_id = client.mk_eve_effect(
         id_=consts.EveEffect.ftr_abil_launch_bomb,

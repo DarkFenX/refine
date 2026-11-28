@@ -11,24 +11,25 @@ use crate::{
 pub(crate) struct RShipDroneLimit {
     pub(crate) group_ids: Box<[AItemGrpId]>,
 }
-
-pub(in crate::rd::data::item::base) fn get_ship_drone_limit(
-    item_attrs: &RMap<RAttrId, Value>,
-    attr_consts: &RAttrConsts,
-) -> Option<RShipDroneLimit> {
-    let group_ids = [attr_consts.allowed_drone_group1, attr_consts.allowed_drone_group2]
-        .iter()
-        .filter_map(|attr_rid| {
-            attr_rid
-                .and_then(|attr_rid| item_attrs.get(&attr_rid))
-                .and_then(|v| AItemGrpId::try_from_f64_rounded(v.into_f64()))
+impl RShipDroneLimit {
+    pub(in crate::rd::data::item::base) fn build(
+        item_attrs: &RMap<RAttrId, Value>,
+        attr_consts: &RAttrConsts,
+    ) -> Option<Self> {
+        let group_ids = [attr_consts.allowed_drone_group1, attr_consts.allowed_drone_group2]
+            .iter()
+            .filter_map(|attr_rid| {
+                attr_rid
+                    .and_then(|attr_rid| item_attrs.get(&attr_rid))
+                    .and_then(|v| AItemGrpId::try_from_f64_rounded(v.into_f64()))
+            })
+            .unique()
+            .collect_vec();
+        if group_ids.is_empty() {
+            return None;
+        }
+        Some(Self {
+            group_ids: group_ids.into_boxed_slice(),
         })
-        .unique()
-        .collect_vec();
-    if group_ids.is_empty() {
-        return None;
     }
-    Some(RShipDroneLimit {
-        group_ids: group_ids.into_boxed_slice(),
-    })
 }

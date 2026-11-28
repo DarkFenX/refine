@@ -4,9 +4,7 @@ use super::getters::{
         get_calibration_use, get_capacity, get_charge_rate, get_charge_size, get_fighter_refuel_duration,
         get_max_fighter_count, get_online_max_sec_class, get_radius, get_rig_size, get_volume,
     },
-    charge_limit::get_item_charge_limit,
     cycling::{get_has_optional_reload, get_has_rearm, get_has_spool},
-    drone_limit::get_ship_drone_limit,
     effect_immunity::get_disallow_vs_ew_immune_tgt,
     fighter_kind::{
         get_heavy_fighter_flag, get_light_fighter_flag, get_st_heavy_fighter_flag, get_st_light_fighter_flag,
@@ -17,7 +15,6 @@ use super::getters::{
     mobility::{get_enables_conduit, get_enables_portal_from_attrs, get_jump_fuel_type_id},
     sec_zone::is_sec_zone_limitable,
     ship_kind::{get_item_ship_kind, get_ship_kind},
-    ship_limit::get_item_ship_limit,
     slot_index::{get_booster_slot, get_implant_slot, get_subsystem_slot},
 };
 use crate::{
@@ -105,7 +102,7 @@ pub(crate) struct RItemBase {
     /// Items can be fit to those ships
     pub(crate) ship_limit: Option<RItemShipLimit>,
     /// Items can load those charges
-    pub(crate) charge_limit: Option<RItemChargeLimit>,
+    pub(crate) charge_limit: RItemChargeLimit,
     /// Ship can use those drones
     pub(crate) drone_limit: Option<RShipDroneLimit>,
     // Derived data - self-limits
@@ -338,9 +335,9 @@ impl RItemBase {
         self.booster_slot = get_booster_slot(r_item_attrs, attr_consts);
         self.subsystem_slot = get_subsystem_slot(r_item_attrs, attr_consts);
         // Various aggregated limits
-        self.ship_limit = get_item_ship_limit(self.aid, r_item_attrs, attr_consts);
-        self.charge_limit = get_item_charge_limit(r_item_attrs, attr_consts);
-        self.drone_limit = get_ship_drone_limit(r_item_attrs, attr_consts);
+        self.ship_limit = RItemShipLimit::build(self.aid, r_item_attrs, attr_consts);
+        self.charge_limit = RItemChargeLimit::build(r_item_attrs, attr_consts);
+        self.drone_limit = RShipDroneLimit::build(r_item_attrs, attr_consts);
         // Self-limits
         self.sec_zone_limitable = is_sec_zone_limitable(r_item_attrs, attr_consts);
         self.online_max_sec_class = get_online_max_sec_class(r_item_attrs, attr_consts);
