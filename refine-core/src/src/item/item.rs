@@ -35,6 +35,13 @@ impl SrcItem<'_> {
             .iter()
             .map(|&stance_aid| ItemTypeId::from_aid(stance_aid))
     }
+    /// Subsystem types this ship type can use; nothing for anything but a ship with subsystems.
+    pub fn iter_ship_subsystem_type_ids(&self) -> impl ExactSizeIterator<Item = ItemTypeId> {
+        self.r_data
+            .get_ship_subsystem_aids(&self.r_item.base.aid)
+            .iter()
+            .map(|&subsystem_aid| ItemTypeId::from_aid(subsystem_aid))
+    }
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////

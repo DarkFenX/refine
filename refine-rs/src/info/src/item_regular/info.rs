@@ -29,6 +29,8 @@ pub struct SrcItemInfo {
     pub module_max_state: Option<ModuleState>,
     #[cfg_attr(feature = "serde", serde(skip_serializing_if = "Vec::is_empty"))]
     pub ship_stance_type_ids: Vec<ItemTypeId>,
+    #[cfg_attr(feature = "serde", serde(skip_serializing_if = "Vec::is_empty"))]
+    pub ship_subsystem_type_ids: Vec<ItemTypeId>,
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -61,6 +63,7 @@ impl SrcItemInfo {
             detected_kind: core_src_item.get_detected_kind(),
             module_max_state: core_src_item.get_module_max_state(),
             ship_stance_type_ids: core_src_item.iter_ship_stance_type_ids().collect(),
+            ship_subsystem_type_ids: core_src_item.iter_ship_subsystem_type_ids().collect(),
         }
     }
 }

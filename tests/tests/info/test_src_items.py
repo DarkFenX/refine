@@ -270,6 +270,44 @@ def test_ship_stances_none(client, consts):
         api_src_items[eve_stance_id].ship_stance_type_ids  # ruff:ignore[useless-expression]
 
 
+def test_ship_subsystems(client, consts):
+    eve_ship_attr_id = client.mk_eve_attr(id_=consts.EveAttr.fits_to_ship_type)
+    eve_ship1_id = client.mk_eve_ship()
+    eve_ship2_id = client.mk_eve_ship()
+    eve_subsystem1_id = client.mk_eve_item(cat_id=consts.EveItemCat.subsystem, attrs={eve_ship_attr_id: eve_ship1_id})
+    eve_subsystem2_id = client.mk_eve_item(cat_id=consts.EveItemCat.subsystem, attrs={eve_ship_attr_id: eve_ship2_id})
+    eve_subsystem3_id = client.mk_eve_item(cat_id=consts.EveItemCat.subsystem, attrs={eve_ship_attr_id: eve_ship1_id})
+    eve_stance_id = client.mk_eve_item(cat_id=consts.EveItemCat.module, grp_id=consts.EveItemGrp.ship_modifier)
+    api_src = client.create_source()
+    # Action
+    api_src_items = api_src.get_items(type_ids=[eve_ship1_id, eve_ship2_id])
+    # Verification - subsystems are sorted by type ID, and are not mixed with stances
+    assert api_src_items[eve_ship1_id].ship_subsystem_type_ids == [eve_subsystem1_id, eve_subsystem3_id]
+    assert api_src_items[eve_ship1_id].ship_stance_type_ids == [eve_stance_id]
+    assert api_src_items[eve_ship2_id].ship_subsystem_type_ids == [eve_subsystem2_id]
+    assert api_src_items[eve_ship2_id].ship_stance_type_ids == [eve_stance_id]
+
+
+def test_ship_subsystems_none(client, consts):
+    eve_ship_attr_id = client.mk_eve_attr(id_=consts.EveAttr.fits_to_ship_type)
+    eve_ship1_id = client.mk_eve_ship()
+    eve_ship2_id = client.mk_eve_ship()
+    # Is limited to the first ship, but is not detected as a subsystem
+    eve_item_id = client.mk_eve_item(cat_id=consts.EveItemCat.module, attrs={eve_ship_attr_id: eve_ship1_id})
+    eve_subsystem_id = client.mk_eve_item(cat_id=consts.EveItemCat.subsystem, attrs={eve_ship_attr_id: eve_ship2_id})
+    api_src = client.create_source()
+    # Action
+    api_src_items = api_src.get_items(type_ids=[eve_ship1_id, eve_item_id, eve_subsystem_id])
+    # Verification
+    assert api_src_items.keys() == {eve_ship1_id, eve_item_id, eve_subsystem_id}
+    with check_no_field():
+        api_src_items[eve_ship1_id].ship_subsystem_type_ids  # ruff:ignore[useless-expression]
+    with check_no_field():
+        api_src_items[eve_item_id].ship_subsystem_type_ids  # ruff:ignore[useless-expression]
+    with check_no_field():
+        api_src_items[eve_subsystem_id].ship_subsystem_type_ids  # ruff:ignore[useless-expression]
+
+
 def test_unknown_type(client, consts):
     eve_item_id = client.mk_eve_item(cat_id=consts.EveItemCat.ship)
     eve_other_id = client.alloc_item_id()
