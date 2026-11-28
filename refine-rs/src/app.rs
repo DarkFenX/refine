@@ -1,5 +1,6 @@
 pub use crate::api::{
-    SolFittingAppEnforcedResp, SolFittingAppSimpleResp, ValCheckerInput, ValCheckerResult, ValCheckerSol, ValEnforcer,
+    SolFittingAppEnforcedResp, SolFittingAppSimpleResp, StatsCmdBuilderInput, ValCheckerInput, ValCheckerResult,
+    ValCheckerSol, ValEnforcer,
 };
 
 pub mod err {

@@ -1,9 +1,12 @@
 use crate::{
     CmdResps, Sol,
-    app::{ValCheckerInput, ValCheckerResult, ValCheckerSol, ValEnforcer, err::SolFittingAppEnforcedError},
+    app::{
+        StatsCmdBuilderInput, ValCheckerInput, ValCheckerResult, ValCheckerSol, ValEnforcer,
+        err::SolFittingAppEnforcedError,
+    },
     ctl::SolChangeEnumCmdBr,
     info::{SolInfo, SolInfoCmdBr},
-    stats::{SolStatsCmdBr, SolStatsResp},
+    stats::{SolStatsCmd, SolStatsResp},
     val::{SolValCmdBr, SolValResult, ValResultMode},
 };
 
@@ -18,18 +21,23 @@ impl Sol<'_> {
     /// needs fixing to make it acceptable. If fixes are needed, enforcer emits commands which
     /// attempt to fix it, and validation is re-run again. This can cycle until sol state is deemed
     /// acceptable, or fix limit is broken.
+    ///
+    /// Stats command is built by the passed function once the changes and fixes are applied and
+    /// info is generated, which lets it request stats for items the caller could not see in
+    /// advance.
     #[tracing::instrument(name = "sol-app-enf", level = "error", skip_all)]
-    pub async fn fitting_app_enforced_batch<VC, VCE>(
+    pub async fn fitting_app_enforced_batch<VC, VCE, SB>(
         &mut self,
         ctl_cmds: Vec<SolChangeEnumCmdBr>,
         val_enforcer: ValEnforcer<VC>,
         val_cmd: SolValCmdBr,
         info_cmd: SolInfoCmdBr,
-        stats_cmd: SolStatsCmdBr,
+        stats_cmd_builder: SB,
     ) -> Result<SolFittingAppEnforcedResp, SolFittingAppEnforcedError<VCE>>
     where
         VC: FnMut(ValCheckerInput<'_>) -> ValCheckerResult<VCE> + Send + 'static,
         VCE: std::error::Error + Send + Sync + 'static,
+        SB: FnOnce(StatsCmdBuilderInput<'_>) -> SolStatsCmd + Send + 'static,
     {
         // Variables for move
         let sol_ctx = self.get_ctx();
@@ -103,7 +111,12 @@ impl Sol<'_> {
             let info = info_cmd
                 .br_resolve(&ctl_cmd_resps)
                 .execute(sol_ctx.sol_id, sol_ctx.src_alias, core_sol);
-            let stats = stats_cmd.br_resolve(&ctl_cmd_resps).execute(core_sol);
+            let stats_cmd = stats_cmd_builder(StatsCmdBuilderInput {
+                ctl: &ctl_cmd_resps,
+                ctl_fix: &fix_ctl_cmd_resps,
+                info: &info,
+            });
+            let stats = stats_cmd.execute(core_sol);
             Ok(SolFittingAppEnforcedResp {
                 ctl: ctl_cmd_resps,
                 ctl_fix: fix_ctl_cmd_resps,

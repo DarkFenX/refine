@@ -1,9 +1,10 @@
 use crate::{
     CmdResps, Sol,
+    app::StatsCmdBuilderInput,
     ctl::{SolChangeEnumCmdBr, err::SolChangeEnumError},
     err::BrResolveError,
     info::{SolInfo, SolInfoCmdBr},
-    stats::{SolStatsCmdBr, SolStatsResp},
+    stats::{SolStatsCmd, SolStatsResp},
     val::{SolValCmdBr, SolValResult},
 };
 
@@ -12,14 +13,20 @@ impl Sol<'_> {
     /// info and stats, and return all of it.
     ///
     /// If any of control commands fails, solar system state before any changes is restored.
+    ///
+    /// Stats command is built by the passed function once the changes are applied and info is
+    /// generated, which lets it request stats for items the caller could not see in advance.
     #[tracing::instrument(name = "sol-app", level = "error", skip_all)]
-    pub async fn fitting_app_simple_batch(
+    pub async fn fitting_app_simple_batch<SB>(
         &mut self,
         ctl_cmds: Vec<SolChangeEnumCmdBr>,
         val_cmd: SolValCmdBr,
         info_cmd: SolInfoCmdBr,
-        stats_cmd: SolStatsCmdBr,
-    ) -> Result<SolFittingAppSimpleResp, SolFittingAppSimpleError> {
+        stats_cmd_builder: SB,
+    ) -> Result<SolFittingAppSimpleResp, SolFittingAppSimpleError>
+    where
+        SB: FnOnce(StatsCmdBuilderInput<'_>) -> SolStatsCmd + Send + 'static,
+    {
         // Variables for move
         let sol_ctx = self.get_ctx();
         self.exec_standard(move |core_sol| {
@@ -37,7 +44,12 @@ impl Sol<'_> {
             let info = info_cmd
                 .br_resolve(&ctl_cmd_resps)
                 .execute(sol_ctx.sol_id, sol_ctx.src_alias, core_sol);
-            let stats = stats_cmd.br_resolve(&ctl_cmd_resps).execute(core_sol);
+            let stats_cmd = stats_cmd_builder(StatsCmdBuilderInput {
+                ctl: &ctl_cmd_resps,
+                ctl_fix: &CmdResps::new(),
+                info: &info,
+            });
+            let stats = stats_cmd.execute(core_sol);
             Ok(SolFittingAppSimpleResp {
                 ctl: ctl_cmd_resps,
                 val: val_result,

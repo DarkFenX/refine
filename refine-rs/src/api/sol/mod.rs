@@ -4,7 +4,7 @@ pub use refine_get_sol::SolGetError;
 pub use sol::Sol;
 pub use sol_batch_fitting_app::{
     SolFittingAppEnforcedError, SolFittingAppEnforcedResp, SolFittingAppSimpleError, SolFittingAppSimpleResp,
-    ValCheckerInput, ValCheckerResult, ValCheckerSol, ValEnforcer,
+    StatsCmdBuilderInput, ValCheckerInput, ValCheckerResult, ValCheckerSol, ValEnforcer,
 };
 pub use sol_batch_hybrid::SolHybridBatchError;
 pub use sol_remove::SolRemoveError;
