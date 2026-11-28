@@ -1,5 +1,8 @@
 use crate::{CmdResp, FitId, FitIdBr, FleetId, FleetIdBr, ItemId, ItemIdBr, err::BrResolveError};
 
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Public
+////////////////////////////////////////////////////////////////////////////////////////////////////
 #[cfg_attr(feature = "serde", derive(serde::Serialize), serde(transparent))]
 #[derive(Clone)]
 pub struct CmdResps {
@@ -18,6 +21,25 @@ impl CmdResps {
     pub fn is_empty(&self) -> bool {
         self.data.is_empty()
     }
+    pub fn resolve_fleet_id(&self, fleet_id: FleetIdBr) -> Result<FleetId, BrResolveError> {
+        match fleet_id {
+            FleetIdBr::Id(item_id) => Ok(item_id),
+            FleetIdBr::Br(index) => self.get_fleet_id(index),
+        }
+    }
+    pub fn resolve_fit_id(&self, fit_id: FitIdBr) -> Result<FitId, BrResolveError> {
+        match fit_id {
+            FitIdBr::Id(item_id) => Ok(item_id),
+            FitIdBr::Br(index) => self.get_fit_id(index),
+        }
+    }
+    pub fn resolve_item_id(&self, item_id: ItemIdBr) -> Result<ItemId, BrResolveError> {
+        match item_id {
+            ItemIdBr::Id(item_id) => Ok(item_id),
+            ItemIdBr::BrMain(index) => self.get_item_id(index),
+            ItemIdBr::BrCharge(index) => self.get_charge_item_id(index),
+        }
+    }
 }
 impl IntoIterator for CmdResps {
     type Item = CmdResp;
@@ -29,7 +51,7 @@ impl IntoIterator for CmdResps {
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-// Non-public
+// Private
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl CmdResps {
     pub(crate) fn new() -> Self {
@@ -46,18 +68,6 @@ impl CmdResps {
     pub(crate) fn append(&mut self, resp: CmdResp) {
         self.data.push(resp);
     }
-    pub(crate) fn resolve_fleet_id(&self, fleet_id: FleetIdBr) -> Result<FleetId, BrResolveError> {
-        match fleet_id {
-            FleetIdBr::Id(item_id) => Ok(item_id),
-            FleetIdBr::Br(index) => self.get_fleet_id(index),
-        }
-    }
-    pub(crate) fn resolve_fit_id(&self, fit_id: FitIdBr) -> Result<FitId, BrResolveError> {
-        match fit_id {
-            FitIdBr::Id(item_id) => Ok(item_id),
-            FitIdBr::Br(index) => self.get_fit_id(index),
-        }
-    }
     pub(crate) fn resolve_fit_ids(&self, br_fit_ids: Vec<FitIdBr>) -> Result<Vec<FitId>, BrResolveError> {
         let mut fit_ids = Vec::with_capacity(br_fit_ids.len());
         for backref_fit_id in br_fit_ids.into_iter() {
@@ -73,13 +83,6 @@ impl CmdResps {
                 .filter_map(|br_fit_id| self.resolve_fit_id(br_fit_id).ok()),
         );
         fit_ids
-    }
-    pub(crate) fn resolve_item_id(&self, item_id: ItemIdBr) -> Result<ItemId, BrResolveError> {
-        match item_id {
-            ItemIdBr::Id(item_id) => Ok(item_id),
-            ItemIdBr::BrMain(index) => self.get_item_id(index),
-            ItemIdBr::BrCharge(index) => self.get_charge_item_id(index),
-        }
     }
     pub(crate) fn resolve_item_ids(&self, br_item_ids: Vec<ItemIdBr>) -> Result<Vec<ItemId>, BrResolveError> {
         let mut item_ids = Vec::with_capacity(br_item_ids.len());
